@@ -91,7 +91,8 @@ fn generate_interop() {
         includes: &["../interop/cxx", "../proto"],
         input: &["../interop/cxx/interop_pb.proto"],
         ..Default::default()
-    }).unwrap();
+    })
+    .unwrap();
 }
 
 fn generate_pb_rs() {

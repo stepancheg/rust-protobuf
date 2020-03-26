@@ -12,12 +12,13 @@ use scope::MessageWithScope;
 use scope::RootScope;
 use scope::WithScope;
 use serde;
+use rust_name::RustIdentWithPath;
 
 /// Message info for codegen
 pub(crate) struct MessageGen<'a> {
     pub message: &'a MessageWithScope<'a>,
     pub root_scope: &'a RootScope<'a>,
-    type_name: String,
+    type_name: RustIdentWithPath,
     pub fields: Vec<FieldGen<'a>>,
     pub lite_runtime: bool,
     customize: Customize,
@@ -47,10 +48,10 @@ impl<'a> MessageGen<'a> {
                 == FileOptions_OptimizeMode::LITE_RUNTIME
         });
         MessageGen {
-            message: message,
-            root_scope: root_scope,
+            message,
+            root_scope,
             type_name: message.rust_name().into(),
-            fields: fields,
+            fields,
             lite_runtime,
             customize,
         }
@@ -161,7 +162,7 @@ impl<'a> MessageGen<'a> {
             |w| {
                 w.lazy_static_decl_get_simple(
                     "instance",
-                    &self.type_name,
+                    &self.type_name.to_string(),
                     &format!("{}::new", self.type_name),
                 );
             },
@@ -204,7 +205,7 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_impl_self(&self, w: &mut CodeWriter) {
-        w.impl_self_block(&self.type_name, |w| {
+        w.impl_self_block(&self.type_name.to_string(), |w| {
             // TODO: new should probably be a part of Message trait
             w.pub_fn(&format!("new() -> {}", self.type_name), |w| {
                 w.write_line("::std::default::Default::default()");
@@ -347,7 +348,7 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_impl_message(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::protobuf::Message", &self.type_name, |w| {
+        w.impl_for_block("::protobuf::Message", &self.type_name.to_string(), |w| {
             self.write_is_initialized(w);
             w.write_line("");
             self.write_merge_from(w);
@@ -393,7 +394,7 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_impl_value(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::protobuf::reflect::ProtobufValue", &self.type_name, |w| {
+        w.impl_for_block("::protobuf::reflect::ProtobufValue", &self.type_name.to_string(), |w| {
             w.def_fn(
                 "as_ref(&self) -> ::protobuf::reflect::ReflectValueRef",
                 |w| w.write_line("::protobuf::reflect::ReflectValueRef::Message(self)"),
@@ -402,7 +403,7 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_impl_show(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::std::fmt::Debug", &self.type_name, |w| {
+        w.impl_for_block("::std::fmt::Debug", &self.type_name.to_string(), |w| {
             w.def_fn(
                 "fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result",
                 |w| {
@@ -413,7 +414,7 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_impl_clear(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::protobuf::Clear", &self.type_name, |w| {
+        w.impl_for_block("::protobuf::Clear", &self.type_name.to_string(), |w| {
             w.def_fn("clear(&mut self)", |w| {
                 for f in self.fields_except_group() {
                     f.write_clear(w);
@@ -437,7 +438,7 @@ impl<'a> MessageGen<'a> {
         }
         w.derive(&derive);
         serde::write_serde_attr(w, &self.customize, "derive(Serialize, Deserialize)");
-        w.pub_struct(&self.type_name, |w| {
+        w.pub_struct(&self.type_name.to_string(), |w| {
             if !self.fields_except_oneof().is_empty() {
                 w.comment("message fields");
                 for field in self.fields_except_oneof() {
