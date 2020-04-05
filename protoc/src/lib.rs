@@ -246,16 +246,16 @@ pub struct Protoc {
 impl Protoc {
     /// New `protoc` command from `$PATH`
     pub fn from_env_path() -> Protoc {
-        if which::which("protoc").is_ok() {
+        if let Ok(path) = which::which("protoc") {
             Protoc {
-                exec: OsString::from("protoc"),
+                exec: path.into_os_string(),
             }
         } else {
             let protoc_bin_name = match (env::consts::OS, env::consts::ARCH) {
                 ("linux", "x86") => "protoc-linux-x86_32",
                 ("linux", "x86_64") => "protoc-linux-x86_64",
                 ("linux", "aarch64") => "protoc-linux-aarch_64",
-                ("linux", "ppcle64") => "protoc-linux-ppcle_64",
+                ("linux", "powerpc64") => "protoc-linux-ppcle_64",
                 ("macos", "x86_64") => "protoc-osx-x86_64",
                 ("windows", _) => "protoc-win32.exe",
                 (os, arch) => panic!("protoc can't be found for your platform {}-{}", os, arch),
@@ -263,6 +263,7 @@ impl Protoc {
             let bin_path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
                 .join("bin")
                 .join(protoc_bin_name);
+            assert!(bin_path.exists(), "internal: protoc not found {}", protoc_bin_name);
             Protoc {
                 exec: bin_path.into_os_string(),
             }
