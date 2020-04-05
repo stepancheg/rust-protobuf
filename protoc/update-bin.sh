@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 cd $(dirname $0)
 
 for arch in linux-aarch_64 linux-ppcle_64 linux-x86_32 linux-x86_64 osx-x86_64 win32; do
