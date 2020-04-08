@@ -251,21 +251,8 @@ impl Protoc {
                 exec: path.into_os_string(),
             }
         } else {
-            let protoc_bin_name = match (env::consts::OS, env::consts::ARCH) {
-                ("linux", "x86") => "protoc-linux-x86_32",
-                ("linux", "x86_64") => "protoc-linux-x86_64",
-                ("linux", "aarch64") => "protoc-linux-aarch_64",
-                ("linux", "powerpc64") => "protoc-linux-ppcle_64",
-                ("macos", "x86_64") => "protoc-osx-x86_64",
-                ("windows", _) => "protoc-win32.exe",
-                (os, arch) => panic!("protoc can't be found for your platform {}-{}", os, arch),
-            };
-            let bin_path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-                .join("bin")
-                .join(protoc_bin_name);
-            assert!(bin_path.exists(), "internal: protoc not found {}", protoc_bin_name);
             Protoc {
-                exec: bin_path.into_os_string(),
+                exec: protoc_binary_vendored().into_os_string(),
             }
         }
     }
@@ -362,6 +349,27 @@ impl Protoc {
             include_imports: false,
         }
     }
+}
+
+fn protoc_binary_vendored() -> PathBuf {
+    let protoc_bin_name = match (env::consts::OS, env::consts::ARCH) {
+        ("linux", "x86") => "protoc-linux-x86_32",
+        ("linux", "x86_64") => "protoc-linux-x86_64",
+        ("linux", "aarch64") => "protoc-linux-aarch_64",
+        ("linux", "powerpc64") => "protoc-linux-ppcle_64",
+        ("macos", "x86_64") => "protoc-osx-x86_64",
+        ("windows", _) => "protoc-win32.exe",
+        (os, arch) => panic!("protoc can't be found for your platform {}-{}", os, arch),
+    };
+    let protoc_bin_path = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("bin")
+        .join(protoc_bin_name);
+    assert!(
+        protoc_bin_path.exists(),
+        "internal: protoc not found {}",
+        protoc_bin_name
+    );
+    protoc_bin_path
 }
 
 /// Protobuf (protoc) version.
