@@ -11,7 +11,7 @@ use std::ffi::{OsStr, OsString};
 use std::fmt;
 use std::path::{Path, PathBuf};
 use std::process;
-use std::{env, io};
+use std::io;
 
 #[macro_use]
 extern crate log;
@@ -251,9 +251,7 @@ impl Protoc {
                 exec: path.into_os_string(),
             }
         } else {
-            Protoc {
-                exec: protoc_binary_vendored().into_os_string(),
-            }
+            panic!("protoc binary not found");
         }
     }
 
@@ -349,27 +347,6 @@ impl Protoc {
             include_imports: false,
         }
     }
-}
-
-fn protoc_binary_vendored() -> PathBuf {
-    let protoc_bin_name = match (env::consts::OS, env::consts::ARCH) {
-        ("linux", "x86") => "protoc-linux-x86_32",
-        ("linux", "x86_64") => "protoc-linux-x86_64",
-        ("linux", "aarch64") => "protoc-linux-aarch_64",
-        ("linux", "powerpc64") => "protoc-linux-ppcle_64",
-        ("macos", "x86_64") => "protoc-osx-x86_64",
-        ("windows", _) => "protoc-win32.exe",
-        (os, arch) => panic!("protoc can't be found for your platform {}-{}", os, arch),
-    };
-    let protoc_bin_path = Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("bin")
-        .join(protoc_bin_name);
-    assert!(
-        protoc_bin_path.exists(),
-        "internal: protoc not found {}",
-        protoc_bin_name
-    );
-    protoc_bin_path
 }
 
 /// Protobuf (protoc) version.
