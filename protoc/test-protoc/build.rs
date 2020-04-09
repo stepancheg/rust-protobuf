@@ -23,7 +23,7 @@ fn main() -> Result<()> {
     let mut gen_rust_plugin = OsString::from("protoc-gen-rust=");
     gen_rust_plugin.push(gen_rust_binary);
 
-    protoc::Args::new()
+    protoc::ProtocLangOut::new()
         .lang("rust")
         .out_dir("src")
         .plugin(gen_rust_plugin)
