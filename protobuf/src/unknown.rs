@@ -1,6 +1,4 @@
-use std::collections::hash_map;
 use std::collections::hash_map::DefaultHasher;
-use std::collections::HashMap;
 use std::default::Default;
 use std::hash::Hash;
 use std::hash::Hasher;
@@ -171,9 +169,7 @@ impl<'o> Iterator for UnknownValuesIter<'o> {
 #[derive(Clone, PartialEq, Eq, Debug, Default)]
 pub struct UnknownFields {
     /// The map.
-    // option is needed, because HashMap constructor performs allocation,
-    // and very expensive
-    fields: Option<Box<HashMap<u32, UnknownValues>>>,
+    fields: Vec<(u32, UnknownValues)>,
 }
 
 /// Very simple hash implementation of `Hash` for `UnknownFields`.
@@ -181,18 +177,14 @@ pub struct UnknownFields {
 /// instead we summing hashes of entries.
 impl Hash for UnknownFields {
     fn hash<H: Hasher>(&self, state: &mut H) {
-        if let Some(ref map) = self.fields {
-            if !map.is_empty() {
-                let mut hash: u64 = 0;
-                for (k, v) in &**map {
-                    let mut entry_hasher = DefaultHasher::new();
-                    Hash::hash(&(k, v), &mut entry_hasher);
-                    hash = hash.wrapping_add(entry_hasher.finish());
-                }
-                Hash::hash(&map.len(), state);
-                Hash::hash(&hash, state);
-            }
+        let mut hash: u64 = 0;
+        for (k, v) in &self.fields {
+            let mut entry_hasher = DefaultHasher::new();
+            Hash::hash(&(k, v), &mut entry_hasher);
+            hash = hash.wrapping_add(entry_hasher.finish());
         }
+        Hash::hash(&self.fields.len(), state);
+        Hash::hash(&hash, state);
     }
 }
 
@@ -202,69 +194,62 @@ impl UnknownFields {
         Default::default()
     }
 
-    fn init_map(&mut self) {
-        if self.fields.is_none() {
-            self.fields = Some(Default::default());
+    fn find_field<'a>(&'a mut self, number: u32) -> &'a mut UnknownValues {
+        for i in 0..self.fields.len() {
+            if self.fields[i].0 == number {
+                return &mut self.fields[i].1;
+            }
         }
-    }
-
-    fn find_field<'a>(&'a mut self, number: &'a u32) -> &'a mut UnknownValues {
-        self.init_map();
-
-        match self.fields.as_mut().unwrap().entry(*number) {
-            hash_map::Entry::Occupied(e) => e.into_mut(),
-            hash_map::Entry::Vacant(e) => e.insert(Default::default()),
-        }
+        self.fields.push((number, Default::default()));
+        &mut self.fields.last_mut().unwrap().1
     }
 
     /// Add unknown fixed 32-bit
     pub fn add_fixed32(&mut self, number: u32, fixed32: u32) {
-        self.find_field(&number).fixed32.push(fixed32);
+        self.find_field(number).fixed32.push(fixed32);
     }
 
     /// Add unknown fixed 64-bit
     pub fn add_fixed64(&mut self, number: u32, fixed64: u64) {
-        self.find_field(&number).fixed64.push(fixed64);
+        self.find_field(number).fixed64.push(fixed64);
     }
 
     /// Add unknown varint
     pub fn add_varint(&mut self, number: u32, varint: u64) {
-        self.find_field(&number).varint.push(varint);
+        self.find_field(number).varint.push(varint);
     }
 
     /// Add unknown length delimited
     pub fn add_length_delimited(&mut self, number: u32, length_delimited: Vec<u8>) {
-        self.find_field(&number)
+        self.find_field(number)
             .length_delimited
             .push(length_delimited);
     }
 
     /// Add unknown value
     pub fn add_value(&mut self, number: u32, value: UnknownValue) {
-        self.find_field(&number).add_value(value);
+        self.find_field(number).add_value(value);
     }
 
     /// Iterate over all unknowns
     pub fn iter<'s>(&'s self) -> UnknownFieldsIter<'s> {
         UnknownFieldsIter {
-            entries: self.fields.as_ref().map(|m| m.iter()),
+            entries: self.fields.iter(),
         }
     }
 
     /// Find unknown field by number
     pub fn get(&self, field_number: u32) -> Option<&UnknownValues> {
-        match self.fields {
-            Some(ref map) => map.get(&field_number),
-            None => None,
-        }
+        self.fields
+            .iter()
+            .find(|(n, _v)| *n == field_number)
+            .map(|(_n, v)| v)
     }
 }
 
 impl Clear for UnknownFields {
     fn clear(&mut self) {
-        if let Some(ref mut fields) = self.fields {
-            fields.clear();
-        }
+        self.fields.clear();
     }
 }
 
@@ -279,17 +264,16 @@ impl<'a> IntoIterator for &'a UnknownFields {
 
 /// Iterator over [`UnknownFields`](crate::UnknownFields)
 pub struct UnknownFieldsIter<'s> {
-    entries: Option<hash_map::Iter<'s, u32, UnknownValues>>,
+    entries: slice::Iter<'s, (u32, UnknownValues)>,
 }
 
 impl<'s> Iterator for UnknownFieldsIter<'s> {
     type Item = (u32, &'s UnknownValues);
 
     fn next(&mut self) -> Option<(u32, &'s UnknownValues)> {
-        match self.entries {
-            Some(ref mut entries) => entries.next().map(|(&number, values)| (number, values)),
-            None => None,
-        }
+        self.entries
+            .next()
+            .map(|(number, values)| (*number, values))
     }
 }
 
