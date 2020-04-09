@@ -29,5 +29,9 @@ serde_derive = { version = "1.0", optional = true }
 serde_json   = { version = "1.0", optional = true }
 bytes = { version = "0.5", optional = true }
 
+[dev-dependencies]
+protobuf-test = { path = "../protobuf-test" }
+walkdir = "2.3.1"
+
 [dependencies.protobuf]
 path = "../protobuf"
