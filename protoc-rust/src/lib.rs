@@ -1,3 +1,6 @@
+#![deny(missing_docs)]
+#![deny(intra_doc_link_resolution_failure)]
+
 extern crate tempfile;
 
 extern crate protobuf;
