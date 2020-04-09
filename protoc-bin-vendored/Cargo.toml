@@ -16,5 +16,8 @@ bench = false
 
 [dependencies]
 
+[dev-dependencies]
+protoc = { path = "../protoc", version = "=3.0.0-pre" }
+
 [package.metadata.docs.rs]
 all-features = true

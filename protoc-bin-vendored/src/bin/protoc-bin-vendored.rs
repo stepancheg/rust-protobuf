@@ -10,7 +10,10 @@ fn main() {
             process::exit(11);
         }
     };
-    let mut command = match process::Command::new(protoc_bin_path).args(env::args()).spawn() {
+    let mut command = match process::Command::new(protoc_bin_path)
+        .args(env::args())
+        .spawn()
+    {
         Ok(command) => command,
         Err(e) => {
             eprintln!("failed to spawn protoc: {}", e);
