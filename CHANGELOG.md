@@ -33,7 +33,11 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - `generate_getter` option to disable generation of getters functions.
 - [Flush `CodedOutputStream` on `drop`](https://github.com/stepancheg/rust-protobuf/commit/0e9cc5964c2731a771725bcf70125d3eb1c273b3)
 
-## [2.12] - Unreleased
+## [2.13] - Unreleased
+
+- [Implement Any::pack,is,unpack
+  operations](https://github.com/stepancheg/rust-protobuf/commit/e91bf7eb20abe68a7b29264b864e2cecbbb3f769)
+- Rename `protoc::Args` to `protoc::ProtocLangOut`
 
 ## [2.12.0] - 2020-03-26
 
