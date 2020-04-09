@@ -1,0 +1,17 @@
+[package]
+name = "protobuf-codegen-identical-test"
+version = "0.0.0"
+authors = ["Nikhil Benesch <nikhil.benesch@gmail.com>"]
+publish = false
+edition = "2018"
+description = "Test protoc-based and pure rust codegen produce identical output"
+
+[dev-dependencies]
+protobuf = { path = "../protobuf" }
+protobuf-codegen = { path = "../protobuf-codegen" }
+protobuf-codegen-pure = { path = "../protobuf-codegen-pure" }
+protobuf-test-common = { path = "../protobuf-test-common" }
+protoc = { path = "../protoc" }
+protoc-rust = { path = "../protoc-rust" }
+tempfile = "3"
+regex = "1.3.9"

@@ -9,6 +9,7 @@ members = [
     "protobuf-codegen",
     "protobuf-codegen-pure",
     "protobuf-codegen-pure-test",
+    "protobuf-codegen-identical-test",
     "protobuf-test",
     "protobuf-test-common",
     "ci-gen",

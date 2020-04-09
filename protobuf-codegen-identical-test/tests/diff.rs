@@ -1,0 +1,186 @@
+use regex::Regex;
+use std::fmt::Write as _;
+use std::fs;
+use std::path::Path;
+use std::path::PathBuf;
+use std::path::MAIN_SEPARATOR;
+use std::str;
+
+use protobuf_test_common::build::glob_simple;
+use std::process::Command;
+use std::process::Stdio;
+
+fn to_paths(iter: impl IntoIterator<Item = impl Into<String>>) -> Vec<PathBuf> {
+    iter.into_iter()
+        .map(|item| item.into().replace(MAIN_SEPARATOR, "/").into())
+        .collect()
+}
+
+#[derive(Default, Debug)]
+struct TestStats {
+    passed: u32,
+    passed_marked_skip: u32,
+    skipped: u32,
+    failed: u32,
+}
+
+fn normalize_generated_file(contents: &str) -> String {
+    let parsed_by = Regex::new("^// \\.proto file is parsed by.*").unwrap();
+
+    let mut r = String::new();
+    let mut inside_descriptor_data = false;
+    for line in contents.lines() {
+        let line = if inside_descriptor_data {
+            if line == "\";" {
+                inside_descriptor_data = false;
+                line.to_owned()
+            } else {
+                continue;
+            }
+        } else if line.starts_with("static file_descriptor_proto_data") {
+            inside_descriptor_data = true;
+            line.to_owned()
+        } else {
+            parsed_by.replace(line, "").into_owned()
+        };
+
+        writeln!(&mut r, "{}", line).unwrap();
+    }
+
+    // sanity check
+    assert!(!inside_descriptor_data);
+
+    r
+}
+
+fn normalize_generated_file_in_place(path: &Path) {
+    let contents = fs::read_to_string(path).unwrap();
+    let contents = normalize_generated_file(&contents);
+    fs::write(path, &contents).unwrap();
+}
+
+fn print_diff(dir: &Path, a: &Path, b: &Path) {
+    if cfg!(windows) {
+        // likely we don't have `diff` command on Windows
+        return;
+    }
+
+    // Not using difference crate because it's slow for large files
+    let output = Command::new("diff")
+        .current_dir(dir)
+        .arg("-u")
+        .arg(a)
+        .arg(b)
+        .stdin(Stdio::null())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .output()
+        .unwrap();
+
+    print!("{}", str::from_utf8(&output.stdout).unwrap());
+    print!("{}", str::from_utf8(&output.stderr).unwrap());
+}
+
+fn test_diff_in<F>(s: &str, include: &str, should_skip: F, stats: &mut TestStats)
+where
+    F: Fn(&str) -> bool,
+{
+    let rel_path_prefix = "../protobuf-test/";
+
+    let include_full = format!("{}{}", rel_path_prefix, include);
+    let s_full = format!("{}{}", rel_path_prefix, s);
+
+    let inputs = to_paths(glob_simple(&format!("{}/*.proto", s_full)));
+    let includes = to_paths(vec![include_full.as_str(), "../proto"]);
+
+    let temp_dir = tempfile::Builder::new()
+        .prefix("protobuf-codegen-identical-test")
+        .tempdir()
+        .unwrap();
+
+    let protoc_dir = format!("{}/protoc", temp_dir.path().to_str().unwrap());
+    let pure_dir = format!("{}/pure", temp_dir.path().to_str().unwrap());
+
+    fs::create_dir(&protoc_dir).unwrap();
+    fs::create_dir(&pure_dir).unwrap();
+
+    protoc_rust::Codegen::new()
+        .inputs(&inputs)
+        .includes(&includes)
+        .out_dir(&protoc_dir)
+        .run()
+        .unwrap();
+
+    protobuf_codegen_pure::Codegen::new()
+        .inputs(&inputs)
+        .includes(&includes)
+        .out_dir(&pure_dir)
+        .run()
+        .unwrap();
+
+    for input in &inputs {
+        let label = input.display().to_string();
+        assert!(label.starts_with(rel_path_prefix));
+        let label = &label[rel_path_prefix.len()..];
+        let proto_name = input.file_name().unwrap().to_str().unwrap();
+        let rs_name = protobuf_codegen::proto_name_to_rs(proto_name);
+        let protoc_rs = format!("{}/{}", protoc_dir, rs_name);
+        let pure_rs = format!("{}/{}", pure_dir, rs_name);
+
+        normalize_generated_file_in_place(Path::new(&protoc_rs));
+        normalize_generated_file_in_place(Path::new(&pure_rs));
+
+        let protoc_rs_contents =
+            fs::read_to_string(&protoc_rs).expect(&format!("while reading {}", protoc_rs));
+        let pure_rs_contents =
+            fs::read_to_string(&pure_rs).expect(&format!("while reading {}", pure_rs));
+        let skip = should_skip(input.to_str().unwrap());
+        if protoc_rs_contents == pure_rs_contents {
+            if !skip {
+                stats.passed += 1;
+                println!("{}: PASSED", label);
+            } else {
+                stats.passed_marked_skip += 1;
+                println!("{}: PASSED BUT MARKED SKIP", label);
+            }
+        } else {
+            if skip {
+                stats.skipped += 1;
+                println!("{} SKIPPED", label);
+            } else {
+                stats.failed += 1;
+                println!("{} FAILED", label);
+            }
+
+            print_diff(temp_dir.path(), Path::new(&protoc_rs), Path::new(&pure_rs));
+        }
+    }
+}
+
+#[test]
+fn test_diff() {
+    let should_skip = |path: &str| {
+        fs::read_to_string(path)
+            .unwrap()
+            .contains("@skip-codegen-identical-test")
+    };
+
+    let mut stats = TestStats {
+        passed: 0,
+        passed_marked_skip: 0,
+        skipped: 0,
+        failed: 0,
+    };
+    test_diff_in("src/v2", "src/v2", should_skip, &mut stats);
+    test_diff_in("src/v3", "src/v3", should_skip, &mut stats);
+    test_diff_in("src/common/v2", "src/common/v2", should_skip, &mut stats);
+    // TODO: test v3 files are generated, copy them here,
+    //   do not rely on protobuf-test crate copying them
+    //test_diff_in("src/common/v3", "src/common/v3", should_skip, &mut stats);
+    test_diff_in("../interop/cxx", "../interop/cxx", should_skip, &mut stats);
+    test_diff_in("src/google/protobuf", "src", |_| true, &mut stats);
+
+    println!("{:?}", stats);
+    assert!(stats.passed != 0, "sanity check");
+    assert!(stats.failed == 0, "at least one test failed");
+}
