@@ -2,7 +2,11 @@
 
 #![deny(missing_docs)]
 
+use std::ffi::OsStr;
+use std::ffi::OsString;
 use std::io;
+use std::path::Path;
+use std::path::PathBuf;
 use std::process;
 
 #[macro_use]
@@ -13,12 +17,148 @@ pub type Error = io::Error;
 /// Alias for io::Error
 pub type Result<T> = io::Result<T>;
 
-fn err_other<T>(s: &str) -> Result<T> {
-    Err(Error::new(io::ErrorKind::Other, s.to_owned()))
+fn err_other(s: impl AsRef<str>) -> Error {
+    Error::new(io::ErrorKind::Other, s.as_ref().to_owned())
+}
+
+/// `protoc --lang_out=... ...` command builder and spawner.
+///
+/// # Examples
+///
+/// ```no_run
+/// use protoc::ProtocLangOut;
+/// ProtocLangOut::new()
+///     .lang("go")
+///     .include("protos")
+///     .include("more-protos")
+///     .out_dir("generated-protos")
+///     .run()
+///     .unwrap();
+/// ```
+#[derive(Default)]
+pub struct ProtocLangOut {
+    protoc: Option<Protoc>,
+    /// `LANG` part in `--LANG_out=...`
+    lang: Option<String>,
+    /// `--LANG_out=...` param
+    out_dir: Option<PathBuf>,
+    /// `--plugin` param. Not needed if plugin is in `$PATH`
+    plugin: Option<OsString>,
+    /// `-I` args
+    includes: Vec<PathBuf>,
+    /// List of `.proto` files to compile
+    inputs: Vec<PathBuf>,
+}
+
+impl ProtocLangOut {
+    /// Arguments to the `protoc` found in `$PATH`
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Set `LANG` part in `--LANG_out=...`
+    pub fn lang(&mut self, lang: &str) -> &mut Self {
+        self.lang = Some(lang.to_owned());
+        self
+    }
+
+    /// Set `--LANG_out=...` param
+    pub fn out_dir(&mut self, out_dir: impl AsRef<Path>) -> &mut Self {
+        self.out_dir = Some(out_dir.as_ref().to_owned());
+        self
+    }
+
+    /// Set `--plugin` param. Not needed if plugin is in `$PATH`
+    pub fn plugin(&mut self, plugin: impl AsRef<OsStr>) -> &mut Self {
+        self.plugin = Some(plugin.as_ref().to_owned());
+        self
+    }
+
+    /// Append a path to `-I` args
+    pub fn include(&mut self, include: impl AsRef<Path>) -> &mut Self {
+        self.includes.push(include.as_ref().to_owned());
+        self
+    }
+
+    /// Append multiple paths to `-I` args
+    pub fn includes(&mut self, includes: impl IntoIterator<Item = impl AsRef<Path>>) -> &mut Self {
+        for include in includes {
+            self.include(include);
+        }
+        self
+    }
+
+    /// Append a `.proto` file path to compile
+    pub fn input(&mut self, input: impl AsRef<Path>) -> &mut Self {
+        self.inputs.push(input.as_ref().to_owned());
+        self
+    }
+
+    /// Append multiple `.proto` file paths to compile
+    pub fn inputs(&mut self, inputs: impl IntoIterator<Item = impl AsRef<Path>>) -> &mut Self {
+        for input in inputs {
+            self.input(input);
+        }
+        self
+    }
+
+    /// Execute `protoc` with given args
+    pub fn run(&self) -> Result<()> {
+        let protoc = match &self.protoc {
+            Some(protoc) => protoc.clone(),
+            None => {
+                let protoc = Protoc::from_env_path();
+                // Check with have good `protoc`
+                protoc.check()?;
+                protoc
+            }
+        };
+
+        if self.inputs.is_empty() {
+            return Err(err_other("input is empty"));
+        }
+
+        let out_dir = self
+            .out_dir
+            .as_ref()
+            .ok_or_else(|| err_other("out_dir is empty"))?;
+        let lang = self
+            .lang
+            .as_ref()
+            .ok_or_else(|| err_other("lang is empty"))?;
+
+        // --{lang}_out={out_dir}
+        let mut lang_out_flag = OsString::from("--");
+        lang_out_flag.push(lang);
+        lang_out_flag.push("_out=");
+        lang_out_flag.push(out_dir);
+
+        // --plugin={plugin}
+        let plugin_flag = self.plugin.as_ref().map(|plugin| {
+            let mut flag = OsString::from("--plugin=");
+            flag.push(plugin);
+            flag
+        });
+
+        // -I{include}
+        let include_flags = self.includes.iter().map(|include| {
+            let mut flag = OsString::from("-I");
+            flag.push(include);
+            flag
+        });
+
+        let mut cmd_args = Vec::new();
+        cmd_args.push(lang_out_flag);
+        cmd_args.extend(self.inputs.iter().map(|path| path.as_os_str().to_owned()));
+        cmd_args.extend(plugin_flag);
+        cmd_args.extend(include_flags);
+        protoc.run_with_args(cmd_args)
+    }
 }
 
 /// `Protoc --lang_out...` args
 #[derive(Default)]
+#[deprecated(since = "2.13", note = "Use ProtocLangOut instead")]
 pub struct Args<'a> {
     /// `LANG` part in `--LANG_out=...`
     pub lang: &'a str,
@@ -46,6 +186,7 @@ pub struct DescriptorSetOutArgs<'a> {
 }
 
 /// Protoc command.
+#[derive(Clone)]
 pub struct Protoc {
     exec: String,
 }
@@ -89,25 +230,25 @@ impl Protoc {
 
         let output = child.wait_with_output()?;
         if !output.status.success() {
-            return err_other("protoc failed with error");
+            return Err(err_other("protoc failed with error"));
         }
         let output =
             String::from_utf8(output.stdout).map_err(|e| Error::new(io::ErrorKind::Other, e))?;
         let output = match output.lines().next() {
-            None => return err_other("output is empty"),
+            None => return Err(err_other("output is empty")),
             Some(line) => line,
         };
         let prefix = "libprotoc ";
         if !output.starts_with(prefix) {
-            return err_other("output does not start with prefix");
+            return Err(err_other("output does not start with prefix"));
         }
         let output = &output[prefix.len()..];
         if output.is_empty() {
-            return err_other("version is empty");
+            return Err(err_other("version is empty"));
         }
         let first = output.chars().next().unwrap();
         if !first.is_digit(10) {
-            return err_other("version does not start with digit");
+            return Err(err_other("version does not start with digit"));
         }
         Ok(Version {
             version: output.to_owned(),
@@ -115,7 +256,7 @@ impl Protoc {
     }
 
     /// Execute `protoc` command with given args, check it completed correctly.
-    fn run_with_args(&self, args: Vec<String>) -> Result<()> {
+    fn run_with_args(&self, args: Vec<OsString>) -> Result<()> {
         let mut cmd = process::Command::new(&self.exec);
         cmd.stdin(process::Stdio::null());
         cmd.args(args);
@@ -123,10 +264,10 @@ impl Protoc {
         let mut child = self.spawn(&mut cmd)?;
 
         if !child.wait()?.success() {
-            return err_other(&format!(
+            return Err(err_other(&format!(
                 "protoc ({:?}) exited with non-zero exit code",
                 cmd
-            ));
+            )));
         }
 
         Ok(())
@@ -134,30 +275,30 @@ impl Protoc {
 
     /// Execute configured `protoc` with given args
     pub fn run(&self, args: Args) -> Result<()> {
-        let mut cmd_args: Vec<String> = Vec::new();
+        let mut cmd_args: Vec<OsString> = Vec::new();
 
         if args.out_dir.is_empty() {
-            return err_other("out_dir is empty");
+            return Err(err_other("out_dir is empty"));
         }
 
         if args.lang.is_empty() {
-            return err_other("lang is empty");
+            return Err(err_other("lang is empty"));
         }
 
-        cmd_args.push(format!("--{}_out={}", args.lang, args.out_dir));
+        cmd_args.push(format!("--{}_out={}", args.lang, args.out_dir).into());
 
         if args.input.is_empty() {
-            return err_other("input is empty");
+            return Err(err_other("input is empty"));
         }
 
-        cmd_args.extend(args.input.into_iter().map(|a| String::from(*a)));
+        cmd_args.extend(args.input.into_iter().map(|a| OsString::from(*a)));
 
         if let Some(plugin) = args.plugin {
-            cmd_args.push(format!("--plugin={}", plugin));
+            cmd_args.push(format!("--plugin={}", plugin).into());
         }
 
         for include in args.includes {
-            cmd_args.push(format!("-I{}", include));
+            cmd_args.push(format!("-I{}", include).into());
         }
 
         self.run_with_args(cmd_args)
@@ -165,40 +306,51 @@ impl Protoc {
 
     /// Execute `protoc --descriptor_set_out=`
     pub fn write_descriptor_set(&self, args: DescriptorSetOutArgs) -> Result<()> {
-        let mut cmd_args: Vec<String> = Vec::new();
+        let mut cmd_args: Vec<OsString> = Vec::new();
 
         for include in args.includes {
-            cmd_args.push(format!("-I{}", include));
+            cmd_args.push(format!("-I{}", include).into());
         }
 
         if args.out.is_empty() {
-            return err_other("out is empty");
+            return Err(err_other("out is empty"));
         }
 
-        cmd_args.push(format!("--descriptor_set_out={}", args.out));
+        cmd_args.push(format!("--descriptor_set_out={}", args.out).into());
 
         if args.include_imports {
-            cmd_args.push("--include_imports".to_owned());
+            cmd_args.push("--include_imports".into());
         }
 
         if args.input.is_empty() {
-            return err_other("input is empty");
+            return Err(err_other("input is empty"));
         }
 
-        cmd_args.extend(args.input.into_iter().map(|a| String::from(*a)));
+        cmd_args.extend(args.input.into_iter().map(|a| OsString::from(*a)));
 
         self.run_with_args(cmd_args)
     }
 }
 
-/// Execute `protoc` found in `$PATH` with given args
+#[deprecated(since = "2.13", note = "Use ProtocLangOut instead")]
 pub fn run(args: Args) -> Result<()> {
-    let protoc = Protoc::from_env_path();
-
-    // First check with have good `protoc`
-    protoc.check()?;
-
-    protoc.run(args)
+    let mut protoc_lang_out = ProtocLangOut::new();
+    if !args.lang.is_empty() {
+        protoc_lang_out.lang(args.lang);
+    }
+    if !args.out_dir.is_empty() {
+        protoc_lang_out.out_dir(args.out_dir);
+    }
+    if let Some(plugin) = args.plugin {
+        protoc_lang_out.plugin(plugin);
+    }
+    if !args.includes.is_empty() {
+        protoc_lang_out.includes(args.includes);
+    }
+    if !args.input.is_empty() {
+        protoc_lang_out.inputs(args.input);
+    }
+    protoc_lang_out.run()
 }
 
 /// Protobuf (protoc) version.
