@@ -245,3 +245,13 @@ fn test_get_reflect_map() {
         _ => panic!(),
     }
 }
+
+#[test]
+fn test_json_name() {
+    let descriptor = M::descriptor_static().get_field_by_name("sub_m").unwrap();
+    // Note that we intentionally do not call `descriptor.json_name()`, since
+    // that will compute a JSON name if one is not already present in the proto.
+    // We want to verify that the compiler has encoded the correct JSON name in
+    // the descriptor itself.
+    assert_eq!("subM", descriptor.proto().get_json_name());
+}
