@@ -5,7 +5,7 @@ use std::io::Read;
 use std::process;
 
 fn generate_protos() {
-    protoc_rust::Args::new()
+    protoc_rust::Codegen::new()
         .out_dir("src")
         .input("src/messages.proto")
         .includes(&["src", "../../proto"])

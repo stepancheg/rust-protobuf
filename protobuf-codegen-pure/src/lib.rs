@@ -1,3 +1,25 @@
+//! API to generate `.rs` files.
+//!
+//! This API requires `protoc` command present in `$PATH`.
+//!
+//! ```
+//! extern crate protoc_rust;
+//!
+//! fn main() {
+//!     protobuf_codegen_pure::Codegen::new()
+//!         .out_dir("src/protos")
+//!         .inputs(&["protos/a.proto", "protos/b.proto"]),
+//!         .include("protos")
+//!         .run()
+//!         .expect("Codegen failed.");
+//! }
+//! ```
+//!
+//! It is advisable that `protobuf-codegen-pure` build-dependecy version be the same as
+//! `protobuf` dependency.
+//!
+//! The alternative is to use `protoc-rust` crate.
+//!
 extern crate protobuf;
 extern crate protobuf_codegen;
 
@@ -8,7 +30,8 @@ use std::error::Error;
 use std::fmt;
 use std::fs;
 use std::io;
-use std::path::{Path, PathBuf};
+use std::path::Path;
+use std::path::PathBuf;
 
 mod model;
 mod parser;
@@ -21,7 +44,7 @@ mod test_against_protobuf_protos;
 
 // TODO: merge with protoc-rust def
 #[derive(Debug, Default)]
-pub struct Args {
+pub struct Codegen {
     /// --lang_out= param
     out_dir: PathBuf,
     /// -I args
@@ -32,7 +55,7 @@ pub struct Args {
     customize: Customize,
 }
 
-impl Args {
+impl Codegen {
     pub fn new() -> Self {
         Self::default()
     }

@@ -6,7 +6,7 @@
 //! extern crate protoc_rust;
 //!
 //! fn main() {
-//!     protoc_rust::Args::new()
+//!     protoc_rust::Codegen::new()
 //!         .out_dir("src/protos")
 //!         .inputs(&["protos/a.proto", "protos/b.proto"]),
 //!         .include("protos")
@@ -39,7 +39,7 @@ pub use protobuf_codegen::Customize;
 
 /// `Protoc --rust_out...` args
 #[derive(Debug, Default)]
-pub struct Args {
+pub struct Codegen {
     /// --lang_out= param
     out_dir: PathBuf,
     /// -I args
@@ -50,7 +50,7 @@ pub struct Args {
     customize: Customize,
 }
 
-impl Args {
+impl Codegen {
     /// Arguments to the `protoc` found in `$PATH`
     pub fn new() -> Self {
         Self::default()

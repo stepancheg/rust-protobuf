@@ -88,7 +88,7 @@ fn gen_in_dir(dir: &str, include_dir: &str) {
              includes,
              customize,
          }| {
-            protobuf_codegen_pure::Args::new()
+            protobuf_codegen_pure::Codegen::new()
                 .out_dir(out_dir)
                 .inputs(input)
                 .includes(includes)
@@ -114,7 +114,7 @@ fn generate_interop() {
     copy_from_protobuf_test("src/interop/mod.rs");
     copy_from_protobuf_test("src/interop/json.rs");
 
-    protobuf_codegen_pure::Args::new()
+    protobuf_codegen_pure::Codegen::new()
         .out_dir("src/interop")
         .includes(&["../interop/cxx", "../proto"])
         .input("../interop/cxx/interop_pb.proto")
