@@ -140,9 +140,6 @@ fn normalize_file_descriptor(desc: &mut FileDescriptorProto) {
     }
     desc.options.clear();
 
-    // TODO: don't clear dependencies.
-    desc.dependency.clear();
-
     // TODO: don't clear services.
     desc.service.clear();
 }
