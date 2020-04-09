@@ -5,6 +5,7 @@ use std::iter;
 use model;
 
 use protobuf;
+use protobuf::json::json_name;
 use protobuf::Message;
 
 use protobuf_codegen::ProtobufAbsolutePath;
@@ -38,7 +39,18 @@ trait ProtobufOptions {
 
     fn by_name_bool(&self, name: &str) -> ConvertResult<Option<bool>> {
         match self.by_name(name) {
-            Some(&model::ProtobufConstant::Bool(b)) => Ok(Some(b)),
+            Some(model::ProtobufConstant::Bool(b)) => Ok(Some(*b)),
+            Some(_) => Err(ConvertError::WrongOptionType),
+            None => Ok(None),
+        }
+    }
+
+    fn by_name_string(&self, name: &str) -> ConvertResult<Option<String>> {
+        match self.by_name(name) {
+            Some(model::ProtobufConstant::String(s)) => s
+                .decode_utf8()
+                .map(Some)
+                .map_err(ConvertError::StrLitDecodeError),
             Some(_) => Err(ConvertError::WrongOptionType),
             None => Ok(None),
         }
@@ -48,13 +60,9 @@ trait ProtobufOptions {
 impl<'a> ProtobufOptions for &'a [model::ProtobufOption] {
     fn by_name(&self, name: &str) -> Option<&model::ProtobufConstant> {
         let option_name = name;
-        for &model::ProtobufOption {
-            ref name,
-            ref value,
-        } in *self
-        {
+        for model::ProtobufOption { name, value } in *self {
             if name == option_name {
-                return Some(value);
+                return Some(&value);
             }
         }
         None
@@ -186,6 +194,8 @@ impl<'a> Resolver<'a> {
         if let Some(t_name) = t_name {
             output.set_type_name(t_name.path);
         }
+
+        output.set_json_name(json_name(&name));
 
         output
     }
@@ -428,6 +438,12 @@ impl<'a> Resolver<'a> {
 
         if let Some(oneof_index) = oneof_index {
             output.set_oneof_index(oneof_index);
+        }
+
+        if let Some(json_name) = input.options.as_slice().by_name_string("json_name")? {
+            output.set_json_name(json_name);
+        } else {
+            output.set_json_name(json_name(&input.name));
         }
 
         Ok(output)
