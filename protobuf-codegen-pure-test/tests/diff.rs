@@ -53,15 +53,12 @@ fn test_diff() {
             | "src/v2/test_group_pb.rs"
             | "src/v2/test_oneof_group_pb.rs"
             | "src/v2/test_default_values_pb.rs"
-            | "src/common/v2/test_ident_pb.rs"
             | "src/common/v2/test_lite_runtime_pb.rs"
             | "src/common/v2/test_service_pb.rs"
             | "src/common/v2/test_ext_pb.rs"
-            | "src/common/v3/test_ident_pb.rs"
             | "src/common/v3/test_lite_runtime_pb.rs"
             | "src/common/v3/test_service_pb.rs"
-            | "src/common/v3/test_ext_pb.rs"
-            | "src/v3/test_ident_pb.rs" => true,
+            | "src/common/v3/test_ext_pb.rs" => true,
             _ => false,
         };
 

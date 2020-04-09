@@ -203,13 +203,21 @@ impl MessageBodyParseMode {
 
 #[derive(Default)]
 pub struct MessageBody {
-    pub fields: Vec<Field>,
-    pub oneofs: Vec<OneOf>,
+    pub entries: Vec<MessageEntry>,
     pub reserved_nums: Vec<FieldNumberRange>,
     pub reserved_names: Vec<String>,
     pub messages: Vec<Message>,
     pub enums: Vec<Enumeration>,
     pub options: Vec<ProtobufOption>,
+}
+
+impl MessageBody {
+    pub fn fields(&self) -> impl Iterator<Item = &Field> {
+        self.entries.iter().filter_map(|e| match e {
+            MessageEntry::Field(f) => Some(f),
+            MessageEntry::OneOf(_) => None,
+        })
+    }
 }
 
 trait NumLitEx {
@@ -555,7 +563,7 @@ impl<'a> Parser<'a> {
                 Syntax::Proto3 => MessageBodyParseMode::MessageProto3,
             };
 
-            let MessageBody { fields, .. } = self.next_message_body(mode)?;
+            let fields = self.next_message_body(mode)?.fields().cloned().collect();
 
             Ok(Field {
                 name,
@@ -591,11 +599,19 @@ impl<'a> Parser<'a> {
 
     // oneof = "oneof" oneofName "{" { oneofField | emptyStatement } "}"
     // oneofField = type fieldName "=" fieldNumber [ "[" fieldOptions "]" ] ";"
-    fn next_oneof_opt(&mut self) -> ParserResult<Option<OneOf>> {
+    fn next_oneof_opt(&mut self, index: i32) -> ParserResult<Option<OneOf>> {
         if self.tokenizer.next_ident_if_eq("oneof")? {
             let name = self.tokenizer.next_ident()?.to_owned();
-            let MessageBody { fields, .. } = self.next_message_body(MessageBodyParseMode::Oneof)?;
-            Ok(Some(OneOf { name, fields }))
+            let fields = self
+                .next_message_body(MessageBodyParseMode::Oneof)?
+                .fields()
+                .cloned()
+                .collect();
+            Ok(Some(OneOf {
+                name,
+                index,
+                fields,
+            }))
         } else {
             Ok(None)
         }
@@ -767,6 +783,7 @@ impl<'a> Parser<'a> {
         self.tokenizer.next_symbol_expect_eq('{')?;
 
         let mut r = MessageBody::default();
+        let mut oneof_index = 0;
 
         while self.tokenizer.lookahead_if_symbol()? != Some('}') {
             // emptyStatement
@@ -781,8 +798,9 @@ impl<'a> Parser<'a> {
                     continue;
                 }
 
-                if let Some(oneof) = self.next_oneof_opt()? {
-                    r.oneofs.push(oneof);
+                if let Some(oneof) = self.next_oneof_opt(oneof_index)? {
+                    r.entries.push(MessageEntry::OneOf(oneof));
+                    oneof_index += 1;
                     continue;
                 }
 
@@ -821,7 +839,7 @@ impl<'a> Parser<'a> {
                 self.tokenizer.next_ident_if_eq_error("option")?;
             }
 
-            r.fields.push(self.next_field(mode)?);
+            r.entries.push(MessageEntry::Field(self.next_field(mode)?));
         }
 
         self.tokenizer.next_symbol_expect_eq('}')?;
@@ -840,8 +858,7 @@ impl<'a> Parser<'a> {
             };
 
             let MessageBody {
-                fields,
-                oneofs,
+                entries,
                 reserved_nums,
                 reserved_names,
                 messages,
@@ -851,8 +868,7 @@ impl<'a> Parser<'a> {
 
             Ok(Some(Message {
                 name,
-                fields,
-                oneofs,
+                entries,
                 reserved_nums,
                 reserved_names,
                 messages,
@@ -882,10 +898,11 @@ impl<'a> Parser<'a> {
                 Syntax::Proto3 => MessageBodyParseMode::ExtendProto3,
             };
 
-            let MessageBody { fields, .. } = self.next_message_body(mode)?;
+            let body = self.next_message_body(mode)?;
 
-            let extensions = fields
-                .into_iter()
+            let extensions = body
+                .fields()
+                .cloned()
                 .map(|field| {
                     let extendee = extendee.clone();
                     Extension { extendee, field }
@@ -1189,7 +1206,7 @@ mod test {
     }"#;
 
         let mess = parse_opt(msg, |p| p.next_message_opt());
-        assert_eq!(10, mess.fields.len());
+        assert_eq!(10, mess.entries.len());
     }
 
     #[test]
@@ -1279,8 +1296,8 @@ mod test {
     }"#;
 
         let mess = parse_opt(msg, |p| p.next_message_opt());
-        assert_eq!(1, mess.fields.len());
-        match mess.fields[0].typ {
+        assert_eq!(1, mess.entries.len());
+        match mess.entries[0].unwrap_field().typ {
             FieldType::Map(ref f) => match &**f {
                 &(FieldType::String, FieldType::Int32) => (),
                 ref f => panic!("Expecting Map<String, Int32> found {:?}", f),
@@ -1303,8 +1320,8 @@ mod test {
     }"#;
 
         let mess = parse_opt(msg, |p| p.next_message_opt());
-        assert_eq!(1, mess.oneofs.len());
-        assert_eq!(3, mess.oneofs[0].fields.len());
+        assert_eq!(1, mess.oneofs().count());
+        assert_eq!(3, mess.entries[1].unwrap_oneof().fields.len());
     }
 
     #[test]
@@ -1330,7 +1347,7 @@ mod test {
             vec!["foo".to_string(), "bar".to_string()],
             mess.reserved_names
         );
-        assert_eq!(2, mess.fields.len());
+        assert_eq!(2, mess.entries.len());
     }
 
     #[test]
@@ -1340,8 +1357,11 @@ mod test {
         }"#;
 
         let mess = parse_opt(msg, |p| p.next_message_opt());
-        assert_eq!("default", mess.fields[0].options[0].name);
-        assert_eq!("17", mess.fields[0].options[0].value.format());
+        assert_eq!("default", mess.entries[0].unwrap_field().options[0].name);
+        assert_eq!(
+            "17",
+            mess.entries[0].unwrap_field().options[0].value.format()
+        );
     }
 
     #[test]
@@ -1353,7 +1373,7 @@ mod test {
         let mess = parse_opt(msg, |p| p.next_message_opt());
         assert_eq!(
             r#""ab\nc d\"g\'h\0\"z""#,
-            mess.fields[0].options[0].value.format()
+            mess.entries[0].unwrap_field().options[0].value.format()
         );
     }
 
@@ -1366,7 +1386,7 @@ mod test {
         let mess = parse_opt(msg, |p| p.next_message_opt());
         assert_eq!(
             r#""ab\nc d\xfeE\"g\'h\0\"z""#,
-            mess.fields[0].options[0].value.format()
+            mess.entries[0].unwrap_field().options[0].value.format()
         );
     }
 
@@ -1384,14 +1404,16 @@ mod test {
         }"#;
         let mess = parse_opt(msg, |p| p.next_message_opt());
 
-        assert_eq!("Identifier", mess.fields[1].name);
-        if let FieldType::Group(ref group_fields) = mess.fields[1].typ {
+        let field1 = mess.entries[1].unwrap_field();
+        assert_eq!("Identifier", field1.name);
+        if let FieldType::Group(ref group_fields) = field1.typ {
             assert_eq!(2, group_fields.len());
         } else {
             panic!("expecting group");
         }
 
-        assert_eq!("bbb", mess.fields[2].name);
+        let field2 = mess.entries[2].unwrap_field();
+        assert_eq!("bbb", field2.name);
     }
 
     #[test]

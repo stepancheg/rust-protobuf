@@ -161,10 +161,8 @@ pub struct FieldNumberRange {
 pub struct Message {
     /// Message name
     pub name: String,
-    /// Message `Field`s
-    pub fields: Vec<Field>,
-    /// Message `OneOf`s
-    pub oneofs: Vec<OneOf>,
+    /// Message `Field`s and `OneOf`s
+    pub entries: Vec<MessageEntry>,
     /// Message reserved numbers
     ///
     /// TODO: use RangeInclusive once stable
@@ -177,6 +175,48 @@ pub struct Message {
     pub enums: Vec<Enumeration>,
     /// Non-builtin options
     pub options: Vec<ProtobufOption>,
+}
+
+impl Message {
+    #[cfg(test)]
+    pub fn oneofs(&self) -> impl Iterator<Item = &OneOf> {
+        self.entries.iter().filter_map(|e| match e {
+            MessageEntry::Field(_) => None,
+            MessageEntry::OneOf(o) => Some(o),
+        })
+    }
+
+    pub fn fields(&self) -> impl Iterator<Item = &Field> {
+        self.entries.iter().filter_map(|e| match e {
+            MessageEntry::Field(f) => Some(f),
+            MessageEntry::OneOf(_) => None,
+        })
+    }
+}
+
+/// A field or a oneof in a protobuf message
+#[derive(Debug, Clone)]
+pub enum MessageEntry {
+    Field(Field),
+    OneOf(OneOf),
+}
+
+impl MessageEntry {
+    #[cfg(test)]
+    pub fn unwrap_field(&self) -> &Field {
+        match self {
+            MessageEntry::Field(f) => f,
+            MessageEntry::OneOf(_) => panic!("MessageEntry::unwrap_field called on OneOf",),
+        }
+    }
+
+    #[cfg(test)]
+    pub fn unwrap_oneof(&self) -> &OneOf {
+        match self {
+            MessageEntry::Field(_) => panic!("MessageEntry::unwrap_oneof called on Field"),
+            MessageEntry::OneOf(o) => o,
+        }
+    }
 }
 
 /// A protobuf enumeration field
@@ -204,6 +244,10 @@ pub struct Enumeration {
 pub struct OneOf {
     /// OneOf name
     pub name: String,
+    /// OneOf index
+    ///
+    /// Starts from zero within a message and increments for each OneOf
+    pub index: i32,
     /// OneOf fields
     pub fields: Vec<Field>,
 }

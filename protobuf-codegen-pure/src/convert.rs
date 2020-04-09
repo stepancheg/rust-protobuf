@@ -264,7 +264,7 @@ impl<'a> Resolver<'a> {
             nested_messages.push(self.message(m, &nested_path_in_file)?);
         }
 
-        for f in &input.fields {
+        for f in input.fields() {
             if let model::FieldType::Map(ref t) = f.typ {
                 nested_messages.push(self.map_entry_message(&f.name, &t.0, &t.1, path_in_file)?);
             }
@@ -280,23 +280,25 @@ impl<'a> Resolver<'a> {
 
         {
             let mut fields = protobuf::RepeatedField::new();
+            let mut oneofs = protobuf::RepeatedField::new();
 
-            for f in &input.fields {
-                fields.push(self.field(f, None, &nested_path_in_file)?);
-            }
-
-            for (oneof_index, oneof) in input.oneofs.iter().enumerate() {
-                let oneof_index = oneof_index as i32;
-                for f in &oneof.fields {
-                    fields.push(self.field(f, Some(oneof_index as i32), &nested_path_in_file)?);
+            for e in &input.entries {
+                match e {
+                    model::MessageEntry::Field(f) => {
+                        fields.push(self.field(f, None, &nested_path_in_file)?);
+                    }
+                    model::MessageEntry::OneOf(o) => {
+                        for f in &o.fields {
+                            fields.push(self.field(f, Some(o.index), &nested_path_in_file)?);
+                        }
+                        oneofs.push(self.oneof(o));
+                    }
                 }
             }
 
             output.field = fields;
+            output.oneof_decl = oneofs;
         }
-
-        let oneofs = input.oneofs.iter().map(|o| self.oneof(o)).collect();
-        output.oneof_decl = oneofs;
 
         if !input.options.is_empty() {
             output
