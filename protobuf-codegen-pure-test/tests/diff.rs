@@ -124,7 +124,6 @@ fn test_diff() {
             | "src/common/v3/test_reflect_pb.rs"
             | "src/common/v3/test_ext_pb.rs"
             | "src/common/v3/test_repeated_packed_pb.rs"
-            | "src/common/v3/test_nonunique_enum_pb.rs"
             | "src/common/v3/test_oneof_expose_pb.rs"
             | "src/common/v3/test_serde_derive_pb.rs"
             | "src/common/v3/test_fmt_text_format_pb.rs"
