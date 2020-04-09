@@ -20,6 +20,7 @@
 //!
 //! The alternative is to use `protoc-rust` crate.
 
+#![deny(missing_docs)]
 #![deny(intra_doc_link_resolution_failure)]
 
 extern crate protobuf;
@@ -44,6 +45,7 @@ pub use protobuf_codegen::Customize;
 #[cfg(test)]
 mod test_against_protobuf_protos;
 
+/// Invoke pure rust codegen. See [crate docs](crate) for example.
 // TODO: merge with protoc-rust def
 #[derive(Debug, Default)]
 pub struct Codegen {
@@ -58,20 +60,24 @@ pub struct Codegen {
 }
 
 impl Codegen {
+    /// Fresh new codegen object.
     pub fn new() -> Self {
         Self::default()
     }
 
+    /// Set the output directory for codegen.
     pub fn out_dir(&mut self, out_dir: impl AsRef<Path>) -> &mut Self {
         self.out_dir = out_dir.as_ref().to_owned();
         self
     }
 
+    /// Add an include directory.
     pub fn include(&mut self, include: impl AsRef<Path>) -> &mut Self {
         self.includes.push(include.as_ref().to_owned());
         self
     }
 
+    /// Add include directories.
     pub fn includes(&mut self, includes: impl IntoIterator<Item = impl AsRef<Path>>) -> &mut Self {
         for include in includes {
             self.include(include);
@@ -79,11 +85,13 @@ impl Codegen {
         self
     }
 
+    /// Add an input (`.proto` file).
     pub fn input(&mut self, input: impl AsRef<Path>) -> &mut Self {
         self.inputs.push(input.as_ref().to_owned());
         self
     }
 
+    /// Add inputs (`.proto` files).
     pub fn inputs(&mut self, inputs: impl IntoIterator<Item = impl AsRef<Path>>) -> &mut Self {
         for input in inputs {
             self.input(input);
@@ -91,6 +99,7 @@ impl Codegen {
         self
     }
 
+    /// Specify generated code [`Customize`] object.
     pub fn customize(&mut self, customize: Customize) -> &mut Self {
         self.customize = customize;
         self
