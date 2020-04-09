@@ -35,6 +35,25 @@ pub fn snake_case(input: &str) -> String {
     result
 }
 
+pub fn json_name(input: &str) -> String {
+    let mut capitalize_next = false;
+    let mut result = String::new();
+    result.reserve(input.len());
+
+    for c in input.chars() {
+        if c == '_' {
+            capitalize_next = true;
+        } else if capitalize_next {
+            result.push(c.to_ascii_uppercase());
+            capitalize_next = false;
+        } else {
+            result.push(c);
+        }
+    }
+
+    result
+}
+
 #[cfg(test)]
 mod test {
     use super::*;

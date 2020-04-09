@@ -23,7 +23,6 @@ fn test_diff() {
 
         // Many files are expected to fail right now.
         let expect_fail = match path {
-            "src/google/protobuf/unittest_preserve_unknown_enum2.rs"
             | "src/google/protobuf/unittest_lazy_dependencies_enum.rs"
             | "src/google/protobuf/unittest_proto3_arena.rs"
             | "src/google/protobuf/unittest_no_arena_lite.rs"
@@ -38,7 +37,6 @@ fn test_diff() {
             | "src/google/protobuf/unittest_proto3_arena_lite.rs"
             | "src/google/protobuf/unittest.rs"
             | "src/google/protobuf/unittest_mset_wire_format.rs"
-            | "src/google/protobuf/unittest_no_arena_import.rs"
             | "src/google/protobuf/unittest_lazy_dependencies_custom_option.rs"
             | "src/google/protobuf/unittest_import_public.rs"
             | "src/google/protobuf/unittest_custom_options.rs"
@@ -52,13 +50,11 @@ fn test_diff() {
             | "src/google/protobuf/unittest_mset.rs"
             | "src/google/protobuf/unittest_import_public_lite.rs"
             | "src/interop/interop_pb.rs"
-            | "src/v2/test_required_pb.rs"
             | "src/v2/test_oneof_default_value_pb.rs"
             | "src/v2/test_import_root_pb.rs"
             | "src/v2/test_import_nested_pb.rs"
             | "src/v2/test_import_nonunique_pb.rs"
             | "src/v2/test_import_pkg_nested_pb.rs"
-            | "src/v2/test_reflect_default_pb.rs"
             | "src/v2/test_group_pb.rs"
             | "src/v2/test_oneof_group_pb.rs"
             | "src/v2/test_carllerche_bytes_default_value_pb.rs"
@@ -67,12 +63,10 @@ fn test_diff() {
             | "src/common/v2/test_sync_pb.rs"
             | "src/common/v2/test_import_descriptor_pb.rs"
             | "src/common/v2/test_lite_runtime_pb.rs"
-            | "src/common/v2/test_root_pb.rs"
             | "src/common/v2/test_oneof_pb.rs"
             | "src/common/v2/test_map_carllerche_pb.rs"
             | "src/common/v2/test_well_known_types_pb.rs"
             | "src/common/v2/test_enum_alias_pb.rs"
-            | "src/common/v2/test_oneof_recursive_pb.rs"
             | "src/common/v2/test_carllerche_bytes_pb.rs"
             | "src/common/v2/test_fmt_json_well_known_pb.rs"
             | "src/common/v2/test_fmt_json_pb.rs"
@@ -82,7 +76,6 @@ fn test_diff() {
             | "src/common/v2/test_default_pb.rs"
             | "src/common/v2/test_reflect_pb.rs"
             | "src/common/v2/test_ext_pb.rs"
-            | "src/common/v2/test_repeated_packed_pb.rs"
             | "src/common/v2/test_oneof_expose_pb.rs"
             | "src/common/v2/test_serde_derive_pb.rs"
             | "src/common/v2/test_fmt_text_format_pb.rs"
@@ -96,12 +89,10 @@ fn test_diff() {
             | "src/common/v3/test_sync_pb.rs"
             | "src/common/v3/test_import_descriptor_pb.rs"
             | "src/common/v3/test_lite_runtime_pb.rs"
-            | "src/common/v3/test_root_pb.rs"
             | "src/common/v3/test_oneof_pb.rs"
             | "src/common/v3/test_map_carllerche_pb.rs"
             | "src/common/v3/test_well_known_types_pb.rs"
             | "src/common/v3/test_enum_alias_pb.rs"
-            | "src/common/v3/test_oneof_recursive_pb.rs"
             | "src/common/v3/test_carllerche_bytes_pb.rs"
             | "src/common/v3/test_fmt_json_well_known_pb.rs"
             | "src/common/v3/test_fmt_json_pb.rs"
@@ -111,7 +102,6 @@ fn test_diff() {
             | "src/common/v3/test_default_pb.rs"
             | "src/common/v3/test_reflect_pb.rs"
             | "src/common/v3/test_ext_pb.rs"
-            | "src/common/v3/test_repeated_packed_pb.rs"
             | "src/common/v3/test_oneof_expose_pb.rs"
             | "src/common/v3/test_serde_derive_pb.rs"
             | "src/common/v3/test_fmt_text_format_pb.rs"
@@ -121,9 +111,7 @@ fn test_diff() {
             | "src/common/v3/test_singular_concat_pb.rs"
             | "src/common/v3/test_enum_unknown_values_preserved_pb.rs"
             | "src/common/v3/test_any_pb.rs"
-            | "src/v3/test_ident_pb.rs"
-            | "src/v3/test_issue_190_pb.rs"
-            | "src/v3/test_zeros_are_not_written_pb.rs" => true,
+            | "src/v3/test_ident_pb.rs" => true,
             _ => false,
         };
 
