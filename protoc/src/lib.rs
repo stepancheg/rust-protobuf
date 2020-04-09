@@ -9,9 +9,9 @@
 
 use std::ffi::{OsStr, OsString};
 use std::fmt;
+use std::io;
 use std::path::{Path, PathBuf};
 use std::process;
-use std::io;
 
 #[macro_use]
 extern crate log;
@@ -26,9 +26,22 @@ fn err_other(s: impl AsRef<str>) -> Error {
     Error::new(io::ErrorKind::Other, s.as_ref().to_owned())
 }
 
-/// `Protoc --lang_out...` args
+/// `protoc --lang_out=... ...` command builder and spawner.
+///
+/// # Examples
+///
+/// ```no_run
+/// use protoc::ProtocLangOut;
+/// ProtocLangOut::new()
+///     .lang("go")
+///     .include("protos")
+///     .include("more-protos")
+///     .out_dir("generated-protos")
+///     .run()
+///     .unwrap();
+/// ```
 #[derive(Default)]
-pub struct Args {
+pub struct ProtocLangOut {
     protoc: Option<Protoc>,
     /// `LANG` part in `--LANG_out=...`
     lang: Option<String>,
@@ -42,7 +55,7 @@ pub struct Args {
     inputs: Vec<PathBuf>,
 }
 
-impl Args {
+impl ProtocLangOut {
     /// Arguments to the `protoc` found in `$PATH`
     pub fn new() -> Self {
         Self::default()
@@ -344,10 +357,10 @@ impl Protoc {
     }
 
     /// Get default Args for this command.
-    pub fn args(&self) -> Args {
-        Args {
+    pub fn args(&self) -> ProtocLangOut {
+        ProtocLangOut {
             protoc: Some(self.clone()),
-            ..Args::new()
+            ..ProtocLangOut::new()
         }
     }
 
