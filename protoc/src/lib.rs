@@ -335,6 +335,7 @@ impl Protoc {
 
 /// Deprecated version of [`ProtocLangOut`].
 #[deprecated(since = "2.13", note = "Use ProtocLangOut instead")]
+#[allow(deprecated)]
 pub fn run(args: Args) -> Result<()> {
     let mut protoc_lang_out = ProtocLangOut::new();
     if !args.lang.is_empty() {
