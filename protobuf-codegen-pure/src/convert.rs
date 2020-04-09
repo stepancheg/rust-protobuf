@@ -838,6 +838,8 @@ pub fn file_descriptor(
         output.set_package(package.clone());
     }
 
+    output.dependency = protobuf::RepeatedField::from_slice(&input.import_paths);
+
     let mut messages = protobuf::RepeatedField::new();
     for m in &input.messages {
         messages.push(resolver.message(&m, &ProtobufRelativePath::empty())?);
