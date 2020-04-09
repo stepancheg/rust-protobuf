@@ -11,7 +11,7 @@ Protobuf protoc command as API
 """
 
 [lib]
-doctest = false
+doctest = true
 bench = false
 
 [dependencies]

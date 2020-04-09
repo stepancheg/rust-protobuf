@@ -256,6 +256,20 @@ impl Protoc {
     }
 
     /// New `protoc` command from specified path
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// # mod protoc_bin_vendored {
+    /// #   pub fn protoc_bin_path() -> Result<std::path::PathBuf, std::io::Error> {
+    /// #       unimplemented!()
+    /// #   }
+    /// # }
+    ///
+    /// // Use a binary from `protoc-bin-vendored` crate
+    /// let protoc = protoc::Protoc::from_path(
+    ///     protoc_bin_vendored::protoc_bin_path().unwrap());
+    /// ```
     pub fn from_path(path: impl AsRef<OsStr>) -> Protoc {
         Protoc {
             exec: path.as_ref().to_owned(),
