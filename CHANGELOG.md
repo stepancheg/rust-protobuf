@@ -35,6 +35,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.13] - Unreleased
 
+## [2.13.0] - 2020-04-09
+
 - [Implement Any::pack,is,unpack
   operations](https://github.com/stepancheg/rust-protobuf/commit/e91bf7eb20abe68a7b29264b864e2cecbbb3f769)
 - Rename `protoc::Args` to `protoc::ProtocLangOut`
