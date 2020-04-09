@@ -35,6 +35,7 @@ if [ -z "$ON_WINDOWS" ]; then
     cargo doc -p protobuf
     cargo doc -p protoc
     cargo doc -p protoc-rust
+    cargo doc -p protobuf-codegen-pure
 
     check_protoc_crate
 fi
