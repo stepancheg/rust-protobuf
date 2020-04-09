@@ -17,6 +17,7 @@ pub use protoc::Result;
 
 pub use protobuf_codegen::Customize;
 
+/// `Protoc --rust_out...` args
 #[derive(Debug, Default)]
 pub struct Args<'a> {
     /// --lang_out= param
