@@ -1,6 +1,6 @@
 /// Implementation must match exactly
 /// `ToJsonName()` function in C++ `descriptor.cc`.
-pub(crate) fn json_name(input: &str) -> String {
+pub fn json_name(input: &str) -> String {
     let mut capitalize_next = false;
     let mut result = String::with_capacity(input.len());
 

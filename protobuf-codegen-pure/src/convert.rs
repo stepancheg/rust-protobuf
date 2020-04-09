@@ -8,6 +8,7 @@ use crate::model;
 use protobuf;
 use protobuf::descriptor::field_descriptor_proto;
 use protobuf::prelude::*;
+use protobuf::json::json_name;
 use protobuf::Message;
 
 use crate::model::FieldOrOneOf;
@@ -208,6 +209,8 @@ impl<'a> Resolver<'a> {
         }
 
         output.set_label(field_descriptor_proto::Label::LABEL_OPTIONAL);
+
+        output.set_json_name(json_name(&name));
 
         output
     }
@@ -455,6 +458,8 @@ impl<'a> Resolver<'a> {
 
         if let Some(json_name) = input.options.as_slice().by_name_string("json_name")? {
             output.set_json_name(json_name);
+        } else {
+            output.set_json_name(json_name(&input.name));
         }
 
         Ok(output)

@@ -9,7 +9,8 @@ mod print;
 mod rfc_3339;
 mod well_known_wrapper;
 
-pub(crate) use self::json_name::json_name;
+#[doc(hidden)]
+pub use self::json_name::json_name;
 pub use self::parse::merge_from_str;
 pub use self::parse::merge_from_str_with_options;
 pub use self::parse::parse_dynamic_from_str;
