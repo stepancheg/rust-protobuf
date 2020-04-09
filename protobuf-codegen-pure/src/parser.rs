@@ -566,9 +566,12 @@ impl<'a> Parser<'a> {
             let fields = self.next_message_body(mode)?.fields().cloned().collect();
 
             Ok(Field {
-                name,
+                // The field name is a lowercased version of the type name
+                // (which has been verified to start with an uppercase letter).
+                // https://git.io/JvxAP
+                name: name.to_lowercase(),
                 rule,
-                typ: FieldType::Group(fields),
+                typ: FieldType::Group { name, fields },
                 number,
                 options: Vec::new(),
             })
@@ -1405,9 +1408,9 @@ mod test {
         let mess = parse_opt(msg, |p| p.next_message_opt());
 
         let field1 = mess.entries[1].unwrap_field();
-        assert_eq!("Identifier", field1.name);
-        if let FieldType::Group(ref group_fields) = field1.typ {
-            assert_eq!(2, group_fields.len());
+        assert_eq!("identifier", field1.name);
+        if let FieldType::Group { ref fields, .. } = field1.typ {
+            assert_eq!(2, fields.len());
         } else {
             panic!("expecting group");
         }

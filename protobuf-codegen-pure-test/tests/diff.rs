@@ -50,7 +50,6 @@ fn test_diff() {
             | "src/google/protobuf/unittest_mset.rs"
             | "src/google/protobuf/unittest_import_public_lite.rs"
             | "src/v2/test_oneof_default_value_pb.rs"
-            | "src/v2/test_group_pb.rs"
             | "src/v2/test_oneof_group_pb.rs"
             | "src/v2/test_default_values_pb.rs"
             | "src/common/v2/test_lite_runtime_pb.rs"

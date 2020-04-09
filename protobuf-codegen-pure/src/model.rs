@@ -129,7 +129,7 @@ pub enum FieldType {
     /// Protobut map
     Map(Box<(FieldType, FieldType)>),
     /// Protobuf group (deprecated)
-    Group(Vec<Field>),
+    Group { name: String, fields: Vec<Field> },
 }
 
 /// A Protobuf Field
