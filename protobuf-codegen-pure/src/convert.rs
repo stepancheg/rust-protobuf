@@ -797,6 +797,12 @@ pub fn file_descriptor(
         model::Syntax::Proto3 => output.set_syntax("proto3".to_owned()),
     }
 
+    let mut dependencies = protobuf::RepeatedField::new();
+    for import_path in &input.import_paths {
+        dependencies.push(import_path.clone());
+    }
+    output.dependency = dependencies;
+
     let mut messages = protobuf::RepeatedField::new();
     for m in &input.messages {
         messages.push(resolver.message(&m, &ProtobufRelativePath::empty())?);
