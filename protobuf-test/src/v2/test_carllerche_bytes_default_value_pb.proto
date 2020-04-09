@@ -1,3 +1,5 @@
+// @skip-codegen-identical-test
+
 syntax = "proto2";
 
 package test_carllerche_bytes_default_value;

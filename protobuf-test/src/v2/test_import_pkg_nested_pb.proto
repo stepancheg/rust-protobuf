@@ -1,3 +1,5 @@
+// @skip-codegen-identical-test
+
 syntax = "proto2";
 
 import "test_import_pkg_nested_imported_pb.proto";

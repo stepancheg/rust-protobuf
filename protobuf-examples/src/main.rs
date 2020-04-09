@@ -1,6 +1,6 @@
 mod protos;
 use protobuf::{parse_from_bytes, Message};
-use protos::example::{GetRequest, GetResponse, get_response::Status};
+use protos::example::{get_response::Status, GetRequest, GetResponse};
 
 fn main() {
     // Encode example request

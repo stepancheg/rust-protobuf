@@ -1,3 +1,5 @@
+// @skip-codegen-identical-test
+
 syntax = "proto2";
 
 import "rustproto.proto";

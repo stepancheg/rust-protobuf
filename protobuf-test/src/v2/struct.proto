@@ -1,3 +1,5 @@
+// @skip-codegen-identical-test
+
 syntax = "proto2";
 
 // this file just checks that file name is properly escaped,

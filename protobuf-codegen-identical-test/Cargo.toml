@@ -1,0 +1,15 @@
+[package]
+name = "protobuf-codegen-identical-test"
+version = "0.0.0"
+authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
+publish = false
+edition = "2018"
+
+[dev-dependencies]
+difference = "2"
+protobuf = { path = "../protobuf" }
+protobuf-codegen-pure = { path = "../protobuf-codegen-pure" }
+protobuf-test = { path = "../protobuf-test" }
+protobuf-test-common = { path = "../protobuf-test-common" }
+protoc = { path = "../protoc" }
+tempfile = "3"
