@@ -1,3 +1,12 @@
+//! API to generate `.rs` files.
+//!
+//! This API requires `protoc` command present in `$PATH`.
+//!
+//! It is advisable that `protoc-rust` build-dependecy version be the same as
+//! `protobuf` dependency.
+//!
+//! The alternative is to use `protobuf-codegen-pure`.
+
 #![deny(missing_docs)]
 #![deny(intra_doc_link_resolution_failure)]
 

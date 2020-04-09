@@ -1,3 +1,13 @@
+//! API to generate `.rs` files.
+//!
+//! This API requires `protoc` command present in `$PATH`.
+//!
+//! It is advisable that `protobuf-codegen-pure` build-dependecy version be the same as
+//! `protobuf` dependency.
+//!
+//! The alternative is to use `protoc-rust` crate.
+
+#![deny(missing_docs)]
 #![deny(intra_doc_link_resolution_failure)]
 
 extern crate protobuf;
@@ -22,6 +32,7 @@ pub use protobuf_codegen::Customize;
 #[cfg(test)]
 mod test_against_protobuf_protos;
 
+/// Arguments for pure rust codegen invocation.
 // TODO: merge with protoc-rust def
 #[derive(Debug, Default)]
 pub struct Args<'a> {
