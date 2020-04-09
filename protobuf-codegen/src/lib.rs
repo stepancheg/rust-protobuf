@@ -1,3 +1,5 @@
+#![deny(intra_doc_link_resolution_failure)]
+
 extern crate proc_macro;
 extern crate protobuf;
 

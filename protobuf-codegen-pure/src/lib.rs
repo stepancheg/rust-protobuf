@@ -19,7 +19,9 @@
 //! `protobuf` dependency.
 //!
 //! The alternative is to use `protoc-rust` crate.
-//!
+
+#![deny(intra_doc_link_resolution_failure)]
+
 extern crate protobuf;
 extern crate protobuf_codegen;
 
