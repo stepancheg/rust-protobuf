@@ -568,9 +568,12 @@ impl<'a> Parser<'a> {
                 .collect::<Result<_, ParserError>>()?;
 
             Ok(Field {
-                name,
+                // The field name is a lowercased version of the type name
+                // (which has been verified to start with an uppercase letter).
+                // https://git.io/JvxAP
+                name: name.to_lowercase(),
                 rule,
-                typ: FieldType::Group(fields),
+                typ: FieldType::Group { name, fields },
                 number,
                 options: Vec::new(),
             })
@@ -1400,9 +1403,9 @@ mod test {
         }"#;
         let mess = parse_opt(msg, |p| p.next_message_opt());
 
-        assert_eq!("Identifier", mess.regular_fields_for_test()[1].name);
-        if let FieldType::Group(ref group_fields) = mess.regular_fields_for_test()[1].typ {
-            assert_eq!(2, group_fields.len());
+        assert_eq!("identifier", mess.regular_fields_for_test()[1].name);
+        if let FieldType::Group { name, fields } = &mess.regular_fields_for_test()[1].typ {
+            assert_eq!(2, fields.len());
         } else {
             panic!("expecting group");
         }
