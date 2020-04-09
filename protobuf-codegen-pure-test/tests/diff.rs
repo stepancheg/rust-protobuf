@@ -133,7 +133,6 @@ fn test_diff() {
             | "src/common/v3/test_repeated_field_vec_pb.rs"
             | "src/common/v3/test_singular_concat_pb.rs"
             | "src/common/v3/test_enum_unknown_values_preserved_pb.rs"
-            | "src/common/v3/test_enum_values_pb.rs"
             | "src/common/v3/test_any_pb.rs"
             | "src/v3/test_ident_pb.rs"
             | "src/v3/test_issue_190_pb.rs"

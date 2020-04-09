@@ -296,9 +296,11 @@ impl<'a> Resolver<'a> {
         let oneofs = input.oneofs.iter().map(|o| self.oneof(o)).collect();
         output.oneof_decl = oneofs;
 
-        output
-            .options
-            .set_message(self.message_options(&input.options)?);
+        if !input.options.is_empty() {
+            output
+                .options
+                .set_message(self.message_options(&input.options)?);
+        }
 
         Ok(output)
     }
@@ -406,9 +408,16 @@ impl<'a> Resolver<'a> {
             output.set_default_value(default);
         }
 
-        output
+        if input
             .options
-            .set_message(self.field_options(&input.options)?);
+            .iter()
+            .find(|o| o.name != "default" && o.name != "json_name")
+            .is_some()
+        {
+            output
+                .options
+                .set_message(self.field_options(&input.options)?);
+        }
 
         if let Some(oneof_index) = oneof_index {
             output.set_oneof_index(oneof_index);
@@ -607,9 +616,11 @@ impl<'a> Resolver<'a> {
             .iter()
             .map(|v| self.enum_value(&v.name, v.number))
             .collect();
-        output
-            .options
-            .set_message(self.enum_options(&input.options)?);
+        if !input.options.is_empty() {
+            output
+                .options
+                .set_message(self.enum_options(&input.options)?);
+        }
         Ok(output)
     }
 
@@ -792,9 +803,11 @@ pub fn file_descriptor(
         .map(|e| resolver.enumeration(e))
         .collect::<Result<_, _>>()?;
 
-    output
-        .options
-        .set_message(resolver.file_options(&input.options)?);
+    if !input.options.is_empty() {
+        output
+            .options
+            .set_message(resolver.file_options(&input.options)?);
+    }
 
     let mut extensions = protobuf::RepeatedField::new();
     for e in &input.extensions {
