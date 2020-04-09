@@ -1,3 +1,7 @@
+//! `protoc` binary downloaded and stored inside the crate.
+//!
+//! Can be used to avoid downloading and installing `protoc` binary.
+
 #![deny(missing_docs)]
 
 use std::env;
