@@ -1,6 +1,7 @@
 //! API to invoke `protoc` command. `protoc` command must be in `$PATH`.
 
 #![deny(missing_docs)]
+#![deny(intra_doc_link_resolution_failure)]
 
 use std::ffi::OsStr;
 use std::ffi::OsString;
@@ -332,6 +333,7 @@ impl Protoc {
     }
 }
 
+/// Deprecated version of [`ProtocLangOut`].
 #[deprecated(since = "2.13", note = "Use ProtocLangOut instead")]
 pub fn run(args: Args) -> Result<()> {
     let mut protoc_lang_out = ProtocLangOut::new();
