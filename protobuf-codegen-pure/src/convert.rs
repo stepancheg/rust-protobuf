@@ -754,13 +754,6 @@ impl<'a> Resolver<'a> {
     }
 }
 
-fn syntax(input: model::Syntax) -> String {
-    match input {
-        model::Syntax::Proto2 => "proto2".to_owned(),
-        model::Syntax::Proto3 => "proto3".to_owned(),
-    }
-}
-
 fn label(input: model::Rule) -> protobuf::descriptor::field_descriptor_proto::Label {
     match input {
         model::Rule::Optional => {
@@ -788,11 +781,16 @@ pub fn file_descriptor(
     };
 
     let mut output = protobuf::descriptor::FileDescriptorProto::new();
+
     output.set_name(name.to_owned());
-    output.set_syntax(syntax(input.syntax));
 
     if let Some(package) = &input.package {
         output.set_package(package.clone());
+    }
+
+    match &input.syntax {
+        model::Syntax::Proto2 => (),
+        model::Syntax::Proto3 => output.set_syntax("proto3".to_owned()),
     }
 
     let mut messages = protobuf::RepeatedField::new();
