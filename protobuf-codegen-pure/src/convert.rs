@@ -233,6 +233,23 @@ impl<'a> Resolver<'a> {
         Ok(output)
     }
 
+    fn group_message(
+        &self,
+        name: &str,
+        fields: &[model::Field],
+        path_in_file: &ProtobufRelativePath,
+    ) -> ConvertResult<protobuf::descriptor::DescriptorProto> {
+        let mut output = protobuf::descriptor::DescriptorProto::new();
+
+        output.set_name(name.to_owned());
+
+        for f in fields {
+            output.field.push(self.field(f, None, path_in_file)?);
+        }
+
+        Ok(output)
+    }
+
     fn message_options(
         &self,
         input: &[model::ProtobufOption],
@@ -264,13 +281,23 @@ impl<'a> Resolver<'a> {
 
         for fo in &input.fields {
             if let FieldOrOneOf::Field(f) = fo {
-                if let model::FieldType::Map(ref t) = f.typ {
-                    nested_messages.push(self.map_entry_message(
-                        &f.name,
-                        &t.0,
-                        &t.1,
-                        path_in_file,
-                    )?);
+                match &f.typ {
+                    model::FieldType::Map(t) => {
+                        nested_messages.push(self.map_entry_message(
+                            &f.name,
+                            &t.0,
+                            &t.1,
+                            path_in_file,
+                        )?);
+                    }
+                    model::FieldType::Group { name, fields } => {
+                        nested_messages.push(self.group_message(
+                            name,
+                            fields,
+                            &nested_path_in_file,
+                        )?);
+                    }
+                    _ => (),
                 }
             }
         }
@@ -575,10 +602,16 @@ impl<'a> Resolver<'a> {
                     Some(type_name),
                 )
             }
-            model::FieldType::Group(..) => (
-                protobuf::descriptor::field_descriptor_proto::Type::TYPE_GROUP,
-                None,
-            ),
+            model::FieldType::Group { ref name, .. } => {
+                let mut type_name =
+                    ProtobufAbsolutePath::from_path_without_dot(&self.current_file.package);
+                type_name.push_relative(path_in_file);
+                type_name.push_simple(ProtobufIdent::from(name.clone()));
+                (
+                    protobuf::descriptor::field_descriptor_proto::Type::TYPE_GROUP,
+                    Some(type_name),
+                )
+            }
         }
     }
 
