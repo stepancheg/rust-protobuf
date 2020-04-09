@@ -1,15 +1,6 @@
 syntax = "proto2";
 
-import "google/protobuf/any.proto";
-import "google/protobuf/api.proto";
-import "google/protobuf/duration.proto";
-import "google/protobuf/empty.proto";
-import "google/protobuf/field_mask.proto";
-import "google/protobuf/source_context.proto";
 import "google/protobuf/struct.proto";
-import "google/protobuf/timestamp.proto";
-import "google/protobuf/type.proto";
-import "google/protobuf/wrappers.proto";
 
 // generate accessors to make sure accessors are generated correctly
 import "rustproto.proto";

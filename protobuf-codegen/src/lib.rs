@@ -341,3 +341,9 @@ pub fn protoc_gen_rust_main() {
         )
     });
 }
+
+/// Used in protobuf-codegen-identical-test
+#[doc(hidden)]
+pub fn proto_name_to_rs(name: &str) -> String {
+    format!("{}.rs", proto_path_to_rust_mod(name))
+}
