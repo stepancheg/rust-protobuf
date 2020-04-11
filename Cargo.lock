@@ -198,6 +198,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "protoc-bin-vendored"
+version = "2.14.0-pre"
+dependencies = [
+ "protoc 2.14.0-pre",
+]
+
+[[package]]
 name = "protoc-rust"
 version = "2.14.0-pre"
 dependencies = [

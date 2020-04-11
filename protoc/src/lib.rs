@@ -187,7 +187,7 @@ pub struct DescriptorSetOutArgs<'a> {
 }
 
 /// Protoc command.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Protoc {
     exec: String,
 }

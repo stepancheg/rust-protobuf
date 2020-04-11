@@ -134,7 +134,7 @@ impl Codegen {
     ///     .unwrap();
     /// ```
     pub fn protoc_path(&mut self, protoc: impl Into<PathBuf>) -> &mut Self {
-        self.protoc = Some(Protoc::from_path(&protoc.into()));
+        self.protoc = Some(Protoc::from_path(&protoc.into().to_str().unwrap()));
         self
     }
 
