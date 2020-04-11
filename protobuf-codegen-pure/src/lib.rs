@@ -1,6 +1,6 @@
 //! API to generate `.rs` files.
 //!
-//! This API requires `protoc` command present in `$PATH`.
+//! This API does not require `protoc` command present in `$PATH`.
 //!
 //! ```
 //! extern crate protoc_rust;
