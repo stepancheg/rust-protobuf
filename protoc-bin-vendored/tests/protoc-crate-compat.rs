@@ -1,9 +1,12 @@
 #[test]
 fn protoc_crate_compat() {
-    assert!(
-        protoc::Protoc::from_path(protoc_bin_vendored::protoc_bin_path().unwrap())
-            .version()
+    assert!(protoc::Protoc::from_path(
+        protoc_bin_vendored::protoc_bin_path()
             .unwrap()
-            .is_3()
-    );
+            .to_str()
+            .unwrap()
+    )
+    .version()
+    .unwrap()
+    .is_3());
 }
