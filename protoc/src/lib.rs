@@ -189,21 +189,35 @@ pub struct DescriptorSetOutArgs<'a> {
 /// Protoc command.
 #[derive(Clone, Debug)]
 pub struct Protoc {
-    exec: String,
+    exec: OsString,
 }
 
 impl Protoc {
     /// New `protoc` command from `$PATH`
     pub fn from_env_path() -> Protoc {
         Protoc {
-            exec: "protoc".to_owned(),
+            exec: "protoc".into(),
         }
     }
 
     /// New `protoc` command from specified path
-    pub fn from_path(path: &str) -> Protoc {
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// # mod protoc_bin_vendored {
+    /// #   pub fn protoc_bin_path() -> Result<std::path::PathBuf, std::io::Error> {
+    /// #       unimplemented!()
+    /// #   }
+    /// # }
+    ///
+    /// // Use a binary from `protoc-bin-vendored` crate
+    /// let protoc = protoc::Protoc::from_path(
+    ///     protoc_bin_vendored::protoc_bin_path().unwrap());
+    /// ```
+    pub fn from_path(path: impl AsRef<OsStr>) -> Protoc {
         Protoc {
-            exec: path.to_owned(),
+            exec: path.as_ref().to_owned(),
         }
     }
 
