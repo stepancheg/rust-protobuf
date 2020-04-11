@@ -1,14 +1,15 @@
 //! API to generate `.rs` files.
 //!
-//! This API requires `protoc` command present in `$PATH`.
+//! This API requires `protoc` command present in `$PATH`
+//! or [passed explicitly to `Codegen` object](crate::Codegen::protoc_path).
 //!
-//! ```
+//! ```no_run
 //! extern crate protoc_rust;
 //!
 //! fn main() {
 //!     protoc_rust::Codegen::new()
 //!         .out_dir("src/protos")
-//!         .inputs(&["protos/a.proto", "protos/b.proto"]),
+//!         .inputs(&["protos/a.proto", "protos/b.proto"])
 //!         .include("protos")
 //!         .run()
 //!         .expect("Running protoc failed.");
@@ -42,6 +43,7 @@ pub use protoc::Error;
 pub use protoc::Result;
 
 pub use protobuf_codegen::Customize;
+use protoc::Protoc;
 
 /// `Protoc --rust_out...` args
 #[derive(Debug, Default)]
@@ -68,6 +70,8 @@ pub struct Codegen {
     inputs: Vec<PathBuf>,
     /// Customize code generation
     customize: Customize,
+    /// Protoc command path
+    protoc: Option<Protoc>,
 }
 
 impl Codegen {
@@ -110,6 +114,30 @@ impl Codegen {
         self
     }
 
+    /// Specify `protoc` command path to be used when invoking code generation.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// # mod protoc_bin_vendored {
+    /// #   pub fn protoc_bin_path() -> Result<std::path::PathBuf, std::io::Error> {
+    /// #       unimplemented!()
+    /// #   }
+    /// # }
+    ///
+    /// use protoc_rust::Codegen;
+    ///
+    /// Codegen::new()
+    ///     .protoc_path(protoc_bin_vendored::protoc_bin_path().unwrap())
+    ///     // ...
+    ///     .run()
+    ///     .unwrap();
+    /// ```
+    pub fn protoc_path(&mut self, protoc: impl Into<PathBuf>) -> &mut Self {
+        self.protoc = Some(Protoc::from_path(&protoc.into()));
+        self
+    }
+
     /// Set options to customize code generation
     pub fn customize(&mut self, customize: Customize) -> &mut Self {
         self.customize = customize;
@@ -118,7 +146,10 @@ impl Codegen {
 
     /// Like `protoc --rust_out=...` but without requiring `protoc-gen-rust` command in `$PATH`.
     pub fn run(&self) -> Result<()> {
-        let protoc = protoc::Protoc::from_env_path();
+        let protoc = match self.protoc.clone() {
+            Some(protoc) => protoc,
+            None => Protoc::from_env_path(),
+        };
         protoc.check()?;
 
         let temp_dir = tempfile::Builder::new().prefix("protoc-rust").tempdir()?;
