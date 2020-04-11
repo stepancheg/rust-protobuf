@@ -35,9 +35,11 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.14] - Unreleased
 
+## [2.14.0] - 2020-04-12
+
 - Rename `protoc_rust::Args` to `protoc_rust::Codegen`
 - Rename `protobuf_codegen_pure::Args` to `protobuf_codegen_pure::Codegen`
-- `protoc-bin-vendored` crate introduced
+- [`protoc-bin-vendored` crate](https://github.com/stepancheg/rust-protobuf/tree/master/protoc-bin-vendored) introduced
 
 ## [2.13.0] - 2020-04-09
 
