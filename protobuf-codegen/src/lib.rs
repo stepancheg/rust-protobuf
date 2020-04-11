@@ -1,4 +1,19 @@
+//! This crate implement protobuf codegen.
+//!
+//! This crate:
+//! * provides `protoc-gen-rust` plugin for `protoc` command
+//! * implement protobuf codegen
+//!
+//! This crate is not meant to be used directly, in fact, it does not provide any public API
+//! (except for `protoc-gen-rust` binary).
+//!
+//! Code can be generated with either:
+//! * `protoc-gen-rust` binary or
+//! * `protoc-rust` crate (codegen which depends on `protoc` binary for parsing)
+//! * `protobuf-codegen-pure` crate
+
 #![deny(intra_doc_link_resolution_failure)]
+#![deny(missing_docs)]
 
 extern crate protobuf;
 
@@ -20,6 +35,7 @@ mod field;
 mod file;
 mod file_and_mod;
 mod file_descriptor;
+#[doc(hidden)]
 pub mod float;
 mod inside;
 mod message;
@@ -36,6 +52,7 @@ pub(crate) mod strx;
 pub(crate) mod syntax;
 
 use customize::customize_from_rustproto_for_file;
+#[doc(hidden)]
 pub use customize::Customize;
 
 pub mod code_writer;
@@ -203,6 +220,7 @@ fn gen_file(
 // This function is also used externally by cargo plugin
 // https://github.com/plietar/rust-protobuf-build
 // So be careful changing its signature.
+#[doc(hidden)]
 pub fn gen(
     file_descriptors: &[FileDescriptorProto],
     files_to_generate: &[String],
@@ -228,6 +246,7 @@ pub fn gen(
     results
 }
 
+#[doc(hidden)]
 pub fn gen_and_write(
     file_descriptors: &[FileDescriptorProto],
     files_to_generate: &[String],
@@ -247,6 +266,7 @@ pub fn gen_and_write(
     Ok(())
 }
 
+#[doc(hidden)]
 pub fn protoc_gen_rust_main() {
     compiler_plugin::plugin_main_2(|r| {
         let customize = Customize::parse_from_parameter(r.parameter).expect("parse options");
