@@ -33,7 +33,10 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - `generate_getter` option to disable generation of getters functions.
 - [Flush `CodedOutputStream` on `drop`](https://github.com/stepancheg/rust-protobuf/commit/0e9cc5964c2731a771725bcf70125d3eb1c273b3)
 
-## [2.13] - Unreleased
+## [2.14] - Unreleased
+
+- Rename `protoc_rust::Args` to `protoc_rust::Codegen`
+- Rename `protobuf_codegen_pure::Args` to `protobuf_codegen_pure::Codegen`
 
 ## [2.13.0] - 2020-04-09
 
