@@ -275,6 +275,8 @@ impl Protoc {
     }
 
     /// Execute configured `protoc` with given args
+    #[deprecated(since = "2.13", note = "Use ProtocLangOut instead")]
+    #[allow(deprecated)]
     pub fn run(&self, args: Args) -> Result<()> {
         let mut cmd_args: Vec<OsString> = Vec::new();
 
