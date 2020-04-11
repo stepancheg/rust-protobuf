@@ -34,20 +34,11 @@ See [CHANGELOG.md](CHANGELOG.md) for a list of changes and compatility issues be
 
 ## How to generate rust code
 
-There are several ways to generate rust code from `.proto` files
+There are several ways to generate rust code from `.proto` files:
 
-### Invoke protoc programmatically with protoc-rust crate (recommended)
-
-Have a look at readme in [protoc-rust crate](https://github.com/stepancheg/rust-protobuf/tree/master/protoc-rust).
-
-### Use pure rust protobuf parser and code generator (alpha)
-
-Readme should be in
-[protobuf-codegen-pure crate](https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen-pure).
-
-### Use protoc-gen-rust plugin
-
-Readme is [here](https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen).
+* [Invoke protoc programmatically with protoc-rust crate (`protoc-rust` crate, recommended)](https://github.com/stepancheg/rust-protobuf/tree/master/protoc-rust)
+* [Use pure rust protobuf parser and code generator (`protobuf-codegen-pure` crate)](https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen-pure)
+* [Use `protoc-gen-rust` plugin for Google's `protoc` command](https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen)
 
 ## Generated code
 
