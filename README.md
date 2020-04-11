@@ -14,6 +14,17 @@ rust-protobuf
   (Coded{Input|Output}Stream impl)
 * Supports both Protobuf versions 2 and 3
 
+## List of crates
+
+`rust-protobuf` — repository provides multiple crates:
+
+* `protobuf` — protobuf runtime
+* `protobuf-codegen` — protobuf codegen engine and `protoc-gen-rust` plugin for `protoc` command
+* `protoc` — programmatically work with `protoc` command
+* `protoc-rust` — codegen which can be invoked programmatically using `protoc` binary (e. g. from `build.rs`)
+* `protobuf-codegen-pure` — pure rust codegen
+* `protoc-bin-vendored` — `protoc` binary packaged as crate, can be used with `protoc` or `protoc-rust` crates
+
 ## About versions and branches
 
 - `2.*.*` is the latest stable version. `2.*.*` versions follow semver conventions
