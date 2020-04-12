@@ -47,9 +47,6 @@ pub mod descriptor;
 pub mod plugin;
 pub mod rustproto;
 
-mod any;
-mod timestamp;
-
 mod clear;
 mod core;
 mod enums;
@@ -66,6 +63,7 @@ mod singular;
 mod stream;
 pub mod text_format;
 pub mod well_known_types;
+mod well_known_types_util;
 
 // used by test
 #[cfg(test)]
