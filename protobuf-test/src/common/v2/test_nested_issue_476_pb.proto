@@ -1,0 +1,12 @@
+syntax = "proto2";
+
+message Foo {
+  message Bar {
+    message Baz { }
+    oneof bar_content {
+      Baz baz = 1;
+      uint32 integer = 2;
+    }
+  }
+  optional Bar bar = 1;
+}

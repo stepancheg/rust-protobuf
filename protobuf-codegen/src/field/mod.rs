@@ -1365,17 +1365,18 @@ impl<'a> FieldGen<'a> {
             .scope
             .get_file_and_mod(self.customize.clone());
 
-        match self.kind {
-            FieldKind::Oneof(OneofField {
-                ref elem,
-                ref type_name,
-                ref oneof_field_name,
-                ..
-            }) => {
-                let cond = format!("Some({}::{}(ref {}))", type_name, self.rust_name, varn);
-                w.if_let_stmt(&cond, &format!("self.{}", oneof_field_name), |w| {
-                    cb(w, &elem.rust_storage_elem_type(&file_and_mod))
-                })
+        match &self.kind {
+            FieldKind::Oneof(oneof_field) => {
+                let cond = format!(
+                    "Some({}(ref {}))",
+                    oneof_field.variant_path(&file_and_mod.relative_mod.clone().into_path()),
+                    varn
+                );
+                w.if_let_stmt(
+                    &cond,
+                    &format!("self.{}", oneof_field.oneof_field_name),
+                    |w| cb(w, &oneof_field.elem.rust_storage_elem_type(&file_and_mod)),
+                )
             }
             _ => {
                 let v_type = self.full_storage_iter_elem_type(&file_and_mod);
