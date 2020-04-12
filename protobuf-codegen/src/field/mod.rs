@@ -1359,6 +1359,12 @@ impl<'a> FieldGen<'a> {
     where
         F: Fn(&mut CodeWriter, &RustType),
     {
+        let file_and_mod = self
+            .proto_field
+            .message
+            .scope
+            .get_file_and_mod(self.customize.clone());
+
         match self.kind {
             FieldKind::Oneof(OneofField {
                 ref elem,
@@ -1368,26 +1374,11 @@ impl<'a> FieldGen<'a> {
             }) => {
                 let cond = format!("Some({}::{}(ref {}))", type_name, self.rust_name, varn);
                 w.if_let_stmt(&cond, &format!("self.{}", oneof_field_name), |w| {
-                    cb(
-                        w,
-                        &elem.rust_storage_elem_type(
-                            &self
-                                .proto_field
-                                .message
-                                .scope
-                                .get_file_and_mod(self.customize.clone()),
-                        ),
-                    )
+                    cb(w, &elem.rust_storage_elem_type(&file_and_mod))
                 })
             }
             _ => {
-                let v_type = self.full_storage_iter_elem_type(
-                    &self
-                        .proto_field
-                        .message
-                        .scope
-                        .get_file_and_mod(self.customize.clone()),
-                );
+                let v_type = self.full_storage_iter_elem_type(&file_and_mod);
                 let self_field = self.self_field();
                 w.for_stmt(&format!("&{}", self_field), varn, |w| cb(w, &v_type));
             }
