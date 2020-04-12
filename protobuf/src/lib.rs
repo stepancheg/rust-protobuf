@@ -48,8 +48,6 @@ pub mod descriptor;
 pub mod plugin;
 pub mod rustproto;
 
-mod any;
-
 mod clear;
 pub mod compiler_plugin;
 mod core;
@@ -65,6 +63,7 @@ pub mod stream;
 pub mod text_format;
 pub mod types;
 pub mod well_known_types;
+mod well_known_types_util;
 
 // used by test
 #[cfg(test)]
