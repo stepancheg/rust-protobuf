@@ -5,7 +5,7 @@ use crate::Message;
 use crate::ProtobufResult;
 
 impl Any {
-    fn get_type_url(type_url_prefix: &str, descriptor: &MessageDescriptor) -> String {
+    fn type_url(type_url_prefix: &str, descriptor: &MessageDescriptor) -> String {
         format!("{}/{}", type_url_prefix, descriptor.full_name())
     }
 
@@ -61,7 +61,7 @@ impl Any {
         type_url_prefix: &str,
     ) -> ProtobufResult<Any> {
         Ok(Any {
-            type_url: Any::get_type_url(type_url_prefix, message.descriptor()),
+            type_url: Any::type_url(type_url_prefix, message.descriptor()),
             value: message.write_to_bytes()?,
             ..Default::default()
         })
