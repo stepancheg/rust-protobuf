@@ -11,6 +11,11 @@ impl Timestamp {
         unknown_fields: UnknownFields::INIT,
         cached_size: CachedSize::INIT,
     };
+
+    /// Return current time as `Timestamp`.
+    pub fn now() -> Timestamp {
+        Timestamp::from(SystemTime::now())
+    }
 }
 
 /// Convert from [`Timestamp`].
