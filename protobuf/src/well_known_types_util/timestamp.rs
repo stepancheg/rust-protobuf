@@ -74,7 +74,7 @@ mod test {
     use std::time::SystemTime;
 
     #[test]
-    fn from_system_time() {
+    fn to_from_system_time() {
         fn to_from(timestamp: Timestamp, system_time: SystemTime) {
             assert_eq!(timestamp, Timestamp::from(system_time));
             assert_eq!(system_time, Into::<SystemTime>::into(timestamp));
