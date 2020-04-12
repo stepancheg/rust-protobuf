@@ -15,6 +15,11 @@ pub struct CachedSize {
 }
 
 impl CachedSize {
+    /// Default value for cached size.
+    pub const INIT: CachedSize = CachedSize {
+        size: AtomicUsize::new(0),
+    };
+
     /// Get cached size
     pub fn get(&self) -> u32 {
         self.size.load(Ordering::Relaxed) as u32

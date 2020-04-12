@@ -48,6 +48,7 @@ pub mod plugin;
 pub mod rustproto;
 
 mod any;
+mod timestamp;
 
 mod clear;
 mod core;
