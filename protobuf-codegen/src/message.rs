@@ -369,7 +369,7 @@ impl<'a> MessageGen<'a> {
                 w.write_line("self as &mut dyn (::std::any::Any)");
             });
             w.def_fn(
-                "into_any(self: Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)>",
+                "into_any(self: ::std::boxed::Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)>",
                 |w| {
                     w.write_line("self");
                 },
