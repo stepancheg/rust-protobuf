@@ -36,6 +36,7 @@ pub struct Customize {
     /// Used internally to generate protos bundled in protobuf crate
     /// like `descriptor.proto`
     pub inside_protobuf: Option<bool>,
+    pub derives: Option<String>,
 
     // When adding more options please keep in sync with `parse_from_parameter` below.
     /// Make sure `Customize` is always used with `..Default::default()`
@@ -94,6 +95,9 @@ impl Customize {
         if let Some(v) = that.inside_protobuf {
             self.inside_protobuf = Some(v);
         }
+        if let Some(ref v) = that.derives {
+            self.derives = Some(v.clone());
+        }
     }
 
     /// Update unset fields of self with fields from other customize
@@ -146,6 +150,8 @@ impl Customize {
                 r.lite_runtime = Some(parse_bool(v)?);
             } else if n == "inside_protobuf" {
                 r.inside_protobuf = Some(parse_bool(v)?);
+            } else if n == "derives" {
+                r.derives = Some(v.to_owned());
             } else {
                 return Err(CustomizeParseParameterError::UnknownOptionName(
                     n.to_owned(),
@@ -184,6 +190,7 @@ pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customiz
         serde_derive_cfg,
         lite_runtime,
         inside_protobuf,
+        derives: None, // TODO
         _future_options: (),
     }
 }
@@ -217,6 +224,7 @@ pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
         serde_derive_cfg,
         lite_runtime,
         inside_protobuf,
+        derives: None, // TODO
         _future_options: (),
     }
 }
@@ -249,6 +257,7 @@ pub fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
         serde_derive_cfg,
         lite_runtime,
         inside_protobuf,
+        derives: None, // TODO
         _future_options: (),
     }
 }

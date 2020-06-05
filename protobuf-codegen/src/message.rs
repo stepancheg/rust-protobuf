@@ -469,12 +469,16 @@ impl<'a> MessageGen<'a> {
         self.fields.len() <= 500
     }
 
-    fn write_struct(&self, w: &mut CodeWriter) {
+    fn write_struct(&self, w: &mut CodeWriter, customize: &Customize) {
         let mut derive = Vec::new();
         if self.supports_derive_partial_eq() {
             derive.push("PartialEq");
         }
+        if let Some(ref d) = customize.derives {
+            derive.push(d.as_str());
+        }
         derive.extend(&["Clone", "Default"]);
+
         if self.lite_runtime {
             derive.push("Debug");
         }
