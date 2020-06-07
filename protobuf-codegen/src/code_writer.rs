@@ -59,7 +59,7 @@ impl<'a> CodeWriter<'a> {
         self.write_line("#![allow(unknown_lints)]");
         self.write_line("#![allow(clippy::all)]");
         self.write_line("");
-        self.write_line("#![cfg_attr(rustfmt, rustfmt_skip)]");
+        self.write_line("#![rustfmt::skip]");
         self.write_line("");
         self.write_line("#![allow(box_pointers)]");
         self.write_line("#![allow(dead_code)]");
