@@ -35,6 +35,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.15] - Unreleased
 
+## [2.15.0] - 2020-06-21
+
 - Min supported rust version if 1.44.1 now
 - Replace deprecated `#![cfg_attr(rustfmt, rustfmt_skip)]` with `#![rustfmt::skip]`
 
