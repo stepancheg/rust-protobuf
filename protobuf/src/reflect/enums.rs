@@ -308,10 +308,10 @@ impl EnumDescriptor {
 
         use std::mem;
         unsafe {
-            let mut r = mem::uninitialized();
+            let mut r = mem::MaybeUninit::<E>::uninit();
             self.get_descriptor
-                .copy_to(value, &mut r as *mut E as *mut ());
-            Some(r)
+                .copy_to(value, r.as_mut_ptr() as *mut ());
+            Some(r.assume_init())
         }
     }
 
@@ -337,9 +337,9 @@ impl EnumDescriptor {
         debug_assert_eq!(mem::size_of::<E>(), mem::size_of::<i32>());
         unsafe {
             // This works because `ProtobufEnumOrUnknown<E>` is `#[repr(transparent)]`
-            let mut r = mem::uninitialized();
-            ptr::copy(&value, &mut r as *mut E as *mut i32, 1);
-            Some(r)
+            let mut r = mem::MaybeUninit::<E>::uninit();
+            ptr::copy(&value, r.as_mut_ptr() as *mut i32, 1);
+            Some(r.assume_init())
         }
     }
 }
