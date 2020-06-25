@@ -21,6 +21,10 @@
 
 //! Generated file from `google/protobuf/descriptor.proto`
 
+#[cfg(serde)]
+use serde::{Deserialize, Serialize};
+
+
 ///  The protocol compiler can output a FileDescriptorSet containing the .proto
 ///  files it parses.
 #[derive(PartialEq,Clone,Default)]
@@ -967,6 +971,10 @@ impl crate::reflect::ProtobufValue for DescriptorProto {
 
 /// Nested message and enums of message `DescriptorProto`
 pub mod descriptor_proto {
+
+    #[cfg(serde)]
+    use serde::{Deserialize, Serialize};
+
     #[derive(PartialEq,Clone,Default)]
     #[cfg_attr(serde, derive(Serialize, Deserialize))]
     pub struct ExtensionRange {
@@ -1921,6 +1929,10 @@ impl crate::reflect::ProtobufValue for FieldDescriptorProto {
 
 /// Nested message and enums of message `FieldDescriptorProto`
 pub mod field_descriptor_proto {
+
+    #[cfg(serde)]
+    use serde::{Deserialize, Serialize};
+
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
     #[cfg_attr(serde, derive(Serialize, Deserialize))]
     pub enum Type {
@@ -4048,6 +4060,10 @@ impl crate::reflect::ProtobufValue for FileOptions {
 
 /// Nested message and enums of message `FileOptions`
 pub mod file_options {
+
+    #[cfg(serde)]
+    use serde::{Deserialize, Serialize};
+
     ///  Generated classes can be optimized for speed or code size.
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
     #[cfg_attr(serde, derive(Serialize, Deserialize))]
@@ -4815,6 +4831,10 @@ impl crate::reflect::ProtobufValue for FieldOptions {
 
 /// Nested message and enums of message `FieldOptions`
 pub mod field_options {
+
+    #[cfg(serde)]
+    use serde::{Deserialize, Serialize};
+
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
     #[cfg_attr(serde, derive(Serialize, Deserialize))]
     pub enum CType {
@@ -6190,6 +6210,10 @@ impl crate::reflect::ProtobufValue for UninterpretedOption {
 
 /// Nested message and enums of message `UninterpretedOption`
 pub mod uninterpreted_option {
+
+    #[cfg(serde)]
+    use serde::{Deserialize, Serialize};
+
     ///  The name of the uninterpreted option.  Each string represents a segment in
     ///  a dot-separated name.  is_extension is true iff a segment represents an
     ///  extension (denoted with parentheses in options specs in .proto files).
@@ -6534,6 +6558,10 @@ impl crate::reflect::ProtobufValue for SourceCodeInfo {
 
 /// Nested message and enums of message `SourceCodeInfo`
 pub mod source_code_info {
+
+    #[cfg(serde)]
+    use serde::{Deserialize, Serialize};
+
     #[derive(PartialEq,Clone,Default)]
     #[cfg_attr(serde, derive(Serialize, Deserialize))]
     pub struct Location {
@@ -6947,6 +6975,10 @@ impl crate::reflect::ProtobufValue for GeneratedCodeInfo {
 
 /// Nested message and enums of message `GeneratedCodeInfo`
 pub mod generated_code_info {
+
+    #[cfg(serde)]
+    use serde::{Deserialize, Serialize};
+
     #[derive(PartialEq,Clone,Default)]
     #[cfg_attr(serde, derive(Serialize, Deserialize))]
     pub struct Annotation {

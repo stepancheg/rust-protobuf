@@ -21,6 +21,10 @@
 
 //! Generated file from `google/protobuf/compiler/plugin.proto`
 
+#[cfg(serde)]
+use serde::{Deserialize, Serialize};
+
+
 ///  An encoded CodeGeneratorRequest is written to the plugin's stdin.
 #[derive(PartialEq,Clone,Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
@@ -428,6 +432,10 @@ impl crate::reflect::ProtobufValue for CodeGeneratorResponse {
 
 /// Nested message and enums of message `CodeGeneratorResponse`
 pub mod code_generator_response {
+
+    #[cfg(serde)]
+    use serde::{Deserialize, Serialize};
+
     ///  Represents a single generated file.
     #[derive(PartialEq,Clone,Default)]
     #[cfg_attr(serde, derive(Serialize, Deserialize))]

@@ -1,6 +1,7 @@
 // TODO: used by grpc-rust, should move it into separate crate.
 #![doc(hidden)]
 
+use crate::Customize;
 use std::io::Write;
 
 /// Field visibility.
@@ -30,6 +31,17 @@ impl<'a> CodeWriter<'a> {
             self.writer.write_all(s.as_bytes())
         })
         .unwrap();
+    }
+
+    pub fn write_serde_use(&mut self, customize: &Customize) {
+        if customize.serde_derive == Some(true) {
+            self.write_line("");
+            if let Some(cfg) = &customize.serde_derive_cfg {
+                self.write_line(&format!("#[cfg({})]", cfg));
+            }
+            self.write_line("use serde::{Deserialize, Serialize};");
+            self.write_line("");
+        }
     }
 
     pub fn write_generated(&mut self) {

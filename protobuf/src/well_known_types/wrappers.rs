@@ -21,6 +21,10 @@
 
 //! Generated file from `google/protobuf/wrappers.proto`
 
+#[cfg(serde)]
+use serde::{Deserialize, Serialize};
+
+
 ///  Wrapper message for `double`.
 ///
 ///  The JSON representation for `DoubleValue` is JSON number.
