@@ -33,7 +33,12 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - `generate_getter` option to disable generation of getters functions.
 - [Flush `CodedOutputStream` on `drop`](https://github.com/stepancheg/rust-protobuf/commit/0e9cc5964c2731a771725bcf70125d3eb1c273b3)
 
-## [2.14] - Unreleased
+## [2.15] - Unreleased
+
+## [2.15.0] - 2020-06-21
+
+- Min supported rust version if 1.44.1 now
+- Replace deprecated `#![cfg_attr(rustfmt, rustfmt_skip)]` with `#![rustfmt::skip]`
 
 ## [2.14.0] - 2020-04-12
 
