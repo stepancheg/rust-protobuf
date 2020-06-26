@@ -21,6 +21,10 @@
 
 //! Generated file from `rustproto.proto`
 
+#[cfg(serde)]
+use serde::{Deserialize, Serialize};
+
+
 /// Extension fields
 pub mod exts {
 

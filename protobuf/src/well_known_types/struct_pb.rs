@@ -21,6 +21,10 @@
 
 //! Generated file from `google/protobuf/struct.proto`
 
+#[cfg(serde)]
+use serde::{Deserialize, Serialize};
+
+
 ///  `Struct` represents a structured data value, consisting of fields
 ///  which map to dynamically typed values. In some languages, `Struct`
 ///  might be supported by a native representation. For example, in
@@ -624,6 +628,10 @@ impl crate::reflect::ProtobufValue for Value {
 
 /// Nested message and enums of message `Value`
 pub mod value {
+
+    #[cfg(serde)]
+    use serde::{Deserialize, Serialize};
+
 
     #[derive(Clone,PartialEq,Debug)]
     #[cfg_attr(serde, derive(Serialize, Deserialize))]

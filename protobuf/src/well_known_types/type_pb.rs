@@ -21,6 +21,10 @@
 
 //! Generated file from `google/protobuf/type.proto`
 
+#[cfg(serde)]
+use serde::{Deserialize, Serialize};
+
+
 ///  A protocol buffer message type.
 #[derive(PartialEq,Clone,Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
@@ -555,6 +559,10 @@ impl crate::reflect::ProtobufValue for Field {
 
 /// Nested message and enums of message `Field`
 pub mod field {
+
+    #[cfg(serde)]
+    use serde::{Deserialize, Serialize};
+
     ///  Basic field types.
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
     #[cfg_attr(serde, derive(Serialize, Deserialize))]

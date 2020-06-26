@@ -21,6 +21,10 @@
 
 //! Generated file from `google/protobuf/api.proto`
 
+#[cfg(serde)]
+use serde::{Deserialize, Serialize};
+
+
 ///  Api is a light-weight descriptor for a protocol buffer service.
 #[derive(PartialEq,Clone,Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]

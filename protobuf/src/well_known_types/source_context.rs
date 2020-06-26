@@ -21,6 +21,10 @@
 
 //! Generated file from `google/protobuf/source_context.proto`
 
+#[cfg(serde)]
+use serde::{Deserialize, Serialize};
+
+
 ///  `SourceContext` represents information about the source of a
 ///  protobuf element, like the file in which it is defined.
 #[derive(PartialEq,Clone,Default)]

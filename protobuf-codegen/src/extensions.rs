@@ -109,9 +109,9 @@ pub(crate) fn write_extensions(
 
             w.write_line("");
             ExtGen {
-                file: file,
-                root_scope: root_scope,
-                field: field,
+                file,
+                root_scope,
+                field,
                 customize: customize.clone(),
             }
             .write(w);

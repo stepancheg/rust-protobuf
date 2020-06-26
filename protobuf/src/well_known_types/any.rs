@@ -21,6 +21,10 @@
 
 //! Generated file from `google/protobuf/any.proto`
 
+#[cfg(serde)]
+use serde::{Deserialize, Serialize};
+
+
 #[derive(PartialEq,Clone,Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct Any {
