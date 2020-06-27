@@ -88,6 +88,7 @@ pub(crate) fn write_extensions(
     }
 
     w.write_line("");
+    w.write_line("/// Extension fields");
     w.pub_mod("exts", |w| {
         w.write_line("use protobuf::Message as Message_imported_for_functions;");
 
