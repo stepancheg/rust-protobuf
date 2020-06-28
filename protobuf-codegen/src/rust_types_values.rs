@@ -3,6 +3,7 @@ use std::cmp;
 use crate::customize::Customize;
 use crate::file_and_mod::FileAndMod;
 use crate::inside::protobuf_crate_path;
+use crate::message::RustTypeMessage;
 use crate::protobuf_name::ProtobufAbsolutePath;
 use crate::rust_name::RustIdent;
 use crate::rust_name::RustIdentWithPath;
@@ -37,7 +38,7 @@ pub(crate) enum RustType {
     // &T
     Ref(Box<RustType>),
     // protobuf message
-    Message(RustIdentWithPath),
+    Message(RustTypeMessage),
     // protobuf enum, not any enum
     Enum(RustIdentWithPath, RustIdent),
     // protobuf enum or unknown
@@ -89,9 +90,8 @@ impl RustType {
             ),
             RustType::Uniq(ref param) => format!("::std::boxed::Box<{}>", param.to_code(customize)),
             RustType::Ref(ref param) => format!("&{}", param.to_code(customize)),
-            RustType::Message(ref name)
-            | RustType::Enum(ref name, _)
-            | RustType::Oneof(ref name) => format!("{}", name),
+            RustType::Message(ref name) => format!("{}", name),
+            RustType::Enum(ref name, _) | RustType::Oneof(ref name) => format!("{}", name),
             RustType::EnumOrUnknown(ref name, _) => format!(
                 "{}::ProtobufEnumOrUnknown<{}>",
                 protobuf_crate_path(customize),
@@ -225,11 +225,7 @@ impl RustType {
             }
             RustType::Message(ref name) => format!("{}::new()", name),
             RustType::Ref(ref m) if m.is_message() => match **m {
-                RustType::Message(ref name) => format!(
-                    "<{} as {}::Message>::default_instance()",
-                    name,
-                    protobuf_crate_path(customize)
-                ),
+                RustType::Message(ref name) => name.default_instance(customize),
                 _ => unreachable!(),
             },
             // Note: default value of enum type may not be equal to default value of field
@@ -590,7 +586,7 @@ pub enum _CarllercheBytesType {
 // ProtobufType trait name
 pub(crate) enum ProtobufTypeGen {
     Primitive(field_descriptor_proto::Type, PrimitiveTypeVariant),
-    Message(RustIdentWithPath),
+    Message(RustTypeMessage),
     EnumOrUnknown(RustIdentWithPath),
     Enum(RustIdentWithPath),
 }

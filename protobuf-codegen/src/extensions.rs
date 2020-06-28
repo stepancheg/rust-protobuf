@@ -4,6 +4,7 @@ use crate::customize::Customize;
 use crate::field::rust_field_name_for_protobuf_field_name;
 use crate::file_and_mod::FileAndMod;
 use crate::inside::protobuf_crate_path;
+use crate::message::RustTypeMessage;
 use crate::protobuf_name::ProtobufAbsolutePath;
 use crate::rust_name::RustIdentWithPath;
 use crate::rust_name::RustRelativePath;
@@ -53,7 +54,7 @@ impl<'a> ExtGen<'a> {
             );
             match self.field.get_field_type() {
                 field_descriptor_proto::Type::TYPE_MESSAGE => {
-                    ProtobufTypeGen::Message(rust_name_relative)
+                    ProtobufTypeGen::Message(RustTypeMessage(rust_name_relative))
                 }
                 field_descriptor_proto::Type::TYPE_ENUM => {
                     ProtobufTypeGen::EnumOrUnknown(rust_name_relative)

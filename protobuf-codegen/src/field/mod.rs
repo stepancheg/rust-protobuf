@@ -17,6 +17,7 @@ use crate::customize::Customize;
 use crate::file_and_mod::FileAndMod;
 use crate::inside::protobuf_crate_path;
 use crate::map::map_entry;
+use crate::message::RustTypeMessage;
 use crate::oneof::OneofField;
 use crate::rust_name::RustIdent;
 use crate::rust_name::RustIdentWithPath;
@@ -393,8 +394,8 @@ pub(crate) struct FieldElemMessage<'a> {
 }
 
 impl<'a> FieldElemMessage<'a> {
-    fn rust_name_relative(&self, reference: &FileAndMod) -> RustIdentWithPath {
-        message_or_enum_to_rust_relative(&self.message, reference)
+    fn rust_name_relative(&self, reference: &FileAndMod) -> RustTypeMessage {
+        RustTypeMessage(message_or_enum_to_rust_relative(&self.message, reference))
     }
 
     fn rust_type(&self, reference: &FileAndMod) -> RustType {
