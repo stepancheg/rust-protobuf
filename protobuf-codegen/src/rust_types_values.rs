@@ -333,9 +333,19 @@ impl RustType {
             {
                 return Ok(format!("&{}", v))
             }
-            (&RustType::Enum(..), &RustType::Int(true, 32)) => return Ok(format!("{}.value()", v)),
+            (&RustType::Enum(..), &RustType::Int(true, 32)) => {
+                return Ok(format!(
+                    "{}::ProtobufEnum::value(&{})",
+                    protobuf_crate_path(customize),
+                    v
+                ))
+            }
             (&RustType::Ref(ref t), &RustType::Int(true, 32)) if t.is_enum() => {
-                return Ok(format!("{}.value()", v))
+                return Ok(format!(
+                    "{}::ProtobufEnum::value({})",
+                    protobuf_crate_path(customize),
+                    v
+                ))
             }
             _ => (),
         };

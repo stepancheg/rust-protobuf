@@ -5,6 +5,7 @@ use protobuf::descriptor::*;
 use super::code_writer::*;
 use super::customize::Customize;
 use file_descriptor::file_descriptor_proto_expr;
+use inside::protobuf_crate_path;
 use protobuf_name::ProtobufAbsolutePath;
 use rust_types_values::type_name_to_rust_relative;
 use scope::EnumWithScope;
@@ -272,7 +273,7 @@ impl<'a> EnumGen<'a> {
         w.impl_for_block("::protobuf::reflect::ProtobufValue", &self.type_name, |w| {
             w.def_fn(
                 "as_ref(&self) -> ::protobuf::reflect::ReflectValueRef",
-                |w| w.write_line("::protobuf::reflect::ReflectValueRef::Enum(self.descriptor())"),
+                |w| w.write_line("::protobuf::reflect::ReflectValueRef::Enum(::protobuf::ProtobufEnum::descriptor(self))"),
             )
         })
     }
@@ -283,18 +284,29 @@ impl<'a> EnumGen<'a> {
 
     fn write_impl_eq(&self, w: &mut CodeWriter) {
         assert!(self.allow_alias());
-        w.impl_for_block("::std::cmp::PartialEq", &self.type_name, |w| {
-            w.def_fn("eq(&self, other: &Self) -> bool", |w| {
-                w.write_line("self.value() == other.value()");
-            });
-        });
+        w.impl_for_block(
+            "::std::cmp::PartialEq",
+            &format!("{}", self.type_name),
+            |w| {
+                w.def_fn("eq(&self, other: &Self) -> bool", |w| {
+                    w.write_line(&format!(
+                        "{}::ProtobufEnum::value(self) == {}::ProtobufEnum::value(other)",
+                        protobuf_crate_path(&self.customize),
+                        protobuf_crate_path(&self.customize)
+                    ));
+                });
+            },
+        );
     }
 
     fn write_impl_hash(&self, w: &mut CodeWriter) {
         assert!(self.allow_alias());
-        w.impl_for_block("::std::hash::Hash", &self.type_name, |w| {
+        w.impl_for_block("::std::hash::Hash", &format!("{}", self.type_name), |w| {
             w.def_fn("hash<H : ::std::hash::Hasher>(&self, state: &mut H)", |w| {
-                w.write_line("state.write_i32(self.value())");
+                w.write_line(&format!(
+                    "state.write_i32({}::ProtobufEnum::value(self))",
+                    protobuf_crate_path(&self.customize)
+                ));
             });
         });
     }
