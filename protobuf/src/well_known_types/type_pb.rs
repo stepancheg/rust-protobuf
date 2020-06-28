@@ -21,7 +21,6 @@
 //! Generated file from `google/protobuf/type.proto`
 
 use protobuf::Message as Message_imported_for_functions;
-use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 
 #[derive(PartialEq,Clone,Default)]
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
@@ -304,7 +303,7 @@ impl ::protobuf::Message for Type {
             v.write_to_with_cached_sizes(os)?;
         }
         if self.syntax != Syntax::SYNTAX_PROTO2 {
-            os.write_enum(6, self.syntax.value())?;
+            os.write_enum(6, ::protobuf::ProtobufEnum::value(&self.syntax))?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -759,10 +758,10 @@ impl ::protobuf::Message for Field {
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
         if self.kind != Field_Kind::TYPE_UNKNOWN {
-            os.write_enum(1, self.kind.value())?;
+            os.write_enum(1, ::protobuf::ProtobufEnum::value(&self.kind))?;
         }
         if self.cardinality != Field_Cardinality::CARDINALITY_UNKNOWN {
-            os.write_enum(2, self.cardinality.value())?;
+            os.write_enum(2, ::protobuf::ProtobufEnum::value(&self.cardinality))?;
         }
         if self.number != 0 {
             os.write_int32(3, self.number)?;
@@ -1024,7 +1023,7 @@ impl ::std::default::Default for Field_Kind {
 
 impl ::protobuf::reflect::ProtobufValue for Field_Kind {
     fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Enum(self.descriptor())
+        ::protobuf::reflect::ReflectValueRef::Enum(::protobuf::ProtobufEnum::descriptor(self))
     }
 }
 
@@ -1083,7 +1082,7 @@ impl ::std::default::Default for Field_Cardinality {
 
 impl ::protobuf::reflect::ProtobufValue for Field_Cardinality {
     fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Enum(self.descriptor())
+        ::protobuf::reflect::ReflectValueRef::Enum(::protobuf::ProtobufEnum::descriptor(self))
     }
 }
 
@@ -1333,7 +1332,7 @@ impl ::protobuf::Message for Enum {
             v.write_to_with_cached_sizes(os)?;
         }
         if self.syntax != Syntax::SYNTAX_PROTO2 {
-            os.write_enum(5, self.syntax.value())?;
+            os.write_enum(5, ::protobuf::ProtobufEnum::value(&self.syntax))?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -1961,7 +1960,7 @@ impl ::std::default::Default for Syntax {
 
 impl ::protobuf::reflect::ProtobufValue for Syntax {
     fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Enum(self.descriptor())
+        ::protobuf::reflect::ReflectValueRef::Enum(::protobuf::ProtobufEnum::descriptor(self))
     }
 }
 

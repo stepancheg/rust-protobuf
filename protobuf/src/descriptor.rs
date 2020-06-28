@@ -21,7 +21,6 @@
 //! Generated file from `google/protobuf/descriptor.proto`
 
 use protobuf::Message as Message_imported_for_functions;
-use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 
 #[derive(PartialEq,Clone,Default)]
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
@@ -2360,10 +2359,10 @@ impl ::protobuf::Message for FieldDescriptorProto {
             os.write_int32(3, v)?;
         }
         if let Some(v) = self.label {
-            os.write_enum(4, v.value())?;
+            os.write_enum(4, ::protobuf::ProtobufEnum::value(&v))?;
         }
         if let Some(v) = self.field_type {
-            os.write_enum(5, v.value())?;
+            os.write_enum(5, ::protobuf::ProtobufEnum::value(&v))?;
         }
         if let Some(ref v) = self.type_name.as_ref() {
             os.write_string(6, &v)?;
@@ -2617,7 +2616,7 @@ impl ::std::default::Default for FieldDescriptorProto_Type {
 
 impl ::protobuf::reflect::ProtobufValue for FieldDescriptorProto_Type {
     fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Enum(self.descriptor())
+        ::protobuf::reflect::ReflectValueRef::Enum(::protobuf::ProtobufEnum::descriptor(self))
     }
 }
 
@@ -2674,7 +2673,7 @@ impl ::std::default::Default for FieldDescriptorProto_Label {
 
 impl ::protobuf::reflect::ProtobufValue for FieldDescriptorProto_Label {
     fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Enum(self.descriptor())
+        ::protobuf::reflect::ReflectValueRef::Enum(::protobuf::ProtobufEnum::descriptor(self))
     }
 }
 
@@ -4747,7 +4746,7 @@ impl ::protobuf::Message for FileOptions {
             os.write_bool(27, v)?;
         }
         if let Some(v) = self.optimize_for {
-            os.write_enum(9, v.value())?;
+            os.write_enum(9, ::protobuf::ProtobufEnum::value(&v))?;
         }
         if let Some(ref v) = self.go_package.as_ref() {
             os.write_string(11, &v)?;
@@ -4995,7 +4994,7 @@ impl ::std::default::Default for FileOptions_OptimizeMode {
 
 impl ::protobuf::reflect::ProtobufValue for FileOptions_OptimizeMode {
     fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Enum(self.descriptor())
+        ::protobuf::reflect::ReflectValueRef::Enum(::protobuf::ProtobufEnum::descriptor(self))
     }
 }
 
@@ -5589,13 +5588,13 @@ impl ::protobuf::Message for FieldOptions {
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
         if let Some(v) = self.ctype {
-            os.write_enum(1, v.value())?;
+            os.write_enum(1, ::protobuf::ProtobufEnum::value(&v))?;
         }
         if let Some(v) = self.packed {
             os.write_bool(2, v)?;
         }
         if let Some(v) = self.jstype {
-            os.write_enum(6, v.value())?;
+            os.write_enum(6, ::protobuf::ProtobufEnum::value(&v))?;
         }
         if let Some(v) = self.lazy {
             os.write_bool(5, v)?;
@@ -5779,7 +5778,7 @@ impl ::std::default::Default for FieldOptions_CType {
 
 impl ::protobuf::reflect::ProtobufValue for FieldOptions_CType {
     fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Enum(self.descriptor())
+        ::protobuf::reflect::ReflectValueRef::Enum(::protobuf::ProtobufEnum::descriptor(self))
     }
 }
 
@@ -5835,7 +5834,7 @@ impl ::std::default::Default for FieldOptions_JSType {
 
 impl ::protobuf::reflect::ProtobufValue for FieldOptions_JSType {
     fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Enum(self.descriptor())
+        ::protobuf::reflect::ReflectValueRef::Enum(::protobuf::ProtobufEnum::descriptor(self))
     }
 }
 

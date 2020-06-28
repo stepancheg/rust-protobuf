@@ -21,7 +21,6 @@
 //! Generated file from `google/protobuf/api.proto`
 
 use protobuf::Message as Message_imported_for_functions;
-use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 
 #[derive(PartialEq,Clone,Default)]
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
@@ -348,7 +347,7 @@ impl ::protobuf::Message for Api {
             v.write_to_with_cached_sizes(os)?;
         };
         if self.syntax != ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2 {
-            os.write_enum(7, self.syntax.value())?;
+            os.write_enum(7, ::protobuf::ProtobufEnum::value(&self.syntax))?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -748,7 +747,7 @@ impl ::protobuf::Message for Method {
             v.write_to_with_cached_sizes(os)?;
         };
         if self.syntax != ::protobuf::well_known_types::Syntax::SYNTAX_PROTO2 {
-            os.write_enum(7, self.syntax.value())?;
+            os.write_enum(7, ::protobuf::ProtobufEnum::value(&self.syntax))?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())

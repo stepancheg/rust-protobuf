@@ -21,7 +21,6 @@
 //! Generated file from `google/protobuf/struct.proto`
 
 use protobuf::Message as Message_imported_for_functions;
-use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 
 #[derive(PartialEq,Clone,Default)]
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
@@ -541,7 +540,7 @@ impl ::protobuf::Message for Value {
         if let ::std::option::Option::Some(ref v) = self.kind {
             match v {
                 &Value_oneof_kind::null_value(v) => {
-                    os.write_enum(1, v.value())?;
+                    os.write_enum(1, ::protobuf::ProtobufEnum::value(&v))?;
                 },
                 &Value_oneof_kind::number_value(v) => {
                     os.write_double(2, v)?;
@@ -893,7 +892,7 @@ impl ::std::default::Default for NullValue {
 
 impl ::protobuf::reflect::ProtobufValue for NullValue {
     fn as_ref(&self) -> ::protobuf::reflect::ReflectValueRef {
-        ::protobuf::reflect::ReflectValueRef::Enum(self.descriptor())
+        ::protobuf::reflect::ReflectValueRef::Enum(::protobuf::ProtobufEnum::descriptor(self))
     }
 }
 
