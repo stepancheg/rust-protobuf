@@ -36,6 +36,9 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 ## [2.16] - Unreleased
 
 - Minor changes in generated files
+- Generated repeated and message fields for proto2 are
+  [public now](https://github.com/stepancheg/rust-protobuf/commit/f391e9ae0968ae08f4a68798c3b3f25852590150)
+  (for proto3 all fields are already public).
 
 ## [2.15.0] - 2020-06-21
 
