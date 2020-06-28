@@ -20,8 +20,6 @@
 #![allow(unused_results)]
 //! Generated file from `google/protobuf/struct.proto`
 
-use protobuf::Message as Message_imported_for_functions;
-
 #[derive(PartialEq,Clone,Default)]
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct Struct {

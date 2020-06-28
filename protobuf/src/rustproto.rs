@@ -20,8 +20,6 @@
 #![allow(unused_results)]
 //! Generated file from `rustproto.proto`
 
-use protobuf::Message as Message_imported_for_functions;
-
 /// Extension fields
 pub mod exts {
 
