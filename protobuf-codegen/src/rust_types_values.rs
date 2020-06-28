@@ -2,6 +2,7 @@ use std::cmp;
 
 use super::well_known_types::is_well_known_type_full;
 use inside::protobuf_crate_path;
+use message::RustTypeMessage;
 use protobuf::descriptor::*;
 use protobuf_name::ProtobufAbsolutePath;
 use rust_name::RustIdent;
@@ -34,7 +35,7 @@ pub(crate) enum RustType {
     // &T
     Ref(Box<RustType>),
     // protobuf message
-    Message(String),
+    Message(RustTypeMessage),
     // protobuf enum, not any enum
     Enum(String, RustIdent),
     // oneof enum
@@ -84,9 +85,8 @@ impl RustType {
             ),
             RustType::Uniq(ref param) => format!("::std::boxed::Box<{}>", param.to_code(customize)),
             RustType::Ref(ref param) => format!("&{}", param.to_code(customize)),
-            RustType::Message(ref name)
-            | RustType::Enum(ref name, _)
-            | RustType::Oneof(ref name) => format!("{}", name),
+            RustType::Message(ref name) => format!("{}", name),
+            RustType::Enum(ref name, _) | RustType::Oneof(ref name) => format!("{}", name),
             RustType::Group => format!("<group>"),
             RustType::Bytes => format!("::bytes::Bytes"),
             RustType::Chars => format!("{}::Chars", protobuf_crate_path(customize)),
@@ -199,7 +199,7 @@ impl RustType {
             }
             RustType::Message(ref name) => format!("{}::new()", name),
             RustType::Ref(ref m) if m.is_message() => match **m {
-                RustType::Message(ref name) => format!("{}::default_instance()", name),
+                RustType::Message(ref name) => name.default_instance(customize),
                 _ => unreachable!(),
             },
             // Note: default value of enum type may not be equal to default value of field

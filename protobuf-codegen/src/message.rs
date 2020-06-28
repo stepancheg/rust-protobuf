@@ -15,6 +15,29 @@ use scope::RootScope;
 use scope::WithScope;
 use serde;
 
+use std::fmt;
+
+/// Protobuf message Rust type name
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct RustTypeMessage(pub RustIdentWithPath);
+
+impl fmt::Display for RustTypeMessage {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        fmt::Display::fmt(&self.0, f)
+    }
+}
+
+impl RustTypeMessage {
+    /// Code which emits default instance.
+    pub fn default_instance(&self, customize: &Customize) -> String {
+        format!(
+            "<{} as {}::Message>::default_instance()",
+            self.0,
+            protobuf_crate_path(customize)
+        )
+    }
+}
+
 /// Message info for codegen
 pub(crate) struct MessageGen<'a> {
     pub message: &'a MessageWithScope<'a>,

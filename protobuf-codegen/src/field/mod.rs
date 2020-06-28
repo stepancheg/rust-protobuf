@@ -14,8 +14,10 @@ use oneof::OneofField;
 
 use float;
 use inside::protobuf_crate_path;
+use message::RustTypeMessage;
 use protobuf_name::ProtobufAbsolutePath;
 use rust_name::RustIdent;
+use rust_name::RustIdentWithPath;
 use scope::FieldWithContext;
 use scope::MessageOrEnumWithScope;
 use scope::RootScope;
@@ -267,7 +269,9 @@ impl<'a> FieldElem<'a> {
             ) => RustType::Bytes,
             FieldElem::Primitive(.., PrimitiveTypeVariant::Carllerche) => unreachable!(),
             FieldElem::Group => RustType::Group,
-            FieldElem::Message(ref name, ..) => RustType::Message(name.clone()),
+            FieldElem::Message(ref name, ..) => {
+                RustType::Message(RustTypeMessage(RustIdentWithPath::new(name.clone())))
+            }
             FieldElem::Enum(ref name, _, ref default_value) => {
                 RustType::Enum(name.clone(), default_value.clone())
             }
@@ -1630,11 +1634,14 @@ impl<'a> FieldGen<'a> {
 
         if self.proto_type == FieldDescriptorProto_Type::TYPE_MESSAGE {
             let self_field = self.self_field();
-            let ref field_type_name = self.elem().rust_storage_type();
+            let ref rust_type_message = match self.elem().rust_storage_type() {
+                RustType::Message(m) => m,
+                _ => unreachable!(),
+            };
             w.write_line(&format!(
-                "{}.as_ref().unwrap_or_else(|| {}::default_instance())",
+                "{}.as_ref().unwrap_or_else(|| {})",
                 self_field,
-                field_type_name.to_code(&self.customize)
+                rust_type_message.default_instance(&self.customize)
             ));
         } else {
             let get_xxx_default_value_rust = self.get_xxx_default_value_rust();
