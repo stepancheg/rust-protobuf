@@ -456,8 +456,13 @@ impl<'a> FieldGen<'a> {
 
         let generate_accessors = customize.generate_accessors.unwrap_or(true);
 
-        let default_expose_field =
-            field.message.scope.file_scope.syntax() == Syntax::PROTO3 || !generate_accessors;
+        let syntax = field.message.scope.file_scope.syntax();
+
+        let field_may_have_custom_default_value = syntax == Syntax::PROTO2
+            && field.field.get_label() != FieldDescriptorProto_Label::LABEL_REPEATED
+            && field.field.get_field_type() != FieldDescriptorProto_Type::TYPE_MESSAGE;
+
+        let default_expose_field = !field_may_have_custom_default_value;
 
         let expose_field = customize.expose_fields.unwrap_or(default_expose_field);
 
