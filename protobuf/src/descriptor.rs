@@ -24,7 +24,7 @@
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct FileDescriptorSet {
     // message fields
-    file: ::protobuf::RepeatedField<FileDescriptorProto>,
+    pub file: ::protobuf::RepeatedField<FileDescriptorProto>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -199,15 +199,15 @@ pub struct FileDescriptorProto {
     // message fields
     name: ::protobuf::SingularField<::std::string::String>,
     package: ::protobuf::SingularField<::std::string::String>,
-    dependency: ::protobuf::RepeatedField<::std::string::String>,
-    public_dependency: ::std::vec::Vec<i32>,
-    weak_dependency: ::std::vec::Vec<i32>,
-    message_type: ::protobuf::RepeatedField<DescriptorProto>,
-    enum_type: ::protobuf::RepeatedField<EnumDescriptorProto>,
-    service: ::protobuf::RepeatedField<ServiceDescriptorProto>,
-    extension: ::protobuf::RepeatedField<FieldDescriptorProto>,
-    options: ::protobuf::SingularPtrField<FileOptions>,
-    source_code_info: ::protobuf::SingularPtrField<SourceCodeInfo>,
+    pub dependency: ::protobuf::RepeatedField<::std::string::String>,
+    pub public_dependency: ::std::vec::Vec<i32>,
+    pub weak_dependency: ::std::vec::Vec<i32>,
+    pub message_type: ::protobuf::RepeatedField<DescriptorProto>,
+    pub enum_type: ::protobuf::RepeatedField<EnumDescriptorProto>,
+    pub service: ::protobuf::RepeatedField<ServiceDescriptorProto>,
+    pub extension: ::protobuf::RepeatedField<FieldDescriptorProto>,
+    pub options: ::protobuf::SingularPtrField<FileOptions>,
+    pub source_code_info: ::protobuf::SingularPtrField<SourceCodeInfo>,
     syntax: ::protobuf::SingularField<::std::string::String>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
@@ -911,15 +911,15 @@ impl ::protobuf::reflect::ProtobufValue for FileDescriptorProto {
 pub struct DescriptorProto {
     // message fields
     name: ::protobuf::SingularField<::std::string::String>,
-    field: ::protobuf::RepeatedField<FieldDescriptorProto>,
-    extension: ::protobuf::RepeatedField<FieldDescriptorProto>,
-    nested_type: ::protobuf::RepeatedField<DescriptorProto>,
-    enum_type: ::protobuf::RepeatedField<EnumDescriptorProto>,
-    extension_range: ::protobuf::RepeatedField<DescriptorProto_ExtensionRange>,
-    oneof_decl: ::protobuf::RepeatedField<OneofDescriptorProto>,
-    options: ::protobuf::SingularPtrField<MessageOptions>,
-    reserved_range: ::protobuf::RepeatedField<DescriptorProto_ReservedRange>,
-    reserved_name: ::protobuf::RepeatedField<::std::string::String>,
+    pub field: ::protobuf::RepeatedField<FieldDescriptorProto>,
+    pub extension: ::protobuf::RepeatedField<FieldDescriptorProto>,
+    pub nested_type: ::protobuf::RepeatedField<DescriptorProto>,
+    pub enum_type: ::protobuf::RepeatedField<EnumDescriptorProto>,
+    pub extension_range: ::protobuf::RepeatedField<DescriptorProto_ExtensionRange>,
+    pub oneof_decl: ::protobuf::RepeatedField<OneofDescriptorProto>,
+    pub options: ::protobuf::SingularPtrField<MessageOptions>,
+    pub reserved_range: ::protobuf::RepeatedField<DescriptorProto_ReservedRange>,
+    pub reserved_name: ::protobuf::RepeatedField<::std::string::String>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -1940,7 +1940,7 @@ pub struct FieldDescriptorProto {
     default_value: ::protobuf::SingularField<::std::string::String>,
     oneof_index: ::std::option::Option<i32>,
     json_name: ::protobuf::SingularField<::std::string::String>,
-    options: ::protobuf::SingularPtrField<FieldOptions>,
+    pub options: ::protobuf::SingularPtrField<FieldOptions>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -2680,7 +2680,7 @@ impl ::protobuf::reflect::ProtobufValue for FieldDescriptorProto_Label {
 pub struct OneofDescriptorProto {
     // message fields
     name: ::protobuf::SingularField<::std::string::String>,
-    options: ::protobuf::SingularPtrField<OneofOptions>,
+    pub options: ::protobuf::SingularPtrField<OneofOptions>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -2913,8 +2913,8 @@ impl ::protobuf::reflect::ProtobufValue for OneofDescriptorProto {
 pub struct EnumDescriptorProto {
     // message fields
     name: ::protobuf::SingularField<::std::string::String>,
-    value: ::protobuf::RepeatedField<EnumValueDescriptorProto>,
-    options: ::protobuf::SingularPtrField<EnumOptions>,
+    pub value: ::protobuf::RepeatedField<EnumValueDescriptorProto>,
+    pub options: ::protobuf::SingularPtrField<EnumOptions>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -3196,7 +3196,7 @@ pub struct EnumValueDescriptorProto {
     // message fields
     name: ::protobuf::SingularField<::std::string::String>,
     number: ::std::option::Option<i32>,
-    options: ::protobuf::SingularPtrField<EnumValueOptions>,
+    pub options: ::protobuf::SingularPtrField<EnumValueOptions>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -3467,8 +3467,8 @@ impl ::protobuf::reflect::ProtobufValue for EnumValueDescriptorProto {
 pub struct ServiceDescriptorProto {
     // message fields
     name: ::protobuf::SingularField<::std::string::String>,
-    method: ::protobuf::RepeatedField<MethodDescriptorProto>,
-    options: ::protobuf::SingularPtrField<ServiceOptions>,
+    pub method: ::protobuf::RepeatedField<MethodDescriptorProto>,
+    pub options: ::protobuf::SingularPtrField<ServiceOptions>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -3751,7 +3751,7 @@ pub struct MethodDescriptorProto {
     name: ::protobuf::SingularField<::std::string::String>,
     input_type: ::protobuf::SingularField<::std::string::String>,
     output_type: ::protobuf::SingularField<::std::string::String>,
-    options: ::protobuf::SingularPtrField<MethodOptions>,
+    pub options: ::protobuf::SingularPtrField<MethodOptions>,
     client_streaming: ::std::option::Option<bool>,
     server_streaming: ::std::option::Option<bool>,
     // special fields
@@ -4177,7 +4177,7 @@ pub struct FileOptions {
     cc_enable_arenas: ::std::option::Option<bool>,
     objc_class_prefix: ::protobuf::SingularField<::std::string::String>,
     csharp_namespace: ::protobuf::SingularField<::std::string::String>,
-    uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -5004,7 +5004,7 @@ pub struct MessageOptions {
     no_standard_descriptor_accessor: ::std::option::Option<bool>,
     deprecated: ::std::option::Option<bool>,
     map_entry: ::std::option::Option<bool>,
-    uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -5335,7 +5335,7 @@ pub struct FieldOptions {
     lazy: ::std::option::Option<bool>,
     deprecated: ::std::option::Option<bool>,
     weak: ::std::option::Option<bool>,
-    uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -5840,7 +5840,7 @@ impl ::protobuf::reflect::ProtobufValue for FieldOptions_JSType {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct OneofOptions {
     // message fields
-    uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -6015,7 +6015,7 @@ pub struct EnumOptions {
     // message fields
     allow_alias: ::std::option::Option<bool>,
     deprecated: ::std::option::Option<bool>,
-    uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -6265,7 +6265,7 @@ impl ::protobuf::reflect::ProtobufValue for EnumOptions {
 pub struct EnumValueOptions {
     // message fields
     deprecated: ::std::option::Option<bool>,
-    uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -6477,7 +6477,7 @@ impl ::protobuf::reflect::ProtobufValue for EnumValueOptions {
 pub struct ServiceOptions {
     // message fields
     deprecated: ::std::option::Option<bool>,
-    uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -6689,7 +6689,7 @@ impl ::protobuf::reflect::ProtobufValue for ServiceOptions {
 pub struct MethodOptions {
     // message fields
     deprecated: ::std::option::Option<bool>,
-    uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: ::protobuf::RepeatedField<UninterpretedOption>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -6900,7 +6900,7 @@ impl ::protobuf::reflect::ProtobufValue for MethodOptions {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct UninterpretedOption {
     // message fields
-    name: ::protobuf::RepeatedField<UninterpretedOption_NamePart>,
+    pub name: ::protobuf::RepeatedField<UninterpretedOption_NamePart>,
     identifier_value: ::protobuf::SingularField<::std::string::String>,
     positive_int_value: ::std::option::Option<u64>,
     negative_int_value: ::std::option::Option<i64>,
@@ -7567,7 +7567,7 @@ impl ::protobuf::reflect::ProtobufValue for UninterpretedOption_NamePart {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct SourceCodeInfo {
     // message fields
-    location: ::protobuf::RepeatedField<SourceCodeInfo_Location>,
+    pub location: ::protobuf::RepeatedField<SourceCodeInfo_Location>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -7740,11 +7740,11 @@ impl ::protobuf::reflect::ProtobufValue for SourceCodeInfo {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct SourceCodeInfo_Location {
     // message fields
-    path: ::std::vec::Vec<i32>,
-    span: ::std::vec::Vec<i32>,
+    pub path: ::std::vec::Vec<i32>,
+    pub span: ::std::vec::Vec<i32>,
     leading_comments: ::protobuf::SingularField<::std::string::String>,
     trailing_comments: ::protobuf::SingularField<::std::string::String>,
-    leading_detached_comments: ::protobuf::RepeatedField<::std::string::String>,
+    pub leading_detached_comments: ::protobuf::RepeatedField<::std::string::String>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -8101,7 +8101,7 @@ impl ::protobuf::reflect::ProtobufValue for SourceCodeInfo_Location {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct GeneratedCodeInfo {
     // message fields
-    annotation: ::protobuf::RepeatedField<GeneratedCodeInfo_Annotation>,
+    pub annotation: ::protobuf::RepeatedField<GeneratedCodeInfo_Annotation>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -8274,7 +8274,7 @@ impl ::protobuf::reflect::ProtobufValue for GeneratedCodeInfo {
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct GeneratedCodeInfo_Annotation {
     // message fields
-    path: ::std::vec::Vec<i32>,
+    pub path: ::std::vec::Vec<i32>,
     source_file: ::protobuf::SingularField<::std::string::String>,
     begin: ::std::option::Option<i32>,
     end: ::std::option::Option<i32>,

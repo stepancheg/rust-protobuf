@@ -24,9 +24,9 @@
 #[cfg_attr(feature = "with-serde", derive(Serialize, Deserialize))]
 pub struct CodeGeneratorRequest {
     // message fields
-    file_to_generate: ::protobuf::RepeatedField<::std::string::String>,
+    pub file_to_generate: ::protobuf::RepeatedField<::std::string::String>,
     parameter: ::protobuf::SingularField<::std::string::String>,
-    proto_file: ::protobuf::RepeatedField<::protobuf::descriptor::FileDescriptorProto>,
+    pub proto_file: ::protobuf::RepeatedField<::protobuf::descriptor::FileDescriptorProto>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -291,7 +291,7 @@ impl ::protobuf::reflect::ProtobufValue for CodeGeneratorRequest {
 pub struct CodeGeneratorResponse {
     // message fields
     error: ::protobuf::SingularField<::std::string::String>,
-    file: ::protobuf::RepeatedField<CodeGeneratorResponse_File>,
+    pub file: ::protobuf::RepeatedField<CodeGeneratorResponse_File>,
     // special fields
     #[cfg_attr(feature = "with-serde", serde(skip))]
     pub unknown_fields: ::protobuf::UnknownFields,
