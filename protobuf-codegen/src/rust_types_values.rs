@@ -640,9 +640,9 @@ mod test {
     #[test]
     fn into_target_ref_box_to_ref() {
         let t1 = RustType::Ref(Box::new(RustType::Uniq(Box::new(RustType::Message(
-            RustIdentWithPath::from("Ab"),
+            RustTypeMessage::from("Ab"),
         )))));
-        let t2 = RustType::Ref(Box::new(RustType::Message(RustIdentWithPath::from("Ab"))));
+        let t2 = RustType::Ref(Box::new(RustType::Message(RustTypeMessage::from("Ab"))));
 
         assert_eq!("&**v", t1.into_target(&t2, "v", &Customize::default()));
     }

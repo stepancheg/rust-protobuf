@@ -34,6 +34,12 @@ impl fmt::Display for RustTypeMessage {
     }
 }
 
+impl<S: Into<RustIdentWithPath>> From<S> for RustTypeMessage {
+    fn from(s: S) -> Self {
+        RustTypeMessage(s.into())
+    }
+}
+
 impl RustTypeMessage {
     /// Code which emits default instance.
     pub fn default_instance(&self, customize: &Customize) -> String {
