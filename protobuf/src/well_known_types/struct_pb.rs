@@ -347,7 +347,7 @@ impl Value {
     pub fn get_struct_value(&self) -> &Struct {
         match self.kind {
             ::std::option::Option::Some(Value_oneof_kind::struct_value(ref v)) => v,
-            _ => Struct::default_instance(),
+            _ => <Struct as ::protobuf::Message>::default_instance(),
         }
     }
     pub fn clear_struct_value(&mut self) {
@@ -396,7 +396,7 @@ impl Value {
     pub fn get_list_value(&self) -> &ListValue {
         match self.kind {
             ::std::option::Option::Some(Value_oneof_kind::list_value(ref v)) => v,
-            _ => ListValue::default_instance(),
+            _ => <ListValue as ::protobuf::Message>::default_instance(),
         }
     }
     pub fn clear_list_value(&mut self) {

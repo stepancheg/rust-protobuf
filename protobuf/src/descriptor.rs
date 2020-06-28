@@ -480,7 +480,7 @@ impl FileDescriptorProto {
 
 
     pub fn get_options(&self) -> &FileOptions {
-        self.options.as_ref().unwrap_or_else(|| FileOptions::default_instance())
+        self.options.as_ref().unwrap_or_else(|| <FileOptions as ::protobuf::Message>::default_instance())
     }
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -513,7 +513,7 @@ impl FileDescriptorProto {
 
 
     pub fn get_source_code_info(&self) -> &SourceCodeInfo {
-        self.source_code_info.as_ref().unwrap_or_else(|| SourceCodeInfo::default_instance())
+        self.source_code_info.as_ref().unwrap_or_else(|| <SourceCodeInfo as ::protobuf::Message>::default_instance())
     }
     pub fn clear_source_code_info(&mut self) {
         self.source_code_info.clear();
@@ -1130,7 +1130,7 @@ impl DescriptorProto {
 
 
     pub fn get_options(&self) -> &MessageOptions {
-        self.options.as_ref().unwrap_or_else(|| MessageOptions::default_instance())
+        self.options.as_ref().unwrap_or_else(|| <MessageOptions as ::protobuf::Message>::default_instance())
     }
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -2221,7 +2221,7 @@ impl FieldDescriptorProto {
 
 
     pub fn get_options(&self) -> &FieldOptions {
-        self.options.as_ref().unwrap_or_else(|| FieldOptions::default_instance())
+        self.options.as_ref().unwrap_or_else(|| <FieldOptions as ::protobuf::Message>::default_instance())
     }
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -2741,7 +2741,7 @@ impl OneofDescriptorProto {
 
 
     pub fn get_options(&self) -> &OneofOptions {
-        self.options.as_ref().unwrap_or_else(|| OneofOptions::default_instance())
+        self.options.as_ref().unwrap_or_else(|| <OneofOptions as ::protobuf::Message>::default_instance())
     }
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -3000,7 +3000,7 @@ impl EnumDescriptorProto {
 
 
     pub fn get_options(&self) -> &EnumOptions {
-        self.options.as_ref().unwrap_or_else(|| EnumOptions::default_instance())
+        self.options.as_ref().unwrap_or_else(|| <EnumOptions as ::protobuf::Message>::default_instance())
     }
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -3276,7 +3276,7 @@ impl EnumValueDescriptorProto {
 
 
     pub fn get_options(&self) -> &EnumValueOptions {
-        self.options.as_ref().unwrap_or_else(|| EnumValueOptions::default_instance())
+        self.options.as_ref().unwrap_or_else(|| <EnumValueOptions as ::protobuf::Message>::default_instance())
     }
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -3554,7 +3554,7 @@ impl ServiceDescriptorProto {
 
 
     pub fn get_options(&self) -> &ServiceOptions {
-        self.options.as_ref().unwrap_or_else(|| ServiceOptions::default_instance())
+        self.options.as_ref().unwrap_or_else(|| <ServiceOptions as ::protobuf::Message>::default_instance())
     }
     pub fn clear_options(&mut self) {
         self.options.clear();
@@ -3886,7 +3886,7 @@ impl MethodDescriptorProto {
 
 
     pub fn get_options(&self) -> &MethodOptions {
-        self.options.as_ref().unwrap_or_else(|| MethodOptions::default_instance())
+        self.options.as_ref().unwrap_or_else(|| <MethodOptions as ::protobuf::Message>::default_instance())
     }
     pub fn clear_options(&mut self) {
         self.options.clear();

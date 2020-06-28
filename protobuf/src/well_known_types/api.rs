@@ -157,7 +157,7 @@ impl Api {
 
 
     pub fn get_source_context(&self) -> &::protobuf::well_known_types::SourceContext {
-        self.source_context.as_ref().unwrap_or_else(|| ::protobuf::well_known_types::SourceContext::default_instance())
+        self.source_context.as_ref().unwrap_or_else(|| <::protobuf::well_known_types::SourceContext as ::protobuf::Message>::default_instance())
     }
     pub fn clear_source_context(&mut self) {
         self.source_context.clear();
