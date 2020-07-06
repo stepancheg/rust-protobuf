@@ -110,7 +110,7 @@ impl crate::Message for SourceContext {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::INIT;
+        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
             fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
@@ -127,7 +127,7 @@ impl crate::Message for SourceContext {
     }
 
     fn default_instance() -> &'static SourceContext {
-        static instance: crate::rt::Lazy<SourceContext> = crate::rt::Lazy::INIT;
+        static instance: crate::rt::LazyV2<SourceContext> = crate::rt::LazyV2::INIT;
         instance.get(SourceContext::new)
     }
 }
@@ -203,7 +203,7 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \0\x02\0\x03\x12\x03-\x15\x16b\x06proto3\
 ";
 
-static file_descriptor_proto_lazy: crate::rt::Lazy<crate::descriptor::FileDescriptorProto> = crate::rt::Lazy::INIT;
+static file_descriptor_proto_lazy: crate::rt::LazyV2<crate::descriptor::FileDescriptorProto> = crate::rt::LazyV2::INIT;
 
 fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
     crate::parse_from_bytes(file_descriptor_proto_data).unwrap()

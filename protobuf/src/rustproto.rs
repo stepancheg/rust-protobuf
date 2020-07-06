@@ -288,7 +288,7 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x01\x12\x03U\x12-\n\n\n\x03\x07\x1e\x03\x12\x03U05\
 ";
 
-static file_descriptor_proto_lazy: crate::rt::Lazy<crate::descriptor::FileDescriptorProto> = crate::rt::Lazy::INIT;
+static file_descriptor_proto_lazy: crate::rt::LazyV2<crate::descriptor::FileDescriptorProto> = crate::rt::LazyV2::INIT;
 
 fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
     crate::parse_from_bytes(file_descriptor_proto_data).unwrap()
