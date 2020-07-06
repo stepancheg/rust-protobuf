@@ -34,8 +34,10 @@ impl<T> Lazy<T> {
 #[cfg(test)]
 mod test {
     use super::Lazy;
-    use std::sync::atomic::{AtomicIsize, Ordering};
-    use std::sync::{Arc, Barrier};
+    use std::sync::atomic::AtomicIsize;
+    use std::sync::atomic::Ordering;
+    use std::sync::Arc;
+    use std::sync::Barrier;
     use std::thread;
 
     #[test]
