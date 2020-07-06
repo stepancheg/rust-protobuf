@@ -13,7 +13,7 @@ fn ident_continue(c: char) -> bool {
 }
 
 pub(crate) fn proto_path_to_rust_mod(path: &str) -> RustIdent {
-    let without_dir = strx::remove_to(path, '/');
+    let without_dir = strx::remove_to(path, std::path::is_separator);
     let without_suffix = strx::remove_suffix(without_dir, ".proto");
 
     let name = without_suffix
@@ -66,5 +66,22 @@ mod test {
     #[test]
     fn test_mod_path_empty_ext() {
         assert_eq!(RustIdent::from("proto"), proto_path_to_rust_mod("proto"));
+    }
+
+    #[test]
+    fn test_mod_path_dir() {
+        assert_eq!(
+            RustIdent::from("baz"),
+            proto_path_to_rust_mod("foo/bar/baz.proto"),
+        )
+    }
+
+    #[cfg(target_os = "windows")]
+    #[test]
+    fn test_mod_path_dir_backslashes() {
+        assert_eq!(
+            RustIdent::from("baz"),
+            proto_path_to_rust_mod("foo\\bar\\baz.proto"),
+        )
     }
 }
