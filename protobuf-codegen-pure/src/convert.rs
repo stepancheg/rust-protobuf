@@ -1,7 +1,6 @@
 //! Convert parser model to rust-protobuf model
 
 use std::iter;
-use std::mem;
 use std::path::Path;
 
 use crate::model;
