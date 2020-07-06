@@ -51,10 +51,7 @@ impl From<String> for Chars {
 
 impl Into<String> for Chars {
     fn into(self) -> String {
-        unsafe {
-            // TODO: copies here
-            String::from_utf8_unchecked(self.0.as_ref().to_owned())
-        }
+        unsafe { String::from_utf8_unchecked(self.0.into()) }
     }
 }
 
