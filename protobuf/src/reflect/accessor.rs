@@ -24,7 +24,7 @@ use super::value::ReflectValueRef;
 use super::ReflectFieldRef;
 
 /// this trait should not be used directly, use `FieldDescriptor` instead
-pub trait FieldAccessor {
+pub trait FieldAccessor: Sync {
     fn name_generic(&self) -> &'static str;
     fn has_field_generic(&self, m: &Message) -> bool;
     fn len_field_generic(&self, m: &Message) -> usize;
@@ -44,7 +44,7 @@ pub trait FieldAccessor {
     fn get_reflect<'a>(&self, m: &'a Message) -> ReflectFieldRef<'a>;
 }
 
-trait GetSingularMessage<M> {
+trait GetSingularMessage<M>: Sync {
     fn get_message<'a>(&self, m: &'a M) -> &'a Message;
 }
 
@@ -58,7 +58,7 @@ impl<M: Message, N: Message + 'static> GetSingularMessage<M> for GetSingularMess
     }
 }
 
-trait GetSingularEnum<M> {
+trait GetSingularEnum<M>: Sync {
     fn get_enum(&self, m: &M) -> &'static EnumValueDescriptor;
 }
 
@@ -72,19 +72,19 @@ impl<M: Message, E: ProtobufEnum> GetSingularEnum<M> for GetSingularEnumImpl<M, 
     }
 }
 
-trait GetRepeatedMessage<M> {
+trait GetRepeatedMessage<M>: Sync {
     fn len_field(&self, m: &M) -> usize;
     fn get_message_item<'a>(&self, m: &'a M, index: usize) -> &'a Message;
     fn reflect_repeated_message<'a>(&self, m: &'a M) -> Box<ReflectRepeatedMessage<'a> + 'a>;
 }
 
-trait GetRepeatedEnum<M: Message + 'static> {
+trait GetRepeatedEnum<M: Message + 'static>: Sync {
     fn len_field(&self, m: &M) -> usize;
     fn get_enum_item(&self, m: &M, index: usize) -> &'static EnumValueDescriptor;
     fn reflect_repeated_enum<'a>(&self, m: &'a M) -> Box<ReflectRepeatedEnum<'a> + 'a>;
 }
 
-trait GetSetCopyFns<M> {
+trait GetSetCopyFns<M>: Sync {
     fn get_field<'a>(&self, m: &'a M) -> ReflectValueRef<'a>;
 }
 
@@ -119,7 +119,7 @@ impl<M: Message + 'static> SingularGetSet<M> {
     }
 }
 
-trait FieldAccessor2<M, R: ?Sized>
+trait FieldAccessor2<M, R: ?Sized>: Sync
 where
     M: Message + 'static,
 {
