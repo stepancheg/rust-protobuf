@@ -2,8 +2,7 @@ rust-protobuf
 =============
 
 <!-- https://travis-ci.org/stepancheg/rust-protobuf.png -->
-[![Build Status](https://img.shields.io/travis/stepancheg/rust-protobuf.svg)](https://travis-ci.org/stepancheg/rust-protobuf)
-[![crates.io version](https://img.shields.io/crates/v/protobuf.svg)](https://crates.io/crates/protobuf)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/stepancheg/rust-protobuf/CI)](https://github.com/stepancheg/rust-protobuf/actions?query=workflow%3ACI)
 [![License](https://img.shields.io/crates/l/protobuf.svg)](https://github.com/stepancheg/rust-protobuf/blob/master/LICENSE.txt)
 
 [Protobuf](https://developers.google.com/protocol-buffers/docs/overview) implementation in [Rust](https://www.rust-lang.org/).
