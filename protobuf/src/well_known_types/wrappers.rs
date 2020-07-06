@@ -15,7 +15,6 @@
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
 #![allow(trivial_casts)]
-#![allow(unsafe_code)]
 #![allow(unused_imports)]
 #![allow(unused_results)]
 //! Generated file from `google/protobuf/wrappers.proto`
@@ -121,7 +120,7 @@ impl ::protobuf::Message for DoubleValue {
     fn as_any_mut(&mut self) -> &mut dyn (::std::any::Any) {
         self as &mut dyn (::std::any::Any)
     }
-    fn into_any(self: Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
+    fn into_any(self: ::std::boxed::Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
         self
     }
 
@@ -134,29 +133,25 @@ impl ::protobuf::Message for DoubleValue {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeDouble>(
-                    "value",
-                    |m: &DoubleValue| { &m.value },
-                    |m: &mut DoubleValue| { &mut m.value },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new_pb_name::<DoubleValue>(
-                    "DoubleValue",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeDouble>(
+                "value",
+                |m: &DoubleValue| { &m.value },
+                |m: &mut DoubleValue| { &mut m.value },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new_pb_name::<DoubleValue>(
+                "DoubleValue",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static DoubleValue {
-        static mut instance: ::protobuf::lazy::Lazy<DoubleValue> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            instance.get(DoubleValue::new)
-        }
+        static instance: ::protobuf::rt::LazyV2<DoubleValue> = ::protobuf::rt::LazyV2::INIT;
+        instance.get(DoubleValue::new)
     }
 }
 
@@ -280,7 +275,7 @@ impl ::protobuf::Message for FloatValue {
     fn as_any_mut(&mut self) -> &mut dyn (::std::any::Any) {
         self as &mut dyn (::std::any::Any)
     }
-    fn into_any(self: Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
+    fn into_any(self: ::std::boxed::Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
         self
     }
 
@@ -293,29 +288,25 @@ impl ::protobuf::Message for FloatValue {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeFloat>(
-                    "value",
-                    |m: &FloatValue| { &m.value },
-                    |m: &mut FloatValue| { &mut m.value },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new_pb_name::<FloatValue>(
-                    "FloatValue",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeFloat>(
+                "value",
+                |m: &FloatValue| { &m.value },
+                |m: &mut FloatValue| { &mut m.value },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new_pb_name::<FloatValue>(
+                "FloatValue",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static FloatValue {
-        static mut instance: ::protobuf::lazy::Lazy<FloatValue> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            instance.get(FloatValue::new)
-        }
+        static instance: ::protobuf::rt::LazyV2<FloatValue> = ::protobuf::rt::LazyV2::INIT;
+        instance.get(FloatValue::new)
     }
 }
 
@@ -439,7 +430,7 @@ impl ::protobuf::Message for Int64Value {
     fn as_any_mut(&mut self) -> &mut dyn (::std::any::Any) {
         self as &mut dyn (::std::any::Any)
     }
-    fn into_any(self: Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
+    fn into_any(self: ::std::boxed::Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
         self
     }
 
@@ -452,29 +443,25 @@ impl ::protobuf::Message for Int64Value {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt64>(
-                    "value",
-                    |m: &Int64Value| { &m.value },
-                    |m: &mut Int64Value| { &mut m.value },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new_pb_name::<Int64Value>(
-                    "Int64Value",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt64>(
+                "value",
+                |m: &Int64Value| { &m.value },
+                |m: &mut Int64Value| { &mut m.value },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new_pb_name::<Int64Value>(
+                "Int64Value",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static Int64Value {
-        static mut instance: ::protobuf::lazy::Lazy<Int64Value> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            instance.get(Int64Value::new)
-        }
+        static instance: ::protobuf::rt::LazyV2<Int64Value> = ::protobuf::rt::LazyV2::INIT;
+        instance.get(Int64Value::new)
     }
 }
 
@@ -598,7 +585,7 @@ impl ::protobuf::Message for UInt64Value {
     fn as_any_mut(&mut self) -> &mut dyn (::std::any::Any) {
         self as &mut dyn (::std::any::Any)
     }
-    fn into_any(self: Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
+    fn into_any(self: ::std::boxed::Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
         self
     }
 
@@ -611,29 +598,25 @@ impl ::protobuf::Message for UInt64Value {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
-                    "value",
-                    |m: &UInt64Value| { &m.value },
-                    |m: &mut UInt64Value| { &mut m.value },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new_pb_name::<UInt64Value>(
-                    "UInt64Value",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
+                "value",
+                |m: &UInt64Value| { &m.value },
+                |m: &mut UInt64Value| { &mut m.value },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new_pb_name::<UInt64Value>(
+                "UInt64Value",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static UInt64Value {
-        static mut instance: ::protobuf::lazy::Lazy<UInt64Value> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            instance.get(UInt64Value::new)
-        }
+        static instance: ::protobuf::rt::LazyV2<UInt64Value> = ::protobuf::rt::LazyV2::INIT;
+        instance.get(UInt64Value::new)
     }
 }
 
@@ -757,7 +740,7 @@ impl ::protobuf::Message for Int32Value {
     fn as_any_mut(&mut self) -> &mut dyn (::std::any::Any) {
         self as &mut dyn (::std::any::Any)
     }
-    fn into_any(self: Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
+    fn into_any(self: ::std::boxed::Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
         self
     }
 
@@ -770,29 +753,25 @@ impl ::protobuf::Message for Int32Value {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
-                    "value",
-                    |m: &Int32Value| { &m.value },
-                    |m: &mut Int32Value| { &mut m.value },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new_pb_name::<Int32Value>(
-                    "Int32Value",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
+                "value",
+                |m: &Int32Value| { &m.value },
+                |m: &mut Int32Value| { &mut m.value },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new_pb_name::<Int32Value>(
+                "Int32Value",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static Int32Value {
-        static mut instance: ::protobuf::lazy::Lazy<Int32Value> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            instance.get(Int32Value::new)
-        }
+        static instance: ::protobuf::rt::LazyV2<Int32Value> = ::protobuf::rt::LazyV2::INIT;
+        instance.get(Int32Value::new)
     }
 }
 
@@ -916,7 +895,7 @@ impl ::protobuf::Message for UInt32Value {
     fn as_any_mut(&mut self) -> &mut dyn (::std::any::Any) {
         self as &mut dyn (::std::any::Any)
     }
-    fn into_any(self: Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
+    fn into_any(self: ::std::boxed::Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
         self
     }
 
@@ -929,29 +908,25 @@ impl ::protobuf::Message for UInt32Value {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint32>(
-                    "value",
-                    |m: &UInt32Value| { &m.value },
-                    |m: &mut UInt32Value| { &mut m.value },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new_pb_name::<UInt32Value>(
-                    "UInt32Value",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint32>(
+                "value",
+                |m: &UInt32Value| { &m.value },
+                |m: &mut UInt32Value| { &mut m.value },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new_pb_name::<UInt32Value>(
+                "UInt32Value",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static UInt32Value {
-        static mut instance: ::protobuf::lazy::Lazy<UInt32Value> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            instance.get(UInt32Value::new)
-        }
+        static instance: ::protobuf::rt::LazyV2<UInt32Value> = ::protobuf::rt::LazyV2::INIT;
+        instance.get(UInt32Value::new)
     }
 }
 
@@ -1075,7 +1050,7 @@ impl ::protobuf::Message for BoolValue {
     fn as_any_mut(&mut self) -> &mut dyn (::std::any::Any) {
         self as &mut dyn (::std::any::Any)
     }
-    fn into_any(self: Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
+    fn into_any(self: ::std::boxed::Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
         self
     }
 
@@ -1088,29 +1063,25 @@ impl ::protobuf::Message for BoolValue {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
-                    "value",
-                    |m: &BoolValue| { &m.value },
-                    |m: &mut BoolValue| { &mut m.value },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new_pb_name::<BoolValue>(
-                    "BoolValue",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+                "value",
+                |m: &BoolValue| { &m.value },
+                |m: &mut BoolValue| { &mut m.value },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new_pb_name::<BoolValue>(
+                "BoolValue",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static BoolValue {
-        static mut instance: ::protobuf::lazy::Lazy<BoolValue> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            instance.get(BoolValue::new)
-        }
+        static instance: ::protobuf::rt::LazyV2<BoolValue> = ::protobuf::rt::LazyV2::INIT;
+        instance.get(BoolValue::new)
     }
 }
 
@@ -1241,7 +1212,7 @@ impl ::protobuf::Message for StringValue {
     fn as_any_mut(&mut self) -> &mut dyn (::std::any::Any) {
         self as &mut dyn (::std::any::Any)
     }
-    fn into_any(self: Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
+    fn into_any(self: ::std::boxed::Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
         self
     }
 
@@ -1254,29 +1225,25 @@ impl ::protobuf::Message for StringValue {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                    "value",
-                    |m: &StringValue| { &m.value },
-                    |m: &mut StringValue| { &mut m.value },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new_pb_name::<StringValue>(
-                    "StringValue",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                "value",
+                |m: &StringValue| { &m.value },
+                |m: &mut StringValue| { &mut m.value },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new_pb_name::<StringValue>(
+                "StringValue",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static StringValue {
-        static mut instance: ::protobuf::lazy::Lazy<StringValue> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            instance.get(StringValue::new)
-        }
+        static instance: ::protobuf::rt::LazyV2<StringValue> = ::protobuf::rt::LazyV2::INIT;
+        instance.get(StringValue::new)
     }
 }
 
@@ -1407,7 +1374,7 @@ impl ::protobuf::Message for BytesValue {
     fn as_any_mut(&mut self) -> &mut dyn (::std::any::Any) {
         self as &mut dyn (::std::any::Any)
     }
-    fn into_any(self: Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
+    fn into_any(self: ::std::boxed::Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
         self
     }
 
@@ -1420,29 +1387,25 @@ impl ::protobuf::Message for BytesValue {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBytes>(
-                    "value",
-                    |m: &BytesValue| { &m.value },
-                    |m: &mut BytesValue| { &mut m.value },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new_pb_name::<BytesValue>(
-                    "BytesValue",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBytes>(
+                "value",
+                |m: &BytesValue| { &m.value },
+                |m: &mut BytesValue| { &mut m.value },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new_pb_name::<BytesValue>(
+                "BytesValue",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static BytesValue {
-        static mut instance: ::protobuf::lazy::Lazy<BytesValue> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            instance.get(BytesValue::new)
-        }
+        static instance: ::protobuf::rt::LazyV2<BytesValue> = ::protobuf::rt::LazyV2::INIT;
+        instance.get(BytesValue::new)
     }
 }
 
@@ -1580,16 +1543,14 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     b\x06proto3\
 ";
 
-static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy::INIT;
+static file_descriptor_proto_lazy: ::protobuf::rt::LazyV2<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::rt::LazyV2::INIT;
 
 fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
     ::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()
 }
 
 pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto {
-    unsafe {
-        file_descriptor_proto_lazy.get(|| {
-            parse_descriptor_proto()
-        })
-    }
+    file_descriptor_proto_lazy.get(|| {
+        parse_descriptor_proto()
+    })
 }

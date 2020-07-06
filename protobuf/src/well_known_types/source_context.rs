@@ -15,7 +15,6 @@
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
 #![allow(trivial_casts)]
-#![allow(unsafe_code)]
 #![allow(unused_imports)]
 #![allow(unused_results)]
 //! Generated file from `google/protobuf/source_context.proto`
@@ -128,7 +127,7 @@ impl ::protobuf::Message for SourceContext {
     fn as_any_mut(&mut self) -> &mut dyn (::std::any::Any) {
         self as &mut dyn (::std::any::Any)
     }
-    fn into_any(self: Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
+    fn into_any(self: ::std::boxed::Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
         self
     }
 
@@ -141,29 +140,25 @@ impl ::protobuf::Message for SourceContext {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                    "file_name",
-                    |m: &SourceContext| { &m.file_name },
-                    |m: &mut SourceContext| { &mut m.file_name },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new_pb_name::<SourceContext>(
-                    "SourceContext",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                "file_name",
+                |m: &SourceContext| { &m.file_name },
+                |m: &mut SourceContext| { &mut m.file_name },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new_pb_name::<SourceContext>(
+                "SourceContext",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static SourceContext {
-        static mut instance: ::protobuf::lazy::Lazy<SourceContext> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            instance.get(SourceContext::new)
-        }
+        static instance: ::protobuf::rt::LazyV2<SourceContext> = ::protobuf::rt::LazyV2::INIT;
+        instance.get(SourceContext::new)
     }
 }
 
@@ -241,16 +236,14 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \0\x02\0\x03\x12\x03-\x15\x16b\x06proto3\
 ";
 
-static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy::INIT;
+static file_descriptor_proto_lazy: ::protobuf::rt::LazyV2<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::rt::LazyV2::INIT;
 
 fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
     ::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()
 }
 
 pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto {
-    unsafe {
-        file_descriptor_proto_lazy.get(|| {
-            parse_descriptor_proto()
-        })
-    }
+    file_descriptor_proto_lazy.get(|| {
+        parse_descriptor_proto()
+    })
 }

@@ -15,7 +15,6 @@
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
 #![allow(trivial_casts)]
-#![allow(unsafe_code)]
 #![allow(unused_imports)]
 #![allow(unused_results)]
 //! Generated file from `google/protobuf/empty.proto`
@@ -91,7 +90,7 @@ impl ::protobuf::Message for Empty {
     fn as_any_mut(&mut self) -> &mut dyn (::std::any::Any) {
         self as &mut dyn (::std::any::Any)
     }
-    fn into_any(self: Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
+    fn into_any(self: ::std::boxed::Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
         self
     }
 
@@ -104,24 +103,20 @@ impl ::protobuf::Message for Empty {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                let fields = ::std::vec::Vec::new();
-                ::protobuf::reflect::MessageDescriptor::new_pb_name::<Empty>(
-                    "Empty",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        descriptor.get(|| {
+            let fields = ::std::vec::Vec::new();
+            ::protobuf::reflect::MessageDescriptor::new_pb_name::<Empty>(
+                "Empty",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static Empty {
-        static mut instance: ::protobuf::lazy::Lazy<Empty> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            instance.get(Empty::new)
-        }
+        static instance: ::protobuf::rt::LazyV2<Empty> = ::protobuf::rt::LazyV2::INIT;
+        instance.get(Empty::new)
     }
 }
 
@@ -200,16 +195,14 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x12\x033\x08\rb\x06proto3\
 ";
 
-static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy::INIT;
+static file_descriptor_proto_lazy: ::protobuf::rt::LazyV2<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::rt::LazyV2::INIT;
 
 fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
     ::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()
 }
 
 pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto {
-    unsafe {
-        file_descriptor_proto_lazy.get(|| {
-            parse_descriptor_proto()
-        })
-    }
+    file_descriptor_proto_lazy.get(|| {
+        parse_descriptor_proto()
+    })
 }

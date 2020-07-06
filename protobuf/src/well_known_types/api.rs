@@ -15,7 +15,6 @@
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
 #![allow(trivial_casts)]
-#![allow(unsafe_code)]
 #![allow(unused_imports)]
 #![allow(unused_results)]
 //! Generated file from `google/protobuf/api.proto`
@@ -369,7 +368,7 @@ impl ::protobuf::Message for Api {
     fn as_any_mut(&mut self) -> &mut dyn (::std::any::Any) {
         self as &mut dyn (::std::any::Any)
     }
-    fn into_any(self: Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
+    fn into_any(self: ::std::boxed::Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
         self
     }
 
@@ -382,59 +381,55 @@ impl ::protobuf::Message for Api {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                    "name",
-                    |m: &Api| { &m.name },
-                    |m: &mut Api| { &mut m.name },
-                ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Method>>(
-                    "methods",
-                    |m: &Api| { &m.methods },
-                    |m: &mut Api| { &mut m.methods },
-                ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::Option>>(
-                    "options",
-                    |m: &Api| { &m.options },
-                    |m: &mut Api| { &mut m.options },
-                ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                    "version",
-                    |m: &Api| { &m.version },
-                    |m: &mut Api| { &mut m.version },
-                ));
-                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::SourceContext>>(
-                    "source_context",
-                    |m: &Api| { &m.source_context },
-                    |m: &mut Api| { &mut m.source_context },
-                ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Mixin>>(
-                    "mixins",
-                    |m: &Api| { &m.mixins },
-                    |m: &mut Api| { &mut m.mixins },
-                ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<::protobuf::well_known_types::Syntax>>(
-                    "syntax",
-                    |m: &Api| { &m.syntax },
-                    |m: &mut Api| { &mut m.syntax },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new_pb_name::<Api>(
-                    "Api",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                "name",
+                |m: &Api| { &m.name },
+                |m: &mut Api| { &mut m.name },
+            ));
+            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Method>>(
+                "methods",
+                |m: &Api| { &m.methods },
+                |m: &mut Api| { &mut m.methods },
+            ));
+            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::Option>>(
+                "options",
+                |m: &Api| { &m.options },
+                |m: &mut Api| { &mut m.options },
+            ));
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                "version",
+                |m: &Api| { &m.version },
+                |m: &mut Api| { &mut m.version },
+            ));
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::SourceContext>>(
+                "source_context",
+                |m: &Api| { &m.source_context },
+                |m: &mut Api| { &mut m.source_context },
+            ));
+            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Mixin>>(
+                "mixins",
+                |m: &Api| { &m.mixins },
+                |m: &mut Api| { &mut m.mixins },
+            ));
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<::protobuf::well_known_types::Syntax>>(
+                "syntax",
+                |m: &Api| { &m.syntax },
+                |m: &mut Api| { &mut m.syntax },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new_pb_name::<Api>(
+                "Api",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static Api {
-        static mut instance: ::protobuf::lazy::Lazy<Api> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            instance.get(Api::new)
-        }
+        static instance: ::protobuf::rt::LazyV2<Api> = ::protobuf::rt::LazyV2::INIT;
+        instance.get(Api::new)
     }
 }
 
@@ -769,7 +764,7 @@ impl ::protobuf::Message for Method {
     fn as_any_mut(&mut self) -> &mut dyn (::std::any::Any) {
         self as &mut dyn (::std::any::Any)
     }
-    fn into_any(self: Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
+    fn into_any(self: ::std::boxed::Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
         self
     }
 
@@ -782,59 +777,55 @@ impl ::protobuf::Message for Method {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                    "name",
-                    |m: &Method| { &m.name },
-                    |m: &mut Method| { &mut m.name },
-                ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                    "request_type_url",
-                    |m: &Method| { &m.request_type_url },
-                    |m: &mut Method| { &mut m.request_type_url },
-                ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
-                    "request_streaming",
-                    |m: &Method| { &m.request_streaming },
-                    |m: &mut Method| { &mut m.request_streaming },
-                ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                    "response_type_url",
-                    |m: &Method| { &m.response_type_url },
-                    |m: &mut Method| { &mut m.response_type_url },
-                ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
-                    "response_streaming",
-                    |m: &Method| { &m.response_streaming },
-                    |m: &mut Method| { &mut m.response_streaming },
-                ));
-                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::Option>>(
-                    "options",
-                    |m: &Method| { &m.options },
-                    |m: &mut Method| { &mut m.options },
-                ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<::protobuf::well_known_types::Syntax>>(
-                    "syntax",
-                    |m: &Method| { &m.syntax },
-                    |m: &mut Method| { &mut m.syntax },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new_pb_name::<Method>(
-                    "Method",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                "name",
+                |m: &Method| { &m.name },
+                |m: &mut Method| { &mut m.name },
+            ));
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                "request_type_url",
+                |m: &Method| { &m.request_type_url },
+                |m: &mut Method| { &mut m.request_type_url },
+            ));
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+                "request_streaming",
+                |m: &Method| { &m.request_streaming },
+                |m: &mut Method| { &mut m.request_streaming },
+            ));
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                "response_type_url",
+                |m: &Method| { &m.response_type_url },
+                |m: &mut Method| { &mut m.response_type_url },
+            ));
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+                "response_streaming",
+                |m: &Method| { &m.response_streaming },
+                |m: &mut Method| { &mut m.response_streaming },
+            ));
+            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<::protobuf::well_known_types::Option>>(
+                "options",
+                |m: &Method| { &m.options },
+                |m: &mut Method| { &mut m.options },
+            ));
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<::protobuf::well_known_types::Syntax>>(
+                "syntax",
+                |m: &Method| { &m.syntax },
+                |m: &mut Method| { &mut m.syntax },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new_pb_name::<Method>(
+                "Method",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static Method {
-        static mut instance: ::protobuf::lazy::Lazy<Method> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            instance.get(Method::new)
-        }
+        static instance: ::protobuf::rt::LazyV2<Method> = ::protobuf::rt::LazyV2::INIT;
+        instance.get(Method::new)
     }
 }
 
@@ -1007,7 +998,7 @@ impl ::protobuf::Message for Mixin {
     fn as_any_mut(&mut self) -> &mut dyn (::std::any::Any) {
         self as &mut dyn (::std::any::Any)
     }
-    fn into_any(self: Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
+    fn into_any(self: ::std::boxed::Box<Self>) -> ::std::boxed::Box<dyn (::std::any::Any)> {
         self
     }
 
@@ -1020,34 +1011,30 @@ impl ::protobuf::Message for Mixin {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static mut descriptor: ::protobuf::lazy::Lazy<::protobuf::reflect::MessageDescriptor> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            descriptor.get(|| {
-                let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                    "name",
-                    |m: &Mixin| { &m.name },
-                    |m: &mut Mixin| { &mut m.name },
-                ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                    "root",
-                    |m: &Mixin| { &m.root },
-                    |m: &mut Mixin| { &mut m.root },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new_pb_name::<Mixin>(
-                    "Mixin",
-                    fields,
-                    file_descriptor_proto()
-                )
-            })
-        }
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        descriptor.get(|| {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                "name",
+                |m: &Mixin| { &m.name },
+                |m: &mut Mixin| { &mut m.name },
+            ));
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                "root",
+                |m: &Mixin| { &m.root },
+                |m: &mut Mixin| { &mut m.root },
+            ));
+            ::protobuf::reflect::MessageDescriptor::new_pb_name::<Mixin>(
+                "Mixin",
+                fields,
+                file_descriptor_proto()
+            )
+        })
     }
 
     fn default_instance() -> &'static Mixin {
-        static mut instance: ::protobuf::lazy::Lazy<Mixin> = ::protobuf::lazy::Lazy::INIT;
-        unsafe {
-            instance.get(Mixin::new)
-        }
+        static instance: ::protobuf::rt::LazyV2<Mixin> = ::protobuf::rt::LazyV2::INIT;
+        instance.get(Mixin::new)
     }
 }
 
@@ -1279,16 +1266,14 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x03\x12\x04\xc7\x01\x10\x11b\x06proto3\
 ";
 
-static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy::INIT;
+static file_descriptor_proto_lazy: ::protobuf::rt::LazyV2<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::rt::LazyV2::INIT;
 
 fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
     ::protobuf::parse_from_bytes(file_descriptor_proto_data).unwrap()
 }
 
 pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto {
-    unsafe {
-        file_descriptor_proto_lazy.get(|| {
-            parse_descriptor_proto()
-        })
-    }
+    file_descriptor_proto_lazy.get(|| {
+        parse_descriptor_proto()
+    })
 }
