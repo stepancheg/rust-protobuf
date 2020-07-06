@@ -33,6 +33,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.16] - Unreleased
 
+## [2.16.1] - 2020-07-06
+
 - Mute self-deprecation warning when compiling rust-protobuf
 
 ## [2.16.0] - 2020-07-06
