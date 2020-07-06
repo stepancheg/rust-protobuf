@@ -116,7 +116,7 @@ dependencies = [
 
 [[package]]
 name = "protobuf"
-version = "2.16.0-pre"
+version = "2.16.0"
 dependencies = [
  "bytes 0.5.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde 1.0.104 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -125,17 +125,17 @@ dependencies = [
 
 [[package]]
 name = "protobuf-codegen"
-version = "2.16.0-pre"
+version = "2.16.0"
 dependencies = [
- "protobuf 2.16.0-pre",
+ "protobuf 2.16.0",
 ]
 
 [[package]]
 name = "protobuf-codegen-pure"
-version = "2.16.0-pre"
+version = "2.16.0"
 dependencies = [
- "protobuf 2.16.0-pre",
- "protobuf-codegen 2.16.0-pre",
+ "protobuf 2.16.0",
+ "protobuf-codegen 2.16.0",
 ]
 
 [[package]]
@@ -146,8 +146,8 @@ dependencies = [
  "env_logger 0.5.13 (registry+https://github.com/rust-lang/crates.io-index)",
  "glob 0.2.11 (registry+https://github.com/rust-lang/crates.io-index)",
  "log 0.4.8 (registry+https://github.com/rust-lang/crates.io-index)",
- "protobuf 2.16.0-pre",
- "protobuf-codegen-pure 2.16.0-pre",
+ "protobuf 2.16.0",
+ "protobuf-codegen-pure 2.16.0",
  "protobuf-test-common 0.0.0",
  "serde 1.0.104 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_derive 1.0.104 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -162,10 +162,10 @@ dependencies = [
  "env_logger 0.5.13 (registry+https://github.com/rust-lang/crates.io-index)",
  "glob 0.2.11 (registry+https://github.com/rust-lang/crates.io-index)",
  "log 0.4.8 (registry+https://github.com/rust-lang/crates.io-index)",
- "protobuf 2.16.0-pre",
+ "protobuf 2.16.0",
  "protobuf-test-common 0.0.0",
- "protoc 2.16.0-pre",
- "protoc-rust 2.16.0-pre",
+ "protoc 2.16.0",
+ "protoc-rust 2.16.0",
  "serde 1.0.104 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_derive 1.0.104 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_json 1.0.44 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -180,8 +180,8 @@ dependencies = [
  "glob 0.2.11 (registry+https://github.com/rust-lang/crates.io-index)",
  "lazy_static 1.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "log 0.4.8 (registry+https://github.com/rust-lang/crates.io-index)",
- "protobuf 2.16.0-pre",
- "protobuf-codegen 2.16.0-pre",
+ "protobuf 2.16.0",
+ "protobuf-codegen 2.16.0",
  "regex 1.1.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "regex-syntax 0.6.10 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde 1.0.104 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -192,25 +192,25 @@ dependencies = [
 
 [[package]]
 name = "protoc"
-version = "2.16.0-pre"
+version = "2.16.0"
 dependencies = [
  "log 0.4.8 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "protoc-bin-vendored"
-version = "2.16.0-pre"
+version = "2.16.0"
 dependencies = [
- "protoc 2.16.0-pre",
+ "protoc 2.16.0",
 ]
 
 [[package]]
 name = "protoc-rust"
-version = "2.16.0-pre"
+version = "2.16.0"
 dependencies = [
- "protobuf 2.16.0-pre",
- "protobuf-codegen 2.16.0-pre",
- "protoc 2.16.0-pre",
+ "protobuf 2.16.0",
+ "protobuf-codegen 2.16.0",
+ "protoc 2.16.0",
  "tempfile 3.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
