@@ -74,7 +74,6 @@ mod hex;
 pub mod descriptorx;
 
 mod cached_size;
-#[cfg(feature = "bytes")]
 mod chars;
 #[doc(hidden)] // used by codegen
 pub mod rust;
