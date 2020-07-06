@@ -52,7 +52,7 @@ impl From<String> for Chars {
 impl Into<String> for Chars {
     fn into(self) -> String {
         // This is safe because `Chars` is guaranteed to store a valid UTF-8 string
-        unsafe { String::from_utf8_unchecked(self.0.into()) }
+        unsafe { String::from_utf8_unchecked(self.0.as_ref().to_owned()) }
     }
 }
 
