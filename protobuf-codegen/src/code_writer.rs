@@ -108,7 +108,7 @@ impl<'a> CodeWriter<'a> {
 
     pub fn lazy_static(&mut self, name: &str, ty: &str, protobuf_crate_path: &str) {
         self.write_line(&format!(
-            "static {}: {}::rt::Lazy<{}> = {}::rt::Lazy::INIT;",
+            "static {}: {}::rt::LazyV2<{}> = {}::rt::LazyV2::INIT;",
             name, protobuf_crate_path, ty, protobuf_crate_path,
         ));
     }
