@@ -55,6 +55,7 @@ mod enums;
 pub mod error;
 pub mod ext;
 pub mod lazy;
+mod lazy_v2;
 pub mod reflect;
 mod repeated;
 pub mod rt;
