@@ -1,5 +1,8 @@
-pub fn remove_to<'s>(s: &'s str, c: char) -> &'s str {
-    match s.rfind(c) {
+pub fn remove_to<'s, P>(s: &'s str, pattern: P) -> &'s str
+where
+    P: Fn(char) -> bool,
+{
+    match s.rfind(pattern) {
         Some(pos) => &s[(pos + 1)..],
         None => s,
     }
@@ -34,9 +37,9 @@ mod test {
 
     #[test]
     fn test_remove_to() {
-        assert_eq!("aaa", remove_to("aaa", '.'));
-        assert_eq!("bbb", remove_to("aaa.bbb", '.'));
-        assert_eq!("ccc", remove_to("aaa.bbb.ccc", '.'));
+        assert_eq!("aaa", remove_to("aaa", |c| c == '.'));
+        assert_eq!("bbb", remove_to("aaa.bbb", |c| c == '.'));
+        assert_eq!("ccc", remove_to("aaa.bbb.ccc", |c| c == '.'));
     }
 
     #[test]
