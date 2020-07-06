@@ -69,6 +69,8 @@ pub fn encode(input: &[u8]) -> String {
         }
     }
 
+    // `out_bytes` vec is prepopulated with `=` symbols and then only updated
+    // with base64 chars, so this unsafe is safe.
     unsafe { String::from_utf8_unchecked(out_bytes) }
 }
 
