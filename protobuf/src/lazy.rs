@@ -1,6 +1,9 @@
 //! Lazily initialized data.
 //! Used in generated code.
 
+// Avoid deprecation warnings when compiling rust-protobuf
+#![allow(deprecated)]
+
 use std::mem;
 use std::sync;
 
