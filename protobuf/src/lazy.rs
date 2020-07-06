@@ -5,6 +5,10 @@ use std::mem;
 use std::sync;
 
 /// Lasily initialized data.
+#[deprecated(
+    since = "2.16",
+    note = "Please regenerate .rs files from .proto files to use newer APIs"
+)]
 pub struct Lazy<T> {
     #[doc(hidden)]
     pub lock: sync::Once,
