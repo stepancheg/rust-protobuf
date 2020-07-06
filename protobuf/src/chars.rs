@@ -51,6 +51,7 @@ impl From<String> for Chars {
 
 impl Into<String> for Chars {
     fn into(self) -> String {
+        // This is safe because `Chars` is guaranteed to store a valid UTF-8 string
         unsafe { String::from_utf8_unchecked(self.0.into()) }
     }
 }
@@ -65,6 +66,7 @@ impl Deref for Chars {
     type Target = str;
 
     fn deref(&self) -> &str {
+        // This is safe because `Chars` is guaranteed to store a valid UTF-8 string
         unsafe { str::from_utf8_unchecked(&self.0) }
     }
 }
