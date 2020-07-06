@@ -9,8 +9,6 @@ use protobuf::Message;
 
 use str_lit::StrLitDecodeError;
 
-use std::mem;
-
 #[derive(Debug)]
 pub enum ConvertError {
     UnsupportedOption(String),
