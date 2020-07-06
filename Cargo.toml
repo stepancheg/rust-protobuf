@@ -11,4 +11,5 @@ members = [
     "protobuf-codegen-pure-test",
     "protobuf-test",
     "protobuf-test-common",
+    "ci-gen",
 ]
