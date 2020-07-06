@@ -5,14 +5,14 @@ use std::cell::UnsafeCell;
 use std::sync;
 
 /// Lasily initialized data.
-pub struct Lazy<T> {
+pub struct Lazy<T: Sync> {
     lock: sync::Once,
     ptr: UnsafeCell<*const T>,
 }
 
-unsafe impl<T> Sync for Lazy<T> {}
+unsafe impl<T: Sync> Sync for Lazy<T> {}
 
-impl<T> Lazy<T> {
+impl<T: Sync> Lazy<T> {
     /// Uninitialized `Lazy` object.
     pub const INIT: Lazy<T> = Lazy {
         lock: sync::Once::new(),
