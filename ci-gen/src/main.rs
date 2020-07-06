@@ -123,13 +123,10 @@ fn job(channel: RustToolchain, os: Os, features: Features) -> Job {
             ));
         }
         _ => {
-            if os != WINDOWS {
-                // TODO: figure out why `which` can't find protoc binary on Windows
-                steps.push(Step::run(
-                    "Test all",
-                    &format!("cargo test --all --all-targets{}", features.flag_suffix()),
-                ));
-            }
+            steps.push(Step::run(
+                "Test all",
+                &format!("cargo test --all --all-targets{}", features.flag_suffix()),
+            ));
             if os == LINUX {
                 steps.push(cargo_doc("cargo doc", &features.flag()));
             }

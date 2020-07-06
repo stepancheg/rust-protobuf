@@ -252,3 +252,6 @@ jobs:
             - name: Protoc check
               run: protoc --version
               shell: bash
+            - name: Test all
+              run: cargo test --all --all-targets
+              shell: bash
