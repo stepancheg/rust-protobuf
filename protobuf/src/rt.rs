@@ -37,7 +37,7 @@ use crate::unknown::UnknownFields;
 use crate::prelude::*;
 
 pub use crate::cached_size::CachedSize;
-pub use crate::new_lazy::Lazy as LazyV2;
+pub use crate::lazy_v2::LazyV2;
 
 /// Given `u64` value compute varint encoded length.
 pub fn compute_raw_varint64_size(value: u64) -> u32 {

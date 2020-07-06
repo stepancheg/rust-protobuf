@@ -4,17 +4,17 @@
 use std::cell::UnsafeCell;
 use std::sync;
 
-/// Lasily initialized data.
-pub struct Lazy<T: Sync> {
+/// Lazily initialized data.
+pub struct LazyV2<T: Sync> {
     lock: sync::Once,
     ptr: UnsafeCell<*const T>,
 }
 
-unsafe impl<T: Sync> Sync for Lazy<T> {}
+unsafe impl<T: Sync> Sync for LazyV2<T> {}
 
-impl<T: Sync> Lazy<T> {
+impl<T: Sync> LazyV2<T> {
     /// Uninitialized `Lazy` object.
-    pub const INIT: Lazy<T> = Lazy {
+    pub const INIT: LazyV2<T> = LazyV2 {
         lock: sync::Once::new(),
         ptr: UnsafeCell::new(0 as *const T),
     };
@@ -33,7 +33,7 @@ impl<T: Sync> Lazy<T> {
 
 #[cfg(test)]
 mod test {
-    use super::Lazy;
+    use super::LazyV2;
     use std::sync::atomic::AtomicIsize;
     use std::sync::atomic::Ordering;
     use std::sync::Arc;
@@ -46,7 +46,7 @@ mod test {
         const N_ITERS_IN_THREAD: usize = 32;
         const N_ITERS: usize = 16;
 
-        static mut LAZY: Lazy<String> = Lazy::INIT;
+        static mut LAZY: LazyV2<String> = LazyV2::INIT;
         static CALL_COUNT: AtomicIsize = AtomicIsize::new(0);
 
         let value = "Hello, world!".to_owned();
@@ -54,7 +54,7 @@ mod test {
         for _ in 0..N_ITERS {
             // Reset mutable state.
             unsafe {
-                LAZY = Lazy::INIT;
+                LAZY = LazyV2::INIT;
             }
             CALL_COUNT.store(0, Ordering::SeqCst);
 
