@@ -689,12 +689,10 @@ impl<'a> Resolver<'a> {
                 _ => Err(()),
             },
             &model::ProtobufConstant::F64(f) => match field_type {
-                &model::FieldType::Float => Ok(protobuf::UnknownValue::Fixed32(unsafe {
-                    mem::transmute::<f32, u32>(f as f32)
-                })),
-                &model::FieldType::Double => Ok(protobuf::UnknownValue::Fixed64(unsafe {
-                    mem::transmute::<f64, u64>(f)
-                })),
+                &model::FieldType::Float => {
+                    Ok(protobuf::UnknownValue::Fixed32((f as f32).to_bits()))
+                }
+                &model::FieldType::Double => Ok(protobuf::UnknownValue::Fixed64(f.to_bits())),
                 _ => Err(()),
             },
             &model::ProtobufConstant::String(ref s) => match field_type {
