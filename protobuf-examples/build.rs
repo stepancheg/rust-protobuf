@@ -1,15 +1,13 @@
-extern crate protoc_rust;
-
-use protoc_rust::Customize;
+use protobuf_codegen_pure::Customize;
 
 fn main() {
-    protoc_rust::run(protoc_rust::Args {
-        out_dir: "src/protos",
-        input: &["src/protos/example.proto"],
-        includes: &["src/protos"],
-        customize: Customize {
+    protobuf_codegen_pure::Codegen::new()
+        .customize(Customize {
             ..Default::default()
-        },
-    })
-    .expect("protoc");
+        })
+        .out_dir("src/protos")
+        .input("src/protos/example.proto")
+        .include("src/protos")
+        .run()
+        .expect("protoc");
 }

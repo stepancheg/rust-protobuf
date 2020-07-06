@@ -9,12 +9,36 @@ die() {
 
 test -n "$PROTOBUF_VERSION" || die "PROTOBUF_VERSION env var is undefined"
 
+echo "::add-path::$HOME/pb/bin"
+echo "::set-env name=LD_LIBRARY_PATH::$HOME/pb/lib"
+echo "::set-env name=PKG_CONFIG_PATH::$HOME/pb/lib/pkgconfig"
+echo "::set-env name=PROTOBUF_PREFIX::$HOME/pb"
+
+if test -e "$HOME/pb/bin/protoc" -o -e "$HOME/pb/bin/protoc.exe"; then
+    echo "Already exists"
+    $HOME/pb/bin/protoc --version
+    exit 0
+fi
+
+if test -e "$HOME/pb"; then
+    echo "... but $HOME/pb exists, and in it:"
+    (
+        cd $HOME/pb
+        ls
+        echo "EOF"
+    )
+fi
+
+cd
+rm -rf pb
+mkdir pb
+
 case `uname` in
-    Linux)
+    Linux|Darwin)
         # Check we have ccache
-        ccache --version
-        export CC="ccache gcc"
-        export CXX="ccache g++"
+        # ccache --version
+        # export CC="ccache gcc"
+        # export CXX="ccache g++"
 
         case "$PROTOBUF_VERSION" in
         2*)
@@ -32,12 +56,12 @@ case `uname` in
 
         cd protobuf-$PROTOBUF_VERSION
 
-        ./configure --prefix=$HOME && make -j2 && make install
+        ./configure --prefix=$HOME/pb && make -j2 && make install
 
     ;;
-    MSYS_NT*)
+    MSYS_NT*|MINGW64*)
         (
-            cd $HOME
+            cd pb
             curl -sLO https://github.com/protocolbuffers/protobuf/releases/download/v$PROTOBUF_VERSION/protoc-$PROTOBUF_VERSION-win32.zip
             unzip protoc-$PROTOBUF_VERSION-win32.zip
         )
@@ -47,4 +71,4 @@ case `uname` in
     ;;
 esac
 
-$HOME/bin/protoc --version
+$HOME/pb/bin/protoc --version

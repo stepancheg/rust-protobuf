@@ -2,6 +2,8 @@
 
 Example rust protobuf project
 
+(This is an example for master branch; TODO a link to a proper branch)
+
 ## Motivation
 
 Simple and obvious examples for using `rust-protobuf` module were lacking, so this was created.
