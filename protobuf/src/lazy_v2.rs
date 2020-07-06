@@ -1,13 +1,14 @@
 //! Lazily initialized data.
 //! Used in generated code.
 
-use std::cell::UnsafeCell;
 use std::sync;
+use std::sync::atomic::AtomicPtr;
+use std::sync::atomic::Ordering;
 
 /// Lazily initialized data.
 pub struct LazyV2<T: Sync> {
     lock: sync::Once,
-    ptr: UnsafeCell<*const T>,
+    ptr: AtomicPtr<T>,
 }
 
 unsafe impl<T: Sync> Sync for LazyV2<T> {}
@@ -16,7 +17,7 @@ impl<T: Sync> LazyV2<T> {
     /// Uninitialized `Lazy` object.
     pub const INIT: LazyV2<T> = LazyV2 {
         lock: sync::Once::new(),
-        ptr: UnsafeCell::new(0 as *const T),
+        ptr: AtomicPtr::new(0 as *mut T),
     };
 
     /// Get lazy field value, initialize it with given function if not yet.
@@ -24,10 +25,11 @@ impl<T: Sync> LazyV2<T> {
     where
         F: FnOnce() -> T,
     {
-        self.lock.call_once(|| unsafe {
-            *self.ptr.get() = Box::into_raw(Box::new(init()));
+        self.lock.call_once(|| {
+            self.ptr
+                .store(Box::into_raw(Box::new(init())), Ordering::Relaxed);
         });
-        unsafe { &**self.ptr.get() }
+        unsafe { &*self.ptr.load(Ordering::Relaxed) }
     }
 }
 
