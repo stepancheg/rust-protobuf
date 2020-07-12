@@ -3,7 +3,7 @@ use crate::actions::cargo_test;
 use crate::actions::checkout_sources;
 use crate::actions::rust_install_toolchain;
 use crate::actions::RustToolchain;
-use crate::actions::{cache, cargo_build};
+use crate::actions::cache;
 use crate::ghwf::Env;
 use crate::ghwf::Job;
 use crate::ghwf::Step;
@@ -144,7 +144,7 @@ fn job(channel: RustToolchain, os: Os, features: Features) -> Job {
     if os == WINDOWS {
         env.push(("VCPKGRS_DYNAMIC".to_owned(), "1".to_owned()));
     };
-    let mut id = format!("{}-{}-{}", os.name, channel, features.id());
+    let id = format!("{}-{}-{}", os.name, channel, features.id());
     let name = format!("{} {} ({})", os.name, channel, features.name());
     Job {
         id,
