@@ -74,6 +74,13 @@ pub struct Job {
     pub env: Vec<(String, String)>,
 }
 
+impl Job {
+    pub fn step(mut self, step: Step) -> Self {
+        self.steps.push(step);
+        self
+    }
+}
+
 impl Into<(String, Yaml)> for Job {
     fn into(self) -> (String, Yaml) {
         let mut entries = vec![
