@@ -82,10 +82,17 @@ fn print_diff(dir: &Path, a: &Path, b: &Path) {
     print!("{}", str::from_utf8(&output.stderr).unwrap());
 }
 
-fn test_diff_in<F>(root: &str, s: &str, include: &str, should_skip: F, stats: &mut TestStats)
+fn test_diff_in<F>(root: &str, s: &str, include: &str, should_skip: F)
 where
     F: Fn(&str) -> bool,
 {
+    let mut stats = TestStats {
+        passed: 0,
+        passed_marked_skip: 0,
+        skipped: 0,
+        failed: 0,
+    };
+
     let include_full = format!("{}/{}", root, include);
     let s_full = format!("{}/{}", root, s);
 
@@ -156,16 +163,33 @@ where
             print_diff(temp_dir.path(), Path::new(&protoc_rs), Path::new(&pure_rs));
         }
     }
+
+    println!("{:?}", stats);
+    assert!(
+        stats.passed != 0 || s == "src/google/protobuf",
+        "sanity check"
+    );
+    assert!(stats.failed == 0, "at least one test failed");
+}
+
+fn should_skip_with_marker(path: &str) -> bool {
+    fs::read_to_string(path)
+        .unwrap()
+        .contains("@skip-codegen-identical-test")
 }
 
 #[test]
-fn test_diff() {
-    let should_skip = |path: &str| {
-        fs::read_to_string(path)
-            .unwrap()
-            .contains("@skip-codegen-identical-test")
-    };
+fn common_v2() {
+    test_diff_in(
+        "../protobuf-test",
+        "src/common/v2",
+        "src/common/v2",
+        should_skip_with_marker,
+    );
+}
 
+#[test]
+fn common_v3() {
     let common_v3_root = tempfile::Builder::new()
         .prefix("common-v3")
         .tempdir()
@@ -181,56 +205,45 @@ fn test_diff() {
         &format!("{}/src/common/v3", common_v3_root.path().to_str().unwrap()),
     );
 
-    let mut stats = TestStats {
-        passed: 0,
-        passed_marked_skip: 0,
-        skipped: 0,
-        failed: 0,
-    };
-    test_diff_in(
-        "../protobuf-test",
-        "src/v2",
-        "src/v2",
-        should_skip,
-        &mut stats,
-    );
-    test_diff_in(
-        "../protobuf-test",
-        "src/v3",
-        "src/v3",
-        should_skip,
-        &mut stats,
-    );
-    test_diff_in(
-        "../protobuf-test",
-        "src/common/v2",
-        "src/common/v2",
-        should_skip,
-        &mut stats,
-    );
     test_diff_in(
         common_v3_root.path().to_str().unwrap(),
         "src/common/v3",
         "src/common/v3",
-        should_skip,
-        &mut stats,
+        should_skip_with_marker,
     );
-    test_diff_in(
-        "../protobuf-test",
-        "../interop/cxx",
-        "../interop/cxx",
-        should_skip,
-        &mut stats,
-    );
-    test_diff_in(
-        "../protobuf-test",
-        "src/google/protobuf",
-        "src",
-        |_| true,
-        &mut stats,
-    );
+}
 
-    println!("{:?}", stats);
-    assert!(stats.passed != 0, "sanity check");
-    assert!(stats.failed == 0, "at least one test failed");
+#[test]
+fn v2() {
+    test_diff_in(
+        "../protobuf-test",
+        "src/v2",
+        "src/v2",
+        should_skip_with_marker,
+    );
+}
+
+#[test]
+fn v3() {
+    test_diff_in(
+        "../protobuf-test",
+        "src/v3",
+        "src/v3",
+        should_skip_with_marker,
+    );
+}
+
+#[test]
+fn interop() {
+    test_diff_in(
+        "../protobuf-test",
+        "../interop/cxx",
+        "../interop/cxx",
+        should_skip_with_marker,
+    );
+}
+
+#[test]
+fn google() {
+    test_diff_in("../protobuf-test", "src/google/protobuf", "src", |_| true);
 }
