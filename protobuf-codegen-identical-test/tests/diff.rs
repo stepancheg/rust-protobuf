@@ -6,6 +6,7 @@ use std::path::PathBuf;
 use std::path::MAIN_SEPARATOR;
 use std::str;
 
+use protobuf_test_common::build::copy_tests_v2_v3;
 use protobuf_test_common::build::glob_simple;
 use std::process::Command;
 use std::process::Stdio;
@@ -81,16 +82,16 @@ fn print_diff(dir: &Path, a: &Path, b: &Path) {
     print!("{}", str::from_utf8(&output.stderr).unwrap());
 }
 
-fn test_diff_in<F>(s: &str, include: &str, should_skip: F, stats: &mut TestStats)
+fn test_diff_in<F>(root: &str, s: &str, include: &str, should_skip: F, stats: &mut TestStats)
 where
     F: Fn(&str) -> bool,
 {
-    let rel_path_prefix = "../protobuf-test/";
+    let include_full = format!("{}/{}", root, include);
+    let s_full = format!("{}/{}", root, s);
 
-    let include_full = format!("{}{}", rel_path_prefix, include);
-    let s_full = format!("{}{}", rel_path_prefix, s);
-
-    let inputs = to_paths(glob_simple(&format!("{}/*.proto", s_full)));
+    let inputs_glob = format!("{}/*.proto", s_full);
+    let inputs = to_paths(glob_simple(&inputs_glob));
+    assert!(!inputs.is_empty(), "glob is empty: {}", inputs_glob);
     let includes = to_paths(vec![include_full.as_str(), "../proto"]);
 
     let temp_dir = tempfile::Builder::new()
@@ -120,8 +121,8 @@ where
 
     for input in &inputs {
         let label = input.display().to_string();
-        assert!(label.starts_with(rel_path_prefix));
-        let label = &label[rel_path_prefix.len()..];
+        assert!(label.starts_with(&format!("{}/", root)));
+        let label = &label[format!("{}/", root).len()..];
         let proto_name = input.file_name().unwrap().to_str().unwrap();
         let rs_name = protobuf_codegen::proto_name_to_rs(proto_name);
         let protoc_rs = format!("{}/{}", protoc_dir, rs_name);
@@ -165,20 +166,69 @@ fn test_diff() {
             .contains("@skip-codegen-identical-test")
     };
 
+    let common_v3_root = tempfile::Builder::new()
+        .prefix("common-v3")
+        .tempdir()
+        .unwrap();
+    fs::create_dir_all(format!(
+        "{}/src/common/v3",
+        common_v3_root.path().to_str().unwrap()
+    ))
+    .unwrap();
+
+    copy_tests_v2_v3(
+        "../protobuf-test/src/common/v2",
+        &format!("{}/src/common/v3", common_v3_root.path().to_str().unwrap()),
+    );
+
     let mut stats = TestStats {
         passed: 0,
         passed_marked_skip: 0,
         skipped: 0,
         failed: 0,
     };
-    test_diff_in("src/v2", "src/v2", should_skip, &mut stats);
-    test_diff_in("src/v3", "src/v3", should_skip, &mut stats);
-    test_diff_in("src/common/v2", "src/common/v2", should_skip, &mut stats);
-    // TODO: test v3 files are generated, copy them here,
-    //   do not rely on protobuf-test crate copying them
-    //test_diff_in("src/common/v3", "src/common/v3", should_skip, &mut stats);
-    test_diff_in("../interop/cxx", "../interop/cxx", should_skip, &mut stats);
-    test_diff_in("src/google/protobuf", "src", |_| true, &mut stats);
+    test_diff_in(
+        "../protobuf-test",
+        "src/v2",
+        "src/v2",
+        should_skip,
+        &mut stats,
+    );
+    test_diff_in(
+        "../protobuf-test",
+        "src/v3",
+        "src/v3",
+        should_skip,
+        &mut stats,
+    );
+    test_diff_in(
+        "../protobuf-test",
+        "src/common/v2",
+        "src/common/v2",
+        should_skip,
+        &mut stats,
+    );
+    test_diff_in(
+        common_v3_root.path().to_str().unwrap(),
+        "src/common/v3",
+        "src/common/v3",
+        should_skip,
+        &mut stats,
+    );
+    test_diff_in(
+        "../protobuf-test",
+        "../interop/cxx",
+        "../interop/cxx",
+        should_skip,
+        &mut stats,
+    );
+    test_diff_in(
+        "../protobuf-test",
+        "src/google/protobuf",
+        "src",
+        |_| true,
+        &mut stats,
+    );
 
     println!("{:?}", stats);
     assert!(stats.passed != 0, "sanity check");
