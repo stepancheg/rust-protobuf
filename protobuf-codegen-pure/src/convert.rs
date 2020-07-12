@@ -7,8 +7,8 @@ use crate::model;
 
 use protobuf;
 use protobuf::descriptor::field_descriptor_proto;
-use protobuf::prelude::*;
 use protobuf::json::json_name;
+use protobuf::prelude::*;
 use protobuf::Message;
 
 use crate::model::FieldOrOneOf;
