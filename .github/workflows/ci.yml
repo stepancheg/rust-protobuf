@@ -49,6 +49,9 @@ jobs:
             - name: test protoc
               run: protoc/test.sh
               shell: bash
+            - name: The check
+              run: cargo fmt -- --check
+              shell: bash
     linux-beta-default-features:
         name: linux beta (default features)
         runs-on: ubuntu-latest
@@ -222,9 +225,6 @@ jobs:
                   args: --all-features
             - name: test protoc
               run: protoc/test.sh
-              shell: bash
-            - name: The check
-              run: cargo fmt -- --check
               shell: bash
     windows-stable-default-features:
         name: windows stable (default features)
