@@ -1,15 +1,17 @@
+use crate::actions::cache;
 use crate::actions::cargo_doc;
 use crate::actions::cargo_test;
 use crate::actions::checkout_sources;
 use crate::actions::rust_install_toolchain;
 use crate::actions::RustToolchain;
-use crate::actions::cache;
 use crate::ghwf::Env;
 use crate::ghwf::Job;
 use crate::ghwf::Step;
 use crate::yaml::Yaml;
 use crate::yaml::YamlWriter;
+use std::env;
 use std::fs::File;
+use std::io::Read;
 use std::io::Write;
 
 mod actions;
@@ -74,6 +76,20 @@ impl Features {
             Features::All => format!("all features"),
             Features::Specific(s) => s.join(","),
         }
+    }
+}
+
+fn self_check_job() -> Job {
+    Job {
+        id: format!("self-check"),
+        name: format!("CI self-check"),
+        runs_on: LINUX.ghwf,
+        steps: vec![
+            checkout_sources(),
+            rust_install_toolchain(RustToolchain::Stable),
+            Step::run("The check", "cargo run -p ci-gen -- --check"),
+        ],
+        ..Default::default()
     }
 }
 
@@ -175,6 +191,8 @@ fn jobs() -> Yaml {
 
     r.push(job(RustToolchain::Stable, WINDOWS, Features::Default));
 
+    r.push(self_check_job());
+
     // TODO: enable macos
     //r.push(job(RustToolchain::Stable, MACOS, Features::Default));
 
@@ -182,6 +200,9 @@ fn jobs() -> Yaml {
 }
 
 fn main() {
+    let args: Vec<String> = env::args().skip(1).collect();
+    let args: Vec<&str> = args.iter().map(|a| a.as_str()).collect();
+
     let yaml = Yaml::map(vec![
         ("on", Yaml::list(vec!["push", "pull_request"])),
         ("name", Yaml::string("CI")),
@@ -195,8 +216,27 @@ fn main() {
     ));
     writer.write_line("");
     writer.write_yaml(&yaml);
-    File::create(".github/workflows/ci.yml")
-        .unwrap()
-        .write_all(writer.buffer.as_bytes())
-        .unwrap();
+    let ci_yml = writer.buffer;
+
+    let ci_yml_path = ".github/workflows/ci.yml";
+
+    match args.as_slice() {
+        &[] => {
+            File::create(ci_yml_path)
+                .unwrap()
+                .write_all(ci_yml.as_bytes())
+                .unwrap();
+            eprintln!("written {}", ci_yml_path);
+        }
+        &["--check"] => {
+            let mut actual = String::new();
+            File::open(ci_yml_path)
+                .unwrap()
+                .read_to_string(&mut actual)
+                .unwrap();
+            assert!(ci_yml == actual);
+            eprintln!("The file is correct")
+        }
+        args => panic!("unknown args: {:?}", args),
+    }
 }

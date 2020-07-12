@@ -51,7 +51,11 @@ impl Step {
     }
 
     pub fn run(name: &str, run: &str) -> Step {
-        Step(Yaml::map(vec![("name", name), ("run", run), ("shell", "bash")]))
+        Step(Yaml::map(vec![
+            ("name", name),
+            ("run", run),
+            ("shell", "bash"),
+        ]))
     }
 }
 

@@ -255,3 +255,18 @@ jobs:
             - name: Test all
               run: cargo test --all --all-targets
               shell: bash
+    self-check:
+        name: CI self-check
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout sources
+              uses: actions/checkout@v2
+            - name: Install toolchain
+              uses: actions-rs/toolchain@v1
+              with:
+                  profile: minimal
+                  toolchain: stable
+                  override: true
+            - name: The check
+              run: cargo run -p ci-gen -- --check
+              shell: bash
