@@ -47,6 +47,7 @@ pub fn cargo_test(name: &str, args: &str) -> Step {
     cargo(name, "test", args)
 }
 
+#[allow(dead_code)]
 pub fn cargo_build(name: &str, args: &str) -> Step {
     cargo(name, "build", args)
 }
