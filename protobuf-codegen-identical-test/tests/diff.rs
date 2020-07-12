@@ -160,7 +160,11 @@ where
                 println!("{} FAILED", label);
             }
 
-            print_diff(temp_dir.path(), Path::new(&protoc_rs), Path::new(&pure_rs));
+            print_diff(
+                temp_dir.path(),
+                Path::new(&protoc_rs).strip_prefix(temp_dir.path()).unwrap(),
+                Path::new(&pure_rs).strip_prefix(temp_dir.path()).unwrap(),
+            );
         }
     }
 
