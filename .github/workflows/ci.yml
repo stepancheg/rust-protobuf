@@ -223,6 +223,9 @@ jobs:
             - name: test protoc
               run: protoc/test.sh
               shell: bash
+            - name: The check
+              run: cargo fmt -- --check
+              shell: bash
     windows-stable-default-features:
         name: windows stable (default features)
         runs-on: windows-latest
@@ -269,19 +272,4 @@ jobs:
                   override: true
             - name: The check
               run: cargo run -p ci-gen -- --check
-              shell: bash
-    cargo-fmt-check:
-        name: cargo fmt -- --check
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout sources
-              uses: actions/checkout@v2
-            - name: Install toolchain
-              uses: actions-rs/toolchain@v1
-              with:
-                  profile: minimal
-                  toolchain: stable
-                  override: true
-            - name: The check
-              run: cargo fmt -- --check
               shell: bash
