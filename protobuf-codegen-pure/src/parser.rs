@@ -1293,7 +1293,7 @@ mod test {
 
         let mess = parse_opt(msg, |p| p.next_message_opt());
         assert_eq!(1, mess.fields.len());
-        match mess.fields[0].typ {
+        match mess.regular_fields_for_test()[0].typ {
             FieldType::Map(ref f) => match &**f {
                 &(FieldType::String, FieldType::Int32) => (),
                 ref f => panic!("Expecting Map<String, Int32> found {:?}", f),
@@ -1316,8 +1316,8 @@ mod test {
     }"#;
 
         let mess = parse_opt(msg, |p| p.next_message_opt());
-        assert_eq!(1, mess.oneofs.len());
-        assert_eq!(3, mess.oneofs[0].fields.len());
+        assert_eq!(1, mess.oneofs_for_test().len());
+        assert_eq!(3, mess.oneofs_for_test()[0].fields.len());
     }
 
     #[test]
@@ -1353,8 +1353,11 @@ mod test {
         }"#;
 
         let mess = parse_opt(msg, |p| p.next_message_opt());
-        assert_eq!("default", mess.fields[0].options[0].name);
-        assert_eq!("17", mess.fields[0].options[0].value.format());
+        assert_eq!("default", mess.regular_fields_for_test()[0].options[0].name);
+        assert_eq!(
+            "17",
+            mess.regular_fields_for_test()[0].options[0].value.format()
+        );
     }
 
     #[test]
@@ -1366,7 +1369,7 @@ mod test {
         let mess = parse_opt(msg, |p| p.next_message_opt());
         assert_eq!(
             r#""ab\nc d\"g\'h\0\"z""#,
-            mess.fields[0].options[0].value.format()
+            mess.regular_fields_for_test()[0].options[0].value.format()
         );
     }
 
@@ -1379,7 +1382,7 @@ mod test {
         let mess = parse_opt(msg, |p| p.next_message_opt());
         assert_eq!(
             r#""ab\nc d\xfeE\"g\'h\0\"z""#,
-            mess.fields[0].options[0].value.format()
+            mess.regular_fields_for_test()[0].options[0].value.format()
         );
     }
 
@@ -1397,14 +1400,14 @@ mod test {
         }"#;
         let mess = parse_opt(msg, |p| p.next_message_opt());
 
-        assert_eq!("Identifier", mess.fields[1].name);
-        if let FieldType::Group(ref group_fields) = mess.fields[1].typ {
+        assert_eq!("Identifier", mess.regular_fields_for_test()[1].name);
+        if let FieldType::Group(ref group_fields) = mess.regular_fields_for_test()[1].typ {
             assert_eq!(2, group_fields.len());
         } else {
             panic!("expecting group");
         }
 
-        assert_eq!("bbb", mess.fields[2].name);
+        assert_eq!("bbb", mess.regular_fields_for_test()[2].name);
     }
 
     #[test]
