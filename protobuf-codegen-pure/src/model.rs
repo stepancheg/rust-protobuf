@@ -308,7 +308,7 @@ pub struct FileDescriptor {
     /// Imports
     pub import_paths: Vec<String>,
     /// Package
-    pub package: String,
+    pub package: Option<String>,
     /// Protobuf Syntax
     pub syntax: Syntax,
     /// Top level messages

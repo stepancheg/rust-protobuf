@@ -1,0 +1,7 @@
+// This file intentionally has no `package` declaration.
+
+syntax = "proto2";
+
+message Ignored {
+    optional int32 i = 1;
+}

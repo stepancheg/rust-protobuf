@@ -469,15 +469,15 @@ impl<'a> Resolver<'a> {
         iter::once(self.current_file).chain(self.deps).collect()
     }
 
-    fn package_files(&self, package: &str) -> Vec<&model::FileDescriptor> {
+    fn package_files(&self, package: Option<&str>) -> Vec<&model::FileDescriptor> {
         self.all_files()
             .into_iter()
-            .filter(|f| f.package == package)
+            .filter(|f| f.package.as_deref() == package)
             .collect()
     }
 
     fn current_file_package_files(&self) -> Vec<&model::FileDescriptor> {
-        self.package_files(&self.current_file.package)
+        self.package_files(self.current_file.package.as_deref())
     }
 
     fn resolve_message_or_enum(
@@ -493,7 +493,7 @@ impl<'a> Resolver<'a> {
                     relative_path_with_name.append(&ProtobufRelativePath::from(name));
                 for file in self.current_file_package_files() {
                     if let Some((n, t)) = LookupScope::File(file).resolve_message_or_enum(
-                        &ProtobufAbsolutePath::from_path_without_dot(&file.package),
+                        &ProtobufAbsolutePath::from_package_path(file.package.as_deref()),
                         &relative_path_with_name,
                     ) {
                         return (n, t);
@@ -506,7 +506,7 @@ impl<'a> Resolver<'a> {
         {
             let absolute_path = ProtobufAbsolutePath::from_path_maybe_dot(name);
             for file in self.all_files() {
-                let file_package = ProtobufAbsolutePath::from_path_without_dot(&file.package);
+                let file_package = ProtobufAbsolutePath::from_package_path(file.package.as_deref());
                 if let Some(relative) = absolute_path.remove_prefix(&file_package) {
                     if let Some((n, t)) =
                         LookupScope::File(file).resolve_message_or_enum(&file_package, &relative)
@@ -519,7 +519,8 @@ impl<'a> Resolver<'a> {
 
         panic!(
             "couldn't find message or enum {} when parsing {}",
-            name, self.current_file.package
+            name,
+            self.current_file.package.as_deref().unwrap_or("")
         );
     }
 
@@ -599,7 +600,7 @@ impl<'a> Resolver<'a> {
             }
             model::FieldType::Map(..) => {
                 let mut type_name =
-                    ProtobufAbsolutePath::from_path_without_dot(&self.current_file.package);
+                    ProtobufAbsolutePath::from_package_path(self.current_file.package.as_deref());
                 type_name.push_relative(path_in_file);
                 type_name.push_simple(Resolver::map_entry_name_for_field_name(name));
                 (
@@ -609,7 +610,7 @@ impl<'a> Resolver<'a> {
             }
             model::FieldType::Group { ref name, .. } => {
                 let mut type_name =
-                    ProtobufAbsolutePath::from_path_without_dot(&self.current_file.package);
+                    ProtobufAbsolutePath::from_package_path(self.current_file.package.as_deref());
                 type_name.push_relative(path_in_file);
                 type_name.push_simple(ProtobufIdent::from(name.clone()));
                 (
@@ -671,8 +672,8 @@ impl<'a> Resolver<'a> {
 
     fn find_extension_by_path(&self, path: &str) -> ConvertResult<&model::Extension> {
         let (package, name) = match path.rfind('.') {
-            Some(dot) => (&path[..dot], &path[dot + 1..]),
-            None => (self.current_file.package.as_str(), path),
+            Some(dot) => (Some(&path[..dot]), &path[dot + 1..]),
+            None => (self.current_file.package.as_deref(), path),
         };
 
         for file in self.package_files(package) {
@@ -825,8 +826,11 @@ pub fn file_descriptor(
 
     let mut output = protobuf::descriptor::FileDescriptorProto::new();
     output.set_name(name.to_owned());
-    output.set_package(input.package.clone());
     output.set_syntax(syntax(input.syntax));
+
+    if let Some(package) = &input.package {
+        output.set_package(package.clone());
+    }
 
     let mut messages = protobuf::RepeatedField::new();
     for m in &input.messages {
