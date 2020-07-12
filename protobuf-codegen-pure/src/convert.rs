@@ -10,6 +10,7 @@ use protobuf::descriptor::field_descriptor_proto;
 use protobuf::prelude::*;
 use protobuf::Message;
 
+use crate::model::FieldOrOneOf;
 use crate::protobuf_codegen::case_convert::camel_case;
 use crate::protobuf_codegen::ProtobufAbsolutePath;
 use crate::protobuf_codegen::ProtobufIdent;
@@ -261,9 +262,16 @@ impl<'a> Resolver<'a> {
             nested_messages.push(self.message(m, &nested_path_in_file)?);
         }
 
-        for f in &input.fields {
-            if let model::FieldType::Map(ref t) = f.typ {
-                nested_messages.push(self.map_entry_message(&f.name, &t.0, &t.1, path_in_file)?);
+        for fo in &input.fields {
+            if let FieldOrOneOf::Field(f) = fo {
+                if let model::FieldType::Map(ref t) = f.typ {
+                    nested_messages.push(self.map_entry_message(
+                        &f.name,
+                        &t.0,
+                        &t.1,
+                        path_in_file,
+                    )?);
+                }
             }
         }
 
@@ -278,22 +286,27 @@ impl<'a> Resolver<'a> {
         {
             let mut fields = protobuf::RepeatedField::new();
 
-            for f in &input.fields {
-                fields.push(self.field(f, None, &nested_path_in_file)?);
-            }
-
-            for (oneof_index, oneof) in input.oneofs.iter().enumerate() {
-                let oneof_index = oneof_index as i32;
-                for f in &oneof.fields {
-                    fields.push(self.field(f, Some(oneof_index as i32), &nested_path_in_file)?);
+            for fo in &input.fields {
+                match fo {
+                    FieldOrOneOf::Field(f) => {
+                        fields.push(self.field(f, None, &nested_path_in_file)?);
+                    }
+                    FieldOrOneOf::OneOf(o) => {
+                        let oneof_index = output.oneof_decl.len();
+                        for f in &o.fields {
+                            fields.push(self.field(
+                                f,
+                                Some(oneof_index as i32),
+                                &nested_path_in_file,
+                            )?);
+                        }
+                        output.oneof_decl.push(self.oneof(o));
+                    }
                 }
             }
 
             output.field = fields;
         }
-
-        let oneofs = input.oneofs.iter().map(|o| self.oneof(o)).collect();
-        output.oneof_decl = oneofs;
 
         output
             .options

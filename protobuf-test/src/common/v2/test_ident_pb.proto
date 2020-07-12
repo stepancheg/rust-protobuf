@@ -1,5 +1,3 @@
-// @skip-codegen-identical-test
-
 syntax = "proto2";
 
 import "google/protobuf/descriptor.proto";

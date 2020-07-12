@@ -147,6 +147,13 @@ pub struct Field {
     pub options: Vec<ProtobufOption>,
 }
 
+/// A Protobuf field of oneof group
+#[derive(Debug, Clone, PartialEq)]
+pub enum FieldOrOneOf {
+    Field(Field),
+    OneOf(OneOf),
+}
+
 /// Extension range
 #[derive(Default, Debug, Eq, PartialEq, Copy, Clone)]
 pub struct FieldNumberRange {
@@ -161,10 +168,8 @@ pub struct FieldNumberRange {
 pub struct Message {
     /// Message name
     pub name: String,
-    /// Message `Field`s
-    pub fields: Vec<Field>,
-    /// Message `OneOf`s
-    pub oneofs: Vec<OneOf>,
+    /// Message fields and oneofs
+    pub fields: Vec<FieldOrOneOf>,
     /// Message reserved numbers
     ///
     /// TODO: use RangeInclusive once stable
@@ -200,7 +205,7 @@ pub struct Enumeration {
 }
 
 /// A OneOf
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Default, PartialEq)]
 pub struct OneOf {
     /// OneOf name
     pub name: String,
