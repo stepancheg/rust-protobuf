@@ -1,5 +1,3 @@
-// @skip-codegen-identical-test
-
 syntax = "proto3";
 
 message Vec { }

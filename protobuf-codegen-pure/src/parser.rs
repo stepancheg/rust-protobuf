@@ -3,9 +3,10 @@ use std::fmt;
 use std::num::ParseIntError;
 use std::str;
 
+use crate::str_lit::StrLit;
+use crate::str_lit::StrLitDecodeError;
 use model::*;
 use protobuf_codegen::float;
-use str_lit::*;
 
 const FIRST_LINE: u32 = 1;
 const FIRST_COL: u32 = 1;
@@ -56,6 +57,9 @@ pub enum ParserError {
     StrLitDecodeError(StrLitDecodeError),
     GroupNameShouldStartWithUpperCase,
     MapFieldNotAllowed,
+    OneOfInGroup,
+    OneOfInOneOf,
+    OneOfInExtend,
 }
 
 #[derive(Debug)]
@@ -769,8 +773,7 @@ impl MessageBodyParseMode {
 
 #[derive(Default)]
 pub struct MessageBody {
-    pub fields: Vec<Field>,
-    pub oneofs: Vec<OneOf>,
+    pub fields: Vec<FieldOrOneOf>,
     pub reserved_nums: Vec<FieldNumberRange>,
     pub reserved_names: Vec<String>,
     pub messages: Vec<Message>,
@@ -1279,6 +1282,14 @@ impl<'a> Parser<'a> {
 
             let MessageBody { fields, .. } = self.next_message_body(mode)?;
 
+            let fields = fields
+                .into_iter()
+                .map(|fo| match fo {
+                    FieldOrOneOf::Field(f) => Ok(f),
+                    FieldOrOneOf::OneOf(_) => Err(ParserError::OneOfInGroup),
+                })
+                .collect::<Result<_, ParserError>>()?;
+
             Ok(Field {
                 name,
                 rule,
@@ -1317,6 +1328,13 @@ impl<'a> Parser<'a> {
         if self.next_ident_if_eq("oneof")? {
             let name = self.next_ident()?.to_owned();
             let MessageBody { fields, .. } = self.next_message_body(MessageBodyParseMode::Oneof)?;
+            let fields = fields
+                .into_iter()
+                .map(|fo| match fo {
+                    FieldOrOneOf::Field(f) => Ok(f),
+                    FieldOrOneOf::OneOf(_) => Err(ParserError::OneOfInOneOf),
+                })
+                .collect::<Result<_, ParserError>>()?;
             Ok(Some(OneOf { name, fields }))
         } else {
             Ok(None)
@@ -1504,7 +1522,7 @@ impl<'a> Parser<'a> {
                 }
 
                 if let Some(oneof) = self.next_oneof_opt()? {
-                    r.oneofs.push(oneof);
+                    r.fields.push(FieldOrOneOf::OneOf(oneof));
                     continue;
                 }
 
@@ -1543,7 +1561,7 @@ impl<'a> Parser<'a> {
                 self.next_ident_if_eq_error("option")?;
             }
 
-            r.fields.push(self.next_field(mode)?);
+            r.fields.push(FieldOrOneOf::Field(self.next_field(mode)?));
         }
 
         self.next_symbol_expect_eq('}')?;
@@ -1563,7 +1581,6 @@ impl<'a> Parser<'a> {
 
             let MessageBody {
                 fields,
-                oneofs,
                 reserved_nums,
                 reserved_names,
                 messages,
@@ -1574,7 +1591,6 @@ impl<'a> Parser<'a> {
             Ok(Some(Message {
                 name,
                 fields,
-                oneofs,
                 reserved_nums,
                 reserved_names,
                 messages,
@@ -1605,6 +1621,15 @@ impl<'a> Parser<'a> {
             };
 
             let MessageBody { fields, .. } = self.next_message_body(mode)?;
+
+            // TODO: is oneof allowed in extend?
+            let fields: Vec<Field> = fields
+                .into_iter()
+                .map(|fo| match fo {
+                    FieldOrOneOf::Field(f) => Ok(f),
+                    FieldOrOneOf::OneOf(_) => Err(ParserError::OneOfInExtend),
+                })
+                .collect::<Result<_, ParserError>>()?;
 
             let extensions = fields
                 .into_iter()
