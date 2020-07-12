@@ -261,11 +261,9 @@ impl Protoc {
     /// New `protoc` command from `$PATH`
     pub fn from_env_path() -> Protoc {
         match which::which("protoc") {
-            Ok(path) => {
-                Protoc {
-                    exec: path.into_os_string(),
-                }
-            }
+            Ok(path) => Protoc {
+                exec: path.into_os_string(),
+            },
             Err(e) => {
                 panic!("protoc binary not found: {}", e);
             }
