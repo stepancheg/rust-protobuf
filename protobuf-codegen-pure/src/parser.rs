@@ -1692,7 +1692,7 @@ impl<'a> Parser<'a> {
         self.syntax = syntax;
 
         let mut import_paths = Vec::new();
-        let mut package = String::new();
+        let mut package = None;
         let mut messages = Vec::new();
         let mut enums = Vec::new();
         let mut extensions = Vec::new();
@@ -1705,7 +1705,7 @@ impl<'a> Parser<'a> {
             }
 
             if let Some(next_package) = self.next_package_opt()? {
-                package = next_package.to_owned();
+                package = Some(next_package);
                 continue;
             }
 
@@ -1937,7 +1937,18 @@ mod test {
     }
     "#;
         let desc = parse(msg, |p| p.next_proto());
-        assert_eq!("foo.bar", desc.package);
+        assert_eq!(Some("foo.bar".to_string()), desc.package);
+    }
+
+    #[test]
+    fn test_no_package() {
+        let msg = r#"
+    message A {
+        optional int32 a = 1;
+    }
+    "#;
+        let desc = parse(msg, |p| p.next_proto());
+        assert_eq!(None, desc.package);
     }
 
     #[test]

@@ -270,6 +270,14 @@ impl ProtobufAbsolutePath {
 
     /// Parse absolute path.
     #[allow(dead_code)]
+    pub fn from_package_path(path: Option<&str>) -> ProtobufAbsolutePath {
+        match path {
+            None => ProtobufAbsolutePath::root(),
+            Some(path) => ProtobufAbsolutePath::from_path_without_dot(path),
+        }
+    }
+
+    /// Construct abs path from a string which may start with a dot.
     pub fn from_path_maybe_dot(path: &str) -> ProtobufAbsolutePath {
         if path.starts_with(".") {
             ProtobufAbsolutePath::new(path.to_owned())
