@@ -35,13 +35,13 @@ use std::io;
 use std::path::Path;
 use std::path::PathBuf;
 
+mod linked_hash_map;
 mod model;
 mod parser;
-mod linked_hash_map;
 
+use linked_hash_map::LinkedHashMap;
 use protobuf_codegen::amend_io_error;
 pub use protobuf_codegen::Customize;
-use linked_hash_map::LinkedHashMap;
 
 #[cfg(test)]
 mod test_against_protobuf_protos;
