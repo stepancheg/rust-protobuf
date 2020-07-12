@@ -93,6 +93,20 @@ fn self_check_job() -> Job {
     }
 }
 
+fn cargo_fmt_check_job() -> Job {
+    Job {
+        id: format!("cargo-fmt-check"),
+        name: format!("cargo fmt -- --check"),
+        runs_on: LINUX.ghwf,
+        steps: vec![
+            checkout_sources(),
+            rust_install_toolchain(RustToolchain::Stable),
+            Step::run("The check", "cargo fmt -- --check"),
+        ],
+        ..Default::default()
+    }
+}
+
 fn job(channel: RustToolchain, os: Os, features: Features) -> Job {
     let mut steps = vec![];
     steps.push(checkout_sources());
@@ -192,6 +206,7 @@ fn jobs() -> Yaml {
     r.push(job(RustToolchain::Stable, WINDOWS, Features::Default));
 
     r.push(self_check_job());
+    r.push(cargo_fmt_check_job());
 
     // TODO: enable macos
     //r.push(job(RustToolchain::Stable, MACOS, Features::Default));
