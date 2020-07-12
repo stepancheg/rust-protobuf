@@ -28,7 +28,6 @@ extern crate protobuf_codegen;
 
 mod convert;
 
-use std::collections::HashMap;
 use std::error::Error;
 use std::fmt;
 use std::fs;
@@ -38,9 +37,11 @@ use std::path::PathBuf;
 
 mod model;
 mod parser;
+mod linked_hash_map;
 
 use protobuf_codegen::amend_io_error;
 pub use protobuf_codegen::Customize;
+use linked_hash_map::LinkedHashMap;
 
 #[cfg(test)]
 mod test_against_protobuf_protos;
@@ -163,7 +164,7 @@ impl Error for WithFileError {
 }
 
 struct Run<'a> {
-    parsed_files: HashMap<PathBuf, FileDescriptorPair>,
+    parsed_files: LinkedHashMap<PathBuf, FileDescriptorPair>,
     includes: &'a [PathBuf],
 }
 
@@ -171,7 +172,7 @@ impl<'a> Run<'a> {
     fn get_file_and_all_deps_already_parsed(
         &self,
         protobuf_path: &Path,
-        result: &mut HashMap<PathBuf, FileDescriptorPair>,
+        result: &mut LinkedHashMap<PathBuf, FileDescriptorPair>,
     ) {
         if let Some(_) = result.get(protobuf_path) {
             return;
@@ -189,7 +190,7 @@ impl<'a> Run<'a> {
     fn get_all_deps_already_parsed(
         &self,
         parsed: &model::FileDescriptor,
-        result: &mut HashMap<PathBuf, FileDescriptorPair>,
+        result: &mut LinkedHashMap<PathBuf, FileDescriptorPair>,
     ) {
         for import in &parsed.import_paths {
             self.get_file_and_all_deps_already_parsed(Path::new(import), result);
@@ -218,7 +219,7 @@ impl<'a> Run<'a> {
             self.add_imported_file(Path::new(import_path))?;
         }
 
-        let mut this_file_deps = HashMap::new();
+        let mut this_file_deps = LinkedHashMap::new();
         self.get_all_deps_already_parsed(&parsed, &mut this_file_deps);
 
         let this_file_deps: Vec<_> = this_file_deps.into_iter().map(|(_, v)| v.parsed).collect();
@@ -295,7 +296,7 @@ pub fn parse_and_typecheck(
     input: &[PathBuf],
 ) -> io::Result<ParsedAndTypechecked> {
     let mut run = Run {
-        parsed_files: HashMap::new(),
+        parsed_files: LinkedHashMap::new(),
         includes: includes,
     };
 
