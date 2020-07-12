@@ -177,7 +177,7 @@ fn jobs() -> Yaml {
 
     r.push(
         job(RustToolchain::Stable, LINUX, Features::Default)
-            .step(Step::run("The check", "cargo fmt -- --check")),
+            .step(Step::run("cargo fmt check", "cargo fmt -- --check")),
     );
     r.push(job(RustToolchain::Beta, LINUX, Features::Default));
     r.push(job(

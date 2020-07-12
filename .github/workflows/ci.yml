@@ -49,7 +49,7 @@ jobs:
             - name: test protoc
               run: protoc/test.sh
               shell: bash
-            - name: The check
+            - name: cargo fmt check
               run: cargo fmt -- --check
               shell: bash
     linux-beta-default-features:
