@@ -1,9 +1,12 @@
-use descriptor::{FieldDescriptorProto, FieldDescriptorProto_Label};
-use reflect::accessor::FieldAccessor;
-use reflect::map::ReflectMap;
-use reflect::repeated::ReflectRepeated;
-use reflect::{EnumValueDescriptor, ReflectValueRef};
-use Message;
+use crate::core::Message;
+use crate::descriptor::FieldDescriptorProto;
+use crate::descriptor::FieldDescriptorProto_Label;
+use crate::json::json_name;
+use crate::reflect::accessor::FieldAccessor;
+use crate::reflect::map::ReflectMap;
+use crate::reflect::repeated::ReflectRepeated;
+use crate::reflect::EnumValueDescriptor;
+use crate::reflect::ReflectValueRef;
 
 /// Reference to a value stored in a field, optional, repeated or map.
 // TODO: implement Eq
@@ -22,6 +25,7 @@ pub enum ReflectFieldRef<'a> {
 pub struct FieldDescriptor {
     proto: &'static FieldDescriptorProto,
     accessor: Box<FieldAccessor + 'static>,
+    json_name: String,
 }
 
 impl FieldDescriptor {
@@ -30,7 +34,17 @@ impl FieldDescriptor {
         proto: &'static FieldDescriptorProto,
     ) -> FieldDescriptor {
         assert_eq!(proto.get_name(), accessor.name_generic());
-        FieldDescriptor { proto, accessor }
+        let json_name = if !proto.get_json_name().is_empty() {
+            proto.get_json_name().to_string()
+        } else {
+            json_name(proto.get_name())
+        };
+        FieldDescriptor {
+            proto,
+            accessor,
+            // probably could be lazy-init
+            json_name,
+        }
     }
 
     /// Get `.proto` description of field
@@ -41,6 +55,17 @@ impl FieldDescriptor {
     /// Field name as specified in `.proto` file
     pub fn name(&self) -> &'static str {
         self.proto.get_name()
+    }
+
+    /// JSON field name.
+    ///
+    /// Can be different from `.proto` field name.
+    ///
+    /// See [JSON mapping][json] for details.
+    ///
+    /// [json]: https://developers.google.com/protocol-buffers/docs/proto3#json
+    pub fn json_name(&self) -> &str {
+        &self.json_name
     }
 
     /// If this field repeated?

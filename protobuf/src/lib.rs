@@ -54,6 +54,7 @@ mod core;
 mod enums;
 pub mod error;
 pub mod ext;
+pub mod json;
 pub mod lazy;
 mod lazy_v2;
 pub mod reflect;
