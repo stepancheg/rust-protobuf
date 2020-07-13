@@ -106,7 +106,6 @@ pub fn cfg_serde() {
 pub struct GenInDirArgs<'a> {
     pub out_dir: &'a str,
     pub input: &'a [&'a str],
-    pub includes: &'a [&'a str],
     pub customize: Customize,
 }
 
@@ -202,7 +201,7 @@ fn check_test_version(file_path: &Path) {
     );
 }
 
-pub fn gen_in_dir_impl<F, E>(dir: &str, include_dir: &str, gen: F)
+pub fn gen_in_dir_impl<F, E>(dir: &str, gen: F)
 where
     F: for<'a> Fn(GenInDirArgs<'a>) -> Result<(), E>,
     E: fmt::Debug,
@@ -220,11 +219,9 @@ where
 
     assert!(!protos.is_empty(), "no protos found in {}", dir);
 
-    let includes = ["../proto", include_dir];
-
     eprintln!(
-        "invoking protobubf compiler: out_dir: {:?}, input: {:?}, includes: {:?}",
-        dir, protos, includes
+        "invoking protobuf compiler: out_dir: {:?}, input: {:?}",
+        dir, protos
     );
 
     let customize = Customize {
@@ -235,7 +232,6 @@ where
     gen(GenInDirArgs {
         out_dir: dir,
         input: &protos.iter().map(|a| a.as_ref()).collect::<Vec<&str>>(),
-        includes: &includes,
         customize,
     })
     .expect("codegen failed");

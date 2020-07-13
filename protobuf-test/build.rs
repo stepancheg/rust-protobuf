@@ -16,17 +16,15 @@ use protobuf_test_common::build::*;
 fn gen_in_dir(dir: &str, include_dir: &str) {
     gen_in_dir_impl(
         dir,
-        include_dir,
         |GenInDirArgs {
              out_dir,
              input,
-             includes,
              customize,
          }| {
             protoc_rust::Codegen::new()
                 .out_dir(out_dir)
                 .inputs(input)
-                .includes(includes)
+                .includes(&["../proto", include_dir])
                 .customize(customize)
                 .run()
         },
