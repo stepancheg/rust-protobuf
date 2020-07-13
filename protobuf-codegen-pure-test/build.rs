@@ -81,17 +81,15 @@ fn copy_tests(dir: &str) {
 fn gen_in_dir(dir: &str, include_dir: &str) {
     gen_in_dir_impl(
         dir,
-        include_dir,
         |GenInDirArgs {
              out_dir,
              input,
-             includes,
              customize,
          }| {
             protobuf_codegen_pure::Codegen::new()
                 .out_dir(out_dir)
                 .inputs(input)
-                .includes(includes)
+                .includes(&[include_dir])
                 .customize(customize)
                 .run()
         },
