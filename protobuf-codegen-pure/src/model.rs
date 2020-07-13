@@ -182,6 +182,8 @@ pub struct Message {
     pub enums: Vec<Enumeration>,
     /// Non-builtin options
     pub options: Vec<ProtobufOption>,
+    /// Extension field numbers
+    pub extensions: Vec<FieldNumberRange>,
 }
 
 impl Message {

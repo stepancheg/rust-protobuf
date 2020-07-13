@@ -336,6 +336,14 @@ impl<'a> Resolver<'a> {
             .options
             .set_message(self.message_options(&input.options)?);
 
+        for ext in &input.extensions {
+            let mut extension_range = protobuf::descriptor::descriptor_proto::ExtensionRange::new();
+            extension_range.set_start(ext.from);
+            // TODO: is end inclusive or exclusive?
+            extension_range.set_end(ext.to);
+            output.extension_range.push(extension_range);
+        }
+
         Ok(output)
     }
 
