@@ -282,26 +282,20 @@ impl<'a> Resolver<'a> {
             nested_messages.push(self.message(m, &nested_path_in_file)?);
         }
 
-        for fo in &input.fields {
-            if let FieldOrOneOf::Field(f) = fo {
-                match &f.typ {
-                    model::FieldType::Map(t) => {
-                        nested_messages.push(self.map_entry_message(
-                            &f.name,
-                            &t.0,
-                            &t.1,
-                            path_in_file,
-                        )?);
-                    }
-                    model::FieldType::Group { name, fields } => {
-                        nested_messages.push(self.group_message(
-                            name,
-                            fields,
-                            &nested_path_in_file,
-                        )?);
-                    }
-                    _ => (),
+        for f in input.regular_fields_including_in_oneofs() {
+            match &f.typ {
+                model::FieldType::Map(t) => {
+                    nested_messages.push(self.map_entry_message(
+                        &f.name,
+                        &t.0,
+                        &t.1,
+                        path_in_file,
+                    )?);
                 }
+                model::FieldType::Group { name, fields } => {
+                    nested_messages.push(self.group_message(name, fields, &nested_path_in_file)?);
+                }
+                _ => (),
             }
         }
 
