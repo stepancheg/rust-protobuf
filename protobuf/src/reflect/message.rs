@@ -196,7 +196,7 @@ impl MessageDescriptor {
         self.factory.new_instance()
     }
 
-    /// Protobuf message name
+    /// Message name as given in `.proto` file
     pub fn name(&self) -> &'static str {
         self.proto.get_name()
     }
@@ -211,7 +211,28 @@ impl MessageDescriptor {
         &self.fields
     }
 
+    /// Find message field by protobuf field name
+    ///
+    /// Note: protobuf field name might be different for Rust field name.
+    pub fn get_field_by_name<'a>(&'a self, name: &str) -> Option<&'a FieldDescriptor> {
+        let &index = self.index_by_name.get(name)?;
+        Some(&self.fields[index])
+    }
+
+    /// Find message field by field name or field JSON name
+    pub fn get_field_by_name_or_json_name<'a>(&'a self, name: &str) -> Option<&'a FieldDescriptor> {
+        let &index = self.index_by_name_or_json_name.get(name)?;
+        Some(&self.fields[index])
+    }
+
+    /// Find message field by field name
+    pub fn get_field_by_number(&self, number: u32) -> Option<&FieldDescriptor> {
+        let &index = self.index_by_number.get(&number)?;
+        Some(&self.fields[index])
+    }
+
     /// Find field by name
+    // TODO: deprecate
     pub fn field_by_name<'a>(&'a self, name: &str) -> &'a FieldDescriptor {
         // TODO: clone is weird
         let &index = self.index_by_name.get(&name.to_string()).unwrap();
@@ -219,6 +240,7 @@ impl MessageDescriptor {
     }
 
     /// Find field by number
+    // TODO: deprecate
     pub fn field_by_number<'a>(&'a self, number: u32) -> &'a FieldDescriptor {
         let &index = self.index_by_number.get(&number).unwrap();
         &self.fields[index]
