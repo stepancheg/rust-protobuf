@@ -66,6 +66,13 @@ use inside::protobuf_crate_path;
 use scope::FileScope;
 use scope::RootScope;
 
+#[doc(hidden)]
+pub use protobuf_name::ProtobufAbsolutePath;
+#[doc(hidden)]
+pub use protobuf_name::ProtobufIdent;
+#[doc(hidden)]
+pub use protobuf_name::ProtobufRelativePath;
+
 fn escape_byte(s: &mut String, b: u8) {
     if b == b'\n' {
         write!(s, "\\n").unwrap();

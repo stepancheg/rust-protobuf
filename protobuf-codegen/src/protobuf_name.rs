@@ -5,6 +5,7 @@ use std::fmt;
 pub struct ProtobufIdent(String);
 
 impl ProtobufIdent {
+    /// New ident from a string.
     #[allow(dead_code)]
     pub fn new(s: &str) -> ProtobufIdent {
         assert!(!s.is_empty());
@@ -14,6 +15,7 @@ impl ProtobufIdent {
         ProtobufIdent(s.to_owned())
     }
 
+    /// Get as a string.
     pub fn get(&self) -> &str {
         &self.0
     }
@@ -37,36 +39,44 @@ impl fmt::Display for ProtobufIdent {
     }
 }
 
+/// Relative protobuf identifier path.
 #[derive(Debug, Eq, PartialEq, Clone)]
 pub struct ProtobufRelativePath {
+    /// The path
     pub path: String,
 }
 
 #[allow(dead_code)]
 impl ProtobufRelativePath {
+    /// Empty relative path.
     pub fn empty() -> ProtobufRelativePath {
         ProtobufRelativePath::new(String::new())
     }
 
+    /// New path from a string.
     pub fn new(path: String) -> ProtobufRelativePath {
         assert!(!path.starts_with("."));
 
         ProtobufRelativePath { path }
     }
 
+    /// From path components.
     pub fn from_components<I: IntoIterator<Item = ProtobufIdent>>(i: I) -> ProtobufRelativePath {
         let v: Vec<String> = i.into_iter().map(|c| c.get().to_owned()).collect();
         ProtobufRelativePath::from(v.join("."))
     }
 
+    /// Get the string.
     pub fn get(&self) -> &str {
         &self.path
     }
 
+    /// The path is empty.
     pub fn is_empty(&self) -> bool {
         self.path.is_empty()
     }
 
+    /// As absolute path from root namespace.
     pub fn into_absolute(self) -> ProtobufAbsolutePath {
         if self.is_empty() {
             ProtobufAbsolutePath::root()
@@ -101,6 +111,7 @@ impl ProtobufRelativePath {
         }
     }
 
+    /// Self path and parent paths.
     pub fn self_and_parents(&self) -> Vec<ProtobufRelativePath> {
         let mut tmp = self.clone();
 
@@ -116,6 +127,7 @@ impl ProtobufRelativePath {
         r
     }
 
+    /// Append path component.
     pub fn append(&self, simple: &ProtobufRelativePath) -> ProtobufRelativePath {
         if self.path.is_empty() {
             ProtobufRelativePath::from(simple.get())
@@ -124,10 +136,12 @@ impl ProtobufRelativePath {
         }
     }
 
+    /// Append identifier to the path.
     pub fn append_ident(&self, simple: &ProtobufIdent) -> ProtobufRelativePath {
         self.append(&ProtobufRelativePath::from(simple.clone()))
     }
 
+    /// Get first component path and remaining.
     pub fn split_first_rem(&self) -> Option<(ProtobufIdent, ProtobufRelativePath)> {
         if self.is_empty() {
             None
@@ -215,8 +229,12 @@ mod relative_path_test {
     }
 }
 
+/// Absolute protobuf path (e. g. package).
+///
+/// This is not filesystem path.
 #[derive(Clone, Eq, PartialEq, Debug, Hash)]
 pub struct ProtobufAbsolutePath {
+    /// The path.
     pub path: String,
 }
 
@@ -225,16 +243,21 @@ impl ProtobufAbsolutePath {
         ProtobufAbsolutePath::new(String::new())
     }
 
+    /// From string.
     pub fn new(path: String) -> ProtobufAbsolutePath {
         assert!(path.is_empty() || path.starts_with("."), path);
         assert!(!path.ends_with("."), path);
         ProtobufAbsolutePath { path }
     }
 
+    /// The path is empty.
     pub fn is_empty(&self) -> bool {
         self.path.is_empty()
     }
 
+    /// From a path without leading dot.
+    ///
+    /// (Protobuf paths start with dot).
     pub fn from_path_without_dot(path: &str) -> ProtobufAbsolutePath {
         if path.is_empty() {
             ProtobufAbsolutePath::root()
@@ -245,6 +268,7 @@ impl ProtobufAbsolutePath {
         }
     }
 
+    /// Parse absolute path.
     #[allow(dead_code)]
     pub fn from_path_maybe_dot(path: &str) -> ProtobufAbsolutePath {
         if path.starts_with(".") {
@@ -254,11 +278,13 @@ impl ProtobufAbsolutePath {
         }
     }
 
+    /// Push identifier to the path.
     pub fn push_simple(&mut self, simple: ProtobufIdent) {
         self.path.push('.');
         self.path.push_str(simple.get());
     }
 
+    /// Push relative path.
     pub fn push_relative(&mut self, relative: &ProtobufRelativePath) {
         if !relative.is_empty() {
             self.path.push('.');
@@ -266,6 +292,7 @@ impl ProtobufAbsolutePath {
         }
     }
 
+    /// Try remove a prefix.
     pub fn remove_prefix(&self, prefix: &ProtobufAbsolutePath) -> Option<ProtobufRelativePath> {
         if self.path.starts_with(&prefix.path) {
             let rem = &self.path[prefix.path.len()..];

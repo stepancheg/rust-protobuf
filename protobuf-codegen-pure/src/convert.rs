@@ -75,46 +75,6 @@ impl MessageOrEnum {
     }
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn absolute_path_push_simple() {
-        let mut foo = AbsolutePath::new(".foo".to_owned());
-        foo.push_simple("bar");
-        assert_eq!(AbsolutePath::new(".foo.bar".to_owned()), foo);
-
-        let mut foo = AbsolutePath::root();
-        foo.push_simple("bar");
-        assert_eq!(AbsolutePath::new(".bar".to_owned()), foo);
-    }
-
-    #[test]
-    fn absolute_path_remove_prefix() {
-        assert_eq!(
-            Some(RelativePath::empty()),
-            AbsolutePath::new(".foo".to_owned())
-                .remove_prefix(&AbsolutePath::new(".foo".to_owned()))
-        );
-        assert_eq!(
-            Some(RelativePath::new("bar".to_owned())),
-            AbsolutePath::new(".foo.bar".to_owned())
-                .remove_prefix(&AbsolutePath::new(".foo".to_owned()))
-        );
-        assert_eq!(
-            Some(RelativePath::new("baz.qux".to_owned())),
-            AbsolutePath::new(".foo.bar.baz.qux".to_owned())
-                .remove_prefix(&AbsolutePath::new(".foo.bar".to_owned()))
-        );
-        assert_eq!(
-            None,
-            AbsolutePath::new(".foo.barbaz".to_owned())
-                .remove_prefix(&AbsolutePath::new(".foo.bar".to_owned()))
-        );
-    }
-}
-
 enum LookupScope<'a> {
     File(&'a model::FileDescriptor),
     Message(&'a model::Message),
