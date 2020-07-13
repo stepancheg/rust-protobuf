@@ -32,6 +32,7 @@ pub struct MessageDescriptor {
     fields: Vec<FieldDescriptor>,
 
     index_by_name: HashMap<String, usize>,
+    index_by_name_or_json_name: HashMap<String, usize>,
     index_by_number: HashMap<u32, usize>,
 }
 
@@ -77,11 +78,8 @@ impl MessageDescriptor {
         }
 
         let mut index_by_name = HashMap::new();
+        let mut index_by_name_or_json_name = HashMap::new();
         let mut index_by_number = HashMap::new();
-        for (i, f) in proto.message.get_field().iter().enumerate() {
-            index_by_number.insert(f.get_number() as u32, i);
-            index_by_name.insert(f.get_name().to_string(), i);
-        }
 
         let mut full_name = file.get_package().to_string();
         if full_name.len() > 0 {
@@ -96,12 +94,30 @@ impl MessageDescriptor {
                 FieldDescriptor::new(f, proto)
             })
             .collect();
+        for (i, f) in fields.iter().enumerate() {
+            assert!(index_by_number
+                .insert(f.proto().get_number() as u32, i)
+                .is_none());
+            assert!(index_by_name
+                .insert(f.proto().get_name().to_owned(), i)
+                .is_none());
+            assert!(index_by_name_or_json_name
+                .insert(f.proto().get_name().to_owned(), i)
+                .is_none());
+
+            let json_name = f.json_name().to_owned();
+
+            if json_name != f.proto().get_name() {
+                assert!(index_by_name_or_json_name.insert(json_name, i).is_none());
+            }
+        }
         MessageDescriptor {
             full_name,
             proto: proto.message,
             factory,
             fields,
             index_by_name,
+            index_by_name_or_json_name,
             index_by_number,
         }
     }
@@ -126,11 +142,8 @@ impl MessageDescriptor {
         }
 
         let mut index_by_name = HashMap::new();
+        let mut index_by_name_or_json_name = HashMap::new();
         let mut index_by_number = HashMap::new();
-        for (i, f) in proto.get_field().iter().enumerate() {
-            index_by_number.insert(f.get_number() as u32, i);
-            index_by_name.insert(f.get_name().to_string(), i);
-        }
 
         let full_name = MessageDescriptor::compute_full_name(
             file_descriptor_proto.get_package(),
@@ -144,12 +157,31 @@ impl MessageDescriptor {
                 FieldDescriptor::new(f, proto)
             })
             .collect();
+
+        for (i, f) in fields.iter().enumerate() {
+            assert!(index_by_number
+                .insert(f.proto().get_number() as u32, i)
+                .is_none());
+            assert!(index_by_name
+                .insert(f.proto().get_name().to_owned(), i)
+                .is_none());
+            assert!(index_by_name_or_json_name
+                .insert(f.proto().get_name().to_owned(), i)
+                .is_none());
+
+            let json_name = f.json_name().to_owned();
+
+            if json_name != f.proto().get_name() {
+                assert!(index_by_name_or_json_name.insert(json_name, i).is_none());
+            }
+        }
         MessageDescriptor {
             full_name,
             proto,
             factory,
             fields,
             index_by_name,
+            index_by_name_or_json_name,
             index_by_number,
         }
     }
