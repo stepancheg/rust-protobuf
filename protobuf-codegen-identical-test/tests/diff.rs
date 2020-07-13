@@ -127,9 +127,7 @@ where
         .unwrap();
 
     for input in &inputs {
-        let label = input.display().to_string();
-        assert!(label.starts_with(&format!("{}/", root)));
-        let label = &label[format!("{}/", root).len()..];
+        let label = input.strip_prefix(root).unwrap().to_str().unwrap();
         let proto_name = input.file_name().unwrap().to_str().unwrap();
         let rs_name = protobuf_codegen::proto_name_to_rs(proto_name);
         let protoc_rs = format!("{}/{}", protoc_dir, rs_name);
