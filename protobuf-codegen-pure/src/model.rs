@@ -184,6 +184,30 @@ pub struct Message {
     pub options: Vec<ProtobufOption>,
 }
 
+impl Message {
+    #[cfg(test)]
+    pub fn regular_fields_for_test(&self) -> Vec<&Field> {
+        self.fields
+            .iter()
+            .flat_map(|fo| match fo {
+                FieldOrOneOf::Field(f) => Some(f),
+                FieldOrOneOf::OneOf(_) => None,
+            })
+            .collect()
+    }
+
+    #[cfg(test)]
+    pub fn oneofs_for_test(&self) -> Vec<&OneOf> {
+        self.fields
+            .iter()
+            .flat_map(|fo| match fo {
+                FieldOrOneOf::Field(_) => None,
+                FieldOrOneOf::OneOf(o) => Some(o),
+            })
+            .collect()
+    }
+}
+
 /// A protobuf enumeration field
 #[derive(Debug, Clone)]
 pub struct EnumValue {
