@@ -34,6 +34,7 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 ## [2.17] - Unreleased
 
 - `protoc` crate now depends on `which` crate for `protoc` binary lookup
+- pure rust codegen output adjusted to be closer to `protoc`-command based output
 
 ## [2.16.2] - 2020-07-06
 
