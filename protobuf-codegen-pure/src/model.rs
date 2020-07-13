@@ -185,6 +185,16 @@ pub struct Message {
 }
 
 impl Message {
+    pub fn regular_fields_including_in_oneofs(&self) -> Vec<&Field> {
+        self.fields
+            .iter()
+            .flat_map(|fo| match fo {
+                FieldOrOneOf::Field(f) => vec![f],
+                FieldOrOneOf::OneOf(o) => o.fields.iter().collect(),
+            })
+            .collect()
+    }
+
     #[cfg(test)]
     pub fn regular_fields_for_test(&self) -> Vec<&Field> {
         self.fields
