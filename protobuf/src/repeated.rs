@@ -87,6 +87,15 @@ impl<T> VecLike<T> for RepeatedField<T> {
     }
 }
 
+impl<A> Extend<A> for RepeatedField<A> {
+    fn extend<I: IntoIterator<Item = A>>(&mut self, iter: I) {
+        // Truncate is less efficient, but maybe the whole `RepeatedField` is a bad idea.
+        self.vec.truncate(self.len);
+        self.vec.extend(iter);
+        self.len = self.vec.len();
+    }
+}
+
 impl<T> Clear for RepeatedField<T> {
     #[inline]
     fn clear(&mut self) {
