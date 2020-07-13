@@ -69,7 +69,6 @@ impl<'a> CodeWriter<'a> {
         self.write_line("#![allow(non_snake_case)]");
         self.write_line("#![allow(non_upper_case_globals)]");
         self.write_line("#![allow(trivial_casts)]");
-        self.write_line("#![allow(unused_imports)]");
         self.write_line("#![allow(unused_results)]");
     }
 
