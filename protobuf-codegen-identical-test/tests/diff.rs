@@ -170,7 +170,7 @@ where
 
     println!("{:?}", stats);
     assert!(
-        stats.passed != 0 || s == "src/google/protobuf",
+        stats.passed != 0 || s == "src/google/protobuf" || s == "../interop/cxx",
         "sanity check"
     );
     assert!(stats.failed == 0, "at least one test failed");
