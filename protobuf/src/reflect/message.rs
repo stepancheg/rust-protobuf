@@ -89,17 +89,18 @@ impl MessageDescriptor {
         }
         full_name.push_str(proto.message.get_name());
 
+        let fields: Vec<_> = fields
+            .into_iter()
+            .map(|f| {
+                let proto = *field_proto_by_name.get(&f.name_generic()).unwrap();
+                FieldDescriptor::new(f, proto)
+            })
+            .collect();
         MessageDescriptor {
-            full_name: full_name,
+            full_name,
             proto: proto.message,
             factory,
-            fields: fields
-                .into_iter()
-                .map(|f| {
-                    let proto = *field_proto_by_name.get(&f.name_generic()).unwrap();
-                    FieldDescriptor::new(f, proto)
-                })
-                .collect(),
+            fields,
             index_by_name,
             index_by_number,
         }
@@ -131,21 +132,23 @@ impl MessageDescriptor {
             index_by_name.insert(f.get_name().to_string(), i);
         }
 
+        let full_name = MessageDescriptor::compute_full_name(
+            file_descriptor_proto.get_package(),
+            &path_to_package,
+            &proto,
+        );
+        let fields: Vec<_> = fields
+            .into_iter()
+            .map(|f| {
+                let proto = *field_proto_by_name.get(&f.name_generic()).unwrap();
+                FieldDescriptor::new(f, proto)
+            })
+            .collect();
         MessageDescriptor {
-            full_name: MessageDescriptor::compute_full_name(
-                file_descriptor_proto.get_package(),
-                &path_to_package,
-                &proto,
-            ),
+            full_name,
             proto,
             factory,
-            fields: fields
-                .into_iter()
-                .map(|f| {
-                    let proto = *field_proto_by_name.get(&f.name_generic()).unwrap();
-                    FieldDescriptor::new(f, proto)
-                })
-                .collect(),
+            fields,
             index_by_name,
             index_by_number,
         }
