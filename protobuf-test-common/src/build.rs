@@ -87,7 +87,6 @@ pub fn clean_old_files() {
 pub struct GenInDirArgs<'a> {
     pub out_dir: &'a str,
     pub input: &'a [&'a str],
-    pub includes: &'a [&'a str],
     pub customize: Customize,
 }
 
@@ -126,7 +125,7 @@ pub fn gen_mod_rs_in_dir(dir: &str) {
     mod_rs.flush().expect("flush");
 }
 
-pub fn gen_in_dir_impl<F, E>(dir: &str, include_dir: &str, protoc3: bool, gen: F)
+pub fn gen_in_dir_impl<F, E>(dir: &str, protoc3: bool, gen: F)
 where
     F: for<'a> Fn(GenInDirArgs<'a>) -> Result<(), E>,
     E: fmt::Debug,
@@ -148,7 +147,6 @@ where
     gen(GenInDirArgs {
         out_dir: dir,
         input: &protos.iter().map(|a| a.as_ref()).collect::<Vec<&str>>(),
-        includes: &["../proto", include_dir],
         ..Default::default()
     })
     .expect("protoc");

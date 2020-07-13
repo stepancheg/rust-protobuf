@@ -24,18 +24,16 @@ fn gen_in_dir(dir: &str, include_dir: &str) {
     let v3 = protoc_is_v3();
     gen_in_dir_impl(
         dir,
-        include_dir,
         v3,
         |GenInDirArgs {
              out_dir,
              input,
-             includes,
              customize,
          }| {
             protoc_rust::run(protoc_rust::Args {
                 out_dir,
                 input,
-                includes,
+                includes: &["../proto", include_dir],
                 customize,
             })
         },
