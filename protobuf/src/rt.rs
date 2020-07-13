@@ -29,8 +29,8 @@ use stream::CodedOutputStream;
 use types::*;
 use zigzag::*;
 
-use unknown::UnknownFields;
 pub use crate::lazy_v2::LazyV2;
+use unknown::UnknownFields;
 
 /// Given `u64` value compute varint encoded length.
 pub fn compute_raw_varint64_size(value: u64) -> u32 {
