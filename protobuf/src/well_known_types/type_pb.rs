@@ -16,7 +16,6 @@
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
 #![allow(trivial_casts)]
-#![allow(unused_imports)]
 #![allow(unused_results)]
 
 //! Generated file from `google/protobuf/type.proto`
