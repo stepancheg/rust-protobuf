@@ -781,7 +781,10 @@ impl<'a> Resolver<'a> {
     fn extension(
         &self,
         input: &model::Extension,
-    ) -> ConvertResult<protobuf::descriptor::FieldDescriptorProto> {
+    ) -> ConvertResult<(
+        protobuf::descriptor::FieldDescriptorProto,
+        Vec<protobuf::descriptor::DescriptorProto>,
+    )> {
         let relative_path = ProtobufRelativePath::new("".to_owned());
         let mut field = self.field(&input.field, None, &relative_path)?;
         field.set_extendee(
@@ -789,7 +792,8 @@ impl<'a> Resolver<'a> {
                 .0
                 .path,
         );
-        Ok(field)
+        // TODO: collect groups
+        Ok((field, Vec::new()))
     }
 }
 
@@ -852,7 +856,9 @@ pub fn file_descriptor(
 
     let mut extensions = protobuf::RepeatedField::new();
     for e in &input.extensions {
-        extensions.push(resolver.extension(e)?);
+        let (ext, group_messages) = resolver.extension(e)?;
+        extensions.push(ext);
+        output.message_type.extend(group_messages);
     }
     output.extension = extensions;
 
