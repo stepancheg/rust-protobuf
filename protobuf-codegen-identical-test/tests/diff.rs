@@ -164,8 +164,6 @@ fn normalize_descriptor(desc: &mut DescriptorProto) {
     desc.options.clear();
     for field in desc.field.iter_mut() {
         field.options.clear();
-        // TODO: don't clear default value.
-        field.clear_default_value();
     }
 }
 
