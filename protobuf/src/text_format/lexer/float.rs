@@ -23,7 +23,7 @@ pub fn format_protobuf_float(f: f64) -> String {
         }
     } else {
         // TODO: make sure doesn't lose precision
-        format!("{:?}", f)
+        format!("{}", f)
     }
 }
 
@@ -53,6 +53,6 @@ mod test {
 
     #[test]
     fn test_format_protobuf_float() {
-        assert_eq!("10.0", format_protobuf_float(10.0));
+        assert_eq!("10", format_protobuf_float(10.0));
     }
 }

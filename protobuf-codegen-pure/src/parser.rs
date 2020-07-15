@@ -1200,7 +1200,7 @@ mod test {
         let mess = parse(msg, |p| p.next_field(MessageBodyParseMode::MessageProto2));
         assert_eq!("f", mess.name);
         assert_eq!("default", mess.options[0].name);
-        assert_eq!("10.0", mess.options[0].value.format());
+        assert_eq!("10", mess.options[0].value.format());
     }
 
     #[test]
