@@ -4,34 +4,13 @@ API to generate `.rs` files to be used e. g. [from build.rs](https://github.com/
 
 Example code:
 
-Using stable rust-protobuf:
-
 ```rust
 extern crate protoc_rust;
 
 use protoc_rust::Customize;
 
 fn main() {
-	protoc_rust::run(protoc_rust::Args {
-	    out_dir: "src/protos",
-	    input: &["protos/a.proto", "protos/b.proto"],
-	    includes: &["protos"],
-	    customize: Customize {
-	      ..Default::default()
-	    },
-	}).expect("protoc");
-}
-```
-
-Using rust-protobuf from master:
-
-```rust
-extern crate protoc_rust;
-
-use protoc_rust::Customize;
-
-fn main() {
-    protoc_rust::Args::new()
+    protoc_rust::Codegen::new()
         .out_dir("src/protos")
         .inputs(&["protos/a.proto", "protos/b.proto"])
         .include("protos")
