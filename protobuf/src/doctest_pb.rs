@@ -20,7 +20,7 @@
 
 //! Generated file from `doctest_pb.proto`
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct MyMessage {
     // special fields
@@ -52,8 +52,13 @@ impl crate::Message for MyMessage {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                    crate::rt::read_unknown_or_skip_group(
+                        field_number,
+                        wire_type,
+                        is,
+                        self.mut_unknown_fields(),
+                    )?;
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -68,7 +73,10 @@ impl crate::Message for MyMessage {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut crate::CodedOutputStream<'_>,
+    ) -> crate::ProtobufResult<()> {
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -94,13 +102,14 @@ impl crate::Message for MyMessage {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
+        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> =
+            crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let fields = ::std::vec::Vec::new();
             crate::reflect::MessageDescriptor::new::<MyMessage>(
                 "MyMessage",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -123,8 +132,7 @@ impl ::std::fmt::Debug for MyMessage {
     }
 }
 
-impl crate::reflect::ProtobufValue for MyMessage {
-}
+impl crate::reflect::ProtobufValue for MyMessage {}
 
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n\x10doctest_pb.proto\"\x0b\n\tMyMessageJG\n\x06\x12\x04\x02\0\x05\x01\
@@ -133,7 +141,8 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x04\x08\x11b\x06proto3\
 ";
 
-static file_descriptor_proto_lazy: crate::rt::LazyV2<crate::descriptor::FileDescriptorProto> = crate::rt::LazyV2::INIT;
+static file_descriptor_proto_lazy: crate::rt::LazyV2<crate::descriptor::FileDescriptorProto> =
+    crate::rt::LazyV2::INIT;
 
 fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
     crate::parse_from_bytes(file_descriptor_proto_data).unwrap()
@@ -141,7 +150,5 @@ fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
 
 /// `FileDescriptorProto` object which was a source for this generated file
 pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
-    file_descriptor_proto_lazy.get(|| {
-        parse_descriptor_proto()
-    })
+    file_descriptor_proto_lazy.get(|| parse_descriptor_proto())
 }

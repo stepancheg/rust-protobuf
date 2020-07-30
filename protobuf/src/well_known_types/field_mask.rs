@@ -20,7 +20,7 @@
 
 //! Generated file from `google/protobuf/field_mask.proto`
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct FieldMask {
     // message fields
@@ -56,10 +56,15 @@ impl crate::Message for FieldMask {
             match field_number {
                 1 => {
                     crate::rt::read_repeated_string_into(wire_type, is, &mut self.paths)?;
-                },
+                }
                 _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                    crate::rt::read_unknown_or_skip_group(
+                        field_number,
+                        wire_type,
+                        is,
+                        self.mut_unknown_fields(),
+                    )?;
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -71,16 +76,19 @@ impl crate::Message for FieldMask {
         let mut my_size = 0;
         for value in &self.paths {
             my_size += crate::rt::string_size(1, &value);
-        };
+        }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut crate::CodedOutputStream<'_>,
+    ) -> crate::ProtobufResult<()> {
         for v in &self.paths {
             os.write_string(1, &v)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -106,18 +114,22 @@ impl crate::Message for FieldMask {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
+        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> =
+            crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::make_repeated_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeString,
+            >(
                 "paths",
-                |m: &FieldMask| { &m.paths },
-                |m: &mut FieldMask| { &mut m.paths },
+                |m: &FieldMask| &m.paths,
+                |m: &mut FieldMask| &mut m.paths,
             ));
             crate::reflect::MessageDescriptor::new::<FieldMask>(
                 "FieldMask",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -141,8 +153,7 @@ impl ::std::fmt::Debug for FieldMask {
     }
 }
 
-impl crate::reflect::ProtobufValue for FieldMask {
-}
+impl crate::reflect::ProtobufValue for FieldMask {}
 
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n\x20google/protobuf/field_mask.proto\x12\x0fgoogle.protobuf\"!\n\tFiel\
@@ -330,7 +341,8 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x01\x1a\x1bb\x06proto3\
 ";
 
-static file_descriptor_proto_lazy: crate::rt::LazyV2<crate::descriptor::FileDescriptorProto> = crate::rt::LazyV2::INIT;
+static file_descriptor_proto_lazy: crate::rt::LazyV2<crate::descriptor::FileDescriptorProto> =
+    crate::rt::LazyV2::INIT;
 
 fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
     crate::parse_from_bytes(file_descriptor_proto_data).unwrap()
@@ -338,7 +350,5 @@ fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
 
 /// `FileDescriptorProto` object which was a source for this generated file
 pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
-    file_descriptor_proto_lazy.get(|| {
-        parse_descriptor_proto()
-    })
+    file_descriptor_proto_lazy.get(|| parse_descriptor_proto())
 }

@@ -20,7 +20,7 @@
 
 //! Generated file from `google/protobuf/timestamp.proto`
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct Timestamp {
     // message fields
@@ -63,19 +63,28 @@ impl crate::Message for Timestamp {
             match field_number {
                 1 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(
+                            wire_type,
+                        ));
                     }
                     self.seconds = is.read_int64()?;
-                },
+                }
                 2 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(
+                            wire_type,
+                        ));
                     }
                     self.nanos = is.read_int32()?;
-                },
+                }
                 _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                    crate::rt::read_unknown_or_skip_group(
+                        field_number,
+                        wire_type,
+                        is,
+                        self.mut_unknown_fields(),
+                    )?;
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -96,7 +105,10 @@ impl crate::Message for Timestamp {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut crate::CodedOutputStream<'_>,
+    ) -> crate::ProtobufResult<()> {
         if self.seconds != 0 {
             os.write_int64(1, self.seconds)?;
         }
@@ -128,23 +140,30 @@ impl crate::Message for Timestamp {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
+        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> =
+            crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeInt64>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeInt64,
+            >(
                 "seconds",
-                |m: &Timestamp| { &m.seconds },
-                |m: &mut Timestamp| { &mut m.seconds },
+                |m: &Timestamp| &m.seconds,
+                |m: &mut Timestamp| &mut m.seconds,
             ));
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeInt32,
+            >(
                 "nanos",
-                |m: &Timestamp| { &m.nanos },
-                |m: &mut Timestamp| { &mut m.nanos },
+                |m: &Timestamp| &m.nanos,
+                |m: &mut Timestamp| &mut m.nanos,
             ));
             crate::reflect::MessageDescriptor::new::<Timestamp>(
                 "Timestamp",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -169,8 +188,7 @@ impl ::std::fmt::Debug for Timestamp {
     }
 }
 
-impl crate::reflect::ProtobufValue for Timestamp {
-}
+impl crate::reflect::ProtobufValue for Timestamp {}
 
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n\x1fgoogle/protobuf/timestamp.proto\x12\x0fgoogle.protobuf\";\n\tTimes\
@@ -276,7 +294,8 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     roto3\
 ";
 
-static file_descriptor_proto_lazy: crate::rt::LazyV2<crate::descriptor::FileDescriptorProto> = crate::rt::LazyV2::INIT;
+static file_descriptor_proto_lazy: crate::rt::LazyV2<crate::descriptor::FileDescriptorProto> =
+    crate::rt::LazyV2::INIT;
 
 fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
     crate::parse_from_bytes(file_descriptor_proto_data).unwrap()
@@ -284,7 +303,5 @@ fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
 
 /// `FileDescriptorProto` object which was a source for this generated file
 pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
-    file_descriptor_proto_lazy.get(|| {
-        parse_descriptor_proto()
-    })
+    file_descriptor_proto_lazy.get(|| parse_descriptor_proto())
 }

@@ -20,7 +20,7 @@
 
 //! Generated file from `google/protobuf/any.proto`
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct Any {
     // message fields
@@ -79,13 +79,18 @@ impl crate::Message for Any {
             match field_number {
                 1 => {
                     crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.type_url)?;
-                },
+                }
                 2 => {
                     crate::rt::read_singular_proto3_bytes_into(wire_type, is, &mut self.value)?;
-                },
+                }
                 _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                    crate::rt::read_unknown_or_skip_group(
+                        field_number,
+                        wire_type,
+                        is,
+                        self.mut_unknown_fields(),
+                    )?;
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -106,7 +111,10 @@ impl crate::Message for Any {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut crate::CodedOutputStream<'_>,
+    ) -> crate::ProtobufResult<()> {
         if !self.type_url.is_empty() {
             os.write_string(1, &self.type_url)?;
         }
@@ -138,24 +146,25 @@ impl crate::Message for Any {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
+        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> =
+            crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeString,
+            >(
                 "type_url",
-                |m: &Any| { &m.type_url },
-                |m: &mut Any| { &mut m.type_url },
+                |m: &Any| &m.type_url,
+                |m: &mut Any| &mut m.type_url,
             ));
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeBytes>(
-                "value",
-                |m: &Any| { &m.value },
-                |m: &mut Any| { &mut m.value },
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeBytes,
+            >(
+                "value", |m: &Any| &m.value, |m: &mut Any| &mut m.value
             ));
-            crate::reflect::MessageDescriptor::new::<Any>(
-                "Any",
-                fields,
-                file_descriptor_proto()
-            )
+            crate::reflect::MessageDescriptor::new::<Any>("Any", fields, file_descriptor_proto())
         })
     }
 
@@ -179,8 +188,7 @@ impl ::std::fmt::Debug for Any {
     }
 }
 
-impl crate::reflect::ProtobufValue for Any {
-}
+impl crate::reflect::ProtobufValue for Any {}
 
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n\x19google/protobuf/any.proto\x12\x0fgoogle.protobuf\"6\n\x03Any\x12\
@@ -305,7 +313,8 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x10\x11b\x06proto3\
 ";
 
-static file_descriptor_proto_lazy: crate::rt::LazyV2<crate::descriptor::FileDescriptorProto> = crate::rt::LazyV2::INIT;
+static file_descriptor_proto_lazy: crate::rt::LazyV2<crate::descriptor::FileDescriptorProto> =
+    crate::rt::LazyV2::INIT;
 
 fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
     crate::parse_from_bytes(file_descriptor_proto_data).unwrap()
@@ -313,7 +322,5 @@ fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
 
 /// `FileDescriptorProto` object which was a source for this generated file
 pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
-    file_descriptor_proto_lazy.get(|| {
-        parse_descriptor_proto()
-    })
+    file_descriptor_proto_lazy.get(|| parse_descriptor_proto())
 }

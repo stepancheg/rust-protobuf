@@ -21,7 +21,7 @@
 //! Generated file from `google/protobuf/compiler/plugin.proto`
 
 ///  An encoded CodeGeneratorRequest is written to the plugin's stdin.
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct CodeGeneratorRequest {
     // message fields
@@ -94,7 +94,9 @@ impl CodeGeneratorRequest {
 
     // Take field
     pub fn take_parameter(&mut self) -> ::std::string::String {
-        self.parameter.take().unwrap_or_else(|| ::std::string::String::new())
+        self.parameter
+            .take()
+            .unwrap_or_else(|| ::std::string::String::new())
     }
 }
 
@@ -104,7 +106,7 @@ impl crate::Message for CodeGeneratorRequest {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
@@ -113,17 +115,30 @@ impl crate::Message for CodeGeneratorRequest {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_repeated_string_into(wire_type, is, &mut self.file_to_generate)?;
-                },
+                    crate::rt::read_repeated_string_into(
+                        wire_type,
+                        is,
+                        &mut self.file_to_generate,
+                    )?;
+                }
                 2 => {
                     crate::rt::read_singular_string_into(wire_type, is, &mut self.parameter)?;
-                },
+                }
                 15 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.proto_file)?;
-                },
+                    crate::rt::read_repeated_message_into_repeated_field(
+                        wire_type,
+                        is,
+                        &mut self.proto_file,
+                    )?;
+                }
                 _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                    crate::rt::read_unknown_or_skip_group(
+                        field_number,
+                        wire_type,
+                        is,
+                        self.mut_unknown_fields(),
+                    )?;
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -135,29 +150,32 @@ impl crate::Message for CodeGeneratorRequest {
         let mut my_size = 0;
         for value in &self.file_to_generate {
             my_size += crate::rt::string_size(1, &value);
-        };
+        }
         if let Some(v) = self.parameter.as_ref() {
             my_size += crate::rt::string_size(2, &v);
         }
         for value in &self.proto_file {
             let len = value.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
-        };
+        }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut crate::CodedOutputStream<'_>,
+    ) -> crate::ProtobufResult<()> {
         for v in &self.file_to_generate {
             os.write_string(1, &v)?;
-        };
+        }
         if let Some(v) = self.parameter.as_ref() {
             os.write_string(2, v)?;
         }
         for v in &self.proto_file {
             crate::rt::write_message_field_with_cached_size(15, v, os)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -183,29 +201,40 @@ impl crate::Message for CodeGeneratorRequest {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
+        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> =
+            crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::make_repeated_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeString,
+            >(
                 "file_to_generate",
-                |m: &CodeGeneratorRequest| { &m.file_to_generate },
-                |m: &mut CodeGeneratorRequest| { &mut m.file_to_generate },
+                |m: &CodeGeneratorRequest| &m.file_to_generate,
+                |m: &mut CodeGeneratorRequest| &mut m.file_to_generate,
             ));
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
+            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeString,
+                _,
+            >(
                 "parameter",
-                |m: &CodeGeneratorRequest| { &m.parameter },
-                |m: &mut CodeGeneratorRequest| { &mut m.parameter },
+                |m: &CodeGeneratorRequest| &m.parameter,
+                |m: &mut CodeGeneratorRequest| &mut m.parameter,
                 CodeGeneratorRequest::get_parameter,
             ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::descriptor::FileDescriptorProto>>(
+            fields.push(crate::reflect::rt::make_repeated_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeMessage<crate::descriptor::FileDescriptorProto>,
+            >(
                 "proto_file",
-                |m: &CodeGeneratorRequest| { &m.proto_file },
-                |m: &mut CodeGeneratorRequest| { &mut m.proto_file },
+                |m: &CodeGeneratorRequest| &m.proto_file,
+                |m: &mut CodeGeneratorRequest| &mut m.proto_file,
             ));
             crate::reflect::MessageDescriptor::new::<CodeGeneratorRequest>(
                 "CodeGeneratorRequest",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -231,11 +260,10 @@ impl ::std::fmt::Debug for CodeGeneratorRequest {
     }
 }
 
-impl crate::reflect::ProtobufValue for CodeGeneratorRequest {
-}
+impl crate::reflect::ProtobufValue for CodeGeneratorRequest {}
 
 ///  The plugin writes an encoded CodeGeneratorResponse to stdout.
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct CodeGeneratorResponse {
     // message fields
@@ -300,7 +328,9 @@ impl CodeGeneratorResponse {
 
     // Take field
     pub fn take_error(&mut self) -> ::std::string::String {
-        self.error.take().unwrap_or_else(|| ::std::string::String::new())
+        self.error
+            .take()
+            .unwrap_or_else(|| ::std::string::String::new())
     }
 }
 
@@ -310,7 +340,7 @@ impl crate::Message for CodeGeneratorResponse {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
@@ -320,13 +350,22 @@ impl crate::Message for CodeGeneratorResponse {
             match field_number {
                 1 => {
                     crate::rt::read_singular_string_into(wire_type, is, &mut self.error)?;
-                },
+                }
                 15 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.file)?;
-                },
+                    crate::rt::read_repeated_message_into_repeated_field(
+                        wire_type,
+                        is,
+                        &mut self.file,
+                    )?;
+                }
                 _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                    crate::rt::read_unknown_or_skip_group(
+                        field_number,
+                        wire_type,
+                        is,
+                        self.mut_unknown_fields(),
+                    )?;
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -342,19 +381,22 @@ impl crate::Message for CodeGeneratorResponse {
         for value in &self.file {
             let len = value.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
-        };
+        }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut crate::CodedOutputStream<'_>,
+    ) -> crate::ProtobufResult<()> {
         if let Some(v) = self.error.as_ref() {
             os.write_string(1, v)?;
         }
         for v in &self.file {
             crate::rt::write_message_field_with_cached_size(15, v, os)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -380,24 +422,32 @@ impl crate::Message for CodeGeneratorResponse {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
+        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> =
+            crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
+            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeString,
+                _,
+            >(
                 "error",
-                |m: &CodeGeneratorResponse| { &m.error },
-                |m: &mut CodeGeneratorResponse| { &mut m.error },
+                |m: &CodeGeneratorResponse| &m.error,
+                |m: &mut CodeGeneratorResponse| &mut m.error,
                 CodeGeneratorResponse::get_error,
             ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<code_generator_response::File>>(
+            fields.push(crate::reflect::rt::make_repeated_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeMessage<code_generator_response::File>,
+            >(
                 "file",
-                |m: &CodeGeneratorResponse| { &m.file },
-                |m: &mut CodeGeneratorResponse| { &mut m.file },
+                |m: &CodeGeneratorResponse| &m.file,
+                |m: &mut CodeGeneratorResponse| &mut m.file,
             ));
             crate::reflect::MessageDescriptor::new::<CodeGeneratorResponse>(
                 "CodeGeneratorResponse",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -422,13 +472,12 @@ impl ::std::fmt::Debug for CodeGeneratorResponse {
     }
 }
 
-impl crate::reflect::ProtobufValue for CodeGeneratorResponse {
-}
+impl crate::reflect::ProtobufValue for CodeGeneratorResponse {}
 
 /// Nested message and enums of message `CodeGeneratorResponse`
 pub mod code_generator_response {
     ///  Represents a single generated file.
-    #[derive(PartialEq,Clone,Default)]
+    #[derive(PartialEq, Clone, Default)]
     #[cfg_attr(serde, derive(Serialize, Deserialize))]
     pub struct File {
         // message fields
@@ -535,7 +584,9 @@ pub mod code_generator_response {
 
         // Take field
         pub fn take_name(&mut self) -> ::std::string::String {
-            self.name.take().unwrap_or_else(|| ::std::string::String::new())
+            self.name
+                .take()
+                .unwrap_or_else(|| ::std::string::String::new())
         }
 
         // optional string insertion_point = 2;
@@ -571,7 +622,9 @@ pub mod code_generator_response {
 
         // Take field
         pub fn take_insertion_point(&mut self) -> ::std::string::String {
-            self.insertion_point.take().unwrap_or_else(|| ::std::string::String::new())
+            self.insertion_point
+                .take()
+                .unwrap_or_else(|| ::std::string::String::new())
         }
 
         // optional string content = 15;
@@ -607,7 +660,9 @@ pub mod code_generator_response {
 
         // Take field
         pub fn take_content(&mut self) -> ::std::string::String {
-            self.content.take().unwrap_or_else(|| ::std::string::String::new())
+            self.content
+                .take()
+                .unwrap_or_else(|| ::std::string::String::new())
         }
     }
 
@@ -616,22 +671,34 @@ pub mod code_generator_response {
             true
         }
 
-        fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
+        fn merge_from(
+            &mut self,
+            is: &mut crate::CodedInputStream<'_>,
+        ) -> crate::ProtobufResult<()> {
             while !is.eof()? {
                 let (field_number, wire_type) = is.read_tag_unpack()?;
                 match field_number {
                     1 => {
                         crate::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
-                    },
+                    }
                     2 => {
-                        crate::rt::read_singular_string_into(wire_type, is, &mut self.insertion_point)?;
-                    },
+                        crate::rt::read_singular_string_into(
+                            wire_type,
+                            is,
+                            &mut self.insertion_point,
+                        )?;
+                    }
                     15 => {
                         crate::rt::read_singular_string_into(wire_type, is, &mut self.content)?;
-                    },
+                    }
                     _ => {
-                        crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                    },
+                        crate::rt::read_unknown_or_skip_group(
+                            field_number,
+                            wire_type,
+                            is,
+                            self.mut_unknown_fields(),
+                        )?;
+                    }
                 };
             }
             ::std::result::Result::Ok(())
@@ -655,7 +722,10 @@ pub mod code_generator_response {
             my_size
         }
 
-        fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+        fn write_to_with_cached_sizes(
+            &self,
+            os: &mut crate::CodedOutputStream<'_>,
+        ) -> crate::ProtobufResult<()> {
             if let Some(v) = self.name.as_ref() {
                 os.write_string(1, v)?;
             }
@@ -690,31 +760,44 @@ pub mod code_generator_response {
         }
 
         fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-            static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
+            static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> =
+                crate::rt::LazyV2::INIT;
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
+                fields.push(crate::reflect::rt::make_option_get_ref_accessor::<
+                    _,
+                    crate::reflect::types::ProtobufTypeString,
+                    _,
+                >(
                     "name",
-                    |m: &File| { &m.name },
-                    |m: &mut File| { &mut m.name },
+                    |m: &File| &m.name,
+                    |m: &mut File| &mut m.name,
                     File::get_name,
                 ));
-                fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
+                fields.push(crate::reflect::rt::make_option_get_ref_accessor::<
+                    _,
+                    crate::reflect::types::ProtobufTypeString,
+                    _,
+                >(
                     "insertion_point",
-                    |m: &File| { &m.insertion_point },
-                    |m: &mut File| { &mut m.insertion_point },
+                    |m: &File| &m.insertion_point,
+                    |m: &mut File| &mut m.insertion_point,
                     File::get_insertion_point,
                 ));
-                fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
+                fields.push(crate::reflect::rt::make_option_get_ref_accessor::<
+                    _,
+                    crate::reflect::types::ProtobufTypeString,
+                    _,
+                >(
                     "content",
-                    |m: &File| { &m.content },
-                    |m: &mut File| { &mut m.content },
+                    |m: &File| &m.content,
+                    |m: &mut File| &mut m.content,
                     File::get_content,
                 ));
                 crate::reflect::MessageDescriptor::new::<File>(
                     "CodeGeneratorResponse.File",
                     fields,
-                    super::file_descriptor_proto()
+                    super::file_descriptor_proto(),
                 )
             })
         }
@@ -740,8 +823,7 @@ pub mod code_generator_response {
         }
     }
 
-    impl crate::reflect::ProtobufValue for File {
-    }
+    impl crate::reflect::ProtobufValue for File {}
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
@@ -934,7 +1016,8 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x02\x01\x03\x12\x04\x94\x01\x17\x19\
 ";
 
-static file_descriptor_proto_lazy: crate::rt::LazyV2<crate::descriptor::FileDescriptorProto> = crate::rt::LazyV2::INIT;
+static file_descriptor_proto_lazy: crate::rt::LazyV2<crate::descriptor::FileDescriptorProto> =
+    crate::rt::LazyV2::INIT;
 
 fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
     crate::parse_from_bytes(file_descriptor_proto_data).unwrap()
@@ -942,7 +1025,5 @@ fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
 
 /// `FileDescriptorProto` object which was a source for this generated file
 pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
-    file_descriptor_proto_lazy.get(|| {
-        parse_descriptor_proto()
-    })
+    file_descriptor_proto_lazy.get(|| parse_descriptor_proto())
 }

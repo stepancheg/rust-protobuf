@@ -23,7 +23,7 @@
 ///  Wrapper message for `double`.
 ///
 ///  The JSON representation for `DoubleValue` is JSON number.
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct DoubleValue {
     // message fields
@@ -59,13 +59,20 @@ impl crate::Message for DoubleValue {
             match field_number {
                 1 => {
                     if wire_type != crate::wire_format::WireTypeFixed64 {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(
+                            wire_type,
+                        ));
                     }
                     self.value = is.read_double()?;
-                },
+                }
                 _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                    crate::rt::read_unknown_or_skip_group(
+                        field_number,
+                        wire_type,
+                        is,
+                        self.mut_unknown_fields(),
+                    )?;
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -83,7 +90,10 @@ impl crate::Message for DoubleValue {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut crate::CodedOutputStream<'_>,
+    ) -> crate::ProtobufResult<()> {
         if self.value != 0. {
             os.write_double(1, self.value)?;
         }
@@ -112,18 +122,22 @@ impl crate::Message for DoubleValue {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
+        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> =
+            crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeDouble>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeDouble,
+            >(
                 "value",
-                |m: &DoubleValue| { &m.value },
-                |m: &mut DoubleValue| { &mut m.value },
+                |m: &DoubleValue| &m.value,
+                |m: &mut DoubleValue| &mut m.value,
             ));
             crate::reflect::MessageDescriptor::new::<DoubleValue>(
                 "DoubleValue",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -147,13 +161,12 @@ impl ::std::fmt::Debug for DoubleValue {
     }
 }
 
-impl crate::reflect::ProtobufValue for DoubleValue {
-}
+impl crate::reflect::ProtobufValue for DoubleValue {}
 
 ///  Wrapper message for `float`.
 ///
 ///  The JSON representation for `FloatValue` is JSON number.
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct FloatValue {
     // message fields
@@ -189,13 +202,20 @@ impl crate::Message for FloatValue {
             match field_number {
                 1 => {
                     if wire_type != crate::wire_format::WireTypeFixed32 {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(
+                            wire_type,
+                        ));
                     }
                     self.value = is.read_float()?;
-                },
+                }
                 _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                    crate::rt::read_unknown_or_skip_group(
+                        field_number,
+                        wire_type,
+                        is,
+                        self.mut_unknown_fields(),
+                    )?;
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -213,7 +233,10 @@ impl crate::Message for FloatValue {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut crate::CodedOutputStream<'_>,
+    ) -> crate::ProtobufResult<()> {
         if self.value != 0. {
             os.write_float(1, self.value)?;
         }
@@ -242,18 +265,22 @@ impl crate::Message for FloatValue {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
+        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> =
+            crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeFloat>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeFloat,
+            >(
                 "value",
-                |m: &FloatValue| { &m.value },
-                |m: &mut FloatValue| { &mut m.value },
+                |m: &FloatValue| &m.value,
+                |m: &mut FloatValue| &mut m.value,
             ));
             crate::reflect::MessageDescriptor::new::<FloatValue>(
                 "FloatValue",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -277,13 +304,12 @@ impl ::std::fmt::Debug for FloatValue {
     }
 }
 
-impl crate::reflect::ProtobufValue for FloatValue {
-}
+impl crate::reflect::ProtobufValue for FloatValue {}
 
 ///  Wrapper message for `int64`.
 ///
 ///  The JSON representation for `Int64Value` is JSON string.
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct Int64Value {
     // message fields
@@ -319,13 +345,20 @@ impl crate::Message for Int64Value {
             match field_number {
                 1 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(
+                            wire_type,
+                        ));
                     }
                     self.value = is.read_int64()?;
-                },
+                }
                 _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                    crate::rt::read_unknown_or_skip_group(
+                        field_number,
+                        wire_type,
+                        is,
+                        self.mut_unknown_fields(),
+                    )?;
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -343,7 +376,10 @@ impl crate::Message for Int64Value {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut crate::CodedOutputStream<'_>,
+    ) -> crate::ProtobufResult<()> {
         if self.value != 0 {
             os.write_int64(1, self.value)?;
         }
@@ -372,18 +408,22 @@ impl crate::Message for Int64Value {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
+        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> =
+            crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeInt64>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeInt64,
+            >(
                 "value",
-                |m: &Int64Value| { &m.value },
-                |m: &mut Int64Value| { &mut m.value },
+                |m: &Int64Value| &m.value,
+                |m: &mut Int64Value| &mut m.value,
             ));
             crate::reflect::MessageDescriptor::new::<Int64Value>(
                 "Int64Value",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -407,13 +447,12 @@ impl ::std::fmt::Debug for Int64Value {
     }
 }
 
-impl crate::reflect::ProtobufValue for Int64Value {
-}
+impl crate::reflect::ProtobufValue for Int64Value {}
 
 ///  Wrapper message for `uint64`.
 ///
 ///  The JSON representation for `UInt64Value` is JSON string.
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct UInt64Value {
     // message fields
@@ -449,13 +488,20 @@ impl crate::Message for UInt64Value {
             match field_number {
                 1 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(
+                            wire_type,
+                        ));
                     }
                     self.value = is.read_uint64()?;
-                },
+                }
                 _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                    crate::rt::read_unknown_or_skip_group(
+                        field_number,
+                        wire_type,
+                        is,
+                        self.mut_unknown_fields(),
+                    )?;
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -473,7 +519,10 @@ impl crate::Message for UInt64Value {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut crate::CodedOutputStream<'_>,
+    ) -> crate::ProtobufResult<()> {
         if self.value != 0 {
             os.write_uint64(1, self.value)?;
         }
@@ -502,18 +551,22 @@ impl crate::Message for UInt64Value {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
+        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> =
+            crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeUint64>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeUint64,
+            >(
                 "value",
-                |m: &UInt64Value| { &m.value },
-                |m: &mut UInt64Value| { &mut m.value },
+                |m: &UInt64Value| &m.value,
+                |m: &mut UInt64Value| &mut m.value,
             ));
             crate::reflect::MessageDescriptor::new::<UInt64Value>(
                 "UInt64Value",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -537,13 +590,12 @@ impl ::std::fmt::Debug for UInt64Value {
     }
 }
 
-impl crate::reflect::ProtobufValue for UInt64Value {
-}
+impl crate::reflect::ProtobufValue for UInt64Value {}
 
 ///  Wrapper message for `int32`.
 ///
 ///  The JSON representation for `Int32Value` is JSON number.
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct Int32Value {
     // message fields
@@ -579,13 +631,20 @@ impl crate::Message for Int32Value {
             match field_number {
                 1 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(
+                            wire_type,
+                        ));
                     }
                     self.value = is.read_int32()?;
-                },
+                }
                 _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                    crate::rt::read_unknown_or_skip_group(
+                        field_number,
+                        wire_type,
+                        is,
+                        self.mut_unknown_fields(),
+                    )?;
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -603,7 +662,10 @@ impl crate::Message for Int32Value {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut crate::CodedOutputStream<'_>,
+    ) -> crate::ProtobufResult<()> {
         if self.value != 0 {
             os.write_int32(1, self.value)?;
         }
@@ -632,18 +694,22 @@ impl crate::Message for Int32Value {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
+        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> =
+            crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeInt32,
+            >(
                 "value",
-                |m: &Int32Value| { &m.value },
-                |m: &mut Int32Value| { &mut m.value },
+                |m: &Int32Value| &m.value,
+                |m: &mut Int32Value| &mut m.value,
             ));
             crate::reflect::MessageDescriptor::new::<Int32Value>(
                 "Int32Value",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -667,13 +733,12 @@ impl ::std::fmt::Debug for Int32Value {
     }
 }
 
-impl crate::reflect::ProtobufValue for Int32Value {
-}
+impl crate::reflect::ProtobufValue for Int32Value {}
 
 ///  Wrapper message for `uint32`.
 ///
 ///  The JSON representation for `UInt32Value` is JSON number.
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct UInt32Value {
     // message fields
@@ -709,13 +774,20 @@ impl crate::Message for UInt32Value {
             match field_number {
                 1 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(
+                            wire_type,
+                        ));
                     }
                     self.value = is.read_uint32()?;
-                },
+                }
                 _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                    crate::rt::read_unknown_or_skip_group(
+                        field_number,
+                        wire_type,
+                        is,
+                        self.mut_unknown_fields(),
+                    )?;
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -733,7 +805,10 @@ impl crate::Message for UInt32Value {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut crate::CodedOutputStream<'_>,
+    ) -> crate::ProtobufResult<()> {
         if self.value != 0 {
             os.write_uint32(1, self.value)?;
         }
@@ -762,18 +837,22 @@ impl crate::Message for UInt32Value {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
+        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> =
+            crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeUint32>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeUint32,
+            >(
                 "value",
-                |m: &UInt32Value| { &m.value },
-                |m: &mut UInt32Value| { &mut m.value },
+                |m: &UInt32Value| &m.value,
+                |m: &mut UInt32Value| &mut m.value,
             ));
             crate::reflect::MessageDescriptor::new::<UInt32Value>(
                 "UInt32Value",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -797,13 +876,12 @@ impl ::std::fmt::Debug for UInt32Value {
     }
 }
 
-impl crate::reflect::ProtobufValue for UInt32Value {
-}
+impl crate::reflect::ProtobufValue for UInt32Value {}
 
 ///  Wrapper message for `bool`.
 ///
 ///  The JSON representation for `BoolValue` is JSON `true` and `false`.
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct BoolValue {
     // message fields
@@ -839,13 +917,20 @@ impl crate::Message for BoolValue {
             match field_number {
                 1 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(
+                            wire_type,
+                        ));
                     }
                     self.value = is.read_bool()?;
-                },
+                }
                 _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                    crate::rt::read_unknown_or_skip_group(
+                        field_number,
+                        wire_type,
+                        is,
+                        self.mut_unknown_fields(),
+                    )?;
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -863,7 +948,10 @@ impl crate::Message for BoolValue {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut crate::CodedOutputStream<'_>,
+    ) -> crate::ProtobufResult<()> {
         if self.value != false {
             os.write_bool(1, self.value)?;
         }
@@ -892,18 +980,22 @@ impl crate::Message for BoolValue {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
+        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> =
+            crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeBool,
+            >(
                 "value",
-                |m: &BoolValue| { &m.value },
-                |m: &mut BoolValue| { &mut m.value },
+                |m: &BoolValue| &m.value,
+                |m: &mut BoolValue| &mut m.value,
             ));
             crate::reflect::MessageDescriptor::new::<BoolValue>(
                 "BoolValue",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -927,13 +1019,12 @@ impl ::std::fmt::Debug for BoolValue {
     }
 }
 
-impl crate::reflect::ProtobufValue for BoolValue {
-}
+impl crate::reflect::ProtobufValue for BoolValue {}
 
 ///  Wrapper message for `string`.
 ///
 ///  The JSON representation for `StringValue` is JSON string.
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct StringValue {
     // message fields
@@ -969,10 +1060,15 @@ impl crate::Message for StringValue {
             match field_number {
                 1 => {
                     crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.value)?;
-                },
+                }
                 _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                    crate::rt::read_unknown_or_skip_group(
+                        field_number,
+                        wire_type,
+                        is,
+                        self.mut_unknown_fields(),
+                    )?;
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -990,7 +1086,10 @@ impl crate::Message for StringValue {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut crate::CodedOutputStream<'_>,
+    ) -> crate::ProtobufResult<()> {
         if !self.value.is_empty() {
             os.write_string(1, &self.value)?;
         }
@@ -1019,18 +1118,22 @@ impl crate::Message for StringValue {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
+        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> =
+            crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeString,
+            >(
                 "value",
-                |m: &StringValue| { &m.value },
-                |m: &mut StringValue| { &mut m.value },
+                |m: &StringValue| &m.value,
+                |m: &mut StringValue| &mut m.value,
             ));
             crate::reflect::MessageDescriptor::new::<StringValue>(
                 "StringValue",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -1054,13 +1157,12 @@ impl ::std::fmt::Debug for StringValue {
     }
 }
 
-impl crate::reflect::ProtobufValue for StringValue {
-}
+impl crate::reflect::ProtobufValue for StringValue {}
 
 ///  Wrapper message for `bytes`.
 ///
 ///  The JSON representation for `BytesValue` is JSON string.
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct BytesValue {
     // message fields
@@ -1096,10 +1198,15 @@ impl crate::Message for BytesValue {
             match field_number {
                 1 => {
                     crate::rt::read_singular_proto3_bytes_into(wire_type, is, &mut self.value)?;
-                },
+                }
                 _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                    crate::rt::read_unknown_or_skip_group(
+                        field_number,
+                        wire_type,
+                        is,
+                        self.mut_unknown_fields(),
+                    )?;
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -1117,7 +1224,10 @@ impl crate::Message for BytesValue {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut crate::CodedOutputStream<'_>,
+    ) -> crate::ProtobufResult<()> {
         if !self.value.is_empty() {
             os.write_bytes(1, &self.value)?;
         }
@@ -1146,18 +1256,22 @@ impl crate::Message for BytesValue {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
+        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> =
+            crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeBytes>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeBytes,
+            >(
                 "value",
-                |m: &BytesValue| { &m.value },
-                |m: &mut BytesValue| { &mut m.value },
+                |m: &BytesValue| &m.value,
+                |m: &mut BytesValue| &mut m.value,
             ));
             crate::reflect::MessageDescriptor::new::<BytesValue>(
                 "BytesValue",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -1181,8 +1295,7 @@ impl ::std::fmt::Debug for BytesValue {
     }
 }
 
-impl crate::reflect::ProtobufValue for BytesValue {
-}
+impl crate::reflect::ProtobufValue for BytesValue {}
 
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n\x1egoogle/protobuf/wrappers.proto\x12\x0fgoogle.protobuf\"#\n\x0bDoub\
@@ -1299,7 +1412,8 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     b\x06proto3\
 ";
 
-static file_descriptor_proto_lazy: crate::rt::LazyV2<crate::descriptor::FileDescriptorProto> = crate::rt::LazyV2::INIT;
+static file_descriptor_proto_lazy: crate::rt::LazyV2<crate::descriptor::FileDescriptorProto> =
+    crate::rt::LazyV2::INIT;
 
 fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
     crate::parse_from_bytes(file_descriptor_proto_data).unwrap()
@@ -1307,7 +1421,5 @@ fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
 
 /// `FileDescriptorProto` object which was a source for this generated file
 pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
-    file_descriptor_proto_lazy.get(|| {
-        parse_descriptor_proto()
-    })
+    file_descriptor_proto_lazy.get(|| parse_descriptor_proto())
 }

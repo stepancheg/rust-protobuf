@@ -22,7 +22,7 @@
 
 ///  `SourceContext` represents information about the source of a
 ///  protobuf element, like the file in which it is defined.
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct SourceContext {
     // message fields
@@ -58,11 +58,20 @@ impl crate::Message for SourceContext {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.file_name)?;
-                },
+                    crate::rt::read_singular_proto3_string_into(
+                        wire_type,
+                        is,
+                        &mut self.file_name,
+                    )?;
+                }
                 _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                    crate::rt::read_unknown_or_skip_group(
+                        field_number,
+                        wire_type,
+                        is,
+                        self.mut_unknown_fields(),
+                    )?;
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -80,7 +89,10 @@ impl crate::Message for SourceContext {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut crate::CodedOutputStream<'_>,
+    ) -> crate::ProtobufResult<()> {
         if !self.file_name.is_empty() {
             os.write_string(1, &self.file_name)?;
         }
@@ -109,18 +121,22 @@ impl crate::Message for SourceContext {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
+        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> =
+            crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeString,
+            >(
                 "file_name",
-                |m: &SourceContext| { &m.file_name },
-                |m: &mut SourceContext| { &mut m.file_name },
+                |m: &SourceContext| &m.file_name,
+                |m: &mut SourceContext| &mut m.file_name,
             ));
             crate::reflect::MessageDescriptor::new::<SourceContext>(
                 "SourceContext",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -144,8 +160,7 @@ impl ::std::fmt::Debug for SourceContext {
     }
 }
 
-impl crate::reflect::ProtobufValue for SourceContext {
-}
+impl crate::reflect::ProtobufValue for SourceContext {}
 
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n$google/protobuf/source_context.proto\x12\x0fgoogle.protobuf\",\n\rSou\
@@ -202,7 +217,8 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \0\x02\0\x03\x12\x03-\x15\x16b\x06proto3\
 ";
 
-static file_descriptor_proto_lazy: crate::rt::LazyV2<crate::descriptor::FileDescriptorProto> = crate::rt::LazyV2::INIT;
+static file_descriptor_proto_lazy: crate::rt::LazyV2<crate::descriptor::FileDescriptorProto> =
+    crate::rt::LazyV2::INIT;
 
 fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
     crate::parse_from_bytes(file_descriptor_proto_data).unwrap()
@@ -210,7 +226,5 @@ fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
 
 /// `FileDescriptorProto` object which was a source for this generated file
 pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
-    file_descriptor_proto_lazy.get(|| {
-        parse_descriptor_proto()
-    })
+    file_descriptor_proto_lazy.get(|| parse_descriptor_proto())
 }

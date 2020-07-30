@@ -21,7 +21,7 @@
 //! Generated file from `google/protobuf/api.proto`
 
 ///  Api is a light-weight descriptor for a protocol buffer service.
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct Api {
     // message fields
@@ -87,22 +87,22 @@ impl crate::Message for Api {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         for v in &self.options {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         for v in &self.source_context {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         for v in &self.mixins {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
@@ -112,31 +112,53 @@ impl crate::Message for Api {
             match field_number {
                 1 => {
                     crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
-                },
+                }
                 2 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.methods)?;
-                },
+                    crate::rt::read_repeated_message_into_repeated_field(
+                        wire_type,
+                        is,
+                        &mut self.methods,
+                    )?;
+                }
                 3 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.options)?;
-                },
+                    crate::rt::read_repeated_message_into_repeated_field(
+                        wire_type,
+                        is,
+                        &mut self.options,
+                    )?;
+                }
                 4 => {
                     crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.version)?;
-                },
+                }
                 5 => {
-                    crate::rt::read_singular_message_into::<crate::well_known_types::SourceContext, _>(wire_type, is, &mut self.source_context)?;
-                },
+                    crate::rt::read_singular_message_into::<
+                        crate::well_known_types::SourceContext,
+                        _,
+                    >(wire_type, is, &mut self.source_context)?;
+                }
                 6 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.mixins)?;
-                },
+                    crate::rt::read_repeated_message_into_repeated_field(
+                        wire_type,
+                        is,
+                        &mut self.mixins,
+                    )?;
+                }
                 7 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(
+                            wire_type,
+                        ));
                     }
                     self.syntax = is.read_enum_or_unknown()?;
-                },
+                }
                 _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                    crate::rt::read_unknown_or_skip_group(
+                        field_number,
+                        wire_type,
+                        is,
+                        self.mut_unknown_fields(),
+                    )?;
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -152,11 +174,11 @@ impl crate::Message for Api {
         for value in &self.methods {
             let len = value.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
-        };
+        }
         for value in &self.options {
             let len = value.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
-        };
+        }
         if !self.version.is_empty() {
             my_size += crate::rt::string_size(4, &self.version);
         }
@@ -167,8 +189,10 @@ impl crate::Message for Api {
         for value in &self.mixins {
             let len = value.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
-        };
-        if self.syntax != crate::ProtobufEnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2) {
+        }
+        if self.syntax
+            != crate::ProtobufEnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2)
+        {
             my_size += crate::rt::enum_or_unknown_size(7, self.syntax);
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
@@ -176,16 +200,19 @@ impl crate::Message for Api {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut crate::CodedOutputStream<'_>,
+    ) -> crate::ProtobufResult<()> {
         if !self.name.is_empty() {
             os.write_string(1, &self.name)?;
         }
         for v in &self.methods {
             crate::rt::write_message_field_with_cached_size(2, v, os)?;
-        };
+        }
         for v in &self.options {
             crate::rt::write_message_field_with_cached_size(3, v, os)?;
-        };
+        }
         if !self.version.is_empty() {
             os.write_string(4, &self.version)?;
         }
@@ -194,8 +221,10 @@ impl crate::Message for Api {
         }
         for v in &self.mixins {
             crate::rt::write_message_field_with_cached_size(6, v, os)?;
-        };
-        if self.syntax != crate::ProtobufEnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2) {
+        }
+        if self.syntax
+            != crate::ProtobufEnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2)
+        {
             os.write_enum(7, crate::ProtobufEnumOrUnknown::value(&self.syntax))?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
@@ -223,49 +252,62 @@ impl crate::Message for Api {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
+        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> =
+            crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                "name",
-                |m: &Api| { &m.name },
-                |m: &mut Api| { &mut m.name },
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeString,
+            >(
+                "name", |m: &Api| &m.name, |m: &mut Api| &mut m.name
             ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Method>>(
+            fields.push(crate::reflect::rt::make_repeated_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeMessage<Method>,
+            >(
                 "methods",
-                |m: &Api| { &m.methods },
-                |m: &mut Api| { &mut m.methods },
+                |m: &Api| &m.methods,
+                |m: &mut Api| &mut m.methods,
             ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::Option>>(
+            fields.push(crate::reflect::rt::make_repeated_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::Option>,
+            >(
                 "options",
-                |m: &Api| { &m.options },
-                |m: &mut Api| { &mut m.options },
+                |m: &Api| &m.options,
+                |m: &mut Api| &mut m.options,
             ));
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeString,
+            >(
                 "version",
-                |m: &Api| { &m.version },
-                |m: &mut Api| { &mut m.version },
+                |m: &Api| &m.version,
+                |m: &mut Api| &mut m.version,
             ));
-            fields.push(crate::reflect::rt::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::SourceContext>, _>(
+            fields.push(crate::reflect::rt::make_option_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::SourceContext>,
+                _,
+            >(
                 "source_context",
-                |m: &Api| { &m.source_context },
-                |m: &mut Api| { &mut m.source_context },
+                |m: &Api| &m.source_context,
+                |m: &mut Api| &mut m.source_context,
             ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Mixin>>(
-                "mixins",
-                |m: &Api| { &m.mixins },
-                |m: &mut Api| { &mut m.mixins },
+            fields.push(crate::reflect::rt::make_repeated_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeMessage<Mixin>,
+            >(
+                "mixins", |m: &Api| &m.mixins, |m: &mut Api| &mut m.mixins
             ));
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeEnumOrUnknown<crate::well_known_types::Syntax>>(
-                "syntax",
-                |m: &Api| { &m.syntax },
-                |m: &mut Api| { &mut m.syntax },
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeEnumOrUnknown<crate::well_known_types::Syntax>,
+            >(
+                "syntax", |m: &Api| &m.syntax, |m: &mut Api| &mut m.syntax
             ));
-            crate::reflect::MessageDescriptor::new::<Api>(
-                "Api",
-                fields,
-                file_descriptor_proto()
-            )
+            crate::reflect::MessageDescriptor::new::<Api>("Api", fields, file_descriptor_proto())
         })
     }
 
@@ -283,7 +325,8 @@ impl crate::Clear for Api {
         self.version.clear();
         self.source_context.clear();
         self.mixins.clear();
-        self.syntax = crate::ProtobufEnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2);
+        self.syntax =
+            crate::ProtobufEnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2);
         self.unknown_fields.clear();
     }
 }
@@ -294,11 +337,10 @@ impl ::std::fmt::Debug for Api {
     }
 }
 
-impl crate::reflect::ProtobufValue for Api {
-}
+impl crate::reflect::ProtobufValue for Api {}
 
 ///  Method represents a method of an api.
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct Method {
     // message fields
@@ -341,7 +383,7 @@ impl crate::Message for Method {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
@@ -351,37 +393,60 @@ impl crate::Message for Method {
             match field_number {
                 1 => {
                     crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
-                },
+                }
                 2 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.request_type_url)?;
-                },
+                    crate::rt::read_singular_proto3_string_into(
+                        wire_type,
+                        is,
+                        &mut self.request_type_url,
+                    )?;
+                }
                 3 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(
+                            wire_type,
+                        ));
                     }
                     self.request_streaming = is.read_bool()?;
-                },
+                }
                 4 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.response_type_url)?;
-                },
+                    crate::rt::read_singular_proto3_string_into(
+                        wire_type,
+                        is,
+                        &mut self.response_type_url,
+                    )?;
+                }
                 5 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(
+                            wire_type,
+                        ));
                     }
                     self.response_streaming = is.read_bool()?;
-                },
+                }
                 6 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.options)?;
-                },
+                    crate::rt::read_repeated_message_into_repeated_field(
+                        wire_type,
+                        is,
+                        &mut self.options,
+                    )?;
+                }
                 7 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(
+                            wire_type,
+                        ));
                     }
                     self.syntax = is.read_enum_or_unknown()?;
-                },
+                }
                 _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                    crate::rt::read_unknown_or_skip_group(
+                        field_number,
+                        wire_type,
+                        is,
+                        self.mut_unknown_fields(),
+                    )?;
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -409,8 +474,10 @@ impl crate::Message for Method {
         for value in &self.options {
             let len = value.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
-        };
-        if self.syntax != crate::ProtobufEnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2) {
+        }
+        if self.syntax
+            != crate::ProtobufEnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2)
+        {
             my_size += crate::rt::enum_or_unknown_size(7, self.syntax);
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
@@ -418,7 +485,10 @@ impl crate::Message for Method {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut crate::CodedOutputStream<'_>,
+    ) -> crate::ProtobufResult<()> {
         if !self.name.is_empty() {
             os.write_string(1, &self.name)?;
         }
@@ -436,8 +506,10 @@ impl crate::Message for Method {
         }
         for v in &self.options {
             crate::rt::write_message_field_with_cached_size(6, v, os)?;
-        };
-        if self.syntax != crate::ProtobufEnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2) {
+        }
+        if self.syntax
+            != crate::ProtobufEnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2)
+        {
             os.write_enum(7, crate::ProtobufEnumOrUnknown::value(&self.syntax))?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
@@ -465,48 +537,68 @@ impl crate::Message for Method {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
+        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> =
+            crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                "name",
-                |m: &Method| { &m.name },
-                |m: &mut Method| { &mut m.name },
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeString,
+            >(
+                "name", |m: &Method| &m.name, |m: &mut Method| &mut m.name
             ));
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeString,
+            >(
                 "request_type_url",
-                |m: &Method| { &m.request_type_url },
-                |m: &mut Method| { &mut m.request_type_url },
+                |m: &Method| &m.request_type_url,
+                |m: &mut Method| &mut m.request_type_url,
             ));
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeBool,
+            >(
                 "request_streaming",
-                |m: &Method| { &m.request_streaming },
-                |m: &mut Method| { &mut m.request_streaming },
+                |m: &Method| &m.request_streaming,
+                |m: &mut Method| &mut m.request_streaming,
             ));
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeString,
+            >(
                 "response_type_url",
-                |m: &Method| { &m.response_type_url },
-                |m: &mut Method| { &mut m.response_type_url },
+                |m: &Method| &m.response_type_url,
+                |m: &mut Method| &mut m.response_type_url,
             ));
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeBool,
+            >(
                 "response_streaming",
-                |m: &Method| { &m.response_streaming },
-                |m: &mut Method| { &mut m.response_streaming },
+                |m: &Method| &m.response_streaming,
+                |m: &mut Method| &mut m.response_streaming,
             ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::Option>>(
+            fields.push(crate::reflect::rt::make_repeated_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::Option>,
+            >(
                 "options",
-                |m: &Method| { &m.options },
-                |m: &mut Method| { &mut m.options },
+                |m: &Method| &m.options,
+                |m: &mut Method| &mut m.options,
             ));
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeEnumOrUnknown<crate::well_known_types::Syntax>>(
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeEnumOrUnknown<crate::well_known_types::Syntax>,
+            >(
                 "syntax",
-                |m: &Method| { &m.syntax },
-                |m: &mut Method| { &mut m.syntax },
+                |m: &Method| &m.syntax,
+                |m: &mut Method| &mut m.syntax,
             ));
             crate::reflect::MessageDescriptor::new::<Method>(
                 "Method",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -525,7 +617,8 @@ impl crate::Clear for Method {
         self.response_type_url.clear();
         self.response_streaming = false;
         self.options.clear();
-        self.syntax = crate::ProtobufEnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2);
+        self.syntax =
+            crate::ProtobufEnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2);
         self.unknown_fields.clear();
     }
 }
@@ -536,10 +629,9 @@ impl ::std::fmt::Debug for Method {
     }
 }
 
-impl crate::reflect::ProtobufValue for Method {
-}
+impl crate::reflect::ProtobufValue for Method {}
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct Mixin {
     // message fields
@@ -578,13 +670,18 @@ impl crate::Message for Mixin {
             match field_number {
                 1 => {
                     crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
-                },
+                }
                 2 => {
                     crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.root)?;
-                },
+                }
                 _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                    crate::rt::read_unknown_or_skip_group(
+                        field_number,
+                        wire_type,
+                        is,
+                        self.mut_unknown_fields(),
+                    )?;
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -605,7 +702,10 @@ impl crate::Message for Mixin {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut crate::CodedOutputStream<'_>,
+    ) -> crate::ProtobufResult<()> {
         if !self.name.is_empty() {
             os.write_string(1, &self.name)?;
         }
@@ -637,23 +737,26 @@ impl crate::Message for Mixin {
     }
 
     fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
+        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> =
+            crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                "name",
-                |m: &Mixin| { &m.name },
-                |m: &mut Mixin| { &mut m.name },
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeString,
+            >(
+                "name", |m: &Mixin| &m.name, |m: &mut Mixin| &mut m.name
             ));
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
-                "root",
-                |m: &Mixin| { &m.root },
-                |m: &mut Mixin| { &mut m.root },
+            fields.push(crate::reflect::rt::make_simple_field_accessor::<
+                _,
+                crate::reflect::types::ProtobufTypeString,
+            >(
+                "root", |m: &Mixin| &m.root, |m: &mut Mixin| &mut m.root
             ));
             crate::reflect::MessageDescriptor::new::<Mixin>(
                 "Mixin",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -678,8 +781,7 @@ impl ::std::fmt::Debug for Mixin {
     }
 }
 
-impl crate::reflect::ProtobufValue for Mixin {
-}
+impl crate::reflect::ProtobufValue for Mixin {}
 
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n\x19google/protobuf/api.proto\x12\x0fgoogle.protobuf\x1a$google/protob\
@@ -889,7 +991,8 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x03\x12\x04\xc7\x01\x10\x11b\x06proto3\
 ";
 
-static file_descriptor_proto_lazy: crate::rt::LazyV2<crate::descriptor::FileDescriptorProto> = crate::rt::LazyV2::INIT;
+static file_descriptor_proto_lazy: crate::rt::LazyV2<crate::descriptor::FileDescriptorProto> =
+    crate::rt::LazyV2::INIT;
 
 fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
     crate::parse_from_bytes(file_descriptor_proto_data).unwrap()
@@ -897,7 +1000,5 @@ fn parse_descriptor_proto() -> crate::descriptor::FileDescriptorProto {
 
 /// `FileDescriptorProto` object which was a source for this generated file
 pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
-    file_descriptor_proto_lazy.get(|| {
-        parse_descriptor_proto()
-    })
+    file_descriptor_proto_lazy.get(|| parse_descriptor_proto())
 }
