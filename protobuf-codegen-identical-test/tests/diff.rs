@@ -153,10 +153,10 @@ fn normalize_file_descriptor(desc: &mut FileDescriptorProto) {
 }
 
 fn normalize_enum_descriptor(desc: &mut EnumDescriptorProto) {
-    // TODO: don't clear options.
-    desc.options.clear();
+    desc.options.mut_or_default();
+
     for value in desc.value.iter_mut() {
-        value.options.clear();
+        value.options.mut_or_default();
     }
 }
 
