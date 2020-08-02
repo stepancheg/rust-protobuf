@@ -43,6 +43,13 @@ pub enum Rule {
     Required,
 }
 
+/// Protobuf group
+#[derive(Debug, Clone, PartialEq)]
+pub struct Group {
+    pub name: String,
+    pub fields: Vec<Field>,
+}
+
 /// Protobuf supported field types
 #[derive(Debug, Clone, PartialEq)]
 pub enum FieldType {
@@ -133,7 +140,7 @@ pub enum FieldType {
     /// Protobut map
     Map(Box<(FieldType, FieldType)>),
     /// Protobuf group (deprecated)
-    Group { name: String, fields: Vec<Field> },
+    Group(Group),
 }
 
 /// A Protobuf Field
@@ -201,6 +208,14 @@ impl Message {
                 FieldOrOneOf::OneOf(o) => o.fields.iter().collect(),
             })
             .collect()
+    }
+
+    pub fn _nested_extensions(&self) -> Vec<&Group> {
+        self.regular_fields_including_in_oneofs().into_iter()
+            .flat_map(|f| match &f.typ {
+                FieldType::Group(g) => Some(g),
+                _ => None,
+            }).collect()
     }
 
     #[cfg(test)]

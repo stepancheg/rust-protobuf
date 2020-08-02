@@ -581,7 +581,7 @@ impl<'a> Parser<'a> {
                 // https://git.io/JvxAP
                 name: name.to_ascii_lowercase(),
                 rule,
-                typ: FieldType::Group { name, fields },
+                typ: FieldType::Group(Group { name, fields }),
                 number,
                 options: Vec::new(),
             })
