@@ -334,12 +334,21 @@ impl<'a> Resolver<'a> {
             .options
             .set_message(self.message_options(&input.options)?);
 
-        for ext in &input.extensions {
+        for ext in &input.extension_ranges {
             let mut extension_range = protobuf::descriptor::descriptor_proto::ExtensionRange::new();
             extension_range.set_start(ext.from);
             // TODO: is end inclusive or exclusive?
             extension_range.set_end(ext.to);
             output.extension_range.push(extension_range);
+        }
+        for ext in &input.extensions {
+            let mut extension = self.field(&ext.field, None, path_in_file)?;
+            extension.set_extendee(
+                self.resolve_message_or_enum(&ext.extendee, path_in_file)
+                    .0
+                    .path,
+            );
+            output.extension.push(extension);
         }
 
         Ok(output)

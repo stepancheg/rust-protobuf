@@ -212,7 +212,8 @@ pub struct MessageBody {
     pub messages: Vec<Message>,
     pub enums: Vec<Enumeration>,
     pub options: Vec<ProtobufOption>,
-    pub extensions: Vec<FieldNumberRange>,
+    pub extension_ranges: Vec<FieldNumberRange>,
+    pub extensions: Vec<Extension>,
 }
 
 trait NumLitEx {
@@ -809,12 +810,13 @@ impl<'a> Parser<'a> {
                     continue;
                 }
 
-                if let Some(extensions) = self.next_extensions_opt()? {
-                    r.extensions.extend(extensions);
+                if let Some(extension_ranges) = self.next_extensions_opt()? {
+                    r.extension_ranges.extend(extension_ranges);
                     continue;
                 }
 
-                if let Some(_extend) = self.next_extend_opt()? {
+                if let Some(extensions) = self.next_extend_opt()? {
+                    r.extensions.extend(extensions);
                     continue;
                 }
 
@@ -871,6 +873,7 @@ impl<'a> Parser<'a> {
                 enums,
                 options,
                 extensions,
+                extension_ranges,
             } = self.next_message_body(mode)?;
 
             Ok(Some(Message {
@@ -882,6 +885,7 @@ impl<'a> Parser<'a> {
                 enums,
                 options,
                 extensions,
+                extension_ranges,
             }))
         } else {
             Ok(None)

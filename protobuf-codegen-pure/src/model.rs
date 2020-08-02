@@ -187,7 +187,9 @@ pub struct Message {
     /// Non-builtin options
     pub options: Vec<ProtobufOption>,
     /// Extension field numbers
-    pub extensions: Vec<FieldNumberRange>,
+    pub extension_ranges: Vec<FieldNumberRange>,
+    /// Extensions
+    pub extensions: Vec<Extension>,
 }
 
 impl Message {
