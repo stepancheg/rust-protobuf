@@ -128,7 +128,7 @@ fn pure_descriptor_set(includes: &[PathBuf], inputs: &[PathBuf]) -> FileDescript
 }
 
 fn normalize_descriptor_set(fds: &mut FileDescriptorSet) {
-    for desc in fds.file.iter_mut() {
+    for desc in &mut fds.file {
         normalize_file_descriptor(desc)
     }
 }
@@ -140,11 +140,11 @@ fn normalize_file_descriptor(desc: &mut FileDescriptorProto) {
     for desc in &mut *desc.message_type {
         normalize_descriptor(desc)
     }
-    for desc in desc.enum_type.iter_mut() {
+    for desc in &mut desc.enum_type {
         normalize_enum_descriptor(desc)
     }
 
-    for desc in &mut *desc.extension {
+    for desc in &mut desc.extension {
         desc.options.mut_or_default();
     }
     desc.options.mut_or_default();
@@ -156,7 +156,7 @@ fn normalize_file_descriptor(desc: &mut FileDescriptorProto) {
 fn normalize_enum_descriptor(desc: &mut EnumDescriptorProto) {
     desc.options.mut_or_default();
 
-    for value in desc.value.iter_mut() {
+    for value in &mut desc.value {
         value.options.mut_or_default();
     }
 }
@@ -166,28 +166,28 @@ fn normalize_oneof_descriptor(desc: &mut OneofDescriptorProto) {
 }
 
 fn normalize_descriptor(desc: &mut DescriptorProto) {
-    for desc in desc.nested_type.iter_mut() {
+    for desc in &mut desc.nested_type {
         normalize_descriptor(desc);
     }
-    for desc in desc.enum_type.iter_mut() {
+    for desc in &mut desc.enum_type {
         normalize_enum_descriptor(desc);
     }
-    for desc in desc.oneof_decl.iter_mut() {
+    for desc in &mut desc.oneof_decl {
         normalize_oneof_descriptor(desc);
     }
 
     // TODO: don't clear options.
     desc.options.clear();
 
-    for field in desc.field.iter_mut() {
+    for field in &mut desc.field {
         field.options.mut_or_default();
     }
 
-    for ext in desc.extension.iter_mut() {
+    for ext in &mut desc.extension {
         ext.options.mut_or_default();
     }
 
-    for ext in desc.extension_range.iter_mut() {
+    for ext in &mut desc.extension_range {
         // If ext range end exceeds max field number,
         // the actual upper limit does not matter.
         // protoc is not consistent in behavior thus flush
