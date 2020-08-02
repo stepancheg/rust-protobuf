@@ -11,8 +11,9 @@ use protobuf::json::json_name;
 use protobuf::prelude::*;
 use protobuf::Message;
 
-use crate::model::FieldOrOneOf;
 use crate::model::ProtobufConstant;
+use crate::model::FieldOrOneOf;
+use crate::model::ImportVis;
 use crate::protobuf_codegen::case_convert::camel_case;
 use crate::protobuf_codegen::ProtobufAbsolutePath;
 use crate::protobuf_codegen::ProtobufIdent;
@@ -839,7 +840,16 @@ pub fn file_descriptor(
         output.set_package(package.clone());
     }
 
-    output.dependency = protobuf::RepeatedField::from_slice(&input.import_paths);
+    for import in &input.imports {
+        if import.vis == ImportVis::Public {
+            output
+                .public_dependency
+                .push(output.dependency.len() as i32);
+        } else if import.vis == ImportVis::Weak {
+            output.weak_dependency.push(output.dependency.len() as i32);
+        }
+        output.dependency.push(import.path.clone());
+    }
 
     let mut messages = protobuf::RepeatedField::new();
     for m in &input.messages {

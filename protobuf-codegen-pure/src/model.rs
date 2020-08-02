@@ -339,11 +339,32 @@ pub struct ProtobufOption {
     pub value: ProtobufConstant,
 }
 
+/// Visibility of import statement
+#[derive(Debug, Clone, Eq, PartialEq)]
+pub enum ImportVis {
+    Default,
+    Public,
+    Weak,
+}
+
+impl Default for ImportVis {
+    fn default() -> Self {
+        ImportVis::Default
+    }
+}
+
+/// Import statement
+#[derive(Debug, Default, Clone)]
+pub struct Import {
+    pub path: String,
+    pub vis: ImportVis,
+}
+
 /// A File descriptor representing a whole .proto file
 #[derive(Debug, Default, Clone)]
 pub struct FileDescriptor {
     /// Imports
-    pub import_paths: Vec<String>,
+    pub imports: Vec<Import>,
     /// Package
     pub package: Option<String>,
     /// Protobuf Syntax
