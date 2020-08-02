@@ -517,6 +517,7 @@ impl<'a> Parser<'a> {
     }
 
     fn next_field_number(&mut self) -> ParserResult<i32> {
+        // TODO: not all integers are valid field numbers
         self.tokenizer.next_token_check_map(|token| match token {
             &Token::IntLit(i) => i.to_i32(),
             _ => Err(ParserError::IncorrectInput),
@@ -658,7 +659,7 @@ impl<'a> Parser<'a> {
         let from = self.next_field_number()?;
         let to = if self.tokenizer.next_ident_if_eq("to")? {
             if self.tokenizer.next_ident_if_eq("max")? {
-                i32::max_value()
+                0x20000000 - 1
             } else {
                 self.next_field_number()?
             }

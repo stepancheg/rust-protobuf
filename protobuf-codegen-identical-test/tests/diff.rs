@@ -184,7 +184,7 @@ fn normalize_descriptor(desc: &mut DescriptorProto) {
         // protoc is not consistent in behavior thus flush
         // the value to some arbitrary compatible value.
         if ext.has_end() && ext.get_end() >= 0x20000000 {
-            ext.set_end(i32::max_value());
+            ext.set_end(0x20000000);
         }
     }
 }
