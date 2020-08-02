@@ -146,7 +146,7 @@ fn normalize_file_descriptor(desc: &mut FileDescriptorProto) {
     for desc in &mut *desc.extension {
         desc.options.clear();
     }
-    desc.options.clear();
+    desc.options.mut_or_default();
 
     // TODO: don't clear services.
     desc.service.clear();
