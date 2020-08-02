@@ -177,6 +177,16 @@ fn normalize_descriptor(desc: &mut DescriptorProto) {
     for ext in desc.extension.iter_mut() {
         ext.options.mut_or_default();
     }
+
+    for ext in desc.extension_range.iter_mut() {
+        // If ext range end exceeds max field number,
+        // the actual upper limit does not matter.
+        // protoc is not consistent in behavior thus flush
+        // the value to some arbitrary compatible value.
+        if ext.has_end() && ext.get_end() >= 0x20000000 {
+            ext.set_end(i32::max_value());
+        }
+    }
 }
 
 fn pretty_message<M: protobuf::Message>(message: &M) -> String {

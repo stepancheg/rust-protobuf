@@ -655,9 +655,7 @@ impl<'a> Parser<'a> {
         let from = self.next_field_number()?;
         let to = if self.tokenizer.next_ident_if_eq("to")? {
             if self.tokenizer.next_ident_if_eq("max")? {
-                // max field number + 1
-                // matches Google implementation
-                536_870_912
+                i32::max_value()
             } else {
                 self.next_field_number()? + 1
             }

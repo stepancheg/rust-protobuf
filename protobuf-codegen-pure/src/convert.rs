@@ -11,9 +11,9 @@ use protobuf::json::json_name;
 use protobuf::prelude::*;
 use protobuf::Message;
 
-use crate::model::ProtobufConstant;
 use crate::model::FieldOrOneOf;
 use crate::model::ImportVis;
+use crate::model::ProtobufConstant;
 use crate::protobuf_codegen::case_convert::camel_case;
 use crate::protobuf_codegen::ProtobufAbsolutePath;
 use crate::protobuf_codegen::ProtobufIdent;
