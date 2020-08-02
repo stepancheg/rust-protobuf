@@ -240,8 +240,8 @@ impl Message {
     pub fn regular_fields_for_test(&self) -> Vec<&Field> {
         self.fields
             .iter()
-            .flat_map(|fo| match fo {
-                FieldOrOneOf::Field(f) => Some(f),
+            .flat_map(|fo| match &fo.t {
+                FieldOrOneOf::Field(f) => Some(&f.t),
                 FieldOrOneOf::OneOf(_) => None,
             })
             .collect()
@@ -251,7 +251,7 @@ impl Message {
     pub fn oneofs_for_test(&self) -> Vec<&OneOf> {
         self.fields
             .iter()
-            .flat_map(|fo| match fo {
+            .flat_map(|fo| match &fo.t {
                 FieldOrOneOf::Field(_) => None,
                 FieldOrOneOf::OneOf(o) => Some(o),
             })

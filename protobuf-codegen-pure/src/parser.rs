@@ -660,7 +660,7 @@ impl<'a> Parser<'a> {
             if self.tokenizer.next_ident_if_eq("max")? {
                 i32::max_value()
             } else {
-                self.next_field_number()? + 1
+                self.next_field_number()?
             }
         } else {
             from
@@ -1211,18 +1211,18 @@ mod test {
     fn test_field_default_value_int() {
         let msg = r#"  optional int64 f = 4 [default = 12];  "#;
         let mess = parse(msg, |p| p.next_field(MessageBodyParseMode::MessageProto2));
-        assert_eq!("f", mess.name);
-        assert_eq!("default", mess.options[0].name);
-        assert_eq!("12", mess.options[0].value.format());
+        assert_eq!("f", mess.t.name);
+        assert_eq!("default", mess.t.options[0].name);
+        assert_eq!("12", mess.t.options[0].value.format());
     }
 
     #[test]
     fn test_field_default_value_float() {
         let msg = r#"  optional float f = 2 [default = 10.0];  "#;
         let mess = parse(msg, |p| p.next_field(MessageBodyParseMode::MessageProto2));
-        assert_eq!("f", mess.name);
-        assert_eq!("default", mess.options[0].name);
-        assert_eq!("10", mess.options[0].value.format());
+        assert_eq!("f", mess.t.name);
+        assert_eq!("default", mess.t.options[0].name);
+        assert_eq!("10", mess.t.options[0].value.format());
     }
 
     #[test]
@@ -1242,7 +1242,7 @@ mod test {
     }"#;
 
         let mess = parse_opt(msg, |p| p.next_message_opt());
-        assert_eq!(10, mess.fields.len());
+        assert_eq!(10, mess.t.fields.len());
     }
 
     #[test]
@@ -1280,7 +1280,7 @@ mod test {
 
         assert_eq!(
             vec!["test_import_nested_imported_pb.proto"],
-            desc.import_paths
+            desc.imports.into_iter().map(|i| i.path).collect::<Vec<_>>()
         );
     }
 
@@ -1321,7 +1321,7 @@ mod test {
     }"#;
 
         let mess = parse_opt(msg, |p| p.next_message_opt());
-        assert_eq!(1, mess.messages.len());
+        assert_eq!(1, mess.t.messages.len());
     }
 
     #[test]
@@ -1332,8 +1332,8 @@ mod test {
     }"#;
 
         let mess = parse_opt(msg, |p| p.next_message_opt());
-        assert_eq!(1, mess.fields.len());
-        match mess.regular_fields_for_test()[0].typ {
+        assert_eq!(1, mess.t.fields.len());
+        match mess.t.regular_fields_for_test()[0].typ {
             FieldType::Map(ref f) => match &**f {
                 &(FieldType::String, FieldType::Int32) => (),
                 ref f => panic!("Expecting Map<String, Int32> found {:?}", f),
@@ -1356,8 +1356,8 @@ mod test {
     }"#;
 
         let mess = parse_opt(msg, |p| p.next_message_opt());
-        assert_eq!(1, mess.oneofs_for_test().len());
-        assert_eq!(3, mess.oneofs_for_test()[0].fields.len());
+        assert_eq!(1, mess.t.oneofs_for_test().len());
+        assert_eq!(3, mess.t.oneofs_for_test()[0].fields.len());
     }
 
     #[test]
@@ -1377,13 +1377,13 @@ mod test {
                 FieldNumberRange { from: 17, to: 20 },
                 FieldNumberRange { from: 30, to: 30 }
             ],
-            mess.reserved_nums
+            mess.t.reserved_nums
         );
         assert_eq!(
             vec!["foo".to_string(), "bar".to_string()],
-            mess.reserved_names
+            mess.t.reserved_names
         );
-        assert_eq!(2, mess.fields.len());
+        assert_eq!(2, mess.t.fields.len());
     }
 
     #[test]
@@ -1393,10 +1393,15 @@ mod test {
         }"#;
 
         let mess = parse_opt(msg, |p| p.next_message_opt());
-        assert_eq!("default", mess.regular_fields_for_test()[0].options[0].name);
+        assert_eq!(
+            "default",
+            mess.t.regular_fields_for_test()[0].options[0].name
+        );
         assert_eq!(
             "17",
-            mess.regular_fields_for_test()[0].options[0].value.format()
+            mess.t.regular_fields_for_test()[0].options[0]
+                .value
+                .format()
         );
     }
 
@@ -1409,7 +1414,9 @@ mod test {
         let mess = parse_opt(msg, |p| p.next_message_opt());
         assert_eq!(
             r#""ab\nc d\"g\'h\0\"z""#,
-            mess.regular_fields_for_test()[0].options[0].value.format()
+            mess.t.regular_fields_for_test()[0].options[0]
+                .value
+                .format()
         );
     }
 
@@ -1422,7 +1429,9 @@ mod test {
         let mess = parse_opt(msg, |p| p.next_message_opt());
         assert_eq!(
             r#""ab\nc d\xfeE\"g\'h\0\"z""#,
-            mess.regular_fields_for_test()[0].options[0].value.format()
+            mess.t.regular_fields_for_test()[0].options[0]
+                .value
+                .format()
         );
     }
 
@@ -1440,14 +1449,14 @@ mod test {
         }"#;
         let mess = parse_opt(msg, |p| p.next_message_opt());
 
-        assert_eq!("identifier", mess.regular_fields_for_test()[1].name);
-        if let FieldType::Group { name, fields } = &mess.regular_fields_for_test()[1].typ {
+        assert_eq!("identifier", mess.t.regular_fields_for_test()[1].name);
+        if let FieldType::Group(Group { fields, .. }) = &mess.t.regular_fields_for_test()[1].typ {
             assert_eq!(2, fields.len());
         } else {
             panic!("expecting group");
         }
 
-        assert_eq!("bbb", mess.regular_fields_for_test()[2].name);
+        assert_eq!("bbb", mess.t.regular_fields_for_test()[2].name);
     }
 
     #[test]
@@ -1496,9 +1505,12 @@ mod test {
 
         let fd = FileDescriptor::parse(proto).expect("fd");
         assert_eq!(3, fd.extensions.len());
-        assert_eq!("google.protobuf.FileOptions", fd.extensions[0].extendee);
-        assert_eq!("google.protobuf.FileOptions", fd.extensions[1].extendee);
-        assert_eq!("google.protobuf.MessageOptions", fd.extensions[2].extendee);
-        assert_eq!(17003, fd.extensions[2].field.number);
+        assert_eq!("google.protobuf.FileOptions", fd.extensions[0].t.extendee);
+        assert_eq!("google.protobuf.FileOptions", fd.extensions[1].t.extendee);
+        assert_eq!(
+            "google.protobuf.MessageOptions",
+            fd.extensions[2].t.extendee
+        );
+        assert_eq!(17003, fd.extensions[2].t.field.t.number);
     }
 }
