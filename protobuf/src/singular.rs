@@ -9,6 +9,7 @@ use std::mem;
 use std::option;
 
 use crate::clear::Clear;
+use crate::Message;
 
 /// Option-like objects
 #[doc(hidden)]
@@ -470,6 +471,21 @@ impl<T: Default + Clear> SingularPtrField<T> {
     #[inline]
     pub fn set_default(&mut self) -> &mut T {
         OptionLike::set_default(self)
+    }
+}
+
+impl<M: Message + Default> SingularPtrField<M> {
+    /// Get a reference to contained value or a default instance.
+    pub fn get_or_default(&self) -> &M {
+        self.as_ref().unwrap_or_else(|| M::default_instance())
+    }
+
+    /// Get a mutable reference to contained value, initialize if not initialized yet.
+    pub fn mut_or_default(&mut self) -> &mut M {
+        if self.is_none() {
+            self.set_default();
+        }
+        self.get_mut_ref()
     }
 }
 
