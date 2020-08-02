@@ -9,8 +9,11 @@ use protobuf::text_format::lexer::StrLit;
 
 use crate::parser::Parser;
 
+use crate::convert::ConvertError;
+use crate::convert::ConvertResult;
 pub use crate::parser::ParserError;
 pub use crate::parser::ParserErrorWithLocation;
+use protobuf::ProtobufEnum;
 
 /// Protobox syntax
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
@@ -305,6 +308,28 @@ impl ProtobufConstant {
             ProtobufConstant::String(ref s) => s.quoted(),
             ProtobufConstant::BracedExpr(ref s) => s.clone(),
         }
+    }
+
+    /** Interpret .proto constant as an enum value. */
+    pub fn as_enum_value<E: ProtobufEnum>(&self) -> ConvertResult<E> {
+        let ident = match self {
+            ProtobufConstant::Ident(ident) => ident,
+            _ => {
+                return Err(ConvertError::IncorrectEnumValue(
+                    E::enum_descriptor_static().name().to_owned(),
+                    self.clone(),
+                ))
+            }
+        };
+        for v in E::values() {
+            if v.descriptor().name() == ident {
+                return Ok(*v);
+            }
+        }
+        Err(ConvertError::IncorrectEnumValue(
+            E::enum_descriptor_static().name().to_owned(),
+            self.clone(),
+        ))
     }
 }
 

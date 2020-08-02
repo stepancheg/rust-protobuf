@@ -10,8 +10,10 @@ use protobuf::descriptor::field_descriptor_proto;
 use protobuf::json::json_name;
 use protobuf::prelude::*;
 use protobuf::Message;
+use protobuf::UnknownFields;
 
 use crate::model::FieldOrOneOf;
+use crate::model::ProtobufConstant;
 use crate::protobuf_codegen::case_convert::camel_case;
 use crate::protobuf_codegen::ProtobufAbsolutePath;
 use crate::protobuf_codegen::ProtobufIdent;
@@ -28,6 +30,7 @@ pub enum ConvertError {
     StrLitDecodeError(StrLitDecodeError),
     DefaultValueIsNotStringLiteral,
     WrongOptionType,
+    IncorrectEnumValue(String, ProtobufConstant),
 }
 
 impl From<StrLitDecodeError> for ConvertError {
@@ -263,6 +266,10 @@ impl<'a> Resolver<'a> {
             input,
             "google.protobuf.MessageOptions",
             r.mut_unknown_fields(),
+            |_, _| {
+                /* TODO */
+                Ok(())
+            },
         )?;
         Ok(r)
     }
@@ -348,15 +355,19 @@ impl<'a> Resolver<'a> {
         Ok(output)
     }
 
-    fn custom_options(
+    fn custom_options<F>(
         &self,
         input: &[model::ProtobufOption],
         extendee: &'static str,
         unknown_fields: &mut protobuf::UnknownFields,
-    ) -> ConvertResult<()> {
+        mut builtin_option: F,
+    ) -> ConvertResult<()>
+    where
+        F: FnMut(&str, &ProtobufConstant) -> ConvertResult<()>,
+    {
         for option in input {
-            // TODO: builtin options too
             if !option.name.starts_with('(') {
+                builtin_option(&option.name, &option.value)?;
                 continue;
             }
 
@@ -404,6 +415,10 @@ impl<'a> Resolver<'a> {
             input,
             "google.protobuf.FieldOptions",
             r.mut_unknown_fields(),
+            |_, _| {
+                /* TODO */
+                Ok(())
+            },
         )?;
         Ok(r)
     }
@@ -648,7 +663,15 @@ impl<'a> Resolver<'a> {
         if let Some(deprecated) = input.by_name_bool("deprecated")? {
             r.set_deprecated(deprecated);
         }
-        self.custom_options(input, "google.protobuf.EnumOptions", r.mut_unknown_fields())?;
+        self.custom_options(
+            input,
+            "google.protobuf.EnumOptions",
+            r.mut_unknown_fields(),
+            |_, _| {
+                /* TODO */
+                Ok(())
+            },
+        )?;
         Ok(r)
     }
 
@@ -777,7 +800,19 @@ impl<'a> Resolver<'a> {
         input: &[model::ProtobufOption],
     ) -> ConvertResult<protobuf::descriptor::FileOptions> {
         let mut r = protobuf::descriptor::FileOptions::new();
-        self.custom_options(input, "google.protobuf.FileOptions", r.mut_unknown_fields())?;
+        let mut unknown_fields = UnknownFields::new();
+        self.custom_options(
+            input,
+            "google.protobuf.FileOptions",
+            &mut unknown_fields,
+            |name, value| {
+                if name == "optimize_for" {
+                    r.set_optimize_for(value.as_enum_value()?);
+                }
+                Ok(())
+            },
+        )?;
+        r.unknown_fields = unknown_fields;
         Ok(r)
     }
 
