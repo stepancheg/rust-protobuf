@@ -11,11 +11,7 @@ use protobuf::json::json_name;
 use protobuf::prelude::*;
 use protobuf::Message;
 
-use crate::model::ImportVis;
-use crate::model::ProtobufConstant;
-use crate::model::FieldType;
-use crate::model::FieldOrOneOf;
-use crate::model::Group;
+use crate::model::WithLoc;
 use crate::protobuf_codegen::case_convert::camel_case;
 use crate::protobuf_codegen::ProtobufAbsolutePath;
 use crate::protobuf_codegen::ProtobufIdent;
@@ -33,7 +29,7 @@ pub enum ConvertError {
     StrLitDecodeError(StrLitDecodeError),
     DefaultValueIsNotStringLiteral,
     WrongOptionType,
-    InconvertibleValue(RuntimeTypeBox, ProtobufConstant),
+    InconvertibleValue(RuntimeTypeBox, model::ProtobufConstant),
 }
 
 impl From<StrLitDecodeError> for ConvertError {
@@ -101,7 +97,7 @@ enum LookupScope<'a> {
 }
 
 impl<'a> LookupScope<'a> {
-    fn messages(&self) -> &[model::Message] {
+    fn messages(&self) -> &[model::WithLoc<model::Message>] {
         match self {
             &LookupScope::File(file) => &file.messages,
             &LookupScope::Message(messasge) => &messasge.messages,
@@ -111,7 +107,8 @@ impl<'a> LookupScope<'a> {
     fn find_message(&self, simple_name: &ProtobufIdent) -> Option<&model::Message> {
         self.messages()
             .into_iter()
-            .find(|m| m.name == simple_name.get())
+            .find(|m| m.t.name == simple_name.get())
+            .map(|m| &m.t)
     }
 
     fn enums(&self) -> &[model::Enumeration] {
@@ -131,7 +128,7 @@ impl<'a> LookupScope<'a> {
         r.extend(
             self.messages()
                 .into_iter()
-                .map(|e| (ProtobufIdent::from(&e.name[..]), MessageOrEnum::Message)),
+                .map(|m| (ProtobufIdent::from(&m.t.name[..]), MessageOrEnum::Message)),
         );
         r
     }
@@ -246,7 +243,7 @@ impl<'a> Resolver<'a> {
     fn group_message(
         &self,
         name: &str,
-        fields: &[model::Field],
+        fields: &[model::WithLoc<model::Field>],
         path_in_file: &ProtobufRelativePath,
     ) -> ConvertResult<protobuf::descriptor::DescriptorProto> {
         let mut output = protobuf::descriptor::DescriptorProto::new();
@@ -280,21 +277,29 @@ impl<'a> Resolver<'a> {
         let mut nested_messages = protobuf::RepeatedField::new();
 
         for m in &input.messages {
-            nested_messages.push(self.message(m, &nested_path_in_file)?);
+            nested_messages.push(self.message(&m.t, &nested_path_in_file)?);
         }
 
         for f in input.regular_fields_including_in_oneofs() {
-            match &f.typ {
+            match &f.t.typ {
                 model::FieldType::Map(t) => {
                     nested_messages.push(self.map_entry_message(
-                        &f.name,
+                        &f.t.name,
                         &t.0,
                         &t.1,
                         path_in_file,
                     )?);
                 }
-                model::FieldType::Group(Group { name, fields }) => {
-                    nested_messages.push(self.group_message(name, fields, &nested_path_in_file)?);
+                model::FieldType::Group(model::Group {
+                    name: group_name,
+                    fields,
+                    ..
+                }) => {
+                    nested_messages.push(self.group_message(
+                        group_name,
+                        fields,
+                        &nested_path_in_file,
+                    )?);
                 }
                 _ => (),
             }
@@ -312,11 +317,11 @@ impl<'a> Resolver<'a> {
             let mut fields = protobuf::RepeatedField::new();
 
             for fo in &input.fields {
-                match fo {
-                    FieldOrOneOf::Field(f) => {
+                match &fo.t {
+                    model::FieldOrOneOf::Field(f) => {
                         fields.push(self.field(f, None, &nested_path_in_file)?);
                     }
-                    FieldOrOneOf::OneOf(o) => {
+                    model::FieldOrOneOf::OneOf(o) => {
                         let oneof_index = output.oneof_decl.len();
                         for f in &o.fields {
                             fields.push(self.field(
@@ -345,9 +350,9 @@ impl<'a> Resolver<'a> {
             output.extension_range.push(extension_range);
         }
         for ext in &input.extensions {
-            let mut extension = self.field(&ext.field, None, path_in_file)?;
+            let mut extension = self.field(&ext.t.field, None, path_in_file)?;
             extension.set_extendee(
-                self.resolve_message_or_enum(&ext.extendee, path_in_file)
+                self.resolve_message_or_enum(&ext.t.extendee, path_in_file)
                     .0
                     .path,
             );
@@ -395,7 +400,7 @@ impl<'a> Resolver<'a> {
 
             let value = match Resolver::option_value_to_unknown_value(
                 &option.value,
-                &extension.field.typ,
+                &extension.field.t.typ,
                 &option.name,
             ) {
                 Ok(value) => value,
@@ -407,7 +412,7 @@ impl<'a> Resolver<'a> {
 
             options
                 .mut_unknown_fields()
-                .add_value(extension.field.number as u32, value);
+                .add_value(extension.field.t.number as u32, value);
         }
         Ok(options)
     }
@@ -421,27 +426,27 @@ impl<'a> Resolver<'a> {
 
     fn field(
         &self,
-        input: &model::Field,
+        input: &model::WithLoc<model::Field>,
         oneof_index: Option<i32>,
         path_in_file: &ProtobufRelativePath,
     ) -> ConvertResult<protobuf::descriptor::FieldDescriptorProto> {
         let mut output = protobuf::descriptor::FieldDescriptorProto::new();
-        output.set_name(input.name.clone());
+        output.set_name(input.t.name.clone());
 
-        if let model::FieldType::Map(..) = input.typ {
+        if let model::FieldType::Map(..) = input.t.typ {
             output.set_label(protobuf::descriptor::field_descriptor_proto::Label::LABEL_REPEATED);
         } else {
-            output.set_label(label(input.rule));
+            output.set_label(label(input.t.rule));
         }
 
-        let (t, t_name) = self.field_type(&input.name, &input.typ, path_in_file);
+        let (t, t_name) = self.field_type(&input.t.name, &input.t.typ, path_in_file);
         output.set_field_type(t);
         if let Some(t_name) = t_name {
             output.set_type_name(t_name.path);
         }
 
-        output.set_number(input.number);
-        if let Some(ref default) = input.options.as_slice().by_name("default") {
+        output.set_number(input.t.number);
+        if let Some(ref default) = input.t.options.as_slice().by_name("default") {
             let default = match output.get_field_type() {
                 protobuf::descriptor::field_descriptor_proto::Type::TYPE_STRING => {
                     if let &model::ProtobufConstant::String(ref s) = default {
@@ -466,16 +471,16 @@ impl<'a> Resolver<'a> {
 
         output
             .options
-            .set_message(self.field_options(&input.options)?);
+            .set_message(self.field_options(&input.t.options)?);
 
         if let Some(oneof_index) = oneof_index {
             output.set_oneof_index(oneof_index);
         }
 
-        if let Some(json_name) = input.options.as_slice().by_name_string("json_name")? {
+        if let Some(json_name) = input.t.options.as_slice().by_name_string("json_name")? {
             output.set_json_name(json_name);
         } else {
-            output.set_json_name(json_name(&input.name));
+            output.set_json_name(json_name(&input.t.name));
         }
 
         Ok(output)
@@ -624,11 +629,14 @@ impl<'a> Resolver<'a> {
                     Some(type_name),
                 )
             }
-            model::FieldType::Group(Group { ref name, .. }) => {
+            model::FieldType::Group(model::Group {
+                name: ref group_name,
+                ..
+            }) => {
                 let mut type_name =
                     ProtobufAbsolutePath::from_package_path(self.current_file.package.as_deref());
                 type_name.push_relative(path_in_file);
-                type_name.push_simple(ProtobufIdent::from(name.clone()));
+                type_name.push_simple(ProtobufIdent::from(group_name.clone()));
                 (
                     protobuf::descriptor::field_descriptor_proto::Type::TYPE_GROUP,
                     Some(type_name),
@@ -686,8 +694,8 @@ impl<'a> Resolver<'a> {
 
         for file in self.package_files(package) {
             for ext in &file.extensions {
-                if ext.field.name == name {
-                    return Ok(ext);
+                if ext.t.field.t.name == name {
+                    return Ok(&ext.t);
                 }
             }
         }
@@ -796,12 +804,8 @@ impl<'a> Resolver<'a> {
                 .0
                 .path,
         );
-        let group_messages = if let FieldType::Group(g) = &input.field.typ {
-            Some(self.group_message(
-                &input.field.name,
-                &g.fields,
-                &ProtobufRelativePath::empty(),
-            )?)
+        let group_messages = if let model::FieldType::Group(g) = &input.field.t.typ {
+            Some(self.group_message(&g.name, &g.fields, &ProtobufRelativePath::empty())?)
         } else {
             None
         };
@@ -851,30 +855,37 @@ pub fn file_descriptor(
     }
 
     for import in &input.imports {
-        if import.vis == ImportVis::Public {
+        if import.vis == model::ImportVis::Public {
             output
                 .public_dependency
                 .push(output.dependency.len() as i32);
-        } else if import.vis == ImportVis::Weak {
+        } else if import.vis == model::ImportVis::Weak {
             output.weak_dependency.push(output.dependency.len() as i32);
         }
         output.dependency.push(import.path.clone());
     }
 
+    let mut messages = Vec::new();
+
     let mut extensions = protobuf::RepeatedField::new();
     for e in &input.extensions {
-        let (ext, group_messages) = resolver.extension(e)?;
+        let (ext, group_messages) = resolver.extension(&e.t)?;
         extensions.push(ext);
-        println!("{:?}", group_messages);
-        output.message_type.extend(group_messages);
+        messages.extend(group_messages.map(WithLoc::with_loc(e.loc)));
     }
     output.extension = extensions;
 
     for m in &input.messages {
-        output
-            .message_type
-            .push(resolver.message(&m, &ProtobufRelativePath::empty())?);
+        let message = resolver.message(&m.t, &ProtobufRelativePath::empty())?;
+        messages.push(WithLoc {
+            t: message,
+            loc: m.loc,
+        });
     }
+
+    // Preserve declaration order
+    messages.sort_by_key(|m| m.loc);
+    output.message_type = messages.into_iter().map(|WithLoc { t, .. }| t).collect();
 
     output.enum_type = input
         .enums

@@ -93,6 +93,12 @@ impl<'a> Tokenizer<'a> {
             .unwrap_or(self.lexer.loc)
     }
 
+    pub fn lookahead_loc(&mut self) -> Loc {
+        drop(self.lookahead());
+        // TODO: does not handle EOF properly
+        self.loc()
+    }
+
     fn lookahead(&mut self) -> TokenizerResult<Option<&Token>> {
         Ok(match self.next_token {
             Some(ref token) => Some(&token.token),

@@ -16,6 +16,21 @@ pub use crate::parser::ParserErrorWithLocation;
 use protobuf::reflect::ReflectValueBox;
 use protobuf::reflect::RuntimeTypeBox;
 
+#[derive(Debug, Clone, PartialEq)]
+pub struct WithLoc<T> {
+    pub loc: Loc,
+    pub t: T,
+}
+
+impl<T> WithLoc<T> {
+    pub fn with_loc(loc: Loc) -> impl FnOnce(T) -> WithLoc<T> {
+        move |t| WithLoc {
+            t,
+            loc: loc.clone(),
+        }
+    }
+}
+
 /// Protobox syntax
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum Syntax {
@@ -46,8 +61,9 @@ pub enum Rule {
 /// Protobuf group
 #[derive(Debug, Clone, PartialEq)]
 pub struct Group {
+    /// Group name
     pub name: String,
-    pub fields: Vec<Field>,
+    pub fields: Vec<WithLoc<Field>>,
 }
 
 /// Protobuf supported field types
@@ -161,7 +177,7 @@ pub struct Field {
 /// A Protobuf field of oneof group
 #[derive(Debug, Clone, PartialEq)]
 pub enum FieldOrOneOf {
-    Field(Field),
+    Field(WithLoc<Field>),
     OneOf(OneOf),
 }
 
@@ -180,7 +196,7 @@ pub struct Message {
     /// Message name
     pub name: String,
     /// Message fields and oneofs
-    pub fields: Vec<FieldOrOneOf>,
+    pub fields: Vec<WithLoc<FieldOrOneOf>>,
     /// Message reserved numbers
     ///
     /// TODO: use RangeInclusive once stable
@@ -188,7 +204,7 @@ pub struct Message {
     /// Message reserved names
     pub reserved_names: Vec<String>,
     /// Nested messages
-    pub messages: Vec<Message>,
+    pub messages: Vec<WithLoc<Message>>,
     /// Nested enums
     pub enums: Vec<Enumeration>,
     /// Non-builtin options
@@ -196,14 +212,14 @@ pub struct Message {
     /// Extension field numbers
     pub extension_ranges: Vec<FieldNumberRange>,
     /// Extensions
-    pub extensions: Vec<Extension>,
+    pub extensions: Vec<WithLoc<Extension>>,
 }
 
 impl Message {
-    pub fn regular_fields_including_in_oneofs(&self) -> Vec<&Field> {
+    pub fn regular_fields_including_in_oneofs(&self) -> Vec<&WithLoc<Field>> {
         self.fields
             .iter()
-            .flat_map(|fo| match fo {
+            .flat_map(|fo| match &fo.t {
                 FieldOrOneOf::Field(f) => vec![f],
                 FieldOrOneOf::OneOf(o) => o.fields.iter().collect(),
             })
@@ -211,11 +227,13 @@ impl Message {
     }
 
     pub fn _nested_extensions(&self) -> Vec<&Group> {
-        self.regular_fields_including_in_oneofs().into_iter()
-            .flat_map(|f| match &f.typ {
+        self.regular_fields_including_in_oneofs()
+            .into_iter()
+            .flat_map(|f| match &f.t.typ {
                 FieldType::Group(g) => Some(g),
                 _ => None,
-            }).collect()
+            })
+            .collect()
     }
 
     #[cfg(test)]
@@ -267,7 +285,7 @@ pub struct OneOf {
     /// OneOf name
     pub name: String,
     /// OneOf fields
-    pub fields: Vec<Field>,
+    pub fields: Vec<WithLoc<Field>>,
 }
 
 #[derive(Debug, Clone)]
@@ -275,7 +293,7 @@ pub struct Extension {
     /// Extend this type with field
     pub extendee: String,
     /// Extension field
-    pub field: Field,
+    pub field: WithLoc<Field>,
 }
 
 /// Service method
@@ -385,11 +403,11 @@ pub struct FileDescriptor {
     /// Protobuf Syntax
     pub syntax: Syntax,
     /// Top level messages
-    pub messages: Vec<Message>,
+    pub messages: Vec<WithLoc<Message>>,
     /// Enums
     pub enums: Vec<Enumeration>,
     /// Extensions
-    pub extensions: Vec<Extension>,
+    pub extensions: Vec<WithLoc<Extension>>,
     /// Services
     pub services: Vec<Service>,
     /// Non-builtin options

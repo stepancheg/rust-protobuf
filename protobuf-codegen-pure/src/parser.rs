@@ -206,14 +206,14 @@ impl MessageBodyParseMode {
 
 #[derive(Default)]
 pub struct MessageBody {
-    pub fields: Vec<FieldOrOneOf>,
+    pub fields: Vec<WithLoc<FieldOrOneOf>>,
     pub reserved_nums: Vec<FieldNumberRange>,
     pub reserved_names: Vec<String>,
-    pub messages: Vec<Message>,
+    pub messages: Vec<WithLoc<Message>>,
     pub enums: Vec<Enumeration>,
     pub options: Vec<ProtobufOption>,
     pub extension_ranges: Vec<FieldNumberRange>,
-    pub extensions: Vec<Extension>,
+    pub extensions: Vec<WithLoc<Extension>>,
 }
 
 trait NumLitEx {
@@ -546,7 +546,8 @@ impl<'a> Parser<'a> {
 
     // field = label type fieldName "=" fieldNumber [ "[" fieldOptions "]" ] ";"
     // group = label "group" groupName "=" fieldNumber messageBody
-    fn next_field(&mut self, mode: MessageBodyParseMode) -> ParserResult<Field> {
+    fn next_field(&mut self, mode: MessageBodyParseMode) -> ParserResult<WithLoc<Field>> {
+        let loc = self.tokenizer.lookahead_loc();
         let rule = if self.clone().tokenizer.next_ident_if_eq("map")? {
             if !mode.map_allowed() {
                 return Err(ParserError::MapFieldNotAllowed);
@@ -569,22 +570,23 @@ impl<'a> Parser<'a> {
 
             let fields = fields
                 .into_iter()
-                .map(|fo| match fo {
+                .map(|fo| match fo.t {
                     FieldOrOneOf::Field(f) => Ok(f),
                     FieldOrOneOf::OneOf(_) => Err(ParserError::OneOfInGroup),
                 })
                 .collect::<Result<_, ParserError>>()?;
 
-            Ok(Field {
+            let field = Field {
                 // The field name is a lowercased version of the type name
                 // (which has been verified to start with an uppercase letter).
                 // https://git.io/JvxAP
                 name: name.to_ascii_lowercase(),
                 rule,
-                typ: FieldType::Group(Group { name, fields }),
+                typ: FieldType::Group(Group { name: name, fields }),
                 number,
                 options: Vec::new(),
-            })
+            };
+            Ok(WithLoc { t: field, loc })
         } else {
             let typ = self.next_field_type()?;
             let name = self.tokenizer.next_ident()?.to_owned();
@@ -600,13 +602,14 @@ impl<'a> Parser<'a> {
                 self.tokenizer.next_symbol_expect_eq(']')?;
             }
             self.tokenizer.next_symbol_expect_eq(';')?;
-            Ok(Field {
+            let field = Field {
                 name,
                 rule,
                 typ,
                 number,
                 options,
-            })
+            };
+            Ok(WithLoc { t: field, loc })
         }
     }
 
@@ -618,7 +621,7 @@ impl<'a> Parser<'a> {
             let MessageBody { fields, .. } = self.next_message_body(MessageBodyParseMode::Oneof)?;
             let fields = fields
                 .into_iter()
-                .map(|fo| match fo {
+                .map(|fo| match fo.t {
                     FieldOrOneOf::Field(f) => Ok(f),
                     FieldOrOneOf::OneOf(_) => Err(ParserError::OneOfInOneOf),
                 })
@@ -797,6 +800,8 @@ impl<'a> Parser<'a> {
         let mut r = MessageBody::default();
 
         while self.tokenizer.lookahead_if_symbol()? != Some('}') {
+            let loc = self.tokenizer.lookahead_loc();
+
             // emptyStatement
             if self.tokenizer.next_symbol_if_eq(';')? {
                 continue;
@@ -810,7 +815,8 @@ impl<'a> Parser<'a> {
                 }
 
                 if let Some(oneof) = self.next_oneof_opt()? {
-                    r.fields.push(FieldOrOneOf::OneOf(oneof));
+                    let one_of = FieldOrOneOf::OneOf(oneof);
+                    r.fields.push(WithLoc { t: one_of, loc });
                     continue;
                 }
 
@@ -851,7 +857,8 @@ impl<'a> Parser<'a> {
                 self.tokenizer.next_ident_if_eq_error("option")?;
             }
 
-            r.fields.push(FieldOrOneOf::Field(self.next_field(mode)?));
+            let field = FieldOrOneOf::Field(self.next_field(mode)?);
+            r.fields.push(WithLoc { t: field, loc });
         }
 
         self.tokenizer.next_symbol_expect_eq('}')?;
@@ -860,7 +867,9 @@ impl<'a> Parser<'a> {
     }
 
     // message = "message" messageName messageBody
-    fn next_message_opt(&mut self) -> ParserResult<Option<Message>> {
+    fn next_message_opt(&mut self) -> ParserResult<Option<WithLoc<Message>>> {
+        let loc = self.tokenizer.lookahead_loc();
+
         if self.tokenizer.next_ident_if_eq("message")? {
             let name = self.tokenizer.next_ident()?.to_owned();
 
@@ -880,7 +889,7 @@ impl<'a> Parser<'a> {
                 extension_ranges,
             } = self.next_message_body(mode)?;
 
-            Ok(Some(Message {
+            let message = Message {
                 name,
                 fields,
                 reserved_nums,
@@ -890,7 +899,8 @@ impl<'a> Parser<'a> {
                 options,
                 extensions,
                 extension_ranges,
-            }))
+            };
+            Ok(Some(WithLoc { t: message, loc }))
         } else {
             Ok(None)
         }
@@ -899,7 +909,7 @@ impl<'a> Parser<'a> {
     // Extend
 
     // extend = "extend" messageType "{" {field | group | emptyStatement} "}"
-    fn next_extend_opt(&mut self) -> ParserResult<Option<Vec<Extension>>> {
+    fn next_extend_opt(&mut self) -> ParserResult<Option<Vec<WithLoc<Extension>>>> {
         let mut clone = self.clone();
         if clone.tokenizer.next_ident_if_eq("extend")? {
             // According to spec `extend` is only for `proto2`, but it is used in `proto3`
@@ -917,9 +927,9 @@ impl<'a> Parser<'a> {
             let MessageBody { fields, .. } = self.next_message_body(mode)?;
 
             // TODO: is oneof allowed in extend?
-            let fields: Vec<Field> = fields
+            let fields: Vec<WithLoc<Field>> = fields
                 .into_iter()
-                .map(|fo| match fo {
+                .map(|fo| match fo.t {
                     FieldOrOneOf::Field(f) => Ok(f),
                     FieldOrOneOf::OneOf(_) => Err(ParserError::OneOfInExtend),
                 })
@@ -929,7 +939,9 @@ impl<'a> Parser<'a> {
                 .into_iter()
                 .map(|field| {
                     let extendee = extendee.clone();
-                    Extension { extendee, field }
+                    let loc = field.loc;
+                    let extension = Extension { extendee, field };
+                    WithLoc { t: extension, loc }
                 })
                 .collect();
 
