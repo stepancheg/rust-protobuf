@@ -9,11 +9,14 @@ use std::path::MAIN_SEPARATOR;
 use std::str;
 use tempfile::NamedTempFile;
 
+use protobuf::descriptor::field_descriptor_proto;
 use protobuf::descriptor::DescriptorProto;
 use protobuf::descriptor::EnumDescriptorProto;
+use protobuf::descriptor::FieldDescriptorProto;
 use protobuf::descriptor::FileDescriptorProto;
 use protobuf::descriptor::FileDescriptorSet;
 use protobuf::descriptor::OneofDescriptorProto;
+use protobuf::text_format::lexer::float::parse_protobuf_float;
 use protobuf::RepeatedField;
 use protobuf_test_common::build::copy_tests_v2_v3;
 use protobuf_test_common::build::glob_simple;
@@ -180,7 +183,7 @@ fn normalize_descriptor(desc: &mut DescriptorProto) {
     desc.options.clear();
 
     for field in &mut desc.field {
-        field.options.mut_or_default();
+        normalize_field(field);
     }
 
     for ext in &mut desc.extension {
@@ -194,6 +197,19 @@ fn normalize_descriptor(desc: &mut DescriptorProto) {
         // the value to some arbitrary compatible value.
         if ext.has_end() && ext.get_end() >= 0x20000000 {
             ext.set_end(0x20000000);
+        }
+    }
+}
+
+fn normalize_field(field: &mut FieldDescriptorProto) {
+    field.options.mut_or_default();
+
+    if field.has_default_value() {
+        if field.get_field_type() == field_descriptor_proto::Type::TYPE_FLOAT {
+            field.set_default_value(format!(
+                "{}",
+                parse_protobuf_float(field.get_default_value()).unwrap()
+            ));
         }
     }
 }
