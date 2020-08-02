@@ -73,6 +73,14 @@ fn print_diff(dir: &Path, a: &Path, b: &Path) {
         return;
     }
 
+    // sanity check
+    let mut a_full = dir.to_path_buf();
+    a_full.push(a);
+    assert!(a_full.exists());
+    let mut b_full = dir.to_path_buf();
+    b_full.push(b);
+    assert!(b_full.exists());
+
     // Not using difference crate because it's slow for large files
     let output = Command::new("diff")
         .current_dir(dir)
