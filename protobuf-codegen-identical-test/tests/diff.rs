@@ -188,7 +188,26 @@ fn pretty_message<M: protobuf::Message>(message: &M) -> String {
     format!("{:#}", FormatMessage(message))
 }
 
-fn test_diff_in<F>(root: &str, s: &str, include: &str, should_skip: F)
+fn descriptor_for_file<'a>(fds: &'a FileDescriptorSet, file_name: &str) -> &'a FileDescriptorProto {
+    for file in &fds.file {
+        if Path::new(file.get_name()).file_name().unwrap()
+            == Path::new(file_name).file_name().unwrap()
+        {
+            return file;
+        }
+    }
+    panic!(
+        "file not found: {}; all files: {}",
+        file_name,
+        fds.file
+            .iter()
+            .map(|f| f.get_name())
+            .collect::<Vec<_>>()
+            .join(", ")
+    );
+}
+
+fn test_diff_in<F>(root: &str, sources_dir: &str, include: &str, should_skip: F)
 where
     F: Fn(&str) -> bool,
 {
@@ -199,8 +218,11 @@ where
         failed: 0,
     };
 
+    let mut include_root = Path::new(root).to_path_buf();
+    include_root.push(include);
+
     let include_full = format!("{}/{}", root, include);
-    let s_full = format!("{}/{}", root, s);
+    let s_full = format!("{}/{}", root, sources_dir);
 
     let inputs_glob = format!("{}/*.proto", s_full);
     let inputs = to_paths(glob_simple(&inputs_glob));
@@ -239,6 +261,7 @@ where
 
     for input in &inputs {
         let label = input.strip_prefix(root).unwrap().to_str().unwrap();
+        let proto_file_name = input.strip_prefix(&include_root).unwrap().to_str().unwrap();
         let proto_name = input.file_name().unwrap().to_str().unwrap();
         let rs_name = protobuf_codegen::proto_name_to_rs(proto_name);
         let protoc_rs = format!("{}/{}", protoc_dir, rs_name);
@@ -252,9 +275,13 @@ where
         let pure_rs_contents =
             fs::read_to_string(&pure_rs).expect(&format!("while reading {}", pure_rs));
 
+        let protoc_descriptor_for_file = descriptor_for_file(&protoc_descriptors, &proto_file_name);
+        let pure_descriptor_for_file = descriptor_for_file(&pure_descriptors, &proto_file_name);
+
         let skip = should_skip(input.to_str().unwrap());
-        // TODO: compare per-file descriptors, not full descriptors
-        if protoc_rs_contents == pure_rs_contents && protoc_descriptors == pure_descriptors {
+        if protoc_rs_contents == pure_rs_contents
+            && protoc_descriptor_for_file == pure_descriptor_for_file
+        {
             if !skip {
                 stats.passed += 1;
                 println!("{}: PASSED", label);
@@ -279,12 +306,12 @@ where
 
             fs::write(
                 format!("{}/{}.descriptors", protoc_dir, proto_name),
-                pretty_message(&protoc_descriptors),
+                pretty_message(protoc_descriptor_for_file),
             )
             .unwrap();
             fs::write(
                 format!("{}/{}.descriptors", pure_dir, proto_name),
-                pretty_message(&pure_descriptors),
+                pretty_message(pure_descriptor_for_file),
             )
             .unwrap();
             print_diff(
@@ -297,7 +324,7 @@ where
 
     println!("{:?}", stats);
     assert!(
-        stats.passed != 0 || s == "src/google/protobuf",
+        stats.passed != 0 || sources_dir == "src/google/protobuf",
         "sanity check"
     );
     assert!(stats.failed == 0, "at least one test failed");
