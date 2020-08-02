@@ -261,7 +261,7 @@ impl<'a> Resolver<'a> {
         &self,
         input: &[model::ProtobufOption],
     ) -> ConvertResult<protobuf::descriptor::MessageOptions> {
-        self.custom_options(input, "google.protobuf.MessageOptions")
+        self.custom_options(input)
     }
 
     fn message(
@@ -345,15 +345,12 @@ impl<'a> Resolver<'a> {
         Ok(output)
     }
 
-    fn custom_options<M>(
-        &self,
-        input: &[model::ProtobufOption],
-        extendee: &'static str,
-    ) -> ConvertResult<M>
+    fn custom_options<M>(&self, input: &[model::ProtobufOption]) -> ConvertResult<M>
     where
         M: Message,
     {
         let mut options = M::new();
+        let extendee = M::descriptor_static().full_name();
 
         for option in input {
             if !option.name.starts_with('(') {
@@ -407,7 +404,7 @@ impl<'a> Resolver<'a> {
         &self,
         input: &[model::ProtobufOption],
     ) -> ConvertResult<protobuf::descriptor::FieldOptions> {
-        self.custom_options(input, "google.protobuf.FieldOptions")
+        self.custom_options(input)
     }
 
     fn field(
@@ -643,7 +640,7 @@ impl<'a> Resolver<'a> {
         &self,
         input: &[model::ProtobufOption],
     ) -> ConvertResult<protobuf::descriptor::EnumOptions> {
-        self.custom_options(input, "google.protobuf.EnumOptions")
+        self.custom_options(input)
     }
 
     fn enumeration(
@@ -770,7 +767,7 @@ impl<'a> Resolver<'a> {
         &self,
         input: &[model::ProtobufOption],
     ) -> ConvertResult<protobuf::descriptor::FileOptions> {
-        self.custom_options(input, "google.protobuf.FileOptions")
+        self.custom_options(input)
     }
 
     fn extension(
