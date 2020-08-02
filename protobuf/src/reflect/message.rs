@@ -1,6 +1,6 @@
 use std::collections::HashMap;
-use std::marker;
 use std::fmt;
+use std::marker;
 
 use crate::core::Message;
 
