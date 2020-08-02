@@ -373,6 +373,7 @@ impl<'a> Resolver<'a> {
             reserved_range.set_end(reserved.to + 1);
             output.reserved_range.push(reserved_range);
         }
+        output.reserved_name = input.reserved_names.clone().into();
 
         Ok(output)
     }
