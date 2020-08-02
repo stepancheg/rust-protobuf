@@ -232,6 +232,11 @@ where
         .run()
         .unwrap();
 
+    let mut protoc_descriptors = protoc_descriptor_set(&includes, &inputs);
+    let mut pure_descriptors = pure_descriptor_set(&includes, &inputs);
+    normalize_descriptor_set(&mut protoc_descriptors);
+    normalize_descriptor_set(&mut pure_descriptors);
+
     for input in &inputs {
         let label = input.strip_prefix(root).unwrap().to_str().unwrap();
         let proto_name = input.file_name().unwrap().to_str().unwrap();
@@ -247,12 +252,8 @@ where
         let pure_rs_contents =
             fs::read_to_string(&pure_rs).expect(&format!("while reading {}", pure_rs));
 
-        let mut protoc_descriptors = protoc_descriptor_set(&includes, &inputs);
-        let mut pure_descriptors = pure_descriptor_set(&includes, &inputs);
-        normalize_descriptor_set(&mut protoc_descriptors);
-        normalize_descriptor_set(&mut pure_descriptors);
-
         let skip = should_skip(input.to_str().unwrap());
+        // TODO: compare per-file descriptors, not full descriptors
         if protoc_rs_contents == pure_rs_contents && protoc_descriptors == pure_descriptors {
             if !skip {
                 stats.passed += 1;
