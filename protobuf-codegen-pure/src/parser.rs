@@ -652,7 +652,7 @@ impl<'a> Parser<'a> {
                 // matches Google implementation
                 536_870_912
             } else {
-                self.next_field_number()?
+                self.next_field_number()? + 1
             }
         } else {
             from
