@@ -274,38 +274,46 @@ impl<'a> Resolver<'a> {
         let mut output = protobuf::descriptor::DescriptorProto::new();
         output.set_name(input.name.clone());
 
-        let mut nested_messages = protobuf::RepeatedField::new();
+        let mut nested_messages = Vec::new();
 
         for m in &input.messages {
-            nested_messages.push(self.message(&m.t, &nested_path_in_file)?);
+            let message = self.message(&m.t, &nested_path_in_file)?;
+            nested_messages.push(WithLoc {
+                t: message,
+                loc: m.loc,
+            });
         }
 
         for f in input.regular_fields_including_in_oneofs() {
             match &f.t.typ {
                 model::FieldType::Map(t) => {
-                    nested_messages.push(self.map_entry_message(
-                        &f.t.name,
-                        &t.0,
-                        &t.1,
-                        path_in_file,
-                    )?);
+                    let message = self.map_entry_message(&f.t.name, &t.0, &t.1, path_in_file)?;
+                    nested_messages.push(WithLoc {
+                        t: message,
+                        loc: f.loc,
+                    });
                 }
                 model::FieldType::Group(model::Group {
                     name: group_name,
                     fields,
                     ..
                 }) => {
-                    nested_messages.push(self.group_message(
-                        group_name,
-                        fields,
-                        &nested_path_in_file,
-                    )?);
+                    let message = self.group_message(group_name, fields, &nested_path_in_file)?;
+                    nested_messages.push(WithLoc {
+                        t: message,
+                        loc: f.loc,
+                    });
                 }
                 _ => (),
             }
         }
 
-        output.nested_type = nested_messages;
+        // Preserve declaration order
+        nested_messages.sort_by_key(|m| m.loc);
+        output.nested_type = nested_messages
+            .into_iter()
+            .map(|WithLoc { t, .. }| t)
+            .collect();
 
         output.enum_type = input
             .enums
