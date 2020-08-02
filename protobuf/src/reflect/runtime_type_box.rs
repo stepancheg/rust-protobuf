@@ -42,8 +42,7 @@ impl fmt::Display for RuntimeTypeBox {
             RuntimeTypeBox::String => write!(f, "String"),
             RuntimeTypeBox::VecU8 => write!(f, "Vec<u8>"),
             RuntimeTypeBox::Enum(e) => write!(f, "{}", e.full_name()),
-            // TODO: full name
-            RuntimeTypeBox::Message(m) => write!(f, "{}", m.name()),
+            RuntimeTypeBox::Message(m) => write!(f, "{}", m.full_name()),
         }
     }
 }
