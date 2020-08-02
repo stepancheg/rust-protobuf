@@ -16,6 +16,7 @@ use crate::protobuf_codegen::case_convert::camel_case;
 use crate::protobuf_codegen::ProtobufAbsolutePath;
 use crate::protobuf_codegen::ProtobufIdent;
 use crate::protobuf_codegen::ProtobufRelativePath;
+use protobuf::descriptor::descriptor_proto::ReservedRange;
 use protobuf::reflect::RuntimeTypeBox;
 use protobuf::text_format::lexer::StrLitDecodeError;
 use protobuf::text_format::quote_bytes_to;
@@ -364,6 +365,13 @@ impl<'a> Resolver<'a> {
                     .path,
             );
             output.extension.push(extension);
+        }
+
+        for reserved in &input.reserved_nums {
+            let mut reserved_range = ReservedRange::new();
+            reserved_range.set_start(reserved.from);
+            reserved_range.set_end(reserved.to + 1);
+            output.reserved_range.push(reserved_range);
         }
 
         Ok(output)
