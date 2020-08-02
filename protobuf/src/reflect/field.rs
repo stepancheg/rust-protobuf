@@ -115,6 +115,15 @@ impl FieldDescriptor {
         self.proto.get_label() == field_descriptor_proto::Label::LABEL_REPEATED
     }
 
+    /// If this field a map field?
+    pub fn is_map(&self) -> bool {
+        if let AccessorKind::Map(..) = self.accessor.accessor {
+            true
+        } else {
+            false
+        }
+    }
+
     /// Check if field is set in given message.
     ///
     /// For repeated field or map field return `true` if

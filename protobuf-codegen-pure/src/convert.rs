@@ -20,6 +20,7 @@ use crate::protobuf_codegen::ProtobufIdent;
 use crate::protobuf_codegen::ProtobufRelativePath;
 use protobuf::text_format::lexer::StrLitDecodeError;
 use protobuf::text_format::quote_bytes_to;
+use protobuf::reflect::RuntimeTypeBox;
 
 #[derive(Debug)]
 pub enum ConvertError {
@@ -30,7 +31,7 @@ pub enum ConvertError {
     StrLitDecodeError(StrLitDecodeError),
     DefaultValueIsNotStringLiteral,
     WrongOptionType,
-    IncorrectEnumValue(String, ProtobufConstant),
+    InconvertibleValue(RuntimeTypeBox, ProtobufConstant),
 }
 
 impl From<StrLitDecodeError> for ConvertError {
@@ -806,8 +807,12 @@ impl<'a> Resolver<'a> {
             "google.protobuf.FileOptions",
             &mut unknown_fields,
             |name, value| {
-                if name == "optimize_for" {
-                    r.set_optimize_for(value.as_enum_value()?);
+                if let Some(field) = r.descriptor().get_field_by_name(name) {
+                    if field.is_repeated() || field.is_map() {
+                        return Ok(())
+                    }
+
+                    field.set_singular_field(&mut r, value.as_type(field.singular_runtime_type().to_box())?);
                 }
                 Ok(())
             },

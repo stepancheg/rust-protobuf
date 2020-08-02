@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::marker;
+use std::fmt;
 
 use crate::core::Message;
 
@@ -59,6 +60,14 @@ pub struct MessageDescriptor {
     index_by_name: HashMap<String, usize>,
     index_by_name_or_json_name: HashMap<String, usize>,
     index_by_number: HashMap<u32, usize>,
+}
+
+impl fmt::Debug for MessageDescriptor {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("MessageDescriptor")
+            .field("full_name", &self.full_name)
+            .finish()
+    }
 }
 
 impl MessageDescriptor {

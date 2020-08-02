@@ -13,7 +13,8 @@ use crate::convert::ConvertError;
 use crate::convert::ConvertResult;
 pub use crate::parser::ParserError;
 pub use crate::parser::ParserErrorWithLocation;
-use protobuf::ProtobufEnum;
+use protobuf::reflect::ReflectValueBox;
+use protobuf::reflect::RuntimeTypeBox;
 
 /// Protobox syntax
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
@@ -310,26 +311,23 @@ impl ProtobufConstant {
         }
     }
 
-    /** Interpret .proto constant as an enum value. */
-    pub fn as_enum_value<E: ProtobufEnum>(&self) -> ConvertResult<E> {
-        let ident = match self {
-            ProtobufConstant::Ident(ident) => ident,
-            _ => {
-                return Err(ConvertError::IncorrectEnumValue(
-                    E::enum_descriptor_static().name().to_owned(),
-                    self.clone(),
-                ))
+    /** Interpret .proto constant as an reflection value. */
+    pub fn as_type(&self, ty: RuntimeTypeBox) -> ConvertResult<ReflectValueBox> {
+        match (self, &ty) {
+            (ProtobufConstant::Ident(ident), RuntimeTypeBox::Enum(e)) => {
+                if let Some(v) = e.get_value_by_name(ident) {
+                    return Ok(ReflectValueBox::Enum(e, v.value()));
+                }
             }
-        };
-        for v in E::values() {
-            if v.descriptor().name() == ident {
-                return Ok(*v);
+            (ProtobufConstant::Bool(b), RuntimeTypeBox::Bool) => {
+                return Ok(ReflectValueBox::Bool(*b))
             }
+            (ProtobufConstant::String(lit), RuntimeTypeBox::String) => {
+                return Ok(ReflectValueBox::String(lit.decode_utf8()?))
+            }
+            _ => {}
         }
-        Err(ConvertError::IncorrectEnumValue(
-            E::enum_descriptor_static().name().to_owned(),
-            self.clone(),
-        ))
+        Err(ConvertError::InconvertibleValue(ty.clone(), self.clone()))
     }
 }
 
