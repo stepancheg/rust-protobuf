@@ -3,6 +3,7 @@ use std::num::ParseIntError;
 
 use std::f32;
 use std::f64;
+use std::fmt;
 
 use super::base64;
 
@@ -73,6 +74,43 @@ enum ParseErrorWithoutLocInner {
 #[derive(Debug)]
 struct ParseErrorWithoutLoc(ParseErrorWithoutLocInner);
 
+impl fmt::Display for ParseErrorWithoutLoc {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match &self.0 {
+            ParseErrorWithoutLocInner::TokenizerError(e) => write!(f, "{}", e),
+            ParseErrorWithoutLocInner::UnknownFieldName(n) => {
+                write!(f, "unknown field name: {}", n)
+            }
+            ParseErrorWithoutLocInner::UnknownEnumVariantName(n) => {
+                write!(f, "unknown enum variant name: {}", n)
+            }
+            ParseErrorWithoutLocInner::UnknownEnumVariantNumber(n) => {
+                write!(f, "unknown enum value: {}", n)
+            }
+            ParseErrorWithoutLocInner::FromBase64Error(e) => write!(f, "{}", e),
+            ParseErrorWithoutLocInner::IncorrectStrLit(e) => write!(f, "{}", e),
+            ParseErrorWithoutLocInner::IncorrectDuration => write!(f, "incorrect duration"),
+            ParseErrorWithoutLocInner::Rfc3339(e) => write!(f, "RFC3339 parse error: {}", e),
+            ParseErrorWithoutLocInner::ParseIntError(e) => write!(f, "{}", e),
+            ParseErrorWithoutLocInner::ParseFloatError(e) => write!(f, "{}", e),
+            ParseErrorWithoutLocInner::ExpectingBool => write!(f, "expecting bool"),
+            ParseErrorWithoutLocInner::ExpectingStrOrInt => {
+                write!(f, "expecting string or integer")
+            }
+            ParseErrorWithoutLocInner::ExpectingNumber => write!(f, "expecting number"),
+            ParseErrorWithoutLocInner::UnexpectedToken => write!(f, "unexpected token"),
+            ParseErrorWithoutLocInner::AnyParsingIsNotImplemented => {
+                write!(f, "Any parsing is not implemented")
+            }
+            ParseErrorWithoutLocInner::MessageNotInitialized => {
+                write!(f, "Message not initialized")
+            }
+        }
+    }
+}
+
+impl std::error::Error for ParseErrorWithoutLoc {}
+
 impl From<TokenizerError> for ParseErrorWithoutLoc {
     fn from(e: TokenizerError) -> Self {
         ParseErrorWithoutLoc(ParseErrorWithoutLocInner::TokenizerError(e))
@@ -109,6 +147,14 @@ pub struct ParseError {
     error: ParseErrorWithoutLoc,
     loc: Loc,
 }
+
+impl fmt::Display for ParseError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{} at {}", self.error, self.loc)
+    }
+}
+
+impl std::error::Error for ParseError {}
 
 type ParseResultWithoutLoc<A> = Result<A, ParseErrorWithoutLoc>;
 type ParseResult<A> = Result<A, ParseError>;

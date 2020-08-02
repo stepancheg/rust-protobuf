@@ -1,6 +1,7 @@
 use std::char;
 use std::convert::TryFrom;
 use std::f64;
+use std::fmt;
 use std::num::ParseFloatError;
 use std::num::ParseIntError;
 
@@ -21,7 +22,7 @@ pub enum LexerError {
     ExpectChar(char),
     ParseIntError,
     ParseFloatError,
-    IncorrectFloatLit,
+    IncorrectFloatLit, // TODO: how it is different from ParseFloatError?
     IncorrectJsonEscape,
     IncorrectJsonNumber,
     IncorrectUnicodeChar,
@@ -31,6 +32,29 @@ pub enum LexerError {
     StrLitDecodeError(StrLitDecodeError),
     ExpectedIdent,
 }
+
+impl fmt::Display for LexerError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            LexerError::IncorrectInput => write!(f, "Incorrect input"),
+            LexerError::UnexpectedEof => write!(f, "Unexpected EOF"),
+            LexerError::ExpectChar(c) => write!(f, "Expecting char: {}", c),
+            LexerError::ParseIntError => write!(f, "Parse int error"),
+            LexerError::ParseFloatError => write!(f, "Parse float error"),
+            LexerError::IncorrectFloatLit => write!(f, "Incorrect float literal"),
+            LexerError::IncorrectJsonEscape => write!(f, "Incorrect JSON escape"),
+            LexerError::IncorrectJsonNumber => write!(f, "Incorrect JSON number"),
+            LexerError::IncorrectUnicodeChar => write!(f, "Incorrect Unicode char"),
+            LexerError::ExpectHexDigit => write!(f, "Expecting hex digit"),
+            LexerError::ExpectOctDigit => write!(f, "Expecting oct digit"),
+            LexerError::ExpectDecDigit => write!(f, "Expecting dec digit"),
+            LexerError::StrLitDecodeError(e) => write!(f, "{}", e),
+            LexerError::ExpectedIdent => write!(f, "Expecting identifier"),
+        }
+    }
+}
+
+impl std::error::Error for LexerError {}
 
 pub type LexerResult<T> = Result<T, LexerError>;
 
