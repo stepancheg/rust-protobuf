@@ -9,9 +9,11 @@ use std::path::MAIN_SEPARATOR;
 use std::str;
 use tempfile::NamedTempFile;
 
-use protobuf::descriptor::{
-    DescriptorProto, EnumDescriptorProto, FileDescriptorProto, FileDescriptorSet,
-};
+use protobuf::descriptor::DescriptorProto;
+use protobuf::descriptor::EnumDescriptorProto;
+use protobuf::descriptor::FileDescriptorProto;
+use protobuf::descriptor::FileDescriptorSet;
+use protobuf::descriptor::OneofDescriptorProto;
 use protobuf::RepeatedField;
 use protobuf_test_common::build::copy_tests_v2_v3;
 use protobuf_test_common::build::glob_simple;
@@ -159,12 +161,19 @@ fn normalize_enum_descriptor(desc: &mut EnumDescriptorProto) {
     }
 }
 
+fn normalize_oneof_descriptor(desc: &mut OneofDescriptorProto) {
+    desc.options.mut_or_default();
+}
+
 fn normalize_descriptor(desc: &mut DescriptorProto) {
     for desc in desc.nested_type.iter_mut() {
         normalize_descriptor(desc);
     }
     for desc in desc.enum_type.iter_mut() {
         normalize_enum_descriptor(desc);
+    }
+    for desc in desc.oneof_decl.iter_mut() {
+        normalize_oneof_descriptor(desc);
     }
 
     // TODO: don't clear options.
