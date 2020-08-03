@@ -731,13 +731,16 @@ impl<'a> Resolver<'a> {
 
     fn enum_value(
         &self,
-        name: &str,
-        number: i32,
-    ) -> protobuf::descriptor::EnumValueDescriptorProto {
+        input: &model::EnumValue,
+        path_in_file: &ProtobufRelativePath,
+    ) -> ConvertResult<protobuf::descriptor::EnumValueDescriptorProto> {
         let mut output = protobuf::descriptor::EnumValueDescriptorProto::new();
-        output.set_name(name.to_owned());
-        output.set_number(number);
+        output.set_name(input.name.clone());
+        output.set_number(input.number);
         output
+            .options
+            .set_message(self.enum_value_options(&[ /* TODO */ ], path_in_file)?);
+        Ok(output)
     }
 
     fn enum_options(
@@ -745,6 +748,14 @@ impl<'a> Resolver<'a> {
         input: &[model::ProtobufOption],
         path_in_file: &ProtobufRelativePath,
     ) -> ConvertResult<protobuf::descriptor::EnumOptions> {
+        self.custom_options(input, path_in_file)
+    }
+
+    fn enum_value_options(
+        &self,
+        input: &[model::ProtobufOption],
+        path_in_file: &ProtobufRelativePath,
+    ) -> ConvertResult<protobuf::descriptor::EnumValueOptions> {
         self.custom_options(input, path_in_file)
     }
 
@@ -758,8 +769,8 @@ impl<'a> Resolver<'a> {
         output.value = input
             .values
             .iter()
-            .map(|v| self.enum_value(&v.name, v.number))
-            .collect();
+            .map(|v| self.enum_value(&v, path_in_file))
+            .collect::<Result<_, _>>()?;
         output
             .options
             .set_message(self.enum_options(&input.options, path_in_file)?);
