@@ -52,19 +52,23 @@ fn do_indent(buf: &mut String, pretty: bool, indent: usize) {
     }
 }
 
-fn print_start_field(
+trait FieldName: fmt::Display {}
+impl<'a> FieldName for &'a str {}
+impl FieldName for u32 {}
+
+fn print_start_field<F: FieldName>(
     buf: &mut String,
     pretty: bool,
     indent: usize,
     first: &mut bool,
-    field_name: &str,
+    field_name: F,
 ) {
     if !*first && !pretty {
         buf.push_str(" ");
     }
     do_indent(buf, pretty, indent);
     *first = false;
-    buf.push_str(field_name);
+    write!(buf, "{}", field_name).unwrap();
 }
 
 fn print_end_field(buf: &mut String, pretty: bool) {
@@ -73,12 +77,12 @@ fn print_end_field(buf: &mut String, pretty: bool) {
     }
 }
 
-fn print_field(
+fn print_field<F: FieldName>(
     buf: &mut String,
     pretty: bool,
     indent: usize,
     first: &mut bool,
-    field_name: &str,
+    field_name: F,
     value: ReflectValueRef,
 ) {
     print_start_field(buf, pretty, indent, first, field_name);
@@ -170,7 +174,12 @@ fn print_to_internal(m: &dyn Message, buf: &mut String, pretty: bool, indent: us
         }
     }
 
-    // TODO: unknown fields
+    for (f, vs) in m.get_unknown_fields() {
+        for v in vs {
+            // TODO: try decode nested message for length-delimited
+            print_field(buf, pretty, indent, &mut first, f, v.to_reflect_value_ref());
+        }
+    }
 }
 
 /// Text-format

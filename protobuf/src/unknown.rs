@@ -8,6 +8,7 @@ use std::slice;
 
 use crate::clear::Clear;
 
+use crate::reflect::ReflectValueRef;
 use crate::wire_format;
 use crate::zigzag::encode_zig_zag_32;
 use crate::zigzag::encode_zig_zag_64;
@@ -76,6 +77,15 @@ impl<'o> UnknownValueRef<'o> {
             UnknownValueRef::Fixed64(_) => wire_format::WireTypeFixed64,
             UnknownValueRef::Varint(_) => wire_format::WireTypeVarint,
             UnknownValueRef::LengthDelimited(_) => wire_format::WireTypeLengthDelimited,
+        }
+    }
+
+    pub(crate) fn to_reflect_value_ref(&'o self) -> ReflectValueRef<'o> {
+        match self {
+            UnknownValueRef::Fixed32(v) => ReflectValueRef::U32(*v),
+            UnknownValueRef::Fixed64(v) => ReflectValueRef::U64(*v),
+            UnknownValueRef::Varint(v) => ReflectValueRef::U64(*v),
+            UnknownValueRef::LengthDelimited(v) => ReflectValueRef::Bytes(v),
         }
     }
 }
