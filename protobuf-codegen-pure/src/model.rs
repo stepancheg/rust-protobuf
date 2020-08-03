@@ -290,6 +290,8 @@ pub struct OneOf {
     pub name: String,
     /// OneOf fields
     pub fields: Vec<WithLoc<Field>>,
+    /// oneof options
+    pub options: Vec<ProtobufOption>,
 }
 
 #[derive(Debug, Clone)]

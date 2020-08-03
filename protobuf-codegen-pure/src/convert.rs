@@ -403,7 +403,7 @@ impl<'a> Resolver<'a> {
                                 &nested_path_in_file,
                             )?);
                         }
-                        output.oneof_decl.push(self.oneof(o));
+                        output.oneof_decl.push(self.oneof(o, path_in_file)?);
                     }
                 }
             }
@@ -777,10 +777,25 @@ impl<'a> Resolver<'a> {
         Ok(output)
     }
 
-    fn oneof(&self, input: &model::OneOf) -> protobuf::descriptor::OneofDescriptorProto {
+    fn oneof_options(
+        &self,
+        input: &[model::ProtobufOption],
+        path_in_file: &ProtobufRelativePath,
+    ) -> ConvertResult<protobuf::descriptor::OneofOptions> {
+        self.custom_options(input, path_in_file)
+    }
+
+    fn oneof(
+        &self,
+        input: &model::OneOf,
+        path_in_file: &ProtobufRelativePath,
+    ) -> ConvertResult<protobuf::descriptor::OneofDescriptorProto> {
         let mut output = protobuf::descriptor::OneofDescriptorProto::new();
         output.set_name(input.name.clone());
         output
+            .options
+            .set_message(self.oneof_options(&input.options, path_in_file)?);
+        Ok(output)
     }
 
     fn find_extension_by_path(&self, path: &str) -> ConvertResult<&model::Extension> {

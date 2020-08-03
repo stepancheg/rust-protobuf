@@ -642,7 +642,9 @@ impl<'a> Parser<'a> {
     fn next_oneof_opt(&mut self) -> ParserResult<Option<OneOf>> {
         if self.tokenizer.next_ident_if_eq("oneof")? {
             let name = self.tokenizer.next_ident()?.to_owned();
-            let MessageBody { fields, .. } = self.next_message_body(MessageBodyParseMode::Oneof)?;
+            let MessageBody {
+                fields, options, ..
+            } = self.next_message_body(MessageBodyParseMode::Oneof)?;
             let fields = fields
                 .into_iter()
                 .map(|fo| match fo.t {
@@ -650,7 +652,11 @@ impl<'a> Parser<'a> {
                     FieldOrOneOf::OneOf(_) => Err(ParserError::OneOfInOneOf),
                 })
                 .collect::<Result<_, ParserError>>()?;
-            Ok(Some(OneOf { name, fields }))
+            Ok(Some(OneOf {
+                name,
+                fields,
+                options,
+            }))
         } else {
             Ok(None)
         }
