@@ -31,6 +31,7 @@ mod message;
 mod oneof;
 mod protobuf_ident;
 mod protobuf_name;
+mod protobuf_rel_path;
 mod rust_name;
 mod rust_types_values;
 mod serde;
@@ -60,7 +61,7 @@ use scope::RootScope;
 use inside::protobuf_crate_path;
 pub use protobuf_ident::ProtobufIdent;
 pub use protobuf_name::ProtobufAbsolutePath;
-pub use protobuf_name::ProtobufRelativePath;
+pub use protobuf_rel_path::ProtobufRelativePath;
 
 fn escape_byte(s: &mut String, b: u8) {
     if b == b'\n' {

@@ -1,5 +1,5 @@
 use crate::protobuf_name::ProtobufAbsolutePath;
-use crate::protobuf_name::ProtobufRelativePath;
+use crate::protobuf_rel_path::ProtobufRelativePath;
 
 static NAMES: &'static [&'static str] = &[
     "Any",

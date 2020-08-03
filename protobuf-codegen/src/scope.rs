@@ -5,7 +5,7 @@ use crate::file_and_mod::FileAndMod;
 use crate::message::message_name_to_nested_mod_name;
 use crate::protobuf_ident::ProtobufIdent;
 use crate::protobuf_name::ProtobufAbsolutePath;
-use crate::protobuf_name::ProtobufRelativePath;
+use crate::protobuf_rel_path::ProtobufRelativePath;
 use crate::rust;
 use crate::rust::is_rust_keyword;
 use crate::rust_name::RustIdent;
