@@ -12,8 +12,13 @@ impl ProtobufAbsolutePath {
         ProtobufAbsolutePath::new(String::new())
     }
 
+    /** If given name is an fully quialified protobuf name. */
+    pub fn is_abs(path: &str) -> bool {
+        path.is_empty() || path.starts_with(".")
+    }
+
     pub fn new(path: String) -> ProtobufAbsolutePath {
-        assert!(path.is_empty() || path.starts_with("."), path);
+        assert!(ProtobufAbsolutePath::is_abs(&path), path);
         assert!(!path.ends_with("."), path);
         ProtobufAbsolutePath { path }
     }
