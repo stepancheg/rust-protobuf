@@ -841,7 +841,8 @@ impl<'a> Resolver<'a> {
                 TypeResolved::Bytes => return Ok(UnknownValue::LengthDelimited(s.decode_bytes()?)),
                 _ => {}
             },
-            _ => {}
+            &model::ProtobufConstant::Ident(_) => {}
+            &model::ProtobufConstant::Message(_) => {}
         };
 
         Err(match field_type {
