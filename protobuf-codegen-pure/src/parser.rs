@@ -457,13 +457,12 @@ impl<'a> Parser<'a> {
     // https://github.com/google/protobuf/issues/4563
     // optionName = ( ident | "(" fullIdent ")" ) { "." ident }
     fn next_option_name(&mut self) -> ParserResult<ProtobufOptionName> {
-        let mut name = String::new();
-        name.push_str(&self.next_ident_or_braced()?);
+        let mut components = Vec::new();
+        components.push(self.next_ident_or_braced()?);
         while self.tokenizer.next_symbol_if_eq('.')? {
-            name.push('.');
-            name.push_str(&self.next_ident_or_braced()?);
+            components.push(self.next_ident_or_braced()?);
         }
-        Ok(ProtobufOptionName { name })
+        Ok(ProtobufOptionName { components })
     }
 
     // option = "option" optionName  "=" constant ";"

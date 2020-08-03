@@ -404,12 +404,42 @@ impl ProtobufConstant {
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct ProtobufOptionName {
-    pub name: String,
+    pub components: Vec<String>,
+}
+
+impl ProtobufOptionName {
+    pub fn simple(name: &str) -> ProtobufOptionName {
+        assert!(!name.is_empty());
+        assert!(!name.contains("."));
+        assert!(!name.contains("("));
+        ProtobufOptionName {
+            components: vec![name.to_owned()],
+        }
+    }
+
+    pub fn get_simple(&self) -> Option<&str> {
+        if self.components.len() != 1 || self.components[0].starts_with("(") {
+            None
+        } else {
+            Some(&self.components[0])
+        }
+    }
+
+    // TODO: get rid of it
+    pub fn full_name(&self) -> String {
+        format!("{}", self)
+    }
 }
 
 impl fmt::Display for ProtobufOptionName {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.name)
+        for (index, comp) in self.components.iter().enumerate() {
+            if index != 0 {
+                write!(f, ".")?;
+            }
+            write!(f, "{}", comp)?;
+        }
+        Ok(())
     }
 }
 

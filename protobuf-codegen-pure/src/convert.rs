@@ -76,9 +76,7 @@ trait ProtobufOptions {
 
 impl<'a> ProtobufOptions for &'a [model::ProtobufOption] {
     fn by_name(&self, name: &str) -> Option<&model::ProtobufConstant> {
-        let option_name = ProtobufOptionName {
-            name: name.to_owned(),
-        };
+        let option_name = ProtobufOptionName::simple(name);
         for model::ProtobufOption { name, value } in *self {
             if name == &option_name {
                 return Some(&value);
@@ -469,23 +467,29 @@ impl<'a> Resolver<'a> {
         let extendee = M::descriptor_static().full_name();
 
         for option in input {
-            if !option.name.name.starts_with('(') {
-                if let Some(field) = M::descriptor_static().get_field_by_name(&option.name.name) {
-                    if field.is_repeated() || field.is_map() {
-                        continue;
+            match option.name.get_simple() {
+                Some(simple) => {
+                    if let Some(field) = M::descriptor_static().get_field_by_name(simple) {
+                        if field.is_repeated() || field.is_map() {
+                            continue;
+                        }
+
+                        field.set_singular_field(
+                            &mut options,
+                            option
+                                .value
+                                .as_type(field.singular_runtime_type().to_box())?,
+                        );
                     }
-
-                    field.set_singular_field(
-                        &mut options,
-                        option
-                            .value
-                            .as_type(field.singular_runtime_type().to_box())?,
-                    );
+                    continue;
                 }
-                continue;
+                None => {
+                    // ?
+                }
             }
+            if !option.name.components[0].starts_with('(') {}
 
-            let extension = match self.find_extension(&option.name.name) {
+            let extension = match self.find_extension(&option.name.full_name()) {
                 Ok(e) => e,
                 // TODO: return error
                 Err(_) => continue,
