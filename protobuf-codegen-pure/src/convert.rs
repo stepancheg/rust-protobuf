@@ -640,7 +640,9 @@ impl<'a> Resolver<'a> {
         name: &str,
         path_in_file: &ProtobufRelativePath,
     ) -> (ProtobufAbsolutePath, MessageOrEnum) {
-        let mut abs_path = ProtobufAbsolutePath::from_package_path(self.current_file.package.as_ref().map(|s| s.as_str()));
+        let mut abs_path = ProtobufAbsolutePath::from_package_path(
+            self.current_file.package.as_ref().map(|s| s.as_str()),
+        );
         abs_path.push_relative(path_in_file);
         // TODO: work with abs_path
 
