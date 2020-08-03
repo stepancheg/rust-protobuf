@@ -456,14 +456,14 @@ impl<'a> Parser<'a> {
 
     // https://github.com/google/protobuf/issues/4563
     // optionName = ( ident | "(" fullIdent ")" ) { "." ident }
-    fn next_option_name(&mut self) -> ParserResult<String> {
-        let mut option_name = String::new();
-        option_name.push_str(&self.next_ident_or_braced()?);
+    fn next_option_name(&mut self) -> ParserResult<ProtobufOptionName> {
+        let mut name = String::new();
+        name.push_str(&self.next_ident_or_braced()?);
         while self.tokenizer.next_symbol_if_eq('.')? {
-            option_name.push('.');
-            option_name.push_str(&self.next_ident_or_braced()?);
+            name.push('.');
+            name.push_str(&self.next_ident_or_braced()?);
         }
-        Ok(option_name)
+        Ok(ProtobufOptionName { name })
     }
 
     // option = "option" optionName  "=" constant ";"

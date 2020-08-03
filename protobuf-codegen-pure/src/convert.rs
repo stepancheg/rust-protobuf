@@ -13,6 +13,7 @@ use protobuf::Message;
 use protobuf::UnknownFields;
 use protobuf::UnknownValue;
 
+use crate::model::ProtobufOptionName;
 use crate::protobuf_codegen::case_convert::camel_case;
 use crate::protobuf_codegen::ProtobufAbsolutePath;
 use crate::protobuf_codegen::ProtobufIdent;
@@ -75,9 +76,11 @@ trait ProtobufOptions {
 
 impl<'a> ProtobufOptions for &'a [model::ProtobufOption] {
     fn by_name(&self, name: &str) -> Option<&model::ProtobufConstant> {
-        let option_name = name;
+        let option_name = ProtobufOptionName {
+            name: name.to_owned(),
+        };
         for model::ProtobufOption { name, value } in *self {
-            if name == option_name {
+            if name == &option_name {
                 return Some(&value);
             }
         }
@@ -466,8 +469,8 @@ impl<'a> Resolver<'a> {
         let extendee = M::descriptor_static().full_name();
 
         for option in input {
-            if !option.name.starts_with('(') {
-                if let Some(field) = M::descriptor_static().get_field_by_name(&option.name) {
+            if !option.name.name.starts_with('(') {
+                if let Some(field) = M::descriptor_static().get_field_by_name(&option.name.name) {
                     if field.is_repeated() || field.is_map() {
                         continue;
                     }
@@ -482,14 +485,14 @@ impl<'a> Resolver<'a> {
                 continue;
             }
 
-            let extension = match self.find_extension(&option.name) {
+            let extension = match self.find_extension(&option.name.name) {
                 Ok(e) => e,
                 // TODO: return error
                 Err(_) => continue,
             };
             if extension.extendee != extendee {
                 return Err(ConvertError::WrongExtensionType(
-                    option.name.clone(),
+                    format!("{}", option.name),
                     extendee,
                 ));
             }
@@ -498,7 +501,7 @@ impl<'a> Resolver<'a> {
                 &option.value,
                 &extension.field.t.name,
                 &extension.field.t.typ,
-                &option.name,
+                &format!("{}", option.name),
                 path_in_file,
             ) {
                 Ok(value) => value,

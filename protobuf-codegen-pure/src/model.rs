@@ -17,6 +17,7 @@ pub use crate::parser::ParserError;
 pub use crate::parser::ParserErrorWithLocation;
 use protobuf::reflect::ReflectValueBox;
 use protobuf::reflect::RuntimeTypeBox;
+use std::fmt;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct WithLoc<T> {
@@ -402,8 +403,19 @@ impl ProtobufConstant {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct ProtobufOption {
+pub struct ProtobufOptionName {
     pub name: String,
+}
+
+impl fmt::Display for ProtobufOptionName {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.name)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ProtobufOption {
+    pub name: ProtobufOptionName,
     pub value: ProtobufConstant,
 }
 
