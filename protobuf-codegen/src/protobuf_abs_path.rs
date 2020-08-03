@@ -117,7 +117,7 @@ impl fmt::Display for ProtobufAbsolutePath {
 }
 
 #[cfg(test)]
-mod absolute_path_test {
+mod test {
     use super::*;
 
     #[test]

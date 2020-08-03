@@ -4,7 +4,7 @@ use crate::customize::Customize;
 use crate::file_and_mod::FileAndMod;
 use crate::inside::protobuf_crate_path;
 use crate::message::RustTypeMessage;
-use crate::protobuf_name::ProtobufAbsolutePath;
+use crate::protobuf_abs_path::ProtobufAbsolutePath;
 use crate::rust_name::RustIdent;
 use crate::rust_name::RustIdentWithPath;
 use crate::rust_name::RustPath;

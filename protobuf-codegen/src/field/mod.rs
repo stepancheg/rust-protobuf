@@ -1,6 +1,6 @@
 use protobuf::prelude::*;
 
-use crate::protobuf_name::ProtobufAbsolutePath;
+use crate::protobuf_abs_path::ProtobufAbsolutePath;
 use crate::rust;
 use protobuf::descriptor::*;
 use protobuf::rt;
