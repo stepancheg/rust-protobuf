@@ -37,6 +37,7 @@ pub enum ConvertError {
     ExpectingMessage(ProtobufAbsolutePath),
     ExpectingEnum(ProtobufAbsolutePath),
     UnknownEnumValue(String),
+    UnknownFieldName(String),
 }
 
 impl From<StrLitDecodeError> for ConvertError {
@@ -589,7 +590,7 @@ impl<'a> Resolver<'a> {
         self.package_files(self.current_file.package.as_deref())
     }
 
-    fn resolve_message_or_enum_by_abs_name(
+    fn find_message_or_enum_by_abs_name(
         &self,
         absolute_path: &ProtobufAbsolutePath,
     ) -> ConvertResult<MessageOrEnum<'a>> {
@@ -611,7 +612,7 @@ impl<'a> Resolver<'a> {
         &self,
         abs_path: &ProtobufAbsolutePath,
     ) -> ConvertResult<&'a model::Message> {
-        match self.resolve_message_or_enum_by_abs_name(abs_path)? {
+        match self.find_message_or_enum_by_abs_name(abs_path)? {
             MessageOrEnum::Message(m) => Ok(m),
             MessageOrEnum::Enum(..) => Err(ConvertError::ExpectingMessage(abs_path.clone())),
         }
@@ -621,7 +622,7 @@ impl<'a> Resolver<'a> {
         &self,
         abs_path: &ProtobufAbsolutePath,
     ) -> ConvertResult<&'a model::Enumeration> {
-        match self.resolve_message_or_enum_by_abs_name(abs_path)? {
+        match self.find_message_or_enum_by_abs_name(abs_path)? {
             MessageOrEnum::Enum(e) => Ok(e),
             MessageOrEnum::Message(..) => Err(ConvertError::ExpectingEnum(abs_path.clone())),
         }
@@ -654,7 +655,7 @@ impl<'a> Resolver<'a> {
 
         (
             absolute_path.clone(),
-            self.resolve_message_or_enum_by_abs_name(&absolute_path)
+            self.find_message_or_enum_by_abs_name(&absolute_path)
                 .unwrap(),
         )
     }
@@ -911,9 +912,16 @@ impl<'a> Resolver<'a> {
                 }
                 _ => {}
             },
-            &model::ProtobufConstant::Message(_) => match &field_type {
+            model::ProtobufConstant::Message(mo) => match &field_type {
                 TypeResolved::Message(m) => {
-                    let _m = self.resolve_message_by_abs_name(m)?;
+                    let m = self.resolve_message_by_abs_name(m)?;
+                    for (n, _v) in &mo.fields {
+                        let _f = match m.field_by_name(n.as_str()) {
+                            Some(f) => f,
+                            None => return Err(ConvertError::UnknownFieldName(n.clone())),
+                        };
+                    }
+                    // TODO
                 }
                 _ => {}
             },

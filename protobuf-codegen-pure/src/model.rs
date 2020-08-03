@@ -228,6 +228,14 @@ impl Message {
             .collect()
     }
 
+    /** Find a field by name. */
+    pub fn field_by_name(&self, name: &str) -> Option<&Field> {
+        self.regular_fields_including_in_oneofs()
+            .iter()
+            .find(|f| f.t.name == name)
+            .map(|f| &f.t)
+    }
+
     pub fn _nested_extensions(&self) -> Vec<&Group> {
         self.regular_fields_including_in_oneofs()
             .into_iter()
