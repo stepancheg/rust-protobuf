@@ -314,12 +314,35 @@ impl<'a> Parser<'a> {
             .next_token_check_map(|token| Ok(token.to_num_lit()?))
     }
 
+    fn next_message_constant(&mut self) -> ParserResult<ProtobufConstantMessage> {
+        let mut r = ProtobufConstantMessage::default();
+        self.tokenizer.next_symbol_expect_eq('{')?;
+        while !self.tokenizer.lookahead_is_symbol('}')? {
+            if self.tokenizer.next_symbol_if_eq('[')? {
+                let n = self.next_full_ident()?;
+                self.tokenizer.next_symbol_expect_eq(']')?;
+                let v = self.next_message_constant()?;
+                r.extensions.insert(n, v);
+            } else {
+                let n = self.tokenizer.next_ident()?;
+                let v = if self.tokenizer.next_symbol_if_eq(':')? {
+                    self.next_constant()?
+                } else {
+                    ProtobufConstant::Message(self.next_message_constant()?)
+                };
+                r.fields.insert(n, v);
+            }
+        }
+        self.tokenizer.next_symbol_expect_eq('}')?;
+        Ok(r)
+    }
+
     // constant = fullIdent | ( [ "-" | "+" ] intLit ) | ( [ "-" | "+" ] floatLit ) |
     //            strLit | boolLit
     fn next_constant(&mut self) -> ParserResult<ProtobufConstant> {
         // https://github.com/google/protobuf/blob/a21f225824e994ebd35e8447382ea4e0cd165b3c/src/google/protobuf/unittest_custom_options.proto#L350
         if self.tokenizer.lookahead_is_symbol('{')? {
-            return Ok(ProtobufConstant::BracedExpr(self.next_braces()?));
+            return Ok(ProtobufConstant::Message(self.next_message_constant()?));
         }
 
         if let Some(b) = self.next_bool_lit_opt()? {
@@ -953,24 +976,6 @@ impl<'a> Parser<'a> {
     }
 
     // Service definition
-
-    fn next_braces(&mut self) -> ParserResult<String> {
-        let mut r = String::new();
-        self.tokenizer.next_symbol_expect_eq('{')?;
-        r.push('{');
-        loop {
-            if self.tokenizer.lookahead_if_symbol()? == Some('{') {
-                r.push_str(&self.next_braces()?);
-                continue;
-            }
-            let next = self.tokenizer.next_some()?;
-            r.push_str(&next.format());
-            if let Token::Symbol('}') = next {
-                break;
-            }
-        }
-        Ok(r)
-    }
 
     fn next_options_or_colon(&mut self) -> ParserResult<Vec<ProtobufOption>> {
         let mut options = Vec::new();

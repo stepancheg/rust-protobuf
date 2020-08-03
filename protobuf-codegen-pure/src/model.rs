@@ -8,9 +8,11 @@ use protobuf::text_format::lexer::Loc;
 use protobuf::text_format::lexer::StrLit;
 
 use crate::parser::Parser;
+use std::fmt::Write;
 
 use crate::convert::ConvertError;
 use crate::convert::ConvertResult;
+use crate::linked_hash_map::LinkedHashMap;
 pub use crate::parser::ParserError;
 pub use crate::parser::ParserErrorWithLocation;
 use protobuf::reflect::ReflectValueBox;
@@ -322,6 +324,12 @@ pub struct Service {
     pub options: Vec<ProtobufOption>,
 }
 
+#[derive(Debug, Clone, PartialEq, Default)]
+pub struct ProtobufConstantMessage {
+    pub fields: LinkedHashMap<String, ProtobufConstant>,
+    pub extensions: LinkedHashMap<String, ProtobufConstantMessage>,
+}
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum ProtobufConstant {
     U64(u64),
@@ -330,7 +338,22 @@ pub enum ProtobufConstant {
     Bool(bool),
     Ident(String),
     String(StrLit),
-    BracedExpr(String),
+    Message(ProtobufConstantMessage),
+}
+
+impl ProtobufConstantMessage {
+    pub fn format(&self) -> String {
+        let mut s = String::new();
+        write!(s, "{{").unwrap();
+        for (n, v) in &self.fields {
+            match v {
+                ProtobufConstant::Message(m) => write!(s, "{} {}", n, m.format()).unwrap(),
+                v => write!(s, "{}: {}", n, v.format()).unwrap(),
+            }
+        }
+        write!(s, "}}").unwrap();
+        s
+    }
 }
 
 impl ProtobufConstant {
@@ -342,7 +365,7 @@ impl ProtobufConstant {
             ProtobufConstant::Bool(b) => b.to_string(),
             ProtobufConstant::Ident(ref i) => i.clone(),
             ProtobufConstant::String(ref s) => s.quoted(),
-            ProtobufConstant::BracedExpr(ref s) => s.clone(),
+            ProtobufConstant::Message(ref s) => s.format(),
         }
     }
 
