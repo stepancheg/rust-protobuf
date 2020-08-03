@@ -739,7 +739,7 @@ impl<'a> Resolver<'a> {
         output.set_number(input.number);
         output
             .options
-            .set_message(self.enum_value_options(&[ /* TODO */ ], path_in_file)?);
+            .set_message(self.enum_value_options(&input.options, path_in_file)?);
         Ok(output)
     }
 

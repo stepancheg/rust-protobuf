@@ -742,11 +742,11 @@ impl<'a> Parser<'a> {
     // Enum definition
 
     // enumValueOption = optionName "=" constant
-    fn next_enum_value_option(&mut self) -> ParserResult<()> {
-        self.next_option_name()?;
+    fn next_enum_value_option(&mut self) -> ParserResult<ProtobufOption> {
+        let name = self.next_option_name()?;
         self.tokenizer.next_symbol_expect_eq('=')?;
-        self.next_constant()?;
-        Ok(())
+        let value = self.next_constant()?;
+        Ok(ProtobufOption { name, value })
     }
 
     // https://github.com/google/protobuf/issues/4561
@@ -769,15 +769,20 @@ impl<'a> Parser<'a> {
         let name = self.tokenizer.next_ident()?.to_owned();
         self.tokenizer.next_symbol_expect_eq('=')?;
         let number = self.next_enum_value()?;
+        let mut options = Vec::new();
         if self.tokenizer.next_symbol_if_eq('[')? {
-            self.next_enum_value_option()?;
+            options.push(self.next_enum_value_option()?);
             while self.tokenizer.next_symbol_if_eq(',')? {
-                self.next_enum_value_option()?;
+                options.push(self.next_enum_value_option()?);
             }
             self.tokenizer.next_symbol_expect_eq(']')?;
         }
 
-        Ok(EnumValue { name, number })
+        Ok(EnumValue {
+            name,
+            number,
+            options,
+        })
     }
 
     // enum = "enum" enumName enumBody

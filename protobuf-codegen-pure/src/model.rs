@@ -268,6 +268,8 @@ pub struct EnumValue {
     pub name: String,
     /// enum value number
     pub number: i32,
+    /// enum value options
+    pub options: Vec<ProtobufOption>,
 }
 
 /// A protobuf enumerator
