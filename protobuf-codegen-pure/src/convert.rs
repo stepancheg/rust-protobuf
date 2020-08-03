@@ -10,6 +10,7 @@ use protobuf::descriptor::field_descriptor_proto;
 use protobuf::json::json_name;
 use protobuf::prelude::*;
 use protobuf::Message;
+use protobuf::UnknownValue;
 
 use crate::protobuf_codegen::case_convert::camel_case;
 use crate::protobuf_codegen::ProtobufAbsolutePath;
@@ -18,7 +19,6 @@ use crate::protobuf_codegen::ProtobufRelativePath;
 use protobuf::descriptor::descriptor_proto::ReservedRange;
 use protobuf::descriptor::field_descriptor_proto::Type;
 use protobuf::reflect::RuntimeTypeBox;
-use protobuf::reflect::RuntimeTypeDynamic;
 use protobuf::text_format::lexer::StrLitDecodeError;
 use protobuf::text_format::quote_bytes_to;
 
@@ -32,6 +32,7 @@ pub enum ConvertError {
     DefaultValueIsNotStringLiteral,
     WrongOptionType,
     InconvertibleValue(RuntimeTypeBox, model::ProtobufConstant),
+    ConstantsOfTypeMessageEnumGroupNotImplemented,
 }
 
 impl From<StrLitDecodeError> for ConvertError {
@@ -83,7 +84,7 @@ enum MessageOrEnum {
 }
 
 impl MessageOrEnum {
-    fn descriptor_type(&self) -> protobuf::descriptor::field_descriptor_proto::Type {
+    fn _descriptor_type(&self) -> protobuf::descriptor::field_descriptor_proto::Type {
         match *self {
             MessageOrEnum::Message => {
                 protobuf::descriptor::field_descriptor_proto::Type::TYPE_MESSAGE
@@ -181,6 +182,7 @@ impl<'a> LookupScope<'a> {
     }
 }
 
+#[derive(Debug, PartialEq)]
 enum TypeResolved {
     Int32,
     Int64,
@@ -216,10 +218,10 @@ impl TypeResolved {
             TypeResolved::Fixed64 => Type::TYPE_FIXED64,
             TypeResolved::Sfixed32 => Type::TYPE_SFIXED32,
             TypeResolved::Sfixed64 => Type::TYPE_SFIXED64,
+            TypeResolved::Float => Type::TYPE_FLOAT,
             TypeResolved::Double => Type::TYPE_DOUBLE,
             TypeResolved::String => Type::TYPE_STRING,
             TypeResolved::Bytes => Type::TYPE_BYTES,
-            TypeResolved::Float => Type::TYPE_FLOAT,
             TypeResolved::Message(_) => Type::TYPE_MESSAGE,
             TypeResolved::Enum(_) => Type::TYPE_ENUM,
             TypeResolved::Group(_) => Type::TYPE_GROUP,
@@ -481,10 +483,11 @@ impl<'a> Resolver<'a> {
                 path_in_file,
             ) {
                 Ok(value) => value,
-                Err(_) => {
+                Err(ConvertError::ConstantsOfTypeMessageEnumGroupNotImplemented) => {
                     // TODO: return error
                     continue;
                 }
+                Err(e) => return Err(e),
             };
 
             options
@@ -672,6 +675,27 @@ impl<'a> Resolver<'a> {
         }
     }
 
+    fn _runtime_type_for_field_type(&self, ft: &TypeResolved) -> ConvertResult<RuntimeTypeBox> {
+        Ok(match ft {
+            TypeResolved::Bool => RuntimeTypeBox::Bool,
+            TypeResolved::Int32 | TypeResolved::Sint32 | TypeResolved::Sfixed32 => {
+                RuntimeTypeBox::I32
+            }
+            TypeResolved::Int64 | TypeResolved::Sint64 | TypeResolved::Sfixed64 => {
+                RuntimeTypeBox::I64
+            }
+            TypeResolved::Uint32 | TypeResolved::Fixed32 => RuntimeTypeBox::U32,
+            TypeResolved::Uint64 | TypeResolved::Fixed64 => RuntimeTypeBox::U64,
+            TypeResolved::Float => RuntimeTypeBox::F32,
+            TypeResolved::Double => RuntimeTypeBox::F64,
+            TypeResolved::String => RuntimeTypeBox::String,
+            TypeResolved::Bytes => RuntimeTypeBox::VecU8,
+            TypeResolved::Message(_) | TypeResolved::Enum(_) | TypeResolved::Group(_) => {
+                return Err(ConvertError::ConstantsOfTypeMessageEnumGroupNotImplemented)
+            }
+        })
+    }
+
     fn enum_value(
         &self,
         name: &str,
@@ -747,73 +771,88 @@ impl<'a> Resolver<'a> {
         field_type: &model::FieldType,
         option_name: &str,
         path_in_file: &ProtobufRelativePath,
-    ) -> ConvertResult<protobuf::UnknownValue> {
-        self.field_type(name, field_type, path_in_file);
+    ) -> ConvertResult<UnknownValue> {
+        let field_type = self.field_type(name, field_type, path_in_file);
 
-        let v = match value {
+        match value {
             &model::ProtobufConstant::Bool(b) => {
-                if field_type != &model::FieldType::Bool {
-                    Err(())
+                if field_type != TypeResolved::Bool {
+                    {}
                 } else {
-                    Ok(protobuf::UnknownValue::Varint(if b { 1 } else { 0 }))
+                    return Ok(UnknownValue::Varint(if b { 1 } else { 0 }));
                 }
             }
             // TODO: check overflow
             &model::ProtobufConstant::U64(v) => match field_type {
-                &model::FieldType::Fixed64 | model::FieldType::Sfixed64 => {
-                    Ok(protobuf::UnknownValue::Fixed64(v))
+                TypeResolved::Fixed64 | TypeResolved::Sfixed64 => {
+                    return Ok(UnknownValue::Fixed64(v))
                 }
-                &model::FieldType::Fixed32 | model::FieldType::Sfixed32 => {
-                    Ok(protobuf::UnknownValue::Fixed32(v as u32))
+                TypeResolved::Fixed32 | TypeResolved::Sfixed32 => {
+                    return Ok(UnknownValue::Fixed32(v as u32))
                 }
-                &model::FieldType::Int64
-                | &model::FieldType::Int32
-                | &model::FieldType::Uint64
-                | &model::FieldType::Uint32 => Ok(protobuf::UnknownValue::Varint(v)),
-                &model::FieldType::Sint64 => Ok(protobuf::UnknownValue::sint64(v as i64)),
-                &model::FieldType::Sint32 => Ok(protobuf::UnknownValue::sint32(v as i32)),
-                _ => Err(()),
+                TypeResolved::Int64
+                | TypeResolved::Int32
+                | TypeResolved::Uint64
+                | TypeResolved::Uint32 => return Ok(UnknownValue::Varint(v)),
+                TypeResolved::Sint64 => return Ok(UnknownValue::sint64(v as i64)),
+                TypeResolved::Sint32 => return Ok(UnknownValue::sint32(v as i32)),
+                TypeResolved::Float => return Ok(UnknownValue::float(v as f32)),
+                TypeResolved::Double => return Ok(UnknownValue::double(v as f64)),
+                _ => {}
             },
             &model::ProtobufConstant::I64(v) => match field_type {
-                &model::FieldType::Fixed64 | model::FieldType::Sfixed64 => {
-                    Ok(protobuf::UnknownValue::Fixed64(v as u64))
+                TypeResolved::Fixed64 | TypeResolved::Sfixed64 => {
+                    return Ok(UnknownValue::Fixed64(v as u64))
                 }
-                &model::FieldType::Fixed32 | model::FieldType::Sfixed32 => {
-                    Ok(protobuf::UnknownValue::Fixed32(v as u32))
+                TypeResolved::Fixed32 | TypeResolved::Sfixed32 => {
+                    return Ok(UnknownValue::Fixed32(v as u32))
                 }
-                &model::FieldType::Int64
-                | &model::FieldType::Int32
-                | &model::FieldType::Uint64
-                | &model::FieldType::Uint32 => Ok(protobuf::UnknownValue::Varint(v as u64)),
-                &model::FieldType::Sint64 => Ok(protobuf::UnknownValue::sint64(v as i64)),
-                &model::FieldType::Sint32 => Ok(protobuf::UnknownValue::sint32(v as i32)),
-                _ => Err(()),
+                TypeResolved::Int64
+                | TypeResolved::Int32
+                | TypeResolved::Uint64
+                | TypeResolved::Uint32 => return Ok(UnknownValue::Varint(v as u64)),
+                TypeResolved::Sint64 => return Ok(UnknownValue::sint64(v as i64)),
+                TypeResolved::Sint32 => return Ok(UnknownValue::sint32(v as i32)),
+                TypeResolved::Float => return Ok(UnknownValue::float(v as f32)),
+                TypeResolved::Double => return Ok(UnknownValue::double(v as f64)),
+                _ => {}
             },
             &model::ProtobufConstant::F64(f) => match field_type {
-                &model::FieldType::Float => {
-                    Ok(protobuf::UnknownValue::Fixed32((f as f32).to_bits()))
+                TypeResolved::Float => return Ok(UnknownValue::float(f as f32)),
+                TypeResolved::Double => return Ok(UnknownValue::double(f)),
+                TypeResolved::Fixed32 => return Ok(UnknownValue::Fixed32(f as u32)),
+                TypeResolved::Fixed64 => return Ok(UnknownValue::Fixed64(f as u64)),
+                TypeResolved::Sfixed32 => return Ok(UnknownValue::sfixed32(f as i32)),
+                TypeResolved::Sfixed64 => return Ok(UnknownValue::sfixed64(f as i64)),
+                TypeResolved::Int32 | TypeResolved::Int64 => {
+                    return Ok(UnknownValue::int64(f as i64))
                 }
-                &model::FieldType::Double => Ok(protobuf::UnknownValue::Fixed64(f.to_bits())),
-                _ => Err(()),
+                TypeResolved::Uint32 | TypeResolved::Uint64 => {
+                    return Ok(UnknownValue::Varint(f as u64))
+                }
+                TypeResolved::Sint64 => return Ok(UnknownValue::sint64(f as i64)),
+                TypeResolved::Sint32 => return Ok(UnknownValue::sint32(f as i32)),
+                _ => {}
             },
             &model::ProtobufConstant::String(ref s) => match field_type {
-                &model::FieldType::String => Ok(protobuf::UnknownValue::LengthDelimited(
-                    s.decode_utf8()?.into_bytes(),
-                )),
-                &model::FieldType::Bytes => {
-                    Ok(protobuf::UnknownValue::LengthDelimited(s.decode_bytes()?))
+                TypeResolved::String => {
+                    return Ok(UnknownValue::LengthDelimited(s.decode_utf8()?.into_bytes()))
                 }
-                _ => Err(()),
+                TypeResolved::Bytes => return Ok(UnknownValue::LengthDelimited(s.decode_bytes()?)),
+                _ => {}
             },
-            _ => Err(()),
+            _ => {}
         };
 
-        v.map_err(|()| {
-            ConvertError::UnsupportedExtensionType(
+        Err(match field_type {
+            TypeResolved::Message(..) | TypeResolved::Enum(..) | TypeResolved::Group(..) => {
+                ConvertError::ConstantsOfTypeMessageEnumGroupNotImplemented
+            }
+            _ => ConvertError::UnsupportedExtensionType(
                 option_name.to_owned(),
                 format!("{:?}", field_type),
                 value.clone(),
-            )
+            ),
         })
     }
 

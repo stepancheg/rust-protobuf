@@ -44,6 +44,16 @@ impl UnknownValue {
         }
     }
 
+    /// Construct unknown value from `int64` value.
+    pub fn int32(i: i32) -> UnknownValue {
+        UnknownValue::int64(i as i64)
+    }
+
+    /// Construct unknown value from `int64` value.
+    pub fn int64(i: i64) -> UnknownValue {
+        UnknownValue::Varint(i as u64)
+    }
+
     /// Construct unknown value from `sint32` value.
     pub fn sint32(i: i32) -> UnknownValue {
         UnknownValue::Varint(encode_zig_zag_32(i) as u64)
@@ -52,6 +62,26 @@ impl UnknownValue {
     /// Construct unknown value from `sint64` value.
     pub fn sint64(i: i64) -> UnknownValue {
         UnknownValue::Varint(encode_zig_zag_64(i))
+    }
+
+    /// Construct unknown value from `float` value.
+    pub fn float(f: f32) -> UnknownValue {
+        UnknownValue::Fixed32(f.to_bits())
+    }
+
+    /// Construct unknown value from `double` value.
+    pub fn double(f: f64) -> UnknownValue {
+        UnknownValue::Fixed64(f.to_bits())
+    }
+
+    /// Construct unknown value from `sfixed32` value.
+    pub fn sfixed32(i: i32) -> UnknownValue {
+        UnknownValue::Fixed32(i as u32)
+    }
+
+    /// Construct unknown value from `sfixed64` value.
+    pub fn sfixed64(i: i64) -> UnknownValue {
+        UnknownValue::Fixed64(i as u64)
     }
 }
 
