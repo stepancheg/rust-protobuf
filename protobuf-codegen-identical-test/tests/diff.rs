@@ -154,6 +154,13 @@ fn normalize_file_descriptor(desc: &mut FileDescriptorProto) {
 
     // TODO: don't clear services.
     desc.service.clear();
+
+    // for unittest_custom_options.proto where a custom option
+    // is an extension. Probably nobody outside of Google uses it.
+    desc.options
+        .mut_or_default()
+        .unknown_fields
+        .remove(15478479);
 }
 
 fn normalize_enum_descriptor(desc: &mut EnumDescriptorProto) {
