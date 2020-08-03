@@ -103,14 +103,23 @@ impl MessageOrEnum<'_> {
 
 enum LookupScope<'a> {
     File(&'a model::FileDescriptor),
-    Message(&'a model::Message),
+    Message(&'a model::Message, ProtobufAbsolutePath),
 }
 
 impl<'a> LookupScope<'a> {
+    fn current_path(&self) -> ProtobufAbsolutePath {
+        match self {
+            LookupScope::File(f) => {
+                ProtobufAbsolutePath::from_package_path(f.package.as_ref().map(|s| s.as_ref()))
+            }
+            LookupScope::Message(_, p) => p.clone(),
+        }
+    }
+
     fn messages(&self) -> &'a [model::WithLoc<model::Message>] {
         match self {
             &LookupScope::File(file) => &file.messages,
-            &LookupScope::Message(messasge) => &messasge.messages,
+            &LookupScope::Message(messasge, _) => &messasge.messages,
         }
     }
 
@@ -124,7 +133,7 @@ impl<'a> LookupScope<'a> {
     fn enums(&self) -> &'a [model::Enumeration] {
         match self {
             &LookupScope::File(file) => &file.enums,
-            &LookupScope::Message(messasge) => &messasge.enums,
+            &LookupScope::Message(messasge, _) => &messasge.enums,
         }
     }
 
@@ -157,11 +166,11 @@ impl<'a> LookupScope<'a> {
             .next()
     }
 
-    fn resolve_message_or_enum(
+    fn find_message_or_enum(
         &self,
-        current_path: &ProtobufAbsolutePath,
         path: &ProtobufRelativePath,
     ) -> Option<(ProtobufAbsolutePath, MessageOrEnum<'a>)> {
+        let current_path = self.current_path();
         let (first, rem) = match path.split_first_rem() {
             Some(x) => x,
             None => return None,
@@ -181,8 +190,8 @@ impl<'a> LookupScope<'a> {
                 Some(message) => {
                     let mut message_path = current_path.clone();
                     message_path.push_simple(ProtobufIdent::from(message.name.clone()));
-                    let message_scope = LookupScope::Message(message);
-                    message_scope.resolve_message_or_enum(&message_path, &rem)
+                    let message_scope = LookupScope::Message(message, message_path);
+                    message_scope.find_message_or_enum(&rem)
                 }
                 None => None,
             }
@@ -597,9 +606,7 @@ impl<'a> Resolver<'a> {
         for file in self.all_files() {
             let file_package = ProtobufAbsolutePath::from_package_path(file.package.as_deref());
             if let Some(relative) = absolute_path.remove_prefix(&file_package) {
-                if let Some((_, t)) =
-                    LookupScope::File(file).resolve_message_or_enum(&file_package, &relative)
-                {
+                if let Some((_, t)) = LookupScope::File(file).find_message_or_enum(&relative) {
                     return Ok(t);
                 }
             }
@@ -608,7 +615,7 @@ impl<'a> Resolver<'a> {
         return Err(ConvertError::NotFoundByAbsPath(absolute_path.clone()));
     }
 
-    fn resolve_message_by_abs_name(
+    fn find_message_by_abs_name(
         &self,
         abs_path: &ProtobufAbsolutePath,
     ) -> ConvertResult<&'a model::Message> {
@@ -618,7 +625,7 @@ impl<'a> Resolver<'a> {
         }
     }
 
-    fn resolve_enum_by_abs_name(
+    fn find_enum_by_abs_name(
         &self,
         abs_path: &ProtobufAbsolutePath,
     ) -> ConvertResult<&'a model::Enumeration> {
@@ -640,10 +647,9 @@ impl<'a> Resolver<'a> {
                 let relative_path_with_name =
                     relative_path_with_name.append(&ProtobufRelativePath::from(name));
                 for file in self.current_file_package_files() {
-                    if let Some((n, t)) = LookupScope::File(file).resolve_message_or_enum(
-                        &ProtobufAbsolutePath::from_package_path(file.package.as_deref()),
-                        &relative_path_with_name,
-                    ) {
+                    if let Some((n, t)) =
+                        LookupScope::File(file).find_message_or_enum(&relative_path_with_name)
+                    {
                         return (n, t);
                     }
                 }
@@ -903,7 +909,7 @@ impl<'a> Resolver<'a> {
             },
             model::ProtobufConstant::Ident(ident) => match &field_type {
                 TypeResolved::Enum(e) => {
-                    let e = self.resolve_enum_by_abs_name(e)?;
+                    let e = self.find_enum_by_abs_name(e)?;
                     let n = match e.values.iter().find(|v| v.name == *ident).map(|v| v.number) {
                         Some(n) => n,
                         None => return Err(ConvertError::UnknownEnumValue(ident.clone())),
@@ -914,7 +920,7 @@ impl<'a> Resolver<'a> {
             },
             model::ProtobufConstant::Message(mo) => match &field_type {
                 TypeResolved::Message(m) => {
-                    let m = self.resolve_message_by_abs_name(m)?;
+                    let m = self.find_message_by_abs_name(m)?;
                     for (n, _v) in &mo.fields {
                         let _f = match m.field_by_name(n.as_str()) {
                             Some(f) => f,
