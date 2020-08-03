@@ -44,7 +44,7 @@ fn generate_in_common() {
         gen_in_dir("src/common/v3", "src/common/v3");
     } else {
         let mut mod_rs = fs::File::create("src/common/v3/mod.rs").expect("create");
-        writeln!(mod_rs, "// generated").expect("write");
+        writeln!(mod_rs, "// @generated").expect("write");
         writeln!(mod_rs, "// no tests because protoc is not v3").expect("write");
         mod_rs.flush().expect("flush");
     }
@@ -76,7 +76,7 @@ fn generate_in_v2_v3() {
             f.truncate(len - suffix.len());
 
             let mut f = fs::File::create(f).expect("create");
-            let content = b"// generated\n// empty file because protobuf 3 is not available\n";
+            let content = b"// @generated\n// empty file because protobuf 3 is not available\n";
             f.write_all(content).expect("write");
             f.flush().expect("flush");
         }

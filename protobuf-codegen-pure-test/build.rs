@@ -23,11 +23,11 @@ fn copy_test<P1: AsRef<Path>, P2: AsRef<Path>>(src: P1, dst: P2) {
         .expect("read_to_end");
 
     let mut write = fs::File::create(dst).expect("create");
-    writeln!(write, "// generated").expect("write");
+    writeln!(write, "// @generated").expect("write");
     writeln!(write, "// copied from {}", src.as_ref().display()).expect("write");
     writeln!(write, "").expect("write");
     write.write_all(&content).expect("write_all");
-    writeln!(write, "// generated").expect("write");
+    writeln!(write, "// @generated").expect("write");
     write.flush().expect("flush");
 }
 
