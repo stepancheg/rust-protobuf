@@ -12,7 +12,7 @@ impl ProtobufAbsolutePath {
         ProtobufAbsolutePath::new(String::new())
     }
 
-    /** If given name is an fully quialified protobuf name. */
+    /// If given name is an fully quialified protobuf name.
     pub fn is_abs(path: &str) -> bool {
         path.is_empty() || path.starts_with(".")
     }
