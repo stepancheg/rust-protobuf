@@ -154,4 +154,17 @@ mod test {
                 .remove_prefix(&ProtobufAbsolutePath::new(".foo.bar".to_owned()))
         );
     }
+
+    #[test]
+    fn self_and_parents() {
+        assert_eq!(
+            vec![
+                ProtobufAbsolutePath::new(".ab.cde.fghi".to_owned()),
+                ProtobufAbsolutePath::new(".ab.cde".to_owned()),
+                ProtobufAbsolutePath::new(".ab".to_owned()),
+                ProtobufAbsolutePath::root(),
+            ],
+            ProtobufAbsolutePath::new(".ab.cde.fghi".to_owned()).self_and_parents()
+        );
+    }
 }
