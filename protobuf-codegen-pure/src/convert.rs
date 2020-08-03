@@ -281,7 +281,7 @@ impl<'a> Resolver<'a> {
         output.set_name(name.to_owned());
         output.set_number(number);
 
-        let t = self.field_type(name, field_type, path_in_file)?;
+        let t = self.field_type_leg(name, field_type, path_in_file)?;
         output.set_field_type(t.type_enum());
         if let Some(t_name) = t.type_name() {
             output.set_type_name(t_name.path.clone());
@@ -435,7 +435,7 @@ impl<'a> Resolver<'a> {
         for ext in &input.extensions {
             let mut extension = self.field(&ext.t.field, None, path_in_file)?;
             extension.set_extendee(
-                self.resolve_message_or_enum(&ext.t.extendee, path_in_file)?
+                self.resolve_message_or_enum_leg(&ext.t.extendee, path_in_file)?
                     .0
                     .path,
             );
@@ -538,7 +538,7 @@ impl<'a> Resolver<'a> {
             output.set_label(label(input.t.rule));
         }
 
-        let t = self.field_type(&input.t.name, &input.t.typ, path_in_file)?;
+        let t = self.field_type_leg(&input.t.name, &input.t.typ, path_in_file)?;
         output.set_field_type(t.type_enum());
         if let Some(t_name) = t.type_name() {
             output.set_type_name(t_name.path.clone());
@@ -639,7 +639,7 @@ impl<'a> Resolver<'a> {
     fn resolve_message_or_enum(
         &self,
         name: &str,
-        path_in_file: &ProtobufRelativePath,
+        scope: &ProtobufAbsolutePath,
     ) -> ConvertResult<(ProtobufAbsolutePath, MessageOrEnum)> {
         if ProtobufAbsolutePath::is_abs(name) && !name.is_empty() {
             let abs_path = ProtobufAbsolutePath::new(name.to_owned());
@@ -650,14 +650,8 @@ impl<'a> Resolver<'a> {
         } else {
             let name = ProtobufRelativePath::from(name);
 
-            let mut abs_path = ProtobufAbsolutePath::from_package_path(
-                self.current_file.package.as_ref().map(|s| s.as_str()),
-            );
-            abs_path.push_relative(path_in_file);
-            // TODO: work with abs_path
-
             // find message or enum in current package
-            for p in abs_path.self_and_parents() {
+            for p in scope.self_and_parents() {
                 let mut fq = p;
                 fq.push_relative(&name);
                 if let Ok(me) = self.find_message_or_enum_by_abs_name(&fq) {
@@ -665,15 +659,27 @@ impl<'a> Resolver<'a> {
                 }
             }
 
-            return Err(ConvertError::NotFoundByRelPath(name, abs_path));
+            return Err(ConvertError::NotFoundByRelPath(name, scope.clone()));
         }
+    }
+
+    fn resolve_message_or_enum_leg(
+        &self,
+        name: &str,
+        path_in_file: &ProtobufRelativePath,
+    ) -> ConvertResult<(ProtobufAbsolutePath, MessageOrEnum)> {
+        let mut scope = ProtobufAbsolutePath::from_package_path(
+            self.current_file.package.as_ref().map(|s| s.as_str()),
+        );
+        scope.push_relative(path_in_file);
+        self.resolve_message_or_enum(name, &scope)
     }
 
     fn field_type(
         &self,
         name: &str,
         input: &model::FieldType,
-        path_in_file: &ProtobufRelativePath,
+        scope: &ProtobufAbsolutePath,
     ) -> ConvertResult<TypeResolved> {
         Ok(match *input {
             model::FieldType::Bool => TypeResolved::Bool,
@@ -692,16 +698,14 @@ impl<'a> Resolver<'a> {
             model::FieldType::String => TypeResolved::String,
             model::FieldType::Bytes => TypeResolved::Bytes,
             model::FieldType::MessageOrEnum(ref name) => {
-                let (name, me) = self.resolve_message_or_enum(&name, path_in_file)?;
+                let (name, me) = self.resolve_message_or_enum(&name, scope)?;
                 match me {
                     MessageOrEnum::Message(..) => TypeResolved::Message(name),
                     MessageOrEnum::Enum(..) => TypeResolved::Enum(name),
                 }
             }
             model::FieldType::Map(..) => {
-                let mut type_name =
-                    ProtobufAbsolutePath::from_package_path(self.current_file.package.as_deref());
-                type_name.push_relative(path_in_file);
+                let mut type_name = scope.clone();
                 type_name.push_simple(Resolver::map_entry_name_for_field_name(name));
                 TypeResolved::Message(type_name)
             }
@@ -709,13 +713,23 @@ impl<'a> Resolver<'a> {
                 name: ref group_name,
                 ..
             }) => {
-                let mut type_name =
-                    ProtobufAbsolutePath::from_package_path(self.current_file.package.as_deref());
-                type_name.push_relative(path_in_file);
+                let mut type_name = scope.clone();
                 type_name.push_simple(ProtobufIdent::from(group_name.clone()));
                 TypeResolved::Group(type_name)
             }
         })
+    }
+
+    fn field_type_leg(
+        &self,
+        name: &str,
+        input: &model::FieldType,
+        path_in_file: &ProtobufRelativePath,
+    ) -> ConvertResult<TypeResolved> {
+        let mut scope =
+            ProtobufAbsolutePath::from_package_path(self.current_file.package.as_deref());
+        scope.push_relative(path_in_file);
+        self.field_type(name, input, &scope)
     }
 
     fn _runtime_type_for_field_type(&self, ft: &TypeResolved) -> ConvertResult<RuntimeTypeBox> {
@@ -838,10 +852,15 @@ impl<'a> Resolver<'a> {
         value: &model::ProtobufConstant,
         name: &str,
         field_type: &model::FieldType,
-        option_name: &str,
+        option_name_for_diag: &str,
         path_in_file: &ProtobufRelativePath,
     ) -> ConvertResult<UnknownValue> {
-        let field_type = self.field_type(name, field_type, path_in_file)?;
+        let mut scope = ProtobufAbsolutePath::from_package_path(
+            self.current_file.package.as_ref().map(|s| s.as_ref()),
+        );
+        scope.push_relative(path_in_file);
+
+        let field_type = self.field_type(name, field_type, &scope)?;
 
         match value {
             &model::ProtobufConstant::Bool(b) => {
@@ -922,13 +941,14 @@ impl<'a> Resolver<'a> {
                 _ => {}
             },
             model::ProtobufConstant::Message(mo) => match &field_type {
-                TypeResolved::Message(m) => {
-                    let m = self.find_message_by_abs_name(m)?;
+                TypeResolved::Message(ma) => {
+                    let m = self.find_message_by_abs_name(ma)?;
                     for (n, _v) in &mo.fields {
-                        let _f = match m.field_by_name(n.as_str()) {
+                        let f = match m.field_by_name(n.as_str()) {
                             Some(f) => f,
                             None => return Err(ConvertError::UnknownFieldName(n.clone())),
                         };
+                        let _ft = self.field_type(n, &f.typ, ma)?;
                     }
                     // TODO
                 }
@@ -941,7 +961,7 @@ impl<'a> Resolver<'a> {
                 ConvertError::ConstantsOfTypeMessageEnumGroupNotImplemented
             }
             _ => ConvertError::UnsupportedExtensionType(
-                option_name.to_owned(),
+                option_name_for_diag.to_owned(),
                 format!("{:?}", field_type),
                 value.clone(),
             ),
@@ -966,7 +986,7 @@ impl<'a> Resolver<'a> {
         let relative_path = ProtobufRelativePath::new("".to_owned());
         let mut field = self.field(&input.field, None, &relative_path)?;
         field.set_extendee(
-            self.resolve_message_or_enum(&input.extendee, &relative_path)?
+            self.resolve_message_or_enum_leg(&input.extendee, &relative_path)?
                 .0
                 .path,
         );
