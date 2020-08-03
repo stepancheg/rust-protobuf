@@ -9,9 +9,11 @@ use std::slice;
 use crate::clear::Clear;
 
 use crate::reflect::ReflectValueRef;
+use crate::rt;
 use crate::wire_format;
 use crate::zigzag::encode_zig_zag_32;
 use crate::zigzag::encode_zig_zag_64;
+use crate::CodedOutputStream;
 
 /// Unknown value.
 ///
@@ -302,6 +304,16 @@ impl UnknownFields {
             Some(ref map) => map.get(&field_number),
             None => None,
         }
+    }
+
+    #[doc(hidden)]
+    pub fn write_to_bytes(&self) -> Vec<u8> {
+        let mut r = Vec::with_capacity(rt::unknown_fields_size(self) as usize);
+        let mut stream = CodedOutputStream::vec(&mut r);
+        stream.write_unknown_fields(self).unwrap();
+        stream.flush().unwrap();
+        drop(stream);
+        r
     }
 }
 

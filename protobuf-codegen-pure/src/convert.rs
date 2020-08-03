@@ -10,6 +10,7 @@ use protobuf::descriptor::field_descriptor_proto;
 use protobuf::json::json_name;
 use protobuf::prelude::*;
 use protobuf::Message;
+use protobuf::UnknownFields;
 use protobuf::UnknownValue;
 
 use crate::protobuf_codegen::case_convert::camel_case;
@@ -493,7 +494,7 @@ impl<'a> Resolver<'a> {
                 ));
             }
 
-            let value = match self.option_value_to_unknown_value(
+            let value = match self.option_value_to_unknown_value_leg(
                 &option.value,
                 &extension.field.t.name,
                 &extension.field.t.typ,
@@ -594,10 +595,6 @@ impl<'a> Resolver<'a> {
             .into_iter()
             .filter(|f| f.package.as_deref() == package)
             .collect()
-    }
-
-    fn current_file_package_files(&self) -> Vec<&model::FileDescriptor> {
-        self.package_files(self.current_file.package.as_deref())
     }
 
     fn find_message_or_enum_by_abs_name(
@@ -847,7 +844,7 @@ impl<'a> Resolver<'a> {
         self.find_extension_by_path(path)
     }
 
-    fn option_value_to_unknown_value(
+    fn option_value_to_unknown_value_leg(
         &self,
         value: &model::ProtobufConstant,
         name: &str,
@@ -860,6 +857,17 @@ impl<'a> Resolver<'a> {
         );
         scope.push_relative(path_in_file);
 
+        self.option_value_to_unknown_value(value, name, field_type, option_name_for_diag, &scope)
+    }
+
+    fn option_value_to_unknown_value(
+        &self,
+        value: &model::ProtobufConstant,
+        name: &str,
+        field_type: &model::FieldType,
+        option_name_for_diag: &str,
+        scope: &ProtobufAbsolutePath,
+    ) -> ConvertResult<UnknownValue> {
         let field_type = self.field_type(name, field_type, &scope)?;
 
         match value {
@@ -943,14 +951,27 @@ impl<'a> Resolver<'a> {
             model::ProtobufConstant::Message(mo) => match &field_type {
                 TypeResolved::Message(ma) => {
                     let m = self.find_message_by_abs_name(ma)?;
-                    for (n, _v) in &mo.fields {
+                    let mut unknown_fields = UnknownFields::new();
+                    for (n, v) in &mo.fields {
                         let f = match m.field_by_name(n.as_str()) {
                             Some(f) => f,
                             None => return Err(ConvertError::UnknownFieldName(n.clone())),
                         };
-                        let _ft = self.field_type(n, &f.typ, ma)?;
+                        let u = self.option_value_to_unknown_value(
+                            v,
+                            n,
+                            &f.typ,
+                            option_name_for_diag,
+                            ma,
+                        )?;
+                        unknown_fields.add_value(f.number as u32, u);
                     }
-                    // TODO
+                    for (_n, _v) in &mo.extensions {
+                        // TODO
+                    }
+                    return Ok(UnknownValue::LengthDelimited(
+                        unknown_fields.write_to_bytes(),
+                    ));
                 }
                 _ => {}
             },
