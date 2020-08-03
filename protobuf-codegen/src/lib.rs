@@ -29,6 +29,7 @@ mod inside;
 mod map;
 mod message;
 mod oneof;
+mod protobuf_ident;
 mod protobuf_name;
 mod rust_name;
 mod rust_types_values;
@@ -57,8 +58,8 @@ use scope::FileScope;
 use scope::RootScope;
 
 use inside::protobuf_crate_path;
+pub use protobuf_ident::ProtobufIdent;
 pub use protobuf_name::ProtobufAbsolutePath;
-pub use protobuf_name::ProtobufIdent;
 pub use protobuf_name::ProtobufRelativePath;
 
 fn escape_byte(s: &mut String, b: u8) {

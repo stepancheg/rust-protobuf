@@ -1,45 +1,5 @@
+use crate::protobuf_ident::ProtobufIdent;
 use std::fmt;
-
-/// Identifier in `.proto` file
-#[derive(Eq, PartialEq, Debug, Clone)]
-pub struct ProtobufIdent(String);
-
-impl ProtobufIdent {
-    #[allow(dead_code)]
-    pub fn new(s: &str) -> ProtobufIdent {
-        assert!(!s.is_empty());
-        assert!(!s.contains("/"));
-        assert!(!s.contains("."));
-        assert!(!s.contains(":"));
-        ProtobufIdent(s.to_owned())
-    }
-
-    pub fn get(&self) -> &str {
-        &self.0
-    }
-
-    pub fn into_string(self) -> String {
-        self.0
-    }
-}
-
-impl From<&'_ str> for ProtobufIdent {
-    fn from(s: &str) -> Self {
-        ProtobufIdent::new(s)
-    }
-}
-
-impl From<String> for ProtobufIdent {
-    fn from(s: String) -> Self {
-        ProtobufIdent::new(&s)
-    }
-}
-
-impl fmt::Display for ProtobufIdent {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Display::fmt(&self.get(), f)
-    }
-}
 
 #[derive(Debug, Eq, PartialEq, Clone)]
 pub struct ProtobufRelativePath {
@@ -296,6 +256,34 @@ impl ProtobufAbsolutePath {
             }
         }
         None
+    }
+
+    fn parent(&self) -> Option<ProtobufAbsolutePath> {
+        match self.path.rfind('.') {
+            Some(pos) => Some(ProtobufAbsolutePath::new(self.path[..pos].to_owned())),
+            None => {
+                if self.path.is_empty() {
+                    None
+                } else {
+                    Some(ProtobufAbsolutePath::root())
+                }
+            }
+        }
+    }
+
+    pub fn self_and_parents(&self) -> Vec<ProtobufAbsolutePath> {
+        let mut tmp = self.clone();
+
+        let mut r = Vec::new();
+
+        r.push(self.clone());
+
+        while let Some(parent) = tmp.parent() {
+            r.push(parent.clone());
+            tmp = parent;
+        }
+
+        r
     }
 }
 
