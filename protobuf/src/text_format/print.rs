@@ -174,10 +174,14 @@ fn print_to_internal(m: &dyn Message, buf: &mut String, pretty: bool, indent: us
         }
     }
 
-    for (f, vs) in m.get_unknown_fields() {
-        for v in vs {
+    let unknown_fields = m.get_unknown_fields();
+    let mut numbers: Vec<u32> = m.get_unknown_fields().iter().map(|(n, _)| n).collect();
+    // Sort for stable output
+    numbers.sort();
+    for &n in &numbers {
+        for v in unknown_fields.get(n).unwrap() {
             // TODO: try decode nested message for length-delimited
-            print_field(buf, pretty, indent, &mut first, f, v.to_reflect_value_ref());
+            print_field(buf, pretty, indent, &mut first, n, v.to_reflect_value_ref());
         }
     }
 }
