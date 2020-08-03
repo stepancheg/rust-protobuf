@@ -53,34 +53,14 @@ fn generate_in_common() {
 fn generate_in_v2_v3() {
     gen_in_dir("src/v2", "src/v2");
 
-    if protoc::Protoc::from_env_path()
+    assert!(protoc::Protoc::from_env_path()
         .version()
         .expect("version")
-        .is_3()
-    {
-        gen_in_dir("src/v3", "src/v3");
+        .is_3());
 
-        gen_in_dir("src/google/protobuf", "src");
-    } else {
-        info!("generating stubs in src/v3");
+    gen_in_dir("src/v3", "src/v3");
 
-        // Because `#[cfg(nonexistent)]` still requires module files to exist
-        // https://github.com/rust-lang/rust/pull/36482
-
-        let g1 = glob_simple("src/v3/*.proto");
-        let g2 = glob_simple("src/google/protobuf/*.proto");
-
-        for mut f in g1.into_iter().chain(g2.into_iter()) {
-            let suffix = ".proto";
-            let len = f.len();
-            f.truncate(len - suffix.len());
-
-            let mut f = fs::File::create(f).expect("create");
-            let content = b"// @generated\n// empty file because protobuf 3 is not available\n";
-            f.write_all(content).expect("write");
-            f.flush().expect("flush");
-        }
-    }
+    gen_in_dir("src/google/protobuf", "src");
 }
 
 fn generate_interop() {
