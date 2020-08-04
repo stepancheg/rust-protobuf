@@ -63,6 +63,7 @@ pub use protobuf_abs_path::ProtobufAbsolutePath;
 pub use protobuf_ident::ProtobufIdent;
 pub use protobuf_rel_path::ProtobufRelativePath;
 
+use crate::scope::WithScope;
 use crate::well_known_types::WELL_KNOWN_TYPES_PROTO_FILE_NAMES;
 #[doc(hidden)]
 pub use file::proto_name_to_rs;
@@ -273,7 +274,7 @@ fn gen_well_known_types_mod(
 
         w.write_line("");
         for p in WELL_KNOWN_TYPES_PROTO_FILE_NAMES {
-            let f = match file_descriptors
+            let file_descriptor = match file_descriptors
                 .iter()
                 .find(|f| f.get_name() == &format!("google/protobuf/{}", p))
             {
@@ -289,11 +290,21 @@ fn gen_well_known_types_mod(
                 ),
             };
 
-            for _m in &f.message_type {
+            let rust_mod = proto_path_to_rust_mod(p);
 
+            let file_scope = FileScope { file_descriptor };
+
+            for m in file_scope.to_scope().get_messages() {
+                w.write_line(&format!("pub use self::{}::{};", rust_mod, m.rust_name()));
+                if m.need_mod() {
+                    // Does not correctly export oneofs,
+                    // but that's not an issue for well_known_types
+                    w.write_line(&format!("pub use self::{}::{};", rust_mod, m.mod_name()));
+                }
             }
-
-            w.write_line(&format!("pub use self::{}::*;", proto_path_to_rust_mod(p)));
+            for e in file_scope.to_scope().get_enums() {
+                w.write_line(&format!("pub use self::{}::{};", rust_mod, e.rust_name()));
+            }
         }
     }
 

@@ -19,6 +19,7 @@ use protobuf::descriptor::EnumValueDescriptorProto;
 use protobuf::descriptor::FieldDescriptorProto;
 use protobuf::descriptor::FileDescriptorProto;
 use protobuf::descriptor::OneofDescriptorProto;
+use crate::map::map_entry;
 
 pub(crate) struct RootScope<'a> {
     pub file_descriptors: &'a [FileDescriptorProto],
@@ -392,6 +393,23 @@ impl<'a> MessageWithScope<'a> {
 
     pub fn mod_name(&self) -> RustIdent {
         message_name_to_nested_mod_name(self.message.get_name())
+    }
+
+    /** Need to generate a mod for message nested objects. */
+    pub fn need_mod(&self) -> bool {
+        for nested in self.to_scope().get_messages() {
+            if map_entry(&nested).is_some() {
+                continue;
+            }
+            return true;
+        }
+        if !self.to_scope().get_enums().is_empty() {
+            return true;
+        }
+        if !self.message.oneof_decl.is_empty() {
+            return true;
+        }
+        false
     }
 }
 
