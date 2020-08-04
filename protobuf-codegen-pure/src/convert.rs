@@ -469,7 +469,7 @@ impl<'a> Resolver<'a> {
         for option in input {
             match option.name.get_simple() {
                 Some(simple) => {
-                    if let Some(field) = M::descriptor_static().get_field_by_name(simple) {
+                    if let Some(field) = M::descriptor_static().get_field_by_name(simple.get()) {
                         if field.is_repeated() || field.is_map() {
                             continue;
                         }
@@ -487,7 +487,6 @@ impl<'a> Resolver<'a> {
                     // ?
                 }
             }
-            if !option.name.components[0].starts_with('(') {}
 
             let extension = match self.find_extension(&option.name.full_name()) {
                 Ok(e) => e,

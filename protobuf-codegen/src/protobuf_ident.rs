@@ -29,6 +29,8 @@ impl ProtobufIdent {
         assert!(!s.contains("/"));
         assert!(!s.contains("."));
         assert!(!s.contains(":"));
+        assert!(!s.contains("("));
+        assert!(!s.contains(")"));
         ProtobufIdent(s.to_owned())
     }
 

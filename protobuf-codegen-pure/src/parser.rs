@@ -10,6 +10,7 @@ use crate::model::*;
 use protobuf::text_format::lexer::int;
 use protobuf::text_format::lexer::Tokenizer;
 use protobuf::text_format::lexer::TokenizerError;
+use protobuf_codegen::ProtobufIdent;
 
 /// Basic information about parsing error.
 #[derive(Debug)]
@@ -441,26 +442,28 @@ impl<'a> Parser<'a> {
 
     // Option
 
-    fn next_ident_or_braced(&mut self) -> ParserResult<String> {
-        let mut ident_or_braced = String::new();
+    fn next_ident(&mut self) -> ParserResult<ProtobufIdent> {
+        Ok(ProtobufIdent::from(self.tokenizer.next_ident()?))
+    }
+
+    fn next_option_name_component(&mut self) -> ParserResult<ProtobufOptionNameComponent> {
         if self.tokenizer.next_symbol_if_eq('(')? {
-            ident_or_braced.push('(');
-            ident_or_braced.push_str(&self.next_full_ident()?);
+            let mut ext = String::new();
+            ext.push_str(&self.next_full_ident()?);
             self.tokenizer.next_symbol_expect_eq(')')?;
-            ident_or_braced.push(')');
+            Ok(ProtobufOptionNameComponent::Ext(ext))
         } else {
-            ident_or_braced.push_str(&self.tokenizer.next_ident()?);
+            Ok(ProtobufOptionNameComponent::Direct(self.next_ident()?))
         }
-        Ok(ident_or_braced)
     }
 
     // https://github.com/google/protobuf/issues/4563
     // optionName = ( ident | "(" fullIdent ")" ) { "." ident }
     fn next_option_name(&mut self) -> ParserResult<ProtobufOptionName> {
         let mut components = Vec::new();
-        components.push(self.next_ident_or_braced()?);
+        components.push(self.next_option_name_component()?);
         while self.tokenizer.next_symbol_if_eq('.')? {
-            components.push(self.next_ident_or_braced()?);
+            components.push(self.next_option_name_component()?);
         }
         Ok(ProtobufOptionName { components })
     }

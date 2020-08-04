@@ -17,6 +17,7 @@ pub use crate::parser::ParserError;
 pub use crate::parser::ParserErrorWithLocation;
 use protobuf::reflect::ReflectValueBox;
 use protobuf::reflect::RuntimeTypeBox;
+use protobuf_codegen::ProtobufIdent;
 use std::fmt;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -403,8 +404,23 @@ impl ProtobufConstant {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub enum ProtobufOptionNameComponent {
+    Direct(ProtobufIdent),
+    Ext(String),
+}
+
+impl fmt::Display for ProtobufOptionNameComponent {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            ProtobufOptionNameComponent::Direct(n) => write!(f, "{}", n),
+            ProtobufOptionNameComponent::Ext(n) => write!(f, "({})", n),
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct ProtobufOptionName {
-    pub components: Vec<String>,
+    pub components: Vec<ProtobufOptionNameComponent>,
 }
 
 impl ProtobufOptionName {
@@ -413,15 +429,16 @@ impl ProtobufOptionName {
         assert!(!name.contains("."));
         assert!(!name.contains("("));
         ProtobufOptionName {
-            components: vec![name.to_owned()],
+            components: vec![ProtobufOptionNameComponent::Direct(ProtobufIdent::from(
+                name,
+            ))],
         }
     }
 
-    pub fn get_simple(&self) -> Option<&str> {
-        if self.components.len() != 1 || self.components[0].starts_with("(") {
-            None
-        } else {
-            Some(&self.components[0])
+    pub fn get_simple(&self) -> Option<&ProtobufIdent> {
+        match &self.components[..] {
+            [ProtobufOptionNameComponent::Direct(n)] => Some(&n),
+            _ => None,
         }
     }
 
