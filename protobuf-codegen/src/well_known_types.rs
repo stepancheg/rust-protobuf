@@ -86,10 +86,7 @@ fn find_file_descriptor<'a>(
     file_descriptors: &'a [FileDescriptorProto],
     file_name: &str,
 ) -> &'a FileDescriptorProto {
-    match file_descriptors
-        .iter()
-        .find(|f| f.get_name() == file_name)
-    {
+    match file_descriptors.iter().find(|f| f.get_name() == file_name) {
         Some(f) => f,
         None => panic!(
             "file descriptor not found for {}, all names: {}",
@@ -152,7 +149,10 @@ pub(crate) fn gen_well_known_types_mod(
         w.pub_mod("file_descriptors", |w| {
             for p in WELL_KNOWN_TYPES_PROTO_FILE_NAMES {
                 let rust_mod = proto_path_to_rust_mod(p);
-                w.write_line(&format!("pub use super::{}::file_descriptor as {};", rust_mod, rust_mod));
+                w.write_line(&format!(
+                    "pub use super::{}::file_descriptor as {};",
+                    rust_mod, rust_mod
+                ));
             }
         })
     }

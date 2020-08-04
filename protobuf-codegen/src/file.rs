@@ -56,11 +56,10 @@ pub(crate) fn proto_path_to_fn_file_descriptor(
 ) -> RustPath {
     let protobuf_crate = protobuf_crate_path(customize);
     match proto_path {
-        "rustproto.proto" => protobuf_crate
-            .append("rustproto::file_descriptor".into()),
-        "google/protobuf/descriptor.proto" =>
-            protobuf_crate
-                .append("descriptor::file_descriptor".into()),
+        "rustproto.proto" => protobuf_crate.append("rustproto::file_descriptor".into()),
+        "google/protobuf/descriptor.proto" => {
+            protobuf_crate.append("descriptor::file_descriptor".into())
+        }
         s if WELL_KNOWN_TYPES_PROTO_FILE_FULL_NAMES.contains(&s) => protobuf_crate
             .append("well_known_types::file_descriptors".into())
             .append_ident(proto_path_to_rust_mod(s)),

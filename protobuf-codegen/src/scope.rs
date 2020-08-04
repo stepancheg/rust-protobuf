@@ -2,6 +2,7 @@ use crate::customize::Customize;
 use crate::field::rust_field_name_for_protobuf_field_name;
 use crate::file::proto_path_to_rust_mod;
 use crate::file_and_mod::FileAndMod;
+use crate::map::map_entry;
 use crate::message::message_name_to_nested_mod_name;
 use crate::protobuf_abs_path::ProtobufAbsolutePath;
 use crate::protobuf_ident::ProtobufIdent;
@@ -19,7 +20,6 @@ use protobuf::descriptor::EnumValueDescriptorProto;
 use protobuf::descriptor::FieldDescriptorProto;
 use protobuf::descriptor::FileDescriptorProto;
 use protobuf::descriptor::OneofDescriptorProto;
-use crate::map::map_entry;
 
 pub(crate) struct RootScope<'a> {
     pub file_descriptors: &'a [FileDescriptorProto],

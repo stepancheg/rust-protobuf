@@ -1231,7 +1231,10 @@ mod test {
         let msg = r#"  optional int64 f = 4 [default = 12];  "#;
         let mess = parse(msg, |p| p.next_field(MessageBodyParseMode::MessageProto2));
         assert_eq!("f", mess.t.name);
-        assert_eq!(ProtobufOptionName::simple("default"), mess.t.options[0].name);
+        assert_eq!(
+            ProtobufOptionName::simple("default"),
+            mess.t.options[0].name
+        );
         assert_eq!("12", mess.t.options[0].value.format());
     }
 
@@ -1240,7 +1243,10 @@ mod test {
         let msg = r#"  optional float f = 2 [default = 10.0];  "#;
         let mess = parse(msg, |p| p.next_field(MessageBodyParseMode::MessageProto2));
         assert_eq!("f", mess.t.name);
-        assert_eq!(ProtobufOptionName::simple("default"), mess.t.options[0].name);
+        assert_eq!(
+            ProtobufOptionName::simple("default"),
+            mess.t.options[0].name
+        );
         assert_eq!("10", mess.t.options[0].value.format());
     }
 
