@@ -63,6 +63,9 @@ pub use protobuf_abs_path::ProtobufAbsolutePath;
 pub use protobuf_ident::ProtobufIdent;
 pub use protobuf_rel_path::ProtobufRelativePath;
 
+#[doc(hidden)]
+pub use file::proto_name_to_rs;
+
 fn escape_byte(s: &mut String, b: u8) {
     if b == b'\n' {
         write!(s, "\\n").unwrap();
@@ -244,7 +247,7 @@ fn gen_file(
     }
 
     Some(compiler_plugin::GenResult {
-        name: format!("{}.rs", proto_path_to_rust_mod(file.get_name())),
+        name: proto_name_to_rs(file.get_name()),
         content: v,
     })
 }
@@ -331,10 +334,4 @@ pub fn protoc_gen_rust_main() {
             &customize,
         )
     });
-}
-
-/// Used in protobuf-codegen-identical-test
-#[doc(hidden)]
-pub fn proto_name_to_rs(name: &str) -> String {
-    format!("{}.rs", proto_path_to_rust_mod(name))
 }
