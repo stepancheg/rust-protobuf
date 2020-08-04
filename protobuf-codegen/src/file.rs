@@ -1,8 +1,9 @@
 use crate::inside::protobuf_crate_path;
+use crate::rust;
 use crate::rust_name::RustIdent;
 use crate::rust_name::RustPath;
 use crate::strx;
-use crate::rust;
+use crate::well_known_types::WELL_KNOWN_TYPES_PROTO_FILE_FULL_NAMES;
 use crate::Customize;
 
 // Copy-pasted from libsyntax.
@@ -49,34 +50,23 @@ pub fn proto_name_to_rs(proto_file_path: &str) -> String {
     format!("{}.rs", proto_path_to_rust_mod(proto_file_path))
 }
 
-pub(crate) fn proto_path_to_rust_mod_rel(proto_path: &str, customize: &Customize) -> RustPath {
+pub(crate) fn proto_path_to_fn_file_descriptor(
+    proto_path: &str,
+    customize: &Customize,
+) -> RustPath {
     let protobuf_crate = protobuf_crate_path(customize);
     match proto_path {
-        "rustproto.proto" => protobuf_crate.append_ident("rustproto".into()),
-        "google/protobuf/descriptor.proto" => protobuf_crate.append_ident("descriptor".into()),
-        "google/protobuf/any.proto" => protobuf_crate.append("well_known_types::any".into()),
-        "google/protobuf/api.proto" => protobuf_crate.append("well_known_types::api".into()),
-        "google/protobuf/duration.proto" => {
-            protobuf_crate.append("well_known_types::duration".into())
-        }
-        "google/protobuf/empty.proto" => protobuf_crate.append("well_known_types::empty".into()),
-        "google/protobuf/field_mask.proto" => {
-            protobuf_crate.append("well_known_types::field_mask".into())
-        }
-        "google/protobuf/source_context.proto" => {
-            protobuf_crate.append("well_known_types::source_context".into())
-        }
-        "google/protobuf/struct.proto" => {
-            protobuf_crate.append("well_known_types::struct_pb".into())
-        }
-        "google/protobuf/timestamp.proto" => {
-            protobuf_crate.append("well_known_types::timestamp".into())
-        }
-        "google/protobuf/type.proto" => protobuf_crate.append("well_known_types::type_pb".into()),
-        "google/protobuf/wrappers.proto" => {
-            protobuf_crate.append("well_known_types::wrappers".into())
-        }
-        s => RustPath::super_path().append_ident(proto_path_to_rust_mod(s)),
+        "rustproto.proto" => protobuf_crate
+            .append("rustproto::file_descriptor".into()),
+        "google/protobuf/descriptor.proto" =>
+            protobuf_crate
+                .append("descriptor::file_descriptor".into()),
+        s if WELL_KNOWN_TYPES_PROTO_FILE_FULL_NAMES.contains(&s) => protobuf_crate
+            .append("well_known_types::file_descriptors".into())
+            .append_ident(proto_path_to_rust_mod(s)),
+        s => RustPath::super_path()
+            .append_ident(proto_path_to_rust_mod(s))
+            .append_ident("file_descriptor".into()),
     }
 }
 

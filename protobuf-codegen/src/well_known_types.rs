@@ -19,6 +19,19 @@ pub(crate) static WELL_KNOWN_TYPES_PROTO_FILE_NAMES: &[&str] = &[
     "wrappers.proto",
 ];
 
+pub(crate) static WELL_KNOWN_TYPES_PROTO_FILE_FULL_NAMES: &[&str] = &[
+    "google/protobuf/any.proto",
+    "google/protobuf/api.proto",
+    "google/protobuf/duration.proto",
+    "google/protobuf/empty.proto",
+    "google/protobuf/field_mask.proto",
+    "google/protobuf/source_context.proto",
+    "google/protobuf/struct.proto",
+    "google/protobuf/timestamp.proto",
+    "google/protobuf/type.proto",
+    "google/protobuf/wrappers.proto",
+];
+
 static NAMES: &'static [&'static str] = &[
     "Any",
     "Api",

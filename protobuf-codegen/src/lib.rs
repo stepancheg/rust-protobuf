@@ -57,7 +57,7 @@ use map::map_entry;
 use scope::FileScope;
 use scope::RootScope;
 
-use crate::file::proto_path_to_rust_mod_rel;
+use crate::file::proto_path_to_fn_file_descriptor;
 use inside::protobuf_crate_path;
 pub use protobuf_abs_path::ProtobufAbsolutePath;
 pub use protobuf_ident::ProtobufIdent;
@@ -111,8 +111,8 @@ fn write_file_descriptor(
                 w.write_line("let mut deps = ::std::vec::Vec::new();");
                 for f in &file_descriptor.dependency {
                     w.write_line(&format!(
-                        "deps.push({}::file_descriptor());",
-                        proto_path_to_rust_mod_rel(f, customize)
+                        "deps.push({}());",
+                        proto_path_to_fn_file_descriptor(f, customize)
                     ));
                 }
 

@@ -903,8 +903,8 @@ pub fn file_descriptor() -> &'static crate::reflect::FileDescriptor {
     static file_descriptor_lazy: crate::rt::LazyV2<crate::reflect::FileDescriptor> = crate::rt::LazyV2::INIT;
     file_descriptor_lazy.get(|| {
         let mut deps = ::std::vec::Vec::new();
-        deps.push(crate::well_known_types::source_context::file_descriptor());
-        deps.push(crate::well_known_types::type_pb::file_descriptor());
+        deps.push(crate::well_known_types::file_descriptors::source_context());
+        deps.push(crate::well_known_types::file_descriptors::type_pb());
         let mut messages = ::std::vec::Vec::new();
         messages.push(<Api as crate::Message>::descriptor_static());
         messages.push(<Method as crate::Message>::descriptor_static());
