@@ -117,19 +117,6 @@ fn write_file_descriptor_data(
     });
     w.write_line("\";");
     w.write_line("");
-    w.def_fn(
-        &format!(
-            "parse_descriptor_proto() -> {}::descriptor::FileDescriptorProto",
-            protobuf_crate_path(customize)
-        ),
-        |w| {
-            w.write_line(&format!(
-                "{}::parse_from_bytes(file_descriptor_proto_data).unwrap()",
-                protobuf_crate_path(customize)
-            ));
-        },
-    );
-    w.write_line("");
     w.write_line("/// `FileDescriptorProto` object which was a source for this generated file");
     w.pub_fn(
         &format!(
@@ -146,7 +133,10 @@ fn write_file_descriptor_data(
                 protobuf_crate_path(customize),
             );
             w.block("file_descriptor_proto_lazy.get(|| {", "})", |w| {
-                w.write_line("parse_descriptor_proto()");
+                w.write_line(&format!(
+                    "{}::parse_from_bytes(file_descriptor_proto_data).unwrap()",
+                    protobuf_crate_path(customize)
+                ));
             });
         },
     );
