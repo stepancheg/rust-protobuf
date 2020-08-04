@@ -53,7 +53,6 @@ use self::extensions::*;
 use self::message::*;
 #[doc(hidden)]
 pub use amend_io_error_util::amend_io_error;
-use file::proto_path_to_rust_mod;
 use map::map_entry;
 use scope::FileScope;
 use scope::RootScope;
@@ -63,8 +62,7 @@ pub use protobuf_abs_path::ProtobufAbsolutePath;
 pub use protobuf_ident::ProtobufIdent;
 pub use protobuf_rel_path::ProtobufRelativePath;
 
-use crate::scope::WithScope;
-use crate::well_known_types::WELL_KNOWN_TYPES_PROTO_FILE_NAMES;
+use crate::well_known_types::gen_well_known_types_mod;
 #[doc(hidden)]
 pub use file::proto_name_to_rs;
 
@@ -252,66 +250,6 @@ fn gen_file(
         name: proto_name_to_rs(file.get_name()),
         content: v,
     })
-}
-
-fn gen_well_known_types_mod(
-    file_descriptors: &[FileDescriptorProto],
-) -> compiler_plugin::GenResult {
-    let mut v = Vec::new();
-
-    {
-        let mut w = CodeWriter::new(&mut v);
-        w.comment("This file is generated. Do not edit");
-        w.comment("@generated");
-        w.mod_doc("Generated code for \"well known types\"");
-        w.mod_doc("");
-        w.mod_doc("[This document](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf) describes these types.");
-
-        w.write_line("");
-        for m in WELL_KNOWN_TYPES_PROTO_FILE_NAMES {
-            w.write_line(&format!("mod {};", proto_path_to_rust_mod(m)));
-        }
-
-        w.write_line("");
-        for p in WELL_KNOWN_TYPES_PROTO_FILE_NAMES {
-            let file_descriptor = match file_descriptors
-                .iter()
-                .find(|f| f.get_name() == &format!("google/protobuf/{}", p))
-            {
-                Some(f) => f,
-                None => panic!(
-                    "file descriptor not found for {}, all names: {}",
-                    p,
-                    file_descriptors
-                        .iter()
-                        .map(|f| f.get_name().to_owned())
-                        .collect::<Vec<_>>()
-                        .join(", ")
-                ),
-            };
-
-            let rust_mod = proto_path_to_rust_mod(p);
-
-            let file_scope = FileScope { file_descriptor };
-
-            for m in file_scope.to_scope().get_messages() {
-                w.write_line(&format!("pub use self::{}::{};", rust_mod, m.rust_name()));
-                if m.need_mod() {
-                    // Does not correctly export oneofs,
-                    // but that's not an issue for well_known_types
-                    w.write_line(&format!("pub use self::{}::{};", rust_mod, m.mod_name()));
-                }
-            }
-            for e in file_scope.to_scope().get_enums() {
-                w.write_line(&format!("pub use self::{}::{};", rust_mod, e.rust_name()));
-            }
-        }
-    }
-
-    compiler_plugin::GenResult {
-        name: "well_known_types_mod.rs".to_string(),
-        content: v,
-    }
 }
 
 // This function is also used externally by cargo plugin
