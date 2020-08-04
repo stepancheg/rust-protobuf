@@ -243,7 +243,7 @@ impl<'a> EnumGen<'a> {
                                 "{}::reflect::EnumDescriptor",
                                 protobuf_crate_path(&self.customize)
                             ),
-                            protobuf_crate_path(&self.customize),
+                            &format!("{}", protobuf_crate_path(&self.customize)),
                             |w| {
                                 w.write_line(&format!(
                                     "{}::reflect::EnumDescriptor::new::<{}>(\"{}\", {})",

@@ -3,6 +3,7 @@
 mod accessor;
 mod enums;
 mod field;
+mod file;
 mod find_message_or_enum;
 mod map;
 mod message;
@@ -37,6 +38,8 @@ pub use self::message::MessageDescriptor;
 pub use self::field::FieldDescriptor;
 pub use self::field::ReflectFieldRef;
 pub use self::field::RuntimeFieldType;
+
+pub use self::file::FileDescriptor;
 
 pub use self::runtime_type_box::RuntimeTypeBox;
 pub use self::runtime_type_dynamic::RuntimeTypeDynamic;

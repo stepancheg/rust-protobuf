@@ -142,6 +142,10 @@ impl From<&'_ str> for RustRelativePath {
 }
 
 impl RustPath {
+    pub fn super_path() -> RustPath {
+        RustPath::from("super")
+    }
+
     pub fn is_absolute(&self) -> bool {
         self.absolute
     }

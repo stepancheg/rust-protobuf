@@ -17,6 +17,7 @@
 #![allow(non_upper_case_globals)]
 #![allow(trivial_casts)]
 #![allow(unused_results)]
+#![allow(unused_mut)]
 
 //! Generated file from `google/protobuf/duration.proto`
 
@@ -279,5 +280,22 @@ pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProt
     static file_descriptor_proto_lazy: crate::rt::LazyV2<crate::descriptor::FileDescriptorProto> = crate::rt::LazyV2::INIT;
     file_descriptor_proto_lazy.get(|| {
         crate::parse_from_bytes(file_descriptor_proto_data).unwrap()
+    })
+}
+
+/// `FileDescriptor` object which allows dynamic access to files
+pub fn file_descriptor() -> &'static crate::reflect::FileDescriptor {
+    static file_descriptor_lazy: crate::rt::LazyV2<crate::reflect::FileDescriptor> = crate::rt::LazyV2::INIT;
+    file_descriptor_lazy.get(|| {
+        let mut deps = ::std::vec::Vec::new();
+        let mut messages = ::std::vec::Vec::new();
+        messages.push(<Duration as crate::Message>::descriptor_static());
+        let mut enums = ::std::vec::Vec::new();
+        crate::reflect::FileDescriptor::new(
+            file_descriptor_proto(),
+            deps,
+            messages,
+            enums,
+        )
     })
 }

@@ -70,6 +70,7 @@ impl<'a> CodeWriter<'a> {
         self.write_line("#![allow(non_upper_case_globals)]");
         self.write_line("#![allow(trivial_casts)]");
         self.write_line("#![allow(unused_results)]");
+        self.write_line("#![allow(unused_mut)]");
     }
 
     pub fn todo(&mut self, message: &str) {

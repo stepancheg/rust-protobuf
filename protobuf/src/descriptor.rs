@@ -17,6 +17,7 @@
 #![allow(non_upper_case_globals)]
 #![allow(trivial_casts)]
 #![allow(unused_results)]
+#![allow(unused_mut)]
 
 //! Generated file from `google/protobuf/descriptor.proto`
 
@@ -8484,5 +8485,51 @@ pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProt
     static file_descriptor_proto_lazy: crate::rt::LazyV2<crate::descriptor::FileDescriptorProto> = crate::rt::LazyV2::INIT;
     file_descriptor_proto_lazy.get(|| {
         crate::parse_from_bytes(file_descriptor_proto_data).unwrap()
+    })
+}
+
+/// `FileDescriptor` object which allows dynamic access to files
+pub fn file_descriptor() -> &'static crate::reflect::FileDescriptor {
+    static file_descriptor_lazy: crate::rt::LazyV2<crate::reflect::FileDescriptor> = crate::rt::LazyV2::INIT;
+    file_descriptor_lazy.get(|| {
+        let mut deps = ::std::vec::Vec::new();
+        let mut messages = ::std::vec::Vec::new();
+        messages.push(<FileDescriptorSet as crate::Message>::descriptor_static());
+        messages.push(<FileDescriptorProto as crate::Message>::descriptor_static());
+        messages.push(<DescriptorProto as crate::Message>::descriptor_static());
+        messages.push(<FieldDescriptorProto as crate::Message>::descriptor_static());
+        messages.push(<OneofDescriptorProto as crate::Message>::descriptor_static());
+        messages.push(<EnumDescriptorProto as crate::Message>::descriptor_static());
+        messages.push(<EnumValueDescriptorProto as crate::Message>::descriptor_static());
+        messages.push(<ServiceDescriptorProto as crate::Message>::descriptor_static());
+        messages.push(<MethodDescriptorProto as crate::Message>::descriptor_static());
+        messages.push(<FileOptions as crate::Message>::descriptor_static());
+        messages.push(<MessageOptions as crate::Message>::descriptor_static());
+        messages.push(<FieldOptions as crate::Message>::descriptor_static());
+        messages.push(<OneofOptions as crate::Message>::descriptor_static());
+        messages.push(<EnumOptions as crate::Message>::descriptor_static());
+        messages.push(<EnumValueOptions as crate::Message>::descriptor_static());
+        messages.push(<ServiceOptions as crate::Message>::descriptor_static());
+        messages.push(<MethodOptions as crate::Message>::descriptor_static());
+        messages.push(<UninterpretedOption as crate::Message>::descriptor_static());
+        messages.push(<SourceCodeInfo as crate::Message>::descriptor_static());
+        messages.push(<GeneratedCodeInfo as crate::Message>::descriptor_static());
+        messages.push(<descriptor_proto::ExtensionRange as crate::Message>::descriptor_static());
+        messages.push(<descriptor_proto::ReservedRange as crate::Message>::descriptor_static());
+        messages.push(<uninterpreted_option::NamePart as crate::Message>::descriptor_static());
+        messages.push(<source_code_info::Location as crate::Message>::descriptor_static());
+        messages.push(<generated_code_info::Annotation as crate::Message>::descriptor_static());
+        let mut enums = ::std::vec::Vec::new();
+        enums.push(<field_descriptor_proto::Type as crate::ProtobufEnum>::enum_descriptor_static());
+        enums.push(<field_descriptor_proto::Label as crate::ProtobufEnum>::enum_descriptor_static());
+        enums.push(<file_options::OptimizeMode as crate::ProtobufEnum>::enum_descriptor_static());
+        enums.push(<field_options::CType as crate::ProtobufEnum>::enum_descriptor_static());
+        enums.push(<field_options::JSType as crate::ProtobufEnum>::enum_descriptor_static());
+        crate::reflect::FileDescriptor::new(
+            file_descriptor_proto(),
+            deps,
+            messages,
+            enums,
+        )
     })
 }

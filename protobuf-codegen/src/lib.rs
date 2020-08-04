@@ -57,11 +57,13 @@ use map::map_entry;
 use scope::FileScope;
 use scope::RootScope;
 
+use crate::file::proto_path_to_rust_mod_rel;
 use inside::protobuf_crate_path;
 pub use protobuf_abs_path::ProtobufAbsolutePath;
 pub use protobuf_ident::ProtobufIdent;
 pub use protobuf_rel_path::ProtobufRelativePath;
 
+use crate::scope::WithScope;
 use crate::well_known_types::gen_well_known_types_mod;
 #[doc(hidden)]
 pub use file::proto_name_to_rs;
@@ -83,6 +85,74 @@ fn escape_byte(s: &mut String, b: u8) {
     } else {
         write!(s, "\\x{:02x}", b).unwrap();
     }
+}
+
+fn write_file_descriptor(
+    file_descriptor: &FileDescriptorProto,
+    customize: &Customize,
+    w: &mut CodeWriter,
+) {
+    w.write_line("/// `FileDescriptor` object which allows dynamic access to files");
+    w.pub_fn(
+        &format!(
+            "file_descriptor() -> &'static {}::reflect::FileDescriptor",
+            protobuf_crate_path(customize)
+        ),
+        |w| {
+            w.lazy_static(
+                "file_descriptor_lazy",
+                &format!(
+                    "{}::reflect::FileDescriptor",
+                    protobuf_crate_path(customize)
+                ),
+                &format!("{}", protobuf_crate_path(customize)),
+            );
+            w.block("file_descriptor_lazy.get(|| {", "})", |w| {
+                w.write_line("let mut deps = ::std::vec::Vec::new();");
+                for f in &file_descriptor.dependency {
+                    w.write_line(&format!(
+                        "deps.push({}::file_descriptor());",
+                        proto_path_to_rust_mod_rel(f, customize)
+                    ));
+                }
+
+                let scope = FileScope { file_descriptor };
+
+                w.write_line("let mut messages = ::std::vec::Vec::new();");
+                for m in scope.find_messages() {
+                    if map_entry(&m).is_some() {
+                        continue;
+                    }
+                    w.write_line(&format!(
+                        "messages.push(<{} as {}::Message>::descriptor_static());",
+                        m.rust_name_to_file(),
+                        protobuf_crate_path(customize),
+                    ));
+                }
+
+                w.write_line("let mut enums = ::std::vec::Vec::new();");
+                for e in scope.find_enums() {
+                    w.write_line(&format!(
+                        "enums.push(<{} as {}::ProtobufEnum>::enum_descriptor_static());",
+                        e.rust_name_to_file(),
+                        protobuf_crate_path(customize),
+                    ));
+                }
+
+                w.write_line(&format!(
+                    "{}::reflect::FileDescriptor::new(",
+                    protobuf_crate_path(&customize),
+                ));
+                w.indented(|w| {
+                    w.write_line(&format!("file_descriptor_proto(),"));
+                    w.write_line(&format!("deps,"));
+                    w.write_line(&format!("messages,"));
+                    w.write_line(&format!("enums,"));
+                });
+                w.write_line(")");
+            });
+        },
+    );
 }
 
 fn write_file_descriptor_data(
@@ -133,7 +203,7 @@ fn write_file_descriptor_data(
                     "{}::descriptor::FileDescriptorProto",
                     protobuf_crate_path(customize)
                 ),
-                protobuf_crate_path(customize),
+                &format!("{}", protobuf_crate_path(customize)),
             );
             w.block("file_descriptor_proto_lazy.get(|| {", "})", |w| {
                 w.write_line(&format!(
@@ -143,6 +213,8 @@ fn write_file_descriptor_data(
             });
         },
     );
+    w.write_line("");
+    write_file_descriptor(file, &customize, w);
 }
 
 fn gen_file(

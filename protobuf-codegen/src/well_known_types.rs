@@ -1,10 +1,10 @@
+use crate::code_writer::CodeWriter;
+use crate::compiler_plugin;
+use crate::file::proto_path_to_rust_mod;
 use crate::protobuf_abs_path::ProtobufAbsolutePath;
 use crate::protobuf_rel_path::ProtobufRelativePath;
-use crate::compiler_plugin;
-use protobuf::descriptor::FileDescriptorProto;
-use crate::code_writer::CodeWriter;
-use crate::file::proto_path_to_rust_mod;
 use crate::scope::{FileScope, WithScope};
+use protobuf::descriptor::FileDescriptorProto;
 
 pub(crate) static WELL_KNOWN_TYPES_PROTO_FILE_NAMES: &[&str] = &[
     "any.proto",
@@ -69,6 +69,27 @@ pub fn is_well_known_type_full(name: &ProtobufAbsolutePath) -> Option<ProtobufRe
     }
 }
 
+fn find_file_descriptor<'a>(
+    file_descriptors: &'a [FileDescriptorProto],
+    file_name: &str,
+) -> &'a FileDescriptorProto {
+    match file_descriptors
+        .iter()
+        .find(|f| f.get_name() == file_name)
+    {
+        Some(f) => f,
+        None => panic!(
+            "file descriptor not found for {}, all names: {}",
+            file_name,
+            file_descriptors
+                .iter()
+                .map(|f| f.get_name().to_owned())
+                .collect::<Vec<_>>()
+                .join(", ")
+        ),
+    }
+}
+
 pub(crate) fn gen_well_known_types_mod(
     file_descriptors: &[FileDescriptorProto],
 ) -> compiler_plugin::GenResult {
@@ -83,27 +104,18 @@ pub(crate) fn gen_well_known_types_mod(
         w.mod_doc("[This document](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf) describes these types.");
 
         w.write_line("");
+        w.write_line("#![allow(unused_attributes)]");
+        w.write_line("#![rustfmt::skip]");
+
+        w.write_line("");
         for m in WELL_KNOWN_TYPES_PROTO_FILE_NAMES {
             w.write_line(&format!("mod {};", proto_path_to_rust_mod(m)));
         }
 
         w.write_line("");
         for p in WELL_KNOWN_TYPES_PROTO_FILE_NAMES {
-            let file_descriptor = match file_descriptors
-                .iter()
-                .find(|f| f.get_name() == &format!("google/protobuf/{}", p))
-            {
-                Some(f) => f,
-                None => panic!(
-                    "file descriptor not found for {}, all names: {}",
-                    p,
-                    file_descriptors
-                        .iter()
-                        .map(|f| f.get_name().to_owned())
-                        .collect::<Vec<_>>()
-                        .join(", ")
-                ),
-            };
+            let file_descriptor =
+                find_file_descriptor(file_descriptors, &format!("google/protobuf/{}", p));
 
             let rust_mod = proto_path_to_rust_mod(p);
 
@@ -121,6 +133,15 @@ pub(crate) fn gen_well_known_types_mod(
                 w.write_line(&format!("pub use self::{}::{};", rust_mod, e.rust_name()));
             }
         }
+
+        w.write_line("");
+        w.write_line("#[doc(hidden)]");
+        w.pub_mod("file_descriptors", |w| {
+            for p in WELL_KNOWN_TYPES_PROTO_FILE_NAMES {
+                let rust_mod = proto_path_to_rust_mod(p);
+                w.write_line(&format!("pub use super::{}::file_descriptor as {};", rust_mod, rust_mod));
+            }
+        })
     }
 
     compiler_plugin::GenResult {
@@ -145,4 +166,3 @@ mod test {
         );
     }
 }
-

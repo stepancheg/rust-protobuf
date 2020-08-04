@@ -252,7 +252,7 @@ impl<'a> MessageGen<'a> {
                     "instance",
                     &format!("{}", self.type_name),
                     &format!("{}::new", self.type_name),
-                    protobuf_crate_path(&self.customize),
+                    &format!("{}", protobuf_crate_path(&self.customize)),
                 );
             },
         );
@@ -355,14 +355,10 @@ impl<'a> MessageGen<'a> {
                     "{}::reflect::MessageDescriptor",
                     protobuf_crate_path(&self.customize)
                 ),
-                protobuf_crate_path(&self.customize),
+                &format!("{}", protobuf_crate_path(&self.customize)),
                 |w| {
                     let fields = self.fields_except_group();
-                    if fields.is_empty() {
-                        w.write_line(&format!("let fields = ::std::vec::Vec::new();"));
-                    } else {
-                        w.write_line(&format!("let mut fields = ::std::vec::Vec::new();"));
-                    }
+                    w.write_line(&format!("let mut fields = ::std::vec::Vec::new();"));
                     for field in fields {
                         field.write_descriptor_field("fields", w);
                     }
