@@ -1,4 +1,5 @@
 // This file is generated. Do not edit
+// @generated
 //! Generated code for "well known types"
 //!
 //! [This document](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf) describes these types.

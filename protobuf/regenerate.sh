@@ -52,6 +52,7 @@ mv tmp-generated/*.rs src/well_known_types/
     cd src/well_known_types
     exec > mod.rs
     echo "// This file is generated. Do not edit"
+    echo "// @generated"
     echo '//! Generated code for "well known types"'
     echo "//!"
     echo "//! [This document](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf) describes these types."
