@@ -1,6 +1,19 @@
 use crate::protobuf_abs_path::ProtobufAbsolutePath;
 use crate::protobuf_rel_path::ProtobufRelativePath;
 
+pub(crate) static WELL_KNOWN_TYPES_PROTO_FILE_NAMES: &[&str] = &[
+    "any.proto",
+    "api.proto",
+    "duration.proto",
+    "empty.proto",
+    "field_mask.proto",
+    "source_context.proto",
+    "struct.proto",
+    "timestamp.proto",
+    "type.proto",
+    "wrappers.proto",
+];
+
 static NAMES: &'static [&'static str] = &[
     "Any",
     "Api",

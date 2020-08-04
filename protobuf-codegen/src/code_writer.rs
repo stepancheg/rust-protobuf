@@ -278,6 +278,14 @@ impl<'a> CodeWriter<'a> {
         }
     }
 
+    pub fn mod_doc(&mut self, comment: &str) {
+        if comment.is_empty() {
+            self.write_line("//!");
+        } else {
+            self.write_line(&format!("//! {}", comment));
+        }
+    }
+
     /// Writes the documentation of the given path.
     ///
     /// Protobuf paths are defined in proto/google/protobuf/descriptor.proto,

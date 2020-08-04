@@ -47,27 +47,7 @@ mv \
     tmp-generated/rustproto.rs \
     tmp-generated/doctest_pb.rs \
     src/
+mv tmp-generated/well_known_types_mod.rs src/well_known_types/mod.rs
 mv tmp-generated/*.rs src/well_known_types/
-(
-    cd src/well_known_types
-    exec > mod.rs
-    echo "// This file is generated. Do not edit"
-    echo "// @generated"
-    echo '//! Generated code for "well known types"'
-    echo "//!"
-    echo "//! [This document](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf) describes these types."
-
-    mod_list() {
-        ls | grep -v mod.rs | sed -e 's,\.rs$,,'
-    }
-
-    echo
-    mod_list | sed -e 's,^,mod ,; s,$,;,'
-
-    echo
-    mod_list | while read mod; do
-        echo "pub use self::$mod::*;"
-    done
-)
 
 # vim: set ts=4 sw=4 et:

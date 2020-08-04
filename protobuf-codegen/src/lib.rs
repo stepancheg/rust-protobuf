@@ -63,6 +63,7 @@ pub use protobuf_abs_path::ProtobufAbsolutePath;
 pub use protobuf_ident::ProtobufIdent;
 pub use protobuf_rel_path::ProtobufRelativePath;
 
+use crate::well_known_types::WELL_KNOWN_TYPES_PROTO_FILE_NAMES;
 #[doc(hidden)]
 pub use file::proto_name_to_rs;
 
@@ -252,6 +253,56 @@ fn gen_file(
     })
 }
 
+fn gen_well_known_types_mod(
+    file_descriptors: &[FileDescriptorProto],
+) -> compiler_plugin::GenResult {
+    let mut v = Vec::new();
+
+    {
+        let mut w = CodeWriter::new(&mut v);
+        w.comment("This file is generated. Do not edit");
+        w.comment("@generated");
+        w.mod_doc("Generated code for \"well known types\"");
+        w.mod_doc("");
+        w.mod_doc("[This document](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf) describes these types.");
+
+        w.write_line("");
+        for m in WELL_KNOWN_TYPES_PROTO_FILE_NAMES {
+            w.write_line(&format!("mod {};", proto_path_to_rust_mod(m)));
+        }
+
+        w.write_line("");
+        for p in WELL_KNOWN_TYPES_PROTO_FILE_NAMES {
+            let f = match file_descriptors
+                .iter()
+                .find(|f| f.get_name() == &format!("google/protobuf/{}", p))
+            {
+                Some(f) => f,
+                None => panic!(
+                    "file descriptor not found for {}, all names: {}",
+                    p,
+                    file_descriptors
+                        .iter()
+                        .map(|f| f.get_name().to_owned())
+                        .collect::<Vec<_>>()
+                        .join(", ")
+                ),
+            };
+
+            for _m in &f.message_type {
+
+            }
+
+            w.write_line(&format!("pub use self::{}::*;", proto_path_to_rust_mod(p)));
+        }
+    }
+
+    compiler_plugin::GenResult {
+        name: "well_known_types_mod.rs".to_string(),
+        content: v,
+    }
+}
+
 // This function is also used externally by cargo plugin
 // https://github.com/plietar/rust-protobuf-build
 // So be careful changing its signature.
@@ -279,6 +330,11 @@ pub fn gen(
         ));
         results.extend(gen_file(file, &files_map, &root_scope, customize, parser));
     }
+
+    if customize.inside_protobuf.unwrap_or(false) {
+        results.push(gen_well_known_types_mod(file_descriptors));
+    }
+
     results
 }
 
