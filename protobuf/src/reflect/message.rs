@@ -1,12 +1,12 @@
-use descriptor::{DescriptorProto, FileDescriptorProto};
-use descriptorx::find_message_by_rust_name;
-use reflect::accessor::FieldAccessorTrait;
-use reflect::find_message_or_enum::find_message_or_enum;
-use reflect::find_message_or_enum::MessageOrEnum;
-use reflect::FieldDescriptor;
+use crate::descriptor::{DescriptorProto, FileDescriptorProto};
+use crate::descriptorx::find_message_by_rust_name;
+use crate::reflect::accessor::FieldAccessorTrait;
+use crate::reflect::find_message_or_enum::find_message_or_enum;
+use crate::reflect::find_message_or_enum::MessageOrEnum;
+use crate::reflect::FieldDescriptor;
 use std::collections::HashMap;
 use std::marker;
-use Message;
+use crate::Message;
 
 trait MessageFactory: Send + Sync + 'static {
     fn new_instance(&self) -> Box<dyn Message>;

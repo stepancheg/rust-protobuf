@@ -12,10 +12,10 @@ use bytes::Bytes;
 #[cfg(feature = "bytes")]
 use bytes::BytesMut;
 
-use error::WireError;
-use stream::READ_RAW_BYTES_MAX_ALLOC;
-use ProtobufError;
-use ProtobufResult;
+use crate::error::WireError;
+use crate::stream::READ_RAW_BYTES_MAX_ALLOC;
+use crate::ProtobufError;
+use crate::ProtobufResult;
 
 use std::mem::MaybeUninit;
 

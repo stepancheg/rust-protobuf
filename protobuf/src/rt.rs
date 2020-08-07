@@ -10,27 +10,27 @@ use bytes::Bytes;
 #[cfg(feature = "bytes")]
 use chars::Chars;
 
-use core::*;
-use enums::ProtobufEnum;
-use error::ProtobufError;
-use error::ProtobufResult;
-use error::WireError;
-use repeated::RepeatedField;
-use singular::SingularField;
-use singular::SingularPtrField;
-use stream::wire_format;
-use stream::wire_format::WireType;
-use stream::wire_format::WireTypeFixed32;
-use stream::wire_format::WireTypeFixed64;
-use stream::wire_format::WireTypeLengthDelimited;
-use stream::wire_format::WireTypeVarint;
-use stream::CodedInputStream;
-use stream::CodedOutputStream;
-use types::*;
-use zigzag::*;
+use crate::core::*;
+use crate::enums::ProtobufEnum;
+use crate::error::ProtobufError;
+use crate::error::ProtobufResult;
+use crate::error::WireError;
+use crate::repeated::RepeatedField;
+use crate::singular::SingularField;
+use crate::singular::SingularPtrField;
+use crate::stream::wire_format;
+use crate::stream::wire_format::WireType;
+use crate::stream::wire_format::WireTypeFixed32;
+use crate::stream::wire_format::WireTypeFixed64;
+use crate::stream::wire_format::WireTypeLengthDelimited;
+use crate::stream::wire_format::WireTypeVarint;
+use crate::stream::CodedInputStream;
+use crate::stream::CodedOutputStream;
+use crate::types::*;
+use crate::zigzag::*;
 
 pub use crate::lazy_v2::LazyV2;
-use unknown::UnknownFields;
+use crate::unknown::UnknownFields;
 
 /// Given `u64` value compute varint encoded length.
 pub fn compute_raw_varint64_size(value: u64) -> u32 {

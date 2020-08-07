@@ -19,9 +19,9 @@
 //! protobuf implementations, including `protoc` command which can decode
 //! and encode messages using text format.
 
-use core::Message;
-use reflect::ReflectFieldRef;
-use reflect::ReflectValueRef;
+use crate::core::Message;
+use crate::reflect::ReflectFieldRef;
+use crate::reflect::ReflectValueRef;
 use std;
 use std::fmt;
 use std::fmt::Write;

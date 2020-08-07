@@ -16,7 +16,7 @@ use std::ops::IndexMut;
 use std::slice;
 use std::vec;
 
-use clear::Clear;
+use crate::clear::Clear;
 
 /// Wrapper around vector to avoid deallocations on clear.
 pub struct RepeatedField<T> {

@@ -7,16 +7,16 @@ use std::io::Write;
 #[cfg(feature = "bytes")]
 use bytes::Bytes;
 
-use clear::Clear;
-use error::ProtobufError;
-use error::ProtobufResult;
-use reflect::MessageDescriptor;
-use stream::with_coded_output_stream_to_bytes;
-use stream::CodedInputStream;
-use stream::CodedOutputStream;
-use stream::WithCodedInputStream;
-use stream::WithCodedOutputStream;
-use unknown::UnknownFields;
+use crate::clear::Clear;
+use crate::error::ProtobufError;
+use crate::error::ProtobufResult;
+use crate::reflect::MessageDescriptor;
+use crate::stream::with_coded_output_stream_to_bytes;
+use crate::stream::CodedInputStream;
+use crate::stream::CodedOutputStream;
+use crate::stream::WithCodedInputStream;
+use crate::stream::WithCodedOutputStream;
+use crate::unknown::UnknownFields;
 
 /// Trait implemented for all generated structs for protobuf messages.
 ///

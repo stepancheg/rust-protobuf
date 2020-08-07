@@ -5,7 +5,7 @@ use std::fmt;
 use std::io;
 use std::str;
 
-use wire_format::WireType;
+use crate::wire_format::WireType;
 
 /// `Result` alias for `ProtobufError`
 pub type ProtobufResult<T> = Result<T, ProtobufError>;

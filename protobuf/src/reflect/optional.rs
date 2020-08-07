@@ -2,7 +2,7 @@ use std::mem;
 
 use super::value::ProtobufValue;
 
-use singular::*;
+use crate::singular::*;
 
 pub trait ReflectOptional: 'static {
     fn to_option(&self) -> Option<&ProtobufValue>;

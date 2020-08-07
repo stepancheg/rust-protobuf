@@ -1,11 +1,11 @@
-use descriptor::EnumDescriptorProto;
-use descriptor::EnumValueDescriptorProto;
-use descriptor::FileDescriptorProto;
-use descriptorx::find_enum_by_rust_name;
-use reflect::find_message_or_enum::find_message_or_enum;
-use reflect::find_message_or_enum::MessageOrEnum;
+use crate::descriptor::EnumDescriptorProto;
+use crate::descriptor::EnumValueDescriptorProto;
+use crate::descriptor::FileDescriptorProto;
+use crate::descriptorx::find_enum_by_rust_name;
+use crate::reflect::find_message_or_enum::find_message_or_enum;
+use crate::reflect::find_message_or_enum::MessageOrEnum;
 use std::collections::HashMap;
-use ProtobufEnum;
+use crate::ProtobufEnum;
 
 /// Description for enum variant.
 ///

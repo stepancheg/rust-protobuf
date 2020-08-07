@@ -1,5 +1,5 @@
-use reflect::EnumDescriptor;
-use reflect::EnumValueDescriptor;
+use crate::reflect::EnumDescriptor;
+use crate::reflect::EnumValueDescriptor;
 
 /// Trait implemented by all protobuf enum types.
 pub trait ProtobufEnum: Eq + Sized + Copy + 'static {
