@@ -19,6 +19,8 @@ pub use self::value::ReflectValueRef;
 #[deprecated(since = "2.11", note = "Use ReflectValueRef instead")]
 pub use self::value::ReflectValueRef as ProtobufValueRef;
 
+pub mod rt;
+
 pub use self::enums::EnumDescriptor;
 pub use self::enums::EnumValueDescriptor;
 

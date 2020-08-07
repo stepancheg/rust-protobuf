@@ -1,5 +1,6 @@
 use crate::descriptor::{DescriptorProto, FileDescriptorProto};
 use crate::descriptorx::find_message_by_rust_name;
+use crate::reflect::acc::FieldAccessor;
 use crate::reflect::accessor::FieldAccessorTrait;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
@@ -126,7 +127,7 @@ impl MessageDescriptor {
     // to reduce code bloat from multiple instantiations.
     fn new_non_generic_by_pb_name(
         protobuf_name_to_package: &'static str,
-        fields: Vec<Box<FieldAccessorTrait + 'static>>,
+        fields: Vec<FieldAccessor>,
         file_descriptor_proto: &'static FileDescriptorProto,
         factory: &'static dyn MessageFactory,
     ) -> MessageDescriptor {
@@ -197,7 +198,7 @@ impl MessageDescriptor {
     )]
     pub fn new<M: 'static + Message + Default + Clone + PartialEq>(
         rust_name: &'static str,
-        fields: Vec<Box<FieldAccessorTrait + 'static>>,
+        fields: Vec<FieldAccessor>,
         file: &'static FileDescriptorProto,
     ) -> MessageDescriptor {
         let factory = &MessageFactoryImpl(marker::PhantomData::<M>);
@@ -211,7 +212,7 @@ impl MessageDescriptor {
     #[doc(hidden)]
     pub fn new_pb_name<M: 'static + Message + Default + Clone + PartialEq>(
         protobuf_name_to_package: &'static str,
-        fields: Vec<Box<FieldAccessorTrait + 'static>>,
+        fields: Vec<FieldAccessor>,
         file_descriptor_proto: &'static FileDescriptorProto,
     ) -> MessageDescriptor {
         let factory = &MessageFactoryImpl(marker::PhantomData::<M>);
