@@ -115,7 +115,7 @@ impl crate::Message for Struct {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_map_accessor::<_, crate::reflect::types::ProtobufTypeString, crate::reflect::types::ProtobufTypeMessage<Value>>(
+            fields.push(crate::reflect::rt::v2::make_map_accessor::<_, crate::reflect::types::ProtobufTypeString, crate::reflect::types::ProtobufTypeMessage<Value>>(
                 "fields",
                 |m: &Struct| { &m.fields },
                 |m: &mut Struct| { &mut m.fields },
@@ -549,38 +549,38 @@ impl crate::Message for Value {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_oneof_copy_has_get_set_accessors::<_, crate::reflect::types::ProtobufTypeEnum<NullValue>>(
+            fields.push(crate::reflect::rt::v2::make_oneof_copy_has_get_set_accessors::<_, crate::reflect::types::ProtobufTypeEnum<NullValue>>(
                 "null_value",
                 Value::has_null_value,
                 Value::get_null_value,
                 Value::set_null_value,
             ));
-            fields.push(crate::reflect::rt::make_oneof_copy_has_get_set_accessors::<_, crate::reflect::types::ProtobufTypeDouble>(
+            fields.push(crate::reflect::rt::v2::make_oneof_copy_has_get_set_accessors::<_, crate::reflect::types::ProtobufTypeDouble>(
                 "number_value",
                 Value::has_number_value,
                 Value::get_number_value,
                 Value::set_number_value,
             ));
-            fields.push(crate::reflect::rt::make_oneof_deref_has_get_set_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::v2::make_oneof_deref_has_get_set_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                 "string_value",
                 Value::has_string_value,
                 Value::get_string_value,
                 Value::set_string_value,
             ));
-            fields.push(crate::reflect::rt::make_oneof_copy_has_get_set_accessors::<_, crate::reflect::types::ProtobufTypeBool>(
+            fields.push(crate::reflect::rt::v2::make_oneof_copy_has_get_set_accessors::<_, crate::reflect::types::ProtobufTypeBool>(
                 "bool_value",
                 Value::has_bool_value,
                 Value::get_bool_value,
                 Value::set_bool_value,
             ));
-            fields.push(crate::reflect::rt::make_oneof_message_has_get_mut_set_accessor::<_, Struct>(
+            fields.push(crate::reflect::rt::v2::make_oneof_message_has_get_mut_set_accessor::<_, Struct>(
                 "struct_value",
                 Value::has_struct_value,
                 Value::get_struct_value,
                 Value::mut_struct_value,
                 Value::set_struct_value,
             ));
-            fields.push(crate::reflect::rt::make_oneof_message_has_get_mut_set_accessor::<_, ListValue>(
+            fields.push(crate::reflect::rt::v2::make_oneof_message_has_get_mut_set_accessor::<_, ListValue>(
                 "list_value",
                 Value::has_list_value,
                 Value::get_list_value,
@@ -738,7 +738,7 @@ impl crate::Message for ListValue {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Value>>(
+            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Value>>(
                 "values",
                 |m: &ListValue| { &m.values },
                 |m: &mut ListValue| { &mut m.values },

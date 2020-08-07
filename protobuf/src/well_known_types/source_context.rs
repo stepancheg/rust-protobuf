@@ -113,7 +113,7 @@ impl crate::Message for SourceContext {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::v2::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                 "file_name",
                 |m: &SourceContext| { &m.file_name },
                 |m: &mut SourceContext| { &mut m.file_name },

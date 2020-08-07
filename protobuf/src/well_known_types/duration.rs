@@ -133,12 +133,12 @@ impl crate::Message for Duration {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeInt64>(
+            fields.push(crate::reflect::rt::v2::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeInt64>(
                 "seconds",
                 |m: &Duration| { &m.seconds },
                 |m: &mut Duration| { &mut m.seconds },
             ));
-            fields.push(crate::reflect::rt::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
+            fields.push(crate::reflect::rt::v2::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
                 "nanos",
                 |m: &Duration| { &m.nanos },
                 |m: &mut Duration| { &mut m.nanos },

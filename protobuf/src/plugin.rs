@@ -187,18 +187,18 @@ impl crate::Message for CodeGeneratorRequest {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                 "file_to_generate",
                 |m: &CodeGeneratorRequest| { &m.file_to_generate },
                 |m: &mut CodeGeneratorRequest| { &mut m.file_to_generate },
             ));
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
+            fields.push(crate::reflect::rt::v2::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
                 "parameter",
                 |m: &CodeGeneratorRequest| { &m.parameter },
                 |m: &mut CodeGeneratorRequest| { &mut m.parameter },
                 CodeGeneratorRequest::get_parameter,
             ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::descriptor::FileDescriptorProto>>(
+            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::descriptor::FileDescriptorProto>>(
                 "proto_file",
                 |m: &CodeGeneratorRequest| { &m.proto_file },
                 |m: &mut CodeGeneratorRequest| { &mut m.proto_file },
@@ -384,13 +384,13 @@ impl crate::Message for CodeGeneratorResponse {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
+            fields.push(crate::reflect::rt::v2::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
                 "error",
                 |m: &CodeGeneratorResponse| { &m.error },
                 |m: &mut CodeGeneratorResponse| { &mut m.error },
                 CodeGeneratorResponse::get_error,
             ));
-            fields.push(crate::reflect::rt::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<code_generator_response::File>>(
+            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<code_generator_response::File>>(
                 "file",
                 |m: &CodeGeneratorResponse| { &m.file },
                 |m: &mut CodeGeneratorResponse| { &mut m.file },
@@ -694,19 +694,19 @@ pub mod code_generator_response {
             static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
+                fields.push(crate::reflect::rt::v2::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
                     "name",
                     |m: &File| { &m.name },
                     |m: &mut File| { &mut m.name },
                     File::get_name,
                 ));
-                fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
+                fields.push(crate::reflect::rt::v2::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
                     "insertion_point",
                     |m: &File| { &m.insertion_point },
                     |m: &mut File| { &mut m.insertion_point },
                     File::get_insertion_point,
                 ));
-                fields.push(crate::reflect::rt::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
+                fields.push(crate::reflect::rt::v2::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
                     "content",
                     |m: &File| { &m.content },
                     |m: &mut File| { &mut m.content },
