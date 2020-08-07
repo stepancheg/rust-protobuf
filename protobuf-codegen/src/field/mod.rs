@@ -139,15 +139,13 @@ fn field_type_size(field_type: field_descriptor_proto::Type) -> Option<u32> {
     }
 }
 
-/// Optional fields can be stored are `Option<T>`, `SingularField<T>` or `SingularPtrField<T>`.
+/// Optional fields can be stored are `Option<T>` or `SingularPtrField<T>`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum OptionKind {
     /// Field is `Option<T>`
     Option,
     /// Field is `Option<Box<T>>`
     OptionBox,
-    /// Field is `SingularField<T>`
-    SingularField,
     /// Field is `SingularPtrField<T>`
     SingularPtrField,
 }
@@ -158,7 +156,6 @@ impl OptionKind {
         match self {
             OptionKind::Option => RustType::Option(element_type),
             OptionKind::OptionBox => RustType::Option(Box::new(RustType::Uniq(element_type))),
-            OptionKind::SingularField => RustType::SingularField(element_type),
             OptionKind::SingularPtrField => RustType::SingularPtrField(element_type),
         }
     }
@@ -170,7 +167,6 @@ impl OptionKind {
             OptionKind::OptionBox => RustType::Option(Box::new(RustType::Ref(Box::new(
                 RustType::Uniq(Box::new(element_type)),
             )))),
-            OptionKind::SingularField => RustType::SingularField(Box::new(element_type.ref_type())),
             OptionKind::SingularPtrField => {
                 RustType::SingularPtrField(Box::new(element_type.ref_type()))
             }
@@ -180,7 +176,7 @@ impl OptionKind {
     fn _as_option_ref(&self, v: &str) -> String {
         match self {
             OptionKind::OptionBox => format!("{}.as_ref().map(|v| &**v)", v),
-            OptionKind::Option | OptionKind::SingularField | OptionKind::SingularPtrField => {
+            OptionKind::Option | OptionKind::SingularPtrField => {
                 format!("{}.as_ref()", v)
             }
         }
@@ -212,11 +208,6 @@ impl OptionKind {
                 // TODO: could reuse allocated memory
                 format!("::std::option::Option::Some(Box::new({}))", value)
             }
-            OptionKind::SingularField => format!(
-                "{}::SingularField::some({})",
-                protobuf_crate_path(customize),
-                value
-            ),
             OptionKind::SingularPtrField => format!(
                 "{}::SingularPtrField::some({})",
                 protobuf_crate_path(customize),
@@ -650,12 +641,6 @@ impl<'a> FieldGen<'a> {
                         } else {
                             OptionKind::SingularPtrField
                         }
-                    }
-                    field_descriptor_proto::Type::TYPE_STRING
-                    | field_descriptor_proto::Type::TYPE_BYTES
-                        if elem.primitive_type_variant() == PrimitiveTypeVariant::Default =>
-                    {
-                        OptionKind::SingularField
                     }
                     _ => OptionKind::Option,
                 };
@@ -1497,7 +1482,7 @@ impl<'a> FieldGen<'a> {
                 // with default value
                 match singular.flag {
                     SingularFieldFlag::WithFlag { option_kind, .. } => match option_kind {
-                        OptionKind::SingularField | OptionKind::SingularPtrField => {
+                        OptionKind::SingularPtrField => {
                             let self_field = self.self_field();
                             w.write_line(&format!("{}.set_default();", self_field));
                         }
@@ -1771,9 +1756,7 @@ impl<'a> FieldGen<'a> {
         w: &mut CodeWriter,
     ) {
         match s.elem {
-            FieldElem::Message(..)
-            | FieldElem::Primitive(field_descriptor_proto::Type::TYPE_STRING, ..)
-            | FieldElem::Primitive(field_descriptor_proto::Type::TYPE_BYTES, ..) => {
+            FieldElem::Message(..) => {
                 self.write_merge_from_field_message_string_bytes(w);
             }
             _ => {

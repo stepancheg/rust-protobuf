@@ -30,7 +30,6 @@ pub(crate) enum RustType {
     // str, not &str
     Str,
     Option(Box<RustType>),
-    SingularField(Box<RustType>),
     SingularPtrField(Box<RustType>),
     RepeatedField(Box<RustType>),
     // Box<T>
@@ -73,11 +72,6 @@ impl RustType {
             RustType::Option(ref param) => {
                 format!("::std::option::Option<{}>", param.to_code(customize))
             }
-            RustType::SingularField(ref param) => format!(
-                "{}::SingularField<{}>",
-                protobuf_crate_path(customize),
-                param.to_code(customize)
-            ),
             RustType::SingularPtrField(ref param) => format!(
                 "{}::SingularPtrField<{}>",
                 protobuf_crate_path(customize),
@@ -213,9 +207,6 @@ impl RustType {
             RustType::Bytes => "::bytes::Bytes::new()".to_string(),
             RustType::Chars => format!("{}::Chars::new()", protobuf_crate_path(customize)),
             RustType::Option(..) => "::std::option::Option::None".to_string(),
-            RustType::SingularField(..) => {
-                format!("{}::SingularField::none()", protobuf_crate_path(customize))
-            }
             RustType::SingularPtrField(..) => format!(
                 "{}::SingularPtrField::none()",
                 protobuf_crate_path(customize)
@@ -255,7 +246,6 @@ impl RustType {
             | RustType::Bytes
             | RustType::String
             | RustType::RepeatedField(..)
-            | RustType::SingularField(..)
             | RustType::SingularPtrField(..)
             | RustType::HashMap(..) => format!("{}.clear()", v),
             RustType::Chars => format!(
@@ -390,7 +380,6 @@ impl RustType {
     pub fn elem_type(&self) -> RustType {
         match self {
             &RustType::Option(ref ty) => (**ty).clone(),
-            &RustType::SingularField(ref ty) => (**ty).clone(),
             &RustType::SingularPtrField(ref ty) => (**ty).clone(),
             x => panic!("cannot get elem type of {:?}", x),
         }
@@ -402,7 +391,6 @@ impl RustType {
             &RustType::Vec(ref ty)
             | &RustType::Option(ref ty)
             | &RustType::RepeatedField(ref ty)
-            | &RustType::SingularField(ref ty)
             | &RustType::SingularPtrField(ref ty) => RustType::Ref(ty.clone()),
             x => panic!("cannot iterate {:?}", x),
         }
