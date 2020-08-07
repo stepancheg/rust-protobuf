@@ -1,7 +1,10 @@
 #![doc(hidden)]
 
+use crate::reflect::acc::v1::FieldAccessorImpl;
+use crate::reflect::acc::v1::FieldAccessorFunctions;
 use crate::reflect::acc::v1::FieldAccessorTrait;
-use crate::reflect::{EnumValueDescriptor, ReflectFieldRef};
+use crate::reflect::EnumValueDescriptor;
+use crate::reflect::ReflectFieldRef;
 use crate::Message;
 
 pub(crate) mod v1;
@@ -13,20 +16,18 @@ pub(crate) enum Accessor {
 /// Accessor object is constructed in generated code.
 /// Should not be used directly.
 pub struct FieldAccessor {
-    //pub(crate) name: &'static str,
+    pub(crate) name: &'static str,
     pub(crate) accessor: Accessor,
 }
 
 impl FieldAccessor {
-    pub(crate) fn new_v1<F: FieldAccessorTrait>(f: F) -> FieldAccessor {
+    pub(crate) fn new_v1<M: Message>(
+        name: &'static str,
+        fns: FieldAccessorFunctions<M>,
+    ) -> FieldAccessor {
         FieldAccessor {
-            accessor: Accessor::V1(Box::new(f)),
-        }
-    }
-
-    pub(crate) fn name_generic(&self) -> &str {
-        match &self.accessor {
-            Accessor::V1(a) => a.name_generic(),
+            name,
+            accessor: Accessor::V1(Box::new(FieldAccessorImpl { fns })),
         }
     }
 

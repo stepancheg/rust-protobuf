@@ -90,7 +90,7 @@ impl MessageDescriptor {
         let fields: Vec<_> = fields
             .into_iter()
             .map(|f| {
-                let proto = *field_proto_by_name.get(&f.name_generic()).unwrap();
+                let proto = *field_proto_by_name.get(&f.name).unwrap();
                 FieldDescriptor::new(f, proto)
             })
             .collect();
@@ -153,7 +153,7 @@ impl MessageDescriptor {
         let fields: Vec<_> = fields
             .into_iter()
             .map(|f| {
-                let proto = *field_proto_by_name.get(&f.name_generic()).unwrap();
+                let proto = *field_proto_by_name.get(&f.name).unwrap();
                 FieldDescriptor::new(f, proto)
             })
             .collect();
