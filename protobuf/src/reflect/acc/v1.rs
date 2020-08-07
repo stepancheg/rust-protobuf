@@ -1,3 +1,5 @@
+#![doc(hidden)]
+
 //! Version 1 reflection accessors.
 
 use std::collections::HashMap;

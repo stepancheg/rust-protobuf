@@ -2,6 +2,7 @@
 
 use crate::core::Message;
 
+mod acc;
 pub mod accessor;
 mod enums;
 mod field;
