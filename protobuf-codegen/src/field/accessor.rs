@@ -250,7 +250,7 @@ impl FieldGen<'_> {
     pub fn write_descriptor_field(&self, fields_var: &str, w: &mut CodeWriter) {
         let accessor_fn = self.accessor_fn();
         w.write_line(&format!(
-            "{}.push({}::reflect::rt::{}(",
+            "{}.push({}::reflect::rt::v2::{}(",
             fields_var,
             protobuf_crate_path(&self.customize),
             accessor_fn.sig()
