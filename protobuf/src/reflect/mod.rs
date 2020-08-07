@@ -11,17 +11,19 @@ mod message;
 mod repeated;
 mod runtime_type_box;
 mod runtime_type_dynamic;
-pub(crate) mod runtime_types;
 mod transmute_eq;
 mod type_dynamic;
-pub mod types;
 mod value;
+
+pub mod runtime_types;
+pub mod types;
 
 pub(crate) mod reflect_eq;
 
 pub mod rt;
 
 pub use self::value::ProtobufValue;
+pub use self::value::ProtobufValueSized;
 pub use self::value::ReflectValueBox;
 pub use self::value::ReflectValueRef;
 

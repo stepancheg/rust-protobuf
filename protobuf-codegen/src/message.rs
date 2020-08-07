@@ -15,7 +15,9 @@ use crate::inside::protobuf_crate_path;
 use crate::map::map_entry;
 use crate::oneof::OneofGen;
 use crate::oneof::OneofVariantGen;
-use crate::rust::{is_rust_keyword, EXPR_VEC_NEW, EXPR_NONE};
+use crate::rust::is_rust_keyword;
+use crate::rust::EXPR_NONE;
+use crate::rust::EXPR_VEC_NEW;
 use crate::rust_name::RustIdent;
 use crate::rust_name::RustIdentWithPath;
 use crate::scope::MessageWithScope;
@@ -254,16 +256,35 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_default_instance_static(&self, w: &mut CodeWriter) {
-        w.stmt_block(&format!("static instance: {} = {}", self.type_name, self.type_name), |w| {
-            for f in &self.fields_except_oneof_and_group() {
-                w.field_entry(f.rust_name.get(), &f.kind.default(&self.customize, &self.get_file_and_mod(), true));
-            }
-            for o in &self.oneofs() {
-                w.field_entry(o.oneof.field_name().get(), EXPR_NONE);
-            }
-            w.field_entry("unknown_fields", &format!("{}::UnknownFields::new()", protobuf_crate_path(&self.customize)));
-            w.field_entry("cached_size", &format!("{}::rt::CachedSize::new()", protobuf_crate_path(&self.customize)));
-        });
+        w.stmt_block(
+            &format!("static instance: {} = {}", self.type_name, self.type_name),
+            |w| {
+                for f in &self.fields_except_oneof_and_group() {
+                    w.field_entry(
+                        f.rust_name.get(),
+                        &f.kind
+                            .default(&self.customize, &self.get_file_and_mod(), true),
+                    );
+                }
+                for o in &self.oneofs() {
+                    w.field_entry(o.oneof.field_name().get(), EXPR_NONE);
+                }
+                w.field_entry(
+                    "unknown_fields",
+                    &format!(
+                        "{}::UnknownFields::new()",
+                        protobuf_crate_path(&self.customize)
+                    ),
+                );
+                w.field_entry(
+                    "cached_size",
+                    &format!(
+                        "{}::rt::CachedSize::new()",
+                        protobuf_crate_path(&self.customize)
+                    ),
+                );
+            },
+        );
         w.write_line("&instance");
     }
 
@@ -482,6 +503,20 @@ impl<'a> MessageGen<'a> {
             &format!("{}", self.type_name),
             |_w| {},
         );
+        w.write_line("");
+        w.impl_for_block(
+            &format!(
+                "{}::reflect::ProtobufValueSized",
+                protobuf_crate_path(&self.customize)
+            ),
+            &format!("{}", self.type_name),
+            |w| {
+                w.write_line(&format!(
+                    "type RuntimeType = {}::reflect::runtime_types::RuntimeTypeMessage<Self>;",
+                    protobuf_crate_path(&self.customize)
+                ));
+            },
+        )
     }
 
     fn write_impl_show(&self, w: &mut CodeWriter) {

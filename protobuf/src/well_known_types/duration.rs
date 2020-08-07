@@ -179,6 +179,10 @@ impl ::std::fmt::Debug for Duration {
 impl crate::reflect::ProtobufValue for Duration {
 }
 
+impl crate::reflect::ProtobufValueSized for Duration {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n\x1egoogle/protobuf/duration.proto\x12\x0fgoogle.protobuf\":\n\x08Dura\
     tion\x12\x18\n\x07seconds\x18\x01\x20\x01(\x03R\x07seconds\x12\x14\n\x05\

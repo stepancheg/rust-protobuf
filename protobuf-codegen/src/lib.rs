@@ -63,11 +63,11 @@ pub use protobuf_abs_path::ProtobufAbsolutePath;
 pub use protobuf_ident::ProtobufIdent;
 pub use protobuf_rel_path::ProtobufRelativePath;
 
+use crate::rust::EXPR_VEC_NEW;
 use crate::scope::WithScope;
 use crate::well_known_types::gen_well_known_types_mod;
 #[doc(hidden)]
 pub use file::proto_name_to_rs;
-use crate::rust::EXPR_VEC_NEW;
 
 fn escape_byte(s: &mut String, b: u8) {
     if b == b'\n' {

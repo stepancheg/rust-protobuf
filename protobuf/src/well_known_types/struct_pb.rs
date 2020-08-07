@@ -150,6 +150,10 @@ impl ::std::fmt::Debug for Struct {
 impl crate::reflect::ProtobufValue for Struct {
 }
 
+impl crate::reflect::ProtobufValueSized for Struct {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
 ///  `Value` represents a dynamically typed value which can be either
 ///  null, a number, a string, a boolean, a recursive struct value, or a
 ///  list of values. A producer of value is expected to set one of that
@@ -626,6 +630,10 @@ impl ::std::fmt::Debug for Value {
 impl crate::reflect::ProtobufValue for Value {
 }
 
+impl crate::reflect::ProtobufValueSized for Value {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
 /// Nested message and enums of message `Value`
 pub mod value {
 
@@ -781,6 +789,10 @@ impl ::std::fmt::Debug for ListValue {
 impl crate::reflect::ProtobufValue for ListValue {
 }
 
+impl crate::reflect::ProtobufValueSized for ListValue {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
 ///  `NullValue` is a singleton enumeration to represent the null value for the
 ///  `Value` type union.
 ///
@@ -825,6 +837,10 @@ impl ::std::default::Default for NullValue {
 }
 
 impl crate::reflect::ProtobufValue for NullValue {
+}
+
+impl crate::reflect::ProtobufValueSized for NullValue {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeEnum<Self>;
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\

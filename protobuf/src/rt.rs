@@ -29,7 +29,6 @@ use crate::wire_format::WireTypeVarint;
 use crate::zigzag::*;
 use crate::ProtobufEnumOrUnknown;
 
-use crate::reflect::runtime_types::RuntimeType;
 use crate::repeated::VecLike;
 use crate::unknown::UnknownFields;
 
@@ -37,6 +36,7 @@ use crate::prelude::*;
 
 pub use crate::cached_size::CachedSize;
 pub use crate::lazy_v2::LazyV2;
+use crate::reflect::ProtobufValueSized;
 
 /// Given `u64` value compute varint encoded length.
 pub fn compute_raw_varint64_size(value: u64) -> u32 {
@@ -511,7 +511,7 @@ pub fn read_repeated_bool_into(
 
 /// Read repeated `enum` field into given vec.
 /// This function is no longer called from generated code, remove in 1.5.
-pub fn read_repeated_enum_into<E: ProtobufEnum>(
+pub fn read_repeated_enum_into<E: ProtobufEnum + ProtobufValueSized>(
     wire_type: WireType,
     is: &mut CodedInputStream,
     target: &mut Vec<E>,
@@ -925,12 +925,12 @@ pub fn unexpected_wire_type(wire_type: WireType) -> ProtobufError {
 /// Compute serialized size of `map` field and cache nested field sizes.
 pub fn compute_map_size<K, V>(
     field_number: u32,
-    map: &HashMap<<K::RuntimeType as RuntimeType>::Value, <V::RuntimeType as RuntimeType>::Value>,
+    map: &HashMap<K::ProtobufValue, V::ProtobufValue>,
 ) -> u32
 where
     K: ProtobufType,
     V: ProtobufType,
-    <K::RuntimeType as RuntimeType>::Value: Eq + Hash,
+    K::ProtobufValue: Eq + Hash,
 {
     let mut sum = 0;
     for (k, v) in map {
@@ -949,13 +949,13 @@ where
 /// Write map, message sizes must be already known.
 pub fn write_map_with_cached_sizes<K, V>(
     field_number: u32,
-    map: &HashMap<<K::RuntimeType as RuntimeType>::Value, <V::RuntimeType as RuntimeType>::Value>,
+    map: &HashMap<K::ProtobufValue, V::ProtobufValue>,
     os: &mut CodedOutputStream,
 ) -> ProtobufResult<()>
 where
     K: ProtobufType,
     V: ProtobufType,
-    <K::RuntimeType as RuntimeType>::Value: Eq + Hash,
+    K::ProtobufValue: Eq + Hash,
 {
     for (k, v) in map {
         let key_tag_size = 1;
@@ -992,15 +992,12 @@ where
 pub fn read_map_into<K, V>(
     wire_type: WireType,
     is: &mut CodedInputStream,
-    target: &mut HashMap<
-        <K::RuntimeType as RuntimeType>::Value,
-        <V::RuntimeType as RuntimeType>::Value,
-    >,
+    target: &mut HashMap<K::ProtobufValue, V::ProtobufValue>,
 ) -> ProtobufResult<()>
 where
     K: ProtobufType,
     V: ProtobufType,
-    <K::RuntimeType as RuntimeType>::Value: Eq + Hash,
+    K::ProtobufValue: Eq + Hash,
 {
     if wire_type != WireType::WireTypeLengthDelimited {
         return Err(unexpected_wire_type(wire_type));

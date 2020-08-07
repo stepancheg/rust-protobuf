@@ -244,6 +244,10 @@ impl ::std::fmt::Debug for CodeGeneratorRequest {
 impl crate::reflect::ProtobufValue for CodeGeneratorRequest {
 }
 
+impl crate::reflect::ProtobufValueSized for CodeGeneratorRequest {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
 ///  The plugin writes an encoded CodeGeneratorResponse to stdout.
 #[derive(PartialEq,Clone,Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
@@ -441,6 +445,10 @@ impl ::std::fmt::Debug for CodeGeneratorResponse {
 }
 
 impl crate::reflect::ProtobufValue for CodeGeneratorResponse {
+}
+
+impl crate::reflect::ProtobufValueSized for CodeGeneratorResponse {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 /// Nested message and enums of message `CodeGeneratorResponse`
@@ -774,6 +782,10 @@ pub mod code_generator_response {
     }
 
     impl crate::reflect::ProtobufValue for File {
+    }
+
+    impl crate::reflect::ProtobufValueSized for File {
+        type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
     }
 }
 

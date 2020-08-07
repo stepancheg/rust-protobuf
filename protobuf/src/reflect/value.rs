@@ -1,7 +1,7 @@
 use std::any::Any;
 use std::hash::Hash;
 use std::hash::Hasher;
-use std::mem;
+use std::{fmt, mem};
 
 #[cfg(feature = "bytes")]
 use crate::bytes::Bytes;
@@ -10,7 +10,22 @@ use crate::chars::Chars;
 
 use super::*;
 use crate::core::*;
-use crate::reflect::reflect_eq::{ReflectEq, ReflectEqMode};
+use crate::reflect::reflect_eq::ReflectEq;
+use crate::reflect::reflect_eq::ReflectEqMode;
+use crate::reflect::runtime_types::RuntimeType;
+use crate::reflect::runtime_types::RuntimeTypeBool;
+#[cfg(feature = "bytes")]
+use crate::reflect::runtime_types::RuntimeTypeCarllercheBytes;
+#[cfg(feature = "bytes")]
+use crate::reflect::runtime_types::RuntimeTypeCarllercheChars;
+use crate::reflect::runtime_types::RuntimeTypeF32;
+use crate::reflect::runtime_types::RuntimeTypeF64;
+use crate::reflect::runtime_types::RuntimeTypeI32;
+use crate::reflect::runtime_types::RuntimeTypeI64;
+use crate::reflect::runtime_types::RuntimeTypeString;
+use crate::reflect::runtime_types::RuntimeTypeU32;
+use crate::reflect::runtime_types::RuntimeTypeU64;
+use crate::reflect::runtime_types::RuntimeTypeVecU8;
 use crate::reflect::transmute_eq::transmute_eq;
 
 /// Type implemented by all protobuf singular types
@@ -19,29 +34,121 @@ use crate::reflect::transmute_eq::transmute_eq;
 /// Used for dynamic casting in reflection.
 pub trait ProtobufValue: Any + 'static + Send + Sync {}
 
+/// Sized version of [`ProtobufValue`].
+pub trait ProtobufValueSized: ProtobufValue + Sized + Clone + Default + fmt::Debug {
+    /// Actual implementation of type properties.
+    type RuntimeType: RuntimeType<Value = Self>;
+
+    // TODO: inline the rest
+
+    /// Dynamic version of the type.
+    fn dynamic() -> &'static dyn RuntimeTypeDynamic {
+        Self::RuntimeType::dynamic()
+    }
+
+    /// Pointer to a dynamic reference.
+    fn as_ref(value: &Self) -> ReflectValueRef {
+        Self::RuntimeType::as_ref(value)
+    }
+
+    /// Mutable pointer to a dynamic mutable reference.
+    fn as_mut(value: &mut Self) -> ReflectValueMut {
+        Self::RuntimeType::as_mut(value)
+    }
+
+    /// Construct a value from given reflective value.
+    ///
+    /// # Panics
+    ///
+    /// If reflective value is of incompatible type.
+    fn from_value_box(value_box: ReflectValueBox) -> Self {
+        Self::RuntimeType::from_value_box(value_box)
+    }
+
+    /// Write the value.
+    fn set_from_value_box(target: &mut Self, value_box: ReflectValueBox) {
+        Self::RuntimeType::set_from_value_box(target, value_box)
+    }
+
+    /// Default value for this type.
+    fn default_value_ref() -> ReflectValueRef<'static> {
+        Self::RuntimeType::default_value_ref()
+    }
+
+    /// Convert a value into a ref value if possible.
+    ///
+    /// # Panics
+    ///
+    /// For message and enum.
+    fn into_static_value_ref(value: Self) -> ReflectValueRef<'static> {
+        Self::RuntimeType::into_static_value_ref(value)
+    }
+
+    /// Value is non-default?
+    fn is_non_zero(value: &Self) -> bool {
+        Self::RuntimeType::is_non_zero(value)
+    }
+}
+
 impl ProtobufValue for u32 {}
 
+impl ProtobufValueSized for u32 {
+    type RuntimeType = RuntimeTypeU32;
+}
+
 impl ProtobufValue for u64 {}
+impl ProtobufValueSized for u64 {
+    type RuntimeType = RuntimeTypeU64;
+}
 
 impl ProtobufValue for i32 {}
+impl ProtobufValueSized for i32 {
+    type RuntimeType = RuntimeTypeI32;
+}
 
 impl ProtobufValue for i64 {}
+impl ProtobufValueSized for i64 {
+    type RuntimeType = RuntimeTypeI64;
+}
 
 impl ProtobufValue for f32 {}
+impl ProtobufValueSized for f32 {
+    type RuntimeType = RuntimeTypeF32;
+}
 
 impl ProtobufValue for f64 {}
+impl ProtobufValueSized for f64 {
+    type RuntimeType = RuntimeTypeF64;
+}
 
 impl ProtobufValue for bool {}
+impl ProtobufValueSized for bool {
+    type RuntimeType = RuntimeTypeBool;
+}
 
 impl ProtobufValue for String {}
+impl ProtobufValueSized for String {
+    type RuntimeType = RuntimeTypeString;
+}
 
 impl ProtobufValue for Vec<u8> {}
+impl ProtobufValueSized for Vec<u8> {
+    type RuntimeType = RuntimeTypeVecU8;
+}
 
 #[cfg(feature = "bytes")]
 impl ProtobufValue for Bytes {}
+#[cfg(feature = "bytes")]
+impl ProtobufValueSized for Bytes {
+    type RuntimeType = RuntimeTypeCarllercheBytes;
+}
 
 #[cfg(feature = "bytes")]
 impl ProtobufValue for Chars {}
+#[cfg(feature = "bytes")]
+impl ProtobufValueSized for Bytes {
+    type RuntimeType = RuntimeTypeCarllercheChars;
+}
 
 // conflicting implementations, so generated code is used instead
 /*

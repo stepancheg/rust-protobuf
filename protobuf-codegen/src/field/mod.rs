@@ -19,6 +19,8 @@ use crate::inside::protobuf_crate_path;
 use crate::map::map_entry;
 use crate::message::RustTypeMessage;
 use crate::oneof::OneofField;
+use crate::rust::EXPR_NONE;
+use crate::rust::EXPR_VEC_NEW;
 use crate::rust_name::RustIdent;
 use crate::rust_name::RustIdentWithPath;
 use crate::rust_name::RustRelativePath;
@@ -31,7 +33,6 @@ use crate::scope::WithScope;
 use crate::serde;
 use crate::syntax::Syntax;
 use protobuf::wire_format::WireType;
-use crate::rust::{EXPR_NONE, EXPR_VEC_NEW};
 
 mod accessor;
 
@@ -177,9 +178,7 @@ impl OptionKind {
     fn _as_option_ref(&self, v: &str) -> String {
         match self {
             OptionKind::OptionBox => format!("{}.as_ref().map(|v| &**v)", v),
-            OptionKind::Option | OptionKind::SingularPtrField => {
-                format!("{}.as_ref()", v)
-            }
+            OptionKind::Option | OptionKind::SingularPtrField => format!("{}.as_ref()", v),
         }
     }
 
@@ -254,8 +253,14 @@ impl<'a> SingularField<'a> {
         }
     }
 
-    fn default_value(&self, customize: &Customize, reference: &FileAndMod, const_expr: bool) -> String {
-        self.rust_storage_type(reference).default_value(customize, const_expr)
+    fn default_value(
+        &self,
+        customize: &Customize,
+        reference: &FileAndMod,
+        const_expr: bool,
+    ) -> String {
+        self.rust_storage_type(reference)
+            .default_value(customize, const_expr)
     }
 }
 
@@ -278,7 +283,9 @@ impl RepeatedFieldKind {
     fn default(&self, customize: &Customize) -> String {
         match self {
             RepeatedFieldKind::Vec => EXPR_VEC_NEW.to_owned(),
-            RepeatedFieldKind::RepeatedField => format!("{}::RepeatedField::new()", protobuf_crate_path(customize)),
+            RepeatedFieldKind::RepeatedField => {
+                format!("{}::RepeatedField::new()", protobuf_crate_path(customize))
+            }
         }
     }
 }
@@ -332,7 +339,12 @@ pub(crate) enum FieldKind<'a> {
 }
 
 impl<'a> FieldKind<'a> {
-    pub fn default(&self, customize: &Customize, reference: &FileAndMod, const_expr: bool) -> String {
+    pub fn default(
+        &self,
+        customize: &Customize,
+        reference: &FileAndMod,
+        const_expr: bool,
+    ) -> String {
         match self {
             FieldKind::Singular(s) => s.default_value(customize, reference, const_expr),
             FieldKind::Repeated(r) => r.default(customize),
@@ -388,7 +400,7 @@ impl<'a> FieldElemEnum<'a> {
         RustType::Enum(
             self.rust_name_relative(reference),
             self.default_value.rust_name(),
-            self.default_value.proto.get_number()
+            self.default_value.proto.get_number(),
         )
     }
 
@@ -396,7 +408,7 @@ impl<'a> FieldElemEnum<'a> {
         RustType::EnumOrUnknown(
             self.rust_name_relative(reference),
             self.default_value.rust_name(),
-            self.default_value.proto.get_number()
+            self.default_value.proto.get_number(),
         )
     }
 
@@ -983,9 +995,12 @@ impl<'a> FieldGen<'a> {
     // default value to be returned from fn get_xxx
     fn get_xxx_default_value_rust(&self) -> String {
         match self.kind {
-            FieldKind::Singular(..) | FieldKind::Oneof(..) => self
-                .default_value_from_proto()
-                .unwrap_or_else(|| self.get_xxx_return_type().default_value(&self.customize, false)),
+            FieldKind::Singular(..) | FieldKind::Oneof(..) => {
+                self.default_value_from_proto().unwrap_or_else(|| {
+                    self.get_xxx_return_type()
+                        .default_value(&self.customize, false)
+                })
+            }
             _ => unreachable!(),
         }
     }

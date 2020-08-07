@@ -10,9 +10,9 @@ use crate::reflect::runtime_type_box::RuntimeTypeBox;
 use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
 use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamicImpl;
 use crate::reflect::value::ReflectValueMut;
-use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
+use crate::reflect::{ProtobufValue, ProtobufValueSized};
 
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;
@@ -29,8 +29,10 @@ use crate::enums::ProtobufEnumOrUnknown;
 /// The downside is that we have to explicitly specify type parameters
 /// in a lot of places.
 pub trait RuntimeType: fmt::Debug + Send + Sync + 'static {
+    /// Actual value for this type.
     type Value: ProtobufValue + Clone + Sized + fmt::Debug + Default;
 
+    /// Dynamic version of the type.
     fn dynamic() -> &'static dyn RuntimeTypeDynamic
     where
         Self: Sized,
@@ -38,70 +40,102 @@ pub trait RuntimeType: fmt::Debug + Send + Sync + 'static {
         &RuntimeTypeDynamicImpl::<Self>(marker::PhantomData)
     }
 
+    /// "Box" version of type type.
     fn runtime_type_box() -> RuntimeTypeBox
     where
         Self: Sized;
 
+    /// Default value for this type.
     fn default_value_ref() -> ReflectValueRef<'static>;
 
+    /// Construct a value from given reflective value.
+    ///
+    /// # Panics
+    ///
+    /// If reflective value is of incompatible type.
     fn from_value_box(value_box: ReflectValueBox) -> Self::Value;
 
+    /// Convert a value into a refletive box value.
     fn into_value_box(value: Self::Value) -> ReflectValueBox;
 
+    /// Convert a value into a ref value if possible.
+    ///
+    /// # Panics
+    ///
+    /// For message and enum.
     // TODO: move the operation into a separate trait
     fn into_static_value_ref(value: Self::Value) -> ReflectValueRef<'static> {
         panic!("value {:?} cannot be converted to static ref", value)
     }
 
+    /// Pointer to a dynamic reference.
     fn as_ref(value: &Self::Value) -> ReflectValueRef;
+    /// Mutable pointer to a dynamic mutable reference.
     fn as_mut(value: &mut Self::Value) -> ReflectValueMut;
 
+    /// Value is non-default?
     fn is_non_zero(value: &Self::Value) -> bool;
 
+    /// Write the value.
     fn set_from_value_box(target: &mut Self::Value, value_box: ReflectValueBox) {
         *target = Self::from_value_box(value_box);
     }
 }
 
+/// Runtime type which can be dereferenced.
 pub trait RuntimeTypeWithDeref: RuntimeType {
+    /// Deref target.
     type DerefTarget: ?Sized;
 
+    /// Deref.
     // TODO: rename to `deref`
     fn defef_as_ref(value: &Self::DerefTarget) -> ReflectValueRef;
 }
 
+/// Implementation for `f32`
 #[derive(Debug, Copy, Clone)]
 pub struct RuntimeTypeF32;
+/// Implementation for `f64`
 #[derive(Debug, Copy, Clone)]
 pub struct RuntimeTypeF64;
+/// Implementation for `i32`
 #[derive(Debug, Copy, Clone)]
 pub struct RuntimeTypeI32;
+/// Implementation for `f32`
 #[derive(Debug, Copy, Clone)]
 pub struct RuntimeTypeI64;
+/// Implementation for `u32`
 #[derive(Debug, Copy, Clone)]
 pub struct RuntimeTypeU32;
+/// Implementation for `u64`
 #[derive(Debug, Copy, Clone)]
 pub struct RuntimeTypeU64;
+/// Implementation for `bool`
 #[derive(Debug, Copy, Clone)]
 pub struct RuntimeTypeBool;
+/// Implementation for `String`
 #[derive(Debug, Copy, Clone)]
 pub struct RuntimeTypeString;
+/// Implementation for `Vec<u8>`
 #[derive(Debug, Copy, Clone)]
 pub struct RuntimeTypeVecU8;
-#[derive(Debug, Copy, Clone)]
-pub struct RuntimeTypeChars;
 
+/// Implementation for [`Bytes`].
 #[cfg(feature = "bytes")]
 #[derive(Debug, Copy, Clone)]
 pub struct RuntimeTypeCarllercheBytes;
+/// Implementation for [`Chars`].
 #[cfg(feature = "bytes")]
 #[derive(Debug, Copy, Clone)]
 pub struct RuntimeTypeCarllercheChars;
 
+/// Implementation for enum.
 #[derive(Debug, Copy, Clone)]
-pub struct RuntimeTypeEnum<E: ProtobufEnum>(marker::PhantomData<E>);
+pub struct RuntimeTypeEnum<E: ProtobufEnum + ProtobufValueSized>(marker::PhantomData<E>);
+/// Implementation for enum.
 #[derive(Debug, Copy, Clone)]
-pub struct RuntimeTypeEnumOrUnknown<E: ProtobufEnum>(marker::PhantomData<E>);
+pub struct RuntimeTypeEnumOrUnknown<E: ProtobufEnum + ProtobufValueSized>(marker::PhantomData<E>);
+/// Implementation for [`Message`].
 #[derive(Debug, Copy, Clone)]
 pub struct RuntimeTypeMessage<M: Message>(marker::PhantomData<M>);
 
@@ -588,7 +622,7 @@ impl RuntimeTypeWithDeref for RuntimeTypeCarllercheChars {
 
 impl<E> RuntimeType for RuntimeTypeEnum<E>
 where
-    E: ProtobufEnum + ProtobufValue + fmt::Debug,
+    E: ProtobufEnum + ProtobufValueSized + fmt::Debug,
 {
     type Value = E;
 
@@ -637,7 +671,7 @@ where
 
 impl<E> RuntimeType for RuntimeTypeEnumOrUnknown<E>
 where
-    E: ProtobufEnum + ProtobufValue + fmt::Debug,
+    E: ProtobufEnum + ProtobufValueSized + fmt::Debug,
 {
     type Value = ProtobufEnumOrUnknown<E>;
 

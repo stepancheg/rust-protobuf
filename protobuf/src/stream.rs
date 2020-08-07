@@ -27,7 +27,6 @@ use crate::zigzag::encode_zig_zag_32;
 use crate::zigzag::encode_zig_zag_64;
 
 use crate::enums::ProtobufEnumOrUnknown;
-use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::types::ProtobufType;
 use crate::reflect::types::ProtobufTypeBool;
 use crate::reflect::types::ProtobufTypeDouble;
@@ -44,6 +43,7 @@ use crate::reflect::types::ProtobufTypeSint32;
 use crate::reflect::types::ProtobufTypeSint64;
 use crate::reflect::types::ProtobufTypeUint32;
 use crate::reflect::types::ProtobufTypeUint64;
+use crate::reflect::ProtobufValueSized;
 
 // Equal to the default buffer size of `BufWriter`, so when
 // `CodedOutputStream` wraps `BufWriter`, it often skips double buffering.
@@ -386,7 +386,7 @@ impl<'a> CodedInputStream<'a> {
 
     fn read_repeated_packed_fixed_into<T: ProtobufTypeFixed>(
         &mut self,
-        target: &mut Vec<<T::RuntimeType as RuntimeType>::Value>,
+        target: &mut Vec<T::ProtobufValue>,
     ) -> ProtobufResult<()> {
         let len_bytes = self.read_raw_varint64()?;
 
@@ -410,7 +410,7 @@ impl<'a> CodedInputStream<'a> {
 
     fn read_repeated_packed_into<T: ProtobufType>(
         &mut self,
-        target: &mut Vec<<T::RuntimeType as RuntimeType>::Value>,
+        target: &mut Vec<T::ProtobufValue>,
     ) -> ProtobufResult<()> {
         let len_bytes = self.read_raw_varint64()?;
 
@@ -525,7 +525,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     /// Read repeated packed `enum` into `ProtobufEnum`
-    pub fn read_repeated_packed_enum_into<E: ProtobufEnum>(
+    pub fn read_repeated_packed_enum_into<E: ProtobufEnum + ProtobufValueSized>(
         &mut self,
         target: &mut Vec<E>,
     ) -> ProtobufResult<()> {

@@ -155,6 +155,10 @@ impl ::std::fmt::Debug for DoubleValue {
 impl crate::reflect::ProtobufValue for DoubleValue {
 }
 
+impl crate::reflect::ProtobufValueSized for DoubleValue {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
 ///  Wrapper message for `float`.
 ///
 ///  The JSON representation for `FloatValue` is JSON number.
@@ -287,6 +291,10 @@ impl ::std::fmt::Debug for FloatValue {
 }
 
 impl crate::reflect::ProtobufValue for FloatValue {
+}
+
+impl crate::reflect::ProtobufValueSized for FloatValue {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 ///  Wrapper message for `int64`.
@@ -423,6 +431,10 @@ impl ::std::fmt::Debug for Int64Value {
 impl crate::reflect::ProtobufValue for Int64Value {
 }
 
+impl crate::reflect::ProtobufValueSized for Int64Value {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
 ///  Wrapper message for `uint64`.
 ///
 ///  The JSON representation for `UInt64Value` is JSON string.
@@ -555,6 +567,10 @@ impl ::std::fmt::Debug for UInt64Value {
 }
 
 impl crate::reflect::ProtobufValue for UInt64Value {
+}
+
+impl crate::reflect::ProtobufValueSized for UInt64Value {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 ///  Wrapper message for `int32`.
@@ -691,6 +707,10 @@ impl ::std::fmt::Debug for Int32Value {
 impl crate::reflect::ProtobufValue for Int32Value {
 }
 
+impl crate::reflect::ProtobufValueSized for Int32Value {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
 ///  Wrapper message for `uint32`.
 ///
 ///  The JSON representation for `UInt32Value` is JSON number.
@@ -823,6 +843,10 @@ impl ::std::fmt::Debug for UInt32Value {
 }
 
 impl crate::reflect::ProtobufValue for UInt32Value {
+}
+
+impl crate::reflect::ProtobufValueSized for UInt32Value {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 ///  Wrapper message for `bool`.
@@ -959,6 +983,10 @@ impl ::std::fmt::Debug for BoolValue {
 impl crate::reflect::ProtobufValue for BoolValue {
 }
 
+impl crate::reflect::ProtobufValueSized for BoolValue {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
 ///  Wrapper message for `string`.
 ///
 ///  The JSON representation for `StringValue` is JSON string.
@@ -1093,6 +1121,10 @@ impl ::std::fmt::Debug for StringValue {
 impl crate::reflect::ProtobufValue for StringValue {
 }
 
+impl crate::reflect::ProtobufValueSized for StringValue {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
 ///  Wrapper message for `bytes`.
 ///
 ///  The JSON representation for `BytesValue` is JSON string.
@@ -1225,6 +1257,10 @@ impl ::std::fmt::Debug for BytesValue {
 }
 
 impl crate::reflect::ProtobufValue for BytesValue {
+}
+
+impl crate::reflect::ProtobufValueSized for BytesValue {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\

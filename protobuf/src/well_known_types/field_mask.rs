@@ -149,6 +149,10 @@ impl ::std::fmt::Debug for FieldMask {
 impl crate::reflect::ProtobufValue for FieldMask {
 }
 
+impl crate::reflect::ProtobufValueSized for FieldMask {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n\x20google/protobuf/field_mask.proto\x12\x0fgoogle.protobuf\"!\n\tFiel\
     dMask\x12\x14\n\x05paths\x18\x01\x20\x03(\tR\x05pathsBN\n\x13com.google.\

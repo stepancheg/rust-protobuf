@@ -8,13 +8,13 @@ use super::code_writer::*;
 use super::customize::Customize;
 use crate::file_descriptor::file_descriptor_proto_expr;
 use crate::inside::protobuf_crate_path;
+use crate::rust::EXPR_NONE;
 use crate::rust_name::RustIdent;
 use crate::rust_name::RustIdentWithPath;
 use crate::scope::RootScope;
 use crate::scope::WithScope;
 use crate::scope::{EnumValueWithContext, EnumWithScope};
 use crate::serde;
-use crate::rust::EXPR_NONE;
 
 #[derive(Clone)]
 pub(crate) struct EnumValueGen<'a> {
@@ -269,6 +269,20 @@ impl<'a> EnumGen<'a> {
             ),
             &format!("{}", self.type_name),
             |_w| {},
+        );
+        w.write_line("");
+        w.impl_for_block(
+            &format!(
+                "{}::reflect::ProtobufValueSized",
+                protobuf_crate_path(&self.customize)
+            ),
+            &format!("{}", self.type_name),
+            |w| {
+                w.write_line(&format!(
+                    "type RuntimeType = {}::reflect::runtime_types::RuntimeTypeEnum<Self>;",
+                    protobuf_crate_path(&self.customize)
+                ));
+            },
         )
     }
 

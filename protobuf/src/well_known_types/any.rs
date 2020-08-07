@@ -194,6 +194,10 @@ impl ::std::fmt::Debug for Any {
 impl crate::reflect::ProtobufValue for Any {
 }
 
+impl crate::reflect::ProtobufValueSized for Any {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n\x19google/protobuf/any.proto\x12\x0fgoogle.protobuf\"6\n\x03Any\x12\
     \x19\n\x08type_url\x18\x01\x20\x01(\tR\x07typeUrl\x12\x14\n\x05value\x18\

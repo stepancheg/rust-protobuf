@@ -314,6 +314,10 @@ impl ::std::fmt::Debug for Api {
 impl crate::reflect::ProtobufValue for Api {
 }
 
+impl crate::reflect::ProtobufValueSized for Api {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
 ///  Method represents a method of an api.
 #[derive(PartialEq,Clone,Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
@@ -575,6 +579,10 @@ impl ::std::fmt::Debug for Method {
 impl crate::reflect::ProtobufValue for Method {
 }
 
+impl crate::reflect::ProtobufValueSized for Method {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
 #[derive(PartialEq,Clone,Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct Mixin {
@@ -726,6 +734,10 @@ impl ::std::fmt::Debug for Mixin {
 }
 
 impl crate::reflect::ProtobufValue for Mixin {
+}
+
+impl crate::reflect::ProtobufValueSized for Mixin {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\

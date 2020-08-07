@@ -264,6 +264,10 @@ impl ::std::fmt::Debug for Type {
 impl crate::reflect::ProtobufValue for Type {
 }
 
+impl crate::reflect::ProtobufValueSized for Type {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
 ///  A single field of a message type.
 #[derive(PartialEq,Clone,Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
@@ -590,6 +594,10 @@ impl ::std::fmt::Debug for Field {
 impl crate::reflect::ProtobufValue for Field {
 }
 
+impl crate::reflect::ProtobufValueSized for Field {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
 /// Nested message and enums of message `Field`
 pub mod field {
     ///  Basic field types.
@@ -689,6 +697,10 @@ pub mod field {
     impl crate::reflect::ProtobufValue for Kind {
     }
 
+    impl crate::reflect::ProtobufValueSized for Kind {
+        type RuntimeType = crate::reflect::runtime_types::RuntimeTypeEnum<Self>;
+    }
+
     ///  Whether a field is optional, required, or repeated.
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
     #[cfg_attr(serde, derive(Serialize, Deserialize))]
@@ -739,6 +751,10 @@ pub mod field {
     }
 
     impl crate::reflect::ProtobufValue for Cardinality {
+    }
+
+    impl crate::reflect::ProtobufValueSized for Cardinality {
+        type RuntimeType = crate::reflect::runtime_types::RuntimeTypeEnum<Self>;
     }
 }
 
@@ -967,6 +983,10 @@ impl ::std::fmt::Debug for Enum {
 impl crate::reflect::ProtobufValue for Enum {
 }
 
+impl crate::reflect::ProtobufValueSized for Enum {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
 ///  Enum value definition.
 #[derive(PartialEq,Clone,Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
@@ -1144,6 +1164,10 @@ impl ::std::fmt::Debug for EnumValue {
 impl crate::reflect::ProtobufValue for EnumValue {
 }
 
+impl crate::reflect::ProtobufValueSized for EnumValue {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
 ///  A protocol buffer option, which can be attached to a message, field,
 ///  enumeration, etc.
 #[derive(PartialEq,Clone,Default)]
@@ -1301,6 +1325,10 @@ impl ::std::fmt::Debug for Option {
 impl crate::reflect::ProtobufValue for Option {
 }
 
+impl crate::reflect::ProtobufValueSized for Option {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
 ///  The syntax in which a protocol buffer element is defined.
 #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
@@ -1345,6 +1373,10 @@ impl ::std::default::Default for Syntax {
 }
 
 impl crate::reflect::ProtobufValue for Syntax {
+}
+
+impl crate::reflect::ProtobufValueSized for Syntax {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeEnum<Self>;
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\

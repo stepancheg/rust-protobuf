@@ -5,6 +5,8 @@ use crate::file_and_mod::FileAndMod;
 use crate::inside::protobuf_crate_path;
 use crate::message::RustTypeMessage;
 use crate::protobuf_abs_path::ProtobufAbsolutePath;
+use crate::rust::EXPR_NONE;
+use crate::rust::EXPR_VEC_NEW;
 use crate::rust_name::RustIdent;
 use crate::rust_name::RustIdentWithPath;
 use crate::rust_name::RustPath;
@@ -13,7 +15,6 @@ use crate::scope::WithScope;
 use crate::strx::capitalize;
 use crate::well_known_types::is_well_known_type_full;
 use protobuf::descriptor::*;
-use crate::rust::{EXPR_NONE, EXPR_VEC_NEW};
 
 // Represent subset of rust types used in generated code
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -222,7 +223,7 @@ impl RustType {
             },
             // Note: default value of enum type may not be equal to default value of field
             RustType::Enum(ref name, ref default, ..) => format!("{}::{}", name, default),
-            RustType::EnumOrUnknown(ref name, _, number) if const_expr => format!(
+            RustType::EnumOrUnknown(_, _, number) if const_expr => format!(
                 "{}::ProtobufEnumOrUnknown::from_i32({})",
                 protobuf_crate_path(customize),
                 number,
@@ -263,7 +264,9 @@ impl RustType {
             | RustType::Float(..)
             | RustType::Int(..)
             | RustType::Enum(..)
-            | RustType::EnumOrUnknown(..) => format!("{} = {}", v, self.default_value(customize, false)),
+            | RustType::EnumOrUnknown(..) => {
+                format!("{} = {}", v, self.default_value(customize, false))
+            }
             ref ty => panic!("cannot clear type: {:?}", ty),
         }
     }

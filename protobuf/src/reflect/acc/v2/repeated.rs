@@ -9,10 +9,9 @@ use crate::reflect::acc::FieldAccessor;
 use crate::reflect::repeated::ReflectRepeated;
 use crate::reflect::repeated::ReflectRepeatedMut;
 use crate::reflect::repeated::ReflectRepeatedRef;
-use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::type_dynamic::ProtobufTypeDynamic;
 use crate::reflect::types::ProtobufType;
-use crate::reflect::ProtobufValue;
+use crate::reflect::{ProtobufValue, ProtobufValueSized};
 
 pub(crate) trait RepeatedFieldAccessor: Send + Sync + 'static {
     fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectRepeatedRef<'a>;
@@ -88,7 +87,7 @@ where
         let repeated = self.fns.get_field(m);
         ReflectRepeatedRef {
             repeated,
-            dynamic: V::RuntimeType::dynamic(),
+            dynamic: <V::ProtobufValue as ProtobufValueSized>::dynamic(),
         }
     }
 
@@ -97,7 +96,7 @@ where
         let repeated = self.fns.mut_field(m);
         ReflectRepeatedMut {
             repeated,
-            dynamic: V::RuntimeType::dynamic(),
+            dynamic: <V::ProtobufValue as ProtobufValueSized>::dynamic(),
         }
     }
 }
@@ -105,8 +104,8 @@ where
 /// Make accessor for `Vec` field
 pub fn make_vec_accessor<M, V>(
     name: &'static str,
-    get_vec: for<'a> fn(&'a M) -> &'a Vec<<V::RuntimeType as RuntimeType>::Value>,
-    mut_vec: for<'a> fn(&'a mut M) -> &'a mut Vec<<V::RuntimeType as RuntimeType>::Value>,
+    get_vec: for<'a> fn(&'a M) -> &'a Vec<V::ProtobufValue>,
+    mut_vec: for<'a> fn(&'a mut M) -> &'a mut Vec<V::ProtobufValue>,
 ) -> FieldAccessor
 where
     M: Message + 'static,
@@ -116,10 +115,7 @@ where
         name,
         AccessorV2::Repeated(RepeatedFieldAccessorHolder {
             accessor: Box::new(RepeatedFieldAccessorImpl::<M, V> {
-                fns: Box::new(RepeatedFieldGetMutImpl::<
-                    M,
-                    Vec<<V::RuntimeType as RuntimeType>::Value>,
-                > {
+                fns: Box::new(RepeatedFieldGetMutImpl::<M, Vec<V::ProtobufValue>> {
                     get_field: get_vec,
                     mut_field: mut_vec,
                 }),
@@ -133,8 +129,8 @@ where
 /// Make accessor for `RepeatedField`
 pub fn make_repeated_field_accessor<M, V>(
     name: &'static str,
-    get_vec: for<'a> fn(&'a M) -> &'a RepeatedField<<V::RuntimeType as RuntimeType>::Value>,
-    mut_vec: for<'a> fn(&'a mut M) -> &'a mut RepeatedField<<V::RuntimeType as RuntimeType>::Value>,
+    get_vec: for<'a> fn(&'a M) -> &'a RepeatedField<V::ProtobufValue>,
+    mut_vec: for<'a> fn(&'a mut M) -> &'a mut RepeatedField<V::ProtobufValue>,
 ) -> FieldAccessor
 where
     M: Message + 'static,
@@ -144,13 +140,12 @@ where
         name,
         AccessorV2::Repeated(RepeatedFieldAccessorHolder {
             accessor: Box::new(RepeatedFieldAccessorImpl::<M, V> {
-                fns: Box::new(RepeatedFieldGetMutImpl::<
-                    M,
-                    RepeatedField<<V::RuntimeType as RuntimeType>::Value>,
-                > {
-                    get_field: get_vec,
-                    mut_field: mut_vec,
-                }),
+                fns: Box::new(
+                    RepeatedFieldGetMutImpl::<M, RepeatedField<V::ProtobufValue>> {
+                        get_field: get_vec,
+                        mut_field: mut_vec,
+                    },
+                ),
                 _marker: marker::PhantomData::<V>,
             }),
             element_type: V::dynamic(),

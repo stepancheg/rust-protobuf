@@ -155,6 +155,10 @@ impl ::std::fmt::Debug for SourceContext {
 impl crate::reflect::ProtobufValue for SourceContext {
 }
 
+impl crate::reflect::ProtobufValueSized for SourceContext {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n$google/protobuf/source_context.proto\x12\x0fgoogle.protobuf\",\n\rSou\
     rceContext\x12\x1b\n\tfile_name\x18\x01\x20\x01(\tR\x08fileNameBR\n\x13c\

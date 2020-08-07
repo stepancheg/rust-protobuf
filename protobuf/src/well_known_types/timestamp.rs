@@ -178,6 +178,10 @@ impl ::std::fmt::Debug for Timestamp {
 impl crate::reflect::ProtobufValue for Timestamp {
 }
 
+impl crate::reflect::ProtobufValueSized for Timestamp {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n\x1fgoogle/protobuf/timestamp.proto\x12\x0fgoogle.protobuf\";\n\tTimes\
     tamp\x12\x18\n\x07seconds\x18\x01\x20\x01(\x03R\x07seconds\x12\x14\n\x05\

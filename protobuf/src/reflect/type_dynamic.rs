@@ -3,8 +3,8 @@
 use std::marker;
 
 use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
-use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::types::ProtobufType;
+use crate::reflect::ProtobufValueSized;
 use crate::wire_format::WireType;
 
 /// Dynamic version of [`ProtobufType`](crate::reflect::types::ProtobufType).
@@ -26,6 +26,6 @@ impl<T: ProtobufType> ProtobufTypeDynamic for ProtobufTypeDynamicImpl<T> {
     }
 
     fn runtime_type(&self) -> &dyn RuntimeTypeDynamic {
-        <T::RuntimeType as RuntimeType>::dynamic()
+        <T::ProtobufValue as ProtobufValueSized>::dynamic()
     }
 }

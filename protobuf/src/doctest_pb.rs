@@ -130,6 +130,10 @@ impl ::std::fmt::Debug for MyMessage {
 impl crate::reflect::ProtobufValue for MyMessage {
 }
 
+impl crate::reflect::ProtobufValueSized for MyMessage {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n\x10doctest_pb.proto\"\x0b\n\tMyMessageJG\n\x06\x12\x04\x02\0\x05\x01\
     \n%\n\x01\x0c\x12\x03\x02\0\x122\x1b\x20Messages\x20used\x20in\x20doctes\

@@ -130,6 +130,10 @@ impl ::std::fmt::Debug for Empty {
 impl crate::reflect::ProtobufValue for Empty {
 }
 
+impl crate::reflect::ProtobufValueSized for Empty {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n\x1bgoogle/protobuf/empty.proto\x12\x0fgoogle.protobuf\"\x07\n\x05Empt\
     yBv\n\x13com.google.protobufB\nEmptyProtoP\x01Z'github.com/golang/protob\
