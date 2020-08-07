@@ -116,8 +116,11 @@ impl<T> Default for RepeatedField<T> {
 impl<T> RepeatedField<T> {
     /// Create new empty container.
     #[inline]
-    pub fn new() -> RepeatedField<T> {
-        Default::default()
+    pub const fn new() -> RepeatedField<T> {
+        RepeatedField {
+            vec: Vec::new(),
+            len: 0,
+        }
     }
 
     /// Create a contained with data from given vec.
