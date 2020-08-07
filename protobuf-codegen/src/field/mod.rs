@@ -31,6 +31,7 @@ use crate::scope::WithScope;
 use crate::serde;
 use crate::syntax::Syntax;
 use protobuf::wire_format::WireType;
+use crate::rust::{EXPR_NONE, EXPR_VEC_NEW};
 
 mod accessor;
 
@@ -252,6 +253,10 @@ impl<'a> SingularField<'a> {
             SingularFieldFlag::WithoutFlag => self.elem.rust_storage_elem_type(reference),
         }
     }
+
+    fn default_value(&self, customize: &Customize, reference: &FileAndMod, const_expr: bool) -> String {
+        self.rust_storage_type(reference).default_value(customize, const_expr)
+    }
 }
 
 /// Repeated field can be `Vec<T>` or `RepeatedField<T>`.
@@ -267,6 +272,13 @@ impl RepeatedFieldKind {
         match self {
             RepeatedFieldKind::Vec => RustType::Vec(element_type),
             RepeatedFieldKind::RepeatedField => RustType::RepeatedField(element_type),
+        }
+    }
+
+    fn default(&self, customize: &Customize) -> String {
+        match self {
+            RepeatedFieldKind::Vec => EXPR_VEC_NEW.to_owned(),
+            RepeatedFieldKind::RepeatedField => format!("{}::RepeatedField::new()", protobuf_crate_path(customize)),
         }
     }
 }
@@ -294,6 +306,10 @@ impl<'a> RepeatedField<'a> {
         self.kind()
             .wrap_element(self.elem.rust_storage_elem_type(reference))
     }
+
+    fn default(&self, customize: &Customize) -> String {
+        self.kind().default(customize)
+    }
 }
 
 #[derive(Clone)]
@@ -313,6 +329,17 @@ pub(crate) enum FieldKind<'a> {
     Map(MapField<'a>),
     // part of oneof
     Oneof(OneofField<'a>),
+}
+
+impl<'a> FieldKind<'a> {
+    pub fn default(&self, customize: &Customize, reference: &FileAndMod, const_expr: bool) -> String {
+        match self {
+            FieldKind::Singular(s) => s.default_value(customize, reference, const_expr),
+            FieldKind::Repeated(r) => r.default(customize),
+            FieldKind::Oneof(..) => EXPR_NONE.to_owned(),
+            FieldKind::Map(..) => panic!("map fields cannot have field value"),
+        }
+    }
 }
 
 #[derive(Clone)]
@@ -361,6 +388,7 @@ impl<'a> FieldElemEnum<'a> {
         RustType::Enum(
             self.rust_name_relative(reference),
             self.default_value.rust_name(),
+            self.default_value.proto.get_number()
         )
     }
 
@@ -368,6 +396,7 @@ impl<'a> FieldElemEnum<'a> {
         RustType::EnumOrUnknown(
             self.rust_name_relative(reference),
             self.default_value.rust_name(),
+            self.default_value.proto.get_number()
         )
     }
 
@@ -956,7 +985,7 @@ impl<'a> FieldGen<'a> {
         match self.kind {
             FieldKind::Singular(..) | FieldKind::Oneof(..) => self
                 .default_value_from_proto()
-                .unwrap_or_else(|| self.get_xxx_return_type().default_value(&self.customize)),
+                .unwrap_or_else(|| self.get_xxx_return_type().default_value(&self.customize, false)),
             _ => unreachable!(),
         }
     }
@@ -974,7 +1003,7 @@ impl<'a> FieldGen<'a> {
                                 .scope
                                 .get_file_and_mod(self.customize.clone()),
                         )
-                        .default_value_typed(&self.customize)
+                        .default_value_typed(&self.customize, false)
                 })
             }
             _ => unreachable!(),
@@ -1302,7 +1331,7 @@ impl<'a> FieldGen<'a> {
                                     .scope
                                     .get_file_and_mod(self.customize.clone())
                             )
-                            .default_value(&self.customize)
+                            .default_value(&self.customize, false)
                         ),
                         |w| {
                             let v = RustValueTyped {
@@ -1499,7 +1528,7 @@ impl<'a> FieldGen<'a> {
                                             .scope
                                             .get_file_and_mod(self.customize.clone()),
                                     )
-                                    .default_value_typed(&self.customize)
+                                    .default_value_typed(&self.customize, false)
                                     .into_type(
                                         singular.elem.rust_storage_elem_type(
                                             &self
@@ -2463,7 +2492,7 @@ impl<'a> FieldGen<'a> {
                             .scope
                             .get_file_and_mod(self.customize.clone()),
                     )
-                    .default_value_typed(&self.customize)
+                    .default_value_typed(&self.customize, false)
                     .into_type(take_xxx_return_type.clone(), &self.customize)
                     .value,
             );
@@ -2489,7 +2518,7 @@ impl<'a> FieldGen<'a> {
                                         .scope
                                         .get_file_and_mod(self.customize.clone()),
                                 )
-                                .default_value(&self.customize),
+                                .default_value(&self.customize, false),
                         ),
                     );
                 } else {
@@ -2513,7 +2542,7 @@ impl<'a> FieldGen<'a> {
                         .scope
                         .get_file_and_mod(self.customize.clone())
                 )
-                .default_value(&self.customize)
+                .default_value(&self.customize, false)
             )),
         }
     }
@@ -2540,7 +2569,7 @@ impl<'a> FieldGen<'a> {
                     w.write_line(&format!(
                         "::std::mem::replace(&mut self.{}, {})",
                         self.rust_name,
-                        take_xxx_return_type.default_value(&self.customize)
+                        take_xxx_return_type.default_value(&self.customize, false)
                     ));
                 }
             },

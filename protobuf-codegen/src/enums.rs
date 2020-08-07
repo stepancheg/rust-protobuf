@@ -14,6 +14,7 @@ use crate::scope::RootScope;
 use crate::scope::WithScope;
 use crate::scope::{EnumValueWithContext, EnumWithScope};
 use crate::serde;
+use crate::rust::EXPR_NONE;
 
 #[derive(Clone)]
 pub(crate) struct EnumValueGen<'a> {
@@ -213,7 +214,7 @@ impl<'a> EnumGen<'a> {
                                     value.rust_name_outer()
                                 ));
                             }
-                            w.write_line(&format!("_ => ::std::option::Option::None"));
+                            w.write_line(&format!("_ => {}", EXPR_NONE));
                         });
                     },
                 );

@@ -13,6 +13,7 @@ use crate::scope::WithScope;
 use crate::strx::capitalize;
 use crate::well_known_types::is_well_known_type_full;
 use protobuf::descriptor::*;
+use crate::rust::{EXPR_NONE, EXPR_VEC_NEW};
 
 // Represent subset of rust types used in generated code
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -39,9 +40,9 @@ pub(crate) enum RustType {
     // protobuf message
     Message(RustTypeMessage),
     // protobuf enum, not any enum
-    Enum(RustIdentWithPath, RustIdent),
+    Enum(RustIdentWithPath, RustIdent, i32),
     // protobuf enum or unknown
-    EnumOrUnknown(RustIdentWithPath, RustIdent),
+    EnumOrUnknown(RustIdentWithPath, RustIdent, i32),
     // oneof enum
     Oneof(RustIdentWithPath),
     // bytes::Bytes
@@ -85,8 +86,8 @@ impl RustType {
             RustType::Uniq(ref param) => format!("::std::boxed::Box<{}>", param.to_code(customize)),
             RustType::Ref(ref param) => format!("&{}", param.to_code(customize)),
             RustType::Message(ref name) => format!("{}", name),
-            RustType::Enum(ref name, _) | RustType::Oneof(ref name) => format!("{}", name),
-            RustType::EnumOrUnknown(ref name, _) => format!(
+            RustType::Enum(ref name, ..) | RustType::Oneof(ref name) => format!("{}", name),
+            RustType::EnumOrUnknown(ref name, ..) => format!(
                 "{}::ProtobufEnumOrUnknown<{}>",
                 protobuf_crate_path(customize),
                 name
@@ -194,19 +195,19 @@ impl RustType {
     }
 
     // default value for type
-    pub fn default_value(&self, customize: &Customize) -> String {
+    pub fn default_value(&self, customize: &Customize, const_expr: bool) -> String {
         match *self {
             RustType::Ref(ref t) if t.is_str() => "\"\"".to_string(),
             RustType::Ref(ref t) if t.is_slice().is_some() => "&[]".to_string(),
             RustType::Int(..) => "0".to_string(),
             RustType::Float(..) => "0.".to_string(),
             RustType::Bool => "false".to_string(),
-            RustType::Vec(..) => "::std::vec::Vec::new()".to_string(),
+            RustType::Vec(..) => EXPR_VEC_NEW.to_string(),
             RustType::HashMap(..) => "::std::collections::HashMap::new()".to_string(),
             RustType::String => "::std::string::String::new()".to_string(),
             RustType::Bytes => "::bytes::Bytes::new()".to_string(),
             RustType::Chars => format!("{}::Chars::new()", protobuf_crate_path(customize)),
-            RustType::Option(..) => "::std::option::Option::None".to_string(),
+            RustType::Option(..) => EXPR_NONE.to_string(),
             RustType::SingularPtrField(..) => format!(
                 "{}::SingularPtrField::none()",
                 protobuf_crate_path(customize)
@@ -220,8 +221,13 @@ impl RustType {
                 _ => unreachable!(),
             },
             // Note: default value of enum type may not be equal to default value of field
-            RustType::Enum(ref name, ref default) => format!("{}::{}", name, default),
-            RustType::EnumOrUnknown(ref name, ref default) => format!(
+            RustType::Enum(ref name, ref default, ..) => format!("{}::{}", name, default),
+            RustType::EnumOrUnknown(ref name, _, number) if const_expr => format!(
+                "{}::ProtobufEnumOrUnknown::from_i32({})",
+                protobuf_crate_path(customize),
+                number,
+            ),
+            RustType::EnumOrUnknown(ref name, ref default, ..) if !const_expr => format!(
                 "{}::ProtobufEnumOrUnknown::new({}::{})",
                 protobuf_crate_path(customize),
                 name,
@@ -231,9 +237,9 @@ impl RustType {
         }
     }
 
-    pub fn default_value_typed(self, customize: &Customize) -> RustValueTyped {
+    pub fn default_value_typed(self, customize: &Customize, const_expr: bool) -> RustValueTyped {
         RustValueTyped {
-            value: self.default_value(customize),
+            value: self.default_value(customize, const_expr),
             rust_type: self,
         }
     }
@@ -241,7 +247,7 @@ impl RustType {
     /// Emit a code to clear a variable `v`
     pub fn clear(&self, v: &str, customize: &Customize) -> String {
         match *self {
-            RustType::Option(..) => format!("{} = ::std::option::Option::None", v),
+            RustType::Option(..) => format!("{} = {}", v, EXPR_NONE),
             RustType::Vec(..)
             | RustType::Bytes
             | RustType::String
@@ -257,7 +263,7 @@ impl RustType {
             | RustType::Float(..)
             | RustType::Int(..)
             | RustType::Enum(..)
-            | RustType::EnumOrUnknown(..) => format!("{} = {}", v, self.default_value(customize)),
+            | RustType::EnumOrUnknown(..) => format!("{} = {}", v, self.default_value(customize, false)),
             ref ty => panic!("cannot clear type: {:?}", ty),
         }
     }

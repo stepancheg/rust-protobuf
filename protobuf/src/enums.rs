@@ -40,25 +40,30 @@ pub trait ProtobufEnum: Eq + Sized + Copy + 'static + ProtobufValue + fmt::Debug
 /// Protobuf enums with possibly unknown values are preserved in this struct.
 #[derive(Eq, PartialEq, Ord, PartialOrd, Copy, Clone)]
 #[repr(transparent)]
-pub struct ProtobufEnumOrUnknown<E: ProtobufEnum> {
+// TODO: specify <E: ProtobufEnum> when it no longer prevents using const fns
+pub struct ProtobufEnumOrUnknown<E> {
     value: i32,
     _marker: marker::PhantomData<E>,
+}
+
+// TODO: move into <E: ProtobufEnum> when no longer:
+//  trait bounds other than `Sized` on const fn parameters are unstable
+impl<E> ProtobufEnumOrUnknown<E> {
+    /// Construct from any `i32` value.
+    ///
+    /// Note passed value is not required to be a valid enum value.
+    pub const fn from_i32(value: i32) -> ProtobufEnumOrUnknown<E> {
+        ProtobufEnumOrUnknown {
+            value,
+            _marker: marker::PhantomData,
+        }
+    }
 }
 
 impl<E: ProtobufEnum> ProtobufEnumOrUnknown<E> {
     /// Construct from typed enum
     pub fn new(e: E) -> ProtobufEnumOrUnknown<E> {
         ProtobufEnumOrUnknown::from_i32(e.value())
-    }
-
-    /// Construct from any `i32` value.
-    ///
-    /// Note passed value is not required to be a valid enum value.
-    pub fn from_i32(value: i32) -> ProtobufEnumOrUnknown<E> {
-        ProtobufEnumOrUnknown {
-            value,
-            _marker: marker::PhantomData,
-        }
     }
 
     /// Get contained `i32` value of enum

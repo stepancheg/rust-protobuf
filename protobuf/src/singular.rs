@@ -129,7 +129,7 @@ impl<T> SingularPtrField<T> {
 
     /// Construct an empty `SingularPtrField`.
     #[inline]
-    pub fn none() -> SingularPtrField<T> {
+    pub const fn none() -> SingularPtrField<T> {
         SingularPtrField {
             value: None,
             set: false,

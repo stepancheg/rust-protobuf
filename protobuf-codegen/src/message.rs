@@ -15,7 +15,7 @@ use crate::inside::protobuf_crate_path;
 use crate::map::map_entry;
 use crate::oneof::OneofGen;
 use crate::oneof::OneofVariantGen;
-use crate::rust::is_rust_keyword;
+use crate::rust::{is_rust_keyword, EXPR_VEC_NEW, EXPR_NONE};
 use crate::rust_name::RustIdent;
 use crate::rust_name::RustIdentWithPath;
 use crate::scope::MessageWithScope;
@@ -244,16 +244,42 @@ impl<'a> MessageGen<'a> {
         });
     }
 
+    fn write_default_instance_lazy(&self, w: &mut CodeWriter) {
+        w.lazy_static_decl_get_simple(
+            "instance",
+            &format!("{}", self.type_name),
+            &format!("{}::new", self.type_name),
+            &format!("{}", protobuf_crate_path(&self.customize)),
+        );
+    }
+
+    fn write_default_instance_static(&self, w: &mut CodeWriter) {
+        w.stmt_block(&format!("static instance: {} = {}", self.type_name, self.type_name), |w| {
+            for f in &self.fields_except_oneof_and_group() {
+                w.field_entry(f.rust_name.get(), &f.kind.default(&self.customize, &self.get_file_and_mod(), true));
+            }
+            for o in &self.oneofs() {
+                w.field_entry(o.oneof.field_name().get(), EXPR_NONE);
+            }
+            w.field_entry("unknown_fields", &format!("{}::UnknownFields::new()", protobuf_crate_path(&self.customize)));
+            w.field_entry("cached_size", &format!("{}::rt::CachedSize::new()", protobuf_crate_path(&self.customize)));
+        });
+        w.write_line("&instance");
+    }
+
     fn write_default_instance(&self, w: &mut CodeWriter) {
         w.def_fn(
             &format!("default_instance() -> &'static {}", self.type_name),
             |w| {
-                w.lazy_static_decl_get_simple(
-                    "instance",
-                    &format!("{}", self.type_name),
-                    &format!("{}::new", self.type_name),
-                    &format!("{}", protobuf_crate_path(&self.customize)),
-                );
+                let has_map_field = self.fields.iter().any(|f| match f.kind {
+                    FieldKind::Map(..) => true,
+                    _ => false,
+                });
+                if has_map_field {
+                    self.write_default_instance_lazy(w)
+                } else {
+                    self.write_default_instance_static(w)
+                }
             },
         );
     }
@@ -358,7 +384,7 @@ impl<'a> MessageGen<'a> {
                 &format!("{}", protobuf_crate_path(&self.customize)),
                 |w| {
                     let fields = self.fields_except_group();
-                    w.write_line(&format!("let mut fields = ::std::vec::Vec::new();"));
+                    w.write_line(&format!("let mut fields = {};", EXPR_VEC_NEW));
                     for field in fields {
                         field.write_descriptor_field("fields", w);
                     }

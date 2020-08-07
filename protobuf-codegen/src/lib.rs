@@ -67,6 +67,7 @@ use crate::scope::WithScope;
 use crate::well_known_types::gen_well_known_types_mod;
 #[doc(hidden)]
 pub use file::proto_name_to_rs;
+use crate::rust::EXPR_VEC_NEW;
 
 fn escape_byte(s: &mut String, b: u8) {
     if b == b'\n' {
@@ -108,7 +109,7 @@ fn write_file_descriptor(
                 &format!("{}", protobuf_crate_path(customize)),
             );
             w.block("file_descriptor_lazy.get(|| {", "})", |w| {
-                w.write_line("let mut deps = ::std::vec::Vec::new();");
+                w.write_line(&format!("let mut deps = {};", EXPR_VEC_NEW));
                 for f in &file_descriptor.dependency {
                     w.write_line(&format!(
                         "deps.push({}());",
@@ -118,7 +119,7 @@ fn write_file_descriptor(
 
                 let scope = FileScope { file_descriptor };
 
-                w.write_line("let mut messages = ::std::vec::Vec::new();");
+                w.write_line(&format!("let mut messages = {};", EXPR_VEC_NEW));
                 for m in scope.find_messages() {
                     if map_entry(&m).is_some() {
                         continue;
@@ -130,7 +131,7 @@ fn write_file_descriptor(
                     ));
                 }
 
-                w.write_line("let mut enums = ::std::vec::Vec::new();");
+                w.write_line(&format!("let mut enums = {};", EXPR_VEC_NEW));
                 for e in scope.find_enums() {
                     w.write_line(&format!(
                         "enums.push(<{} as {}::ProtobufEnum>::enum_descriptor_static());",

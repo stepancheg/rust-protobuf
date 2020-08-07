@@ -102,6 +102,9 @@ pub fn quote_escape_bytes(bytes: &[u8]) -> String {
     buf
 }
 
+pub(crate) const EXPR_NONE: &str = "::std::option::Option::None";
+pub(crate) const EXPR_VEC_NEW: &str = "::std::vec::Vec::new()";
+
 #[cfg(test)]
 mod test {
 
