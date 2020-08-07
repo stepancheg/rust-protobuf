@@ -229,8 +229,17 @@ impl crate::Message for Type {
     }
 
     fn default_instance() -> &'static Type {
-        static instance: crate::rt::LazyV2<Type> = crate::rt::LazyV2::INIT;
-        instance.get(Type::new)
+        static instance: Type = Type {
+            name: ::std::string::String::new(),
+            fields: crate::RepeatedField::new(),
+            oneofs: crate::RepeatedField::new(),
+            options: crate::RepeatedField::new(),
+            source_context: crate::SingularPtrField::none(),
+            syntax: crate::ProtobufEnumOrUnknown::from_i32(0),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -538,8 +547,21 @@ impl crate::Message for Field {
     }
 
     fn default_instance() -> &'static Field {
-        static instance: crate::rt::LazyV2<Field> = crate::rt::LazyV2::INIT;
-        instance.get(Field::new)
+        static instance: Field = Field {
+            kind: crate::ProtobufEnumOrUnknown::from_i32(0),
+            cardinality: crate::ProtobufEnumOrUnknown::from_i32(0),
+            number: 0,
+            name: ::std::string::String::new(),
+            type_url: ::std::string::String::new(),
+            oneof_index: 0,
+            packed: false,
+            options: crate::RepeatedField::new(),
+            json_name: ::std::string::String::new(),
+            default_value: ::std::string::String::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -912,8 +934,16 @@ impl crate::Message for Enum {
     }
 
     fn default_instance() -> &'static Enum {
-        static instance: crate::rt::LazyV2<Enum> = crate::rt::LazyV2::INIT;
-        instance.get(Enum::new)
+        static instance: Enum = Enum {
+            name: ::std::string::String::new(),
+            enumvalue: crate::RepeatedField::new(),
+            options: crate::RepeatedField::new(),
+            source_context: crate::SingularPtrField::none(),
+            syntax: crate::ProtobufEnumOrUnknown::from_i32(0),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -1085,8 +1115,14 @@ impl crate::Message for EnumValue {
     }
 
     fn default_instance() -> &'static EnumValue {
-        static instance: crate::rt::LazyV2<EnumValue> = crate::rt::LazyV2::INIT;
-        instance.get(EnumValue::new)
+        static instance: EnumValue = EnumValue {
+            name: ::std::string::String::new(),
+            number: 0,
+            options: crate::RepeatedField::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -1238,8 +1274,13 @@ impl crate::Message for Option {
     }
 
     fn default_instance() -> &'static Option {
-        static instance: crate::rt::LazyV2<Option> = crate::rt::LazyV2::INIT;
-        instance.get(Option::new)
+        static instance: Option = Option {
+            name: ::std::string::String::new(),
+            value: crate::SingularPtrField::none(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 

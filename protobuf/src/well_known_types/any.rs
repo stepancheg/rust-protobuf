@@ -167,8 +167,13 @@ impl crate::Message for Any {
     }
 
     fn default_instance() -> &'static Any {
-        static instance: crate::rt::LazyV2<Any> = crate::rt::LazyV2::INIT;
-        instance.get(Any::new)
+        static instance: Any = Any {
+            type_url: ::std::string::String::new(),
+            value: ::std::vec::Vec::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 

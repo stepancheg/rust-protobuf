@@ -107,8 +107,11 @@ impl crate::Message for Empty {
     }
 
     fn default_instance() -> &'static Empty {
-        static instance: crate::rt::LazyV2<Empty> = crate::rt::LazyV2::INIT;
-        instance.get(Empty::new)
+        static instance: Empty = Empty {
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 

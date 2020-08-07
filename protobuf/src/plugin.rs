@@ -215,8 +215,14 @@ impl crate::Message for CodeGeneratorRequest {
     }
 
     fn default_instance() -> &'static CodeGeneratorRequest {
-        static instance: crate::rt::LazyV2<CodeGeneratorRequest> = crate::rt::LazyV2::INIT;
-        instance.get(CodeGeneratorRequest::new)
+        static instance: CodeGeneratorRequest = CodeGeneratorRequest {
+            file_to_generate: crate::RepeatedField::new(),
+            parameter: ::std::option::Option::None,
+            proto_file: crate::RepeatedField::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -410,8 +416,13 @@ impl crate::Message for CodeGeneratorResponse {
     }
 
     fn default_instance() -> &'static CodeGeneratorResponse {
-        static instance: crate::rt::LazyV2<CodeGeneratorResponse> = crate::rt::LazyV2::INIT;
-        instance.get(CodeGeneratorResponse::new)
+        static instance: CodeGeneratorResponse = CodeGeneratorResponse {
+            error: ::std::option::Option::None,
+            file: crate::RepeatedField::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -736,8 +747,14 @@ pub mod code_generator_response {
         }
 
         fn default_instance() -> &'static File {
-            static instance: crate::rt::LazyV2<File> = crate::rt::LazyV2::INIT;
-            instance.get(File::new)
+            static instance: File = File {
+                name: ::std::option::Option::None,
+                insertion_point: ::std::option::Option::None,
+                content: ::std::option::Option::None,
+                unknown_fields: crate::UnknownFields::new(),
+                cached_size: crate::rt::CachedSize::new(),
+            };
+            &instance
         }
     }
 

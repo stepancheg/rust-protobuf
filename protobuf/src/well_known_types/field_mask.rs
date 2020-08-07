@@ -124,8 +124,12 @@ impl crate::Message for FieldMask {
     }
 
     fn default_instance() -> &'static FieldMask {
-        static instance: crate::rt::LazyV2<FieldMask> = crate::rt::LazyV2::INIT;
-        instance.get(FieldMask::new)
+        static instance: FieldMask = FieldMask {
+            paths: crate::RepeatedField::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 

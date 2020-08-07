@@ -596,8 +596,12 @@ impl crate::Message for Value {
     }
 
     fn default_instance() -> &'static Value {
-        static instance: crate::rt::LazyV2<Value> = crate::rt::LazyV2::INIT;
-        instance.get(Value::new)
+        static instance: Value = Value {
+            kind: ::std::option::Option::None,
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -752,8 +756,12 @@ impl crate::Message for ListValue {
     }
 
     fn default_instance() -> &'static ListValue {
-        static instance: crate::rt::LazyV2<ListValue> = crate::rt::LazyV2::INIT;
-        instance.get(ListValue::new)
+        static instance: ListValue = ListValue {
+            values: crate::RepeatedField::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 

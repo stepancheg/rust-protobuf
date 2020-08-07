@@ -130,8 +130,12 @@ impl crate::Message for SourceContext {
     }
 
     fn default_instance() -> &'static SourceContext {
-        static instance: crate::rt::LazyV2<SourceContext> = crate::rt::LazyV2::INIT;
-        instance.get(SourceContext::new)
+        static instance: SourceContext = SourceContext {
+            file_name: ::std::string::String::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 

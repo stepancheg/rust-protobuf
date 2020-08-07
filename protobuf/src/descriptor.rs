@@ -131,8 +131,12 @@ impl crate::Message for FileDescriptorSet {
     }
 
     fn default_instance() -> &'static FileDescriptorSet {
-        static instance: crate::rt::LazyV2<FileDescriptorSet> = crate::rt::LazyV2::INIT;
-        instance.get(FileDescriptorSet::new)
+        static instance: FileDescriptorSet = FileDescriptorSet {
+            file: crate::RepeatedField::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -587,8 +591,23 @@ impl crate::Message for FileDescriptorProto {
     }
 
     fn default_instance() -> &'static FileDescriptorProto {
-        static instance: crate::rt::LazyV2<FileDescriptorProto> = crate::rt::LazyV2::INIT;
-        instance.get(FileDescriptorProto::new)
+        static instance: FileDescriptorProto = FileDescriptorProto {
+            name: ::std::option::Option::None,
+            package: ::std::option::Option::None,
+            dependency: crate::RepeatedField::new(),
+            public_dependency: ::std::vec::Vec::new(),
+            weak_dependency: ::std::vec::Vec::new(),
+            message_type: crate::RepeatedField::new(),
+            enum_type: crate::RepeatedField::new(),
+            service: crate::RepeatedField::new(),
+            extension: crate::RepeatedField::new(),
+            options: crate::SingularPtrField::none(),
+            source_code_info: crate::SingularPtrField::none(),
+            syntax: ::std::option::Option::None,
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -947,8 +966,21 @@ impl crate::Message for DescriptorProto {
     }
 
     fn default_instance() -> &'static DescriptorProto {
-        static instance: crate::rt::LazyV2<DescriptorProto> = crate::rt::LazyV2::INIT;
-        instance.get(DescriptorProto::new)
+        static instance: DescriptorProto = DescriptorProto {
+            name: ::std::option::Option::None,
+            field: crate::RepeatedField::new(),
+            extension: crate::RepeatedField::new(),
+            nested_type: crate::RepeatedField::new(),
+            enum_type: crate::RepeatedField::new(),
+            extension_range: crate::RepeatedField::new(),
+            oneof_decl: crate::RepeatedField::new(),
+            options: crate::SingularPtrField::none(),
+            reserved_range: crate::RepeatedField::new(),
+            reserved_name: crate::RepeatedField::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -1142,8 +1174,13 @@ pub mod descriptor_proto {
         }
 
         fn default_instance() -> &'static ExtensionRange {
-            static instance: crate::rt::LazyV2<ExtensionRange> = crate::rt::LazyV2::INIT;
-            instance.get(ExtensionRange::new)
+            static instance: ExtensionRange = ExtensionRange {
+                start: ::std::option::Option::None,
+                end: ::std::option::Option::None,
+                unknown_fields: crate::UnknownFields::new(),
+                cached_size: crate::rt::CachedSize::new(),
+            };
+            &instance
         }
     }
 
@@ -1330,8 +1367,13 @@ pub mod descriptor_proto {
         }
 
         fn default_instance() -> &'static ReservedRange {
-            static instance: crate::rt::LazyV2<ReservedRange> = crate::rt::LazyV2::INIT;
-            instance.get(ReservedRange::new)
+            static instance: ReservedRange = ReservedRange {
+                start: ::std::option::Option::None,
+                end: ::std::option::Option::None,
+                unknown_fields: crate::UnknownFields::new(),
+                cached_size: crate::rt::CachedSize::new(),
+            };
+            &instance
         }
     }
 
@@ -1916,8 +1958,21 @@ impl crate::Message for FieldDescriptorProto {
     }
 
     fn default_instance() -> &'static FieldDescriptorProto {
-        static instance: crate::rt::LazyV2<FieldDescriptorProto> = crate::rt::LazyV2::INIT;
-        instance.get(FieldDescriptorProto::new)
+        static instance: FieldDescriptorProto = FieldDescriptorProto {
+            name: ::std::option::Option::None,
+            number: ::std::option::Option::None,
+            label: ::std::option::Option::None,
+            field_type: ::std::option::Option::None,
+            type_name: ::std::option::Option::None,
+            extendee: ::std::option::Option::None,
+            default_value: ::std::option::Option::None,
+            oneof_index: ::std::option::Option::None,
+            json_name: ::std::option::Option::None,
+            options: crate::SingularPtrField::none(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -2256,8 +2311,13 @@ impl crate::Message for OneofDescriptorProto {
     }
 
     fn default_instance() -> &'static OneofDescriptorProto {
-        static instance: crate::rt::LazyV2<OneofDescriptorProto> = crate::rt::LazyV2::INIT;
-        instance.get(OneofDescriptorProto::new)
+        static instance: OneofDescriptorProto = OneofDescriptorProto {
+            name: ::std::option::Option::None,
+            options: crate::SingularPtrField::none(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -2463,8 +2523,14 @@ impl crate::Message for EnumDescriptorProto {
     }
 
     fn default_instance() -> &'static EnumDescriptorProto {
-        static instance: crate::rt::LazyV2<EnumDescriptorProto> = crate::rt::LazyV2::INIT;
-        instance.get(EnumDescriptorProto::new)
+        static instance: EnumDescriptorProto = EnumDescriptorProto {
+            name: ::std::option::Option::None,
+            value: crate::RepeatedField::new(),
+            options: crate::SingularPtrField::none(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -2688,8 +2754,14 @@ impl crate::Message for EnumValueDescriptorProto {
     }
 
     fn default_instance() -> &'static EnumValueDescriptorProto {
-        static instance: crate::rt::LazyV2<EnumValueDescriptorProto> = crate::rt::LazyV2::INIT;
-        instance.get(EnumValueDescriptorProto::new)
+        static instance: EnumValueDescriptorProto = EnumValueDescriptorProto {
+            name: ::std::option::Option::None,
+            number: ::std::option::Option::None,
+            options: crate::SingularPtrField::none(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -2896,8 +2968,14 @@ impl crate::Message for ServiceDescriptorProto {
     }
 
     fn default_instance() -> &'static ServiceDescriptorProto {
-        static instance: crate::rt::LazyV2<ServiceDescriptorProto> = crate::rt::LazyV2::INIT;
-        instance.get(ServiceDescriptorProto::new)
+        static instance: ServiceDescriptorProto = ServiceDescriptorProto {
+            name: ::std::option::Option::None,
+            method: crate::RepeatedField::new(),
+            options: crate::SingularPtrField::none(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -3273,8 +3351,17 @@ impl crate::Message for MethodDescriptorProto {
     }
 
     fn default_instance() -> &'static MethodDescriptorProto {
-        static instance: crate::rt::LazyV2<MethodDescriptorProto> = crate::rt::LazyV2::INIT;
-        instance.get(MethodDescriptorProto::new)
+        static instance: MethodDescriptorProto = MethodDescriptorProto {
+            name: ::std::option::Option::None,
+            input_type: ::std::option::Option::None,
+            output_type: ::std::option::Option::None,
+            options: crate::SingularPtrField::none(),
+            client_streaming: ::std::option::Option::None,
+            server_streaming: ::std::option::Option::None,
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -4074,8 +4161,26 @@ impl crate::Message for FileOptions {
     }
 
     fn default_instance() -> &'static FileOptions {
-        static instance: crate::rt::LazyV2<FileOptions> = crate::rt::LazyV2::INIT;
-        instance.get(FileOptions::new)
+        static instance: FileOptions = FileOptions {
+            java_package: ::std::option::Option::None,
+            java_outer_classname: ::std::option::Option::None,
+            java_multiple_files: ::std::option::Option::None,
+            java_generate_equals_and_hash: ::std::option::Option::None,
+            java_string_check_utf8: ::std::option::Option::None,
+            optimize_for: ::std::option::Option::None,
+            go_package: ::std::option::Option::None,
+            cc_generic_services: ::std::option::Option::None,
+            java_generic_services: ::std::option::Option::None,
+            py_generic_services: ::std::option::Option::None,
+            deprecated: ::std::option::Option::None,
+            cc_enable_arenas: ::std::option::Option::None,
+            objc_class_prefix: ::std::option::Option::None,
+            csharp_namespace: ::std::option::Option::None,
+            uninterpreted_option: crate::RepeatedField::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -4430,8 +4535,16 @@ impl crate::Message for MessageOptions {
     }
 
     fn default_instance() -> &'static MessageOptions {
-        static instance: crate::rt::LazyV2<MessageOptions> = crate::rt::LazyV2::INIT;
-        instance.get(MessageOptions::new)
+        static instance: MessageOptions = MessageOptions {
+            message_set_wire_format: ::std::option::Option::None,
+            no_standard_descriptor_accessor: ::std::option::Option::None,
+            deprecated: ::std::option::Option::None,
+            map_entry: ::std::option::Option::None,
+            uninterpreted_option: crate::RepeatedField::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -4849,8 +4962,18 @@ impl crate::Message for FieldOptions {
     }
 
     fn default_instance() -> &'static FieldOptions {
-        static instance: crate::rt::LazyV2<FieldOptions> = crate::rt::LazyV2::INIT;
-        instance.get(FieldOptions::new)
+        static instance: FieldOptions = FieldOptions {
+            ctype: ::std::option::Option::None,
+            packed: ::std::option::Option::None,
+            jstype: ::std::option::Option::None,
+            lazy: ::std::option::Option::None,
+            deprecated: ::std::option::Option::None,
+            weak: ::std::option::Option::None,
+            uninterpreted_option: crate::RepeatedField::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -5084,8 +5207,12 @@ impl crate::Message for OneofOptions {
     }
 
     fn default_instance() -> &'static OneofOptions {
-        static instance: crate::rt::LazyV2<OneofOptions> = crate::rt::LazyV2::INIT;
-        instance.get(OneofOptions::new)
+        static instance: OneofOptions = OneofOptions {
+            uninterpreted_option: crate::RepeatedField::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -5296,8 +5423,14 @@ impl crate::Message for EnumOptions {
     }
 
     fn default_instance() -> &'static EnumOptions {
-        static instance: crate::rt::LazyV2<EnumOptions> = crate::rt::LazyV2::INIT;
-        instance.get(EnumOptions::new)
+        static instance: EnumOptions = EnumOptions {
+            allow_alias: ::std::option::Option::None,
+            deprecated: ::std::option::Option::None,
+            uninterpreted_option: crate::RepeatedField::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -5470,8 +5603,13 @@ impl crate::Message for EnumValueOptions {
     }
 
     fn default_instance() -> &'static EnumValueOptions {
-        static instance: crate::rt::LazyV2<EnumValueOptions> = crate::rt::LazyV2::INIT;
-        instance.get(EnumValueOptions::new)
+        static instance: EnumValueOptions = EnumValueOptions {
+            deprecated: ::std::option::Option::None,
+            uninterpreted_option: crate::RepeatedField::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -5643,8 +5781,13 @@ impl crate::Message for ServiceOptions {
     }
 
     fn default_instance() -> &'static ServiceOptions {
-        static instance: crate::rt::LazyV2<ServiceOptions> = crate::rt::LazyV2::INIT;
-        instance.get(ServiceOptions::new)
+        static instance: ServiceOptions = ServiceOptions {
+            deprecated: ::std::option::Option::None,
+            uninterpreted_option: crate::RepeatedField::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -5816,8 +5959,13 @@ impl crate::Message for MethodOptions {
     }
 
     fn default_instance() -> &'static MethodOptions {
-        static instance: crate::rt::LazyV2<MethodOptions> = crate::rt::LazyV2::INIT;
-        instance.get(MethodOptions::new)
+        static instance: MethodOptions = MethodOptions {
+            deprecated: ::std::option::Option::None,
+            uninterpreted_option: crate::RepeatedField::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -6233,8 +6381,18 @@ impl crate::Message for UninterpretedOption {
     }
 
     fn default_instance() -> &'static UninterpretedOption {
-        static instance: crate::rt::LazyV2<UninterpretedOption> = crate::rt::LazyV2::INIT;
-        instance.get(UninterpretedOption::new)
+        static instance: UninterpretedOption = UninterpretedOption {
+            name: crate::RepeatedField::new(),
+            identifier_value: ::std::option::Option::None,
+            positive_int_value: ::std::option::Option::None,
+            negative_int_value: ::std::option::Option::None,
+            double_value: ::std::option::Option::None,
+            string_value: ::std::option::Option::None,
+            aggregate_value: ::std::option::Option::None,
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -6453,8 +6611,13 @@ pub mod uninterpreted_option {
         }
 
         fn default_instance() -> &'static NamePart {
-            static instance: crate::rt::LazyV2<NamePart> = crate::rt::LazyV2::INIT;
-            instance.get(NamePart::new)
+            static instance: NamePart = NamePart {
+                name_part: ::std::option::Option::None,
+                is_extension: ::std::option::Option::None,
+                unknown_fields: crate::UnknownFields::new(),
+                cached_size: crate::rt::CachedSize::new(),
+            };
+            &instance
         }
     }
 
@@ -6586,8 +6749,12 @@ impl crate::Message for SourceCodeInfo {
     }
 
     fn default_instance() -> &'static SourceCodeInfo {
-        static instance: crate::rt::LazyV2<SourceCodeInfo> = crate::rt::LazyV2::INIT;
-        instance.get(SourceCodeInfo::new)
+        static instance: SourceCodeInfo = SourceCodeInfo {
+            location: crate::RepeatedField::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -6866,8 +7033,16 @@ pub mod source_code_info {
         }
 
         fn default_instance() -> &'static Location {
-            static instance: crate::rt::LazyV2<Location> = crate::rt::LazyV2::INIT;
-            instance.get(Location::new)
+            static instance: Location = Location {
+                path: ::std::vec::Vec::new(),
+                span: ::std::vec::Vec::new(),
+                leading_comments: ::std::option::Option::None,
+                trailing_comments: ::std::option::Option::None,
+                leading_detached_comments: crate::RepeatedField::new(),
+                unknown_fields: crate::UnknownFields::new(),
+                cached_size: crate::rt::CachedSize::new(),
+            };
+            &instance
         }
     }
 
@@ -7005,8 +7180,12 @@ impl crate::Message for GeneratedCodeInfo {
     }
 
     fn default_instance() -> &'static GeneratedCodeInfo {
-        static instance: crate::rt::LazyV2<GeneratedCodeInfo> = crate::rt::LazyV2::INIT;
-        instance.get(GeneratedCodeInfo::new)
+        static instance: GeneratedCodeInfo = GeneratedCodeInfo {
+            annotation: crate::RepeatedField::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -7274,8 +7453,15 @@ pub mod generated_code_info {
         }
 
         fn default_instance() -> &'static Annotation {
-            static instance: crate::rt::LazyV2<Annotation> = crate::rt::LazyV2::INIT;
-            instance.get(Annotation::new)
+            static instance: Annotation = Annotation {
+                path: ::std::vec::Vec::new(),
+                source_file: ::std::option::Option::None,
+                begin: ::std::option::Option::None,
+                end: ::std::option::Option::None,
+                unknown_fields: crate::UnknownFields::new(),
+                cached_size: crate::rt::CachedSize::new(),
+            };
+            &instance
         }
     }
 

@@ -152,8 +152,13 @@ impl crate::Message for Duration {
     }
 
     fn default_instance() -> &'static Duration {
-        static instance: crate::rt::LazyV2<Duration> = crate::rt::LazyV2::INIT;
-        instance.get(Duration::new)
+        static instance: Duration = Duration {
+            seconds: 0,
+            nanos: 0,
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 

@@ -130,8 +130,12 @@ impl crate::Message for DoubleValue {
     }
 
     fn default_instance() -> &'static DoubleValue {
-        static instance: crate::rt::LazyV2<DoubleValue> = crate::rt::LazyV2::INIT;
-        instance.get(DoubleValue::new)
+        static instance: DoubleValue = DoubleValue {
+            value: 0.,
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -260,8 +264,12 @@ impl crate::Message for FloatValue {
     }
 
     fn default_instance() -> &'static FloatValue {
-        static instance: crate::rt::LazyV2<FloatValue> = crate::rt::LazyV2::INIT;
-        instance.get(FloatValue::new)
+        static instance: FloatValue = FloatValue {
+            value: 0.,
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -390,8 +398,12 @@ impl crate::Message for Int64Value {
     }
 
     fn default_instance() -> &'static Int64Value {
-        static instance: crate::rt::LazyV2<Int64Value> = crate::rt::LazyV2::INIT;
-        instance.get(Int64Value::new)
+        static instance: Int64Value = Int64Value {
+            value: 0,
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -520,8 +532,12 @@ impl crate::Message for UInt64Value {
     }
 
     fn default_instance() -> &'static UInt64Value {
-        static instance: crate::rt::LazyV2<UInt64Value> = crate::rt::LazyV2::INIT;
-        instance.get(UInt64Value::new)
+        static instance: UInt64Value = UInt64Value {
+            value: 0,
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -650,8 +666,12 @@ impl crate::Message for Int32Value {
     }
 
     fn default_instance() -> &'static Int32Value {
-        static instance: crate::rt::LazyV2<Int32Value> = crate::rt::LazyV2::INIT;
-        instance.get(Int32Value::new)
+        static instance: Int32Value = Int32Value {
+            value: 0,
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -780,8 +800,12 @@ impl crate::Message for UInt32Value {
     }
 
     fn default_instance() -> &'static UInt32Value {
-        static instance: crate::rt::LazyV2<UInt32Value> = crate::rt::LazyV2::INIT;
-        instance.get(UInt32Value::new)
+        static instance: UInt32Value = UInt32Value {
+            value: 0,
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -910,8 +934,12 @@ impl crate::Message for BoolValue {
     }
 
     fn default_instance() -> &'static BoolValue {
-        static instance: crate::rt::LazyV2<BoolValue> = crate::rt::LazyV2::INIT;
-        instance.get(BoolValue::new)
+        static instance: BoolValue = BoolValue {
+            value: false,
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -1040,8 +1068,12 @@ impl crate::Message for StringValue {
     }
 
     fn default_instance() -> &'static StringValue {
-        static instance: crate::rt::LazyV2<StringValue> = crate::rt::LazyV2::INIT;
-        instance.get(StringValue::new)
+        static instance: StringValue = StringValue {
+            value: ::std::string::String::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -1170,8 +1202,12 @@ impl crate::Message for BytesValue {
     }
 
     fn default_instance() -> &'static BytesValue {
-        static instance: crate::rt::LazyV2<BytesValue> = crate::rt::LazyV2::INIT;
-        instance.get(BytesValue::new)
+        static instance: BytesValue = BytesValue {
+            value: ::std::vec::Vec::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 

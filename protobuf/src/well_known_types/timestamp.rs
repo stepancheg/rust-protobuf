@@ -151,8 +151,13 @@ impl crate::Message for Timestamp {
     }
 
     fn default_instance() -> &'static Timestamp {
-        static instance: crate::rt::LazyV2<Timestamp> = crate::rt::LazyV2::INIT;
-        instance.get(Timestamp::new)
+        static instance: Timestamp = Timestamp {
+            seconds: 0,
+            nanos: 0,
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 

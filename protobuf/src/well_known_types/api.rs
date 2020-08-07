@@ -277,8 +277,18 @@ impl crate::Message for Api {
     }
 
     fn default_instance() -> &'static Api {
-        static instance: crate::rt::LazyV2<Api> = crate::rt::LazyV2::INIT;
-        instance.get(Api::new)
+        static instance: Api = Api {
+            name: ::std::string::String::new(),
+            methods: crate::RepeatedField::new(),
+            options: crate::RepeatedField::new(),
+            version: ::std::string::String::new(),
+            source_context: crate::SingularPtrField::none(),
+            mixins: crate::RepeatedField::new(),
+            syntax: crate::ProtobufEnumOrUnknown::from_i32(0),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -528,8 +538,18 @@ impl crate::Message for Method {
     }
 
     fn default_instance() -> &'static Method {
-        static instance: crate::rt::LazyV2<Method> = crate::rt::LazyV2::INIT;
-        instance.get(Method::new)
+        static instance: Method = Method {
+            name: ::std::string::String::new(),
+            request_type_url: ::std::string::String::new(),
+            request_streaming: false,
+            response_type_url: ::std::string::String::new(),
+            response_streaming: false,
+            options: crate::RepeatedField::new(),
+            syntax: crate::ProtobufEnumOrUnknown::from_i32(0),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
@@ -681,8 +701,13 @@ impl crate::Message for Mixin {
     }
 
     fn default_instance() -> &'static Mixin {
-        static instance: crate::rt::LazyV2<Mixin> = crate::rt::LazyV2::INIT;
-        instance.get(Mixin::new)
+        static instance: Mixin = Mixin {
+            name: ::std::string::String::new(),
+            root: ::std::string::String::new(),
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
     }
 }
 
