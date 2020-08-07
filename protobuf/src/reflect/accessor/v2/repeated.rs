@@ -4,7 +4,7 @@ use std::marker;
 use crate::core::Message;
 use crate::repeated::RepeatedField;
 
-use crate::reflect::accessor::AccessorKind;
+use crate::reflect::accessor::v2::AccessorV2;
 use crate::reflect::accessor::FieldAccessor;
 use crate::reflect::repeated::ReflectRepeated;
 use crate::reflect::repeated::ReflectRepeatedMut;
@@ -114,7 +114,7 @@ where
 {
     FieldAccessor {
         name,
-        accessor: AccessorKind::Repeated(RepeatedFieldAccessorHolder {
+        accessor: AccessorV2::Repeated(RepeatedFieldAccessorHolder {
             accessor: Box::new(RepeatedFieldAccessorImpl::<M, V> {
                 fns: Box::new(RepeatedFieldGetMutImpl::<
                     M,
@@ -142,7 +142,7 @@ where
 {
     FieldAccessor {
         name,
-        accessor: AccessorKind::Repeated(RepeatedFieldAccessorHolder {
+        accessor: AccessorV2::Repeated(RepeatedFieldAccessorHolder {
             accessor: Box::new(RepeatedFieldAccessorImpl::<M, V> {
                 fns: Box::new(RepeatedFieldGetMutImpl::<
                     M,

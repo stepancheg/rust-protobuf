@@ -3,7 +3,7 @@ use std::hash::Hash;
 
 use crate::core::Message;
 
-use crate::reflect::accessor::AccessorKind;
+use crate::reflect::accessor::v2::AccessorV2;
 use crate::reflect::accessor::FieldAccessor;
 use crate::reflect::map::ReflectMapMut;
 use crate::reflect::map::ReflectMapRef;
@@ -94,7 +94,7 @@ where
 {
     FieldAccessor {
         name,
-        accessor: AccessorKind::Map(MapFieldAccessorHolder {
+        accessor: AccessorV2::Map(MapFieldAccessorHolder {
             accessor: Box::new(MapFieldAccessorImpl::<M, K, V> {
                 get_field,
                 mut_field,

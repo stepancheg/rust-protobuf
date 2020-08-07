@@ -1,15 +1,15 @@
-use crate::reflect::accessor::singular::GetOptionImplHasGetCopy;
-use crate::reflect::accessor::singular::GetOptionImplHasGetRef;
-use crate::reflect::accessor::singular::GetOptionImplHasGetRefDeref;
-use crate::reflect::accessor::singular::GetOrDefaultGetCopy;
-use crate::reflect::accessor::singular::GetOrDefaultGetRef;
-use crate::reflect::accessor::singular::GetOrDefaultGetRefDeref;
-use crate::reflect::accessor::singular::MutOrDefaultGetMut;
-use crate::reflect::accessor::singular::MutOrDefaultUnmplemented;
-use crate::reflect::accessor::singular::SetImplSetField;
-use crate::reflect::accessor::singular::SingularFieldAccessorHolder;
-use crate::reflect::accessor::singular::SingularFieldAccessorImpl;
-use crate::reflect::accessor::AccessorKind;
+use crate::reflect::accessor::v2::singular::GetOptionImplHasGetCopy;
+use crate::reflect::accessor::v2::singular::GetOptionImplHasGetRef;
+use crate::reflect::accessor::v2::singular::GetOptionImplHasGetRefDeref;
+use crate::reflect::accessor::v2::singular::GetOrDefaultGetCopy;
+use crate::reflect::accessor::v2::singular::GetOrDefaultGetRef;
+use crate::reflect::accessor::v2::singular::GetOrDefaultGetRefDeref;
+use crate::reflect::accessor::v2::singular::MutOrDefaultGetMut;
+use crate::reflect::accessor::v2::singular::MutOrDefaultUnmplemented;
+use crate::reflect::accessor::v2::singular::SetImplSetField;
+use crate::reflect::accessor::v2::singular::SingularFieldAccessorHolder;
+use crate::reflect::accessor::v2::singular::SingularFieldAccessorImpl;
+use crate::reflect::accessor::v2::AccessorV2;
 use crate::reflect::accessor::FieldAccessor;
 use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::runtime_types::RuntimeTypeMessage;
@@ -33,7 +33,7 @@ where
 {
     FieldAccessor {
         name,
-        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
+        accessor: AccessorV2::Singular(SingularFieldAccessorHolder {
             accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
                 get_option_impl: GetOptionImplHasGetCopy::<M, V::RuntimeType> { has, get },
                 get_or_default_impl: GetOrDefaultGetCopy::<M, V::RuntimeType> { get_field: get },
@@ -60,7 +60,7 @@ where
 {
     FieldAccessor {
         name,
-        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
+        accessor: AccessorV2::Singular(SingularFieldAccessorHolder {
             accessor: Box::new(SingularFieldAccessorImpl::<M, F, _, _, _, _> {
                 get_option_impl: GetOptionImplHasGetRefDeref::<M, F::RuntimeType> { has, get },
                 get_or_default_impl: GetOrDefaultGetRefDeref::<M, F::RuntimeType> {
@@ -89,7 +89,7 @@ where
 {
     FieldAccessor {
         name,
-        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
+        accessor: AccessorV2::Singular(SingularFieldAccessorHolder {
             accessor: Box::new(
                 SingularFieldAccessorImpl::<M, ProtobufTypeMessage<F>, _, _, _, _> {
                     get_option_impl: GetOptionImplHasGetRef::<M, RuntimeTypeMessage<F>> {

@@ -3,7 +3,7 @@ use std::marker;
 use crate::core::Message;
 use crate::enums::ProtobufEnum;
 use crate::enums::ProtobufEnumOrUnknown;
-use crate::reflect::accessor::AccessorKind;
+use crate::reflect::accessor::v2::AccessorV2;
 use crate::reflect::accessor::FieldAccessor;
 use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::runtime_types::RuntimeTypeEnumOrUnknown;
@@ -427,7 +427,7 @@ where
 {
     FieldAccessor {
         name,
-        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
+        accessor: AccessorV2::Singular(SingularFieldAccessorHolder {
             accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
                 get_option_impl: GetOptionImplOptionFieldPointer::<M, V::RuntimeType, _> {
                     get_field,
@@ -466,7 +466,7 @@ where
 {
     FieldAccessor {
         name,
-        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
+        accessor: AccessorV2::Singular(SingularFieldAccessorHolder {
             accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
                 get_option_impl: GetOptionImplOptionFieldPointer::<M, V::RuntimeType, O> {
                     get_field,
@@ -517,7 +517,7 @@ where
 {
     FieldAccessor {
         name,
-        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
+        accessor: AccessorV2::Singular(SingularFieldAccessorHolder {
             accessor: Box::new(SingularFieldAccessorImpl::<
                 M,
                 ProtobufTypeEnumOrUnknown<E>,
@@ -569,7 +569,7 @@ where
 {
     FieldAccessor {
         name,
-        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
+        accessor: AccessorV2::Singular(SingularFieldAccessorHolder {
             accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
                 get_option_impl: GetOptionImplOptionFieldPointer::<M, V::RuntimeType, O> {
                     get_field,
@@ -602,7 +602,7 @@ where
 {
     FieldAccessor {
         name,
-        accessor: AccessorKind::Singular(SingularFieldAccessorHolder {
+        accessor: AccessorV2::Singular(SingularFieldAccessorHolder {
             accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
                 get_option_impl: GetOptionImplFieldPointer::<M, V::RuntimeType> { get_field },
                 get_or_default_impl: GetOrDefaultGetRef::<M, V::RuntimeType> { get_field },
