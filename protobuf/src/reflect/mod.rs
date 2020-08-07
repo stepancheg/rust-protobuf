@@ -1,6 +1,6 @@
 //! Reflection implementation for protobuf types.
 
-mod accessor;
+mod acc;
 mod dynamic;
 mod enums;
 mod field;

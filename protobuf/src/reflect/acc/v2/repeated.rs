@@ -4,8 +4,8 @@ use std::marker;
 use crate::core::Message;
 use crate::repeated::RepeatedField;
 
-use crate::reflect::accessor::v2::AccessorV2;
-use crate::reflect::accessor::FieldAccessor;
+use crate::reflect::acc::v2::AccessorV2;
+use crate::reflect::acc::FieldAccessor;
 use crate::reflect::repeated::ReflectRepeated;
 use crate::reflect::repeated::ReflectRepeatedMut;
 use crate::reflect::repeated::ReflectRepeatedRef;

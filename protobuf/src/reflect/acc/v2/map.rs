@@ -3,8 +3,8 @@ use std::hash::Hash;
 
 use crate::core::Message;
 
-use crate::reflect::accessor::v2::AccessorV2;
-use crate::reflect::accessor::FieldAccessor;
+use crate::reflect::acc::v2::AccessorV2;
+use crate::reflect::acc::FieldAccessor;
 use crate::reflect::map::ReflectMapMut;
 use crate::reflect::map::ReflectMapRef;
 use crate::reflect::runtime_types::RuntimeType;

@@ -7,7 +7,7 @@ use crate::core::Message;
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 
-use crate::reflect::accessor::FieldAccessor;
+use crate::reflect::acc::FieldAccessor;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
 use crate::reflect::reflect_eq::{ReflectEq, ReflectEqMode};

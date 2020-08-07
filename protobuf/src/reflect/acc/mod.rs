@@ -1,4 +1,4 @@
-use crate::reflect::accessor::v2::AccessorV2;
+use crate::reflect::acc::v2::AccessorV2;
 
 pub(crate) mod v2;
 
