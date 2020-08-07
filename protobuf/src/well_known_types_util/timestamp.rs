@@ -8,8 +8,8 @@ impl Timestamp {
     pub const UNIX_EPOCH: Timestamp = Timestamp {
         seconds: 0,
         nanos: 0,
-        unknown_fields: UnknownFields::INIT,
-        cached_size: CachedSize::INIT,
+        unknown_fields: UnknownFields::new(),
+        cached_size: CachedSize::new(),
     };
 
     /// Return current time as `Timestamp`.

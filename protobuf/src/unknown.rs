@@ -218,11 +218,6 @@ pub struct UnknownFields {
     fields: Option<Box<HashMap<u32, UnknownValues>>>,
 }
 
-impl UnknownFields {
-    /// Field initializer.
-    pub const INIT: UnknownFields = UnknownFields { fields: None };
-}
-
 /// Very simple hash implementation of `Hash` for `UnknownFields`.
 /// Since map is unordered, we cannot put entry hashes into hasher,
 /// instead we summing hashes of entries.
@@ -245,8 +240,8 @@ impl Hash for UnknownFields {
 
 impl UnknownFields {
     /// Empty unknown fields
-    pub fn new() -> UnknownFields {
-        Default::default()
+    pub const fn new() -> UnknownFields {
+        UnknownFields { fields: None }
     }
 
     fn init_map(&mut self) {
