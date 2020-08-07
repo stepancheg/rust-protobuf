@@ -2,7 +2,8 @@ use crate::core::Message;
 use crate::descriptor::FieldDescriptorProto;
 use crate::descriptor::FieldDescriptorProto_Label;
 use crate::json::json_name;
-use crate::reflect::acc::{Accessor, FieldAccessor};
+use crate::reflect::acc::Accessor;
+use crate::reflect::acc::FieldAccessor;
 use crate::reflect::map::ReflectMap;
 use crate::reflect::repeated::ReflectRepeated;
 use crate::reflect::EnumValueDescriptor;
@@ -14,9 +15,9 @@ pub enum ReflectFieldRef<'a> {
     /// Singular field, optional or required in proto3 and just plain field in proto3
     Optional(Option<ReflectValueRef<'a>>),
     /// Repeated field
-    Repeated(&'a ReflectRepeated),
+    Repeated(&'a dyn ReflectRepeated),
     /// Map field
-    Map(&'a ReflectMap),
+    Map(&'a dyn ReflectMap),
 }
 
 /// Field descriptor.
@@ -89,7 +90,7 @@ impl FieldDescriptor {
 
     /// Return length of repeated field.
     ///
-    /// For singualar field return `1` if field is set and `0` otherwise.
+    /// For singular field return `1` if field is set and `0` otherwise.
     ///
     /// # Panics
     ///
