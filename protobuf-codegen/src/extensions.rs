@@ -1,6 +1,7 @@
 use super::code_writer::CodeWriter;
 use super::rust_types_values::*;
 use field::rust_field_name_for_protobuf_field_name;
+use inside::protobuf_crate_path;
 use protobuf::descriptor::*;
 use protobuf_name::ProtobufAbsolutePath;
 use scope::RootScope;
@@ -20,6 +21,7 @@ impl<'a> ExtGen<'a> {
             self.file,
             true,
             self.root_scope,
+            &self.customize,
         )
     }
 
@@ -40,6 +42,7 @@ impl<'a> ExtGen<'a> {
                 self.file,
                 true,
                 self.root_scope,
+                &self.customize,
             );
             match self.field.get_field_type() {
                 FieldDescriptorProto_Type::TYPE_MESSAGE => {
@@ -59,7 +62,11 @@ impl<'a> ExtGen<'a> {
         } else {
             "Optional"
         };
-        let field_type = format!("::protobuf::ext::ExtField{}", suffix);
+        let field_type = format!(
+            "{}::ext::ExtField{}",
+            protobuf_crate_path(&self.customize),
+            suffix
+        );
         w.pub_const(
             rust_field_name_for_protobuf_field_name(self.field.get_name()).get(),
             &format!(

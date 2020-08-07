@@ -1,7 +1,9 @@
 // TODO: used by grpc-rust, should move it into separate crate.
 #![doc(hidden)]
 
+use inside::protobuf_crate_path;
 use std::io::Write;
+use Customize;
 
 /// Field visibility.
 pub enum Visibility {
@@ -102,29 +104,34 @@ impl<'a> CodeWriter<'a> {
         self.write_line(&format!("pub const {}: {} = {};", name, field_type, init));
     }
 
-    pub fn lazy_static(&mut self, name: &str, ty: &str) {
-        self.lazy_static_protobuf_path(name, ty, "::protobuf")
-    }
-
-    pub fn lazy_static_protobuf_path(&mut self, name: &str, ty: &str, protobuf_crate_path: &str) {
+    pub fn lazy_static(&mut self, name: &str, ty: &str, customize: &Customize) {
         self.write_line(&format!(
             "static {}: {}::rt::LazyV2<{}> = {}::rt::LazyV2::INIT;",
-            name, protobuf_crate_path, ty, protobuf_crate_path,
+            name,
+            protobuf_crate_path(customize),
+            ty,
+            protobuf_crate_path(customize),
         ));
     }
 
-    pub fn lazy_static_decl_get<F>(&mut self, name: &str, ty: &str, init: F)
+    pub fn lazy_static_decl_get<F>(&mut self, name: &str, ty: &str, customize: &Customize, init: F)
     where
         F: Fn(&mut CodeWriter),
     {
-        self.lazy_static(name, ty);
+        self.lazy_static(name, ty, customize);
         self.write_line(&format!("{}.get(|| {{", name));
         self.indented(|w| init(w));
         self.write_line(&format!("}})"));
     }
 
-    pub fn lazy_static_decl_get_simple(&mut self, name: &str, ty: &str, init: &str) {
-        self.lazy_static(name, ty);
+    pub fn lazy_static_decl_get_simple(
+        &mut self,
+        name: &str,
+        ty: &str,
+        init: &str,
+        customize: &Customize,
+    ) {
+        self.lazy_static(name, ty, customize);
         self.write_line(&format!("{}.get({})", name, init));
     }
 

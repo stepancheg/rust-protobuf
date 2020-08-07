@@ -77,6 +77,7 @@ impl<'a> EnumGen<'a> {
                 current_file,
                 false,
                 root_scope,
+                customize,
             )
             .to_string()
         };
@@ -206,76 +207,102 @@ impl<'a> EnumGen<'a> {
 
     fn write_impl_enum(&self, w: &mut CodeWriter) {
         let ref type_name = self.type_name;
-        w.impl_for_block("::protobuf::ProtobufEnum", &type_name, |w| {
-            self.write_fn_value(w);
+        w.impl_for_block(
+            &format!("{}::ProtobufEnum", protobuf_crate_path(&self.customize)),
+            &format!("{}", type_name),
+            |w| {
+                self.write_fn_value(w);
 
-            w.write_line("");
-            let ref type_name = self.type_name;
-            w.def_fn(
-                &format!(
-                    "from_i32(value: i32) -> ::std::option::Option<{}>",
-                    type_name
-                ),
-                |w| {
-                    w.match_expr("value", |w| {
-                        let values = self.values_unique();
-                        for value in values {
-                            w.write_line(&format!(
-                                "{} => ::std::option::Option::Some({}),",
-                                value.number(),
-                                value.rust_name_outer()
-                            ));
-                        }
-                        w.write_line(&format!("_ => ::std::option::Option::None"));
-                    });
-                },
-            );
-
-            w.write_line("");
-            w.def_fn(&format!("values() -> &'static [Self]"), |w| {
-                w.write_line(&format!("static values: &'static [{}] = &[", type_name));
-                w.indented(|w| {
-                    for value in self.values_all() {
-                        w.write_line(&format!("{},", value.rust_name_outer()));
-                    }
-                });
-                w.write_line("];");
-                w.write_line("values");
-            });
-
-            if !self.lite_runtime {
                 w.write_line("");
+                let ref type_name = self.type_name;
                 w.def_fn(
                     &format!(
-                        "enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor"
+                        "from_i32(value: i32) -> ::std::option::Option<{}>",
+                        type_name
                     ),
                     |w| {
-                        w.lazy_static_decl_get(
-                            "descriptor",
-                            "::protobuf::reflect::EnumDescriptor",
-                            |w| {
-                                let ref type_name = self.type_name;
+                        w.match_expr("value", |w| {
+                            let values = self.values_unique();
+                            for value in values {
                                 w.write_line(&format!(
-                                    "::protobuf::reflect::EnumDescriptor::new_pb_name::<{}>(\"{}\", {})",
+                                    "{} => ::std::option::Option::Some({}),",
+                                    value.number(),
+                                    value.rust_name_outer()
+                                ));
+                            }
+                            w.write_line(&format!("_ => ::std::option::Option::None"));
+                        });
+                    },
+                );
+
+                w.write_line("");
+                w.def_fn(&format!("values() -> &'static [Self]"), |w| {
+                    w.write_line(&format!("static values: &'static [{}] = &[", type_name));
+                    w.indented(|w| {
+                        for value in self.values_all() {
+                            w.write_line(&format!("{},", value.rust_name_outer()));
+                        }
+                    });
+                    w.write_line("];");
+                    w.write_line("values");
+                });
+
+                if !self.lite_runtime {
+                    w.write_line("");
+                    w.def_fn(
+                        &format!(
+                            "enum_descriptor_static() -> &'static {}::reflect::EnumDescriptor",
+                            protobuf_crate_path(&self.customize)
+                        ),
+                        |w| {
+                            w.lazy_static_decl_get(
+                                "descriptor",
+                                &format!(
+                                    "{}::reflect::EnumDescriptor",
+                                    protobuf_crate_path(&self.customize)
+                                ),
+                                &self.customize,
+                                |w| {
+                                    let ref type_name = self.type_name;
+                                    w.write_line(&format!(
+                                    "{}::reflect::EnumDescriptor::new_pb_name::<{}>(\"{}\", {})",
+                                    protobuf_crate_path(&self.customize),
                                     type_name,
                                     self.enum_with_scope.name_to_package(),
                                     file_descriptor_proto_expr(&self.enum_with_scope.scope)
                                 ));
-                            },
-                        );
-                    },
-                );
-            }
-        });
+                                },
+                            );
+                        },
+                    );
+                }
+            },
+        );
     }
 
     fn write_impl_value(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::protobuf::reflect::ProtobufValue", &self.type_name, |w| {
-            w.def_fn(
-                "as_ref(&self) -> ::protobuf::reflect::ReflectValueRef",
-                |w| w.write_line("::protobuf::reflect::ReflectValueRef::Enum(::protobuf::ProtobufEnum::descriptor(self))"),
-            )
-        })
+        w.impl_for_block(
+            &format!(
+                "{}::reflect::ProtobufValue",
+                protobuf_crate_path(&self.customize)
+            ),
+            &format!("{}", self.type_name),
+            |w| {
+                w.def_fn(
+                    &format!(
+                        "as_ref(&self) -> {}::reflect::ReflectValueRef",
+                        protobuf_crate_path(&self.customize)
+                    ),
+                    |w| {
+                        w.write_line(&format!(
+                        "{}::reflect::ReflectValueRef::Enum({}::ProtobufEnum::descriptor(self))",
+                        protobuf_crate_path(&self.customize),
+                        protobuf_crate_path(&self.customize)
+                    ))
+                    },
+                )
+            },
+        )
     }
 
     fn write_impl_copy(&self, w: &mut CodeWriter) {

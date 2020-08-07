@@ -226,7 +226,11 @@ impl RustType {
             | RustType::SingularField(..)
             | RustType::SingularPtrField(..)
             | RustType::HashMap(..) => format!("{}.clear()", v),
-            RustType::Chars => format!("::protobuf::Clear::clear(&mut {})", v),
+            RustType::Chars => format!(
+                "{}::Clear::clear(&mut {})",
+                protobuf_crate_path(customize),
+                v
+            ),
             RustType::Bool | RustType::Float(..) | RustType::Int(..) | RustType::Enum(..) => {
                 format!("{} = {}", v, self.default_value(customize))
             }
@@ -235,13 +239,19 @@ impl RustType {
     }
 
     // wrap value in storage type
-    pub fn wrap_value(&self, value: &str) -> String {
+    pub fn wrap_value(&self, value: &str, customize: &Customize) -> String {
         match *self {
             RustType::Option(..) => format!("::std::option::Option::Some({})", value),
-            RustType::SingularField(..) => format!("::protobuf::SingularField::some({})", value),
-            RustType::SingularPtrField(..) => {
-                format!("::protobuf::SingularPtrField::some({})", value)
-            }
+            RustType::SingularField(..) => format!(
+                "{}::SingularField::some({})",
+                protobuf_crate_path(customize),
+                value
+            ),
+            RustType::SingularPtrField(..) => format!(
+                "{}::SingularPtrField::some({})",
+                protobuf_crate_path(customize),
+                value
+            ),
             _ => panic!("not a wrapper type: {:?}", *self),
         }
     }
@@ -492,6 +502,7 @@ pub(crate) fn type_name_to_rust_relative(
     file: &FileDescriptorProto,
     subm: bool,
     root_scope: &RootScope,
+    customize: &Customize,
 ) -> String {
     let message_or_enum = root_scope.find_message_or_enum(type_name);
     if message_or_enum.get_scope().get_file_descriptor().get_name() == file.get_name() {
@@ -504,11 +515,16 @@ pub(crate) fn type_name_to_rust_relative(
     } else if let Some(name) = is_well_known_type_full(&type_name.path) {
         // Well-known types are included in rust-protobuf library
         // https://developers.google.com/protocol-buffers/docs/reference/google.protobuf
-        format!("::protobuf::well_known_types::{}", name)
+        format!(
+            "{}::well_known_types::{}",
+            protobuf_crate_path(customize),
+            name
+        )
     } else if is_descriptor_proto(message_or_enum.get_file_descriptor()) {
         // Messages defined in descriptor.proto
         format!(
-            "::protobuf::descriptor::{}",
+            "{}::descriptor::{}",
+            protobuf_crate_path(customize),
             message_or_enum.name_to_package()
         )
     } else {
@@ -542,7 +558,8 @@ impl ProtobufTypeGen {
     pub fn rust_type(&self, customize: &Customize) -> String {
         match self {
             &ProtobufTypeGen::Primitive(t, PrimitiveTypeVariant::Default) => format!(
-                "::protobuf::types::ProtobufType{}",
+                "{}::types::ProtobufType{}",
+                protobuf_crate_path(customize),
                 capitalize(protobuf_name(t))
             ),
             &ProtobufTypeGen::Primitive(
@@ -565,9 +582,11 @@ impl ProtobufTypeGen {
                 protobuf_crate_path(customize),
                 name
             ),
-            &ProtobufTypeGen::Enum(ref name) => {
-                format!("::protobuf::types::ProtobufTypeEnum<{}>", name)
-            }
+            &ProtobufTypeGen::Enum(ref name) => format!(
+                "{}::types::ProtobufTypeEnum<{}>",
+                protobuf_crate_path(customize),
+                name
+            ),
         }
     }
 }

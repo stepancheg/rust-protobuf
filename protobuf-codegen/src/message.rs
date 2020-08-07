@@ -188,6 +188,7 @@ impl<'a> MessageGen<'a> {
                     "instance",
                     &self.type_name.to_string(),
                     &format!("{}::new", self.type_name),
+                    &self.customize,
                 );
             },
         );
@@ -241,14 +242,20 @@ impl<'a> MessageGen<'a> {
 
     fn write_unknown_fields(&self, w: &mut CodeWriter) {
         w.def_fn(
-            "get_unknown_fields(&self) -> &::protobuf::UnknownFields",
+            &format!(
+                "get_unknown_fields(&self) -> &{}::UnknownFields",
+                protobuf_crate_path(&self.customize)
+            ),
             |w| {
                 w.write_line("&self.unknown_fields");
             },
         );
         w.write_line("");
         w.def_fn(
-            "mut_unknown_fields(&mut self) -> &mut ::protobuf::UnknownFields",
+            &format!(
+                "mut_unknown_fields(&mut self) -> &mut {}::UnknownFields",
+                protobuf_crate_path(&self.customize)
+            ),
             |w| {
                 w.write_line("&mut self.unknown_fields");
             },
@@ -283,8 +290,9 @@ impl<'a> MessageGen<'a> {
     fn write_descriptor_field(&self, fields_var: &str, field: &FieldGen, w: &mut CodeWriter) {
         let accessor_fn = field.accessor_fn();
         w.write_line(&format!(
-            "{}.push(::protobuf::reflect::accessor::{}(",
+            "{}.push({}::reflect::accessor::{}(",
             fields_var,
+            protobuf_crate_path(&self.customize),
             accessor_fn.sig()
         ));
         w.indented(|w| {
@@ -311,11 +319,18 @@ impl<'a> MessageGen<'a> {
 
     fn write_descriptor_static(&self, w: &mut CodeWriter) {
         w.def_fn(
-            &format!("descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor"),
+            &format!(
+                "descriptor_static() -> &'static {}::reflect::MessageDescriptor",
+                protobuf_crate_path(&self.customize)
+            ),
             |w| {
                 w.lazy_static_decl_get(
                     "descriptor",
-                    "::protobuf::reflect::MessageDescriptor",
+                    &format!(
+                        "{}::reflect::MessageDescriptor",
+                        protobuf_crate_path(&self.customize)
+                    ),
+                    &self.customize,
                     |w| {
                         let fields = self.fields_except_group();
                         if fields.is_empty() {
@@ -327,7 +342,8 @@ impl<'a> MessageGen<'a> {
                             self.write_descriptor_field("fields", field, w);
                         }
                         w.write_line(&format!(
-                            "::protobuf::reflect::MessageDescriptor::new_pb_name::<{}>(",
+                            "{}::reflect::MessageDescriptor::new_pb_name::<{}>(",
+                            protobuf_crate_path(&self.customize),
                             self.type_name
                         ));
                         w.indented(|w| {
@@ -372,7 +388,9 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_impl_message(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::protobuf::Message", &self.type_name.to_string(), |w| {
+        w.impl_for_block(
+            &format!("{}::Message", protobuf_crate_path(&self.customize)),
+            &self.type_name.to_string(), |w| {
             self.write_is_initialized(w);
             w.write_line("");
             self.write_merge_from(w);
@@ -399,7 +417,7 @@ impl<'a> MessageGen<'a> {
             );
             w.write_line("");
             w.def_fn(
-                "descriptor(&self) -> &'static ::protobuf::reflect::MessageDescriptor",
+                &format!("descriptor(&self) -> &'static {}::reflect::MessageDescriptor", protobuf_crate_path(&self.customize)),
                 |w| {
                     w.write_line("Self::descriptor_static()");
                 },
@@ -419,12 +437,23 @@ impl<'a> MessageGen<'a> {
 
     fn write_impl_value(&self, w: &mut CodeWriter) {
         w.impl_for_block(
-            "::protobuf::reflect::ProtobufValue",
+            &format!(
+                "{}::reflect::ProtobufValue",
+                protobuf_crate_path(&self.customize)
+            ),
             &self.type_name.to_string(),
             |w| {
                 w.def_fn(
-                    "as_ref(&self) -> ::protobuf::reflect::ReflectValueRef",
-                    |w| w.write_line("::protobuf::reflect::ReflectValueRef::Message(self)"),
+                    &format!(
+                        "as_ref(&self) -> {}::reflect::ReflectValueRef",
+                        protobuf_crate_path(&self.customize)
+                    ),
+                    |w| {
+                        w.write_line(&format!(
+                            "{}::reflect::ReflectValueRef::Message(self)",
+                            protobuf_crate_path(&self.customize)
+                        ))
+                    },
                 )
             },
         )
@@ -435,21 +464,28 @@ impl<'a> MessageGen<'a> {
             w.def_fn(
                 "fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result",
                 |w| {
-                    w.write_line("::protobuf::text_format::fmt(self, f)");
+                    w.write_line(&format!(
+                        "{}::text_format::fmt(self, f)",
+                        protobuf_crate_path(&self.customize)
+                    ));
                 },
             );
         });
     }
 
     fn write_impl_clear(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::protobuf::Clear", &self.type_name.to_string(), |w| {
-            w.def_fn("clear(&mut self)", |w| {
-                for f in self.fields_except_group() {
-                    f.write_clear(w);
-                }
-                w.write_line("self.unknown_fields.clear();");
-            });
-        });
+        w.impl_for_block(
+            &format!("{}::Clear", protobuf_crate_path(&self.customize)),
+            &format!("{}", self.type_name),
+            |w| {
+                w.def_fn("clear(&mut self)", |w| {
+                    for f in self.fields_except_group() {
+                        f.write_clear(w);
+                    }
+                    w.write_line("self.unknown_fields.clear();");
+                });
+            },
+        );
     }
 
     #[allow(dead_code)]
