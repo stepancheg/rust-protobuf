@@ -88,34 +88,6 @@ mod misc;
 
 mod buf_read_iter;
 
-// so `use protobuf::*` could work in mod descriptor and well_known_types
-mod protobuf {
-    pub use crate::cached_size::CachedSize;
-    pub use crate::clear::Clear;
-    pub use crate::core::*;
-    pub use crate::descriptor;
-    pub use crate::descriptorx;
-    pub use crate::enums::ProtobufEnum;
-    pub use crate::error::*;
-    pub use crate::ext;
-    pub use crate::lazy;
-    pub use crate::reflect;
-    pub use crate::repeated::RepeatedField;
-    pub use crate::rt;
-    pub use crate::singular::SingularField;
-    pub use crate::singular::SingularPtrField;
-    pub use crate::stream::*;
-    pub use crate::text_format;
-    pub use crate::types;
-    pub use crate::unknown::UnknownFields;
-    pub use crate::unknown::UnknownFieldsIter;
-    pub use crate::unknown::UnknownValue;
-    pub use crate::unknown::UnknownValueRef;
-    pub use crate::unknown::UnknownValues;
-    pub use crate::unknown::UnknownValuesIter;
-    pub use crate::well_known_types;
-}
-
 /// This symbol is in generated `version.rs`, include here for IDE
 #[cfg(never)]
 pub const VERSION: &str = "";
