@@ -1,7 +1,6 @@
 use crate::descriptor::{DescriptorProto, FileDescriptorProto};
 use crate::descriptorx::find_message_by_rust_name;
 use crate::reflect::acc::FieldAccessor;
-use crate::reflect::accessor::FieldAccessorTrait;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
 use crate::reflect::FieldDescriptor;
@@ -67,7 +66,7 @@ impl MessageDescriptor {
     // to reduce code bloat from multiple instantiations.
     fn new_non_generic_by_rust_name(
         rust_name: &'static str,
-        fields: Vec<Box<FieldAccessorTrait + 'static>>,
+        fields: Vec<FieldAccessor>,
         file: &'static FileDescriptorProto,
         factory: &'static dyn MessageFactory,
     ) -> MessageDescriptor {

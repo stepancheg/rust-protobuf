@@ -26,7 +26,7 @@ use crate::singular::SingularField;
 use crate::singular::SingularPtrField;
 
 /// this trait should not be used directly, use `FieldDescriptor` instead
-pub trait FieldAccessorTrait: Sync {
+pub trait FieldAccessorTrait: Sync + 'static {
     fn name_generic(&self) -> &'static str;
     fn has_field_generic(&self, m: &dyn Message) -> bool;
     fn len_field_generic(&self, m: &dyn Message) -> usize;
@@ -379,7 +379,7 @@ pub fn make_singular_u32_accessor<M: Message + 'static>(
     has: fn(&M) -> bool,
     get: fn(&M) -> u32,
 ) -> FieldAccessor {
-    Box::new(FieldAccessorImpl {
+    FieldAccessor::new_v1(FieldAccessorImpl {
         name,
         fns: FieldAccessorFunctions::SingularHasGetSet {
             has,
@@ -396,7 +396,7 @@ pub fn make_singular_i32_accessor<M: Message + 'static>(
     has: fn(&M) -> bool,
     get: fn(&M) -> i32,
 ) -> FieldAccessor {
-    Box::new(FieldAccessorImpl {
+    FieldAccessor::new_v1(FieldAccessorImpl {
         name,
         fns: FieldAccessorFunctions::SingularHasGetSet {
             has,
@@ -413,7 +413,7 @@ pub fn make_singular_u64_accessor<M: Message + 'static>(
     has: fn(&M) -> bool,
     get: fn(&M) -> u64,
 ) -> FieldAccessor {
-    Box::new(FieldAccessorImpl {
+    FieldAccessor::new_v1(FieldAccessorImpl {
         name,
         fns: FieldAccessorFunctions::SingularHasGetSet {
             has,
@@ -430,7 +430,7 @@ pub fn make_singular_i64_accessor<M: Message + 'static>(
     has: fn(&M) -> bool,
     get: fn(&M) -> i64,
 ) -> FieldAccessor {
-    Box::new(FieldAccessorImpl {
+    FieldAccessor::new_v1(FieldAccessorImpl {
         name,
         fns: FieldAccessorFunctions::SingularHasGetSet {
             has,
@@ -447,7 +447,7 @@ pub fn make_singular_f32_accessor<M: Message + 'static>(
     has: fn(&M) -> bool,
     get: fn(&M) -> f32,
 ) -> FieldAccessor {
-    Box::new(FieldAccessorImpl {
+    FieldAccessor::new_v1(FieldAccessorImpl {
         name,
         fns: FieldAccessorFunctions::SingularHasGetSet {
             has,
@@ -464,7 +464,7 @@ pub fn make_singular_f64_accessor<M: Message + 'static>(
     has: fn(&M) -> bool,
     get: fn(&M) -> f64,
 ) -> FieldAccessor {
-    Box::new(FieldAccessorImpl {
+    FieldAccessor::new_v1(FieldAccessorImpl {
         name,
         fns: FieldAccessorFunctions::SingularHasGetSet {
             has,
@@ -481,7 +481,7 @@ pub fn make_singular_bool_accessor<M: Message + 'static>(
     has: fn(&M) -> bool,
     get: fn(&M) -> bool,
 ) -> FieldAccessor {
-    Box::new(FieldAccessorImpl {
+    FieldAccessor::new_v1(FieldAccessorImpl {
         name,
         fns: FieldAccessorFunctions::SingularHasGetSet {
             has,
@@ -498,7 +498,7 @@ pub fn make_singular_enum_accessor<M: Message + 'static, E: ProtobufEnum + 'stat
     has: fn(&M) -> bool,
     get: fn(&M) -> E,
 ) -> FieldAccessor {
-    Box::new(FieldAccessorImpl {
+    FieldAccessor::new_v1(FieldAccessorImpl {
         name,
         fns: FieldAccessorFunctions::SingularHasGetSet {
             has,
@@ -512,7 +512,7 @@ pub fn make_singular_string_accessor<M: Message + 'static>(
     has: fn(&M) -> bool,
     get: for<'a> fn(&'a M) -> &'a str,
 ) -> FieldAccessor {
-    Box::new(FieldAccessorImpl {
+    FieldAccessor::new_v1(FieldAccessorImpl {
         name,
         fns: FieldAccessorFunctions::SingularHasGetSet {
             has,
@@ -526,7 +526,7 @@ pub fn make_singular_bytes_accessor<M: Message + 'static>(
     has: fn(&M) -> bool,
     get: for<'a> fn(&'a M) -> &'a [u8],
 ) -> FieldAccessor {
-    Box::new(FieldAccessorImpl {
+    FieldAccessor::new_v1(FieldAccessorImpl {
         name,
         fns: FieldAccessorFunctions::SingularHasGetSet {
             has,
@@ -540,7 +540,7 @@ pub fn make_singular_message_accessor<M: Message + 'static, F: Message + 'static
     has: fn(&M) -> bool,
     get: for<'a> fn(&'a M) -> &'a F,
 ) -> FieldAccessor {
-    Box::new(FieldAccessorImpl {
+    FieldAccessor::new_v1(FieldAccessorImpl {
         name,
         fns: FieldAccessorFunctions::SingularHasGetSet {
             has,
@@ -574,7 +574,7 @@ where
     M: Message + 'static,
     V: ProtobufType + 'static,
 {
-    Box::new(FieldAccessorImpl {
+    FieldAccessor::new_v1(FieldAccessorImpl {
         name,
         fns: FieldAccessorFunctions::Repeated(Box::new(MessageGetMut::<M, Vec<V::Value>> {
             get_field: get_vec,
@@ -606,7 +606,7 @@ where
     M: Message + 'static,
     V: ProtobufType + 'static,
 {
-    Box::new(FieldAccessorImpl {
+    FieldAccessor::new_v1(FieldAccessorImpl {
         name,
         fns: FieldAccessorFunctions::Repeated(Box::new(MessageGetMut::<
             M,
@@ -641,7 +641,7 @@ where
     M: Message + 'static,
     V: ProtobufType + 'static,
 {
-    Box::new(FieldAccessorImpl {
+    FieldAccessor::new_v1(FieldAccessorImpl {
         name,
         fns: FieldAccessorFunctions::Optional(Box::new(MessageGetMut::<M, Option<V::Value>> {
             get_field,
@@ -673,7 +673,7 @@ where
     M: Message + 'static,
     V: ProtobufType + 'static,
 {
-    Box::new(FieldAccessorImpl {
+    FieldAccessor::new_v1(FieldAccessorImpl {
         name,
         fns: FieldAccessorFunctions::Optional(Box::new(MessageGetMut::<
             M,
@@ -708,7 +708,7 @@ where
     M: Message + 'static,
     V: ProtobufType + 'static,
 {
-    Box::new(FieldAccessorImpl {
+    FieldAccessor::new_v1(FieldAccessorImpl {
         name,
         fns: FieldAccessorFunctions::Optional(Box::new(MessageGetMut::<
             M,
@@ -743,7 +743,7 @@ where
     M: Message + 'static,
     V: ProtobufType + 'static,
 {
-    Box::new(FieldAccessorImpl {
+    FieldAccessor::new_v1(FieldAccessorImpl {
         name,
         fns: FieldAccessorFunctions::Simple(Box::new(MessageGetMut::<M, V::Value> {
             get_field,
@@ -779,7 +779,7 @@ where
     V: ProtobufType + 'static,
     <K as ProtobufType>::Value: Hash + Eq,
 {
-    Box::new(FieldAccessorImpl {
+    FieldAccessor::new_v1(FieldAccessorImpl {
         name,
         fns: FieldAccessorFunctions::Map(Box::new(
             MessageGetMut::<M, HashMap<K::Value, V::Value>> {
