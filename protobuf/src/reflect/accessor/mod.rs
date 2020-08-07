@@ -24,7 +24,7 @@ use super::value::ReflectValueRef;
 use super::ReflectFieldRef;
 
 /// this trait should not be used directly, use `FieldDescriptor` instead
-pub trait FieldAccessor: Sync {
+pub trait FieldAccessorTrait: Sync {
     fn name_generic(&self) -> &'static str;
     fn has_field_generic(&self, m: &Message) -> bool;
     fn len_field_generic(&self, m: &Message) -> usize;
@@ -194,7 +194,7 @@ impl<M: Message> FieldAccessorImpl<M> {
     }
 }
 
-impl<M: Message + 'static> FieldAccessor for FieldAccessorImpl<M> {
+impl<M: Message + 'static> FieldAccessorTrait for FieldAccessorImpl<M> {
     fn name_generic(&self) -> &'static str {
         self.name
     }
@@ -376,7 +376,7 @@ pub fn make_singular_u32_accessor<M: Message + 'static>(
     name: &'static str,
     has: fn(&M) -> bool,
     get: fn(&M) -> u32,
-) -> Box<FieldAccessor + 'static> {
+) -> Box<FieldAccessorTrait + 'static> {
     Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::SingularHasGetSet {
@@ -393,7 +393,7 @@ pub fn make_singular_i32_accessor<M: Message + 'static>(
     name: &'static str,
     has: fn(&M) -> bool,
     get: fn(&M) -> i32,
-) -> Box<FieldAccessor + 'static> {
+) -> Box<FieldAccessorTrait + 'static> {
     Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::SingularHasGetSet {
@@ -410,7 +410,7 @@ pub fn make_singular_u64_accessor<M: Message + 'static>(
     name: &'static str,
     has: fn(&M) -> bool,
     get: fn(&M) -> u64,
-) -> Box<FieldAccessor + 'static> {
+) -> Box<FieldAccessorTrait + 'static> {
     Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::SingularHasGetSet {
@@ -427,7 +427,7 @@ pub fn make_singular_i64_accessor<M: Message + 'static>(
     name: &'static str,
     has: fn(&M) -> bool,
     get: fn(&M) -> i64,
-) -> Box<FieldAccessor + 'static> {
+) -> Box<FieldAccessorTrait + 'static> {
     Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::SingularHasGetSet {
@@ -444,7 +444,7 @@ pub fn make_singular_f32_accessor<M: Message + 'static>(
     name: &'static str,
     has: fn(&M) -> bool,
     get: fn(&M) -> f32,
-) -> Box<FieldAccessor + 'static> {
+) -> Box<FieldAccessorTrait + 'static> {
     Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::SingularHasGetSet {
@@ -461,7 +461,7 @@ pub fn make_singular_f64_accessor<M: Message + 'static>(
     name: &'static str,
     has: fn(&M) -> bool,
     get: fn(&M) -> f64,
-) -> Box<FieldAccessor + 'static> {
+) -> Box<FieldAccessorTrait + 'static> {
     Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::SingularHasGetSet {
@@ -478,7 +478,7 @@ pub fn make_singular_bool_accessor<M: Message + 'static>(
     name: &'static str,
     has: fn(&M) -> bool,
     get: fn(&M) -> bool,
-) -> Box<FieldAccessor + 'static> {
+) -> Box<FieldAccessorTrait + 'static> {
     Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::SingularHasGetSet {
@@ -495,7 +495,7 @@ pub fn make_singular_enum_accessor<M: Message + 'static, E: ProtobufEnum + 'stat
     name: &'static str,
     has: fn(&M) -> bool,
     get: fn(&M) -> E,
-) -> Box<FieldAccessor + 'static> {
+) -> Box<FieldAccessorTrait + 'static> {
     Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::SingularHasGetSet {
@@ -509,7 +509,7 @@ pub fn make_singular_string_accessor<M: Message + 'static>(
     name: &'static str,
     has: fn(&M) -> bool,
     get: for<'a> fn(&'a M) -> &'a str,
-) -> Box<FieldAccessor + 'static> {
+) -> Box<FieldAccessorTrait + 'static> {
     Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::SingularHasGetSet {
@@ -523,7 +523,7 @@ pub fn make_singular_bytes_accessor<M: Message + 'static>(
     name: &'static str,
     has: fn(&M) -> bool,
     get: for<'a> fn(&'a M) -> &'a [u8],
-) -> Box<FieldAccessor + 'static> {
+) -> Box<FieldAccessorTrait + 'static> {
     Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::SingularHasGetSet {
@@ -537,7 +537,7 @@ pub fn make_singular_message_accessor<M: Message + 'static, F: Message + 'static
     name: &'static str,
     has: fn(&M) -> bool,
     get: for<'a> fn(&'a M) -> &'a F,
-) -> Box<FieldAccessor + 'static> {
+) -> Box<FieldAccessorTrait + 'static> {
     Box::new(FieldAccessorImpl {
         name: name,
         fns: FieldAccessorFunctions::SingularHasGetSet {
@@ -567,7 +567,7 @@ pub fn make_vec_accessor<M, V>(
     name: &'static str,
     get_vec: for<'a> fn(&'a M) -> &'a Vec<V::Value>,
     mut_vec: for<'a> fn(&'a mut M) -> &'a mut Vec<V::Value>,
-) -> Box<FieldAccessor + 'static>
+) -> Box<FieldAccessorTrait + 'static>
 where
     M: Message + 'static,
     V: ProtobufType + 'static,
@@ -599,7 +599,7 @@ pub fn make_repeated_field_accessor<M, V>(
     name: &'static str,
     get_vec: for<'a> fn(&'a M) -> &'a RepeatedField<V::Value>,
     mut_vec: for<'a> fn(&'a mut M) -> &'a mut RepeatedField<V::Value>,
-) -> Box<FieldAccessor + 'static>
+) -> Box<FieldAccessorTrait + 'static>
 where
     M: Message + 'static,
     V: ProtobufType + 'static,
@@ -634,7 +634,7 @@ pub fn make_option_accessor<M, V>(
     name: &'static str,
     get_field: for<'a> fn(&'a M) -> &'a Option<V::Value>,
     mut_field: for<'a> fn(&'a mut M) -> &'a mut Option<V::Value>,
-) -> Box<FieldAccessor + 'static>
+) -> Box<FieldAccessorTrait + 'static>
 where
     M: Message + 'static,
     V: ProtobufType + 'static,
@@ -666,7 +666,7 @@ pub fn make_singular_field_accessor<M, V>(
     name: &'static str,
     get_field: for<'a> fn(&'a M) -> &'a SingularField<V::Value>,
     mut_field: for<'a> fn(&'a mut M) -> &'a mut SingularField<V::Value>,
-) -> Box<FieldAccessor + 'static>
+) -> Box<FieldAccessorTrait + 'static>
 where
     M: Message + 'static,
     V: ProtobufType + 'static,
@@ -701,7 +701,7 @@ pub fn make_singular_ptr_field_accessor<M, V>(
     name: &'static str,
     get_field: for<'a> fn(&'a M) -> &'a SingularPtrField<V::Value>,
     mut_field: for<'a> fn(&'a mut M) -> &'a mut SingularPtrField<V::Value>,
-) -> Box<FieldAccessor + 'static>
+) -> Box<FieldAccessorTrait + 'static>
 where
     M: Message + 'static,
     V: ProtobufType + 'static,
@@ -736,7 +736,7 @@ pub fn make_simple_field_accessor<M, V>(
     name: &'static str,
     get_field: for<'a> fn(&'a M) -> &'a V::Value,
     mut_field: for<'a> fn(&'a mut M) -> &'a mut V::Value,
-) -> Box<FieldAccessor + 'static>
+) -> Box<FieldAccessorTrait + 'static>
 where
     M: Message + 'static,
     V: ProtobufType + 'static,
@@ -770,7 +770,7 @@ pub fn make_map_accessor<M, K, V>(
     name: &'static str,
     get_field: for<'a> fn(&'a M) -> &'a HashMap<K::Value, V::Value>,
     mut_field: for<'a> fn(&'a mut M) -> &'a mut HashMap<K::Value, V::Value>,
-) -> Box<FieldAccessor + 'static>
+) -> Box<FieldAccessorTrait + 'static>
 where
     M: Message + 'static,
     K: ProtobufType + 'static,

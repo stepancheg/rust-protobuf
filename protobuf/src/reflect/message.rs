@@ -1,6 +1,6 @@
 use descriptor::{DescriptorProto, FileDescriptorProto};
 use descriptorx::find_message_by_rust_name;
-use reflect::accessor::FieldAccessor;
+use reflect::accessor::FieldAccessorTrait;
 use reflect::find_message_or_enum::find_message_or_enum;
 use reflect::find_message_or_enum::MessageOrEnum;
 use reflect::FieldDescriptor;
@@ -66,7 +66,7 @@ impl MessageDescriptor {
     // to reduce code bloat from multiple instantiations.
     fn new_non_generic_by_rust_name(
         rust_name: &'static str,
-        fields: Vec<Box<FieldAccessor + 'static>>,
+        fields: Vec<Box<FieldAccessorTrait + 'static>>,
         file: &'static FileDescriptorProto,
         factory: &'static dyn MessageFactory,
     ) -> MessageDescriptor {
@@ -126,7 +126,7 @@ impl MessageDescriptor {
     // to reduce code bloat from multiple instantiations.
     fn new_non_generic_by_pb_name(
         protobuf_name_to_package: &'static str,
-        fields: Vec<Box<FieldAccessor + 'static>>,
+        fields: Vec<Box<FieldAccessorTrait + 'static>>,
         file_descriptor_proto: &'static FileDescriptorProto,
         factory: &'static dyn MessageFactory,
     ) -> MessageDescriptor {
@@ -197,7 +197,7 @@ impl MessageDescriptor {
     )]
     pub fn new<M: 'static + Message + Default + Clone + PartialEq>(
         rust_name: &'static str,
-        fields: Vec<Box<FieldAccessor + 'static>>,
+        fields: Vec<Box<FieldAccessorTrait + 'static>>,
         file: &'static FileDescriptorProto,
     ) -> MessageDescriptor {
         let factory = &MessageFactoryImpl(marker::PhantomData::<M>);
@@ -211,7 +211,7 @@ impl MessageDescriptor {
     #[doc(hidden)]
     pub fn new_pb_name<M: 'static + Message + Default + Clone + PartialEq>(
         protobuf_name_to_package: &'static str,
-        fields: Vec<Box<FieldAccessor + 'static>>,
+        fields: Vec<Box<FieldAccessorTrait + 'static>>,
         file_descriptor_proto: &'static FileDescriptorProto,
     ) -> MessageDescriptor {
         let factory = &MessageFactoryImpl(marker::PhantomData::<M>);

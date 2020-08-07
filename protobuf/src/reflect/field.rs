@@ -2,7 +2,7 @@ use crate::core::Message;
 use crate::descriptor::FieldDescriptorProto;
 use crate::descriptor::FieldDescriptorProto_Label;
 use crate::json::json_name;
-use crate::reflect::accessor::FieldAccessor;
+use crate::reflect::accessor::FieldAccessorTrait;
 use crate::reflect::map::ReflectMap;
 use crate::reflect::repeated::ReflectRepeated;
 use crate::reflect::EnumValueDescriptor;
@@ -24,13 +24,13 @@ pub enum ReflectFieldRef<'a> {
 /// Can be used for runtime reflection.
 pub struct FieldDescriptor {
     proto: &'static FieldDescriptorProto,
-    accessor: Box<FieldAccessor + 'static>,
+    accessor: Box<FieldAccessorTrait + 'static>,
     json_name: String,
 }
 
 impl FieldDescriptor {
     pub(crate) fn new(
-        accessor: Box<FieldAccessor + 'static>,
+        accessor: Box<FieldAccessorTrait + 'static>,
         proto: &'static FieldDescriptorProto,
     ) -> FieldDescriptor {
         assert_eq!(proto.get_name(), accessor.name_generic());
