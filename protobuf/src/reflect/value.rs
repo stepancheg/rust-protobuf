@@ -1,9 +1,9 @@
 use std::any::Any;
 
 #[cfg(feature = "bytes")]
-use bytes::Bytes;
+use crate::chars::Chars;
 #[cfg(feature = "bytes")]
-use chars::Chars;
+use bytes::Bytes;
 
 use super::*;
 

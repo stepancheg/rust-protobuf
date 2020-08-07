@@ -9,9 +9,9 @@ use std::mem;
 use std::slice;
 
 #[cfg(feature = "bytes")]
-use bytes::Bytes;
+use crate::chars::Chars;
 #[cfg(feature = "bytes")]
-use chars::Chars;
+use bytes::Bytes;
 
 use crate::buf_read_iter::BufReadIter;
 use crate::core::Message;
