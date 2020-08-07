@@ -25,7 +25,6 @@ pub use crate::enums::ProtobufEnum;
 pub use crate::enums::ProtobufEnumOrUnknown;
 pub use crate::oneof::Oneof;
 pub use crate::repeated::RepeatedField;
-pub use crate::singular::SingularField;
 pub use crate::singular::SingularPtrField;
 pub use crate::stream::CodedInputStream;
 pub use crate::stream::CodedOutputStream;

@@ -18,7 +18,6 @@ use crate::error::ProtobufResult;
 use crate::error::WireError;
 use crate::reflect::types::*;
 use crate::repeated::RepeatedField;
-use crate::singular::SingularField;
 use crate::stream::CodedInputStream;
 use crate::stream::CodedOutputStream;
 use crate::wire_format;
@@ -699,21 +698,6 @@ where
     }
 }
 
-/// Read singular `string` field.
-pub fn read_singular_string_into(
-    wire_type: WireType,
-    is: &mut CodedInputStream,
-    target: &mut SingularField<String>,
-) -> ProtobufResult<()> {
-    match wire_type {
-        WireTypeLengthDelimited => {
-            let tmp = target.set_default();
-            is.read_string_into(tmp)
-        }
-        _ => Err(unexpected_wire_type(wire_type)),
-    }
-}
-
 /// Read singular `Chars` field.
 #[cfg(feature = "bytes")]
 pub fn read_singular_carllerche_string_into(
@@ -790,21 +774,6 @@ where
         WireTypeLengthDelimited => {
             target.push(is.read_carllerche_bytes()?);
             Ok(())
-        }
-        _ => Err(unexpected_wire_type(wire_type)),
-    }
-}
-
-/// Read singular `bytes` field.
-pub fn read_singular_bytes_into(
-    wire_type: WireType,
-    is: &mut CodedInputStream,
-    target: &mut SingularField<Vec<u8>>,
-) -> ProtobufResult<()> {
-    match wire_type {
-        WireTypeLengthDelimited => {
-            let tmp = target.set_default();
-            is.read_bytes_into(tmp)
         }
         _ => Err(unexpected_wire_type(wire_type)),
     }
