@@ -112,9 +112,9 @@ where
     M: Message + 'static,
     V: ProtobufType + 'static,
 {
-    FieldAccessor {
+    FieldAccessor::new_v2(
         name,
-        accessor: AccessorV2::Repeated(RepeatedFieldAccessorHolder {
+        AccessorV2::Repeated(RepeatedFieldAccessorHolder {
             accessor: Box::new(RepeatedFieldAccessorImpl::<M, V> {
                 fns: Box::new(RepeatedFieldGetMutImpl::<
                     M,
@@ -127,7 +127,7 @@ where
             }),
             element_type: V::dynamic(),
         }),
-    }
+    )
 }
 
 /// Make accessor for `RepeatedField`
@@ -140,9 +140,9 @@ where
     M: Message + 'static,
     V: ProtobufType + 'static,
 {
-    FieldAccessor {
+    FieldAccessor::new_v2(
         name,
-        accessor: AccessorV2::Repeated(RepeatedFieldAccessorHolder {
+        AccessorV2::Repeated(RepeatedFieldAccessorHolder {
             accessor: Box::new(RepeatedFieldAccessorImpl::<M, V> {
                 fns: Box::new(RepeatedFieldGetMutImpl::<
                     M,
@@ -155,5 +155,5 @@ where
             }),
             element_type: V::dynamic(),
         }),
-    }
+    )
 }

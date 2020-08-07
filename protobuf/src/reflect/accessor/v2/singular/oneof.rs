@@ -31,9 +31,9 @@ where
     V: ProtobufType + 'static,
     <V::RuntimeType as RuntimeType>::Value: Copy,
 {
-    FieldAccessor {
+    FieldAccessor::new_v2(
         name,
-        accessor: AccessorV2::Singular(SingularFieldAccessorHolder {
+        AccessorV2::Singular(SingularFieldAccessorHolder {
             accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
                 get_option_impl: GetOptionImplHasGetCopy::<M, V::RuntimeType> { has, get },
                 get_or_default_impl: GetOrDefaultGetCopy::<M, V::RuntimeType> { get_field: get },
@@ -43,7 +43,7 @@ where
             }),
             element_type: V::dynamic(),
         }),
-    }
+    )
 }
 
 /// Make accessor for `oneof` field
@@ -58,9 +58,9 @@ where
     F: ProtobufType,
     F::RuntimeType: RuntimeTypeWithDeref,
 {
-    FieldAccessor {
+    FieldAccessor::new_v2(
         name,
-        accessor: AccessorV2::Singular(SingularFieldAccessorHolder {
+        AccessorV2::Singular(SingularFieldAccessorHolder {
             accessor: Box::new(SingularFieldAccessorImpl::<M, F, _, _, _, _> {
                 get_option_impl: GetOptionImplHasGetRefDeref::<M, F::RuntimeType> { has, get },
                 get_or_default_impl: GetOrDefaultGetRefDeref::<M, F::RuntimeType> {
@@ -72,7 +72,7 @@ where
             }),
             element_type: F::dynamic(),
         }),
-    }
+    )
 }
 
 /// Make accessor for `oneof` `message` field
@@ -87,9 +87,9 @@ where
     M: Message + 'static,
     F: Message + Default + Clone + 'static,
 {
-    FieldAccessor {
+    FieldAccessor::new_v2(
         name,
-        accessor: AccessorV2::Singular(SingularFieldAccessorHolder {
+        AccessorV2::Singular(SingularFieldAccessorHolder {
             accessor: Box::new(
                 SingularFieldAccessorImpl::<M, ProtobufTypeMessage<F>, _, _, _, _> {
                     get_option_impl: GetOptionImplHasGetRef::<M, RuntimeTypeMessage<F>> {
@@ -108,5 +108,5 @@ where
             ),
             element_type: ProtobufTypeMessage::<F>::dynamic(),
         }),
-    }
+    )
 }

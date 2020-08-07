@@ -425,9 +425,9 @@ where
     V: ProtobufType + 'static,
     O: OptionLike<<V::RuntimeType as RuntimeType>::Value> + Send + Sync + 'static,
 {
-    FieldAccessor {
+    FieldAccessor::new_v2(
         name,
-        accessor: AccessorV2::Singular(SingularFieldAccessorHolder {
+        AccessorV2::Singular(SingularFieldAccessorHolder {
             accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
                 get_option_impl: GetOptionImplOptionFieldPointer::<M, V::RuntimeType, _> {
                     get_field,
@@ -449,7 +449,7 @@ where
             }),
             element_type: V::dynamic(),
         }),
-    }
+    )
 }
 
 /// Make accessor for option-like field
@@ -464,9 +464,9 @@ where
     V: ProtobufType + 'static,
     O: OptionLike<<V::RuntimeType as RuntimeType>::Value> + Send + Sync + 'static,
 {
-    FieldAccessor {
+    FieldAccessor::new_v2(
         name,
-        accessor: AccessorV2::Singular(SingularFieldAccessorHolder {
+        AccessorV2::Singular(SingularFieldAccessorHolder {
             accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
                 get_option_impl: GetOptionImplOptionFieldPointer::<M, V::RuntimeType, O> {
                     get_field,
@@ -484,7 +484,7 @@ where
             }),
             element_type: V::dynamic(),
         }),
-    }
+    )
 }
 
 struct GetOrDefaultEnum<M, E: ProtobufEnum> {
@@ -515,9 +515,9 @@ where
     M: Message + 'static,
     E: ProtobufEnum,
 {
-    FieldAccessor {
+    FieldAccessor::new_v2(
         name,
-        accessor: AccessorV2::Singular(SingularFieldAccessorHolder {
+        AccessorV2::Singular(SingularFieldAccessorHolder {
             accessor: Box::new(SingularFieldAccessorImpl::<
                 M,
                 ProtobufTypeEnumOrUnknown<E>,
@@ -551,7 +551,7 @@ where
             }),
             element_type: ProtobufTypeEnumOrUnknown::<E>::dynamic(),
         }),
-    }
+    )
 }
 
 /// String or bytes field
@@ -567,9 +567,9 @@ where
     V::RuntimeType: RuntimeTypeWithDeref,
     O: OptionLike<<V::RuntimeType as RuntimeType>::Value> + Send + Sync + 'static,
 {
-    FieldAccessor {
+    FieldAccessor::new_v2(
         name,
-        accessor: AccessorV2::Singular(SingularFieldAccessorHolder {
+        AccessorV2::Singular(SingularFieldAccessorHolder {
             accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
                 get_option_impl: GetOptionImplOptionFieldPointer::<M, V::RuntimeType, O> {
                     get_field,
@@ -587,7 +587,7 @@ where
             }),
             element_type: V::dynamic(),
         }),
-    }
+    )
 }
 
 /// Make accessor for simple field
@@ -600,9 +600,9 @@ where
     M: Message + 'static,
     V: ProtobufType + 'static,
 {
-    FieldAccessor {
+    FieldAccessor::new_v2(
         name,
-        accessor: AccessorV2::Singular(SingularFieldAccessorHolder {
+        AccessorV2::Singular(SingularFieldAccessorHolder {
             accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
                 get_option_impl: GetOptionImplFieldPointer::<M, V::RuntimeType> { get_field },
                 get_or_default_impl: GetOrDefaultGetRef::<M, V::RuntimeType> { get_field },
@@ -612,5 +612,5 @@ where
             }),
             element_type: V::dynamic(),
         }),
-    }
+    )
 }

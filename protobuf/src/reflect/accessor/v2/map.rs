@@ -92,9 +92,9 @@ where
     V: ProtobufType + 'static,
     <K::RuntimeType as RuntimeType>::Value: Hash + Eq,
 {
-    FieldAccessor {
+    FieldAccessor::new_v2(
         name,
-        accessor: AccessorV2::Map(MapFieldAccessorHolder {
+        AccessorV2::Map(MapFieldAccessorHolder {
             accessor: Box::new(MapFieldAccessorImpl::<M, K, V> {
                 get_field,
                 mut_field,
@@ -102,5 +102,5 @@ where
             key_type: K::dynamic(),
             value_type: V::dynamic(),
         }),
-    }
+    )
 }
