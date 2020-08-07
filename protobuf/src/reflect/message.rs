@@ -4,9 +4,9 @@ use crate::reflect::accessor::FieldAccessorTrait;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
 use crate::reflect::FieldDescriptor;
+use crate::Message;
 use std::collections::HashMap;
 use std::marker;
-use crate::Message;
 
 trait MessageFactory: Send + Sync + 'static {
     fn new_instance(&self) -> Box<dyn Message>;

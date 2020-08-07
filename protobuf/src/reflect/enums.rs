@@ -4,8 +4,8 @@ use crate::descriptor::FileDescriptorProto;
 use crate::descriptorx::find_enum_by_rust_name;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
-use std::collections::HashMap;
 use crate::ProtobufEnum;
+use std::collections::HashMap;
 
 /// Description for enum variant.
 ///
