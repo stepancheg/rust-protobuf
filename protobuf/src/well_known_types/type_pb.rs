@@ -82,7 +82,10 @@ impl crate::Message for Type {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = is.read_string()?;
                 },
                 2 => {
                     crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.fields)?;
@@ -331,10 +334,16 @@ impl crate::Message for Field {
                     self.number = is.read_int32()?;
                 },
                 4 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = is.read_string()?;
                 },
                 6 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.type_url)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.type_url = is.read_string()?;
                 },
                 7 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
@@ -352,10 +361,16 @@ impl crate::Message for Field {
                     crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.options)?;
                 },
                 10 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.json_name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.json_name = is.read_string()?;
                 },
                 11 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.default_value)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.default_value = is.read_string()?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -764,7 +779,10 @@ impl crate::Message for Enum {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = is.read_string()?;
                 },
                 2 => {
                     crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.enumvalue)?;
@@ -964,7 +982,10 @@ impl crate::Message for EnumValue {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = is.read_string()?;
                 },
                 2 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
@@ -1131,7 +1152,10 @@ impl crate::Message for Option {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = is.read_string()?;
                 },
                 2 => {
                     crate::rt::read_singular_message_into::<crate::well_known_types::Any, _>(wire_type, is, &mut self.value)?;

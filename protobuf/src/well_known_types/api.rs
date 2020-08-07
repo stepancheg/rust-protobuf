@@ -112,7 +112,10 @@ impl crate::Message for Api {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = is.read_string()?;
                 },
                 2 => {
                     crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.methods)?;
@@ -121,7 +124,10 @@ impl crate::Message for Api {
                     crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.options)?;
                 },
                 4 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.version)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.version = is.read_string()?;
                 },
                 5 => {
                     crate::rt::read_singular_message_into::<crate::well_known_types::SourceContext, _>(wire_type, is, &mut self.source_context)?;
@@ -351,10 +357,16 @@ impl crate::Message for Method {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = is.read_string()?;
                 },
                 2 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.request_type_url)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.request_type_url = is.read_string()?;
                 },
                 3 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
@@ -363,7 +375,10 @@ impl crate::Message for Method {
                     self.request_streaming = is.read_bool()?;
                 },
                 4 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.response_type_url)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.response_type_url = is.read_string()?;
                 },
                 5 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
@@ -578,10 +593,16 @@ impl crate::Message for Mixin {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = is.read_string()?;
                 },
                 2 => {
-                    crate::rt::read_singular_proto3_string_into(wire_type, is, &mut self.root)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.root = is.read_string()?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;

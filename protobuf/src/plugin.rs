@@ -31,7 +31,7 @@ pub struct CodeGeneratorRequest {
     ///  descriptor will be included in proto_file, below.
     pub file_to_generate: crate::RepeatedField<::std::string::String>,
     ///  The generator parameter passed on the command-line.
-    parameter: crate::SingularField<::std::string::String>,
+    parameter: ::std::option::Option<::std::string::String>,
     ///  FileDescriptorProtos for all files in files_to_generate and everything
     ///  they import.  The files will appear in topological order, so each file
     ///  appears before any file that imports it.
@@ -72,7 +72,7 @@ impl CodeGeneratorRequest {
     }
 
     pub fn clear_parameter(&mut self) {
-        self.parameter.clear();
+        self.parameter = ::std::option::Option::None;
     }
 
     pub fn has_parameter(&self) -> bool {
@@ -81,14 +81,14 @@ impl CodeGeneratorRequest {
 
     // Param is passed by value, moved
     pub fn set_parameter(&mut self, v: ::std::string::String) {
-        self.parameter = crate::SingularField::some(v);
+        self.parameter = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_parameter(&mut self) -> &mut ::std::string::String {
         if self.parameter.is_none() {
-            self.parameter.set_default();
+            self.parameter = ::std::option::Option::Some(::std::string::String::new());
         }
         self.parameter.as_mut().unwrap()
     }
@@ -117,7 +117,10 @@ impl crate::Message for CodeGeneratorRequest {
                     crate::rt::read_repeated_string_into(wire_type, is, &mut self.file_to_generate)?;
                 },
                 2 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.parameter)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.parameter = ::std::option::Option::Some(is.read_string()?);
                 },
                 15 => {
                     crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.proto_file)?;
@@ -220,7 +223,7 @@ impl crate::Message for CodeGeneratorRequest {
 impl crate::Clear for CodeGeneratorRequest {
     fn clear(&mut self) {
         self.file_to_generate.clear();
-        self.parameter.clear();
+        self.parameter = ::std::option::Option::None;
         self.proto_file.clear();
         self.unknown_fields.clear();
     }
@@ -248,7 +251,7 @@ pub struct CodeGeneratorResponse {
     ///  problem in protoc itself -- such as the input CodeGeneratorRequest being
     ///  unparseable -- should be reported by writing a message to stderr and
     ///  exiting with a non-zero status code.
-    error: crate::SingularField<::std::string::String>,
+    error: ::std::option::Option<::std::string::String>,
     pub file: crate::RepeatedField<code_generator_response::File>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
@@ -278,7 +281,7 @@ impl CodeGeneratorResponse {
     }
 
     pub fn clear_error(&mut self) {
-        self.error.clear();
+        self.error = ::std::option::Option::None;
     }
 
     pub fn has_error(&self) -> bool {
@@ -287,14 +290,14 @@ impl CodeGeneratorResponse {
 
     // Param is passed by value, moved
     pub fn set_error(&mut self, v: ::std::string::String) {
-        self.error = crate::SingularField::some(v);
+        self.error = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_error(&mut self) -> &mut ::std::string::String {
         if self.error.is_none() {
-            self.error.set_default();
+            self.error = ::std::option::Option::Some(::std::string::String::new());
         }
         self.error.as_mut().unwrap()
     }
@@ -320,7 +323,10 @@ impl crate::Message for CodeGeneratorResponse {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.error)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.error = ::std::option::Option::Some(is.read_string()?);
                 },
                 15 => {
                     crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.file)?;
@@ -411,7 +417,7 @@ impl crate::Message for CodeGeneratorResponse {
 
 impl crate::Clear for CodeGeneratorResponse {
     fn clear(&mut self) {
-        self.error.clear();
+        self.error = ::std::option::Option::None;
         self.file.clear();
         self.unknown_fields.clear();
     }
@@ -444,7 +450,7 @@ pub mod code_generator_response {
         ///  files need not reside completely in memory at one time.  Note that as of
         ///  this writing protoc does not optimize for this -- it will read the entire
         ///  CodeGeneratorResponse before writing files to disk.
-        name: crate::SingularField<::std::string::String>,
+        name: ::std::option::Option<::std::string::String>,
         ///  If non-empty, indicates that the named file should already exist, and the
         ///  content here is to be inserted into that file at a defined insertion
         ///  point.  This feature allows a code generator to extend the output
@@ -482,9 +488,9 @@ pub mod code_generator_response {
         ///  command line.
         ///
         ///  If |insertion_point| is present, |name| must also be present.
-        insertion_point: crate::SingularField<::std::string::String>,
+        insertion_point: ::std::option::Option<::std::string::String>,
         ///  The file contents.
-        content: crate::SingularField<::std::string::String>,
+        content: ::std::option::Option<::std::string::String>,
         // special fields
         #[cfg_attr(serde, serde(skip))]
         pub unknown_fields: crate::UnknownFields,
@@ -513,7 +519,7 @@ pub mod code_generator_response {
         }
 
         pub fn clear_name(&mut self) {
-            self.name.clear();
+            self.name = ::std::option::Option::None;
         }
 
         pub fn has_name(&self) -> bool {
@@ -522,14 +528,14 @@ pub mod code_generator_response {
 
         // Param is passed by value, moved
         pub fn set_name(&mut self, v: ::std::string::String) {
-            self.name = crate::SingularField::some(v);
+            self.name = ::std::option::Option::Some(v);
         }
 
         // Mutable pointer to the field.
         // If field is not initialized, it is initialized with default value first.
         pub fn mut_name(&mut self) -> &mut ::std::string::String {
             if self.name.is_none() {
-                self.name.set_default();
+                self.name = ::std::option::Option::Some(::std::string::String::new());
             }
             self.name.as_mut().unwrap()
         }
@@ -549,7 +555,7 @@ pub mod code_generator_response {
         }
 
         pub fn clear_insertion_point(&mut self) {
-            self.insertion_point.clear();
+            self.insertion_point = ::std::option::Option::None;
         }
 
         pub fn has_insertion_point(&self) -> bool {
@@ -558,14 +564,14 @@ pub mod code_generator_response {
 
         // Param is passed by value, moved
         pub fn set_insertion_point(&mut self, v: ::std::string::String) {
-            self.insertion_point = crate::SingularField::some(v);
+            self.insertion_point = ::std::option::Option::Some(v);
         }
 
         // Mutable pointer to the field.
         // If field is not initialized, it is initialized with default value first.
         pub fn mut_insertion_point(&mut self) -> &mut ::std::string::String {
             if self.insertion_point.is_none() {
-                self.insertion_point.set_default();
+                self.insertion_point = ::std::option::Option::Some(::std::string::String::new());
             }
             self.insertion_point.as_mut().unwrap()
         }
@@ -585,7 +591,7 @@ pub mod code_generator_response {
         }
 
         pub fn clear_content(&mut self) {
-            self.content.clear();
+            self.content = ::std::option::Option::None;
         }
 
         pub fn has_content(&self) -> bool {
@@ -594,14 +600,14 @@ pub mod code_generator_response {
 
         // Param is passed by value, moved
         pub fn set_content(&mut self, v: ::std::string::String) {
-            self.content = crate::SingularField::some(v);
+            self.content = ::std::option::Option::Some(v);
         }
 
         // Mutable pointer to the field.
         // If field is not initialized, it is initialized with default value first.
         pub fn mut_content(&mut self) -> &mut ::std::string::String {
             if self.content.is_none() {
-                self.content.set_default();
+                self.content = ::std::option::Option::Some(::std::string::String::new());
             }
             self.content.as_mut().unwrap()
         }
@@ -622,13 +628,22 @@ pub mod code_generator_response {
                 let (field_number, wire_type) = is.read_tag_unpack()?;
                 match field_number {
                     1 => {
-                        crate::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
+                        if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                            return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                        }
+                        self.name = ::std::option::Option::Some(is.read_string()?);
                     },
                     2 => {
-                        crate::rt::read_singular_string_into(wire_type, is, &mut self.insertion_point)?;
+                        if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                            return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                        }
+                        self.insertion_point = ::std::option::Option::Some(is.read_string()?);
                     },
                     15 => {
-                        crate::rt::read_singular_string_into(wire_type, is, &mut self.content)?;
+                        if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                            return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                        }
+                        self.content = ::std::option::Option::Some(is.read_string()?);
                     },
                     _ => {
                         crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -728,9 +743,9 @@ pub mod code_generator_response {
 
     impl crate::Clear for File {
         fn clear(&mut self) {
-            self.name.clear();
-            self.insertion_point.clear();
-            self.content.clear();
+            self.name = ::std::option::Option::None;
+            self.insertion_point = ::std::option::Option::None;
+            self.content = ::std::option::Option::None;
             self.unknown_fields.clear();
         }
     }

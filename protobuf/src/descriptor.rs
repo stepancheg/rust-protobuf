@@ -157,8 +157,8 @@ impl crate::reflect::ProtobufValue for FileDescriptorSet {
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct FileDescriptorProto {
     // message fields
-    name: crate::SingularField<::std::string::String>,
-    package: crate::SingularField<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
+    package: ::std::option::Option<::std::string::String>,
     ///  Names of files imported by this file.
     pub dependency: crate::RepeatedField<::std::string::String>,
     ///  Indexes of the public imported files in the dependency list above.
@@ -179,7 +179,7 @@ pub struct FileDescriptorProto {
     pub source_code_info: crate::SingularPtrField<SourceCodeInfo>,
     ///  The syntax of the proto file.
     ///  The supported values are "proto2" and "proto3".
-    syntax: crate::SingularField<::std::string::String>,
+    syntax: ::std::option::Option<::std::string::String>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -208,7 +208,7 @@ impl FileDescriptorProto {
     }
 
     pub fn clear_name(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
     }
 
     pub fn has_name(&self) -> bool {
@@ -217,14 +217,14 @@ impl FileDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_name(&mut self, v: ::std::string::String) {
-        self.name = crate::SingularField::some(v);
+        self.name = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
-            self.name.set_default();
+            self.name = ::std::option::Option::Some(::std::string::String::new());
         }
         self.name.as_mut().unwrap()
     }
@@ -244,7 +244,7 @@ impl FileDescriptorProto {
     }
 
     pub fn clear_package(&mut self) {
-        self.package.clear();
+        self.package = ::std::option::Option::None;
     }
 
     pub fn has_package(&self) -> bool {
@@ -253,14 +253,14 @@ impl FileDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_package(&mut self, v: ::std::string::String) {
-        self.package = crate::SingularField::some(v);
+        self.package = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_package(&mut self) -> &mut ::std::string::String {
         if self.package.is_none() {
-            self.package.set_default();
+            self.package = ::std::option::Option::Some(::std::string::String::new());
         }
         self.package.as_mut().unwrap()
     }
@@ -280,7 +280,7 @@ impl FileDescriptorProto {
     }
 
     pub fn clear_syntax(&mut self) {
-        self.syntax.clear();
+        self.syntax = ::std::option::Option::None;
     }
 
     pub fn has_syntax(&self) -> bool {
@@ -289,14 +289,14 @@ impl FileDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_syntax(&mut self, v: ::std::string::String) {
-        self.syntax = crate::SingularField::some(v);
+        self.syntax = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_syntax(&mut self) -> &mut ::std::string::String {
         if self.syntax.is_none() {
-            self.syntax.set_default();
+            self.syntax = ::std::option::Option::Some(::std::string::String::new());
         }
         self.syntax.as_mut().unwrap()
     }
@@ -347,10 +347,16 @@ impl crate::Message for FileDescriptorProto {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
                 },
                 2 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.package)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.package = ::std::option::Option::Some(is.read_string()?);
                 },
                 3 => {
                     crate::rt::read_repeated_string_into(wire_type, is, &mut self.dependency)?;
@@ -380,7 +386,10 @@ impl crate::Message for FileDescriptorProto {
                     crate::rt::read_singular_message_into::<SourceCodeInfo, _>(wire_type, is, &mut self.source_code_info)?;
                 },
                 12 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.syntax)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.syntax = ::std::option::Option::Some(is.read_string()?);
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -585,8 +594,8 @@ impl crate::Message for FileDescriptorProto {
 
 impl crate::Clear for FileDescriptorProto {
     fn clear(&mut self) {
-        self.name.clear();
-        self.package.clear();
+        self.name = ::std::option::Option::None;
+        self.package = ::std::option::Option::None;
         self.dependency.clear();
         self.public_dependency.clear();
         self.weak_dependency.clear();
@@ -596,7 +605,7 @@ impl crate::Clear for FileDescriptorProto {
         self.extension.clear();
         self.options.clear();
         self.source_code_info.clear();
-        self.syntax.clear();
+        self.syntax = ::std::option::Option::None;
         self.unknown_fields.clear();
     }
 }
@@ -615,7 +624,7 @@ impl crate::reflect::ProtobufValue for FileDescriptorProto {
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct DescriptorProto {
     // message fields
-    name: crate::SingularField<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
     pub field: crate::RepeatedField<FieldDescriptorProto>,
     pub extension: crate::RepeatedField<FieldDescriptorProto>,
     pub nested_type: crate::RepeatedField<DescriptorProto>,
@@ -655,7 +664,7 @@ impl DescriptorProto {
     }
 
     pub fn clear_name(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
     }
 
     pub fn has_name(&self) -> bool {
@@ -664,14 +673,14 @@ impl DescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_name(&mut self, v: ::std::string::String) {
-        self.name = crate::SingularField::some(v);
+        self.name = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
-            self.name.set_default();
+            self.name = ::std::option::Option::Some(::std::string::String::new());
         }
         self.name.as_mut().unwrap()
     }
@@ -732,7 +741,10 @@ impl crate::Message for DescriptorProto {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
                 },
                 2 => {
                     crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.field)?;
@@ -942,7 +954,7 @@ impl crate::Message for DescriptorProto {
 
 impl crate::Clear for DescriptorProto {
     fn clear(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
         self.field.clear();
         self.extension.clear();
         self.nested_type.clear();
@@ -1346,7 +1358,7 @@ pub mod descriptor_proto {
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct FieldDescriptorProto {
     // message fields
-    name: crate::SingularField<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
     number: ::std::option::Option<i32>,
     label: ::std::option::Option<crate::ProtobufEnumOrUnknown<field_descriptor_proto::Label>>,
     ///  If type_name is set, this need not be set.  If both this and type_name
@@ -1358,16 +1370,16 @@ pub struct FieldDescriptorProto {
     ///  rules are used to find the type (i.e. first the nested types within this
     ///  message are searched, then within the parent, on up to the root
     ///  namespace).
-    type_name: crate::SingularField<::std::string::String>,
+    type_name: ::std::option::Option<::std::string::String>,
     ///  For extensions, this is the name of the type being extended.  It is
     ///  resolved in the same manner as type_name.
-    extendee: crate::SingularField<::std::string::String>,
+    extendee: ::std::option::Option<::std::string::String>,
     ///  For numeric types, contains the original text representation of the value.
     ///  For booleans, "true" or "false".
     ///  For strings, contains the default text contents (not escaped in any way).
     ///  For bytes, contains the C escaped value.  All bytes >= 128 are escaped.
     ///  TODO(kenton):  Base-64 encode?
-    default_value: crate::SingularField<::std::string::String>,
+    default_value: ::std::option::Option<::std::string::String>,
     ///  If set, gives the index of a oneof in the containing type's oneof_decl
     ///  list.  This field is a member of that oneof.
     oneof_index: ::std::option::Option<i32>,
@@ -1375,7 +1387,7 @@ pub struct FieldDescriptorProto {
     ///  user has set a "json_name" option on this field, that option's value
     ///  will be used. Otherwise, it's deduced from the field's name by converting
     ///  it to camelCase.
-    json_name: crate::SingularField<::std::string::String>,
+    json_name: ::std::option::Option<::std::string::String>,
     pub options: crate::SingularPtrField<FieldOptions>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
@@ -1405,7 +1417,7 @@ impl FieldDescriptorProto {
     }
 
     pub fn clear_name(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
     }
 
     pub fn has_name(&self) -> bool {
@@ -1414,14 +1426,14 @@ impl FieldDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_name(&mut self, v: ::std::string::String) {
-        self.name = crate::SingularField::some(v);
+        self.name = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
-            self.name.set_default();
+            self.name = ::std::option::Option::Some(::std::string::String::new());
         }
         self.name.as_mut().unwrap()
     }
@@ -1504,7 +1516,7 @@ impl FieldDescriptorProto {
     }
 
     pub fn clear_type_name(&mut self) {
-        self.type_name.clear();
+        self.type_name = ::std::option::Option::None;
     }
 
     pub fn has_type_name(&self) -> bool {
@@ -1513,14 +1525,14 @@ impl FieldDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_type_name(&mut self, v: ::std::string::String) {
-        self.type_name = crate::SingularField::some(v);
+        self.type_name = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_type_name(&mut self) -> &mut ::std::string::String {
         if self.type_name.is_none() {
-            self.type_name.set_default();
+            self.type_name = ::std::option::Option::Some(::std::string::String::new());
         }
         self.type_name.as_mut().unwrap()
     }
@@ -1540,7 +1552,7 @@ impl FieldDescriptorProto {
     }
 
     pub fn clear_extendee(&mut self) {
-        self.extendee.clear();
+        self.extendee = ::std::option::Option::None;
     }
 
     pub fn has_extendee(&self) -> bool {
@@ -1549,14 +1561,14 @@ impl FieldDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_extendee(&mut self, v: ::std::string::String) {
-        self.extendee = crate::SingularField::some(v);
+        self.extendee = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_extendee(&mut self) -> &mut ::std::string::String {
         if self.extendee.is_none() {
-            self.extendee.set_default();
+            self.extendee = ::std::option::Option::Some(::std::string::String::new());
         }
         self.extendee.as_mut().unwrap()
     }
@@ -1576,7 +1588,7 @@ impl FieldDescriptorProto {
     }
 
     pub fn clear_default_value(&mut self) {
-        self.default_value.clear();
+        self.default_value = ::std::option::Option::None;
     }
 
     pub fn has_default_value(&self) -> bool {
@@ -1585,14 +1597,14 @@ impl FieldDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_default_value(&mut self, v: ::std::string::String) {
-        self.default_value = crate::SingularField::some(v);
+        self.default_value = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_default_value(&mut self) -> &mut ::std::string::String {
         if self.default_value.is_none() {
-            self.default_value.set_default();
+            self.default_value = ::std::option::Option::Some(::std::string::String::new());
         }
         self.default_value.as_mut().unwrap()
     }
@@ -1631,7 +1643,7 @@ impl FieldDescriptorProto {
     }
 
     pub fn clear_json_name(&mut self) {
-        self.json_name.clear();
+        self.json_name = ::std::option::Option::None;
     }
 
     pub fn has_json_name(&self) -> bool {
@@ -1640,14 +1652,14 @@ impl FieldDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_json_name(&mut self, v: ::std::string::String) {
-        self.json_name = crate::SingularField::some(v);
+        self.json_name = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_json_name(&mut self) -> &mut ::std::string::String {
         if self.json_name.is_none() {
-            self.json_name.set_default();
+            self.json_name = ::std::option::Option::Some(::std::string::String::new());
         }
         self.json_name.as_mut().unwrap()
     }
@@ -1673,7 +1685,10 @@ impl crate::Message for FieldDescriptorProto {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
                 },
                 3 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
@@ -1694,13 +1709,22 @@ impl crate::Message for FieldDescriptorProto {
                     self.field_type = ::std::option::Option::Some(is.read_enum_or_unknown()?);
                 },
                 6 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.type_name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.type_name = ::std::option::Option::Some(is.read_string()?);
                 },
                 2 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.extendee)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.extendee = ::std::option::Option::Some(is.read_string()?);
                 },
                 7 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.default_value)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.default_value = ::std::option::Option::Some(is.read_string()?);
                 },
                 9 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
@@ -1709,7 +1733,10 @@ impl crate::Message for FieldDescriptorProto {
                     self.oneof_index = ::std::option::Option::Some(is.read_int32()?);
                 },
                 10 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.json_name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.json_name = ::std::option::Option::Some(is.read_string()?);
                 },
                 8 => {
                     crate::rt::read_singular_message_into::<FieldOptions, _>(wire_type, is, &mut self.options)?;
@@ -1896,15 +1923,15 @@ impl crate::Message for FieldDescriptorProto {
 
 impl crate::Clear for FieldDescriptorProto {
     fn clear(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
         self.number = ::std::option::Option::None;
         self.label = ::std::option::Option::None;
         self.field_type = ::std::option::Option::None;
-        self.type_name.clear();
-        self.extendee.clear();
-        self.default_value.clear();
+        self.type_name = ::std::option::Option::None;
+        self.extendee = ::std::option::Option::None;
+        self.default_value = ::std::option::Option::None;
         self.oneof_index = ::std::option::Option::None;
-        self.json_name.clear();
+        self.json_name = ::std::option::Option::None;
         self.options.clear();
         self.unknown_fields.clear();
     }
@@ -2070,7 +2097,7 @@ pub mod field_descriptor_proto {
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct OneofDescriptorProto {
     // message fields
-    name: crate::SingularField<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
     pub options: crate::SingularPtrField<OneofOptions>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
@@ -2100,7 +2127,7 @@ impl OneofDescriptorProto {
     }
 
     pub fn clear_name(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
     }
 
     pub fn has_name(&self) -> bool {
@@ -2109,14 +2136,14 @@ impl OneofDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_name(&mut self, v: ::std::string::String) {
-        self.name = crate::SingularField::some(v);
+        self.name = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
-            self.name.set_default();
+            self.name = ::std::option::Option::Some(::std::string::String::new());
         }
         self.name.as_mut().unwrap()
     }
@@ -2142,7 +2169,10 @@ impl crate::Message for OneofDescriptorProto {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
                 },
                 2 => {
                     crate::rt::read_singular_message_into::<OneofOptions, _>(wire_type, is, &mut self.options)?;
@@ -2233,7 +2263,7 @@ impl crate::Message for OneofDescriptorProto {
 
 impl crate::Clear for OneofDescriptorProto {
     fn clear(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
         self.options.clear();
         self.unknown_fields.clear();
     }
@@ -2253,7 +2283,7 @@ impl crate::reflect::ProtobufValue for OneofDescriptorProto {
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct EnumDescriptorProto {
     // message fields
-    name: crate::SingularField<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
     pub value: crate::RepeatedField<EnumValueDescriptorProto>,
     pub options: crate::SingularPtrField<EnumOptions>,
     // special fields
@@ -2284,7 +2314,7 @@ impl EnumDescriptorProto {
     }
 
     pub fn clear_name(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
     }
 
     pub fn has_name(&self) -> bool {
@@ -2293,14 +2323,14 @@ impl EnumDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_name(&mut self, v: ::std::string::String) {
-        self.name = crate::SingularField::some(v);
+        self.name = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
-            self.name.set_default();
+            self.name = ::std::option::Option::Some(::std::string::String::new());
         }
         self.name.as_mut().unwrap()
     }
@@ -2331,7 +2361,10 @@ impl crate::Message for EnumDescriptorProto {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
                 },
                 2 => {
                     crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.value)?;
@@ -2437,7 +2470,7 @@ impl crate::Message for EnumDescriptorProto {
 
 impl crate::Clear for EnumDescriptorProto {
     fn clear(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
         self.value.clear();
         self.options.clear();
         self.unknown_fields.clear();
@@ -2458,7 +2491,7 @@ impl crate::reflect::ProtobufValue for EnumDescriptorProto {
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct EnumValueDescriptorProto {
     // message fields
-    name: crate::SingularField<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
     number: ::std::option::Option<i32>,
     pub options: crate::SingularPtrField<EnumValueOptions>,
     // special fields
@@ -2489,7 +2522,7 @@ impl EnumValueDescriptorProto {
     }
 
     pub fn clear_name(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
     }
 
     pub fn has_name(&self) -> bool {
@@ -2498,14 +2531,14 @@ impl EnumValueDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_name(&mut self, v: ::std::string::String) {
-        self.name = crate::SingularField::some(v);
+        self.name = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
-            self.name.set_default();
+            self.name = ::std::option::Option::Some(::std::string::String::new());
         }
         self.name.as_mut().unwrap()
     }
@@ -2550,7 +2583,10 @@ impl crate::Message for EnumValueDescriptorProto {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
                 },
                 2 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
@@ -2659,7 +2695,7 @@ impl crate::Message for EnumValueDescriptorProto {
 
 impl crate::Clear for EnumValueDescriptorProto {
     fn clear(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
         self.number = ::std::option::Option::None;
         self.options.clear();
         self.unknown_fields.clear();
@@ -2680,7 +2716,7 @@ impl crate::reflect::ProtobufValue for EnumValueDescriptorProto {
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct ServiceDescriptorProto {
     // message fields
-    name: crate::SingularField<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
     pub method: crate::RepeatedField<MethodDescriptorProto>,
     pub options: crate::SingularPtrField<ServiceOptions>,
     // special fields
@@ -2711,7 +2747,7 @@ impl ServiceDescriptorProto {
     }
 
     pub fn clear_name(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
     }
 
     pub fn has_name(&self) -> bool {
@@ -2720,14 +2756,14 @@ impl ServiceDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_name(&mut self, v: ::std::string::String) {
-        self.name = crate::SingularField::some(v);
+        self.name = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
-            self.name.set_default();
+            self.name = ::std::option::Option::Some(::std::string::String::new());
         }
         self.name.as_mut().unwrap()
     }
@@ -2758,7 +2794,10 @@ impl crate::Message for ServiceDescriptorProto {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
                 },
                 2 => {
                     crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.method)?;
@@ -2864,7 +2903,7 @@ impl crate::Message for ServiceDescriptorProto {
 
 impl crate::Clear for ServiceDescriptorProto {
     fn clear(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
         self.method.clear();
         self.options.clear();
         self.unknown_fields.clear();
@@ -2885,11 +2924,11 @@ impl crate::reflect::ProtobufValue for ServiceDescriptorProto {
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct MethodDescriptorProto {
     // message fields
-    name: crate::SingularField<::std::string::String>,
+    name: ::std::option::Option<::std::string::String>,
     ///  Input and output type names.  These are resolved in the same way as
     ///  FieldDescriptorProto.type_name, but must refer to a message type.
-    input_type: crate::SingularField<::std::string::String>,
-    output_type: crate::SingularField<::std::string::String>,
+    input_type: ::std::option::Option<::std::string::String>,
+    output_type: ::std::option::Option<::std::string::String>,
     pub options: crate::SingularPtrField<MethodOptions>,
     ///  Identifies if client streams multiple client messages
     client_streaming: ::std::option::Option<bool>,
@@ -2923,7 +2962,7 @@ impl MethodDescriptorProto {
     }
 
     pub fn clear_name(&mut self) {
-        self.name.clear();
+        self.name = ::std::option::Option::None;
     }
 
     pub fn has_name(&self) -> bool {
@@ -2932,14 +2971,14 @@ impl MethodDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_name(&mut self, v: ::std::string::String) {
-        self.name = crate::SingularField::some(v);
+        self.name = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_name(&mut self) -> &mut ::std::string::String {
         if self.name.is_none() {
-            self.name.set_default();
+            self.name = ::std::option::Option::Some(::std::string::String::new());
         }
         self.name.as_mut().unwrap()
     }
@@ -2959,7 +2998,7 @@ impl MethodDescriptorProto {
     }
 
     pub fn clear_input_type(&mut self) {
-        self.input_type.clear();
+        self.input_type = ::std::option::Option::None;
     }
 
     pub fn has_input_type(&self) -> bool {
@@ -2968,14 +3007,14 @@ impl MethodDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_input_type(&mut self, v: ::std::string::String) {
-        self.input_type = crate::SingularField::some(v);
+        self.input_type = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_input_type(&mut self) -> &mut ::std::string::String {
         if self.input_type.is_none() {
-            self.input_type.set_default();
+            self.input_type = ::std::option::Option::Some(::std::string::String::new());
         }
         self.input_type.as_mut().unwrap()
     }
@@ -2995,7 +3034,7 @@ impl MethodDescriptorProto {
     }
 
     pub fn clear_output_type(&mut self) {
-        self.output_type.clear();
+        self.output_type = ::std::option::Option::None;
     }
 
     pub fn has_output_type(&self) -> bool {
@@ -3004,14 +3043,14 @@ impl MethodDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_output_type(&mut self, v: ::std::string::String) {
-        self.output_type = crate::SingularField::some(v);
+        self.output_type = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_output_type(&mut self) -> &mut ::std::string::String {
         if self.output_type.is_none() {
-            self.output_type.set_default();
+            self.output_type = ::std::option::Option::Some(::std::string::String::new());
         }
         self.output_type.as_mut().unwrap()
     }
@@ -3075,13 +3114,22 @@ impl crate::Message for MethodDescriptorProto {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.name)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.name = ::std::option::Option::Some(is.read_string()?);
                 },
                 2 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.input_type)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.input_type = ::std::option::Option::Some(is.read_string()?);
                 },
                 3 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.output_type)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.output_type = ::std::option::Option::Some(is.read_string()?);
                 },
                 4 => {
                     crate::rt::read_singular_message_into::<MethodOptions, _>(wire_type, is, &mut self.options)?;
@@ -3232,9 +3280,9 @@ impl crate::Message for MethodDescriptorProto {
 
 impl crate::Clear for MethodDescriptorProto {
     fn clear(&mut self) {
-        self.name.clear();
-        self.input_type.clear();
-        self.output_type.clear();
+        self.name = ::std::option::Option::None;
+        self.input_type = ::std::option::Option::None;
+        self.output_type = ::std::option::Option::None;
         self.options.clear();
         self.client_streaming = ::std::option::Option::None;
         self.server_streaming = ::std::option::Option::None;
@@ -3259,13 +3307,13 @@ pub struct FileOptions {
     ///  placed.  By default, the proto package is used, but this is often
     ///  inappropriate because proto packages do not normally start with backwards
     ///  domain names.
-    java_package: crate::SingularField<::std::string::String>,
+    java_package: ::std::option::Option<::std::string::String>,
     ///  If set, all the classes from the .proto file are wrapped in a single
     ///  outer class with the given name.  This applies to both Proto1
     ///  (equivalent to the old "--one_java_file" option) and Proto2 (where
     ///  a .proto always translates to a single class, but you may want to
     ///  explicitly choose the class name).
-    java_outer_classname: crate::SingularField<::std::string::String>,
+    java_outer_classname: ::std::option::Option<::std::string::String>,
     ///  If set true, then the Java code generator will generate a separate .java
     ///  file for each top-level message, enum, and service defined in the .proto
     ///  file.  Thus, these types will *not* be nested inside the outer class
@@ -3288,7 +3336,7 @@ pub struct FileOptions {
     ///    - The basename of the package import path, if provided.
     ///    - Otherwise, the package statement in the .proto file, if present.
     ///    - Otherwise, the basename of the .proto file, without extension.
-    go_package: crate::SingularField<::std::string::String>,
+    go_package: ::std::option::Option<::std::string::String>,
     ///  Should generic services be generated in each language?  "Generic" services
     ///  are not specific to any particular RPC system.  They are generated by the
     ///  main code generators in each language (without additional plugins).
@@ -3312,9 +3360,9 @@ pub struct FileOptions {
     cc_enable_arenas: ::std::option::Option<bool>,
     ///  Sets the objective c class prefix which is prepended to all objective c
     ///  generated classes from this .proto. There is no default.
-    objc_class_prefix: crate::SingularField<::std::string::String>,
+    objc_class_prefix: ::std::option::Option<::std::string::String>,
     ///  Namespace for generated classes; defaults to the package.
-    csharp_namespace: crate::SingularField<::std::string::String>,
+    csharp_namespace: ::std::option::Option<::std::string::String>,
     ///  The parser stores options it doesn't recognize here. See above.
     pub uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
     // special fields
@@ -3345,7 +3393,7 @@ impl FileOptions {
     }
 
     pub fn clear_java_package(&mut self) {
-        self.java_package.clear();
+        self.java_package = ::std::option::Option::None;
     }
 
     pub fn has_java_package(&self) -> bool {
@@ -3354,14 +3402,14 @@ impl FileOptions {
 
     // Param is passed by value, moved
     pub fn set_java_package(&mut self, v: ::std::string::String) {
-        self.java_package = crate::SingularField::some(v);
+        self.java_package = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_java_package(&mut self) -> &mut ::std::string::String {
         if self.java_package.is_none() {
-            self.java_package.set_default();
+            self.java_package = ::std::option::Option::Some(::std::string::String::new());
         }
         self.java_package.as_mut().unwrap()
     }
@@ -3381,7 +3429,7 @@ impl FileOptions {
     }
 
     pub fn clear_java_outer_classname(&mut self) {
-        self.java_outer_classname.clear();
+        self.java_outer_classname = ::std::option::Option::None;
     }
 
     pub fn has_java_outer_classname(&self) -> bool {
@@ -3390,14 +3438,14 @@ impl FileOptions {
 
     // Param is passed by value, moved
     pub fn set_java_outer_classname(&mut self, v: ::std::string::String) {
-        self.java_outer_classname = crate::SingularField::some(v);
+        self.java_outer_classname = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_java_outer_classname(&mut self) -> &mut ::std::string::String {
         if self.java_outer_classname.is_none() {
-            self.java_outer_classname.set_default();
+            self.java_outer_classname = ::std::option::Option::Some(::std::string::String::new());
         }
         self.java_outer_classname.as_mut().unwrap()
     }
@@ -3496,7 +3544,7 @@ impl FileOptions {
     }
 
     pub fn clear_go_package(&mut self) {
-        self.go_package.clear();
+        self.go_package = ::std::option::Option::None;
     }
 
     pub fn has_go_package(&self) -> bool {
@@ -3505,14 +3553,14 @@ impl FileOptions {
 
     // Param is passed by value, moved
     pub fn set_go_package(&mut self, v: ::std::string::String) {
-        self.go_package = crate::SingularField::some(v);
+        self.go_package = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_go_package(&mut self) -> &mut ::std::string::String {
         if self.go_package.is_none() {
-            self.go_package.set_default();
+            self.go_package = ::std::option::Option::Some(::std::string::String::new());
         }
         self.go_package.as_mut().unwrap()
     }
@@ -3627,7 +3675,7 @@ impl FileOptions {
     }
 
     pub fn clear_objc_class_prefix(&mut self) {
-        self.objc_class_prefix.clear();
+        self.objc_class_prefix = ::std::option::Option::None;
     }
 
     pub fn has_objc_class_prefix(&self) -> bool {
@@ -3636,14 +3684,14 @@ impl FileOptions {
 
     // Param is passed by value, moved
     pub fn set_objc_class_prefix(&mut self, v: ::std::string::String) {
-        self.objc_class_prefix = crate::SingularField::some(v);
+        self.objc_class_prefix = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_objc_class_prefix(&mut self) -> &mut ::std::string::String {
         if self.objc_class_prefix.is_none() {
-            self.objc_class_prefix.set_default();
+            self.objc_class_prefix = ::std::option::Option::Some(::std::string::String::new());
         }
         self.objc_class_prefix.as_mut().unwrap()
     }
@@ -3663,7 +3711,7 @@ impl FileOptions {
     }
 
     pub fn clear_csharp_namespace(&mut self) {
-        self.csharp_namespace.clear();
+        self.csharp_namespace = ::std::option::Option::None;
     }
 
     pub fn has_csharp_namespace(&self) -> bool {
@@ -3672,14 +3720,14 @@ impl FileOptions {
 
     // Param is passed by value, moved
     pub fn set_csharp_namespace(&mut self, v: ::std::string::String) {
-        self.csharp_namespace = crate::SingularField::some(v);
+        self.csharp_namespace = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_csharp_namespace(&mut self) -> &mut ::std::string::String {
         if self.csharp_namespace.is_none() {
-            self.csharp_namespace.set_default();
+            self.csharp_namespace = ::std::option::Option::Some(::std::string::String::new());
         }
         self.csharp_namespace.as_mut().unwrap()
     }
@@ -3705,10 +3753,16 @@ impl crate::Message for FileOptions {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.java_package)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.java_package = ::std::option::Option::Some(is.read_string()?);
                 },
                 8 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.java_outer_classname)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.java_outer_classname = ::std::option::Option::Some(is.read_string()?);
                 },
                 10 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
@@ -3735,7 +3789,10 @@ impl crate::Message for FileOptions {
                     self.optimize_for = ::std::option::Option::Some(is.read_enum_or_unknown()?);
                 },
                 11 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.go_package)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.go_package = ::std::option::Option::Some(is.read_string()?);
                 },
                 16 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
@@ -3768,10 +3825,16 @@ impl crate::Message for FileOptions {
                     self.cc_enable_arenas = ::std::option::Option::Some(is.read_bool()?);
                 },
                 36 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.objc_class_prefix)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.objc_class_prefix = ::std::option::Option::Some(is.read_string()?);
                 },
                 37 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.csharp_namespace)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.csharp_namespace = ::std::option::Option::Some(is.read_string()?);
                 },
                 999 => {
                     crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.uninterpreted_option)?;
@@ -4018,20 +4081,20 @@ impl crate::Message for FileOptions {
 
 impl crate::Clear for FileOptions {
     fn clear(&mut self) {
-        self.java_package.clear();
-        self.java_outer_classname.clear();
+        self.java_package = ::std::option::Option::None;
+        self.java_outer_classname = ::std::option::Option::None;
         self.java_multiple_files = ::std::option::Option::None;
         self.java_generate_equals_and_hash = ::std::option::Option::None;
         self.java_string_check_utf8 = ::std::option::Option::None;
         self.optimize_for = ::std::option::Option::None;
-        self.go_package.clear();
+        self.go_package = ::std::option::Option::None;
         self.cc_generic_services = ::std::option::Option::None;
         self.java_generic_services = ::std::option::Option::None;
         self.py_generic_services = ::std::option::Option::None;
         self.deprecated = ::std::option::Option::None;
         self.cc_enable_arenas = ::std::option::Option::None;
-        self.objc_class_prefix.clear();
-        self.csharp_namespace.clear();
+        self.objc_class_prefix = ::std::option::Option::None;
+        self.csharp_namespace = ::std::option::Option::None;
         self.uninterpreted_option.clear();
         self.unknown_fields.clear();
     }
@@ -5788,12 +5851,12 @@ pub struct UninterpretedOption {
     pub name: crate::RepeatedField<uninterpreted_option::NamePart>,
     ///  The value of the uninterpreted option, in whatever type the tokenizer
     ///  identified it as during parsing. Exactly one of these should be set.
-    identifier_value: crate::SingularField<::std::string::String>,
+    identifier_value: ::std::option::Option<::std::string::String>,
     positive_int_value: ::std::option::Option<u64>,
     negative_int_value: ::std::option::Option<i64>,
     double_value: ::std::option::Option<f64>,
-    string_value: crate::SingularField<::std::vec::Vec<u8>>,
-    aggregate_value: crate::SingularField<::std::string::String>,
+    string_value: ::std::option::Option<::std::vec::Vec<u8>>,
+    aggregate_value: ::std::option::Option<::std::string::String>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -5822,7 +5885,7 @@ impl UninterpretedOption {
     }
 
     pub fn clear_identifier_value(&mut self) {
-        self.identifier_value.clear();
+        self.identifier_value = ::std::option::Option::None;
     }
 
     pub fn has_identifier_value(&self) -> bool {
@@ -5831,14 +5894,14 @@ impl UninterpretedOption {
 
     // Param is passed by value, moved
     pub fn set_identifier_value(&mut self, v: ::std::string::String) {
-        self.identifier_value = crate::SingularField::some(v);
+        self.identifier_value = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_identifier_value(&mut self) -> &mut ::std::string::String {
         if self.identifier_value.is_none() {
-            self.identifier_value.set_default();
+            self.identifier_value = ::std::option::Option::Some(::std::string::String::new());
         }
         self.identifier_value.as_mut().unwrap()
     }
@@ -5915,7 +5978,7 @@ impl UninterpretedOption {
     }
 
     pub fn clear_string_value(&mut self) {
-        self.string_value.clear();
+        self.string_value = ::std::option::Option::None;
     }
 
     pub fn has_string_value(&self) -> bool {
@@ -5924,14 +5987,14 @@ impl UninterpretedOption {
 
     // Param is passed by value, moved
     pub fn set_string_value(&mut self, v: ::std::vec::Vec<u8>) {
-        self.string_value = crate::SingularField::some(v);
+        self.string_value = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_string_value(&mut self) -> &mut ::std::vec::Vec<u8> {
         if self.string_value.is_none() {
-            self.string_value.set_default();
+            self.string_value = ::std::option::Option::Some(::std::vec::Vec::new());
         }
         self.string_value.as_mut().unwrap()
     }
@@ -5951,7 +6014,7 @@ impl UninterpretedOption {
     }
 
     pub fn clear_aggregate_value(&mut self) {
-        self.aggregate_value.clear();
+        self.aggregate_value = ::std::option::Option::None;
     }
 
     pub fn has_aggregate_value(&self) -> bool {
@@ -5960,14 +6023,14 @@ impl UninterpretedOption {
 
     // Param is passed by value, moved
     pub fn set_aggregate_value(&mut self, v: ::std::string::String) {
-        self.aggregate_value = crate::SingularField::some(v);
+        self.aggregate_value = ::std::option::Option::Some(v);
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
     pub fn mut_aggregate_value(&mut self) -> &mut ::std::string::String {
         if self.aggregate_value.is_none() {
-            self.aggregate_value.set_default();
+            self.aggregate_value = ::std::option::Option::Some(::std::string::String::new());
         }
         self.aggregate_value.as_mut().unwrap()
     }
@@ -5996,7 +6059,10 @@ impl crate::Message for UninterpretedOption {
                     crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.name)?;
                 },
                 3 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.identifier_value)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.identifier_value = ::std::option::Option::Some(is.read_string()?);
                 },
                 4 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
@@ -6017,10 +6083,16 @@ impl crate::Message for UninterpretedOption {
                     self.double_value = ::std::option::Option::Some(is.read_double()?);
                 },
                 7 => {
-                    crate::rt::read_singular_bytes_into(wire_type, is, &mut self.string_value)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.string_value = ::std::option::Option::Some(is.read_bytes()?);
                 },
                 8 => {
-                    crate::rt::read_singular_string_into(wire_type, is, &mut self.aggregate_value)?;
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.aggregate_value = ::std::option::Option::Some(is.read_string()?);
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -6169,12 +6241,12 @@ impl crate::Message for UninterpretedOption {
 impl crate::Clear for UninterpretedOption {
     fn clear(&mut self) {
         self.name.clear();
-        self.identifier_value.clear();
+        self.identifier_value = ::std::option::Option::None;
         self.positive_int_value = ::std::option::Option::None;
         self.negative_int_value = ::std::option::Option::None;
         self.double_value = ::std::option::Option::None;
-        self.string_value.clear();
-        self.aggregate_value.clear();
+        self.string_value = ::std::option::Option::None;
+        self.aggregate_value = ::std::option::Option::None;
         self.unknown_fields.clear();
     }
 }
@@ -6199,7 +6271,7 @@ pub mod uninterpreted_option {
     #[cfg_attr(serde, derive(Serialize, Deserialize))]
     pub struct NamePart {
         // message fields
-        name_part: crate::SingularField<::std::string::String>,
+        name_part: ::std::option::Option<::std::string::String>,
         is_extension: ::std::option::Option<bool>,
         // special fields
         #[cfg_attr(serde, serde(skip))]
@@ -6229,7 +6301,7 @@ pub mod uninterpreted_option {
         }
 
         pub fn clear_name_part(&mut self) {
-            self.name_part.clear();
+            self.name_part = ::std::option::Option::None;
         }
 
         pub fn has_name_part(&self) -> bool {
@@ -6238,14 +6310,14 @@ pub mod uninterpreted_option {
 
         // Param is passed by value, moved
         pub fn set_name_part(&mut self, v: ::std::string::String) {
-            self.name_part = crate::SingularField::some(v);
+            self.name_part = ::std::option::Option::Some(v);
         }
 
         // Mutable pointer to the field.
         // If field is not initialized, it is initialized with default value first.
         pub fn mut_name_part(&mut self) -> &mut ::std::string::String {
             if self.name_part.is_none() {
-                self.name_part.set_default();
+                self.name_part = ::std::option::Option::Some(::std::string::String::new());
             }
             self.name_part.as_mut().unwrap()
         }
@@ -6291,7 +6363,10 @@ pub mod uninterpreted_option {
                 let (field_number, wire_type) = is.read_tag_unpack()?;
                 match field_number {
                     1 => {
-                        crate::rt::read_singular_string_into(wire_type, is, &mut self.name_part)?;
+                        if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                            return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                        }
+                        self.name_part = ::std::option::Option::Some(is.read_string()?);
                     },
                     2 => {
                         if wire_type != crate::wire_format::WireTypeVarint {
@@ -6385,7 +6460,7 @@ pub mod uninterpreted_option {
 
     impl crate::Clear for NamePart {
         fn clear(&mut self) {
-            self.name_part.clear();
+            self.name_part = ::std::option::Option::None;
             self.is_extension = ::std::option::Option::None;
             self.unknown_fields.clear();
         }
@@ -6545,8 +6620,8 @@ pub mod source_code_info {
         ///  and column numbers are zero-based -- typically you will want to add
         ///  1 to each before displaying to a user.
         pub span: ::std::vec::Vec<i32>,
-        leading_comments: crate::SingularField<::std::string::String>,
-        trailing_comments: crate::SingularField<::std::string::String>,
+        leading_comments: ::std::option::Option<::std::string::String>,
+        trailing_comments: ::std::option::Option<::std::string::String>,
         pub leading_detached_comments: crate::RepeatedField<::std::string::String>,
         // special fields
         #[cfg_attr(serde, serde(skip))]
@@ -6576,7 +6651,7 @@ pub mod source_code_info {
         }
 
         pub fn clear_leading_comments(&mut self) {
-            self.leading_comments.clear();
+            self.leading_comments = ::std::option::Option::None;
         }
 
         pub fn has_leading_comments(&self) -> bool {
@@ -6585,14 +6660,14 @@ pub mod source_code_info {
 
         // Param is passed by value, moved
         pub fn set_leading_comments(&mut self, v: ::std::string::String) {
-            self.leading_comments = crate::SingularField::some(v);
+            self.leading_comments = ::std::option::Option::Some(v);
         }
 
         // Mutable pointer to the field.
         // If field is not initialized, it is initialized with default value first.
         pub fn mut_leading_comments(&mut self) -> &mut ::std::string::String {
             if self.leading_comments.is_none() {
-                self.leading_comments.set_default();
+                self.leading_comments = ::std::option::Option::Some(::std::string::String::new());
             }
             self.leading_comments.as_mut().unwrap()
         }
@@ -6612,7 +6687,7 @@ pub mod source_code_info {
         }
 
         pub fn clear_trailing_comments(&mut self) {
-            self.trailing_comments.clear();
+            self.trailing_comments = ::std::option::Option::None;
         }
 
         pub fn has_trailing_comments(&self) -> bool {
@@ -6621,14 +6696,14 @@ pub mod source_code_info {
 
         // Param is passed by value, moved
         pub fn set_trailing_comments(&mut self, v: ::std::string::String) {
-            self.trailing_comments = crate::SingularField::some(v);
+            self.trailing_comments = ::std::option::Option::Some(v);
         }
 
         // Mutable pointer to the field.
         // If field is not initialized, it is initialized with default value first.
         pub fn mut_trailing_comments(&mut self) -> &mut ::std::string::String {
             if self.trailing_comments.is_none() {
-                self.trailing_comments.set_default();
+                self.trailing_comments = ::std::option::Option::Some(::std::string::String::new());
             }
             self.trailing_comments.as_mut().unwrap()
         }
@@ -6655,10 +6730,16 @@ pub mod source_code_info {
                         crate::rt::read_repeated_int32_into(wire_type, is, &mut self.span)?;
                     },
                     3 => {
-                        crate::rt::read_singular_string_into(wire_type, is, &mut self.leading_comments)?;
+                        if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                            return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                        }
+                        self.leading_comments = ::std::option::Option::Some(is.read_string()?);
                     },
                     4 => {
-                        crate::rt::read_singular_string_into(wire_type, is, &mut self.trailing_comments)?;
+                        if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                            return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                        }
+                        self.trailing_comments = ::std::option::Option::Some(is.read_string()?);
                     },
                     6 => {
                         crate::rt::read_repeated_string_into(wire_type, is, &mut self.leading_detached_comments)?;
@@ -6794,8 +6875,8 @@ pub mod source_code_info {
         fn clear(&mut self) {
             self.path.clear();
             self.span.clear();
-            self.leading_comments.clear();
-            self.trailing_comments.clear();
+            self.leading_comments = ::std::option::Option::None;
+            self.trailing_comments = ::std::option::Option::None;
             self.leading_detached_comments.clear();
             self.unknown_fields.clear();
         }
@@ -6955,7 +7036,7 @@ pub mod generated_code_info {
         ///  is formatted the same as SourceCodeInfo.Location.path.
         pub path: ::std::vec::Vec<i32>,
         ///  Identifies the filesystem path to the original source .proto.
-        source_file: crate::SingularField<::std::string::String>,
+        source_file: ::std::option::Option<::std::string::String>,
         ///  Identifies the starting offset in bytes in the generated code
         ///  that relates to the identified object.
         begin: ::std::option::Option<i32>,
@@ -6991,7 +7072,7 @@ pub mod generated_code_info {
         }
 
         pub fn clear_source_file(&mut self) {
-            self.source_file.clear();
+            self.source_file = ::std::option::Option::None;
         }
 
         pub fn has_source_file(&self) -> bool {
@@ -7000,14 +7081,14 @@ pub mod generated_code_info {
 
         // Param is passed by value, moved
         pub fn set_source_file(&mut self, v: ::std::string::String) {
-            self.source_file = crate::SingularField::some(v);
+            self.source_file = ::std::option::Option::Some(v);
         }
 
         // Mutable pointer to the field.
         // If field is not initialized, it is initialized with default value first.
         pub fn mut_source_file(&mut self) -> &mut ::std::string::String {
             if self.source_file.is_none() {
-                self.source_file.set_default();
+                self.source_file = ::std::option::Option::Some(::std::string::String::new());
             }
             self.source_file.as_mut().unwrap()
         }
@@ -7069,7 +7150,10 @@ pub mod generated_code_info {
                         crate::rt::read_repeated_int32_into(wire_type, is, &mut self.path)?;
                     },
                     2 => {
-                        crate::rt::read_singular_string_into(wire_type, is, &mut self.source_file)?;
+                        if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                            return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                        }
+                        self.source_file = ::std::option::Option::Some(is.read_string()?);
                     },
                     3 => {
                         if wire_type != crate::wire_format::WireTypeVarint {
@@ -7198,7 +7282,7 @@ pub mod generated_code_info {
     impl crate::Clear for Annotation {
         fn clear(&mut self) {
             self.path.clear();
-            self.source_file.clear();
+            self.source_file = ::std::option::Option::None;
             self.begin = ::std::option::Option::None;
             self.end = ::std::option::Option::None;
             self.unknown_fields.clear();
