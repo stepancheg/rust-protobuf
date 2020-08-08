@@ -14,7 +14,7 @@ use crate::chars::Chars;
 use bytes::Bytes;
 
 use crate::buf_read_iter::BufReadIter;
-use crate::core::Message;
+use crate::message::Message;
 use crate::enums::ProtobufEnum;
 use crate::error::ProtobufError;
 use crate::error::ProtobufResult;

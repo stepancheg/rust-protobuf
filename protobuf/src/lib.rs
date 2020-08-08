@@ -16,17 +16,17 @@ pub use crate::cached_size::CachedSize;
 #[cfg(feature = "bytes")]
 pub use crate::chars::Chars;
 pub use crate::clear::Clear;
-pub use crate::core::parse_from_bytes;
+pub use crate::message::parse_from_bytes;
 #[cfg(feature = "bytes")]
-pub use crate::core::parse_from_carllerche_bytes;
-pub use crate::core::parse_from_reader;
+pub use crate::message::parse_from_carllerche_bytes;
+pub use crate::message::parse_from_reader;
 #[allow(deprecated)]
-pub use crate::core::parse_length_delimited_from;
+pub use crate::message::parse_length_delimited_from;
 #[allow(deprecated)]
-pub use crate::core::parse_length_delimited_from_bytes;
+pub use crate::message::parse_length_delimited_from_bytes;
 #[allow(deprecated)]
-pub use crate::core::parse_length_delimited_from_reader;
-pub use crate::core::Message;
+pub use crate::message::parse_length_delimited_from_reader;
+pub use crate::message::Message;
 pub use crate::enums::ProtobufEnum;
 pub use crate::error::ProtobufError;
 pub use crate::error::ProtobufResult;
@@ -50,7 +50,7 @@ pub mod rustproto;
 
 mod clear;
 pub mod compiler_plugin;
-mod core;
+mod message;
 mod enums;
 pub mod error;
 pub mod ext;

@@ -10,7 +10,7 @@ use crate::chars::Chars;
 #[cfg(feature = "bytes")]
 use bytes::Bytes;
 
-use crate::core::*;
+use crate::message::*;
 use crate::enums::ProtobufEnum;
 use crate::error::ProtobufError;
 use crate::error::ProtobufResult;

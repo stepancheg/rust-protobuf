@@ -1,4 +1,4 @@
-use crate::core::Message;
+use crate::message::Message;
 use crate::descriptor::FieldDescriptorProto;
 use crate::descriptor::FieldDescriptorProto_Label;
 use crate::json::json_name;
