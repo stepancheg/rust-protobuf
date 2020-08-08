@@ -964,7 +964,7 @@ static file_descriptor_proto_data: &'static [u8] = b"\
 pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
     static file_descriptor_proto_lazy: crate::rt::LazyV2<crate::descriptor::FileDescriptorProto> = crate::rt::LazyV2::INIT;
     file_descriptor_proto_lazy.get(|| {
-        crate::parse_from_bytes(file_descriptor_proto_data).unwrap()
+        crate::Message::parse_from_bytes(file_descriptor_proto_data).unwrap()
     })
 }
 

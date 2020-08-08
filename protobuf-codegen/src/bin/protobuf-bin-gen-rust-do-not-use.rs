@@ -3,15 +3,16 @@ extern crate protobuf_codegen;
 
 use std::fs::*;
 use std::io::Read;
-use std::path::{Path, PathBuf};
+use std::path::Path;
+use std::path::PathBuf;
 
 use protobuf::descriptor::*;
-use protobuf::parse_from_reader;
 use protobuf_codegen::*;
+use protobuf::Message;
 
 fn write_file(bin: &str) {
     let mut is = File::open(&Path::new(bin)).unwrap();
-    let fds = parse_from_reader::<FileDescriptorSet>(&mut is as &mut dyn Read).unwrap();
+    let fds = FileDescriptorSet::parse_from_reader(&mut is as &mut dyn Read).unwrap();
 
     let file_names: Vec<PathBuf> = fds.file.iter().map(|f| f.get_name().into()).collect();
     gen_and_write(
