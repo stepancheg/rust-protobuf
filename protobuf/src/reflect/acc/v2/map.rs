@@ -25,19 +25,18 @@ pub(crate) struct MapFieldAccessorHolder {
 struct MapFieldAccessorImpl<M, K, V>
 where
     M: Message,
-    K: ProtobufType,
-    V: ProtobufType,
+    K: ProtobufValueSized,
+    V: ProtobufValueSized,
 {
-    get_field: fn(&M) -> &HashMap<K::ProtobufValue, V::ProtobufValue>,
-    mut_field: fn(&mut M) -> &mut HashMap<K::ProtobufValue, V::ProtobufValue>,
+    get_field: fn(&M) -> &HashMap<K, V>,
+    mut_field: fn(&mut M) -> &mut HashMap<K, V>,
 }
 
 impl<M, K, V> MapFieldAccessor for MapFieldAccessorImpl<M, K, V>
 where
     M: Message,
-    K: ProtobufType,
-    V: ProtobufType,
-    K::ProtobufValue: Eq + Hash,
+    K: ProtobufValueSized + Eq + Hash,
+    V: ProtobufValueSized,
 {
     fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectMapRef<'a> {
         let m = m.downcast_ref().unwrap();
@@ -67,12 +66,39 @@ where
     FieldAccessor::new_v2(
         name,
         AccessorV2::Map(MapFieldAccessorHolder {
+            accessor: Box::new(
+                MapFieldAccessorImpl::<M, K::ProtobufValue, V::ProtobufValue> {
+                    get_field,
+                    mut_field,
+                },
+            ),
+            key_type: <K::ProtobufValue as ProtobufValueSized>::dynamic(),
+            value_type: <V::ProtobufValue as ProtobufValueSized>::dynamic(),
+        }),
+    )
+}
+
+/// Make accessor for map field
+pub fn make_map_simpler_accessor<M, K, V>(
+    name: &'static str,
+    get_field: for<'a> fn(&'a M) -> &'a HashMap<K, V>,
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut HashMap<K, V>,
+) -> FieldAccessor
+where
+    M: Message + 'static,
+    K: ProtobufValueSized,
+    V: ProtobufValueSized,
+    K: Hash + Eq,
+{
+    FieldAccessor::new_v2(
+        name,
+        AccessorV2::Map(MapFieldAccessorHolder {
             accessor: Box::new(MapFieldAccessorImpl::<M, K, V> {
                 get_field,
                 mut_field,
             }),
-            key_type: <K::ProtobufValue as ProtobufValueSized>::dynamic(),
-            value_type: <V::ProtobufValue as ProtobufValueSized>::dynamic(),
+            key_type: K::dynamic(),
+            value_type: V::dynamic(),
         }),
     )
 }

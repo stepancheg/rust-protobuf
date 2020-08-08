@@ -93,11 +93,8 @@ impl FieldGen<'_> {
             ref key, ref value, ..
         } = map_field;
         AccessorFn {
-            name: "make_map_accessor".to_owned(),
-            type_params: vec![
-                key.lib_protobuf_type(&self.get_file_and_mod()),
-                value.lib_protobuf_type(&self.get_file_and_mod()),
-            ],
+            name: "make_map_simpler_accessor".to_owned(),
+            type_params: vec![format!("_"), format!("_")],
             callback_params: self.make_accessor_fns_lambda(),
         }
     }
