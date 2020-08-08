@@ -27,7 +27,7 @@
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct FileDescriptorSet {
     // message fields
-    pub file: crate::RepeatedField<FileDescriptorProto>,
+    pub file: ::std::vec::Vec<FileDescriptorProto>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -62,7 +62,7 @@ impl crate::Message for FileDescriptorSet {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.file)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.file)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -117,7 +117,7 @@ impl crate::Message for FileDescriptorSet {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<FileDescriptorProto>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<FileDescriptorProto>>(
                 "file",
                 |m: &FileDescriptorSet| { &m.file },
                 |m: &mut FileDescriptorSet| { &mut m.file },
@@ -132,7 +132,7 @@ impl crate::Message for FileDescriptorSet {
 
     fn default_instance() -> &'static FileDescriptorSet {
         static instance: FileDescriptorSet = FileDescriptorSet {
-            file: crate::RepeatedField::new(),
+            file: ::std::vec::Vec::new(),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };
@@ -168,17 +168,17 @@ pub struct FileDescriptorProto {
     name: ::std::option::Option<::std::string::String>,
     package: ::std::option::Option<::std::string::String>,
     ///  Names of files imported by this file.
-    pub dependency: crate::RepeatedField<::std::string::String>,
+    pub dependency: ::std::vec::Vec<::std::string::String>,
     ///  Indexes of the public imported files in the dependency list above.
     pub public_dependency: ::std::vec::Vec<i32>,
     ///  Indexes of the weak imported files in the dependency list.
     ///  For Google-internal migration only. Do not use.
     pub weak_dependency: ::std::vec::Vec<i32>,
     ///  All top-level definitions in this file.
-    pub message_type: crate::RepeatedField<DescriptorProto>,
-    pub enum_type: crate::RepeatedField<EnumDescriptorProto>,
-    pub service: crate::RepeatedField<ServiceDescriptorProto>,
-    pub extension: crate::RepeatedField<FieldDescriptorProto>,
+    pub message_type: ::std::vec::Vec<DescriptorProto>,
+    pub enum_type: ::std::vec::Vec<EnumDescriptorProto>,
+    pub service: ::std::vec::Vec<ServiceDescriptorProto>,
+    pub extension: ::std::vec::Vec<FieldDescriptorProto>,
     pub options: crate::SingularPtrField<FileOptions>,
     ///  This field contains optional information about the original source code.
     ///  You may safely remove this entire field without harming runtime
@@ -376,16 +376,16 @@ impl crate::Message for FileDescriptorProto {
                     crate::rt::read_repeated_int32_into(wire_type, is, &mut self.weak_dependency)?;
                 },
                 4 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.message_type)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.message_type)?;
                 },
                 5 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.enum_type)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.enum_type)?;
                 },
                 6 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.service)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.service)?;
                 },
                 7 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.extension)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.extension)?;
                 },
                 8 => {
                     crate::rt::read_singular_message_into::<FileOptions, _>(wire_type, is, &mut self.options)?;
@@ -535,7 +535,7 @@ impl crate::Message for FileDescriptorProto {
                 |m: &mut FileDescriptorProto| { &mut m.package },
                 FileDescriptorProto::get_package,
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                 "dependency",
                 |m: &FileDescriptorProto| { &m.dependency },
                 |m: &mut FileDescriptorProto| { &mut m.dependency },
@@ -550,22 +550,22 @@ impl crate::Message for FileDescriptorProto {
                 |m: &FileDescriptorProto| { &m.weak_dependency },
                 |m: &mut FileDescriptorProto| { &mut m.weak_dependency },
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<DescriptorProto>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<DescriptorProto>>(
                 "message_type",
                 |m: &FileDescriptorProto| { &m.message_type },
                 |m: &mut FileDescriptorProto| { &mut m.message_type },
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<EnumDescriptorProto>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<EnumDescriptorProto>>(
                 "enum_type",
                 |m: &FileDescriptorProto| { &m.enum_type },
                 |m: &mut FileDescriptorProto| { &mut m.enum_type },
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<ServiceDescriptorProto>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<ServiceDescriptorProto>>(
                 "service",
                 |m: &FileDescriptorProto| { &m.service },
                 |m: &mut FileDescriptorProto| { &mut m.service },
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<FieldDescriptorProto>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<FieldDescriptorProto>>(
                 "extension",
                 |m: &FileDescriptorProto| { &m.extension },
                 |m: &mut FileDescriptorProto| { &mut m.extension },
@@ -598,13 +598,13 @@ impl crate::Message for FileDescriptorProto {
         static instance: FileDescriptorProto = FileDescriptorProto {
             name: ::std::option::Option::None,
             package: ::std::option::Option::None,
-            dependency: crate::RepeatedField::new(),
+            dependency: ::std::vec::Vec::new(),
             public_dependency: ::std::vec::Vec::new(),
             weak_dependency: ::std::vec::Vec::new(),
-            message_type: crate::RepeatedField::new(),
-            enum_type: crate::RepeatedField::new(),
-            service: crate::RepeatedField::new(),
-            extension: crate::RepeatedField::new(),
+            message_type: ::std::vec::Vec::new(),
+            enum_type: ::std::vec::Vec::new(),
+            service: ::std::vec::Vec::new(),
+            extension: ::std::vec::Vec::new(),
             options: crate::SingularPtrField::none(),
             source_code_info: crate::SingularPtrField::none(),
             syntax: ::std::option::Option::None,
@@ -652,17 +652,17 @@ impl crate::reflect::ProtobufValueSized for FileDescriptorProto {
 pub struct DescriptorProto {
     // message fields
     name: ::std::option::Option<::std::string::String>,
-    pub field: crate::RepeatedField<FieldDescriptorProto>,
-    pub extension: crate::RepeatedField<FieldDescriptorProto>,
-    pub nested_type: crate::RepeatedField<DescriptorProto>,
-    pub enum_type: crate::RepeatedField<EnumDescriptorProto>,
-    pub extension_range: crate::RepeatedField<descriptor_proto::ExtensionRange>,
-    pub oneof_decl: crate::RepeatedField<OneofDescriptorProto>,
+    pub field: ::std::vec::Vec<FieldDescriptorProto>,
+    pub extension: ::std::vec::Vec<FieldDescriptorProto>,
+    pub nested_type: ::std::vec::Vec<DescriptorProto>,
+    pub enum_type: ::std::vec::Vec<EnumDescriptorProto>,
+    pub extension_range: ::std::vec::Vec<descriptor_proto::ExtensionRange>,
+    pub oneof_decl: ::std::vec::Vec<OneofDescriptorProto>,
     pub options: crate::SingularPtrField<MessageOptions>,
-    pub reserved_range: crate::RepeatedField<descriptor_proto::ReservedRange>,
+    pub reserved_range: ::std::vec::Vec<descriptor_proto::ReservedRange>,
     ///  Reserved field names, which may not be used by fields in the same message.
     ///  A given name may only be reserved once.
-    pub reserved_name: crate::RepeatedField<::std::string::String>,
+    pub reserved_name: ::std::vec::Vec<::std::string::String>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -774,28 +774,28 @@ impl crate::Message for DescriptorProto {
                     self.name = ::std::option::Option::Some(is.read_string()?);
                 },
                 2 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.field)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.field)?;
                 },
                 6 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.extension)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.extension)?;
                 },
                 3 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.nested_type)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.nested_type)?;
                 },
                 4 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.enum_type)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.enum_type)?;
                 },
                 5 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.extension_range)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.extension_range)?;
                 },
                 8 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.oneof_decl)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.oneof_decl)?;
                 },
                 7 => {
                     crate::rt::read_singular_message_into::<MessageOptions, _>(wire_type, is, &mut self.options)?;
                 },
                 9 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.reserved_range)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.reserved_range)?;
                 },
                 10 => {
                     crate::rt::read_repeated_string_into(wire_type, is, &mut self.reserved_name)?;
@@ -920,32 +920,32 @@ impl crate::Message for DescriptorProto {
                 |m: &mut DescriptorProto| { &mut m.name },
                 DescriptorProto::get_name,
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<FieldDescriptorProto>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<FieldDescriptorProto>>(
                 "field",
                 |m: &DescriptorProto| { &m.field },
                 |m: &mut DescriptorProto| { &mut m.field },
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<FieldDescriptorProto>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<FieldDescriptorProto>>(
                 "extension",
                 |m: &DescriptorProto| { &m.extension },
                 |m: &mut DescriptorProto| { &mut m.extension },
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<DescriptorProto>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<DescriptorProto>>(
                 "nested_type",
                 |m: &DescriptorProto| { &m.nested_type },
                 |m: &mut DescriptorProto| { &mut m.nested_type },
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<EnumDescriptorProto>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<EnumDescriptorProto>>(
                 "enum_type",
                 |m: &DescriptorProto| { &m.enum_type },
                 |m: &mut DescriptorProto| { &mut m.enum_type },
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<descriptor_proto::ExtensionRange>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<descriptor_proto::ExtensionRange>>(
                 "extension_range",
                 |m: &DescriptorProto| { &m.extension_range },
                 |m: &mut DescriptorProto| { &mut m.extension_range },
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<OneofDescriptorProto>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<OneofDescriptorProto>>(
                 "oneof_decl",
                 |m: &DescriptorProto| { &m.oneof_decl },
                 |m: &mut DescriptorProto| { &mut m.oneof_decl },
@@ -955,12 +955,12 @@ impl crate::Message for DescriptorProto {
                 |m: &DescriptorProto| { &m.options },
                 |m: &mut DescriptorProto| { &mut m.options },
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<descriptor_proto::ReservedRange>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<descriptor_proto::ReservedRange>>(
                 "reserved_range",
                 |m: &DescriptorProto| { &m.reserved_range },
                 |m: &mut DescriptorProto| { &mut m.reserved_range },
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                 "reserved_name",
                 |m: &DescriptorProto| { &m.reserved_name },
                 |m: &mut DescriptorProto| { &mut m.reserved_name },
@@ -976,15 +976,15 @@ impl crate::Message for DescriptorProto {
     fn default_instance() -> &'static DescriptorProto {
         static instance: DescriptorProto = DescriptorProto {
             name: ::std::option::Option::None,
-            field: crate::RepeatedField::new(),
-            extension: crate::RepeatedField::new(),
-            nested_type: crate::RepeatedField::new(),
-            enum_type: crate::RepeatedField::new(),
-            extension_range: crate::RepeatedField::new(),
-            oneof_decl: crate::RepeatedField::new(),
+            field: ::std::vec::Vec::new(),
+            extension: ::std::vec::Vec::new(),
+            nested_type: ::std::vec::Vec::new(),
+            enum_type: ::std::vec::Vec::new(),
+            extension_range: ::std::vec::Vec::new(),
+            oneof_decl: ::std::vec::Vec::new(),
             options: crate::SingularPtrField::none(),
-            reserved_range: crate::RepeatedField::new(),
-            reserved_name: crate::RepeatedField::new(),
+            reserved_range: ::std::vec::Vec::new(),
+            reserved_name: ::std::vec::Vec::new(),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };
@@ -2380,7 +2380,7 @@ impl crate::reflect::ProtobufValueSized for OneofDescriptorProto {
 pub struct EnumDescriptorProto {
     // message fields
     name: ::std::option::Option<::std::string::String>,
-    pub value: crate::RepeatedField<EnumValueDescriptorProto>,
+    pub value: ::std::vec::Vec<EnumValueDescriptorProto>,
     pub options: crate::SingularPtrField<EnumOptions>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
@@ -2463,7 +2463,7 @@ impl crate::Message for EnumDescriptorProto {
                     self.name = ::std::option::Option::Some(is.read_string()?);
                 },
                 2 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.value)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.value)?;
                 },
                 3 => {
                     crate::rt::read_singular_message_into::<EnumOptions, _>(wire_type, is, &mut self.options)?;
@@ -2540,7 +2540,7 @@ impl crate::Message for EnumDescriptorProto {
                 |m: &mut EnumDescriptorProto| { &mut m.name },
                 EnumDescriptorProto::get_name,
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<EnumValueDescriptorProto>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<EnumValueDescriptorProto>>(
                 "value",
                 |m: &EnumDescriptorProto| { &m.value },
                 |m: &mut EnumDescriptorProto| { &mut m.value },
@@ -2561,7 +2561,7 @@ impl crate::Message for EnumDescriptorProto {
     fn default_instance() -> &'static EnumDescriptorProto {
         static instance: EnumDescriptorProto = EnumDescriptorProto {
             name: ::std::option::Option::None,
-            value: crate::RepeatedField::new(),
+            value: ::std::vec::Vec::new(),
             options: crate::SingularPtrField::none(),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
@@ -2833,7 +2833,7 @@ impl crate::reflect::ProtobufValueSized for EnumValueDescriptorProto {
 pub struct ServiceDescriptorProto {
     // message fields
     name: ::std::option::Option<::std::string::String>,
-    pub method: crate::RepeatedField<MethodDescriptorProto>,
+    pub method: ::std::vec::Vec<MethodDescriptorProto>,
     pub options: crate::SingularPtrField<ServiceOptions>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
@@ -2916,7 +2916,7 @@ impl crate::Message for ServiceDescriptorProto {
                     self.name = ::std::option::Option::Some(is.read_string()?);
                 },
                 2 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.method)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.method)?;
                 },
                 3 => {
                     crate::rt::read_singular_message_into::<ServiceOptions, _>(wire_type, is, &mut self.options)?;
@@ -2993,7 +2993,7 @@ impl crate::Message for ServiceDescriptorProto {
                 |m: &mut ServiceDescriptorProto| { &mut m.name },
                 ServiceDescriptorProto::get_name,
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<MethodDescriptorProto>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<MethodDescriptorProto>>(
                 "method",
                 |m: &ServiceDescriptorProto| { &m.method },
                 |m: &mut ServiceDescriptorProto| { &mut m.method },
@@ -3014,7 +3014,7 @@ impl crate::Message for ServiceDescriptorProto {
     fn default_instance() -> &'static ServiceDescriptorProto {
         static instance: ServiceDescriptorProto = ServiceDescriptorProto {
             name: ::std::option::Option::None,
-            method: crate::RepeatedField::new(),
+            method: ::std::vec::Vec::new(),
             options: crate::SingularPtrField::none(),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
@@ -3503,7 +3503,7 @@ pub struct FileOptions {
     ///  Namespace for generated classes; defaults to the package.
     csharp_namespace: ::std::option::Option<::std::string::String>,
     ///  The parser stores options it doesn't recognize here. See above.
-    pub uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -3976,7 +3976,7 @@ impl crate::Message for FileOptions {
                     self.csharp_namespace = ::std::option::Option::Some(is.read_string()?);
                 },
                 999 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.uninterpreted_option)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -4199,7 +4199,7 @@ impl crate::Message for FileOptions {
                 |m: &mut FileOptions| { &mut m.csharp_namespace },
                 FileOptions::get_csharp_namespace,
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
                 "uninterpreted_option",
                 |m: &FileOptions| { &m.uninterpreted_option },
                 |m: &mut FileOptions| { &mut m.uninterpreted_option },
@@ -4228,7 +4228,7 @@ impl crate::Message for FileOptions {
             cc_enable_arenas: ::std::option::Option::None,
             objc_class_prefix: ::std::option::Option::None,
             csharp_namespace: ::std::option::Option::None,
-            uninterpreted_option: crate::RepeatedField::new(),
+            uninterpreted_option: ::std::vec::Vec::new(),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };
@@ -4343,7 +4343,7 @@ pub struct MessageOptions {
     deprecated: ::std::option::Option<bool>,
     map_entry: ::std::option::Option<bool>,
     ///  The parser stores options it doesn't recognize here. See above.
-    pub uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -4478,7 +4478,7 @@ impl crate::Message for MessageOptions {
                     self.map_entry = ::std::option::Option::Some(is.read_bool()?);
                 },
                 999 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.uninterpreted_option)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -4581,7 +4581,7 @@ impl crate::Message for MessageOptions {
                 |m: &mut MessageOptions| { &mut m.map_entry },
                 MessageOptions::get_map_entry,
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
                 "uninterpreted_option",
                 |m: &MessageOptions| { &m.uninterpreted_option },
                 |m: &mut MessageOptions| { &mut m.uninterpreted_option },
@@ -4600,7 +4600,7 @@ impl crate::Message for MessageOptions {
             no_standard_descriptor_accessor: ::std::option::Option::None,
             deprecated: ::std::option::Option::None,
             map_entry: ::std::option::Option::None,
-            uninterpreted_option: crate::RepeatedField::new(),
+            uninterpreted_option: ::std::vec::Vec::new(),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };
@@ -4694,7 +4694,7 @@ pub struct FieldOptions {
     ///  For Google-internal migration only. Do not use.
     weak: ::std::option::Option<bool>,
     ///  The parser stores options it doesn't recognize here. See above.
-    pub uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -4885,7 +4885,7 @@ impl crate::Message for FieldOptions {
                     self.weak = ::std::option::Option::Some(is.read_bool()?);
                 },
                 999 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.uninterpreted_option)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -5012,7 +5012,7 @@ impl crate::Message for FieldOptions {
                 |m: &mut FieldOptions| { &mut m.weak },
                 FieldOptions::get_weak,
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
                 "uninterpreted_option",
                 |m: &FieldOptions| { &m.uninterpreted_option },
                 |m: &mut FieldOptions| { &mut m.uninterpreted_option },
@@ -5033,7 +5033,7 @@ impl crate::Message for FieldOptions {
             lazy: ::std::option::Option::None,
             deprecated: ::std::option::Option::None,
             weak: ::std::option::Option::None,
-            uninterpreted_option: crate::RepeatedField::new(),
+            uninterpreted_option: ::std::vec::Vec::new(),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };
@@ -5179,7 +5179,7 @@ pub mod field_options {
 pub struct OneofOptions {
     // message fields
     ///  The parser stores options it doesn't recognize here. See above.
-    pub uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -5214,7 +5214,7 @@ impl crate::Message for OneofOptions {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 999 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.uninterpreted_option)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -5269,7 +5269,7 @@ impl crate::Message for OneofOptions {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
                 "uninterpreted_option",
                 |m: &OneofOptions| { &m.uninterpreted_option },
                 |m: &mut OneofOptions| { &mut m.uninterpreted_option },
@@ -5284,7 +5284,7 @@ impl crate::Message for OneofOptions {
 
     fn default_instance() -> &'static OneofOptions {
         static instance: OneofOptions = OneofOptions {
-            uninterpreted_option: crate::RepeatedField::new(),
+            uninterpreted_option: ::std::vec::Vec::new(),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };
@@ -5325,7 +5325,7 @@ pub struct EnumOptions {
     ///  is a formalization for deprecating enums.
     deprecated: ::std::option::Option<bool>,
     ///  The parser stores options it doesn't recognize here. See above.
-    pub uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -5410,7 +5410,7 @@ impl crate::Message for EnumOptions {
                     self.deprecated = ::std::option::Option::Some(is.read_bool()?);
                 },
                 999 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.uninterpreted_option)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -5489,7 +5489,7 @@ impl crate::Message for EnumOptions {
                 |m: &mut EnumOptions| { &mut m.deprecated },
                 EnumOptions::get_deprecated,
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
                 "uninterpreted_option",
                 |m: &EnumOptions| { &m.uninterpreted_option },
                 |m: &mut EnumOptions| { &mut m.uninterpreted_option },
@@ -5506,7 +5506,7 @@ impl crate::Message for EnumOptions {
         static instance: EnumOptions = EnumOptions {
             allow_alias: ::std::option::Option::None,
             deprecated: ::std::option::Option::None,
-            uninterpreted_option: crate::RepeatedField::new(),
+            uninterpreted_option: ::std::vec::Vec::new(),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };
@@ -5546,7 +5546,7 @@ pub struct EnumValueOptions {
     ///  this is a formalization for deprecating enum values.
     deprecated: ::std::option::Option<bool>,
     ///  The parser stores options it doesn't recognize here. See above.
-    pub uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -5606,7 +5606,7 @@ impl crate::Message for EnumValueOptions {
                     self.deprecated = ::std::option::Option::Some(is.read_bool()?);
                 },
                 999 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.uninterpreted_option)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -5673,7 +5673,7 @@ impl crate::Message for EnumValueOptions {
                 |m: &mut EnumValueOptions| { &mut m.deprecated },
                 EnumValueOptions::get_deprecated,
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
                 "uninterpreted_option",
                 |m: &EnumValueOptions| { &m.uninterpreted_option },
                 |m: &mut EnumValueOptions| { &mut m.uninterpreted_option },
@@ -5689,7 +5689,7 @@ impl crate::Message for EnumValueOptions {
     fn default_instance() -> &'static EnumValueOptions {
         static instance: EnumValueOptions = EnumValueOptions {
             deprecated: ::std::option::Option::None,
-            uninterpreted_option: crate::RepeatedField::new(),
+            uninterpreted_option: ::std::vec::Vec::new(),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };
@@ -5728,7 +5728,7 @@ pub struct ServiceOptions {
     ///  this is a formalization for deprecating services.
     deprecated: ::std::option::Option<bool>,
     ///  The parser stores options it doesn't recognize here. See above.
-    pub uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -5788,7 +5788,7 @@ impl crate::Message for ServiceOptions {
                     self.deprecated = ::std::option::Option::Some(is.read_bool()?);
                 },
                 999 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.uninterpreted_option)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -5855,7 +5855,7 @@ impl crate::Message for ServiceOptions {
                 |m: &mut ServiceOptions| { &mut m.deprecated },
                 ServiceOptions::get_deprecated,
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
                 "uninterpreted_option",
                 |m: &ServiceOptions| { &m.uninterpreted_option },
                 |m: &mut ServiceOptions| { &mut m.uninterpreted_option },
@@ -5871,7 +5871,7 @@ impl crate::Message for ServiceOptions {
     fn default_instance() -> &'static ServiceOptions {
         static instance: ServiceOptions = ServiceOptions {
             deprecated: ::std::option::Option::None,
-            uninterpreted_option: crate::RepeatedField::new(),
+            uninterpreted_option: ::std::vec::Vec::new(),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };
@@ -5910,7 +5910,7 @@ pub struct MethodOptions {
     ///  this is a formalization for deprecating methods.
     deprecated: ::std::option::Option<bool>,
     ///  The parser stores options it doesn't recognize here. See above.
-    pub uninterpreted_option: crate::RepeatedField<UninterpretedOption>,
+    pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -5970,7 +5970,7 @@ impl crate::Message for MethodOptions {
                     self.deprecated = ::std::option::Option::Some(is.read_bool()?);
                 },
                 999 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.uninterpreted_option)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -6037,7 +6037,7 @@ impl crate::Message for MethodOptions {
                 |m: &mut MethodOptions| { &mut m.deprecated },
                 MethodOptions::get_deprecated,
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<UninterpretedOption>>(
                 "uninterpreted_option",
                 |m: &MethodOptions| { &m.uninterpreted_option },
                 |m: &mut MethodOptions| { &mut m.uninterpreted_option },
@@ -6053,7 +6053,7 @@ impl crate::Message for MethodOptions {
     fn default_instance() -> &'static MethodOptions {
         static instance: MethodOptions = MethodOptions {
             deprecated: ::std::option::Option::None,
-            uninterpreted_option: crate::RepeatedField::new(),
+            uninterpreted_option: ::std::vec::Vec::new(),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };
@@ -6092,7 +6092,7 @@ impl crate::reflect::ProtobufValueSized for MethodOptions {
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct UninterpretedOption {
     // message fields
-    pub name: crate::RepeatedField<uninterpreted_option::NamePart>,
+    pub name: ::std::vec::Vec<uninterpreted_option::NamePart>,
     ///  The value of the uninterpreted option, in whatever type the tokenizer
     ///  identified it as during parsing. Exactly one of these should be set.
     identifier_value: ::std::option::Option<::std::string::String>,
@@ -6300,7 +6300,7 @@ impl crate::Message for UninterpretedOption {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 2 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.name)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.name)?;
                 },
                 3 => {
                     if wire_type != crate::wire_format::WireTypeLengthDelimited {
@@ -6427,7 +6427,7 @@ impl crate::Message for UninterpretedOption {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<uninterpreted_option::NamePart>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<uninterpreted_option::NamePart>>(
                 "name",
                 |m: &UninterpretedOption| { &m.name },
                 |m: &mut UninterpretedOption| { &mut m.name },
@@ -6478,7 +6478,7 @@ impl crate::Message for UninterpretedOption {
 
     fn default_instance() -> &'static UninterpretedOption {
         static instance: UninterpretedOption = UninterpretedOption {
-            name: crate::RepeatedField::new(),
+            name: ::std::vec::Vec::new(),
             identifier_value: ::std::option::Option::None,
             positive_int_value: ::std::option::Option::None,
             negative_int_value: ::std::option::Option::None,
@@ -6749,7 +6749,7 @@ pub mod uninterpreted_option {
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct SourceCodeInfo {
     // message fields
-    pub location: crate::RepeatedField<source_code_info::Location>,
+    pub location: ::std::vec::Vec<source_code_info::Location>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -6784,7 +6784,7 @@ impl crate::Message for SourceCodeInfo {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.location)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.location)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -6839,7 +6839,7 @@ impl crate::Message for SourceCodeInfo {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<source_code_info::Location>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<source_code_info::Location>>(
                 "location",
                 |m: &SourceCodeInfo| { &m.location },
                 |m: &mut SourceCodeInfo| { &mut m.location },
@@ -6854,7 +6854,7 @@ impl crate::Message for SourceCodeInfo {
 
     fn default_instance() -> &'static SourceCodeInfo {
         static instance: SourceCodeInfo = SourceCodeInfo {
-            location: crate::RepeatedField::new(),
+            location: ::std::vec::Vec::new(),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };
@@ -6897,7 +6897,7 @@ pub mod source_code_info {
         pub span: ::std::vec::Vec<i32>,
         leading_comments: ::std::option::Option<::std::string::String>,
         trailing_comments: ::std::option::Option<::std::string::String>,
-        pub leading_detached_comments: crate::RepeatedField<::std::string::String>,
+        pub leading_detached_comments: ::std::vec::Vec<::std::string::String>,
         // special fields
         #[cfg_attr(serde, serde(skip))]
         pub unknown_fields: crate::UnknownFields,
@@ -7127,7 +7127,7 @@ pub mod source_code_info {
                     |m: &mut Location| { &mut m.trailing_comments },
                     Location::get_trailing_comments,
                 ));
-                fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+                fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                     "leading_detached_comments",
                     |m: &Location| { &m.leading_detached_comments },
                     |m: &mut Location| { &mut m.leading_detached_comments },
@@ -7146,7 +7146,7 @@ pub mod source_code_info {
                 span: ::std::vec::Vec::new(),
                 leading_comments: ::std::option::Option::None,
                 trailing_comments: ::std::option::Option::None,
-                leading_detached_comments: crate::RepeatedField::new(),
+                leading_detached_comments: ::std::vec::Vec::new(),
                 unknown_fields: crate::UnknownFields::new(),
                 cached_size: crate::rt::CachedSize::new(),
             };
@@ -7188,7 +7188,7 @@ pub struct GeneratedCodeInfo {
     // message fields
     ///  An Annotation connects some span of text in generated code to an element
     ///  of its generating .proto file.
-    pub annotation: crate::RepeatedField<generated_code_info::Annotation>,
+    pub annotation: ::std::vec::Vec<generated_code_info::Annotation>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -7223,7 +7223,7 @@ impl crate::Message for GeneratedCodeInfo {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.annotation)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.annotation)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -7278,7 +7278,7 @@ impl crate::Message for GeneratedCodeInfo {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<generated_code_info::Annotation>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<generated_code_info::Annotation>>(
                 "annotation",
                 |m: &GeneratedCodeInfo| { &m.annotation },
                 |m: &mut GeneratedCodeInfo| { &mut m.annotation },
@@ -7293,7 +7293,7 @@ impl crate::Message for GeneratedCodeInfo {
 
     fn default_instance() -> &'static GeneratedCodeInfo {
         static instance: GeneratedCodeInfo = GeneratedCodeInfo {
-            annotation: crate::RepeatedField::new(),
+            annotation: ::std::vec::Vec::new(),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };

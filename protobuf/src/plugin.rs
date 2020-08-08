@@ -29,7 +29,7 @@ pub struct CodeGeneratorRequest {
     ///  The .proto files that were explicitly listed on the command-line.  The
     ///  code generator should generate code only for these files.  Each file's
     ///  descriptor will be included in proto_file, below.
-    pub file_to_generate: crate::RepeatedField<::std::string::String>,
+    pub file_to_generate: ::std::vec::Vec<::std::string::String>,
     ///  The generator parameter passed on the command-line.
     parameter: ::std::option::Option<::std::string::String>,
     ///  FileDescriptorProtos for all files in files_to_generate and everything
@@ -43,7 +43,7 @@ pub struct CodeGeneratorRequest {
     ///  the entire set into memory at once.  However, as of this writing, this
     ///  is not similarly optimized on protoc's end -- it will store all fields in
     ///  memory at once before sending them to the plugin.
-    pub proto_file: crate::RepeatedField<crate::descriptor::FileDescriptorProto>,
+    pub proto_file: ::std::vec::Vec<crate::descriptor::FileDescriptorProto>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -123,7 +123,7 @@ impl crate::Message for CodeGeneratorRequest {
                     self.parameter = ::std::option::Option::Some(is.read_string()?);
                 },
                 15 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.proto_file)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.proto_file)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -190,7 +190,7 @@ impl crate::Message for CodeGeneratorRequest {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                 "file_to_generate",
                 |m: &CodeGeneratorRequest| { &m.file_to_generate },
                 |m: &mut CodeGeneratorRequest| { &mut m.file_to_generate },
@@ -201,7 +201,7 @@ impl crate::Message for CodeGeneratorRequest {
                 |m: &mut CodeGeneratorRequest| { &mut m.parameter },
                 CodeGeneratorRequest::get_parameter,
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::descriptor::FileDescriptorProto>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::descriptor::FileDescriptorProto>>(
                 "proto_file",
                 |m: &CodeGeneratorRequest| { &m.proto_file },
                 |m: &mut CodeGeneratorRequest| { &mut m.proto_file },
@@ -216,9 +216,9 @@ impl crate::Message for CodeGeneratorRequest {
 
     fn default_instance() -> &'static CodeGeneratorRequest {
         static instance: CodeGeneratorRequest = CodeGeneratorRequest {
-            file_to_generate: crate::RepeatedField::new(),
+            file_to_generate: ::std::vec::Vec::new(),
             parameter: ::std::option::Option::None,
-            proto_file: crate::RepeatedField::new(),
+            proto_file: ::std::vec::Vec::new(),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };
@@ -262,7 +262,7 @@ pub struct CodeGeneratorResponse {
     ///  unparseable -- should be reported by writing a message to stderr and
     ///  exiting with a non-zero status code.
     error: ::std::option::Option<::std::string::String>,
-    pub file: crate::RepeatedField<code_generator_response::File>,
+    pub file: ::std::vec::Vec<code_generator_response::File>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -339,7 +339,7 @@ impl crate::Message for CodeGeneratorResponse {
                     self.error = ::std::option::Option::Some(is.read_string()?);
                 },
                 15 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.file)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.file)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -406,7 +406,7 @@ impl crate::Message for CodeGeneratorResponse {
                 |m: &mut CodeGeneratorResponse| { &mut m.error },
                 CodeGeneratorResponse::get_error,
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<code_generator_response::File>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<code_generator_response::File>>(
                 "file",
                 |m: &CodeGeneratorResponse| { &m.file },
                 |m: &mut CodeGeneratorResponse| { &mut m.file },
@@ -422,7 +422,7 @@ impl crate::Message for CodeGeneratorResponse {
     fn default_instance() -> &'static CodeGeneratorResponse {
         static instance: CodeGeneratorResponse = CodeGeneratorResponse {
             error: ::std::option::Option::None,
-            file: crate::RepeatedField::new(),
+            file: ::std::vec::Vec::new(),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };

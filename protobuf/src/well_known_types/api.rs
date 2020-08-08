@@ -30,9 +30,9 @@ pub struct Api {
     ///  followed by the api's simple name.
     pub name: ::std::string::String,
     ///  The methods of this api, in unspecified order.
-    pub methods: crate::RepeatedField<Method>,
+    pub methods: ::std::vec::Vec<Method>,
     ///  Any metadata attached to the API.
-    pub options: crate::RepeatedField<crate::well_known_types::Option>,
+    pub options: ::std::vec::Vec<crate::well_known_types::Option>,
     ///  A version string for this api. If specified, must have the form
     ///  `major-version.minor-version`, as in `1.10`. If the minor version
     ///  is omitted, it defaults to zero. If the entire version field is
@@ -60,7 +60,7 @@ pub struct Api {
     ///  message.
     pub source_context: crate::SingularPtrField<crate::well_known_types::SourceContext>,
     ///  Included APIs. See [Mixin][].
-    pub mixins: crate::RepeatedField<Mixin>,
+    pub mixins: ::std::vec::Vec<Mixin>,
     ///  The source syntax of the service.
     pub syntax: crate::ProtobufEnumOrUnknown<crate::well_known_types::Syntax>,
     // special fields
@@ -118,10 +118,10 @@ impl crate::Message for Api {
                     self.name = is.read_string()?;
                 },
                 2 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.methods)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.methods)?;
                 },
                 3 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.options)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.options)?;
                 },
                 4 => {
                     if wire_type != crate::wire_format::WireTypeLengthDelimited {
@@ -133,7 +133,7 @@ impl crate::Message for Api {
                     crate::rt::read_singular_message_into::<crate::well_known_types::SourceContext, _>(wire_type, is, &mut self.source_context)?;
                 },
                 6 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.mixins)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.mixins)?;
                 },
                 7 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
@@ -238,12 +238,12 @@ impl crate::Message for Api {
                 |m: &Api| { &m.name },
                 |m: &mut Api| { &mut m.name },
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Method>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Method>>(
                 "methods",
                 |m: &Api| { &m.methods },
                 |m: &mut Api| { &mut m.methods },
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::Option>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::Option>>(
                 "options",
                 |m: &Api| { &m.options },
                 |m: &mut Api| { &mut m.options },
@@ -258,7 +258,7 @@ impl crate::Message for Api {
                 |m: &Api| { &m.source_context },
                 |m: &mut Api| { &mut m.source_context },
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Mixin>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Mixin>>(
                 "mixins",
                 |m: &Api| { &m.mixins },
                 |m: &mut Api| { &mut m.mixins },
@@ -279,11 +279,11 @@ impl crate::Message for Api {
     fn default_instance() -> &'static Api {
         static instance: Api = Api {
             name: ::std::string::String::new(),
-            methods: crate::RepeatedField::new(),
-            options: crate::RepeatedField::new(),
+            methods: ::std::vec::Vec::new(),
+            options: ::std::vec::Vec::new(),
             version: ::std::string::String::new(),
             source_context: crate::SingularPtrField::none(),
-            mixins: crate::RepeatedField::new(),
+            mixins: ::std::vec::Vec::new(),
             syntax: crate::ProtobufEnumOrUnknown::from_i32(0),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
@@ -334,7 +334,7 @@ pub struct Method {
     ///  If true, the response is streamed.
     pub response_streaming: bool,
     ///  Any metadata attached to the method.
-    pub options: crate::RepeatedField<crate::well_known_types::Option>,
+    pub options: ::std::vec::Vec<crate::well_known_types::Option>,
     ///  The source syntax of this method.
     pub syntax: crate::ProtobufEnumOrUnknown<crate::well_known_types::Syntax>,
     // special fields
@@ -401,7 +401,7 @@ impl crate::Message for Method {
                     self.response_streaming = is.read_bool()?;
                 },
                 6 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.options)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.options)?;
                 },
                 7 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
@@ -523,7 +523,7 @@ impl crate::Message for Method {
                 |m: &Method| { &m.response_streaming },
                 |m: &mut Method| { &mut m.response_streaming },
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::Option>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::Option>>(
                 "options",
                 |m: &Method| { &m.options },
                 |m: &mut Method| { &mut m.options },
@@ -548,7 +548,7 @@ impl crate::Message for Method {
             request_streaming: false,
             response_type_url: ::std::string::String::new(),
             response_streaming: false,
-            options: crate::RepeatedField::new(),
+            options: ::std::vec::Vec::new(),
             syntax: crate::ProtobufEnumOrUnknown::from_i32(0),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),

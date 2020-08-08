@@ -26,7 +26,7 @@
 pub struct FieldMask {
     // message fields
     ///  The set of field mask paths.
-    pub paths: crate::RepeatedField<::std::string::String>,
+    pub paths: ::std::vec::Vec<::std::string::String>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -110,7 +110,7 @@ impl crate::Message for FieldMask {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                 "paths",
                 |m: &FieldMask| { &m.paths },
                 |m: &mut FieldMask| { &mut m.paths },
@@ -125,7 +125,7 @@ impl crate::Message for FieldMask {
 
     fn default_instance() -> &'static FieldMask {
         static instance: FieldMask = FieldMask {
-            paths: crate::RepeatedField::new(),
+            paths: ::std::vec::Vec::new(),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };

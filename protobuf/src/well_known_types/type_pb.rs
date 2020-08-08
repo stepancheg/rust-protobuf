@@ -29,11 +29,11 @@ pub struct Type {
     ///  The fully qualified message name.
     pub name: ::std::string::String,
     ///  The list of fields.
-    pub fields: crate::RepeatedField<Field>,
+    pub fields: ::std::vec::Vec<Field>,
     ///  The list of types appearing in `oneof` definitions in this type.
-    pub oneofs: crate::RepeatedField<::std::string::String>,
+    pub oneofs: ::std::vec::Vec<::std::string::String>,
     ///  The protocol buffer options.
-    pub options: crate::RepeatedField<Option>,
+    pub options: ::std::vec::Vec<Option>,
     ///  The source context.
     pub source_context: crate::SingularPtrField<crate::well_known_types::SourceContext>,
     ///  The source syntax.
@@ -88,13 +88,13 @@ impl crate::Message for Type {
                     self.name = is.read_string()?;
                 },
                 2 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.fields)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.fields)?;
                 },
                 3 => {
                     crate::rt::read_repeated_string_into(wire_type, is, &mut self.oneofs)?;
                 },
                 4 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.options)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.options)?;
                 },
                 5 => {
                     crate::rt::read_singular_message_into::<crate::well_known_types::SourceContext, _>(wire_type, is, &mut self.source_context)?;
@@ -195,17 +195,17 @@ impl crate::Message for Type {
                 |m: &Type| { &m.name },
                 |m: &mut Type| { &mut m.name },
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Field>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Field>>(
                 "fields",
                 |m: &Type| { &m.fields },
                 |m: &mut Type| { &mut m.fields },
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeString>(
                 "oneofs",
                 |m: &Type| { &m.oneofs },
                 |m: &mut Type| { &mut m.oneofs },
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Option>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Option>>(
                 "options",
                 |m: &Type| { &m.options },
                 |m: &mut Type| { &mut m.options },
@@ -231,9 +231,9 @@ impl crate::Message for Type {
     fn default_instance() -> &'static Type {
         static instance: Type = Type {
             name: ::std::string::String::new(),
-            fields: crate::RepeatedField::new(),
-            oneofs: crate::RepeatedField::new(),
-            options: crate::RepeatedField::new(),
+            fields: ::std::vec::Vec::new(),
+            oneofs: ::std::vec::Vec::new(),
+            options: ::std::vec::Vec::new(),
             source_context: crate::SingularPtrField::none(),
             syntax: crate::ProtobufEnumOrUnknown::from_i32(0),
             unknown_fields: crate::UnknownFields::new(),
@@ -290,7 +290,7 @@ pub struct Field {
     ///  Whether to use alternative packed wire representation.
     pub packed: bool,
     ///  The protocol buffer options.
-    pub options: crate::RepeatedField<Option>,
+    pub options: ::std::vec::Vec<Option>,
     ///  The field JSON name.
     pub json_name: ::std::string::String,
     ///  The string value of the default value of this field. Proto2 syntax only.
@@ -371,7 +371,7 @@ impl crate::Message for Field {
                     self.packed = is.read_bool()?;
                 },
                 9 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.options)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.options)?;
                 },
                 10 => {
                     if wire_type != crate::wire_format::WireTypeLengthDelimited {
@@ -527,7 +527,7 @@ impl crate::Message for Field {
                 |m: &Field| { &m.packed },
                 |m: &mut Field| { &mut m.packed },
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Option>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Option>>(
                 "options",
                 |m: &Field| { &m.options },
                 |m: &mut Field| { &mut m.options },
@@ -559,7 +559,7 @@ impl crate::Message for Field {
             type_url: ::std::string::String::new(),
             oneof_index: 0,
             packed: false,
-            options: crate::RepeatedField::new(),
+            options: ::std::vec::Vec::new(),
             json_name: ::std::string::String::new(),
             default_value: ::std::string::String::new(),
             unknown_fields: crate::UnknownFields::new(),
@@ -766,9 +766,9 @@ pub struct Enum {
     ///  Enum type name.
     pub name: ::std::string::String,
     ///  Enum value definitions.
-    pub enumvalue: crate::RepeatedField<EnumValue>,
+    pub enumvalue: ::std::vec::Vec<EnumValue>,
     ///  Protocol buffer options.
-    pub options: crate::RepeatedField<Option>,
+    pub options: ::std::vec::Vec<Option>,
     ///  The source context.
     pub source_context: crate::SingularPtrField<crate::well_known_types::SourceContext>,
     ///  The source syntax.
@@ -823,10 +823,10 @@ impl crate::Message for Enum {
                     self.name = is.read_string()?;
                 },
                 2 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.enumvalue)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.enumvalue)?;
                 },
                 3 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.options)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.options)?;
                 },
                 4 => {
                     crate::rt::read_singular_message_into::<crate::well_known_types::SourceContext, _>(wire_type, is, &mut self.source_context)?;
@@ -921,12 +921,12 @@ impl crate::Message for Enum {
                 |m: &Enum| { &m.name },
                 |m: &mut Enum| { &mut m.name },
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<EnumValue>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<EnumValue>>(
                 "enumvalue",
                 |m: &Enum| { &m.enumvalue },
                 |m: &mut Enum| { &mut m.enumvalue },
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Option>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Option>>(
                 "options",
                 |m: &Enum| { &m.options },
                 |m: &mut Enum| { &mut m.options },
@@ -952,8 +952,8 @@ impl crate::Message for Enum {
     fn default_instance() -> &'static Enum {
         static instance: Enum = Enum {
             name: ::std::string::String::new(),
-            enumvalue: crate::RepeatedField::new(),
-            options: crate::RepeatedField::new(),
+            enumvalue: ::std::vec::Vec::new(),
+            options: ::std::vec::Vec::new(),
             source_context: crate::SingularPtrField::none(),
             syntax: crate::ProtobufEnumOrUnknown::from_i32(0),
             unknown_fields: crate::UnknownFields::new(),
@@ -997,7 +997,7 @@ pub struct EnumValue {
     ///  Enum value number.
     pub number: i32,
     ///  Protocol buffer options.
-    pub options: crate::RepeatedField<Option>,
+    pub options: ::std::vec::Vec<Option>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -1044,7 +1044,7 @@ impl crate::Message for EnumValue {
                     self.number = is.read_int32()?;
                 },
                 3 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.options)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.options)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -1121,7 +1121,7 @@ impl crate::Message for EnumValue {
                 |m: &EnumValue| { &m.number },
                 |m: &mut EnumValue| { &mut m.number },
             ));
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Option>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Option>>(
                 "options",
                 |m: &EnumValue| { &m.options },
                 |m: &mut EnumValue| { &mut m.options },
@@ -1138,7 +1138,7 @@ impl crate::Message for EnumValue {
         static instance: EnumValue = EnumValue {
             name: ::std::string::String::new(),
             number: 0,
-            options: crate::RepeatedField::new(),
+            options: ::std::vec::Vec::new(),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };

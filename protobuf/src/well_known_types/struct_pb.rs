@@ -660,7 +660,7 @@ pub mod value {
 pub struct ListValue {
     // message fields
     ///  Repeated field of dynamically typed values.
-    pub values: crate::RepeatedField<Value>,
+    pub values: ::std::vec::Vec<Value>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -695,7 +695,7 @@ impl crate::Message for ListValue {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    crate::rt::read_repeated_message_into_repeated_field(wire_type, is, &mut self.values)?;
+                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.values)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -750,7 +750,7 @@ impl crate::Message for ListValue {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_repeated_field_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Value>>(
+            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Value>>(
                 "values",
                 |m: &ListValue| { &m.values },
                 |m: &mut ListValue| { &mut m.values },
@@ -765,7 +765,7 @@ impl crate::Message for ListValue {
 
     fn default_instance() -> &'static ListValue {
         static instance: ListValue = ListValue {
-            values: crate::RepeatedField::new(),
+            values: ::std::vec::Vec::new(),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };
