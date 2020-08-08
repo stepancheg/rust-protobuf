@@ -127,7 +127,7 @@ fn main() {
     };
 
     let mut is = File::open(&Path::new("perftest_data.pbbin")).unwrap();
-    let test_data = protobuf::parse_from_reader::<PerftestData>(&mut is).unwrap();
+    let test_data = PerftestData::parse_from_reader(&mut is).unwrap();
 
     runner.test("test1", &test_data.test1);
     runner.test("test_repeated_bool", &test_data.test_repeated_bool);
