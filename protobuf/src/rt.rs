@@ -751,14 +751,11 @@ pub fn read_repeated_bytes_into(
 
 /// Read repeated `Bytes` field into given vec.
 #[cfg(feature = "bytes")]
-pub fn read_repeated_carllerche_bytes_into<V>(
+pub fn read_repeated_carllerche_bytes_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
-    target: &mut V,
-) -> ProtobufResult<()>
-where
-    V: VecLike<Bytes>,
-{
+    target: &mut Vec<Bytes>,
+) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => {
             target.push(is.read_carllerche_bytes()?);
