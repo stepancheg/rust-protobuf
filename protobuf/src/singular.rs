@@ -80,23 +80,19 @@ impl<T> OptionLike<T> for Option<Box<T>> {
 /// customer.address = Some(make_address()).into();
 /// ```
 #[derive(Clone, Debug, Eq, PartialEq, Hash)]
-pub struct SingularPtrField<T> {
-    value: Option<Box<T>>,
-}
+pub struct SingularPtrField<T>(pub Option<Box<T>>);
 
 impl<T> SingularPtrField<T> {
     /// Construct `SingularPtrField` from given object.
     #[inline]
     pub fn some(value: T) -> SingularPtrField<T> {
-        SingularPtrField {
-            value: Some(Box::new(value)),
-        }
+        SingularPtrField(Some(Box::new(value)))
     }
 
     /// Construct an empty `SingularPtrField`.
     #[inline]
     pub const fn none() -> SingularPtrField<T> {
-        SingularPtrField { value: None }
+        SingularPtrField(None)
     }
 
     /// Construct `SingularPtrField` from optional.
@@ -111,31 +107,31 @@ impl<T> SingularPtrField<T> {
     /// True iff this object contains data.
     #[inline]
     pub fn is_some(&self) -> bool {
-        self.value.is_some()
+        self.0.is_some()
     }
 
     /// True iff this object contains no data.
     #[inline]
     pub fn is_none(&self) -> bool {
-        self.value.is_none()
+        self.0.is_none()
     }
 
     /// Convert into `Option<T>`.
     #[inline]
     pub fn into_option(self) -> Option<T> {
-        self.value.map(|v| *v)
+        self.0.map(|v| *v)
     }
 
     /// View data as reference option.
     #[inline]
     pub fn as_ref(&self) -> Option<&T> {
-        self.value.as_ref().map(|v| &**v)
+        self.0.as_ref().map(|v| &**v)
     }
 
     /// View data as mutable reference option.
     #[inline]
     pub fn as_mut(&mut self) -> Option<&mut T> {
-        self.value.as_mut().map(|v| &mut **v)
+        self.0.as_mut().map(|v| &mut **v)
     }
 
     /// Get data as reference.
@@ -156,13 +152,13 @@ impl<T> SingularPtrField<T> {
     /// Panics if empty
     #[inline]
     pub fn unwrap(self) -> T {
-        *self.value.unwrap()
+        *self.0.unwrap()
     }
 
     /// Take the data or return supplied default element if empty.
     #[inline]
     pub fn unwrap_or(self, def: T) -> T {
-        self.value.map(|v| *v).unwrap_or(def)
+        self.0.map(|v| *v).unwrap_or(def)
     }
 
     /// Take the data or return supplied default element if empty.
@@ -171,7 +167,7 @@ impl<T> SingularPtrField<T> {
     where
         F: FnOnce() -> T,
     {
-        self.value.map(|v| *v).unwrap_or_else(f)
+        self.0.map(|v| *v).unwrap_or_else(f)
     }
 
     /// Apply given function to contained data to construct another `SingularPtrField`.
@@ -199,13 +195,13 @@ impl<T> SingularPtrField<T> {
     /// Take data as option, leaving this object empty.
     #[inline]
     pub fn take(&mut self) -> Option<T> {
-        self.value.take().map(|v| *v)
+        self.0.take().map(|v| *v)
     }
 
     /// Clear this object, but do not call destructor of underlying data.
     #[inline]
     pub fn clear(&mut self) {
-        self.value = None;
+        self.0 = None;
     }
 }
 
@@ -213,7 +209,7 @@ impl<T: Default + Clear> SingularPtrField<T> {
     /// Get contained data, consume self. Return default value for type if this is empty.
     #[inline]
     pub fn unwrap_or_default(self) -> T {
-        *self.value.unwrap_or_default()
+        *self.0.unwrap_or_default()
     }
 
     /// Set object to `Some(T::default())`.
