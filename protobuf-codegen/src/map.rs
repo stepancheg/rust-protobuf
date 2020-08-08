@@ -1,5 +1,3 @@
-use protobuf::prelude::*;
-
 use crate::scope::FieldWithContext;
 use crate::scope::MessageWithScope;
 use protobuf::descriptor::field_descriptor_proto;
@@ -8,7 +6,7 @@ use protobuf::descriptor::field_descriptor_proto;
 pub(crate) fn map_entry<'a>(
     d: &'a MessageWithScope,
 ) -> Option<(FieldWithContext<'a>, FieldWithContext<'a>)> {
-    if d.message.options.get_message().get_map_entry() {
+    if d.message.options.get_or_default().get_map_entry() {
         // Must be consistent with
         // DescriptorBuilder::ValidateMapEntry
 

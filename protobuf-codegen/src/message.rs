@@ -1,7 +1,5 @@
 use protobuf::descriptor::*;
 
-use protobuf::prelude::*;
-
 use super::code_writer::*;
 use super::customize::customize_from_rustproto_for_message;
 use super::customize::Customize;
@@ -75,7 +73,7 @@ impl<'a> MessageGen<'a> {
     ) -> MessageGen<'a> {
         let mut customize = customize.clone();
         customize.update_with(&customize_from_rustproto_for_message(
-            message.message.options.get_message(),
+            message.message.options.get_or_default(),
         ));
 
         static FIELD_NUMBER: protobuf::rt::LazyV2<i32> = protobuf::rt::LazyV2::INIT;
@@ -101,7 +99,7 @@ impl<'a> MessageGen<'a> {
             message
                 .get_file_descriptor()
                 .options
-                .get_message()
+                .get_or_default()
                 .get_optimize_for()
                 == file_options::OptimizeMode::LITE_RUNTIME
         });

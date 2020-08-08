@@ -50,7 +50,6 @@ pub mod ext;
 pub mod json;
 mod lazy_v2;
 mod oneof;
-pub mod prelude;
 pub mod reflect;
 pub mod rt;
 mod singular;

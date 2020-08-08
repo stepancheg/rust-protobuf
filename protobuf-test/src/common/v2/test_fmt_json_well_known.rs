@@ -2,8 +2,6 @@ use protobuf::well_known_types::*;
 
 use protobuf_test_common::*;
 
-use protobuf::prelude::*;
-
 use super::test_fmt_json_well_known_pb::*;
 
 #[test]
@@ -132,7 +130,7 @@ fn test_wrappers() {
 #[test]
 fn test_any() {
     let mut m = TestFmtJsonWellKnownTypes::new();
-    m.any_value.mut_message();
+    m.any_value.mut_or_default();
     // TODO
 }
 

@@ -2,8 +2,6 @@ use std::collections::HashSet;
 
 use protobuf::descriptor::*;
 
-use protobuf::prelude::*;
-
 use super::code_writer::*;
 use super::customize::Customize;
 use crate::file_descriptor::file_descriptor_proto_expr;
@@ -73,7 +71,7 @@ impl<'a> EnumGen<'a> {
                 .get_scope()
                 .get_file_descriptor()
                 .options
-                .get_message()
+                .get_or_default()
                 .get_optimize_for()
                 == file_options::OptimizeMode::LITE_RUNTIME
         });
@@ -92,7 +90,7 @@ impl<'a> EnumGen<'a> {
         self.enum_with_scope
             .en
             .options
-            .get_message()
+            .get_or_default()
             .get_allow_alias()
     }
 

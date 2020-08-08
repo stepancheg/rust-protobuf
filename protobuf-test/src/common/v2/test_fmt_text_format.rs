@@ -3,7 +3,6 @@ use protobuf::Message;
 use protobuf_test_common::*;
 
 use super::test_fmt_text_format_pb::*;
-use protobuf::prelude::MessageField;
 use protobuf::text_format::print_to_string;
 
 #[test]
@@ -269,7 +268,7 @@ fn test_repeated_multiple() {
 #[test]
 fn test_complex_message() {
     t("test_message_singular {value: 30}", |m| {
-        m.test_message_singular.mut_message().set_value(30)
+        m.test_message_singular.mut_or_default().set_value(30)
     });
 }
 

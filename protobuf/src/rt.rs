@@ -20,7 +20,6 @@ use crate::reflect::types::*;
 use crate::stream::CodedInputStream;
 use crate::stream::CodedOutputStream;
 use crate::wire_format;
-use crate::SingularPtrField;
 use crate::wire_format::WireType;
 use crate::wire_format::WireTypeFixed32;
 use crate::wire_format::WireTypeFixed64;
@@ -28,10 +27,9 @@ use crate::wire_format::WireTypeLengthDelimited;
 use crate::wire_format::WireTypeVarint;
 use crate::zigzag::*;
 use crate::ProtobufEnumOrUnknown;
+use crate::SingularPtrField;
 
 use crate::unknown::UnknownFields;
-
-use crate::prelude::*;
 
 pub use crate::cached_size::CachedSize;
 pub use crate::lazy_v2::LazyV2;
@@ -826,28 +824,6 @@ pub fn read_repeated_message_into_vec<M: Message + Default>(
                 }
                 Err(e) => Err(e),
             };
-            is.decr_recursion();
-            res
-        }
-        _ => Err(unexpected_wire_type(wire_type)),
-    }
-}
-
-/// Read singular `message` field.
-pub fn read_singular_message_into<M, O>(
-    wire_type: WireType,
-    is: &mut CodedInputStream,
-    target: &mut O,
-) -> ProtobufResult<()>
-where
-    M: Message + Default,
-    O: MessageField<M>,
-{
-    match wire_type {
-        WireTypeLengthDelimited => {
-            is.incr_recursion()?;
-            let tmp = target.set_default();
-            let res = is.merge_message(tmp);
             is.decr_recursion();
             res
         }

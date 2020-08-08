@@ -8,7 +8,6 @@ use crate::model;
 use protobuf;
 use protobuf::descriptor::field_descriptor_proto;
 use protobuf::json::json_name;
-use protobuf::prelude::*;
 use protobuf::Message;
 use protobuf::UnknownFields;
 use protobuf::UnknownValue;

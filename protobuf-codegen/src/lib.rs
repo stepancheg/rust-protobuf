@@ -13,8 +13,6 @@ use std::path::{Path, PathBuf};
 use protobuf::descriptor::*;
 use protobuf::Message;
 
-use protobuf::prelude::*;
-
 mod amend_io_error_util;
 pub mod case_convert;
 mod compiler_plugin;
@@ -229,7 +227,7 @@ fn gen_file(
     let mut customize = customize.clone();
     // options specified in invocation have precedence over options specified in file
     customize.update_with(&customize_from_rustproto_for_file(
-        file.options.get_message(),
+        file.options.get_or_default(),
     ));
 
     let scope = FileScope {
@@ -237,7 +235,7 @@ fn gen_file(
     }
     .to_scope();
     let lite_runtime = customize.lite_runtime.unwrap_or_else(|| {
-        file.options.get_message().get_optimize_for() == file_options::OptimizeMode::LITE_RUNTIME
+        file.options.get_or_default().get_optimize_for() == file_options::OptimizeMode::LITE_RUNTIME
     });
 
     let mut v = Vec::new();

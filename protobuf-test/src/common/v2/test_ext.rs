@@ -1,4 +1,3 @@
-use protobuf::prelude::*;
 use protobuf::Message;
 
 use super::test_ext_pb::*;
@@ -6,7 +5,7 @@ use super::test_ext_pb::*;
 #[test]
 fn test_get() {
     let descriptor = MyMessage::descriptor_static();
-    let message = descriptor.get_proto().options.get_message();
+    let message = descriptor.get_proto().options.get_or_default();
     assert_eq!(10.5, exts::double_field.get(message).unwrap_or_default());
     assert_eq!(-8.5, exts::float_field.get(message).unwrap_or_default());
     assert_eq!(-3, exts::int32_field.get(message).unwrap_or_default());

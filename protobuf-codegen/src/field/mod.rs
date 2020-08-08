@@ -1,5 +1,3 @@
-use protobuf::prelude::*;
-
 use crate::protobuf_abs_path::ProtobufAbsolutePath;
 use crate::rust;
 use protobuf::descriptor::*;
@@ -580,7 +578,7 @@ impl<'a> FieldGen<'a> {
     ) -> FieldGen<'a> {
         let mut customize = customize.clone();
         customize.update_with(&customize_from_rustproto_for_field(
-            field.field.options.get_message(),
+            field.field.options.get_or_default(),
         ));
 
         let elem = field_elem(
@@ -628,7 +626,7 @@ impl<'a> FieldGen<'a> {
                 // regular repeated field
                 (elem, _) => FieldKind::Repeated(RepeatedField {
                     elem,
-                    packed: field.field.options.get_message().get_packed(),
+                    packed: field.field.options.get_or_default().get_packed(),
                 }),
             }
         } else if let Some(oneof) = field.oneof() {
@@ -1631,9 +1629,7 @@ impl<'a> FieldGen<'a> {
             } => "singular_proto3",
         };
         let suffix = match s.elem {
-            FieldElem::Message(..) => {
-                "into_field"
-            }
+            FieldElem::Message(..) => "into_field",
             _ => "into",
         };
         let carllerche = match s.elem.primitive_type_variant() {
