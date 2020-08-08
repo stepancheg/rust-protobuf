@@ -400,7 +400,7 @@ impl<'a> Resolver<'a> {
             .collect::<Result<_, _>>()?;
 
         {
-            let mut fields = protobuf::RepeatedField::new();
+            let mut fields = Vec::new();
 
             for fo in &input.fields {
                 match &fo.t {
@@ -1080,7 +1080,7 @@ pub fn file_descriptor(
 
     let mut messages = Vec::new();
 
-    let mut extensions = protobuf::RepeatedField::new();
+    let mut extensions = Vec::new();
     for e in &input.extensions {
         let (ext, group_messages) = resolver.extension(&e.t)?;
         extensions.push(ext);

@@ -1,7 +1,6 @@
-extern crate glob;
-#[macro_use]
-extern crate log;
 extern crate env_logger;
+extern crate glob;
+extern crate log;
 
 extern crate protoc;
 extern crate protoc_rust;
