@@ -2,9 +2,11 @@ use std::collections::hash_map;
 use std::collections::HashMap;
 use std::hash::Hash;
 
-use crate::reflect::reflect_eq::{ReflectEq, ReflectEqMode};
+use crate::reflect::reflect_eq::ReflectEq;
+use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
 use crate::reflect::value::ProtobufValue;
+use crate::reflect::ProtobufValueSized;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 
@@ -21,11 +23,13 @@ pub(crate) trait ReflectMap: Send + Sync + 'static {
     fn insert(&mut self, key: ReflectValueBox, value: ReflectValueBox);
 
     fn clear(&mut self);
+
+    fn key_type(&self) -> &'static dyn RuntimeTypeDynamic;
+
+    fn value_type(&self) -> &'static dyn RuntimeTypeDynamic;
 }
 
-impl<K: ProtobufValue + Eq + Hash + 'static, V: ProtobufValue + 'static> ReflectMap
-    for HashMap<K, V>
-{
+impl<K: ProtobufValueSized + Eq + Hash, V: ProtobufValueSized> ReflectMap for HashMap<K, V> {
     fn reflect_iter<'a>(&'a self) -> ReflectMapIter<'a> {
         ReflectMapIter {
             imp: Box::new(ReflectMapIterImpl::<'a, K, V> { iter: self.iter() }),
@@ -55,17 +59,27 @@ impl<K: ProtobufValue + Eq + Hash + 'static, V: ProtobufValue + 'static> Reflect
     fn clear(&mut self) {
         self.clear();
     }
+
+    fn key_type(&self) -> &'static dyn RuntimeTypeDynamic {
+        K::dynamic()
+    }
+
+    fn value_type(&self) -> &'static dyn RuntimeTypeDynamic {
+        V::dynamic()
+    }
 }
 
 trait ReflectMapIterTrait<'a> {
     fn next(&mut self) -> Option<(&'a dyn ProtobufValue, &'a dyn ProtobufValue)>;
+    fn key_type(&self) -> &'static dyn RuntimeTypeDynamic;
+    fn value_type(&self) -> &'static dyn RuntimeTypeDynamic;
 }
 
 struct ReflectMapIterImpl<'a, K: Eq + Hash + 'static, V: 'static> {
     iter: hash_map::Iter<'a, K, V>,
 }
 
-impl<'a, K: ProtobufValue + Eq + Hash + 'static, V: ProtobufValue + 'static> ReflectMapIterTrait<'a>
+impl<'a, K: ProtobufValueSized + Eq + Hash, V: ProtobufValueSized> ReflectMapIterTrait<'a>
     for ReflectMapIterImpl<'a, K, V>
 {
     fn next(&mut self) -> Option<(&'a dyn ProtobufValue, &'a dyn ProtobufValue)> {
@@ -73,6 +87,14 @@ impl<'a, K: ProtobufValue + Eq + Hash + 'static, V: ProtobufValue + 'static> Ref
             Some((k, v)) => Some((k as &dyn ProtobufValue, v as &dyn ProtobufValue)),
             None => None,
         }
+    }
+
+    fn key_type(&self) -> &'static dyn RuntimeTypeDynamic {
+        K::dynamic()
+    }
+
+    fn value_type(&self) -> &'static dyn RuntimeTypeDynamic {
+        V::dynamic()
     }
 }
 
@@ -101,15 +123,11 @@ impl<'a> IntoIterator for &'a dyn ReflectMap {
 #[derive(Copy, Clone)]
 pub struct ReflectMapRef<'a> {
     pub(crate) map: &'a dyn ReflectMap,
-    pub(crate) key_dynamic: &'a dyn RuntimeTypeDynamic,
-    pub(crate) value_dynamic: &'a dyn RuntimeTypeDynamic,
 }
 
 /// Dynamic mutable reference to `map` field
 pub struct ReflectMapMut<'a> {
     pub(crate) map: &'a mut dyn ReflectMap,
-    pub(crate) key_dynamic: &'a dyn RuntimeTypeDynamic,
-    pub(crate) value_dynamic: &'a dyn RuntimeTypeDynamic,
 }
 
 impl<'a> ReflectMapRef<'a> {
@@ -125,19 +143,17 @@ impl<'a> ReflectMapRef<'a> {
 
     /// Find a value by given key.
     pub fn get(&self, key: ReflectValueRef) -> Option<ReflectValueRef> {
-        self.map
-            .get(key)
-            .map(|v| self.value_dynamic.value_to_ref(v))
+        self.map.get(key).map(|v| self.value_type().value_to_ref(v))
     }
 
     /// Map key type
     pub fn key_type(&self) -> &dyn RuntimeTypeDynamic {
-        self.key_dynamic
+        self.map.key_type()
     }
 
     /// Map value type
     pub fn value_type(&self) -> &dyn RuntimeTypeDynamic {
-        self.value_dynamic
+        self.map.value_type()
     }
 }
 
@@ -166,21 +182,17 @@ impl<'a> ReflectEq for ReflectMapRef<'a> {
 
 impl<'a> ReflectMapMut<'a> {
     fn as_ref(&'a self) -> ReflectMapRef<'a> {
-        ReflectMapRef {
-            map: self.map,
-            key_dynamic: self.key_dynamic,
-            value_dynamic: self.value_dynamic,
-        }
+        ReflectMapRef { map: self.map }
     }
 
     /// Map key type
     pub fn key_type(&self) -> &dyn RuntimeTypeDynamic {
-        self.key_dynamic
+        self.map.key_type()
     }
 
     /// Map value type
     pub fn value_type(&self) -> &dyn RuntimeTypeDynamic {
-        self.value_dynamic
+        self.map.value_type()
     }
 
     /// Number of map entries
@@ -195,9 +207,7 @@ impl<'a> ReflectMapMut<'a> {
 
     /// Find a value for given key
     pub fn get(&self, key: ReflectValueRef) -> Option<ReflectValueRef> {
-        self.map
-            .get(key)
-            .map(|v| self.value_dynamic.value_to_ref(v))
+        self.map.get(key).map(|v| self.value_type().value_to_ref(v))
     }
 
     /// Insert a value into the map
@@ -214,8 +224,16 @@ impl<'a> ReflectMapMut<'a> {
 /// Iterator over map
 pub struct ReflectMapRefIter<'a> {
     iter: ReflectMapIter<'a>,
-    key_dynamic: &'a dyn RuntimeTypeDynamic,
-    value_dynamic: &'a dyn RuntimeTypeDynamic,
+}
+
+impl<'a> ReflectMapRefIter<'a> {
+    fn key_type(&self) -> &'static dyn RuntimeTypeDynamic {
+        self.iter.imp.key_type()
+    }
+
+    fn value_type(&self) -> &'static dyn RuntimeTypeDynamic {
+        self.iter.imp.value_type()
+    }
 }
 
 impl<'a> Iterator for ReflectMapRefIter<'a> {
@@ -224,8 +242,8 @@ impl<'a> Iterator for ReflectMapRefIter<'a> {
     fn next(&mut self) -> Option<(ReflectValueRef<'a>, ReflectValueRef<'a>)> {
         self.iter.next().map(|(k, v)| {
             (
-                self.key_dynamic.value_to_ref(k),
-                self.value_dynamic.value_to_ref(v),
+                self.key_type().value_to_ref(k),
+                self.value_type().value_to_ref(v),
             )
         })
     }
@@ -238,8 +256,6 @@ impl<'a, 'b> IntoIterator for &'b ReflectMapRef<'a> {
     fn into_iter(self) -> ReflectMapRefIter<'a> {
         ReflectMapRefIter {
             iter: self.map.reflect_iter(),
-            key_dynamic: self.key_dynamic,
-            value_dynamic: self.value_dynamic,
         }
     }
 }

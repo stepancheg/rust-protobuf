@@ -10,7 +10,6 @@ use crate::reflect::map::ReflectMapRef;
 use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::type_dynamic::ProtobufTypeDynamic;
 use crate::reflect::types::ProtobufType;
-use crate::reflect::ProtobufValueSized;
 
 pub(crate) trait MapFieldAccessor: Send + Sync + 'static {
     fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectMapRef<'a>;
@@ -43,21 +42,13 @@ where
     fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectMapRef<'a> {
         let m = m.downcast_ref().unwrap();
         let map = (self.get_field)(m);
-        ReflectMapRef {
-            map,
-            key_dynamic: <K::ProtobufValue as ProtobufValueSized>::RuntimeType::dynamic(),
-            value_dynamic: <V::ProtobufValue as ProtobufValueSized>::RuntimeType::dynamic(),
-        }
+        ReflectMapRef { map }
     }
 
     fn mut_reflect<'a>(&self, m: &'a mut dyn Message) -> ReflectMapMut<'a> {
         let m = m.downcast_mut().unwrap();
         let map = (self.mut_field)(m);
-        ReflectMapMut {
-            map,
-            key_dynamic: K::ProtobufValue::dynamic(),
-            value_dynamic: V::ProtobufValue::dynamic(),
-        }
+        ReflectMapMut { map }
     }
 }
 
