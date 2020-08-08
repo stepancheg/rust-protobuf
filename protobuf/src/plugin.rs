@@ -195,7 +195,7 @@ impl crate::Message for CodeGeneratorRequest {
                 |m: &CodeGeneratorRequest| { &m.file_to_generate },
                 |m: &mut CodeGeneratorRequest| { &mut m.file_to_generate },
             ));
-            fields.push(crate::reflect::rt::v2::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
+            fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
                 "parameter",
                 |m: &CodeGeneratorRequest| { &m.parameter },
                 |m: &mut CodeGeneratorRequest| { &mut m.parameter },
@@ -400,7 +400,7 @@ impl crate::Message for CodeGeneratorResponse {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
+            fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
                 "error",
                 |m: &CodeGeneratorResponse| { &m.error },
                 |m: &mut CodeGeneratorResponse| { &mut m.error },
@@ -728,19 +728,19 @@ pub mod code_generator_response {
             static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(crate::reflect::rt::v2::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
+                fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
                     "name",
                     |m: &File| { &m.name },
                     |m: &mut File| { &mut m.name },
                     File::get_name,
                 ));
-                fields.push(crate::reflect::rt::v2::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
+                fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
                     "insertion_point",
                     |m: &File| { &m.insertion_point },
                     |m: &mut File| { &mut m.insertion_point },
                     File::get_insertion_point,
                 ));
-                fields.push(crate::reflect::rt::v2::make_option_get_ref_accessor::<_, crate::reflect::types::ProtobufTypeString, _>(
+                fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
                     "content",
                     |m: &File| { &m.content },
                     |m: &mut File| { &mut m.content },
