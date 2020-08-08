@@ -7,9 +7,9 @@ use std::fmt;
 
 use super::base64;
 
-use crate::core::Message;
 use crate::enums::ProtobufEnum;
 use crate::json::base64::FromBase64Error;
+use crate::message::Message;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::EnumValueDescriptor;
 use crate::reflect::FieldDescriptor;

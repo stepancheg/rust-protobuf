@@ -16,9 +16,9 @@ extern crate serde;
 #[cfg(feature = "with-serde")]
 extern crate serde_derive;
 pub use crate::clear::Clear;
-pub use crate::core::Message;
 pub use crate::enums::ProtobufEnum;
 pub use crate::enums::ProtobufEnumOrUnknown;
+pub use crate::message::Message;
 pub use crate::oneof::Oneof;
 pub use crate::singular::SingularPtrField;
 pub use crate::stream::CodedInputStream;
@@ -43,12 +43,12 @@ pub mod rustproto;
 
 mod arc_or_static;
 mod clear;
-mod core;
 mod enums;
 mod error;
 pub mod ext;
 pub mod json;
 mod lazy_v2;
+mod message;
 mod oneof;
 pub mod reflect;
 pub mod rt;

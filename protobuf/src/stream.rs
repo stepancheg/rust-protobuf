@@ -9,11 +9,11 @@ use crate::bytes::Bytes;
 use crate::chars::Chars;
 
 use crate::buf_read_iter::BufReadIter;
-use crate::core::Message;
 use crate::enums::ProtobufEnum;
 use crate::error::ProtobufError;
 use crate::error::ProtobufResult;
 use crate::error::WireError;
+use crate::message::Message;
 use crate::misc::remaining_capacity_as_slice_mut;
 use crate::misc::remove_lifetime_mut;
 use crate::unknown::UnknownFields;

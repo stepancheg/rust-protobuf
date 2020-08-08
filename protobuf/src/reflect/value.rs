@@ -9,7 +9,7 @@ use crate::bytes::Bytes;
 use crate::chars::Chars;
 
 use super::*;
-use crate::core::*;
+use crate::message::*;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::runtime_types::RuntimeType;

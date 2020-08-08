@@ -6,7 +6,7 @@
 
 use std::marker::PhantomData;
 
-use crate::core::Message;
+use crate::message::Message;
 use crate::reflect::types::ProtobufType;
 
 /// Optional ext field

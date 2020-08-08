@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::fmt;
 use std::marker;
 
-use crate::core::Message;
+use crate::message::Message;
 
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;

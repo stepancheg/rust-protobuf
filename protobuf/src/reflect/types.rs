@@ -10,10 +10,10 @@ use crate::bytes::Bytes;
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;
 
-use crate::core::Message;
 use crate::enums::ProtobufEnum;
 use crate::enums::ProtobufEnumOrUnknown;
 use crate::error::ProtobufResult;
+use crate::message::Message;
 use crate::reflect::type_dynamic::ProtobufTypeDynamicImpl;
 use crate::reflect::ProtobufValueSized;
 use crate::rt;

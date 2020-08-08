@@ -1,6 +1,6 @@
-use crate::core::Message;
 use crate::json::base64;
 use crate::json::float;
+use crate::message::Message;
 use crate::reflect::ReflectMapRef;
 use crate::reflect::ReflectRepeatedRef;
 use crate::reflect::ReflectValueRef;

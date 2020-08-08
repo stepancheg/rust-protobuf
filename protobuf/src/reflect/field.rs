@@ -1,7 +1,7 @@
-use crate::core::Message;
 use crate::descriptor::field_descriptor_proto;
 use crate::descriptor::FieldDescriptorProto;
 use crate::json::json_name;
+use crate::message::Message;
 use crate::reflect::acc::v2::map::MapFieldAccessorHolder;
 use crate::reflect::acc::v2::repeated::RepeatedFieldAccessorHolder;
 use crate::reflect::acc::v2::singular::SingularFieldAccessorHolder;
