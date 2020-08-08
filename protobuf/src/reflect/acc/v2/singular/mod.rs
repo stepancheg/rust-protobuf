@@ -19,17 +19,12 @@ pub(crate) mod oneof;
 /// Option-like objects
 #[doc(hidden)]
 trait OptionLike<T> {
-    fn into_option(self) -> Option<T>;
     fn as_option_ref(&self) -> Option<&T>;
     fn as_option_mut(&mut self) -> Option<&mut T>;
     fn set_value(&mut self, value: T);
 }
 
 impl<T> OptionLike<T> for Option<T> {
-    fn into_option(self) -> Option<T> {
-        self
-    }
-
     fn as_option_ref(&self) -> Option<&T> {
         self.as_ref()
     }
@@ -44,10 +39,6 @@ impl<T> OptionLike<T> for Option<T> {
 }
 
 impl<T> OptionLike<T> for SingularPtrField<T> {
-    fn into_option(self) -> Option<T> {
-        self.into_option()
-    }
-
     fn as_option_ref(&self) -> Option<&T> {
         self.as_ref()
     }
