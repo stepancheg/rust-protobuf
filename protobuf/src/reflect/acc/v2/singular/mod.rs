@@ -456,43 +456,6 @@ where
     )
 }
 
-/// Make accessor for option-like field
-pub fn make_option_get_copy_accessor<M, V, O>(
-    name: &'static str,
-    get_field: for<'a> fn(&'a M) -> &'a O,
-    mut_field: for<'a> fn(&'a mut M) -> &'a mut O,
-    get_value: fn(&M) -> V::ProtobufValue,
-) -> FieldAccessor
-where
-    M: Message + 'static,
-    V: ProtobufType + 'static,
-    O: OptionLike<V::ProtobufValue> + Send + Sync + 'static,
-{
-    FieldAccessor::new_v2(
-        name,
-        AccessorV2::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(
-                SingularFieldAccessorImpl::<M, V::ProtobufValue, _, _, _, _> {
-                    get_option_impl: GetOptionImplOptionFieldPointer::<M, V::ProtobufValue, O> {
-                        get_field,
-                        _marker: marker::PhantomData,
-                    },
-                    get_or_default_impl: GetOrDefaultGetCopy::<M, V::ProtobufValue> {
-                        get_field: get_value,
-                    },
-                    mut_or_default_impl: MutOrDefaultUnmplemented::new(),
-                    set_impl: SetImplOptionFieldPointer::<M, V::ProtobufValue, O> {
-                        mut_field,
-                        _marker: marker::PhantomData,
-                    },
-                    _marker: marker::PhantomData,
-                },
-            ),
-            element_type: V::ProtobufValue::dynamic(),
-        }),
-    )
-}
-
 /// Make accessor for `Option<C>` field
 pub fn make_option_get_copy_simpler_accessor<M, V>(
     name: &'static str,
@@ -590,44 +553,6 @@ where
                 _marker: marker::PhantomData,
             }),
             element_type: ProtobufEnumOrUnknown::<E>::dynamic(),
-        }),
-    )
-}
-
-/// String or bytes field
-pub fn make_option_get_ref_accessor<M, V, O>(
-    name: &'static str,
-    get_field: for<'a> fn(&'a M) -> &'a O,
-    mut_field: for<'a> fn(&'a mut M) -> &'a mut O,
-    get_value: for<'a> fn(&'a M) -> &'a <<V::ProtobufValue as ProtobufValueSized>::RuntimeType as RuntimeTypeWithDeref>::DerefTarget,
-) -> FieldAccessor
-where
-    M: Message + 'static,
-    V: ProtobufType + 'static,
-    <V::ProtobufValue as ProtobufValueSized>::RuntimeType: RuntimeTypeWithDeref,
-    O: OptionLike<V::ProtobufValue> + Send + Sync + 'static,
-{
-    FieldAccessor::new_v2(
-        name,
-        AccessorV2::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(
-                SingularFieldAccessorImpl::<M, V::ProtobufValue, _, _, _, _> {
-                    get_option_impl: GetOptionImplOptionFieldPointer::<M, V::ProtobufValue, O> {
-                        get_field,
-                        _marker: marker::PhantomData,
-                    },
-                    get_or_default_impl: GetOrDefaultGetRefDeref::<M, V::ProtobufValue> {
-                        get_field: get_value,
-                    },
-                    mut_or_default_impl: MutOrDefaultUnmplemented::new(),
-                    set_impl: SetImplOptionFieldPointer::<M, V::ProtobufValue, O> {
-                        mut_field,
-                        _marker: marker::PhantomData,
-                    },
-                    _marker: marker::PhantomData,
-                },
-            ),
-            element_type: V::ProtobufValue::dynamic(),
         }),
     )
 }
