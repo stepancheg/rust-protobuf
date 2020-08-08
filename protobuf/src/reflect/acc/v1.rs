@@ -6,9 +6,9 @@ use std::collections::HashMap;
 use std::fmt;
 use std::hash::Hash;
 
+use crate::enums::ProtobufEnum;
 use crate::message::message_down_cast;
 use crate::message::Message;
-use crate::enums::ProtobufEnum;
 use crate::reflect::EnumValueDescriptor;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectFieldRef;

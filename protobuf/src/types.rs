@@ -8,9 +8,9 @@ use crate::chars::Chars;
 #[cfg(feature = "bytes")]
 use bytes::Bytes;
 
-use crate::message::Message;
 use crate::enums::ProtobufEnum;
 use crate::error::ProtobufResult;
+use crate::message::Message;
 use crate::parse_from_bytes;
 use crate::reflect::ProtobufValue;
 use crate::rt;

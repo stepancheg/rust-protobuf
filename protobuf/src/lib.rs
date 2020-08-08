@@ -16,6 +16,9 @@ pub use crate::cached_size::CachedSize;
 #[cfg(feature = "bytes")]
 pub use crate::chars::Chars;
 pub use crate::clear::Clear;
+pub use crate::enums::ProtobufEnum;
+pub use crate::error::ProtobufError;
+pub use crate::error::ProtobufResult;
 pub use crate::message::parse_from_bytes;
 #[cfg(feature = "bytes")]
 pub use crate::message::parse_from_carllerche_bytes;
@@ -27,9 +30,6 @@ pub use crate::message::parse_length_delimited_from_bytes;
 #[allow(deprecated)]
 pub use crate::message::parse_length_delimited_from_reader;
 pub use crate::message::Message;
-pub use crate::enums::ProtobufEnum;
-pub use crate::error::ProtobufError;
-pub use crate::error::ProtobufResult;
 pub use crate::repeated::RepeatedField;
 pub use crate::singular::SingularField;
 pub use crate::singular::SingularPtrField;
@@ -50,13 +50,13 @@ pub mod rustproto;
 
 mod clear;
 pub mod compiler_plugin;
-mod message;
 mod enums;
 pub mod error;
 pub mod ext;
 pub mod json;
 pub mod lazy;
 mod lazy_v2;
+mod message;
 pub mod reflect;
 mod repeated;
 pub mod rt;
