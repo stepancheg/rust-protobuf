@@ -2,16 +2,26 @@ use crate::arc_or_static::ArcOrStatic;
 use crate::cached_size::CachedSize;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ProtobufValue;
+use crate::reflect::ReflectValueBox;
 use crate::Clear;
 use crate::CodedInputStream;
 use crate::CodedOutputStream;
 use crate::Message;
 use crate::ProtobufResult;
 use crate::UnknownFields;
+use std::collections::HashMap;
+
+#[derive(Debug)]
+enum DynamicFieldValue {
+    Singular(ReflectValueBox),
+    Repeated(Vec<ReflectValueBox>),
+    Map(HashMap<ReflectValueBox, ReflectValueBox>),
+}
 
 #[derive(Debug)]
 pub struct DynamicMessage {
     descriptor: ArcOrStatic<MessageDescriptor>,
+    fields: HashMap<String, DynamicFieldValue>,
     unknown_fields: UnknownFields,
     cached_size: CachedSize,
 }
