@@ -51,7 +51,7 @@ fn parse_repeated_small_bytes(b: &mut test::Bencher) {
 #[bench]
 fn parse_repeated_medium_regular(b: &mut test::Bencher) {
     let bs = make_repeated(300);
-    b.iter(|| protobuf::parse_from_bytes::<messages::TestMessage>(&bs).expect("parse"))
+    b.iter(|| messages::TestMessage::parse_from_bytes(&bs).expect("parse"))
 }
 
 #[bench]
