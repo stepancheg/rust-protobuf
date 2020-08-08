@@ -23,9 +23,6 @@ extend google.protobuf.FileOptions {
     optional bool carllerche_bytes_for_bytes_all = 17011;
     // Use `bytes::Bytes` for `string` fields
     optional bool carllerche_bytes_for_string_all = 17012;
-    // Use `std::Option<T>` to store singular messages fields.
-    // Note, it's not possible to have recursive messages with this option enabled.
-    optional bool singular_field_option_all = 17025;
 
     // Use `serde_derive` to implement `Serialize` and `Deserialize`
     optional bool serde_derive_all = 17030;
@@ -49,9 +46,6 @@ extend google.protobuf.MessageOptions {
     optional bool carllerche_bytes_for_bytes = 17011;
     // Use `bytes::Bytes` for `string` fields
     optional bool carllerche_bytes_for_string = 17012;
-    // Use `std::Option<T>` to store singular messages fields.
-    // Note, it's not possible to have recursive messages with this option enabled.
-    optional bool singular_field_option = 17025;
     // Use `serde_derive` to implement `Serialize` and `Deserialize`
     optional bool serde_derive = 17030;
     // Guard serde annotations with cfg attr.
@@ -69,7 +63,4 @@ extend google.protobuf.FieldOptions {
     optional bool carllerche_bytes_for_bytes_field = 17011;
     // Use `bytes::Bytes` for `string` fields
     optional bool carllerche_bytes_for_string_field = 17012;
-    // Use `std::Option<T>` to store singular messages fields.
-    // Note, it's not possible to have recursive messages with this option enabled.
-    optional bool singular_field_option_field = 17025;
 }

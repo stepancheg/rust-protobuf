@@ -642,13 +642,7 @@ impl<'a> FieldGen<'a> {
                 let required =
                     field.field.get_label() == field_descriptor_proto::Label::LABEL_REQUIRED;
                 let option_kind = match field.field.get_field_type() {
-                    field_descriptor_proto::Type::TYPE_MESSAGE => {
-                        if customize.singular_field_option.unwrap_or(false) {
-                            OptionKind::Option
-                        } else {
-                            OptionKind::SingularPtrField
-                        }
-                    }
+                    field_descriptor_proto::Type::TYPE_MESSAGE => OptionKind::SingularPtrField,
                     _ => OptionKind::Option,
                 };
 
