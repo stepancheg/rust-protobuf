@@ -268,7 +268,6 @@ impl<'a> SingularField<'a> {
 #[derive(Eq, PartialEq, Copy, Clone)]
 pub enum RepeatedFieldKind {
     Vec,
-    RepeatedField,
 }
 
 impl RepeatedFieldKind {
@@ -276,16 +275,12 @@ impl RepeatedFieldKind {
         let element_type = Box::new(element_type);
         match self {
             RepeatedFieldKind::Vec => RustType::Vec(element_type),
-            RepeatedFieldKind::RepeatedField => RustType::RepeatedField(element_type),
         }
     }
 
-    fn default(&self, customize: &Customize) -> String {
+    fn default(&self) -> String {
         match self {
             RepeatedFieldKind::Vec => EXPR_VEC_NEW.to_owned(),
-            RepeatedFieldKind::RepeatedField => {
-                format!("{}::RepeatedField::new()", protobuf_crate_path(customize))
-            }
         }
     }
 }
@@ -294,19 +289,11 @@ impl RepeatedFieldKind {
 pub(crate) struct RepeatedField<'a> {
     pub elem: FieldElem<'a>,
     pub packed: bool,
-    pub repeated_field_vec: bool,
 }
 
 impl<'a> RepeatedField<'a> {
     fn kind(&self) -> RepeatedFieldKind {
-        if !self.elem.is_copy()
-            && self.elem.primitive_type_variant() != PrimitiveTypeVariant::Carllerche
-            && !self.repeated_field_vec
-        {
-            RepeatedFieldKind::RepeatedField
-        } else {
-            RepeatedFieldKind::Vec
-        }
+        RepeatedFieldKind::Vec
     }
 
     fn rust_type(&self, reference: &FileAndMod) -> RustType {
@@ -314,8 +301,8 @@ impl<'a> RepeatedField<'a> {
             .wrap_element(self.elem.rust_storage_elem_type(reference))
     }
 
-    fn default(&self, customize: &Customize) -> String {
-        self.kind().default(customize)
+    fn default(&self) -> String {
+        self.kind().default()
     }
 }
 
@@ -347,7 +334,7 @@ impl<'a> FieldKind<'a> {
     ) -> String {
         match self {
             FieldKind::Singular(s) => s.default_value(customize, reference, const_expr),
-            FieldKind::Repeated(r) => r.default(customize),
+            FieldKind::Repeated(r) => r.default(),
             FieldKind::Oneof(..) => EXPR_NONE.to_owned(),
             FieldKind::Map(..) => panic!("map fields cannot have field value"),
         }
@@ -660,7 +647,6 @@ impl<'a> FieldGen<'a> {
                 (elem, _) => FieldKind::Repeated(RepeatedField {
                     elem,
                     packed: field.field.options.get_message().get_packed(),
-                    repeated_field_vec: customize.repeated_field_vec.unwrap_or(false),
                 }),
             }
         } else if let Some(oneof) = field.oneof() {
@@ -1267,9 +1253,6 @@ impl<'a> FieldGen<'a> {
 
         match self.kind {
             FieldKind::Map(..) => tags.push("default".to_string()),
-            FieldKind::Repeated(..) if self.customize.repeated_field_vec == Some(true) => {
-                tags.push("default".to_string());
-            }
             _ => {}
         }
 
@@ -1644,15 +1627,8 @@ impl<'a> FieldGen<'a> {
         let into_what_suffix = match *r {
             RepeatedField {
                 elem: FieldElem::Message(..),
-                repeated_field_vec,
                 ..
-            } => {
-                if repeated_field_vec {
-                    "_vec"
-                } else {
-                    "_repeated_field"
-                }
-            }
+            } => "_vec",
             _ => "",
         };
         w.write_line(&format!(

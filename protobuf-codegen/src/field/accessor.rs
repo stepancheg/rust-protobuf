@@ -107,7 +107,6 @@ impl FieldGen<'_> {
         let RepeatedField { ref elem, .. } = repeated_field;
         let name = match repeated_field.kind() {
             RepeatedFieldKind::Vec => "make_vec_accessor",
-            RepeatedFieldKind::RepeatedField => "make_repeated_field_accessor",
         };
         AccessorFn {
             name: name.to_owned(),
