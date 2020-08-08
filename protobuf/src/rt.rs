@@ -17,7 +17,6 @@ use crate::error::ProtobufError;
 use crate::error::ProtobufResult;
 use crate::error::WireError;
 use crate::reflect::types::*;
-use crate::repeated::RepeatedField;
 use crate::stream::CodedInputStream;
 use crate::stream::CodedOutputStream;
 use crate::wire_format;
@@ -29,7 +28,6 @@ use crate::wire_format::WireTypeVarint;
 use crate::zigzag::*;
 use crate::ProtobufEnumOrUnknown;
 
-use crate::repeated::VecLike;
 use crate::unknown::UnknownFields;
 
 use crate::prelude::*;
@@ -662,18 +660,15 @@ pub fn read_proto2_enum_with_unknown_fields_into<E: ProtobufEnum>(
 }
 
 /// Read repeated `string` field into given vec.
-pub fn read_repeated_string_into<V>(
+pub fn read_repeated_string_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
-    target: &mut V,
-) -> ProtobufResult<()>
-where
-    V: VecLike<String>,
-{
+    target: &mut Vec<String>,
+) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => {
-            let tmp = target.push_default();
-            is.read_string_into(tmp)
+            target.push(is.read_string()?);
+            Ok(())
         }
         _ => Err(unexpected_wire_type(wire_type)),
     }
@@ -684,11 +679,8 @@ where
 pub fn read_repeated_carllerche_string_into<V>(
     wire_type: WireType,
     is: &mut CodedInputStream,
-    target: &mut V,
-) -> ProtobufResult<()>
-where
-    V: VecLike<Chars>,
-{
+    target: &mut Vec<Chars>,
+) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => {
             target.push(is.read_carllerche_chars()?);
@@ -743,18 +735,15 @@ pub fn read_singular_proto3_carllerche_string_into(
 }
 
 /// Read repeated `bytes` field into given vec.
-pub fn read_repeated_bytes_into<V>(
+pub fn read_repeated_bytes_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
-    target: &mut V,
-) -> ProtobufResult<()>
-where
-    V: VecLike<Vec<u8>>,
-{
+    target: &mut Vec<Vec<u8>>,
+) -> ProtobufResult<()> {
     match wire_type {
         WireTypeLengthDelimited => {
-            let tmp = target.push_default();
-            is.read_bytes_into(tmp)
+            target.push(is.read_bytes()?);
+            Ok(())
         }
         _ => Err(unexpected_wire_type(wire_type)),
     }
@@ -818,24 +807,6 @@ pub fn read_singular_proto3_carllerche_bytes_into(
         WireTypeLengthDelimited => {
             *target = is.read_carllerche_bytes()?;
             Ok(())
-        }
-        _ => Err(unexpected_wire_type(wire_type)),
-    }
-}
-
-/// Read repeated `message` field.
-pub fn read_repeated_message_into_repeated_field<M: Message + Default>(
-    wire_type: WireType,
-    is: &mut CodedInputStream,
-    target: &mut RepeatedField<M>,
-) -> ProtobufResult<()> {
-    match wire_type {
-        WireTypeLengthDelimited => {
-            is.incr_recursion()?;
-            let tmp = target.push_default();
-            let res = is.merge_message(tmp);
-            is.decr_recursion();
-            res
         }
         _ => Err(unexpected_wire_type(wire_type)),
     }

@@ -1,7 +1,6 @@
 use std::marker;
 
 use crate::core::Message;
-use crate::repeated::RepeatedField;
 
 use crate::reflect::acc::v2::AccessorV2;
 use crate::reflect::acc::FieldAccessor;
@@ -39,21 +38,6 @@ where
 }
 
 impl<M, V> RepeatedFieldGetMut<M, dyn ReflectRepeated> for RepeatedFieldGetMutImpl<M, Vec<V>>
-where
-    M: Message + 'static,
-    V: ProtobufValueSized,
-{
-    fn get_field<'a>(&self, m: &'a M) -> &'a dyn ReflectRepeated {
-        (self.get_field)(m) as &dyn ReflectRepeated
-    }
-
-    fn mut_field<'a>(&self, m: &'a mut M) -> &'a mut dyn ReflectRepeated {
-        (self.mut_field)(m) as &mut dyn ReflectRepeated
-    }
-}
-
-impl<M, V> RepeatedFieldGetMut<M, dyn ReflectRepeated>
-    for RepeatedFieldGetMutImpl<M, RepeatedField<V>>
 where
     M: Message + 'static,
     V: ProtobufValueSized,
@@ -112,33 +96,6 @@ where
                     get_field: get_vec,
                     mut_field: mut_vec,
                 }),
-                _marker: marker::PhantomData::<V>,
-            }),
-            element_type: V::dynamic(),
-        }),
-    )
-}
-
-/// Make accessor for `RepeatedField`
-pub fn make_repeated_field_accessor<M, V>(
-    name: &'static str,
-    get_vec: for<'a> fn(&'a M) -> &'a RepeatedField<V::ProtobufValue>,
-    mut_vec: for<'a> fn(&'a mut M) -> &'a mut RepeatedField<V::ProtobufValue>,
-) -> FieldAccessor
-where
-    M: Message + 'static,
-    V: ProtobufType + 'static,
-{
-    FieldAccessor::new_v2(
-        name,
-        AccessorV2::Repeated(RepeatedFieldAccessorHolder {
-            accessor: Box::new(RepeatedFieldAccessorImpl::<M, V> {
-                fns: Box::new(
-                    RepeatedFieldGetMutImpl::<M, RepeatedField<V::ProtobufValue>> {
-                        get_field: get_vec,
-                        mut_field: mut_vec,
-                    },
-                ),
                 _marker: marker::PhantomData::<V>,
             }),
             element_type: V::dynamic(),

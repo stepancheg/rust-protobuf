@@ -9,7 +9,6 @@ use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
 use crate::reflect::ProtobufValueSized;
 use crate::reflect::ReflectValueBox;
-use crate::repeated::RepeatedField;
 
 pub(crate) trait ReflectRepeated: Sync + 'static + fmt::Debug {
     fn reflect_iter(&self) -> ReflectRepeatedIter;
@@ -82,40 +81,6 @@ impl<V: ProtobufValueSized> ReflectRepeated for [V] {
 
     fn clear(&mut self) {
         panic!("clear is not possible for [V]");
-    }
-
-    fn element_type(&self) -> &'static dyn RuntimeTypeDynamic {
-        V::dynamic()
-    }
-}
-
-impl<V: ProtobufValueSized> ReflectRepeated for RepeatedField<V> {
-    fn reflect_iter<'a>(&'a self) -> ReflectRepeatedIter<'a> {
-        ReflectRepeatedIter {
-            imp: Box::new(ReflectRepeatedIterImplSlice::<'a, V> { iter: self.iter() }),
-        }
-    }
-
-    fn len(&self) -> usize {
-        RepeatedField::len(self)
-    }
-
-    fn get(&self, index: usize) -> &dyn ProtobufValue {
-        &self[index]
-    }
-
-    fn set(&mut self, index: usize, value: ReflectValueBox) {
-        let value = value.downcast().expect("wrong type");
-        self[index] = value;
-    }
-
-    fn push(&mut self, value: ReflectValueBox) {
-        let value = value.downcast().expect("wrong type");
-        self.push(value)
-    }
-
-    fn clear(&mut self) {
-        self.clear()
     }
 
     fn element_type(&self) -> &'static dyn RuntimeTypeDynamic {
