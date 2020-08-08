@@ -5,7 +5,6 @@ use std::default::Default;
 use std::hash::Hash;
 use std::option;
 
-use crate::clear::Clear;
 use crate::Message;
 
 /// Wrapper around `Option<Box<T>>`, convenient newtype.
@@ -159,7 +158,7 @@ impl<T> MessageField<T> {
     }
 }
 
-impl<T: Default + Clear> MessageField<T> {
+impl<T: Default> MessageField<T> {
     /// Get contained data, consume self. Return default value for type if this is empty.
     #[inline]
     pub fn unwrap_or_default(self) -> T {
