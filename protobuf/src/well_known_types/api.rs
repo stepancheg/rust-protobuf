@@ -238,12 +238,12 @@ impl crate::Message for Api {
                 |m: &Api| { &m.name },
                 |m: &mut Api| { &mut m.name },
             ));
-            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Method>>(
+            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
                 "methods",
                 |m: &Api| { &m.methods },
                 |m: &mut Api| { &mut m.methods },
             ));
-            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::Option>>(
+            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
                 "options",
                 |m: &Api| { &m.options },
                 |m: &mut Api| { &mut m.options },
@@ -258,7 +258,7 @@ impl crate::Message for Api {
                 |m: &Api| { &m.source_context },
                 |m: &mut Api| { &mut m.source_context },
             ));
-            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Mixin>>(
+            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
                 "mixins",
                 |m: &Api| { &m.mixins },
                 |m: &mut Api| { &mut m.mixins },
@@ -523,7 +523,7 @@ impl crate::Message for Method {
                 |m: &Method| { &m.response_streaming },
                 |m: &mut Method| { &mut m.response_streaming },
             ));
-            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::Option>>(
+            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
                 "options",
                 |m: &Method| { &m.options },
                 |m: &mut Method| { &mut m.options },

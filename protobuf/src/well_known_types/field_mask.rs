@@ -110,7 +110,7 @@ impl crate::Message for FieldMask {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
                 "paths",
                 |m: &FieldMask| { &m.paths },
                 |m: &mut FieldMask| { &mut m.paths },

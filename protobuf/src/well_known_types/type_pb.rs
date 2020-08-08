@@ -195,17 +195,17 @@ impl crate::Message for Type {
                 |m: &Type| { &m.name },
                 |m: &mut Type| { &mut m.name },
             ));
-            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Field>>(
+            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
                 "fields",
                 |m: &Type| { &m.fields },
                 |m: &mut Type| { &mut m.fields },
             ));
-            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
                 "oneofs",
                 |m: &Type| { &m.oneofs },
                 |m: &mut Type| { &mut m.oneofs },
             ));
-            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Option>>(
+            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
                 "options",
                 |m: &Type| { &m.options },
                 |m: &mut Type| { &mut m.options },
@@ -527,7 +527,7 @@ impl crate::Message for Field {
                 |m: &Field| { &m.packed },
                 |m: &mut Field| { &mut m.packed },
             ));
-            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Option>>(
+            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
                 "options",
                 |m: &Field| { &m.options },
                 |m: &mut Field| { &mut m.options },
@@ -921,12 +921,12 @@ impl crate::Message for Enum {
                 |m: &Enum| { &m.name },
                 |m: &mut Enum| { &mut m.name },
             ));
-            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<EnumValue>>(
+            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
                 "enumvalue",
                 |m: &Enum| { &m.enumvalue },
                 |m: &mut Enum| { &mut m.enumvalue },
             ));
-            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Option>>(
+            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
                 "options",
                 |m: &Enum| { &m.options },
                 |m: &mut Enum| { &mut m.options },
@@ -1121,7 +1121,7 @@ impl crate::Message for EnumValue {
                 |m: &EnumValue| { &m.number },
                 |m: &mut EnumValue| { &mut m.number },
             ));
-            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Option>>(
+            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
                 "options",
                 |m: &EnumValue| { &m.options },
                 |m: &mut EnumValue| { &mut m.options },

@@ -750,7 +750,7 @@ impl crate::Message for ListValue {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<Value>>(
+            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
                 "values",
                 |m: &ListValue| { &m.values },
                 |m: &mut ListValue| { &mut m.values },

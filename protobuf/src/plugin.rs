@@ -190,7 +190,7 @@ impl crate::Message for CodeGeneratorRequest {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
                 "file_to_generate",
                 |m: &CodeGeneratorRequest| { &m.file_to_generate },
                 |m: &mut CodeGeneratorRequest| { &mut m.file_to_generate },
@@ -201,7 +201,7 @@ impl crate::Message for CodeGeneratorRequest {
                 |m: &mut CodeGeneratorRequest| { &mut m.parameter },
                 CodeGeneratorRequest::get_parameter,
             ));
-            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::descriptor::FileDescriptorProto>>(
+            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
                 "proto_file",
                 |m: &CodeGeneratorRequest| { &m.proto_file },
                 |m: &mut CodeGeneratorRequest| { &mut m.proto_file },
@@ -406,7 +406,7 @@ impl crate::Message for CodeGeneratorResponse {
                 |m: &mut CodeGeneratorResponse| { &mut m.error },
                 CodeGeneratorResponse::get_error,
             ));
-            fields.push(crate::reflect::rt::v2::make_vec_accessor::<_, crate::reflect::types::ProtobufTypeMessage<code_generator_response::File>>(
+            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
                 "file",
                 |m: &CodeGeneratorResponse| { &m.file },
                 |m: &mut CodeGeneratorResponse| { &mut m.file },
