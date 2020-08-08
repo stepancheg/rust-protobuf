@@ -8,17 +8,17 @@ use std::option;
 use crate::clear::Clear;
 use crate::Message;
 
-/// Like `Option<Box<T>>`, but keeps the actual element on `clear`.
+/// Wrapper around `Option<Box<T>>`, convenient newtype.
 ///
 /// # Examples
 ///
 /// ```no_run
-/// # use protobuf::SingularPtrField;
+/// # use protobuf::MessageField;
 /// # use std::ops::Add;
 /// # struct Address {
 /// # }
 /// # struct Customer {
-/// #     address: SingularPtrField<Address>,
+/// #     address: MessageField<Address>,
 /// # }
 /// # impl Customer {
 /// #     fn new() -> Customer { unimplemented!() }
@@ -29,32 +29,32 @@ use crate::Message;
 /// let mut customer = Customer::new();
 ///
 /// // field of type `SingularPtrField` can be initialized like this
-/// customer.address = SingularPtrField::some(make_address());
+/// customer.address = MessageField::some(make_address());
 /// // or using `Option` and `Into`
 /// customer.address = Some(make_address()).into();
 /// ```
 #[derive(Clone, Debug, Eq, PartialEq, Hash)]
-pub struct SingularPtrField<T>(pub Option<Box<T>>);
+pub struct MessageField<T>(pub Option<Box<T>>);
 
-impl<T> SingularPtrField<T> {
+impl<T> MessageField<T> {
     /// Construct `SingularPtrField` from given object.
     #[inline]
-    pub fn some(value: T) -> SingularPtrField<T> {
-        SingularPtrField(Some(Box::new(value)))
+    pub fn some(value: T) -> MessageField<T> {
+        MessageField(Some(Box::new(value)))
     }
 
     /// Construct an empty `SingularPtrField`.
     #[inline]
-    pub const fn none() -> SingularPtrField<T> {
-        SingularPtrField(None)
+    pub const fn none() -> MessageField<T> {
+        MessageField(None)
     }
 
     /// Construct `SingularPtrField` from optional.
     #[inline]
-    pub fn from_option(option: Option<T>) -> SingularPtrField<T> {
+    pub fn from_option(option: Option<T>) -> MessageField<T> {
         match option {
-            Some(x) => SingularPtrField::some(x),
-            None => SingularPtrField::none(),
+            Some(x) => MessageField::some(x),
+            None => MessageField::none(),
         }
     }
 
@@ -127,11 +127,11 @@ impl<T> SingularPtrField<T> {
     /// Apply given function to contained data to construct another `SingularPtrField`.
     /// Returns empty `SingularPtrField` if this object is empty.
     #[inline]
-    pub fn map<U, F>(self, f: F) -> SingularPtrField<U>
+    pub fn map<U, F>(self, f: F) -> MessageField<U>
     where
         F: FnOnce(T) -> U,
     {
-        SingularPtrField::from_option(self.into_option().map(f))
+        MessageField::from_option(self.into_option().map(f))
     }
 
     /// View data as iterator.
@@ -159,7 +159,7 @@ impl<T> SingularPtrField<T> {
     }
 }
 
-impl<T: Default + Clear> SingularPtrField<T> {
+impl<T: Default + Clear> MessageField<T> {
     /// Get contained data, consume self. Return default value for type if this is empty.
     #[inline]
     pub fn unwrap_or_default(self) -> T {
@@ -170,12 +170,12 @@ impl<T: Default + Clear> SingularPtrField<T> {
     // TODO: inline
     #[inline]
     pub fn set_default(&mut self) -> &mut T {
-        *self = SingularPtrField::some(Default::default());
+        *self = MessageField::some(Default::default());
         self.as_mut().unwrap()
     }
 }
 
-impl<M: Message + Default> SingularPtrField<M> {
+impl<M: Message + Default> MessageField<M> {
     /// Get a reference to contained value or a default instance.
     pub fn get_or_default(&self) -> &M {
         self.as_ref().unwrap_or_else(|| M::default_instance())
@@ -184,26 +184,26 @@ impl<M: Message + Default> SingularPtrField<M> {
     /// Get a mutable reference to contained value, initialize if not initialized yet.
     pub fn mut_or_default(&mut self) -> &mut M {
         if self.is_none() {
-            *self = SingularPtrField::some(Default::default());
+            *self = MessageField::some(Default::default());
         }
         self.get_mut_ref()
     }
 }
 
-impl<T> Default for SingularPtrField<T> {
+impl<T> Default for MessageField<T> {
     #[inline]
-    fn default() -> SingularPtrField<T> {
-        SingularPtrField::none()
+    fn default() -> MessageField<T> {
+        MessageField::none()
     }
 }
 
-impl<T> From<Option<T>> for SingularPtrField<T> {
+impl<T> From<Option<T>> for MessageField<T> {
     fn from(o: Option<T>) -> Self {
-        SingularPtrField::from_option(o)
+        MessageField::from_option(o)
     }
 }
 
-impl<'a, T> IntoIterator for &'a SingularPtrField<T> {
+impl<'a, T> IntoIterator for &'a MessageField<T> {
     type Item = &'a T;
     type IntoIter = option::IntoIter<&'a T>;
 
@@ -213,7 +213,7 @@ impl<'a, T> IntoIterator for &'a SingularPtrField<T> {
 }
 
 #[cfg(feature = "with-serde")]
-impl<T: serde::Serialize> serde::Serialize for SingularPtrField<T> {
+impl<T: serde::Serialize> serde::Serialize for MessageField<T> {
     fn serialize<S>(
         &self,
         serializer: S,
@@ -226,11 +226,11 @@ impl<T: serde::Serialize> serde::Serialize for SingularPtrField<T> {
 }
 
 #[cfg(feature = "with-serde")]
-impl<'de, T: serde::Deserialize<'de>> serde::Deserialize<'de> for SingularPtrField<T> {
+impl<'de, T: serde::Deserialize<'de>> serde::Deserialize<'de> for MessageField<T> {
     fn deserialize<D>(deserializer: D) -> Result<Self, <D as serde::Deserializer<'de>>::Error>
     where
         D: serde::Deserializer<'de>,
     {
-        Option::deserialize(deserializer).map(SingularPtrField::from)
+        Option::deserialize(deserializer).map(MessageField::from)
     }
 }

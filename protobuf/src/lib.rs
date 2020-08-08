@@ -19,7 +19,7 @@ pub use crate::clear::Clear;
 pub use crate::enums::ProtobufEnum;
 pub use crate::enums::ProtobufEnumOrUnknown;
 pub use crate::message::Message;
-pub use crate::message_field::SingularPtrField;
+pub use crate::message_field::MessageField;
 pub use crate::oneof::Oneof;
 pub use crate::stream::CodedInputStream;
 pub use crate::stream::CodedOutputStream;

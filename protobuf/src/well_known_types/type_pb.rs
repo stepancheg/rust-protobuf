@@ -35,7 +35,7 @@ pub struct Type {
     ///  The protocol buffer options.
     pub options: ::std::vec::Vec<Option>,
     ///  The source context.
-    pub source_context: crate::SingularPtrField<crate::well_known_types::SourceContext>,
+    pub source_context: crate::MessageField<crate::well_known_types::SourceContext>,
     ///  The source syntax.
     pub syntax: crate::ProtobufEnumOrUnknown<Syntax>,
     // special fields
@@ -234,7 +234,7 @@ impl crate::Message for Type {
             fields: ::std::vec::Vec::new(),
             oneofs: ::std::vec::Vec::new(),
             options: ::std::vec::Vec::new(),
-            source_context: crate::SingularPtrField::none(),
+            source_context: crate::MessageField::none(),
             syntax: crate::ProtobufEnumOrUnknown::from_i32(0),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
@@ -770,7 +770,7 @@ pub struct Enum {
     ///  Protocol buffer options.
     pub options: ::std::vec::Vec<Option>,
     ///  The source context.
-    pub source_context: crate::SingularPtrField<crate::well_known_types::SourceContext>,
+    pub source_context: crate::MessageField<crate::well_known_types::SourceContext>,
     ///  The source syntax.
     pub syntax: crate::ProtobufEnumOrUnknown<Syntax>,
     // special fields
@@ -954,7 +954,7 @@ impl crate::Message for Enum {
             name: ::std::string::String::new(),
             enumvalue: ::std::vec::Vec::new(),
             options: ::std::vec::Vec::new(),
-            source_context: crate::SingularPtrField::none(),
+            source_context: crate::MessageField::none(),
             syntax: crate::ProtobufEnumOrUnknown::from_i32(0),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
@@ -1177,7 +1177,7 @@ pub struct Option {
     ///  The option's name. For example, `"java_package"`.
     pub name: ::std::string::String,
     ///  The option's value. For example, `"com.google.protobuf"`.
-    pub value: crate::SingularPtrField<crate::well_known_types::Any>,
+    pub value: crate::MessageField<crate::well_known_types::Any>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -1300,7 +1300,7 @@ impl crate::Message for Option {
     fn default_instance() -> &'static Option {
         static instance: Option = Option {
             name: ::std::string::String::new(),
-            value: crate::SingularPtrField::none(),
+            value: crate::MessageField::none(),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };

@@ -26,8 +26,8 @@ use crate::wire_format::WireTypeFixed64;
 use crate::wire_format::WireTypeLengthDelimited;
 use crate::wire_format::WireTypeVarint;
 use crate::zigzag::*;
+use crate::MessageField;
 use crate::ProtobufEnumOrUnknown;
-use crate::SingularPtrField;
 
 use crate::unknown::UnknownFields;
 
@@ -835,7 +835,7 @@ pub fn read_repeated_message_into_vec<M: Message + Default>(
 pub fn read_singular_message_into_field<M>(
     wire_type: WireType,
     is: &mut CodedInputStream,
-    target: &mut SingularPtrField<M>,
+    target: &mut MessageField<M>,
 ) -> ProtobufResult<()>
 where
     M: Message + Default,
@@ -845,7 +845,7 @@ where
             is.incr_recursion()?;
             let mut m = M::new();
             let res = is.merge_message(&mut m);
-            *target = SingularPtrField::some(m);
+            *target = MessageField::some(m);
             is.decr_recursion();
             res
         }

@@ -145,7 +145,7 @@ pub enum OptionKind {
     /// Field is `Option<T>`
     Option,
     /// Field is `SingularPtrField<T>`
-    SingularPtrField,
+    MessageField,
 }
 
 impl OptionKind {
@@ -153,7 +153,7 @@ impl OptionKind {
         let element_type = Box::new(element_type);
         match self {
             OptionKind::Option => RustType::Option(element_type),
-            OptionKind::SingularPtrField => RustType::SingularPtrField(element_type),
+            OptionKind::MessageField => RustType::MessageField(element_type),
         }
     }
 
@@ -161,15 +161,13 @@ impl OptionKind {
     fn as_ref_type(&self, element_type: RustType) -> RustType {
         match self {
             OptionKind::Option => RustType::Option(Box::new(element_type.ref_type())),
-            OptionKind::SingularPtrField => {
-                RustType::SingularPtrField(Box::new(element_type.ref_type()))
-            }
+            OptionKind::MessageField => RustType::MessageField(Box::new(element_type.ref_type())),
         }
     }
 
     fn _as_option_ref(&self, v: &str) -> String {
         match self {
-            OptionKind::Option | OptionKind::SingularPtrField => format!("{}.as_ref()", v),
+            OptionKind::Option | OptionKind::MessageField => format!("{}.as_ref()", v),
         }
     }
 
@@ -188,8 +186,8 @@ impl OptionKind {
     fn wrap_value(&self, value: &str, customize: &Customize) -> String {
         match self {
             OptionKind::Option => format!("::std::option::Option::Some({})", value),
-            OptionKind::SingularPtrField => format!(
-                "{}::SingularPtrField::some({})",
+            OptionKind::MessageField => format!(
+                "{}::MessageField::some({})",
                 protobuf_crate_path(customize),
                 value
             ),
@@ -640,7 +638,7 @@ impl<'a> FieldGen<'a> {
                 let required =
                     field.field.get_label() == field_descriptor_proto::Label::LABEL_REQUIRED;
                 let option_kind = match field.field.get_field_type() {
-                    field_descriptor_proto::Type::TYPE_MESSAGE => OptionKind::SingularPtrField,
+                    field_descriptor_proto::Type::TYPE_MESSAGE => OptionKind::MessageField,
                     _ => OptionKind::Option,
                 };
 
@@ -1481,7 +1479,7 @@ impl<'a> FieldGen<'a> {
                 // with default value
                 match singular.flag {
                     SingularFieldFlag::WithFlag { option_kind, .. } => match option_kind {
-                        OptionKind::SingularPtrField => {
+                        OptionKind::MessageField => {
                             let self_field = self.self_field();
                             w.write_line(&format!("{}.set_default();", self_field));
                         }

@@ -32,7 +32,7 @@ pub(crate) enum RustType {
     // str, not &str
     Str,
     Option(Box<RustType>),
-    SingularPtrField(Box<RustType>),
+    MessageField(Box<RustType>),
     // Box<T>
     Uniq(Box<RustType>),
     // &T
@@ -73,8 +73,8 @@ impl RustType {
             RustType::Option(ref param) => {
                 format!("::std::option::Option<{}>", param.to_code(customize))
             }
-            RustType::SingularPtrField(ref param) => format!(
-                "{}::SingularPtrField<{}>",
+            RustType::MessageField(ref param) => format!(
+                "{}::MessageField<{}>",
                 protobuf_crate_path(customize),
                 param.to_code(customize)
             ),
@@ -203,10 +203,9 @@ impl RustType {
             RustType::Bytes => "::bytes::Bytes::new()".to_string(),
             RustType::Chars => format!("{}::Chars::new()", protobuf_crate_path(customize)),
             RustType::Option(..) => EXPR_NONE.to_string(),
-            RustType::SingularPtrField(..) => format!(
-                "{}::SingularPtrField::none()",
-                protobuf_crate_path(customize)
-            ),
+            RustType::MessageField(..) => {
+                format!("{}::MessageField::none()", protobuf_crate_path(customize))
+            }
             RustType::Message(ref name) => format!("{}::new()", name),
             RustType::Ref(ref m) if m.is_message() => match **m {
                 RustType::Message(ref name) => name.default_instance(customize),
@@ -243,7 +242,7 @@ impl RustType {
             RustType::Vec(..)
             | RustType::Bytes
             | RustType::String
-            | RustType::SingularPtrField(..)
+            | RustType::MessageField(..)
             | RustType::HashMap(..) => format!("{}.clear()", v),
             RustType::Chars => format!(
                 "{}::Clear::clear(&mut {})",
@@ -379,7 +378,7 @@ impl RustType {
     pub fn elem_type(&self) -> RustType {
         match self {
             &RustType::Option(ref ty) => (**ty).clone(),
-            &RustType::SingularPtrField(ref ty) => (**ty).clone(),
+            &RustType::MessageField(ref ty) => (**ty).clone(),
             x => panic!("cannot get elem type of {:?}", x),
         }
     }
@@ -389,7 +388,7 @@ impl RustType {
         match self {
             &RustType::Vec(ref ty)
             | &RustType::Option(ref ty)
-            | &RustType::SingularPtrField(ref ty) => RustType::Ref(ty.clone()),
+            | &RustType::MessageField(ref ty) => RustType::Ref(ty.clone()),
             x => panic!("cannot iterate {:?}", x),
         }
     }

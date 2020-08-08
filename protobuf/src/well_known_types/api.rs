@@ -58,7 +58,7 @@ pub struct Api {
     pub version: ::std::string::String,
     ///  Source context for the protocol buffer service represented by this
     ///  message.
-    pub source_context: crate::SingularPtrField<crate::well_known_types::SourceContext>,
+    pub source_context: crate::MessageField<crate::well_known_types::SourceContext>,
     ///  Included APIs. See [Mixin][].
     pub mixins: ::std::vec::Vec<Mixin>,
     ///  The source syntax of the service.
@@ -282,7 +282,7 @@ impl crate::Message for Api {
             methods: ::std::vec::Vec::new(),
             options: ::std::vec::Vec::new(),
             version: ::std::string::String::new(),
-            source_context: crate::SingularPtrField::none(),
+            source_context: crate::MessageField::none(),
             mixins: ::std::vec::Vec::new(),
             syntax: crate::ProtobufEnumOrUnknown::from_i32(0),
             unknown_fields: crate::UnknownFields::new(),

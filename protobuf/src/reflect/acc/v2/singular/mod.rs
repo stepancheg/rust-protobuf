@@ -11,7 +11,7 @@ use crate::reflect::ProtobufValueSized;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::reflect::RuntimeTypeDynamic;
-use crate::SingularPtrField;
+use crate::MessageField;
 
 pub(crate) mod oneof;
 
@@ -37,7 +37,7 @@ impl<T> OptionLike<T> for Option<T> {
     }
 }
 
-impl<T> OptionLike<T> for SingularPtrField<T> {
+impl<T> OptionLike<T> for MessageField<T> {
     fn as_option_ref(&self) -> Option<&T> {
         self.as_ref()
     }
@@ -47,7 +47,7 @@ impl<T> OptionLike<T> for SingularPtrField<T> {
     }
 
     fn set_value(&mut self, value: T) {
-        *self = SingularPtrField::some(value);
+        *self = MessageField::some(value);
     }
 }
 
@@ -456,8 +456,8 @@ where
 /// Make accessor for `SingularPtrField`
 pub fn make_message_field_accessor<M, V>(
     name: &'static str,
-    get_field: for<'a> fn(&'a M) -> &'a SingularPtrField<V>,
-    mut_field: for<'a> fn(&'a mut M) -> &'a mut SingularPtrField<V>,
+    get_field: for<'a> fn(&'a M) -> &'a MessageField<V>,
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut MessageField<V>,
 ) -> FieldAccessor
 where
     M: Message + 'static,

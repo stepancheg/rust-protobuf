@@ -179,12 +179,12 @@ pub struct FileDescriptorProto {
     pub enum_type: ::std::vec::Vec<EnumDescriptorProto>,
     pub service: ::std::vec::Vec<ServiceDescriptorProto>,
     pub extension: ::std::vec::Vec<FieldDescriptorProto>,
-    pub options: crate::SingularPtrField<FileOptions>,
+    pub options: crate::MessageField<FileOptions>,
     ///  This field contains optional information about the original source code.
     ///  You may safely remove this entire field without harming runtime
     ///  functionality of the descriptors -- the information is needed only by
     ///  development tools.
-    pub source_code_info: crate::SingularPtrField<SourceCodeInfo>,
+    pub source_code_info: crate::MessageField<SourceCodeInfo>,
     ///  The syntax of the proto file.
     ///  The supported values are "proto2" and "proto3".
     syntax: ::std::option::Option<::std::string::String>,
@@ -605,8 +605,8 @@ impl crate::Message for FileDescriptorProto {
             enum_type: ::std::vec::Vec::new(),
             service: ::std::vec::Vec::new(),
             extension: ::std::vec::Vec::new(),
-            options: crate::SingularPtrField::none(),
-            source_code_info: crate::SingularPtrField::none(),
+            options: crate::MessageField::none(),
+            source_code_info: crate::MessageField::none(),
             syntax: ::std::option::Option::None,
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
@@ -658,7 +658,7 @@ pub struct DescriptorProto {
     pub enum_type: ::std::vec::Vec<EnumDescriptorProto>,
     pub extension_range: ::std::vec::Vec<descriptor_proto::ExtensionRange>,
     pub oneof_decl: ::std::vec::Vec<OneofDescriptorProto>,
-    pub options: crate::SingularPtrField<MessageOptions>,
+    pub options: crate::MessageField<MessageOptions>,
     pub reserved_range: ::std::vec::Vec<descriptor_proto::ReservedRange>,
     ///  Reserved field names, which may not be used by fields in the same message.
     ///  A given name may only be reserved once.
@@ -982,7 +982,7 @@ impl crate::Message for DescriptorProto {
             enum_type: ::std::vec::Vec::new(),
             extension_range: ::std::vec::Vec::new(),
             oneof_decl: ::std::vec::Vec::new(),
-            options: crate::SingularPtrField::none(),
+            options: crate::MessageField::none(),
             reserved_range: ::std::vec::Vec::new(),
             reserved_name: ::std::vec::Vec::new(),
             unknown_fields: crate::UnknownFields::new(),
@@ -1450,7 +1450,7 @@ pub struct FieldDescriptorProto {
     ///  will be used. Otherwise, it's deduced from the field's name by converting
     ///  it to camelCase.
     json_name: ::std::option::Option<::std::string::String>,
-    pub options: crate::SingularPtrField<FieldOptions>,
+    pub options: crate::MessageField<FieldOptions>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -1988,7 +1988,7 @@ impl crate::Message for FieldDescriptorProto {
             default_value: ::std::option::Option::None,
             oneof_index: ::std::option::Option::None,
             json_name: ::std::option::Option::None,
-            options: crate::SingularPtrField::none(),
+            options: crate::MessageField::none(),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };
@@ -2185,7 +2185,7 @@ pub mod field_descriptor_proto {
 pub struct OneofDescriptorProto {
     // message fields
     name: ::std::option::Option<::std::string::String>,
-    pub options: crate::SingularPtrField<OneofOptions>,
+    pub options: crate::MessageField<OneofOptions>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -2345,7 +2345,7 @@ impl crate::Message for OneofDescriptorProto {
     fn default_instance() -> &'static OneofDescriptorProto {
         static instance: OneofDescriptorProto = OneofDescriptorProto {
             name: ::std::option::Option::None,
-            options: crate::SingularPtrField::none(),
+            options: crate::MessageField::none(),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };
@@ -2381,7 +2381,7 @@ pub struct EnumDescriptorProto {
     // message fields
     name: ::std::option::Option<::std::string::String>,
     pub value: ::std::vec::Vec<EnumValueDescriptorProto>,
-    pub options: crate::SingularPtrField<EnumOptions>,
+    pub options: crate::MessageField<EnumOptions>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -2562,7 +2562,7 @@ impl crate::Message for EnumDescriptorProto {
         static instance: EnumDescriptorProto = EnumDescriptorProto {
             name: ::std::option::Option::None,
             value: ::std::vec::Vec::new(),
-            options: crate::SingularPtrField::none(),
+            options: crate::MessageField::none(),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };
@@ -2599,7 +2599,7 @@ pub struct EnumValueDescriptorProto {
     // message fields
     name: ::std::option::Option<::std::string::String>,
     number: ::std::option::Option<i32>,
-    pub options: crate::SingularPtrField<EnumValueOptions>,
+    pub options: crate::MessageField<EnumValueOptions>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -2797,7 +2797,7 @@ impl crate::Message for EnumValueDescriptorProto {
         static instance: EnumValueDescriptorProto = EnumValueDescriptorProto {
             name: ::std::option::Option::None,
             number: ::std::option::Option::None,
-            options: crate::SingularPtrField::none(),
+            options: crate::MessageField::none(),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };
@@ -2834,7 +2834,7 @@ pub struct ServiceDescriptorProto {
     // message fields
     name: ::std::option::Option<::std::string::String>,
     pub method: ::std::vec::Vec<MethodDescriptorProto>,
-    pub options: crate::SingularPtrField<ServiceOptions>,
+    pub options: crate::MessageField<ServiceOptions>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -3015,7 +3015,7 @@ impl crate::Message for ServiceDescriptorProto {
         static instance: ServiceDescriptorProto = ServiceDescriptorProto {
             name: ::std::option::Option::None,
             method: ::std::vec::Vec::new(),
-            options: crate::SingularPtrField::none(),
+            options: crate::MessageField::none(),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };
@@ -3055,7 +3055,7 @@ pub struct MethodDescriptorProto {
     ///  FieldDescriptorProto.type_name, but must refer to a message type.
     input_type: ::std::option::Option<::std::string::String>,
     output_type: ::std::option::Option<::std::string::String>,
-    pub options: crate::SingularPtrField<MethodOptions>,
+    pub options: crate::MessageField<MethodOptions>,
     ///  Identifies if client streams multiple client messages
     client_streaming: ::std::option::Option<bool>,
     ///  Identifies if server streams multiple server messages
@@ -3403,7 +3403,7 @@ impl crate::Message for MethodDescriptorProto {
             name: ::std::option::Option::None,
             input_type: ::std::option::Option::None,
             output_type: ::std::option::Option::None,
-            options: crate::SingularPtrField::none(),
+            options: crate::MessageField::none(),
             client_streaming: ::std::option::Option::None,
             server_streaming: ::std::option::Option::None,
             unknown_fields: crate::UnknownFields::new(),
