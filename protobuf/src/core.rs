@@ -127,7 +127,7 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
         Self: Sized,
     {
         let mut is = CodedInputStream::from_carllerche_bytes(bytes);
-        let r = parse_from(&mut is)?;
+        let r = Self::parse_from(&mut is)?;
         is.check_eof()?;
         Ok(r)
     }
