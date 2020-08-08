@@ -2,7 +2,6 @@
 
 #![doc(hidden)]
 
-pub use crate::reflect::acc::v2::map::make_map_accessor; // TODO: drop
 pub use crate::reflect::acc::v2::map::make_map_simpler_accessor;
 pub use crate::reflect::acc::v2::repeated::make_vec_simpler_accessor;
 pub use crate::reflect::acc::v2::singular::make_message_field_accessor;

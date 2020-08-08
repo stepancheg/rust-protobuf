@@ -7,7 +7,6 @@ use crate::reflect::acc::v2::AccessorV2;
 use crate::reflect::acc::FieldAccessor;
 use crate::reflect::map::ReflectMapMut;
 use crate::reflect::map::ReflectMapRef;
-use crate::reflect::types::ProtobufType;
 use crate::reflect::ProtobufValueSized;
 use crate::reflect::RuntimeTypeDynamic;
 
@@ -49,33 +48,6 @@ where
         let map = (self.mut_field)(m);
         ReflectMapMut { map }
     }
-}
-
-/// Make accessor for map field
-pub fn make_map_accessor<M, K, V>(
-    name: &'static str,
-    get_field: for<'a> fn(&'a M) -> &'a HashMap<K::ProtobufValue, V::ProtobufValue>,
-    mut_field: for<'a> fn(&'a mut M) -> &'a mut HashMap<K::ProtobufValue, V::ProtobufValue>,
-) -> FieldAccessor
-where
-    M: Message + 'static,
-    K: ProtobufType + 'static,
-    V: ProtobufType + 'static,
-    K::ProtobufValue: Hash + Eq,
-{
-    FieldAccessor::new_v2(
-        name,
-        AccessorV2::Map(MapFieldAccessorHolder {
-            accessor: Box::new(
-                MapFieldAccessorImpl::<M, K::ProtobufValue, V::ProtobufValue> {
-                    get_field,
-                    mut_field,
-                },
-            ),
-            key_type: <K::ProtobufValue as ProtobufValueSized>::dynamic(),
-            value_type: <V::ProtobufValue as ProtobufValueSized>::dynamic(),
-        }),
-    )
 }
 
 /// Make accessor for map field

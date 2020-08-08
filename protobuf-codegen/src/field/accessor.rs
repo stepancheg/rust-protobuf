@@ -89,9 +89,7 @@ impl FieldGen<'_> {
     }
 
     fn accessor_fn_map(&self, map_field: &MapField) -> AccessorFn {
-        let MapField {
-            ref key, ref value, ..
-        } = map_field;
+        let MapField { .. } = map_field;
         AccessorFn {
             name: "make_map_simpler_accessor".to_owned(),
             type_params: vec![format!("_"), format!("_")],
