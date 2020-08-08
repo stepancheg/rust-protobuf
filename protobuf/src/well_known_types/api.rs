@@ -130,7 +130,7 @@ impl crate::Message for Api {
                     self.version = is.read_string()?;
                 },
                 5 => {
-                    crate::rt::read_singular_message_into::<crate::well_known_types::SourceContext, _>(wire_type, is, &mut self.source_context)?;
+                    crate::rt::read_singular_message_into_field(wire_type, is, &mut self.source_context)?;
                 },
                 6 => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.mixins)?;

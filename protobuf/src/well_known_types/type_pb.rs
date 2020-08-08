@@ -97,7 +97,7 @@ impl crate::Message for Type {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.options)?;
                 },
                 5 => {
-                    crate::rt::read_singular_message_into::<crate::well_known_types::SourceContext, _>(wire_type, is, &mut self.source_context)?;
+                    crate::rt::read_singular_message_into_field(wire_type, is, &mut self.source_context)?;
                 },
                 6 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
@@ -829,7 +829,7 @@ impl crate::Message for Enum {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.options)?;
                 },
                 4 => {
-                    crate::rt::read_singular_message_into::<crate::well_known_types::SourceContext, _>(wire_type, is, &mut self.source_context)?;
+                    crate::rt::read_singular_message_into_field(wire_type, is, &mut self.source_context)?;
                 },
                 5 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
@@ -1218,7 +1218,7 @@ impl crate::Message for Option {
                     self.name = is.read_string()?;
                 },
                 2 => {
-                    crate::rt::read_singular_message_into::<crate::well_known_types::Any, _>(wire_type, is, &mut self.value)?;
+                    crate::rt::read_singular_message_into_field(wire_type, is, &mut self.value)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;

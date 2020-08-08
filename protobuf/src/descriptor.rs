@@ -388,10 +388,10 @@ impl crate::Message for FileDescriptorProto {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.extension)?;
                 },
                 8 => {
-                    crate::rt::read_singular_message_into::<FileOptions, _>(wire_type, is, &mut self.options)?;
+                    crate::rt::read_singular_message_into_field(wire_type, is, &mut self.options)?;
                 },
                 9 => {
-                    crate::rt::read_singular_message_into::<SourceCodeInfo, _>(wire_type, is, &mut self.source_code_info)?;
+                    crate::rt::read_singular_message_into_field(wire_type, is, &mut self.source_code_info)?;
                 },
                 12 => {
                     if wire_type != crate::wire_format::WireTypeLengthDelimited {
@@ -792,7 +792,7 @@ impl crate::Message for DescriptorProto {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.oneof_decl)?;
                 },
                 7 => {
-                    crate::rt::read_singular_message_into::<MessageOptions, _>(wire_type, is, &mut self.options)?;
+                    crate::rt::read_singular_message_into_field(wire_type, is, &mut self.options)?;
                 },
                 9 => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.reserved_range)?;
@@ -1801,7 +1801,7 @@ impl crate::Message for FieldDescriptorProto {
                     self.json_name = ::std::option::Option::Some(is.read_string()?);
                 },
                 8 => {
-                    crate::rt::read_singular_message_into::<FieldOptions, _>(wire_type, is, &mut self.options)?;
+                    crate::rt::read_singular_message_into_field(wire_type, is, &mut self.options)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -2262,7 +2262,7 @@ impl crate::Message for OneofDescriptorProto {
                     self.name = ::std::option::Option::Some(is.read_string()?);
                 },
                 2 => {
-                    crate::rt::read_singular_message_into::<OneofOptions, _>(wire_type, is, &mut self.options)?;
+                    crate::rt::read_singular_message_into_field(wire_type, is, &mut self.options)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -2466,7 +2466,7 @@ impl crate::Message for EnumDescriptorProto {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.value)?;
                 },
                 3 => {
-                    crate::rt::read_singular_message_into::<EnumOptions, _>(wire_type, is, &mut self.options)?;
+                    crate::rt::read_singular_message_into_field(wire_type, is, &mut self.options)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -2701,7 +2701,7 @@ impl crate::Message for EnumValueDescriptorProto {
                     self.number = ::std::option::Option::Some(is.read_int32()?);
                 },
                 3 => {
-                    crate::rt::read_singular_message_into::<EnumValueOptions, _>(wire_type, is, &mut self.options)?;
+                    crate::rt::read_singular_message_into_field(wire_type, is, &mut self.options)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -2919,7 +2919,7 @@ impl crate::Message for ServiceDescriptorProto {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.method)?;
                 },
                 3 => {
-                    crate::rt::read_singular_message_into::<ServiceOptions, _>(wire_type, is, &mut self.options)?;
+                    crate::rt::read_singular_message_into_field(wire_type, is, &mut self.options)?;
                 },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -3258,7 +3258,7 @@ impl crate::Message for MethodDescriptorProto {
                     self.output_type = ::std::option::Option::Some(is.read_string()?);
                 },
                 4 => {
-                    crate::rt::read_singular_message_into::<MethodOptions, _>(wire_type, is, &mut self.options)?;
+                    crate::rt::read_singular_message_into_field(wire_type, is, &mut self.options)?;
                 },
                 5 => {
                     if wire_type != crate::wire_format::WireTypeVarint {
