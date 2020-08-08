@@ -6,7 +6,6 @@ use crate::enums::ProtobufEnumOrUnknown;
 use crate::reflect::acc::v2::AccessorV2;
 use crate::reflect::acc::FieldAccessor;
 use crate::reflect::runtime_types::RuntimeTypeWithDeref;
-use crate::reflect::types::ProtobufType;
 use crate::reflect::value::ReflectValueMut;
 use crate::reflect::ProtobufValueSized;
 use crate::reflect::ReflectValueBox;
