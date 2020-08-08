@@ -7,7 +7,6 @@ use crate::reflect::acc::FieldAccessor;
 use crate::reflect::repeated::ReflectRepeated;
 use crate::reflect::repeated::ReflectRepeatedMut;
 use crate::reflect::repeated::ReflectRepeatedRef;
-use crate::reflect::types::ProtobufType;
 use crate::reflect::ProtobufValueSized;
 use crate::reflect::RuntimeTypeDynamic;
 
@@ -76,31 +75,6 @@ where
         let repeated = self.fns.mut_field(m);
         ReflectRepeatedMut { repeated }
     }
-}
-
-/// Make accessor for `Vec` field
-pub fn make_vec_accessor<M, V>(
-    name: &'static str,
-    get_vec: for<'a> fn(&'a M) -> &'a Vec<V::ProtobufValue>,
-    mut_vec: for<'a> fn(&'a mut M) -> &'a mut Vec<V::ProtobufValue>,
-) -> FieldAccessor
-where
-    M: Message + 'static,
-    V: ProtobufType + 'static,
-{
-    FieldAccessor::new_v2(
-        name,
-        AccessorV2::Repeated(RepeatedFieldAccessorHolder {
-            accessor: Box::new(RepeatedFieldAccessorImpl::<M, V::ProtobufValue> {
-                fns: Box::new(RepeatedFieldGetMutImpl::<M, Vec<V::ProtobufValue>> {
-                    get_field: get_vec,
-                    mut_field: mut_vec,
-                }),
-                _marker: marker::PhantomData::<V::ProtobufValue>,
-            }),
-            element_type: V::ProtobufValue::dynamic(),
-        }),
-    )
 }
 
 /// Make accessor for `Vec` field
