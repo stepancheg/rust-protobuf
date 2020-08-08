@@ -493,6 +493,40 @@ where
     )
 }
 
+/// Make accessor for `Option<C>` field
+pub fn make_option_get_copy_simpler_accessor<M, V>(
+    name: &'static str,
+    get_field: for<'a> fn(&'a M) -> &'a Option<V>,
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut Option<V>,
+    get_value: fn(&M) -> V,
+) -> FieldAccessor
+where
+    M: Message + 'static,
+    V: ProtobufValueSized + 'static,
+{
+    FieldAccessor::new_v2(
+        name,
+        AccessorV2::Singular(SingularFieldAccessorHolder {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
+                get_option_impl: GetOptionImplOptionFieldPointer::<M, V, _> {
+                    get_field,
+                    _marker: marker::PhantomData,
+                },
+                get_or_default_impl: GetOrDefaultGetCopy::<M, V> {
+                    get_field: get_value,
+                },
+                mut_or_default_impl: MutOrDefaultUnmplemented::new(),
+                set_impl: SetImplOptionFieldPointer::<M, V, _> {
+                    mut_field,
+                    _marker: marker::PhantomData,
+                },
+                _marker: marker::PhantomData,
+            }),
+            element_type: V::dynamic(),
+        }),
+    )
+}
+
 struct GetOrDefaultEnum<M, E: ProtobufEnum> {
     get_field: for<'a> fn(&'a M) -> &'a Option<ProtobufEnumOrUnknown<E>>,
     default_value: E,
@@ -594,6 +628,41 @@ where
                 },
             ),
             element_type: V::ProtobufValue::dynamic(),
+        }),
+    )
+}
+
+/// String or bytes field
+pub fn make_option_get_ref_simpler_accessor<M, V>(
+    name: &'static str,
+    get_field: for<'a> fn(&'a M) -> &'a Option<V>,
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut Option<V>,
+    get_value: for<'a> fn(&'a M) -> &'a <V::RuntimeType as RuntimeTypeWithDeref>::DerefTarget,
+) -> FieldAccessor
+where
+    M: Message + 'static,
+    V: ProtobufValueSized + 'static,
+    V::RuntimeType: RuntimeTypeWithDeref,
+{
+    FieldAccessor::new_v2(
+        name,
+        AccessorV2::Singular(SingularFieldAccessorHolder {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
+                get_option_impl: GetOptionImplOptionFieldPointer::<M, V, _> {
+                    get_field,
+                    _marker: marker::PhantomData,
+                },
+                get_or_default_impl: GetOrDefaultGetRefDeref::<M, V> {
+                    get_field: get_value,
+                },
+                mut_or_default_impl: MutOrDefaultUnmplemented::new(),
+                set_impl: SetImplOptionFieldPointer::<M, V, _> {
+                    mut_field,
+                    _marker: marker::PhantomData,
+                },
+                _marker: marker::PhantomData,
+            }),
+            element_type: V::dynamic(),
         }),
     )
 }

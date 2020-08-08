@@ -152,19 +152,13 @@ impl FieldGen<'_> {
             },
             FieldElem::Primitive(field_descriptor_proto::Type::TYPE_STRING, ..)
             | FieldElem::Primitive(field_descriptor_proto::Type::TYPE_BYTES, ..) => AccessorFn {
-                name: "make_option_get_ref_accessor".to_owned(),
-                type_params: vec![
-                    elem.lib_protobuf_type(&self.get_file_and_mod()),
-                    "_".to_owned(),
-                ],
+                name: "make_option_get_ref_simpler_accessor".to_owned(),
+                type_params: vec!["_".to_owned()],
                 callback_params: self.make_accessor_fns_lambda_get(),
             },
             FieldElem::Primitive(..) => AccessorFn {
-                name: "make_option_get_copy_accessor".to_owned(),
-                type_params: vec![
-                    elem.lib_protobuf_type(&self.get_file_and_mod()),
-                    "_".to_owned(),
-                ],
+                name: "make_option_get_copy_simpler_accessor".to_owned(),
+                type_params: vec!["_".to_owned()],
                 callback_params: self.make_accessor_fns_lambda_get(),
             },
             FieldElem::Enum(ref en) => AccessorFn {
