@@ -692,61 +692,6 @@ impl<'a> WithCodedOutputStream for &'a mut Vec<u8> {
     }
 }
 
-pub trait WithCodedInputStream {
-    fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
-    where
-        F: FnOnce(&mut CodedInputStream) -> ProtobufResult<T>;
-}
-
-impl<'a> WithCodedInputStream for &'a mut (dyn Read + 'a) {
-    fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
-    where
-        F: FnOnce(&mut CodedInputStream) -> ProtobufResult<T>,
-    {
-        let mut is = CodedInputStream::new(self);
-        let r = cb(&mut is)?;
-        is.check_eof()?;
-        Ok(r)
-    }
-}
-
-impl<'a> WithCodedInputStream for &'a mut (dyn BufRead + 'a) {
-    fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
-    where
-        F: FnOnce(&mut CodedInputStream) -> ProtobufResult<T>,
-    {
-        let mut is = CodedInputStream::from_buffered_reader(self);
-        let r = cb(&mut is)?;
-        is.check_eof()?;
-        Ok(r)
-    }
-}
-
-impl<'a> WithCodedInputStream for &'a [u8] {
-    fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
-    where
-        F: FnOnce(&mut CodedInputStream) -> ProtobufResult<T>,
-    {
-        let mut is = CodedInputStream::from_bytes(self);
-        let r = cb(&mut is)?;
-        is.check_eof()?;
-        Ok(r)
-    }
-}
-
-#[cfg(feature = "bytes")]
-impl<'a> WithCodedInputStream for &'a Bytes {
-    fn with_coded_input_stream<T, F>(self, cb: F) -> ProtobufResult<T>
-    where
-        F: FnOnce(&mut CodedInputStream) -> ProtobufResult<T>,
-    {
-        let mut is = CodedInputStream::from_carllerche_bytes(self);
-        let r = cb(&mut is)?;
-        is.check_eof()?;
-        Ok(r)
-    }
-}
-
 enum OutputTarget<'a> {
     Write(&'a mut dyn Write, Vec<u8>),
     Vec(&'a mut Vec<u8>),

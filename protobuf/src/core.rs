@@ -15,7 +15,6 @@ use crate::reflect::MessageDescriptor;
 use crate::reflect::ProtobufValue;
 use crate::stream::CodedInputStream;
 use crate::stream::CodedOutputStream;
-use crate::stream::WithCodedInputStream;
 use crate::stream::WithCodedOutputStream;
 use crate::unknown::UnknownFields;
 
@@ -271,8 +270,8 @@ impl Clone for Box<dyn Message> {
 }
 
 #[cfg(off)] // don't need it
-impl PartialEq for Box<Message> {
-    fn eq(&self, other: &Box<Message>) -> bool {
+impl PartialEq for Box<dyn Message> {
+    fn eq(&self, other: &Box<dyn Message>) -> bool {
         use std::ops::Deref;
         self.descriptor() == other.descriptor() && self.descriptor().eq(self.deref(), other.deref())
     }
@@ -289,18 +288,26 @@ pub fn parse_from<M: Message>(is: &mut CodedInputStream) -> ProtobufResult<M> {
 /// Parse message from reader.
 /// Parse stops on EOF or when error encountered.
 pub fn parse_from_reader<M: Message>(reader: &mut dyn Read) -> ProtobufResult<M> {
-    reader.with_coded_input_stream(|is| parse_from::<M>(is))
+    let mut is = CodedInputStream::new(reader);
+    let r = parse_from(&mut is)?;
+    is.check_eof()?;
+    Ok(r)
 }
 
 /// Parse message from byte array.
 pub fn parse_from_bytes<M: Message>(bytes: &[u8]) -> ProtobufResult<M> {
-    bytes.with_coded_input_stream(|is| parse_from::<M>(is))
+    let mut is = CodedInputStream::from_bytes(bytes);
+    let r = parse_from(&mut is)?;
+    is.check_eof()?;
+    Ok(r)
 }
 
 /// Parse message from `Bytes` object.
 /// Resulting message may share references to the passed bytes object.
 #[cfg(feature = "bytes")]
 pub fn parse_from_carllerche_bytes<M: Message>(bytes: &Bytes) -> ProtobufResult<M> {
-    // Call trait explicitly to avoid accidental construction from `&[u8]`
-    WithCodedInputStream::with_coded_input_stream(bytes, |is| parse_from::<M>(is))
+    let mut is = CodedInputStream::from_carllerche_bytes(bytes);
+    let r = parse_from(&mut is)?;
+    is.check_eof()?;
+    Ok(r)
 }
