@@ -142,12 +142,12 @@ impl FieldGen<'_> {
         _option_kind: OptionKind,
     ) -> AccessorFn {
         match elem {
-            FieldElem::Message(..) => AccessorFn {
-                name: "make_option_accessor".to_owned(),
-                type_params: vec![
-                    elem.lib_protobuf_type(&self.get_file_and_mod()),
-                    "_".to_owned(),
-                ],
+            FieldElem::Message(m) => AccessorFn {
+                name: "make_message_field_accessor".to_owned(),
+                type_params: vec![format!(
+                    "{}",
+                    m.rust_name_relative(&self.get_file_and_mod())
+                )],
                 callback_params: self.make_accessor_fns_lambda(),
             },
             FieldElem::Primitive(field_descriptor_proto::Type::TYPE_STRING, ..)

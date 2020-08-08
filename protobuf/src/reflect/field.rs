@@ -210,7 +210,7 @@ impl FieldDescriptor {
     ///
     /// If this field belongs to a different message type or field is not singular.
     pub fn singular_runtime_type(&self) -> &dyn RuntimeTypeDynamic {
-        self.singular().element_type.runtime_type()
+        self.singular().element_type
     }
 
     /// Set singular field.
@@ -227,15 +227,9 @@ impl FieldDescriptor {
     pub fn runtime_field_type(&self) -> RuntimeFieldType {
         use self::AccessorV2::*;
         match self.accessor.accessor {
-            Accessor::V2(Singular(ref a)) => {
-                RuntimeFieldType::Singular(a.element_type.runtime_type())
-            }
-            Accessor::V2(Repeated(ref a)) => {
-                RuntimeFieldType::Repeated(a.element_type.runtime_type())
-            }
-            Accessor::V2(Map(ref a)) => {
-                RuntimeFieldType::Map(a.key_type.runtime_type(), a.value_type.runtime_type())
-            }
+            Accessor::V2(Singular(ref a)) => RuntimeFieldType::Singular(a.element_type),
+            Accessor::V2(Repeated(ref a)) => RuntimeFieldType::Repeated(a.element_type),
+            Accessor::V2(Map(ref a)) => RuntimeFieldType::Map(a.key_type, a.value_type),
         }
     }
 

@@ -13,7 +13,6 @@ use crate::reflect::acc::v2::AccessorV2;
 use crate::reflect::acc::FieldAccessor;
 use crate::reflect::runtime_types::RuntimeTypeWithDeref;
 use crate::reflect::types::ProtobufType;
-use crate::reflect::types::ProtobufTypeMessage;
 use crate::reflect::ProtobufValueSized;
 use crate::Message;
 use std::marker;
@@ -44,7 +43,7 @@ where
                     _marker: marker::PhantomData,
                 },
             ),
-            element_type: V::dynamic(),
+            element_type: V::ProtobufValue::dynamic(),
         }),
     )
 }
@@ -78,7 +77,7 @@ where
                     _marker: marker::PhantomData,
                 },
             ),
-            element_type: F::dynamic(),
+            element_type: F::ProtobufValue::dynamic(),
         }),
     )
 }
@@ -108,7 +107,7 @@ where
                 set_impl: SetImplSetField::<M, F> { set_field },
                 _marker: marker::PhantomData,
             }),
-            element_type: ProtobufTypeMessage::<F>::dynamic(),
+            element_type: F::dynamic(),
         }),
     )
 }

@@ -6,14 +6,14 @@ use crate::enums::ProtobufEnumOrUnknown;
 use crate::reflect::acc::v2::AccessorV2;
 use crate::reflect::acc::FieldAccessor;
 use crate::reflect::runtime_types::RuntimeTypeWithDeref;
-use crate::reflect::type_dynamic::ProtobufTypeDynamic;
 use crate::reflect::types::ProtobufType;
-use crate::reflect::types::ProtobufTypeEnumOrUnknown;
 use crate::reflect::value::ReflectValueMut;
-use crate::reflect::ProtobufValueSized;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
+use crate::reflect::ProtobufValueSized;
+use crate::reflect::RuntimeTypeDynamic;
 use crate::singular::OptionLike;
+use crate::SingularPtrField;
 
 pub(crate) mod oneof;
 
@@ -27,7 +27,7 @@ pub(crate) trait SingularFieldAccessor: Send + Sync + 'static {
 
 pub(crate) struct SingularFieldAccessorHolder {
     pub accessor: Box<dyn SingularFieldAccessor>,
-    pub element_type: &'static dyn ProtobufTypeDynamic,
+    pub element_type: &'static dyn RuntimeTypeDynamic,
 }
 
 trait GetOptionImpl<M>: Send + Sync + 'static {
@@ -454,6 +454,43 @@ where
                     _marker: marker::PhantomData,
                 },
             ),
+            element_type: V::ProtobufValue::dynamic(),
+        }),
+    )
+}
+
+/// Make accessor for option or option-like field
+pub fn make_message_field_accessor<M, V>(
+    name: &'static str,
+    get_field: for<'a> fn(&'a M) -> &'a SingularPtrField<V>,
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut SingularPtrField<V>,
+) -> FieldAccessor
+where
+    M: Message + 'static,
+    V: Message + ProtobufValueSized + 'static,
+{
+    FieldAccessor::new_v2(
+        name,
+        AccessorV2::Singular(SingularFieldAccessorHolder {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
+                get_option_impl: GetOptionImplOptionFieldPointer::<M, V, _> {
+                    get_field,
+                    _marker: marker::PhantomData,
+                },
+                get_or_default_impl: GetOrDefaultOptionRefTypeDefault::<M, V, _> {
+                    get_field,
+                    _marker: marker::PhantomData,
+                },
+                mut_or_default_impl: MutOrDefaultOptionMut::<M, V, _> {
+                    mut_field,
+                    _marker: marker::PhantomData,
+                },
+                set_impl: SetImplOptionFieldPointer::<M, V, _> {
+                    mut_field,
+                    _marker: marker::PhantomData,
+                },
+                _marker: marker::PhantomData,
+            }),
             element_type: V::dynamic(),
         }),
     )
@@ -491,7 +528,7 @@ where
                     _marker: marker::PhantomData,
                 },
             ),
-            element_type: V::dynamic(),
+            element_type: V::ProtobufValue::dynamic(),
         }),
     )
 }
@@ -558,7 +595,7 @@ where
                 },
                 _marker: marker::PhantomData,
             }),
-            element_type: ProtobufTypeEnumOrUnknown::<E>::dynamic(),
+            element_type: ProtobufEnumOrUnknown::<E>::dynamic(),
         }),
     )
 }
@@ -596,7 +633,7 @@ where
                     _marker: marker::PhantomData,
                 },
             ),
-            element_type: V::dynamic(),
+            element_type: V::ProtobufValue::dynamic(),
         }),
     )
 }
@@ -623,7 +660,7 @@ where
                     _marker: marker::PhantomData,
                 },
             ),
-            element_type: V::dynamic(),
+            element_type: V::ProtobufValue::dynamic(),
         }),
     )
 }

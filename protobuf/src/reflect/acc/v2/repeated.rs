@@ -7,9 +7,9 @@ use crate::reflect::acc::FieldAccessor;
 use crate::reflect::repeated::ReflectRepeated;
 use crate::reflect::repeated::ReflectRepeatedMut;
 use crate::reflect::repeated::ReflectRepeatedRef;
-use crate::reflect::type_dynamic::ProtobufTypeDynamic;
 use crate::reflect::types::ProtobufType;
 use crate::reflect::ProtobufValueSized;
+use crate::reflect::RuntimeTypeDynamic;
 
 pub(crate) trait RepeatedFieldAccessor: Send + Sync + 'static {
     fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectRepeatedRef<'a>;
@@ -18,7 +18,7 @@ pub(crate) trait RepeatedFieldAccessor: Send + Sync + 'static {
 
 pub(crate) struct RepeatedFieldAccessorHolder {
     pub accessor: Box<dyn RepeatedFieldAccessor>,
-    pub element_type: &'static dyn ProtobufTypeDynamic,
+    pub element_type: &'static dyn RuntimeTypeDynamic,
 }
 
 trait RepeatedFieldGetMut<M, R: ?Sized>: Send + Sync + 'static
@@ -98,7 +98,7 @@ where
                 }),
                 _marker: marker::PhantomData::<V>,
             }),
-            element_type: V::dynamic(),
+            element_type: V::ProtobufValue::dynamic(),
         }),
     )
 }
