@@ -233,7 +233,7 @@ impl crate::Message for Api {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
                 "name",
                 |m: &Api| { &m.name },
                 |m: &mut Api| { &mut m.name },
@@ -248,7 +248,7 @@ impl crate::Message for Api {
                 |m: &Api| { &m.options },
                 |m: &mut Api| { &mut m.options },
             ));
-            fields.push(crate::reflect::rt::v2::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
                 "version",
                 |m: &Api| { &m.version },
                 |m: &mut Api| { &mut m.version },
@@ -263,7 +263,7 @@ impl crate::Message for Api {
                 |m: &Api| { &m.mixins },
                 |m: &mut Api| { &mut m.mixins },
             ));
-            fields.push(crate::reflect::rt::v2::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeEnumOrUnknown<crate::well_known_types::Syntax>>(
+            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
                 "syntax",
                 |m: &Api| { &m.syntax },
                 |m: &mut Api| { &mut m.syntax },
@@ -498,27 +498,27 @@ impl crate::Message for Method {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
                 "name",
                 |m: &Method| { &m.name },
                 |m: &mut Method| { &mut m.name },
             ));
-            fields.push(crate::reflect::rt::v2::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
                 "request_type_url",
                 |m: &Method| { &m.request_type_url },
                 |m: &mut Method| { &mut m.request_type_url },
             ));
-            fields.push(crate::reflect::rt::v2::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
+            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
                 "request_streaming",
                 |m: &Method| { &m.request_streaming },
                 |m: &mut Method| { &mut m.request_streaming },
             ));
-            fields.push(crate::reflect::rt::v2::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
                 "response_type_url",
                 |m: &Method| { &m.response_type_url },
                 |m: &mut Method| { &mut m.response_type_url },
             ));
-            fields.push(crate::reflect::rt::v2::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
+            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
                 "response_streaming",
                 |m: &Method| { &m.response_streaming },
                 |m: &mut Method| { &mut m.response_streaming },
@@ -528,7 +528,7 @@ impl crate::Message for Method {
                 |m: &Method| { &m.options },
                 |m: &mut Method| { &mut m.options },
             ));
-            fields.push(crate::reflect::rt::v2::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeEnumOrUnknown<crate::well_known_types::Syntax>>(
+            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
                 "syntax",
                 |m: &Method| { &m.syntax },
                 |m: &mut Method| { &mut m.syntax },
@@ -690,12 +690,12 @@ impl crate::Message for Mixin {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
                 "name",
                 |m: &Mixin| { &m.name },
                 |m: &mut Mixin| { &mut m.name },
             ));
-            fields.push(crate::reflect::rt::v2::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
                 "root",
                 |m: &Mixin| { &m.root },
                 |m: &mut Mixin| { &mut m.root },

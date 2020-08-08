@@ -148,12 +148,12 @@ impl crate::Message for Any {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
                 "type_url",
                 |m: &Any| { &m.type_url },
                 |m: &mut Any| { &mut m.type_url },
             ));
-            fields.push(crate::reflect::rt::v2::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeBytes>(
+            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
                 "value",
                 |m: &Any| { &m.value },
                 |m: &mut Any| { &mut m.value },

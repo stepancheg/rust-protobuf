@@ -116,7 +116,7 @@ impl crate::Message for DoubleValue {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeDouble>(
+            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
                 "value",
                 |m: &DoubleValue| { &m.value },
                 |m: &mut DoubleValue| { &mut m.value },
@@ -254,7 +254,7 @@ impl crate::Message for FloatValue {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeFloat>(
+            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
                 "value",
                 |m: &FloatValue| { &m.value },
                 |m: &mut FloatValue| { &mut m.value },
@@ -392,7 +392,7 @@ impl crate::Message for Int64Value {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeInt64>(
+            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
                 "value",
                 |m: &Int64Value| { &m.value },
                 |m: &mut Int64Value| { &mut m.value },
@@ -530,7 +530,7 @@ impl crate::Message for UInt64Value {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeUint64>(
+            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
                 "value",
                 |m: &UInt64Value| { &m.value },
                 |m: &mut UInt64Value| { &mut m.value },
@@ -668,7 +668,7 @@ impl crate::Message for Int32Value {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeInt32>(
+            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
                 "value",
                 |m: &Int32Value| { &m.value },
                 |m: &mut Int32Value| { &mut m.value },
@@ -806,7 +806,7 @@ impl crate::Message for UInt32Value {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeUint32>(
+            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
                 "value",
                 |m: &UInt32Value| { &m.value },
                 |m: &mut UInt32Value| { &mut m.value },
@@ -944,7 +944,7 @@ impl crate::Message for BoolValue {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeBool>(
+            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
                 "value",
                 |m: &BoolValue| { &m.value },
                 |m: &mut BoolValue| { &mut m.value },
@@ -1082,7 +1082,7 @@ impl crate::Message for StringValue {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
                 "value",
                 |m: &StringValue| { &m.value },
                 |m: &mut StringValue| { &mut m.value },
@@ -1220,7 +1220,7 @@ impl crate::Message for BytesValue {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_simple_field_accessor::<_, crate::reflect::types::ProtobufTypeBytes>(
+            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
                 "value",
                 |m: &BytesValue| { &m.value },
                 |m: &mut BytesValue| { &mut m.value },
