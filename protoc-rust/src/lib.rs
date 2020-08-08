@@ -22,7 +22,7 @@
 //! The alternative is to use `protobuf-codegen-pure`.
 
 #![deny(missing_docs)]
-#![deny(intra_doc_link_resolution_failure)]
+#![deny(broken_intra_doc_links)]
 
 extern crate tempfile;
 

@@ -5,7 +5,7 @@
 //! See readme on the [project github page](https://github.com/stepancheg/rust-protobuf).
 
 #![deny(missing_docs)]
-#![deny(intra_doc_link_resolution_failure)]
+#![deny(broken_intra_doc_links)]
 #![cfg_attr(rustc_nightly, feature(specialization))]
 
 #[cfg(feature = "bytes")]
