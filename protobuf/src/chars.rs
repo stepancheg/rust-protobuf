@@ -15,7 +15,7 @@ pub struct Chars(Bytes);
 
 impl Chars {
     /// New empty object.
-    pub fn new() -> Chars {
+    pub const fn new() -> Chars {
         Chars(Bytes::new())
     }
 
