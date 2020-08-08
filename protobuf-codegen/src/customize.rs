@@ -20,8 +20,6 @@ pub struct Customize {
     pub carllerche_bytes_for_bytes: Option<bool>,
     /// Use `bytes::Bytes` for `string` fields
     pub carllerche_bytes_for_string: Option<bool>,
-    /// Use `std::Option<std::Box<T>>` to store singular messages fields
-    pub singular_field_option_box: Option<bool>,
     /// Use `std::Option<T>` to store singular messages fields.
     /// Note, it's not possible to have recursive messages with this option enabled.
     pub singular_field_option: Option<bool>,
@@ -70,9 +68,6 @@ impl Customize {
         }
         if let Some(v) = that.carllerche_bytes_for_string {
             self.carllerche_bytes_for_string = Some(v);
-        }
-        if let Some(v) = that.singular_field_option_box {
-            self.singular_field_option_box = Some(v);
         }
         if let Some(v) = that.singular_field_option {
             self.singular_field_option = Some(v);
@@ -127,8 +122,6 @@ impl Customize {
                 r.carllerche_bytes_for_bytes = Some(parse_bool(v)?);
             } else if n == "carllerche_bytes_for_string" {
                 r.carllerche_bytes_for_string = Some(parse_bool(v)?);
-            } else if n == "singular_field_option_box" {
-                r.singular_field_option_box = Some(parse_bool(v)?);
             } else if n == "singular_field_option" {
                 r.singular_field_option = Some(parse_bool(v)?);
             } else if n == "serde_derive" {
@@ -156,7 +149,6 @@ pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customiz
     let generate_getter = rustproto::exts::generate_getter.get(source);
     let carllerche_bytes_for_bytes = rustproto::exts::carllerche_bytes_for_bytes.get(source);
     let carllerche_bytes_for_string = rustproto::exts::carllerche_bytes_for_string.get(source);
-    let singular_field_option_box = rustproto::exts::singular_field_option_box.get(source);
     let singular_field_option = rustproto::exts::singular_field_option.get(source);
     let serde_derive = rustproto::exts::serde_derive.get(source);
     let serde_derive_cfg = rustproto::exts::serde_derive_cfg.get(source);
@@ -169,7 +161,6 @@ pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customiz
         generate_getter,
         carllerche_bytes_for_bytes,
         carllerche_bytes_for_string,
-        singular_field_option_box,
         singular_field_option,
         serde_derive,
         serde_derive_cfg,
@@ -187,7 +178,6 @@ pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
     let carllerche_bytes_for_bytes = rustproto::exts::carllerche_bytes_for_bytes_field.get(source);
     let carllerche_bytes_for_string =
         rustproto::exts::carllerche_bytes_for_string_field.get(source);
-    let singular_field_option_box = rustproto::exts::singular_field_option_box_field.get(source);
     let singular_field_option = rustproto::exts::singular_field_option_field.get(source);
     let serde_derive = None;
     let serde_derive_cfg = None;
@@ -200,7 +190,6 @@ pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
         generate_getter,
         carllerche_bytes_for_bytes,
         carllerche_bytes_for_string,
-        singular_field_option_box,
         singular_field_option,
         serde_derive,
         serde_derive_cfg,
@@ -217,7 +206,6 @@ pub fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
     let generate_getter = rustproto::exts::generate_getter_all.get(source);
     let carllerche_bytes_for_bytes = rustproto::exts::carllerche_bytes_for_bytes_all.get(source);
     let carllerche_bytes_for_string = rustproto::exts::carllerche_bytes_for_string_all.get(source);
-    let singular_field_option_box = rustproto::exts::singular_field_option_box_all.get(source);
     let singular_field_option = rustproto::exts::singular_field_option_all.get(source);
     let serde_derive = rustproto::exts::serde_derive_all.get(source);
     let serde_derive_cfg = rustproto::exts::serde_derive_cfg_all.get(source);
@@ -230,7 +218,6 @@ pub fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
         generate_getter,
         carllerche_bytes_for_bytes,
         carllerche_bytes_for_string,
-        singular_field_option_box,
         singular_field_option,
         serde_derive,
         serde_derive_cfg,

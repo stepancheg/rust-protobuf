@@ -146,8 +146,6 @@ fn field_type_size(field_type: field_descriptor_proto::Type) -> Option<u32> {
 pub enum OptionKind {
     /// Field is `Option<T>`
     Option,
-    /// Field is `Option<Box<T>>`
-    OptionBox,
     /// Field is `SingularPtrField<T>`
     SingularPtrField,
 }
@@ -157,7 +155,6 @@ impl OptionKind {
         let element_type = Box::new(element_type);
         match self {
             OptionKind::Option => RustType::Option(element_type),
-            OptionKind::OptionBox => RustType::Option(Box::new(RustType::Uniq(element_type))),
             OptionKind::SingularPtrField => RustType::SingularPtrField(element_type),
         }
     }
@@ -166,9 +163,6 @@ impl OptionKind {
     fn as_ref_type(&self, element_type: RustType) -> RustType {
         match self {
             OptionKind::Option => RustType::Option(Box::new(element_type.ref_type())),
-            OptionKind::OptionBox => RustType::Option(Box::new(RustType::Ref(Box::new(
-                RustType::Uniq(Box::new(element_type)),
-            )))),
             OptionKind::SingularPtrField => {
                 RustType::SingularPtrField(Box::new(element_type.ref_type()))
             }
@@ -177,26 +171,18 @@ impl OptionKind {
 
     fn _as_option_ref(&self, v: &str) -> String {
         match self {
-            OptionKind::OptionBox => format!("{}.as_ref().map(|v| &**v)", v),
             OptionKind::Option | OptionKind::SingularPtrField => format!("{}.as_ref()", v),
         }
     }
 
     fn unwrap_or_else(&self, what: &str, default_value: &str) -> String {
         match self {
-            OptionKind::OptionBox => {
-                format!("{}.map(|v| *v).unwrap_or_else(|| {})", what, default_value)
-            }
             _ => format!("{}.unwrap_or_else(|| {})", what, default_value),
         }
     }
 
     fn unwrap_ref_or_else(&self, what: &str, default_value: &str) -> String {
         match self {
-            OptionKind::OptionBox => format!(
-                "{}.map(|v| v.as_ref()).unwrap_or_else(|| {})",
-                what, default_value
-            ),
             _ => format!("{}.unwrap_or_else(|| {})", what, default_value),
         }
     }
@@ -204,10 +190,6 @@ impl OptionKind {
     fn wrap_value(&self, value: &str, customize: &Customize) -> String {
         match self {
             OptionKind::Option => format!("::std::option::Option::Some({})", value),
-            OptionKind::OptionBox => {
-                // TODO: could reuse allocated memory
-                format!("::std::option::Option::Some(Box::new({}))", value)
-            }
             OptionKind::SingularPtrField => format!(
                 "{}::SingularPtrField::some({})",
                 protobuf_crate_path(customize),
@@ -661,9 +643,7 @@ impl<'a> FieldGen<'a> {
                     field.field.get_label() == field_descriptor_proto::Label::LABEL_REQUIRED;
                 let option_kind = match field.field.get_field_type() {
                     field_descriptor_proto::Type::TYPE_MESSAGE => {
-                        if customize.singular_field_option_box.unwrap_or(false) {
-                            OptionKind::OptionBox
-                        } else if customize.singular_field_option.unwrap_or(false) {
+                        if customize.singular_field_option.unwrap_or(false) {
                             OptionKind::Option
                         } else {
                             OptionKind::SingularPtrField
