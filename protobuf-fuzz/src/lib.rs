@@ -7,12 +7,12 @@ use std::str;
 pub mod all_types_pb;
 
 fn test_bytes<M: Message>(bytes: &[u8]) {
-    drop(protobuf::parse_from_bytes::<M>(bytes));
+    drop(M::parse_from_bytes(bytes));
 }
 
 fn test_read<M: Message>(bytes: &[u8]) {
     let mut reader = BufReader::new(bytes);
-    drop(protobuf::parse_from_reader::<M>(&mut reader));
+    drop(M::parse_from_reader(&mut reader));
 }
 
 fn test_parse_json<M: Message>(bytes: &[u8]) {
@@ -32,7 +32,7 @@ fn test_parse_text_format<M: Message>(bytes: &[u8]) {
 }
 
 fn test_write_to_bytes<M: Message>(bytes: &[u8]) {
-    let message = match protobuf::parse_from_bytes::<M>(bytes) {
+    let message = match M::parse_from_bytes(bytes) {
         Ok(message) => message,
         Err(_) => return,
     };
