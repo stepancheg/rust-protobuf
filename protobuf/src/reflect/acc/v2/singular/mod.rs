@@ -8,9 +8,9 @@ use crate::reflect::acc::FieldAccessor;
 use crate::reflect::runtime_types::RuntimeTypeWithDeref;
 use crate::reflect::types::ProtobufType;
 use crate::reflect::value::ReflectValueMut;
+use crate::reflect::ProtobufValueSized;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
-use crate::reflect::ProtobufValueSized;
 use crate::reflect::RuntimeTypeDynamic;
 use crate::singular::OptionLike;
 use crate::SingularPtrField;
@@ -419,47 +419,7 @@ where
     }
 }
 
-/// Make accessor for option or option-like field
-pub fn make_option_accessor<M, V, O>(
-    name: &'static str,
-    get_field: for<'a> fn(&'a M) -> &'a O,
-    mut_field: for<'a> fn(&'a mut M) -> &'a mut O,
-) -> FieldAccessor
-where
-    M: Message + 'static,
-    V: ProtobufType + 'static,
-    O: OptionLike<V::ProtobufValue> + Send + Sync + 'static,
-{
-    FieldAccessor::new_v2(
-        name,
-        AccessorV2::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(
-                SingularFieldAccessorImpl::<M, V::ProtobufValue, _, _, _, _> {
-                    get_option_impl: GetOptionImplOptionFieldPointer::<M, V::ProtobufValue, _> {
-                        get_field,
-                        _marker: marker::PhantomData,
-                    },
-                    get_or_default_impl: GetOrDefaultOptionRefTypeDefault::<M, V::ProtobufValue, _> {
-                        get_field,
-                        _marker: marker::PhantomData,
-                    },
-                    mut_or_default_impl: MutOrDefaultOptionMut::<M, V::ProtobufValue, _> {
-                        mut_field,
-                        _marker: marker::PhantomData,
-                    },
-                    set_impl: SetImplOptionFieldPointer::<M, V::ProtobufValue, _> {
-                        mut_field,
-                        _marker: marker::PhantomData,
-                    },
-                    _marker: marker::PhantomData,
-                },
-            ),
-            element_type: V::ProtobufValue::dynamic(),
-        }),
-    )
-}
-
-/// Make accessor for option or option-like field
+/// Make accessor for `SingularPtrField`
 pub fn make_message_field_accessor<M, V>(
     name: &'static str,
     get_field: for<'a> fn(&'a M) -> &'a SingularPtrField<V>,
