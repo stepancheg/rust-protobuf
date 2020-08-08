@@ -253,7 +253,7 @@ impl crate::Message for Api {
                 |m: &Api| { &m.version },
                 |m: &mut Api| { &mut m.version },
             ));
-            fields.push(crate::reflect::rt::v2::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<crate::well_known_types::SourceContext>, _>(
+            fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, crate::well_known_types::SourceContext>(
                 "source_context",
                 |m: &Api| { &m.source_context },
                 |m: &mut Api| { &mut m.source_context },

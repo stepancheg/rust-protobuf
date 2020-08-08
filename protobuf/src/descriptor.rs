@@ -570,12 +570,12 @@ impl crate::Message for FileDescriptorProto {
                 |m: &FileDescriptorProto| { &m.extension },
                 |m: &mut FileDescriptorProto| { &mut m.extension },
             ));
-            fields.push(crate::reflect::rt::v2::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<FileOptions>, _>(
+            fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, FileOptions>(
                 "options",
                 |m: &FileDescriptorProto| { &m.options },
                 |m: &mut FileDescriptorProto| { &mut m.options },
             ));
-            fields.push(crate::reflect::rt::v2::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<SourceCodeInfo>, _>(
+            fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, SourceCodeInfo>(
                 "source_code_info",
                 |m: &FileDescriptorProto| { &m.source_code_info },
                 |m: &mut FileDescriptorProto| { &mut m.source_code_info },
@@ -950,7 +950,7 @@ impl crate::Message for DescriptorProto {
                 |m: &DescriptorProto| { &m.oneof_decl },
                 |m: &mut DescriptorProto| { &mut m.oneof_decl },
             ));
-            fields.push(crate::reflect::rt::v2::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<MessageOptions>, _>(
+            fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, MessageOptions>(
                 "options",
                 |m: &DescriptorProto| { &m.options },
                 |m: &mut DescriptorProto| { &mut m.options },
@@ -1964,7 +1964,7 @@ impl crate::Message for FieldDescriptorProto {
                 |m: &mut FieldDescriptorProto| { &mut m.json_name },
                 FieldDescriptorProto::get_json_name,
             ));
-            fields.push(crate::reflect::rt::v2::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<FieldOptions>, _>(
+            fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, FieldOptions>(
                 "options",
                 |m: &FieldDescriptorProto| { &m.options },
                 |m: &mut FieldDescriptorProto| { &mut m.options },
@@ -2329,7 +2329,7 @@ impl crate::Message for OneofDescriptorProto {
                 |m: &mut OneofDescriptorProto| { &mut m.name },
                 OneofDescriptorProto::get_name,
             ));
-            fields.push(crate::reflect::rt::v2::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<OneofOptions>, _>(
+            fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, OneofOptions>(
                 "options",
                 |m: &OneofDescriptorProto| { &m.options },
                 |m: &mut OneofDescriptorProto| { &mut m.options },
@@ -2545,7 +2545,7 @@ impl crate::Message for EnumDescriptorProto {
                 |m: &EnumDescriptorProto| { &m.value },
                 |m: &mut EnumDescriptorProto| { &mut m.value },
             ));
-            fields.push(crate::reflect::rt::v2::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<EnumOptions>, _>(
+            fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, EnumOptions>(
                 "options",
                 |m: &EnumDescriptorProto| { &m.options },
                 |m: &mut EnumDescriptorProto| { &mut m.options },
@@ -2780,7 +2780,7 @@ impl crate::Message for EnumValueDescriptorProto {
                 |m: &mut EnumValueDescriptorProto| { &mut m.number },
                 EnumValueDescriptorProto::get_number,
             ));
-            fields.push(crate::reflect::rt::v2::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<EnumValueOptions>, _>(
+            fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, EnumValueOptions>(
                 "options",
                 |m: &EnumValueDescriptorProto| { &m.options },
                 |m: &mut EnumValueDescriptorProto| { &mut m.options },
@@ -2998,7 +2998,7 @@ impl crate::Message for ServiceDescriptorProto {
                 |m: &ServiceDescriptorProto| { &m.method },
                 |m: &mut ServiceDescriptorProto| { &mut m.method },
             ));
-            fields.push(crate::reflect::rt::v2::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<ServiceOptions>, _>(
+            fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, ServiceOptions>(
                 "options",
                 |m: &ServiceDescriptorProto| { &m.options },
                 |m: &mut ServiceDescriptorProto| { &mut m.options },
@@ -3373,7 +3373,7 @@ impl crate::Message for MethodDescriptorProto {
                 |m: &mut MethodDescriptorProto| { &mut m.output_type },
                 MethodDescriptorProto::get_output_type,
             ));
-            fields.push(crate::reflect::rt::v2::make_option_accessor::<_, crate::reflect::types::ProtobufTypeMessage<MethodOptions>, _>(
+            fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, MethodOptions>(
                 "options",
                 |m: &MethodDescriptorProto| { &m.options },
                 |m: &mut MethodDescriptorProto| { &mut m.options },
