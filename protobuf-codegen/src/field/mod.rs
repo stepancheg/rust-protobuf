@@ -1630,11 +1630,11 @@ impl<'a> FieldGen<'a> {
                 ..
             } => "singular_proto3",
         };
-        let type_params = match s.elem {
-            FieldElem::Message(ref m, ..) => {
-                format!("::<{}, _>", m.rust_name_relative(&self.get_file_and_mod()))
+        let suffix = match s.elem {
+            FieldElem::Message(..) => {
+                "into_field"
             }
-            _ => "".to_owned(),
+            _ => "into",
         };
         let carllerche = match s.elem.primitive_type_variant() {
             PrimitiveTypeVariant::Carllerche => "carllerche_",
@@ -1642,12 +1642,12 @@ impl<'a> FieldGen<'a> {
         };
         let type_name_for_fn = protobuf_name(self.proto_type);
         w.write_line(&format!(
-            "{}::rt::read_{}_{}{}_into{}(wire_type, is, &mut self.{})?;",
+            "{}::rt::read_{}_{}{}_{}(wire_type, is, &mut self.{})?;",
             protobuf_crate_path(&self.customize),
             singular_or_proto3,
             carllerche,
             type_name_for_fn,
-            type_params,
+            suffix,
             self.rust_name,
         ));
     }

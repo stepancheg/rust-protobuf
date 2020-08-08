@@ -20,6 +20,7 @@ use crate::reflect::types::*;
 use crate::stream::CodedInputStream;
 use crate::stream::CodedOutputStream;
 use crate::wire_format;
+use crate::SingularPtrField;
 use crate::wire_format::WireType;
 use crate::wire_format::WireTypeFixed32;
 use crate::wire_format::WireTypeFixed64;
@@ -847,6 +848,28 @@ where
             is.incr_recursion()?;
             let tmp = target.set_default();
             let res = is.merge_message(tmp);
+            is.decr_recursion();
+            res
+        }
+        _ => Err(unexpected_wire_type(wire_type)),
+    }
+}
+
+/// Read singular `message` field.
+pub fn read_singular_message_into_field<M>(
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    target: &mut SingularPtrField<M>,
+) -> ProtobufResult<()>
+where
+    M: Message + Default,
+{
+    match wire_type {
+        WireTypeLengthDelimited => {
+            is.incr_recursion()?;
+            let mut m = M::new();
+            let res = is.merge_message(&mut m);
+            *target = SingularPtrField::some(m);
             is.decr_recursion();
             res
         }
