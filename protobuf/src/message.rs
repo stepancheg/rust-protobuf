@@ -25,6 +25,25 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
     /// Message descriptor for this message, used for reflection.
     fn descriptor(&self) -> &'static MessageDescriptor;
 
+    /// Get message descriptor for message type.
+    ///
+    /// ```
+    /// # use protobuf::Message;
+    /// # fn foo<MyMessage: Message>() {
+    /// let descriptor = MyMessage::descriptor_static();
+    /// assert_eq!("MyMessage", descriptor.name());
+    /// # }
+    /// ```
+    fn descriptor_static() -> &'static MessageDescriptor
+    where
+        Self: Sized,
+    {
+        panic!(
+            "descriptor_static is not implemented for message, \
+             LITE_RUNTIME must be used"
+        );
+    }
+
     /// True iff all required fields are initialized.
     /// Always returns `true` for protobuf 3.
     fn is_initialized(&self) -> bool;
@@ -204,25 +223,6 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
     fn new() -> Self
     where
         Self: Sized;
-
-    /// Get message descriptor for message type.
-    ///
-    /// ```
-    /// # use protobuf::Message;
-    /// # fn foo<MyMessage: Message>() {
-    /// let descriptor = MyMessage::descriptor_static();
-    /// assert_eq!("MyMessage", descriptor.name());
-    /// # }
-    /// ```
-    fn descriptor_static() -> &'static MessageDescriptor
-    where
-        Self: Sized,
-    {
-        panic!(
-            "descriptor_static is not implemented for message, \
-             LITE_RUNTIME must be used"
-        );
-    }
 
     /// Return a pointer to default immutable message with static lifetime.
     ///
