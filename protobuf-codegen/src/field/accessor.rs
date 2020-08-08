@@ -129,8 +129,8 @@ impl FieldGen<'_> {
             }
         } else {
             AccessorFn {
-                name: "make_simple_field_accessor".to_owned(),
-                type_params: vec![elem.lib_protobuf_type(&self.get_file_and_mod())],
+                name: "make_simpler_field_accessor".to_owned(),
+                type_params: vec![format!("_")],
                 callback_params: self.make_accessor_fns_lambda(),
             }
         }

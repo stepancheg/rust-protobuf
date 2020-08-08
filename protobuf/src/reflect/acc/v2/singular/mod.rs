@@ -653,3 +653,28 @@ where
         }),
     )
 }
+
+/// Make accessor for simple field
+pub fn make_simpler_field_accessor<M, V>(
+    name: &'static str,
+    get_field: for<'a> fn(&'a M) -> &'a V,
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut V,
+) -> FieldAccessor
+where
+    M: Message + 'static,
+    V: ProtobufValueSized,
+{
+    FieldAccessor::new_v2(
+        name,
+        AccessorV2::Singular(SingularFieldAccessorHolder {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
+                get_option_impl: GetOptionImplFieldPointer::<M, V> { get_field },
+                get_or_default_impl: GetOrDefaultGetRef::<M, V> { get_field },
+                mut_or_default_impl: MutOrDefaultGetMut::<M, V> { mut_field },
+                set_impl: SetImplFieldPointer::<M, V> { mut_field },
+                _marker: marker::PhantomData,
+            }),
+            element_type: V::dynamic(),
+        }),
+    )
+}
