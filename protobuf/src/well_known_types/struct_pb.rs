@@ -553,25 +553,25 @@ impl crate::Message for Value {
         static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_oneof_copy_has_get_set_accessors::<_, crate::reflect::types::ProtobufTypeEnum<NullValue>>(
+            fields.push(crate::reflect::rt::v2::make_oneof_copy_has_get_set_simpler_accessors::<_, _>(
                 "null_value",
                 Value::has_null_value,
                 Value::get_null_value,
                 Value::set_null_value,
             ));
-            fields.push(crate::reflect::rt::v2::make_oneof_copy_has_get_set_accessors::<_, crate::reflect::types::ProtobufTypeDouble>(
+            fields.push(crate::reflect::rt::v2::make_oneof_copy_has_get_set_simpler_accessors::<_, _>(
                 "number_value",
                 Value::has_number_value,
                 Value::get_number_value,
                 Value::set_number_value,
             ));
-            fields.push(crate::reflect::rt::v2::make_oneof_deref_has_get_set_accessor::<_, crate::reflect::types::ProtobufTypeString>(
+            fields.push(crate::reflect::rt::v2::make_oneof_deref_has_get_set_simpler_accessor::<_, _>(
                 "string_value",
                 Value::has_string_value,
                 Value::get_string_value,
                 Value::set_string_value,
             ));
-            fields.push(crate::reflect::rt::v2::make_oneof_copy_has_get_set_accessors::<_, crate::reflect::types::ProtobufTypeBool>(
+            fields.push(crate::reflect::rt::v2::make_oneof_copy_has_get_set_simpler_accessors::<_, _>(
                 "bool_value",
                 Value::has_bool_value,
                 Value::get_bool_value,
