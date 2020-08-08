@@ -7,8 +7,8 @@ use std::path::Path;
 use std::path::PathBuf;
 
 use protobuf::descriptor::*;
-use protobuf_codegen::*;
 use protobuf::Message;
+use protobuf_codegen::*;
 
 fn write_file(bin: &str) {
     let mut is = File::open(&Path::new(bin)).unwrap();

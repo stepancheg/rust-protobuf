@@ -89,8 +89,3 @@ pub const VERSION: &str = "";
 #[doc(hidden)]
 pub const VERSION_IDENT: &str = "";
 include!(concat!(env!("OUT_DIR"), "/version.rs"));
-
-/// TODO: inline
-pub fn parse_from_bytes<M: Message>(bytes: &[u8]) -> ProtobufResult<M> {
-    M::parse_from_bytes(bytes)
-}
