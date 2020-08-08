@@ -10,42 +10,13 @@ use crate::descriptor::FileDescriptorProto;
 use crate::reflect::acc::FieldAccessor;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
-use crate::reflect::reflect_eq::{ReflectEq, ReflectEqMode};
+use crate::reflect::message::generated::MessageFactory;
+use crate::reflect::message::generated::MessageFactoryImpl;
+use crate::reflect::reflect_eq::ReflectEq;
+use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::FieldDescriptor;
 
-trait MessageFactory: Send + Sync + 'static {
-    fn new_instance(&self) -> Box<dyn Message>;
-    fn default_instance(&self) -> &dyn Message;
-    fn clone(&self, message: &dyn Message) -> Box<dyn Message>;
-    fn eq(&self, a: &dyn Message, b: &dyn Message) -> bool;
-}
-
-struct MessageFactoryImpl<M>(marker::PhantomData<M>);
-
-impl<M> MessageFactory for MessageFactoryImpl<M>
-where
-    M: 'static + Message + Default + Clone + PartialEq,
-{
-    fn new_instance(&self) -> Box<dyn Message> {
-        let m: M = Default::default();
-        Box::new(m)
-    }
-
-    fn default_instance(&self) -> &dyn Message {
-        M::default_instance() as &dyn Message
-    }
-
-    fn clone(&self, message: &dyn Message) -> Box<dyn Message> {
-        let m: &M = message.downcast_ref().expect("wrong message type");
-        Box::new(m.clone())
-    }
-
-    fn eq(&self, a: &dyn Message, b: &dyn Message) -> bool {
-        let a: &M = a.downcast_ref().expect("wrong message type");
-        let b: &M = b.downcast_ref().expect("wrong message type");
-        a == b
-    }
-}
+mod generated;
 
 /// Dynamic representation of message type.
 ///
