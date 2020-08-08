@@ -12,10 +12,54 @@ use crate::reflect::ProtobufValueSized;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::reflect::RuntimeTypeDynamic;
-use crate::singular::OptionLike;
 use crate::SingularPtrField;
 
 pub(crate) mod oneof;
+
+/// Option-like objects
+#[doc(hidden)]
+trait OptionLike<T> {
+    fn into_option(self) -> Option<T>;
+    fn as_option_ref(&self) -> Option<&T>;
+    fn as_option_mut(&mut self) -> Option<&mut T>;
+    fn set_value(&mut self, value: T);
+}
+
+impl<T> OptionLike<T> for Option<T> {
+    fn into_option(self) -> Option<T> {
+        self
+    }
+
+    fn as_option_ref(&self) -> Option<&T> {
+        self.as_ref()
+    }
+
+    fn as_option_mut(&mut self) -> Option<&mut T> {
+        self.as_mut()
+    }
+
+    fn set_value(&mut self, value: T) {
+        *self = Some(value);
+    }
+}
+
+impl<T> OptionLike<T> for SingularPtrField<T> {
+    fn into_option(self) -> Option<T> {
+        self.into_option()
+    }
+
+    fn as_option_ref(&self) -> Option<&T> {
+        self.as_ref()
+    }
+
+    fn as_option_mut(&mut self) -> Option<&mut T> {
+        self.as_mut()
+    }
+
+    fn set_value(&mut self, value: T) {
+        *self = SingularPtrField::some(value);
+    }
+}
 
 /// This trait should not be used directly, use `FieldDescriptor` instead
 pub(crate) trait SingularFieldAccessor: Send + Sync + 'static {

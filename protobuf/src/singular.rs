@@ -8,52 +8,6 @@ use std::option;
 use crate::clear::Clear;
 use crate::Message;
 
-/// Option-like objects
-#[doc(hidden)]
-pub trait OptionLike<T> {
-    fn into_option(self) -> Option<T>;
-    fn as_option_ref(&self) -> Option<&T>;
-    fn as_option_mut(&mut self) -> Option<&mut T>;
-    fn set_value(&mut self, value: T);
-}
-
-impl<T> OptionLike<T> for Option<T> {
-    fn into_option(self) -> Option<T> {
-        self
-    }
-
-    fn as_option_ref(&self) -> Option<&T> {
-        self.as_ref()
-    }
-
-    fn as_option_mut(&mut self) -> Option<&mut T> {
-        self.as_mut()
-    }
-
-    fn set_value(&mut self, value: T) {
-        *self = Some(value);
-    }
-}
-
-impl<T> OptionLike<T> for Option<Box<T>> {
-    fn into_option(self) -> Option<T> {
-        self.map(|b| *b)
-    }
-
-    fn as_option_ref(&self) -> Option<&T> {
-        self.as_ref().map(|b| b.as_ref())
-    }
-
-    fn as_option_mut(&mut self) -> Option<&mut T> {
-        self.as_mut().map(|b| b.as_mut())
-    }
-
-    fn set_value(&mut self, value: T) {
-        // TODO: reuse allocation
-        *self = Some(Box::new(value))
-    }
-}
-
 /// Like `Option<Box<T>>`, but keeps the actual element on `clear`.
 ///
 /// # Examples
@@ -255,25 +209,6 @@ impl<'a, T> IntoIterator for &'a SingularPtrField<T> {
 
     fn into_iter(self) -> option::IntoIter<&'a T> {
         self.iter()
-    }
-}
-
-impl<T> OptionLike<T> for SingularPtrField<T> {
-    fn into_option(self) -> Option<T> {
-        self.into_option()
-    }
-
-    fn as_option_ref(&self) -> Option<&T> {
-        self.as_ref()
-    }
-
-    fn as_option_mut(&mut self) -> Option<&mut T> {
-        self.as_mut()
-    }
-
-    fn set_value(&mut self, value: T) {
-        // TODO: unnecessary malloc
-        *self = SingularPtrField::some(value);
     }
 }
 
