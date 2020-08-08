@@ -304,7 +304,7 @@ impl<'a> Resolver<'a> {
     ) -> ConvertResult<protobuf::descriptor::DescriptorProto> {
         let mut output = protobuf::descriptor::DescriptorProto::new();
 
-        output.options.mut_message().set_map_entry(true);
+        output.options.mut_or_default().set_map_entry(true);
         output.set_name(Resolver::map_entry_name_for_field_name(field_name).into_string());
         output
             .field
@@ -423,9 +423,7 @@ impl<'a> Resolver<'a> {
             output.field = fields;
         }
 
-        output
-            .options
-            .set_message(self.message_options(&input.options, path_in_file)?);
+        output.options = Some(self.message_options(&input.options, path_in_file)?).into();
 
         for ext in &input.extension_ranges {
             let mut extension_range = protobuf::descriptor::descriptor_proto::ExtensionRange::new();
@@ -574,9 +572,7 @@ impl<'a> Resolver<'a> {
             output.set_default_value(default);
         }
 
-        output
-            .options
-            .set_message(self.field_options(&input.t.options, path_in_file)?);
+        output.options = Some(self.field_options(&input.t.options, path_in_file)?).into();
 
         if let Some(oneof_index) = oneof_index {
             output.set_oneof_index(oneof_index);
@@ -763,9 +759,7 @@ impl<'a> Resolver<'a> {
         let mut output = protobuf::descriptor::EnumValueDescriptorProto::new();
         output.set_name(input.name.clone());
         output.set_number(input.number);
-        output
-            .options
-            .set_message(self.enum_value_options(&input.options, path_in_file)?);
+        output.options = Some(self.enum_value_options(&input.options, path_in_file)?).into();
         Ok(output)
     }
 
@@ -797,9 +791,7 @@ impl<'a> Resolver<'a> {
             .iter()
             .map(|v| self.enum_value(&v, path_in_file))
             .collect::<Result<_, _>>()?;
-        output
-            .options
-            .set_message(self.enum_options(&input.options, path_in_file)?);
+        output.options = Some(self.enum_options(&input.options, path_in_file)?).into();
         Ok(output)
     }
 
@@ -818,9 +810,7 @@ impl<'a> Resolver<'a> {
     ) -> ConvertResult<protobuf::descriptor::OneofDescriptorProto> {
         let mut output = protobuf::descriptor::OneofDescriptorProto::new();
         output.set_name(input.name.clone());
-        output
-            .options
-            .set_message(self.oneof_options(&input.options, path_in_file)?);
+        output.options = Some(self.oneof_options(&input.options, path_in_file)?).into();
         Ok(output)
     }
 
@@ -1108,9 +1098,8 @@ pub fn file_descriptor(
         .map(|e| resolver.enumeration(e, &ProtobufRelativePath::empty()))
         .collect::<Result<_, _>>()?;
 
-    output
-        .options
-        .set_message(resolver.file_options(&input.options, &ProtobufRelativePath::empty())?);
+    output.options =
+        Some(resolver.file_options(&input.options, &ProtobufRelativePath::empty())?).into();
 
     Ok(output)
 }
