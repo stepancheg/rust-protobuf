@@ -3,7 +3,7 @@
 //! Can be used to avoid downloading and installing `protoc` binary.
 
 #![deny(missing_docs)]
-#![deny(intra_doc_link_resolution_failure)]
+#![deny(broken_intra_doc_links)]
 
 use std::env;
 use std::fmt;

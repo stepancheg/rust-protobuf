@@ -1,7 +1,7 @@
 //! Library to read and write protocol buffers data.
 
 #![deny(missing_docs)]
-#![deny(intra_doc_link_resolution_failure)]
+#![deny(broken_intra_doc_links)]
 // Because we need compat with Rust 1.26
 #![allow(bare_trait_objects)]
 
