@@ -17,7 +17,7 @@ use protobuf::descriptor::FileDescriptorProto;
 use protobuf::descriptor::FileDescriptorSet;
 use protobuf::descriptor::OneofDescriptorProto;
 use protobuf::text_format::lexer::float::parse_protobuf_float;
-use protobuf::RepeatedField;
+use protobuf::Message;
 use protobuf_test_common::build::copy_tests_v2_v3;
 use protobuf_test_common::build::glob_simple;
 use std::process::Command;
@@ -111,7 +111,7 @@ fn protoc_descriptor_set(includes: &[PathBuf], inputs: &[PathBuf]) -> FileDescri
         .inputs(inputs)
         .write_descriptor_set()
         .unwrap();
-    protobuf::parse_from_reader(&mut temp_file).unwrap()
+    FileDescriptorSet::parse_from_reader(&mut temp_file).unwrap()
 }
 
 // TODO: expose this utility from protobuf-codegen-pure crate.
@@ -126,7 +126,7 @@ fn pure_descriptor_set(includes: &[PathBuf], inputs: &[PathBuf]) -> FileDescript
         .file_descriptors
         .retain(|fd| relative_paths.contains(fd.get_name()));
     let mut fds = FileDescriptorSet::new();
-    fds.file = RepeatedField::from_vec(codegen.file_descriptors);
+    fds.file = codegen.file_descriptors;
     fds
 }
 
