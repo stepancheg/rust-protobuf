@@ -6,8 +6,8 @@ use crate::reflect::acc::v2::map::MapFieldAccessorHolder;
 use crate::reflect::acc::v2::repeated::RepeatedFieldAccessorHolder;
 use crate::reflect::acc::v2::singular::SingularFieldAccessorHolder;
 use crate::reflect::acc::v2::AccessorV2;
-use crate::reflect::acc::Accessor;
 use crate::reflect::acc::FieldAccessor;
+use crate::reflect::acc::FieldAccessorImpl;
 use crate::reflect::map::ReflectMapMut;
 use crate::reflect::map::ReflectMapRef;
 use crate::reflect::reflect_eq::{ReflectEq, ReflectEqMode};
@@ -67,7 +67,7 @@ fn _assert_sync<'a>() {
 /// Can be used for runtime reflection.
 pub struct FieldDescriptor {
     proto: &'static FieldDescriptorProto,
-    accessor: Accessor,
+    accessor: FieldAccessorImpl,
     json_name: String,
 }
 
@@ -119,8 +119,8 @@ impl FieldDescriptor {
     /// If this field a map field?
     pub fn is_map(&self) -> bool {
         match self.accessor {
-            Accessor::V2(AccessorV2::Map(..)) => true,
-            Accessor::V2(..) => false,
+            FieldAccessorImpl::V2(AccessorV2::Map(..)) => true,
+            FieldAccessorImpl::V2(..) => false,
         }
     }
 
@@ -134,9 +134,11 @@ impl FieldDescriptor {
     /// If this field belongs to a different message type.
     pub fn has_field(&self, m: &dyn Message) -> bool {
         match self.accessor {
-            Accessor::V2(AccessorV2::Singular(ref a)) => a.accessor.get_field(m).is_some(),
-            Accessor::V2(AccessorV2::Repeated(ref a)) => a.accessor.get_reflect(m).len() != 0,
-            Accessor::V2(AccessorV2::Map(ref a)) => a.accessor.get_reflect(m).len() != 0,
+            FieldAccessorImpl::V2(AccessorV2::Singular(ref a)) => a.accessor.get_field(m).is_some(),
+            FieldAccessorImpl::V2(AccessorV2::Repeated(ref a)) => {
+                a.accessor.get_reflect(m).len() != 0
+            }
+            FieldAccessorImpl::V2(AccessorV2::Map(ref a)) => a.accessor.get_reflect(m).len() != 0,
         }
     }
 
@@ -144,22 +146,22 @@ impl FieldDescriptor {
 
     fn singular(&self) -> &SingularFieldAccessorHolder {
         match self.accessor {
-            Accessor::V2(AccessorV2::Singular(ref a)) => a,
-            Accessor::V2(..) => panic!("not a singular field: {}", self.name()),
+            FieldAccessorImpl::V2(AccessorV2::Singular(ref a)) => a,
+            FieldAccessorImpl::V2(..) => panic!("not a singular field: {}", self.name()),
         }
     }
 
     fn repeated(&self) -> &RepeatedFieldAccessorHolder {
         match self.accessor {
-            Accessor::V2(AccessorV2::Repeated(ref a)) => a,
-            Accessor::V2(..) => panic!("not a repeated field: {}", self.name()),
+            FieldAccessorImpl::V2(AccessorV2::Repeated(ref a)) => a,
+            FieldAccessorImpl::V2(..) => panic!("not a repeated field: {}", self.name()),
         }
     }
 
     fn map(&self) -> &MapFieldAccessorHolder {
         match self.accessor {
-            Accessor::V2(AccessorV2::Map(ref a)) => a,
-            Accessor::V2(..) => panic!("not a map field: {}", self.name()),
+            FieldAccessorImpl::V2(AccessorV2::Map(ref a)) => a,
+            FieldAccessorImpl::V2(..) => panic!("not a map field: {}", self.name()),
         }
     }
 
@@ -227,9 +229,9 @@ impl FieldDescriptor {
     pub fn runtime_field_type(&self) -> RuntimeFieldType {
         use self::AccessorV2::*;
         match self.accessor {
-            Accessor::V2(Singular(ref a)) => RuntimeFieldType::Singular(a.element_type),
-            Accessor::V2(Repeated(ref a)) => RuntimeFieldType::Repeated(a.element_type),
-            Accessor::V2(Map(ref a)) => RuntimeFieldType::Map(a.key_type, a.value_type),
+            FieldAccessorImpl::V2(Singular(ref a)) => RuntimeFieldType::Singular(a.element_type),
+            FieldAccessorImpl::V2(Repeated(ref a)) => RuntimeFieldType::Repeated(a.element_type),
+            FieldAccessorImpl::V2(Map(ref a)) => RuntimeFieldType::Map(a.key_type, a.value_type),
         }
     }
 
@@ -241,9 +243,13 @@ impl FieldDescriptor {
     pub fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectFieldRef<'a> {
         use self::AccessorV2::*;
         match self.accessor {
-            Accessor::V2(Singular(ref a)) => ReflectFieldRef::Optional(a.accessor.get_field(m)),
-            Accessor::V2(Repeated(ref a)) => ReflectFieldRef::Repeated(a.accessor.get_reflect(m)),
-            Accessor::V2(Map(ref a)) => ReflectFieldRef::Map(a.accessor.get_reflect(m)),
+            FieldAccessorImpl::V2(Singular(ref a)) => {
+                ReflectFieldRef::Optional(a.accessor.get_field(m))
+            }
+            FieldAccessorImpl::V2(Repeated(ref a)) => {
+                ReflectFieldRef::Repeated(a.accessor.get_reflect(m))
+            }
+            FieldAccessorImpl::V2(Map(ref a)) => ReflectFieldRef::Map(a.accessor.get_reflect(m)),
         }
     }
 
