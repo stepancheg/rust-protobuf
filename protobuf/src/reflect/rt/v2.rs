@@ -3,7 +3,8 @@
 #![doc(hidden)]
 
 pub use crate::reflect::acc::v2::map::make_map_accessor;
-pub use crate::reflect::acc::v2::repeated::make_vec_accessor;
+pub use crate::reflect::acc::v2::repeated::make_vec_accessor; // TODO: drop
+pub use crate::reflect::acc::v2::repeated::make_vec_simpler_accessor;
 pub use crate::reflect::acc::v2::singular::make_message_field_accessor;
 pub use crate::reflect::acc::v2::singular::make_option_enum_accessor;
 pub use crate::reflect::acc::v2::singular::make_option_get_copy_simpler_accessor;

@@ -103,13 +103,13 @@ impl FieldGen<'_> {
     }
 
     fn accessor_fn_repeated(&self, repeated_field: &RepeatedField) -> AccessorFn {
-        let RepeatedField { ref elem, .. } = repeated_field;
+        let RepeatedField { .. } = repeated_field;
         let name = match repeated_field.kind() {
-            RepeatedFieldKind::Vec => "make_vec_accessor",
+            RepeatedFieldKind::Vec => "make_vec_simpler_accessor",
         };
         AccessorFn {
             name: name.to_owned(),
-            type_params: vec![elem.lib_protobuf_type(&self.get_file_and_mod())],
+            type_params: vec![format!("_")],
             callback_params: self.make_accessor_fns_lambda(),
         }
     }

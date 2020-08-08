@@ -54,7 +54,7 @@ where
 struct RepeatedFieldAccessorImpl<M, V>
 where
     M: Message,
-    V: ProtobufType,
+    V: ProtobufValueSized,
 {
     fns: Box<dyn RepeatedFieldGetMut<M, dyn ReflectRepeated>>,
     _marker: marker::PhantomData<V>,
@@ -63,7 +63,7 @@ where
 impl<M, V> RepeatedFieldAccessor for RepeatedFieldAccessorImpl<M, V>
 where
     M: Message,
-    V: ProtobufType,
+    V: ProtobufValueSized,
 {
     fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectRepeatedRef<'a> {
         let m = m.downcast_ref().unwrap();
@@ -91,14 +91,39 @@ where
     FieldAccessor::new_v2(
         name,
         AccessorV2::Repeated(RepeatedFieldAccessorHolder {
-            accessor: Box::new(RepeatedFieldAccessorImpl::<M, V> {
+            accessor: Box::new(RepeatedFieldAccessorImpl::<M, V::ProtobufValue> {
                 fns: Box::new(RepeatedFieldGetMutImpl::<M, Vec<V::ProtobufValue>> {
+                    get_field: get_vec,
+                    mut_field: mut_vec,
+                }),
+                _marker: marker::PhantomData::<V::ProtobufValue>,
+            }),
+            element_type: V::ProtobufValue::dynamic(),
+        }),
+    )
+}
+
+/// Make accessor for `Vec` field
+pub fn make_vec_simpler_accessor<M, V>(
+    name: &'static str,
+    get_vec: for<'a> fn(&'a M) -> &'a Vec<V>,
+    mut_vec: for<'a> fn(&'a mut M) -> &'a mut Vec<V>,
+) -> FieldAccessor
+where
+    M: Message + 'static,
+    V: ProtobufValueSized,
+{
+    FieldAccessor::new_v2(
+        name,
+        AccessorV2::Repeated(RepeatedFieldAccessorHolder {
+            accessor: Box::new(RepeatedFieldAccessorImpl::<M, V> {
+                fns: Box::new(RepeatedFieldGetMutImpl::<M, Vec<V>> {
                     get_field: get_vec,
                     mut_field: mut_vec,
                 }),
                 _marker: marker::PhantomData::<V>,
             }),
-            element_type: V::ProtobufValue::dynamic(),
+            element_type: V::dynamic(),
         }),
     )
 }
