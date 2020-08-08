@@ -39,15 +39,13 @@ fn make_repeated(len: usize) -> Vec<u8> {
 #[bench]
 fn parse_repeated_small_regular(b: &mut test::Bencher) {
     let bs = make_repeated(30);
-    b.iter(|| protobuf::parse_from_bytes::<messages::TestMessage>(&bs).expect("parse"))
+    b.iter(|| messages::TestMessage::parse_from_bytes(&bs).expect("parse"))
 }
 
 #[bench]
 fn parse_repeated_small_bytes(b: &mut test::Bencher) {
     let bs = Bytes::from(make_repeated(30));
-    b.iter(|| {
-        protobuf::parse_from_carllerche_bytes::<messages::TestMessageWithBytes>(&bs).expect("parse")
-    })
+    b.iter(|| messages::TestMessageWithBytes::parse_from_carllerche_bytes(&bs).expect("parse"))
 }
 
 #[bench]
@@ -59,35 +57,29 @@ fn parse_repeated_medium_regular(b: &mut test::Bencher) {
 #[bench]
 fn parse_repeated_medium_bytes(b: &mut test::Bencher) {
     let bs = Bytes::from(make_repeated(300));
-    b.iter(|| {
-        protobuf::parse_from_carllerche_bytes::<messages::TestMessageWithBytes>(&bs).expect("parse")
-    })
+    b.iter(|| messages::TestMessageWithBytes::parse_from_carllerche_bytes(&bs).expect("parse"))
 }
 
 #[bench]
 fn parse_repeated_large_regular(b: &mut test::Bencher) {
     let bs = make_repeated(3000);
-    b.iter(|| protobuf::parse_from_bytes::<messages::TestMessage>(&bs).expect("parse"))
+    b.iter(|| messages::TestMessage::parse_from_bytes(&bs).expect("parse"))
 }
 
 #[bench]
 fn parse_repeated_large_bytes(b: &mut test::Bencher) {
     let bs = Bytes::from(make_repeated(3000));
-    b.iter(|| {
-        protobuf::parse_from_carllerche_bytes::<messages::TestMessageWithBytes>(&bs).expect("parse")
-    })
+    b.iter(|| messages::TestMessageWithBytes::parse_from_carllerche_bytes(&bs).expect("parse"))
 }
 
 #[bench]
 fn parse_repeated_huge_regular(b: &mut test::Bencher) {
     let bs = make_repeated(30000);
-    b.iter(|| protobuf::parse_from_bytes::<messages::TestMessage>(&bs).expect("parse"))
+    b.iter(|| messages::TestMessage::parse_from_bytes(&bs).expect("parse"))
 }
 
 #[bench]
 fn parse_repeated_huge_bytes(b: &mut test::Bencher) {
     let bs = Bytes::from(make_repeated(30000));
-    b.iter(|| {
-        protobuf::parse_from_carllerche_bytes::<messages::TestMessageWithBytes>(&bs).expect("parse")
-    })
+    b.iter(|| messages::TestMessageWithBytes::parse_from_carllerche_bytes(&bs).expect("parse"))
 }
