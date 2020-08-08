@@ -1,4 +1,3 @@
-use std::fmt;
 use std::marker;
 
 use crate::core::Message;
@@ -11,7 +10,7 @@ use crate::reflect::repeated::ReflectRepeatedMut;
 use crate::reflect::repeated::ReflectRepeatedRef;
 use crate::reflect::type_dynamic::ProtobufTypeDynamic;
 use crate::reflect::types::ProtobufType;
-use crate::reflect::{ProtobufValue, ProtobufValueSized};
+use crate::reflect::ProtobufValueSized;
 
 pub(crate) trait RepeatedFieldAccessor: Send + Sync + 'static {
     fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectRepeatedRef<'a>;
@@ -42,7 +41,7 @@ where
 impl<M, V> RepeatedFieldGetMut<M, dyn ReflectRepeated> for RepeatedFieldGetMutImpl<M, Vec<V>>
 where
     M: Message + 'static,
-    V: ProtobufValue + fmt::Debug + 'static,
+    V: ProtobufValueSized,
 {
     fn get_field<'a>(&self, m: &'a M) -> &'a dyn ReflectRepeated {
         (self.get_field)(m) as &dyn ReflectRepeated
@@ -57,7 +56,7 @@ impl<M, V> RepeatedFieldGetMut<M, dyn ReflectRepeated>
     for RepeatedFieldGetMutImpl<M, RepeatedField<V>>
 where
     M: Message + 'static,
-    V: ProtobufValue + fmt::Debug + 'static,
+    V: ProtobufValueSized,
 {
     fn get_field<'a>(&self, m: &'a M) -> &'a dyn ReflectRepeated {
         (self.get_field)(m) as &dyn ReflectRepeated
@@ -85,19 +84,13 @@ where
     fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectRepeatedRef<'a> {
         let m = m.downcast_ref().unwrap();
         let repeated = self.fns.get_field(m);
-        ReflectRepeatedRef {
-            repeated,
-            dynamic: <V::ProtobufValue as ProtobufValueSized>::dynamic(),
-        }
+        ReflectRepeatedRef { repeated }
     }
 
     fn mut_reflect<'a>(&self, m: &'a mut dyn Message) -> ReflectRepeatedMut<'a> {
         let m = m.downcast_mut().unwrap();
         let repeated = self.fns.mut_field(m);
-        ReflectRepeatedMut {
-            repeated,
-            dynamic: <V::ProtobufValue as ProtobufValueSized>::dynamic(),
-        }
+        ReflectRepeatedMut { repeated }
     }
 }
 

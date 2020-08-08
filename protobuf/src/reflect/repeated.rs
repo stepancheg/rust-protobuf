@@ -4,8 +4,10 @@ use std::slice;
 use crate::reflect::value::ProtobufValue;
 use crate::reflect::value::ReflectValueRef;
 
-use crate::reflect::reflect_eq::{ReflectEq, ReflectEqMode};
+use crate::reflect::reflect_eq::ReflectEq;
+use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
+use crate::reflect::ProtobufValueSized;
 use crate::reflect::ReflectValueBox;
 use crate::repeated::RepeatedField;
 
@@ -16,9 +18,10 @@ pub(crate) trait ReflectRepeated: Sync + 'static + fmt::Debug {
     fn set(&mut self, index: usize, value: ReflectValueBox);
     fn push(&mut self, value: ReflectValueBox);
     fn clear(&mut self);
+    fn element_type(&self) -> &'static dyn RuntimeTypeDynamic;
 }
 
-impl<V: ProtobufValue + fmt::Debug + 'static> ReflectRepeated for Vec<V> {
+impl<V: ProtobufValueSized> ReflectRepeated for Vec<V> {
     fn reflect_iter<'a>(&'a self) -> ReflectRepeatedIter<'a> {
         ReflectRepeatedIter {
             imp: Box::new(ReflectRepeatedIterImplSlice::<'a, V> { iter: self.iter() }),
@@ -46,10 +49,14 @@ impl<V: ProtobufValue + fmt::Debug + 'static> ReflectRepeated for Vec<V> {
     fn clear(&mut self) {
         self.clear()
     }
+
+    fn element_type(&self) -> &'static dyn RuntimeTypeDynamic {
+        V::dynamic()
+    }
 }
 
 // useless
-impl<V: ProtobufValue + fmt::Debug + 'static> ReflectRepeated for [V] {
+impl<V: ProtobufValueSized> ReflectRepeated for [V] {
     fn reflect_iter<'a>(&'a self) -> ReflectRepeatedIter<'a> {
         ReflectRepeatedIter {
             imp: Box::new(ReflectRepeatedIterImplSlice::<'a, V> { iter: self.iter() }),
@@ -76,9 +83,13 @@ impl<V: ProtobufValue + fmt::Debug + 'static> ReflectRepeated for [V] {
     fn clear(&mut self) {
         panic!("clear is not possible for [V]");
     }
+
+    fn element_type(&self) -> &'static dyn RuntimeTypeDynamic {
+        V::dynamic()
+    }
 }
 
-impl<V: ProtobufValue + fmt::Debug + 'static> ReflectRepeated for RepeatedField<V> {
+impl<V: ProtobufValueSized> ReflectRepeated for RepeatedField<V> {
     fn reflect_iter<'a>(&'a self) -> ReflectRepeatedIter<'a> {
         ReflectRepeatedIter {
             imp: Box::new(ReflectRepeatedIterImplSlice::<'a, V> { iter: self.iter() }),
@@ -105,6 +116,10 @@ impl<V: ProtobufValue + fmt::Debug + 'static> ReflectRepeated for RepeatedField<
 
     fn clear(&mut self) {
         self.clear()
+    }
+
+    fn element_type(&self) -> &'static dyn RuntimeTypeDynamic {
+        V::dynamic()
     }
 }
 
@@ -149,13 +164,11 @@ impl<'a> IntoIterator for &'a dyn ReflectRepeated {
 #[derive(Copy, Clone)]
 pub struct ReflectRepeatedRef<'a> {
     pub(crate) repeated: &'a dyn ReflectRepeated,
-    pub(crate) dynamic: &'static dyn RuntimeTypeDynamic,
 }
 
 /// Dynamic mutable reference to repeated field
 pub struct ReflectRepeatedMut<'a> {
     pub(crate) repeated: &'a mut dyn ReflectRepeated,
-    pub(crate) dynamic: &'static dyn RuntimeTypeDynamic,
 }
 
 impl<'a> ReflectRepeatedRef<'a> {
@@ -172,12 +185,14 @@ impl<'a> ReflectRepeatedRef<'a> {
     /// Get item by index
     // TODO: replace with index
     pub fn get(&self, index: usize) -> ReflectValueRef<'a> {
-        self.dynamic.value_to_ref(self.repeated.get(index))
+        self.repeated
+            .element_type()
+            .value_to_ref(self.repeated.get(index))
     }
 
     /// Runtime type of element
     pub fn element_type(&self) -> &dyn RuntimeTypeDynamic {
-        self.dynamic
+        self.repeated.element_type()
     }
 }
 
@@ -255,7 +270,6 @@ impl<'a> ReflectRepeatedMut<'a> {
     fn as_ref(&'a self) -> ReflectRepeatedRef<'a> {
         ReflectRepeatedRef {
             repeated: self.repeated,
-            dynamic: self.dynamic,
         }
     }
 
@@ -273,12 +287,14 @@ impl<'a> ReflectRepeatedMut<'a> {
     ///
     /// Note: return immutable reference.
     pub fn get(&'a self, index: usize) -> ReflectValueRef<'a> {
-        self.dynamic.value_to_ref(self.repeated.get(index))
+        self.repeated
+            .element_type()
+            .value_to_ref(self.repeated.get(index))
     }
 
     /// Runtime type of element
     pub fn element_type(&self) -> &dyn RuntimeTypeDynamic {
-        self.dynamic
+        self.repeated.element_type()
     }
 
     /// Set a value at given index.
