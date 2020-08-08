@@ -676,7 +676,7 @@ pub fn read_repeated_string_into(
 
 /// Read repeated `Chars` field into given vec.
 #[cfg(feature = "bytes")]
-pub fn read_repeated_carllerche_string_into<V>(
+pub fn read_repeated_carllerche_string_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
     target: &mut Vec<Chars>,
