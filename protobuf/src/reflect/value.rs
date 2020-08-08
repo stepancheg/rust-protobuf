@@ -146,7 +146,7 @@ impl ProtobufValueSized for Bytes {
 #[cfg(feature = "bytes")]
 impl ProtobufValue for Chars {}
 #[cfg(feature = "bytes")]
-impl ProtobufValueSized for Bytes {
+impl ProtobufValueSized for Chars {
     type RuntimeType = RuntimeTypeCarllercheChars;
 }
 
