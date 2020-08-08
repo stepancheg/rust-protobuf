@@ -10,7 +10,6 @@ use crate::field::SingularField;
 use crate::field::SingularFieldFlag;
 use crate::inside::protobuf_crate_path;
 use crate::oneof::OneofField;
-use crate::rust_types_values::ProtobufTypeGen;
 use crate::rust_types_values::RustType;
 use crate::scope::WithScope;
 use protobuf::descriptor::field_descriptor_proto;
@@ -185,23 +184,18 @@ impl FieldGen<'_> {
             .scope
             .get_file_and_mod(self.customize.clone());
 
-        if let FieldElem::Enum(ref en) = oneof.elem {
+        if let FieldElem::Enum(..) = oneof.elem {
             return AccessorFn {
-                name: "make_oneof_copy_has_get_set_accessors".to_owned(),
-                type_params: vec![ProtobufTypeGen::Enum(
-                    en.rust_name_relative(&self.get_file_and_mod()),
-                )
-                .rust_type(&self.customize)],
+                name: "make_oneof_copy_has_get_set_simpler_accessors".to_owned(),
+                type_params: vec![format!("_")],
                 callback_params: self.make_accessor_fns_has_get_set(),
             };
         }
 
         if elem.is_copy() {
             return AccessorFn {
-                name: "make_oneof_copy_has_get_set_accessors".to_owned(),
-                type_params: vec![elem
-                    .protobuf_type_gen(&self.get_file_and_mod())
-                    .rust_type(&self.customize)],
+                name: "make_oneof_copy_has_get_set_simpler_accessors".to_owned(),
+                type_params: vec![format!("_")],
                 callback_params: self.make_accessor_fns_has_get_set(),
             };
         }
@@ -216,10 +210,8 @@ impl FieldGen<'_> {
 
         // string or bytes
         AccessorFn {
-            name: "make_oneof_deref_has_get_set_accessor".to_owned(),
-            type_params: vec![elem
-                .protobuf_type_gen(&self.get_file_and_mod())
-                .rust_type(&self.customize)],
+            name: "make_oneof_deref_has_get_set_simpler_accessor".to_owned(),
+            type_params: vec![format!("_")],
             callback_params: self.make_accessor_fns_has_get_set(),
         }
     }

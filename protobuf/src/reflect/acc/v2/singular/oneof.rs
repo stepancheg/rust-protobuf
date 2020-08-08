@@ -111,3 +111,56 @@ where
         }),
     )
 }
+
+/// Make accessor for `Copy` field
+pub fn make_oneof_copy_has_get_set_simpler_accessors<M, V>(
+    name: &'static str,
+    has: fn(&M) -> bool,
+    get: fn(&M) -> V,
+    set: fn(&mut M, V),
+) -> FieldAccessor
+where
+    M: Message + 'static,
+    V: ProtobufValueSized + Copy,
+{
+    FieldAccessor::new_v2(
+        name,
+        AccessorV2::Singular(SingularFieldAccessorHolder {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
+                get_option_impl: GetOptionImplHasGetCopy::<M, V> { has, get },
+                get_or_default_impl: GetOrDefaultGetCopy::<M, V> { get_field: get },
+                mut_or_default_impl: MutOrDefaultUnmplemented::new(),
+                set_impl: SetImplSetField::<M, V> { set_field: set },
+                _marker: marker::PhantomData,
+            }),
+            element_type: V::dynamic(),
+        }),
+    )
+}
+
+/// Make accessor for `oneof` field
+pub fn make_oneof_deref_has_get_set_simpler_accessor<M, F>(
+    name: &'static str,
+    has: fn(&M) -> bool,
+    get: for<'a> fn(&'a M) -> &'a <F::RuntimeType as RuntimeTypeWithDeref>::DerefTarget,
+    set: fn(&mut M, F),
+) -> FieldAccessor
+where
+    M: Message + 'static,
+    F: ProtobufValueSized,
+    F::RuntimeType: RuntimeTypeWithDeref,
+{
+    FieldAccessor::new_v2(
+        name,
+        AccessorV2::Singular(SingularFieldAccessorHolder {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, F, _, _, _, _> {
+                get_option_impl: GetOptionImplHasGetRefDeref::<M, F> { has, get },
+                get_or_default_impl: GetOrDefaultGetRefDeref::<M, F> { get_field: get },
+                mut_or_default_impl: MutOrDefaultUnmplemented::new(),
+                set_impl: SetImplSetField::<M, F> { set_field: set },
+                _marker: marker::PhantomData,
+            }),
+            element_type: F::dynamic(),
+        }),
+    )
+}

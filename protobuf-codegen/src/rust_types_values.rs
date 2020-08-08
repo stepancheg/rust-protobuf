@@ -574,7 +574,7 @@ pub(crate) enum ProtobufTypeGen {
     Primitive(field_descriptor_proto::Type, PrimitiveTypeVariant),
     Message(RustTypeMessage),
     EnumOrUnknown(RustIdentWithPath),
-    Enum(RustIdentWithPath),
+    _Enum(RustIdentWithPath),
 }
 
 impl ProtobufTypeGen {
@@ -610,7 +610,7 @@ impl ProtobufTypeGen {
                 protobuf_crate_path(customize),
                 name
             ),
-            &ProtobufTypeGen::Enum(ref name) => format!(
+            &ProtobufTypeGen::_Enum(ref name) => format!(
                 "{}::reflect::types::ProtobufTypeEnum<{}>",
                 protobuf_crate_path(customize),
                 name
