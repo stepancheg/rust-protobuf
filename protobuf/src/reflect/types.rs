@@ -10,7 +10,6 @@ use crate::bytes::Bytes;
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;
 
-use crate::core::parse_from_bytes;
 use crate::core::Message;
 use crate::enums::ProtobufEnum;
 use crate::enums::ProtobufEnumOrUnknown;
@@ -718,7 +717,7 @@ impl<M: Message + Clone + ProtobufValueSized + Default> ProtobufType for Protobu
             .iter()
             .rev()
             .next()
-            .map(|bytes| parse_from_bytes(bytes).expect("cannot parse message"))
+            .map(|bytes| M::parse_from_bytes(bytes).expect("cannot parse message"))
     }
 
     fn compute_size(value: &M) -> u32 {

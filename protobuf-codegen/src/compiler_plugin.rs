@@ -1,5 +1,4 @@
 use protobuf::descriptor::FileDescriptorProto;
-use protobuf::parse_from_reader;
 use protobuf::plugin::*;
 use protobuf::Message;
 use std::io::stdin;
@@ -22,7 +21,7 @@ pub fn plugin_main<F>(gen: F)
 where
     F: Fn(&GenRequest) -> Vec<GenResult>,
 {
-    let req = parse_from_reader::<CodeGeneratorRequest>(&mut stdin()).unwrap();
+    let req = CodeGeneratorRequest::parse_from_reader(&mut stdin()).unwrap();
     let result = gen(&GenRequest {
         file_descriptors: &req.proto_file,
         files_to_generate: &req

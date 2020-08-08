@@ -32,6 +32,17 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
     /// Update this message object with fields read from given stream.
     fn merge_from(&mut self, is: &mut CodedInputStream) -> ProtobufResult<()>;
 
+    /// Parse message from stream.
+    fn parse_from(is: &mut CodedInputStream) -> ProtobufResult<Self>
+    where
+        Self: Sized,
+    {
+        let mut r: Self = Message::new();
+        r.merge_from(is)?;
+        r.check_initialized()?;
+        Ok(r)
+    }
+
     /// Write message to the stream.
     ///
     /// Sizes of this messages and nested messages must be cached
@@ -83,6 +94,42 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
     fn merge_from_bytes(&mut self, bytes: &[u8]) -> ProtobufResult<()> {
         let mut is = CodedInputStream::from_bytes(bytes);
         self.merge_from(&mut is)
+    }
+
+    /// Parse message from reader.
+    /// Parse stops on EOF or when error encountered.
+    fn parse_from_reader(reader: &mut dyn Read) -> ProtobufResult<Self>
+    where
+        Self: Sized,
+    {
+        let mut is = CodedInputStream::new(reader);
+        let r = Message::parse_from(&mut is)?;
+        is.check_eof()?;
+        Ok(r)
+    }
+
+    /// Parse message from byte array.
+    fn parse_from_bytes(bytes: &[u8]) -> ProtobufResult<Self>
+    where
+        Self: Sized,
+    {
+        let mut is = CodedInputStream::from_bytes(bytes);
+        let r = Message::parse_from(&mut is)?;
+        is.check_eof()?;
+        Ok(r)
+    }
+
+    /// Parse message from `Bytes` object.
+    /// Resulting message may share references to the passed bytes object.
+    #[cfg(feature = "bytes")]
+    fn parse_from_carllerche_bytes(bytes: &Bytes) -> ProtobufResult<Self>
+    where
+        Self: Sized,
+    {
+        let mut is = CodedInputStream::from_carllerche_bytes(bytes);
+        let r = parse_from(&mut is)?;
+        is.check_eof()?;
+        Ok(r)
     }
 
     /// Check if all required fields of this object are initialized.
@@ -275,39 +322,4 @@ impl PartialEq for Box<dyn Message> {
         use std::ops::Deref;
         self.descriptor() == other.descriptor() && self.descriptor().eq(self.deref(), other.deref())
     }
-}
-
-/// Parse message from stream.
-pub fn parse_from<M: Message>(is: &mut CodedInputStream) -> ProtobufResult<M> {
-    let mut r: M = Message::new();
-    r.merge_from(is)?;
-    r.check_initialized()?;
-    Ok(r)
-}
-
-/// Parse message from reader.
-/// Parse stops on EOF or when error encountered.
-pub fn parse_from_reader<M: Message>(reader: &mut dyn Read) -> ProtobufResult<M> {
-    let mut is = CodedInputStream::new(reader);
-    let r = parse_from(&mut is)?;
-    is.check_eof()?;
-    Ok(r)
-}
-
-/// Parse message from byte array.
-pub fn parse_from_bytes<M: Message>(bytes: &[u8]) -> ProtobufResult<M> {
-    let mut is = CodedInputStream::from_bytes(bytes);
-    let r = parse_from(&mut is)?;
-    is.check_eof()?;
-    Ok(r)
-}
-
-/// Parse message from `Bytes` object.
-/// Resulting message may share references to the passed bytes object.
-#[cfg(feature = "bytes")]
-pub fn parse_from_carllerche_bytes<M: Message>(bytes: &Bytes) -> ProtobufResult<M> {
-    let mut is = CodedInputStream::from_carllerche_bytes(bytes);
-    let r = parse_from(&mut is)?;
-    is.check_eof()?;
-    Ok(r)
 }

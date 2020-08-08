@@ -16,10 +16,6 @@ extern crate serde;
 #[cfg(feature = "with-serde")]
 extern crate serde_derive;
 pub use crate::clear::Clear;
-pub use crate::core::parse_from_bytes;
-#[cfg(feature = "bytes")]
-pub use crate::core::parse_from_carllerche_bytes;
-pub use crate::core::parse_from_reader;
 pub use crate::core::Message;
 pub use crate::enums::ProtobufEnum;
 pub use crate::enums::ProtobufEnumOrUnknown;
@@ -93,3 +89,8 @@ pub const VERSION: &str = "";
 #[doc(hidden)]
 pub const VERSION_IDENT: &str = "";
 include!(concat!(env!("OUT_DIR"), "/version.rs"));
+
+/// TODO: inline
+pub fn parse_from_bytes<M: Message>(bytes: &[u8]) -> ProtobufResult<M> {
+    M::parse_from_bytes(bytes)
+}

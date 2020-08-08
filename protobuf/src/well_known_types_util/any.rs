@@ -1,4 +1,3 @@
-use crate::parse_from_bytes;
 use crate::reflect::MessageDescriptor;
 use crate::well_known_types::Any;
 use crate::Message;
@@ -90,7 +89,7 @@ impl Any {
         if !self.is::<M>() {
             return Ok(None);
         }
-        Ok(Some(parse_from_bytes(&self.value)?))
+        Ok(Some(M::parse_from_bytes(&self.value)?))
     }
 
     /// Extract a message from this `Any`.
