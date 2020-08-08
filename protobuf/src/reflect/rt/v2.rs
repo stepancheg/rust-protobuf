@@ -8,7 +8,6 @@ pub use crate::reflect::acc::v2::singular::make_message_field_accessor;
 pub use crate::reflect::acc::v2::singular::make_option_enum_accessor;
 pub use crate::reflect::acc::v2::singular::make_option_get_copy_simpler_accessor;
 pub use crate::reflect::acc::v2::singular::make_option_get_ref_simpler_accessor;
-pub use crate::reflect::acc::v2::singular::make_simple_field_accessor; // TODO: erase
 pub use crate::reflect::acc::v2::singular::make_simpler_field_accessor;
 pub use crate::reflect::acc::v2::singular::oneof::make_oneof_copy_has_get_set_accessors;
 pub use crate::reflect::acc::v2::singular::oneof::make_oneof_deref_has_get_set_accessor;
