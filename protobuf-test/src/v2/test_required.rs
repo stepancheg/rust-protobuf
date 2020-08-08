@@ -3,15 +3,13 @@ use protobuf::*;
 use super::test_required_pb::*;
 
 #[test]
-#[should_panic]
 fn test_write_missing_required() {
-    TestRequired::new().write_to_bytes().unwrap();
+    assert!(TestRequired::new().write_to_bytes().is_err());
 }
 
 #[test]
-#[should_panic]
 fn test_read_missing_required() {
-    TestRequired::parse_from_bytes(&[]).unwrap();
+    assert!(TestRequired::parse_from_bytes(&[]).is_err());
 }
 
 #[test]
