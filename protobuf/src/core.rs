@@ -201,7 +201,7 @@ impl dyn Message {
     /// let m: Box<MyMessage> = Message::downcast_box(m).unwrap();
     /// # }
     /// ```
-    pub fn downcast_box<T: Any>(self: Box<Self>) -> Result<Box<T>, Box<dyn Message>> {
+    pub fn downcast_box<T: Any>(self: Box<dyn Message>) -> Result<Box<T>, Box<dyn Message>> {
         if Any::type_id(&*self) == TypeId::of::<T>() {
             unsafe {
                 let raw: *mut dyn Message = Box::into_raw(self);
