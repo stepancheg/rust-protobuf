@@ -96,9 +96,8 @@ impl FieldDescriptor {
         self.proto().get_label() == field_descriptor_proto::Label::LABEL_REPEATED
     }
 
-    #[deprecated]
     fn get_accessor(&self) -> &FieldAccessorImpl {
-        &self.message_descriptor.get_generated().fields[self.index].accessor
+        self.message_descriptor.get_accessor(self.index)
     }
 
     /// If this field a map field?
@@ -106,6 +105,7 @@ impl FieldDescriptor {
         match self.get_accessor() {
             FieldAccessorImpl::V2(AccessorV2::Map(..)) => true,
             FieldAccessorImpl::V2(..) => false,
+            FieldAccessorImpl::Dynamic => unimplemented!(), // TODO
         }
     }
 
@@ -124,6 +124,7 @@ impl FieldDescriptor {
                 a.accessor.get_reflect(m).len() != 0
             }
             FieldAccessorImpl::V2(AccessorV2::Map(ref a)) => a.accessor.get_reflect(m).len() != 0,
+            FieldAccessorImpl::Dynamic => unimplemented!(), // TODO
         }
     }
 
@@ -133,6 +134,7 @@ impl FieldDescriptor {
         match self.get_accessor() {
             FieldAccessorImpl::V2(AccessorV2::Singular(ref a)) => a,
             FieldAccessorImpl::V2(..) => panic!("not a singular field: {}", self.name()),
+            FieldAccessorImpl::Dynamic => unimplemented!(), // TODO
         }
     }
 
@@ -140,6 +142,7 @@ impl FieldDescriptor {
         match self.get_accessor() {
             FieldAccessorImpl::V2(AccessorV2::Repeated(ref a)) => a,
             FieldAccessorImpl::V2(..) => panic!("not a repeated field: {}", self.name()),
+            FieldAccessorImpl::Dynamic => unimplemented!(), // TODO
         }
     }
 
@@ -147,6 +150,7 @@ impl FieldDescriptor {
         match self.get_accessor() {
             FieldAccessorImpl::V2(AccessorV2::Map(ref a)) => a,
             FieldAccessorImpl::V2(..) => panic!("not a map field: {}", self.name()),
+            FieldAccessorImpl::Dynamic => unimplemented!(), // TODO
         }
     }
 
@@ -217,6 +221,7 @@ impl FieldDescriptor {
             FieldAccessorImpl::V2(Singular(ref a)) => RuntimeFieldType::Singular(a.element_type),
             FieldAccessorImpl::V2(Repeated(ref a)) => RuntimeFieldType::Repeated(a.element_type),
             FieldAccessorImpl::V2(Map(ref a)) => RuntimeFieldType::Map(a.key_type, a.value_type),
+            FieldAccessorImpl::Dynamic => unimplemented!(), // TODO
         }
     }
 
@@ -235,6 +240,7 @@ impl FieldDescriptor {
                 ReflectFieldRef::Repeated(a.accessor.get_reflect(m))
             }
             FieldAccessorImpl::V2(Map(ref a)) => ReflectFieldRef::Map(a.accessor.get_reflect(m)),
+            FieldAccessorImpl::Dynamic => unimplemented!(), // TODO
         }
     }
 

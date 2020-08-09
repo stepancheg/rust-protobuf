@@ -5,6 +5,7 @@ use crate::message::Message;
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 
+use crate::reflect::acc::FieldAccessorImpl;
 use crate::reflect::dynamic::DynamicMessage;
 use crate::reflect::file::FileDescriptorImpl;
 use crate::reflect::message::common::MessageIndices;
@@ -58,14 +59,6 @@ impl MessageDescriptor {
         }
     }
 
-    #[deprecated]
-    pub(crate) fn get_generated(&self) -> &GeneratedMessageDescriptor {
-        match self.file_descriptor.imp {
-            FileDescriptorImpl::Generated(g) => &g.messages[self.index],
-            _ => unimplemented!("TODO"),
-        }
-    }
-
     fn get_impl(&self) -> MessageDescriptorImplRef {
         match &self.file_descriptor.imp {
             FileDescriptorImpl::Generated(g) => {
@@ -74,6 +67,13 @@ impl MessageDescriptor {
             FileDescriptorImpl::Dynamic(d) => {
                 MessageDescriptorImplRef::Dynamic(&d.messages[self.index])
             }
+        }
+    }
+
+    pub(crate) fn get_accessor(&self, index: usize) -> &FieldAccessorImpl {
+        match self.get_impl() {
+            MessageDescriptorImplRef::Generated(g) => &g.fields[index].accessor,
+            MessageDescriptorImplRef::Dynamic(..) => &FieldAccessorImpl::Dynamic,
         }
     }
 

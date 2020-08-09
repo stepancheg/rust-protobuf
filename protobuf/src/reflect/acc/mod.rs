@@ -4,6 +4,7 @@ pub(crate) mod v2;
 
 pub(crate) enum FieldAccessorImpl {
     V2(AccessorV2),
+    Dynamic,
 }
 
 /// Accessor object is constructed in generated code.
