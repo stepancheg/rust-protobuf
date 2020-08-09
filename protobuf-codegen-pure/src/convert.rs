@@ -27,7 +27,7 @@ use protobuf::text_format::quote_bytes_to;
 pub enum ConvertError {
     UnsupportedOption(String),
     ExtensionNotFound(String),
-    WrongExtensionType(String, &'static str),
+    WrongExtensionType(String, String),
     UnsupportedExtensionType(String, String, model::ProtobufConstant),
     StrLitDecodeError(StrLitDecodeError),
     DefaultValueIsNotStringLiteral,
@@ -461,7 +461,7 @@ impl<'a> Resolver<'a> {
         M: Message,
     {
         let mut options = M::new();
-        let extendee = M::descriptor_static().full_name();
+        let extendee = M::descriptor_static().full_name().to_owned();
 
         for option in input {
             match option.name.get_simple() {

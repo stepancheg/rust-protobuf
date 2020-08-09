@@ -388,7 +388,7 @@ impl ProtobufConstant {
         match (self, &ty) {
             (ProtobufConstant::Ident(ident), RuntimeTypeBox::Enum(e)) => {
                 if let Some(v) = e.get_value_by_name(ident) {
-                    return Ok(ReflectValueBox::Enum(e, v.value()));
+                    return Ok(ReflectValueBox::Enum(e.clone(), v.value()));
                 }
             }
             (ProtobufConstant::Bool(b), RuntimeTypeBox::Bool) => {
