@@ -324,12 +324,10 @@ where
     O: OptionLike<V> + Sync + Send + 'static,
 {
     fn get_singular_field_or_default_impl<'a>(&self, m: &'a M) -> ReflectValueRef<'a> {
-        ReflectValueRef::Message(
-            (match (self.get_field)(m).as_option_ref() {
-                Some(v) => v,
-                None => V::default_instance(),
-            }),
-        )
+        ReflectValueRef::Message(match (self.get_field)(m).as_option_ref() {
+            Some(v) => v,
+            None => V::default_instance(),
+        })
     }
 }
 

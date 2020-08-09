@@ -8,7 +8,6 @@ use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
 use crate::reflect::name::compute_full_name;
 use crate::reflect::FieldDescriptor;
-use crate::reflect::MessageDescriptor;
 use std::collections::HashMap;
 use std::marker;
 

@@ -1,13 +1,19 @@
 use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::FileDescriptorProto;
+use crate::reflect::enums::common::EnumIndices;
 use crate::reflect::name::append_path;
 use std::sync::Arc;
 
+pub(crate) struct DynamicEnumValueDescriptor {}
+
 pub(crate) struct DynamicEnumDescriptor {
-    full_name: String,
+    pub full_name: String,
     file_descriptor_proto: Arc<FileDescriptorProto>,
     path: Vec<usize>,
     enum_index: usize,
+    pub values: Vec<DynamicEnumValueDescriptor>,
+
+    pub(crate) indices: EnumIndices<String>,
 }
 
 impl DynamicEnumDescriptor {
@@ -29,11 +35,22 @@ impl DynamicEnumDescriptor {
             &m.enum_type[enum_index]
         };
         append_path(&mut full_name, e.get_name());
+
+        let indices = EnumIndices::<String>::index(e);
+
+        let values = e
+            .value
+            .iter()
+            .map(|_| DynamicEnumValueDescriptor {})
+            .collect();
+
         DynamicEnumDescriptor {
             full_name,
             file_descriptor_proto: proto,
             path: path.to_owned(),
             enum_index,
+            values,
+            indices,
         }
     }
 

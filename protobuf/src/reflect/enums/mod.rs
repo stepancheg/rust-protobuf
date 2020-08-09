@@ -1,5 +1,4 @@
 use std::any::TypeId;
-use std::collections::HashMap;
 use std::fmt;
 use std::hash::Hash;
 use std::hash::Hasher;
@@ -8,6 +7,7 @@ use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::EnumValueDescriptorProto;
 use crate::enums::ProtobufEnum;
 use crate::enums::ProtobufEnumOrUnknown;
+use crate::reflect::enums::dynamic::DynamicEnumDescriptor;
 use crate::reflect::enums::generated::GeneratedEnumDescriptor;
 #[cfg(not(rustc_nightly))]
 use crate::reflect::enums::generated::GetEnumDescriptor;
@@ -15,6 +15,7 @@ use crate::reflect::file::FileDescriptorImpl;
 use crate::reflect::FileDescriptor;
 use crate::reflect::ProtobufValue;
 
+pub(crate) mod common;
 pub(crate) mod dynamic;
 pub(crate) mod generated;
 
@@ -90,7 +91,7 @@ impl EnumValueDescriptor {
 #[derive(Clone, Eq, PartialEq)]
 pub struct EnumDescriptor {
     file_descriptor: FileDescriptor,
-    index: u32,
+    index: usize,
 }
 
 impl fmt::Debug for EnumDescriptor {
@@ -104,26 +105,34 @@ impl fmt::Debug for EnumDescriptor {
 }
 
 impl EnumDescriptor {
-    fn get_proto(&self) -> &EnumDescriptorProto {
-        self.get_generated().proto
+    fn get_impl(&self) -> EnumDescriptorImplRef {
+        match &self.file_descriptor.imp {
+            FileDescriptorImpl::Generated(g) => {
+                EnumDescriptorImplRef::Generated(&g.enums[self.index])
+            }
+            FileDescriptorImpl::Dynamic(d) => EnumDescriptorImplRef::Dynamic(&d.enums[self.index]),
+        }
     }
 
-    #[deprecated]
-    fn get_generated(&self) -> &GeneratedEnumDescriptor {
-        match self.file_descriptor.imp {
-            FileDescriptorImpl::Generated(g) => &g.enums[self.index as usize],
-            _ => unimplemented!("TODO"),
+    fn get_proto(&self) -> &EnumDescriptorProto {
+        match self.get_impl() {
+            EnumDescriptorImplRef::Generated(g) => &g.proto,
+            EnumDescriptorImplRef::Dynamic(d) => d.get_proto(),
         }
     }
 
     /// Enum name as given in `.proto` file
-    pub fn name(&self) -> &'static str {
-        self.get_generated().proto.get_name()
+    pub fn name(&self) -> &str {
+        // TODO: get_proto is inefficient
+        self.get_proto().get_name()
     }
 
     /// Fully qualified protobuf name of enum
     pub fn full_name(&self) -> &str {
-        &self.get_generated().full_name
+        match self.get_impl() {
+            EnumDescriptorImplRef::Generated(g) => &g.full_name,
+            EnumDescriptorImplRef::Dynamic(d) => &d.full_name,
+        }
     }
 
     /// Get `EnumDescriptor` object for given enum type
@@ -131,22 +140,8 @@ impl EnumDescriptor {
         E::enum_descriptor_static()
     }
 
-    /// Separate function to reduce generated code size bloat.
-    pub(crate) fn make_indices(
-        proto: &EnumDescriptorProto,
-    ) -> (HashMap<String, usize>, HashMap<i32, usize>) {
-        let mut index_by_name = HashMap::new();
-        let mut index_by_number = HashMap::new();
-        for (i, v) in proto.value.iter().enumerate() {
-            index_by_number.insert(v.get_number(), i);
-            index_by_name.insert(v.get_name().to_string(), i);
-        }
-
-        (index_by_name, index_by_number)
-    }
-
     #[doc(hidden)]
-    pub fn new_generated_2(file_descriptor: FileDescriptor, index: u32) -> EnumDescriptor {
+    pub fn new_generated_2(file_descriptor: FileDescriptor, index: usize) -> EnumDescriptor {
         EnumDescriptor {
             file_descriptor,
             index,
@@ -155,7 +150,11 @@ impl EnumDescriptor {
 
     /// This enum values
     pub fn values(&self) -> Vec<EnumValueDescriptor> {
-        (0..self.get_generated().proto.value.len())
+        let value_len = match self.get_impl() {
+            EnumDescriptorImplRef::Generated(g) => g.proto.value.len(),
+            EnumDescriptorImplRef::Dynamic(d) => d.values.len(),
+        };
+        (0..value_len)
             .map(|index| EnumValueDescriptor {
                 enum_descriptor: self.clone(),
                 index,
@@ -165,7 +164,10 @@ impl EnumDescriptor {
 
     /// Find enum variant by name
     pub fn get_value_by_name<'a>(&'a self, name: &str) -> Option<EnumValueDescriptor> {
-        let &index = self.get_generated().index_by_name.get(name)?;
+        let index = match self.get_impl() {
+            EnumDescriptorImplRef::Generated(g) => *g.indices.index_by_name.get(name)?,
+            EnumDescriptorImplRef::Dynamic(d) => *d.indices.index_by_name.get(name)?,
+        };
         Some(EnumValueDescriptor {
             enum_descriptor: self.clone(),
             index,
@@ -174,7 +176,10 @@ impl EnumDescriptor {
 
     /// Find enum variant by number
     pub fn get_value_by_number(&self, number: i32) -> Option<EnumValueDescriptor> {
-        let &index = self.get_generated().index_by_number.get(&number)?;
+        let index = match self.get_impl() {
+            EnumDescriptorImplRef::Generated(g) => *g.indices.index_by_number.get(&number)?,
+            EnumDescriptorImplRef::Dynamic(d) => *d.indices.index_by_number.get(&number)?,
+        };
         Some(EnumValueDescriptor {
             enum_descriptor: self.clone(),
             index,
@@ -199,12 +204,15 @@ impl EnumDescriptor {
     /// # use protobuf::descriptor::field_descriptor_proto::Label;
     /// # use protobuf::reflect::EnumDescriptor;
     ///
-    /// let descriptor: &EnumDescriptor = Label::enum_descriptor_static();
+    /// let descriptor: EnumDescriptor = Label::enum_descriptor_static();
     ///
     /// assert!(descriptor.is::<Label>())
     /// ```
     pub fn is<E: ProtobufEnum>(&self) -> bool {
-        TypeId::of::<E>() == self.get_generated().type_id
+        match self.get_impl() {
+            EnumDescriptorImplRef::Generated(g) => g.type_id == TypeId::of::<E>(),
+            EnumDescriptorImplRef::Dynamic(..) => false,
+        }
     }
 
     /// Create enum object from given value.
@@ -227,7 +235,11 @@ impl EnumDescriptor {
 
     #[cfg(rustc_nightly)]
     fn cast_to_protobuf_enum<E: ProtobufValue>(&self, value: i32) -> Option<E> {
-        if TypeId::of::<E>() != self.get_generated().type_id {
+        let g = match self.get_impl() {
+            EnumDescriptorImplRef::Dynamic(..) => return None,
+            EnumDescriptorImplRef::Generated(g) => g,
+        };
+        if TypeId::of::<E>() != g.type_id {
             return None;
         }
 
@@ -236,23 +248,29 @@ impl EnumDescriptor {
 
     #[cfg(not(rustc_nightly))]
     fn cast_to_protobuf_enum<E: ProtobufValue>(&self, value: i32) -> Option<E> {
-        if TypeId::of::<E>() != self.get_generated().type_id {
+        let g = match self.get_impl() {
+            EnumDescriptorImplRef::Dynamic(..) => return None,
+            EnumDescriptorImplRef::Generated(g) => g,
+        };
+        if TypeId::of::<E>() != g.type_id {
             return None;
         }
 
         use std::mem;
         unsafe {
             let mut r = mem::MaybeUninit::<E>::uninit();
-            self.get_generated()
-                .get_descriptor
-                .copy_to(value, r.as_mut_ptr() as *mut ());
+            g.get_descriptor.copy_to(value, r.as_mut_ptr() as *mut ());
             Some(r.assume_init())
         }
     }
 
     #[cfg(rustc_nightly)]
     fn cast_to_protobuf_enum_or_unknown<E: ProtobufValue>(&self, value: i32) -> Option<E> {
-        if TypeId::of::<E>() != self.get_generated().enum_or_unknown_type_id {
+        let g = match self.get_impl() {
+            EnumDescriptorImplRef::Dynamic(..) => return None,
+            EnumDescriptorImplRef::Generated(g) => g,
+        };
+        if TypeId::of::<E>() != g.enum_or_unknown_type_id {
             return None;
         }
 
@@ -263,7 +281,11 @@ impl EnumDescriptor {
 
     #[cfg(not(rustc_nightly))]
     fn cast_to_protobuf_enum_or_unknown<E: ProtobufValue>(&self, value: i32) -> Option<E> {
-        if TypeId::of::<E>() != self.get_generated().enum_or_unknown_type_id {
+        let g = match self.get_impl() {
+            EnumDescriptorImplRef::Dynamic(..) => return None,
+            EnumDescriptorImplRef::Generated(g) => g,
+        };
+        if TypeId::of::<E>() != g.enum_or_unknown_type_id {
             return None;
         }
 
@@ -314,4 +336,9 @@ mod cast_impl {
             E::from_i32(value).expect(&format!("unknown enum value: {}", value))
         }
     }
+}
+
+enum EnumDescriptorImplRef<'a> {
+    Generated(&'static GeneratedEnumDescriptor),
+    Dynamic(&'a DynamicEnumDescriptor),
 }

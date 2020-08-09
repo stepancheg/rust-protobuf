@@ -186,7 +186,7 @@ impl MessageDescriptor {
     }
 }
 
-pub(crate) enum MessageDescriptorImplRef<'a> {
+enum MessageDescriptorImplRef<'a> {
     Generated(&'static GeneratedMessageDescriptor),
     Dynamic(&'a DynamicMessageDescriptor),
 }

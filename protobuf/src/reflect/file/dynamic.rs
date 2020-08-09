@@ -3,7 +3,6 @@ use crate::descriptor::FileDescriptorProto;
 use crate::reflect::enums::dynamic::DynamicEnumDescriptor;
 use crate::reflect::message::dynamic::DynamicMessageDescriptor;
 use crate::reflect::FileDescriptor;
-use crate::reflect::MessageDescriptor;
 use std::sync::Arc;
 
 pub(crate) struct DynamicFileDescriptor {
@@ -75,10 +74,10 @@ impl DynamicFileDescriptor {
         r: &mut Vec<DynamicEnumDescriptor>,
         path: &mut Vec<usize>,
     ) {
-        for (i, _e) in proto.enum_type.iter().enumerate() {
+        for (i, _e) in scope.nested_type.iter().enumerate() {
             r.push(DynamicEnumDescriptor::new(proto.clone(), &path, i));
         }
-        for (i, m) in proto.message_type.iter().enumerate() {
+        for (i, m) in scope.nested_type.iter().enumerate() {
             path.push(i);
             Self::enums_from(proto, m, r, path);
             path.pop().unwrap();
