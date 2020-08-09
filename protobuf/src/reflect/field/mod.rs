@@ -118,13 +118,11 @@ impl FieldDescriptor {
     ///
     /// If this field belongs to a different message type.
     pub fn has_field(&self, m: &dyn Message) -> bool {
-        match self.get_accessor() {
-            FieldAccessorImpl::V2(AccessorV2::Singular(ref a)) => a.accessor.get_field(m).is_some(),
-            FieldAccessorImpl::V2(AccessorV2::Repeated(ref a)) => {
-                a.accessor.get_reflect(m).len() != 0
-            }
-            FieldAccessorImpl::V2(AccessorV2::Map(ref a)) => a.accessor.get_reflect(m).len() != 0,
-            FieldAccessorImpl::Dynamic => unimplemented!(), // TODO
+        match self.get_reflect(m) {
+            ReflectFieldRef::Optional(Some(..)) => true,
+            ReflectFieldRef::Optional(None) => false,
+            ReflectFieldRef::Repeated(r) => !r.is_empty(),
+            ReflectFieldRef::Map(m) => !m.is_empty(),
         }
     }
 
@@ -252,7 +250,10 @@ impl FieldDescriptor {
     ///
     /// If this field belongs to a different message type or field is not repeated.
     pub fn get_repeated<'a>(&self, m: &'a dyn Message) -> ReflectRepeatedRef<'a> {
-        self.repeated().accessor.get_reflect(m)
+        match self.get_reflect(m) {
+            ReflectFieldRef::Repeated(r) => r,
+            _ => panic!("not a repeated field"),
+        }
     }
 
     /// Get a mutable reference to `repeated` field.
@@ -272,7 +273,10 @@ impl FieldDescriptor {
     ///
     /// If this field belongs to a different message type or field is not `map`.
     pub fn get_map<'a>(&self, m: &'a dyn Message) -> ReflectMapRef<'a> {
-        self.map().accessor.get_reflect(m)
+        match self.get_reflect(m) {
+            ReflectFieldRef::Map(m) => m,
+            _ => panic!("not a map field"),
+        }
     }
 
     /// Get a mutable reference to `map` field.
