@@ -18,7 +18,7 @@ pub(crate) trait ReflectMap: Send + Sync + 'static {
 
     fn is_empty(&self) -> bool;
 
-    fn get(&self, key: ReflectValueRef) -> Option<&dyn ProtobufValue>;
+    fn get<'a>(&'a self, key: ReflectValueRef) -> Option<ReflectValueRef<'a>>;
 
     fn insert(&mut self, key: ReflectValueBox, value: ReflectValueBox);
 
@@ -44,10 +44,10 @@ impl<K: ProtobufValueSized + Eq + Hash, V: ProtobufValueSized> ReflectMap for Ha
         self.is_empty()
     }
 
-    fn get(&self, key: ReflectValueRef) -> Option<&dyn ProtobufValue> {
+    fn get<'a>(&'a self, key: ReflectValueRef) -> Option<ReflectValueRef<'a>> {
         // TODO: malloc for string or bytes
         let key: K = key.to_box().downcast().expect("wrong key type");
-        self.get(&key).map(|v| v as &dyn ProtobufValue)
+        self.get(&key).map(V::as_ref)
     }
 
     fn insert(&mut self, key: ReflectValueBox, value: ReflectValueBox) {
@@ -70,7 +70,7 @@ impl<K: ProtobufValueSized + Eq + Hash, V: ProtobufValueSized> ReflectMap for Ha
 }
 
 trait ReflectMapIterTrait<'a> {
-    fn next(&mut self) -> Option<(&'a dyn ProtobufValue, &'a dyn ProtobufValue)>;
+    fn next(&mut self) -> Option<(ReflectValueRef<'a>, ReflectValueRef<'a>)>;
     fn key_type(&self) -> &'static dyn RuntimeTypeDynamic;
     fn value_type(&self) -> &'static dyn RuntimeTypeDynamic;
 }
@@ -82,9 +82,9 @@ struct ReflectMapIterImpl<'a, K: Eq + Hash + 'static, V: 'static> {
 impl<'a, K: ProtobufValueSized + Eq + Hash, V: ProtobufValueSized> ReflectMapIterTrait<'a>
     for ReflectMapIterImpl<'a, K, V>
 {
-    fn next(&mut self) -> Option<(&'a dyn ProtobufValue, &'a dyn ProtobufValue)> {
+    fn next(&mut self) -> Option<(ReflectValueRef<'a>, ReflectValueRef<'a>)> {
         match self.iter.next() {
-            Some((k, v)) => Some((k as &dyn ProtobufValue, v as &dyn ProtobufValue)),
+            Some((k, v)) => Some((K::as_ref(k), V::as_ref(v))),
             None => None,
         }
     }
@@ -103,15 +103,15 @@ pub struct ReflectMapIter<'a> {
 }
 
 impl<'a> Iterator for ReflectMapIter<'a> {
-    type Item = (&'a dyn ProtobufValue, &'a dyn ProtobufValue);
+    type Item = (ReflectValueRef<'a>, ReflectValueRef<'a>);
 
-    fn next(&mut self) -> Option<(&'a dyn ProtobufValue, &'a dyn ProtobufValue)> {
+    fn next(&mut self) -> Option<(ReflectValueRef<'a>, ReflectValueRef<'a>)> {
         self.imp.next()
     }
 }
 
 impl<'a> IntoIterator for &'a dyn ReflectMap {
-    type Item = (&'a dyn ProtobufValue, &'a dyn ProtobufValue);
+    type Item = (ReflectValueRef<'a>, ReflectValueRef<'a>);
     type IntoIter = ReflectMapIter<'a>;
 
     fn into_iter(self) -> Self::IntoIter {
@@ -143,7 +143,7 @@ impl<'a> ReflectMapRef<'a> {
 
     /// Find a value by given key.
     pub fn get(&self, key: ReflectValueRef) -> Option<ReflectValueRef> {
-        self.map.get(key).map(|v| self.value_type().value_to_ref(v))
+        self.map.get(key)
     }
 
     /// Map key type
@@ -207,7 +207,7 @@ impl<'a> ReflectMapMut<'a> {
 
     /// Find a value for given key
     pub fn get(&self, key: ReflectValueRef) -> Option<ReflectValueRef> {
-        self.map.get(key).map(|v| self.value_type().value_to_ref(v))
+        self.map.get(key)
     }
 
     /// Insert a value into the map
@@ -227,11 +227,11 @@ pub struct ReflectMapRefIter<'a> {
 }
 
 impl<'a> ReflectMapRefIter<'a> {
-    fn key_type(&self) -> &'static dyn RuntimeTypeDynamic {
+    fn _key_type(&self) -> &'static dyn RuntimeTypeDynamic {
         self.iter.imp.key_type()
     }
 
-    fn value_type(&self) -> &'static dyn RuntimeTypeDynamic {
+    fn _value_type(&self) -> &'static dyn RuntimeTypeDynamic {
         self.iter.imp.value_type()
     }
 }
@@ -240,12 +240,7 @@ impl<'a> Iterator for ReflectMapRefIter<'a> {
     type Item = (ReflectValueRef<'a>, ReflectValueRef<'a>);
 
     fn next(&mut self) -> Option<(ReflectValueRef<'a>, ReflectValueRef<'a>)> {
-        self.iter.next().map(|(k, v)| {
-            (
-                self.key_type().value_to_ref(k),
-                self.value_type().value_to_ref(v),
-            )
-        })
+        self.iter.next()
     }
 }
 

@@ -13,7 +13,7 @@ use crate::reflect::ReflectValueBox;
 pub(crate) trait ReflectRepeated: Sync + 'static + fmt::Debug {
     fn reflect_iter(&self) -> ReflectRepeatedIter;
     fn len(&self) -> usize;
-    fn get(&self, index: usize) -> &dyn ProtobufValue;
+    fn get(&self, index: usize) -> ReflectValueRef;
     fn set(&mut self, index: usize, value: ReflectValueBox);
     fn push(&mut self, value: ReflectValueBox);
     fn clear(&mut self);
@@ -31,8 +31,8 @@ impl<V: ProtobufValueSized> ReflectRepeated for Vec<V> {
         Vec::len(self)
     }
 
-    fn get(&self, index: usize) -> &dyn ProtobufValue {
-        &self[index]
+    fn get(&self, index: usize) -> ReflectValueRef {
+        V::as_ref(&self[index])
     }
 
     fn set(&mut self, index: usize, value: ReflectValueBox) {
@@ -66,8 +66,8 @@ impl<V: ProtobufValueSized> ReflectRepeated for [V] {
         <[_]>::len(self)
     }
 
-    fn get(&self, index: usize) -> &dyn ProtobufValue {
-        &self[index]
+    fn get(&self, index: usize) -> ReflectValueRef {
+        V::as_ref(&self[index])
     }
 
     fn set(&mut self, index: usize, value: ReflectValueBox) {
@@ -150,9 +150,7 @@ impl<'a> ReflectRepeatedRef<'a> {
     /// Get item by index
     // TODO: replace with index
     pub fn get(&self, index: usize) -> ReflectValueRef<'a> {
-        self.repeated
-            .element_type()
-            .value_to_ref(self.repeated.get(index))
+        self.repeated.get(index)
     }
 
     /// Runtime type of element
@@ -252,9 +250,7 @@ impl<'a> ReflectRepeatedMut<'a> {
     ///
     /// Note: return immutable reference.
     pub fn get(&'a self, index: usize) -> ReflectValueRef<'a> {
-        self.repeated
-            .element_type()
-            .value_to_ref(self.repeated.get(index))
+        self.repeated.get(index)
     }
 
     /// Runtime type of element
