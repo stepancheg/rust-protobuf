@@ -10,14 +10,14 @@ use crate::ProtobufResult;
 use crate::UnknownFields;
 use std::collections::HashMap;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 enum DynamicFieldValue {
     Singular(ReflectValueBox),
     Repeated(Vec<ReflectValueBox>),
     Map(HashMap<ReflectValueBox, ReflectValueBox>),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct DynamicMessage {
     descriptor: MessageDescriptor,
     fields: HashMap<String, DynamicFieldValue>,

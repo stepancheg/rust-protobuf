@@ -105,7 +105,14 @@ impl MessageDescriptor {
 
     /// Clone a message
     pub(crate) fn clone_message(&self, message: &dyn Message) -> Box<dyn Message> {
-        self.get_generated().factory.clone(message)
+        assert!(&message.descriptor() == self);
+        match self.get_impl() {
+            MessageDescriptorImplRef::Generated(g) => g.factory.clone(message),
+            MessageDescriptorImplRef::Dynamic(..) => {
+                let message: &DynamicMessage = Message::downcast_ref(message).unwrap();
+                Box::new(message.clone())
+            }
+        }
     }
 
     /// Check if two messages equal.
