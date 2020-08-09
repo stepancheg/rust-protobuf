@@ -7,6 +7,7 @@ use crate::descriptor::FileDescriptorProto;
 
 use crate::reflect::dynamic::DynamicMessage;
 use crate::reflect::file::FileDescriptorImpl;
+use crate::reflect::message::common::MessageIndices;
 use crate::reflect::message::dynamic::DynamicMessageDescriptor;
 use crate::reflect::message::generated::GeneratedMessageDescriptor;
 use crate::reflect::reflect_eq::ReflectEq;
@@ -14,6 +15,7 @@ use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::FieldDescriptor;
 use crate::reflect::FileDescriptor;
 
+pub(crate) mod common;
 pub(crate) mod dynamic;
 pub(crate) mod generated;
 
@@ -171,24 +173,31 @@ impl MessageDescriptor {
         &self.get_generated().fields
     }
 
+    fn get_indices(&self) -> &MessageIndices {
+        match self.get_impl() {
+            MessageDescriptorImplRef::Generated(g) => &g.indices,
+            MessageDescriptorImplRef::Dynamic(d) => &d.indices,
+        }
+    }
+
     /// Find message field by protobuf field name
     ///
     /// Note: protobuf field name might be different for Rust field name.
     // TODO: return value, not pointer, pointer is not compatible with dynamic message
     pub fn get_field_by_name<'a>(&'a self, name: &str) -> Option<&'a FieldDescriptor> {
-        let &index = self.get_generated().index_by_name.get(name)?;
+        let &index = self.get_indices().index_by_name.get(name)?;
         Some(&self.get_generated().fields[index])
     }
 
     /// Find message field by field name or field JSON name
     pub fn get_field_by_name_or_json_name<'a>(&'a self, name: &str) -> Option<&'a FieldDescriptor> {
-        let &index = self.get_generated().index_by_name_or_json_name.get(name)?;
+        let &index = self.get_indices().index_by_name_or_json_name.get(name)?;
         Some(&self.get_generated().fields[index])
     }
 
     /// Find message field by field name
     pub fn get_field_by_number(&self, number: u32) -> Option<&FieldDescriptor> {
-        let &index = self.get_generated().index_by_number.get(&number)?;
+        let &index = self.get_indices().index_by_number.get(&number)?;
         Some(&self.get_generated().fields[index])
     }
 }

@@ -6,6 +6,7 @@ use crate::message::Message;
 use crate::reflect::acc::FieldAccessor;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
+use crate::reflect::message::common::MessageIndices;
 use crate::reflect::name::compute_full_name;
 use crate::reflect::FieldDescriptor;
 use std::collections::HashMap;
@@ -87,9 +88,7 @@ pub(crate) struct GeneratedMessageDescriptor {
 
     pub(crate) fields: Vec<FieldDescriptor>,
 
-    pub(crate) index_by_name: HashMap<String, usize>,
-    pub(crate) index_by_name_or_json_name: HashMap<String, usize>,
-    pub(crate) index_by_number: HashMap<u32, usize>,
+    pub indices: MessageIndices,
 }
 
 impl GeneratedMessageDescriptor {
@@ -118,10 +117,6 @@ impl GeneratedMessageDescriptor {
             field_proto_by_name.insert(field_proto.get_name(), field_proto);
         }
 
-        let mut index_by_name = HashMap::new();
-        let mut index_by_name_or_json_name = HashMap::new();
-        let mut index_by_number = HashMap::new();
-
         let fields: Vec<_> = fields
             .into_iter()
             .map(|f| {
@@ -130,23 +125,7 @@ impl GeneratedMessageDescriptor {
             })
             .collect();
 
-        for (i, f) in fields.iter().enumerate() {
-            assert!(index_by_number
-                .insert(f.proto().get_number() as u32, i)
-                .is_none());
-            assert!(index_by_name
-                .insert(f.proto().get_name().to_owned(), i)
-                .is_none());
-            assert!(index_by_name_or_json_name
-                .insert(f.proto().get_name().to_owned(), i)
-                .is_none());
-
-            let json_name = f.json_name().to_owned();
-
-            if json_name != f.proto().get_name() {
-                assert!(index_by_name_or_json_name.insert(json_name, i).is_none());
-            }
-        }
+        let indices = MessageIndices::index(proto);
 
         GeneratedMessageDescriptor {
             full_name: compute_full_name(
@@ -155,9 +134,7 @@ impl GeneratedMessageDescriptor {
                 proto.get_name(),
             ),
             fields,
-            index_by_name,
-            index_by_name_or_json_name,
-            index_by_number,
+            indices,
             factory,
             proto,
         }

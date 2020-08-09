@@ -10,7 +10,6 @@ use crate::reflect::ProtobufValue;
 use crate::ProtobufEnum;
 use crate::ProtobufEnumOrUnknown;
 use std::any::TypeId;
-use std::collections::HashMap;
 use std::marker;
 
 pub(crate) trait GetEnumDescriptor: Send + Sync + 'static {
