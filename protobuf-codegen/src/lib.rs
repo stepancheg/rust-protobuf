@@ -51,7 +51,6 @@ use self::extensions::*;
 use self::message::*;
 #[doc(hidden)]
 pub use amend_io_error_util::amend_io_error;
-use map::map_entry;
 use scope::FileScope;
 use scope::RootScope;
 
@@ -119,7 +118,7 @@ fn write_file_descriptor(
 
                 w.write_line(&format!("let mut messages = {};", EXPR_VEC_NEW));
                 for m in scope.find_messages() {
-                    if map_entry(&m).is_some() {
+                    if m.is_map() {
                         continue;
                     }
                     w.write_line(&format!(
@@ -214,6 +213,17 @@ fn write_file_descriptor_data(
     write_file_descriptor(file, &customize, w);
 }
 
+pub(crate) struct FileIndex {
+    messsage_to_index: HashMap<ProtobufRelativePath, u32>,
+    enum_to_index: HashMap<ProtobufRelativePath, u32>,
+}
+
+impl FileIndex {
+    fn index(file_scope: &FileScope) -> FileIndex {
+        unimplemented!()
+    }
+}
+
 fn gen_file(
     file: &FileDescriptorProto,
     _files_map: &HashMap<&Path, &FileDescriptorProto>,
@@ -268,7 +278,7 @@ fn gen_file(
         let mut path = vec![message_type_number, 0];
         for (id, message) in scope.get_messages().iter().enumerate() {
             // ignore map entries, because they are not used in map fields
-            if map_entry(message).is_none() {
+            if !message.is_map() {
                 path[1] = id as i32;
 
                 w.write_line("");

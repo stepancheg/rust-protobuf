@@ -10,7 +10,6 @@ use crate::case_convert::snake_case;
 use crate::file_and_mod::FileAndMod;
 use crate::file_descriptor::file_descriptor_proto_expr;
 use crate::inside::protobuf_crate_path;
-use crate::map::map_entry;
 use crate::oneof::OneofGen;
 use crate::oneof::OneofVariantGen;
 use crate::rust::is_rust_keyword;
@@ -694,7 +693,7 @@ impl<'a> MessageGen<'a> {
             .into_iter()
             .filter(|nested| {
                 // ignore map entries, because they are not used in map fields
-                map_entry(nested).is_none()
+                !nested.is_map()
             })
             .collect();
         let nested_enums = self.message.to_scope().get_enums();

@@ -2,10 +2,8 @@
 
 use crate::arc_or_static::ArcOrStatic;
 use crate::descriptor::FileDescriptorProto;
-use crate::reflect::EnumDescriptor;
 use crate::reflect::GeneratedEnumDescriptorData;
 use crate::reflect::GeneratedMessageDescriptorData;
-use crate::reflect::MessageDescriptor;
 
 /// Reflection for objects defined in `.proto` file (messages, enums, etc).
 pub struct FileDescriptor {

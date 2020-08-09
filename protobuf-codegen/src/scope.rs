@@ -398,7 +398,7 @@ impl<'a> MessageWithScope<'a> {
     /** Need to generate a mod for message nested objects. */
     pub fn need_mod(&self) -> bool {
         for nested in self.to_scope().get_messages() {
-            if map_entry(&nested).is_some() {
+            if nested.is_map() {
                 continue;
             }
             return true;
@@ -410,6 +410,11 @@ impl<'a> MessageWithScope<'a> {
             return true;
         }
         false
+    }
+
+    /// This message is a special message which is a map.
+    pub fn is_map(&self) -> bool {
+        map_entry(self).is_some()
     }
 }
 

@@ -3,14 +3,12 @@ use std::collections::HashMap;
 use std::fmt;
 use std::hash::Hash;
 use std::hash::Hasher;
-use std::marker;
 
 use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::EnumValueDescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 use crate::enums::ProtobufEnum;
 use crate::enums::ProtobufEnumOrUnknown;
-use crate::reflect::enums::generated::{GetDescriptorImpl, GetEnumDescriptor};
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
 use crate::reflect::ProtobufValue;
