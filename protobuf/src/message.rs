@@ -23,7 +23,9 @@ use crate::unknown::UnknownFields;
 /// Also, generated messages implement `Clone + Default + PartialEq`
 pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
     /// Message descriptor for this message, used for reflection.
-    fn descriptor(&self) -> &'static MessageDescriptor;
+    fn descriptor(&self) -> &'static MessageDescriptor {
+        unimplemented!()
+    }
 
     /// Get message descriptor for message type.
     ///
@@ -42,6 +44,19 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
             "descriptor_static is not implemented for message, \
              LITE_RUNTIME must be used"
         );
+    }
+
+    /// TODO
+    fn descriptor_new(&self) -> MessageDescriptor {
+        unimplemented!();
+    }
+
+    /// TODO
+    fn descriptor_static_new() -> MessageDescriptor
+    where
+        Self: Sized,
+    {
+        unimplemented!();
     }
 
     /// True iff all required fields are initialized.

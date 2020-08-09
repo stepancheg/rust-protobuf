@@ -37,6 +37,11 @@ pub trait ProtobufEnum: Eq + Sized + Copy + 'static + ProtobufValue + fmt::Debug
     fn enum_descriptor_static() -> &'static EnumDescriptor {
         panic!();
     }
+
+    /// Get enum descriptor by type.
+    fn enum_descriptor_static_new() -> EnumDescriptor {
+        panic!();
+    }
 }
 
 /// Protobuf enums with possibly unknown values are preserved in this struct.

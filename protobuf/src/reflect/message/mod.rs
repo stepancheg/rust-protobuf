@@ -14,7 +14,7 @@ use crate::reflect::message::generated::MessageFactory;
 use crate::reflect::message::generated::MessageFactoryImpl;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
-use crate::reflect::FieldDescriptor;
+use crate::reflect::{FieldDescriptor, FileDescriptor};
 
 pub(crate) mod generated;
 
@@ -150,6 +150,14 @@ impl MessageDescriptor {
             file_descriptor_proto,
             factory,
         )
+    }
+
+    #[doc(hidden)]
+    pub fn new_generated(
+        file_descriptor: &'static FileDescriptor,
+        index: usize,
+    ) -> MessageDescriptor {
+        unimplemented!()
     }
 
     /// `FileDescriptorProto` containg this message type

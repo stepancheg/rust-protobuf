@@ -13,6 +13,7 @@ use crate::scope::RootScope;
 use crate::scope::WithScope;
 use crate::scope::{EnumValueWithContext, EnumWithScope};
 use crate::serde;
+use crate::FileIndex;
 
 #[derive(Clone)]
 pub(crate) struct EnumValueGen<'a> {
@@ -51,6 +52,7 @@ impl<'a> EnumValueGen<'a> {
 // Codegen for enum definition
 pub(crate) struct EnumGen<'a> {
     enum_with_scope: &'a EnumWithScope<'a>,
+    file_index: &'a FileIndex,
     type_name: RustIdentWithPath,
     lite_runtime: bool,
     customize: Customize,
@@ -61,6 +63,7 @@ pub(crate) struct EnumGen<'a> {
 impl<'a> EnumGen<'a> {
     pub fn new(
         enum_with_scope: &'a EnumWithScope<'a>,
+        file_index: &'a FileIndex,
         customize: &Customize,
         _root_scope: &RootScope,
         path: &'a [i32],
@@ -83,7 +86,12 @@ impl<'a> EnumGen<'a> {
             customize: customize.clone(),
             path,
             info,
+            file_index,
         }
+    }
+
+    fn index_in_file(&self) -> u32 {
+        self.file_index.enum_to_index[&self.enum_with_scope.protobuf_name_to_package()]
     }
 
     fn allow_alias(&self) -> bool {
@@ -240,6 +248,8 @@ impl<'a> EnumGen<'a> {
                 if !self.lite_runtime {
                     w.write_line("");
                     self.write_enum_descriptor_static(w);
+                    w.write_line("");
+                    self.write_enum_descriptor_static_new(w);
                 }
             },
         );
@@ -271,6 +281,25 @@ impl<'a> EnumGen<'a> {
         });
     }
 
+    fn write_enum_descriptor_static_new(&self, w: &mut CodeWriter) {
+        let sig = format!(
+            "enum_descriptor_static_new() -> {}::reflect::EnumDescriptor",
+            protobuf_crate_path(&self.customize)
+        );
+        w.def_fn(&sig, |w| {
+            w.write_line(&format!(
+                "{}::reflect::EnumDescriptor::new_generated({}(), {})",
+                protobuf_crate_path(&self.customize),
+                self.enum_with_scope
+                    .get_scope()
+                    .rust_path_to_file()
+                    .to_reverse()
+                    .append_ident("file_descriptor".into()),
+                self.index_in_file(),
+            ));
+        });
+    }
+
     fn write_generated_enum_descriptor_data(&self, w: &mut CodeWriter) {
         let sig = format!(
             "generated_enum_descriptor_data() -> {}::reflect::GeneratedEnumDescriptorData",
@@ -286,10 +315,11 @@ impl<'a> EnumGen<'a> {
             &sig,
             |w| {
                 w.write_line(&format!(
-                    "{}::reflect::GeneratedEnumDescriptorData::new::<{}>(\"{}\")",
+                    "{}::reflect::GeneratedEnumDescriptorData::new_2::<{}>(\"{}\", {})",
                     protobuf_crate_path(&self.customize),
                     self.type_name,
                     self.enum_with_scope.name_to_package(),
+                    self.index_in_file(),
                 ));
             },
         );

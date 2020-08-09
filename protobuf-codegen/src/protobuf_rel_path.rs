@@ -123,7 +123,7 @@ impl ProtobufRelativePath {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Clone)]
+#[derive(Debug, Eq, PartialEq, Clone, Hash)]
 pub struct ProtobufRelativePath {
     pub path: String,
 }

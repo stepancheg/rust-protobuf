@@ -117,7 +117,7 @@ fn write_file_descriptor(
                 let scope = FileScope { file_descriptor };
 
                 w.write_line(&format!("let mut messages = {};", EXPR_VEC_NEW));
-                for m in scope.find_messages() {
+                for m in scope.find_messages_except_map() {
                     if m.is_map() {
                         continue;
                     }
@@ -220,7 +220,22 @@ pub(crate) struct FileIndex {
 
 impl FileIndex {
     fn index(file_scope: &FileScope) -> FileIndex {
-        unimplemented!()
+        FileIndex {
+            messsage_to_index: file_scope
+                .find_messages_except_map()
+                .into_iter()
+                .map(|m| m.protobuf_name_to_package())
+                .enumerate()
+                .map(|(i, n)| (n, i as u32))
+                .collect(),
+            enum_to_index: file_scope
+                .find_enums()
+                .into_iter()
+                .map(|m| m.protobuf_name_to_package())
+                .enumerate()
+                .map(|(i, n)| (n, i as u32))
+                .collect(),
+        }
     }
 }
 
@@ -238,13 +253,15 @@ fn gen_file(
         file.options.get_or_default(),
     ));
 
-    let scope = FileScope {
+    let file_scope = FileScope {
         file_descriptor: file,
-    }
-    .to_scope();
+    };
+    let scope = file_scope.to_scope();
     let lite_runtime = customize.lite_runtime.unwrap_or_else(|| {
         file.options.get_or_default().get_optimize_for() == file_options::OptimizeMode::LITE_RUNTIME
     });
+
+    let file_index = FileIndex::index(&file_scope);
 
     let mut v = Vec::new();
 
@@ -284,6 +301,7 @@ fn gen_file(
                 w.write_line("");
                 MessageGen::new(
                     message,
+                    &file_index,
                     &root_scope,
                     &customize,
                     &path,
@@ -309,6 +327,7 @@ fn gen_file(
             w.write_line("");
             EnumGen::new(
                 enum_type,
+                &file_index,
                 &customize,
                 root_scope,
                 &path,

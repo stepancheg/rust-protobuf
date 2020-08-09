@@ -1,16 +1,21 @@
 use std::any::TypeId;
 use std::collections::HashMap;
-use std::fmt;
 use std::hash::Hash;
 use std::hash::Hasher;
+use std::fmt;
+use std::marker;
 
 use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::EnumValueDescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 use crate::enums::ProtobufEnum;
 use crate::enums::ProtobufEnumOrUnknown;
+use crate::reflect::enums::generated::GetDescriptorImpl;
+#[cfg(not(rustc_nightly))]
+use crate::reflect::enums::generated::GetEnumDescriptor;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
+use crate::reflect::FileDescriptor;
 use crate::reflect::ProtobufValue;
 
 pub(crate) mod generated;
@@ -219,6 +224,11 @@ impl EnumDescriptor {
             index_by_name,
             index_by_number,
         }
+    }
+
+    #[doc(hidden)]
+    pub fn new_generated(file_descriptor: &'static FileDescriptor, index: usize) -> EnumDescriptor {
+        unimplemented!()
     }
 
     /// This enum values

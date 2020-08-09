@@ -66,4 +66,18 @@ impl GeneratedMessageDescriptorData {
             factory,
         }
     }
+
+    #[doc(hidden)]
+    pub fn new_2<M: 'static + Message + Default + Clone + PartialEq>(
+        protobuf_name_to_package: &'static str,
+        index: usize,
+        fields: Vec<FieldAccessor>,
+    ) -> GeneratedMessageDescriptorData {
+        let factory = &MessageFactoryImpl(marker::PhantomData::<M>);
+        GeneratedMessageDescriptorData {
+            protobuf_name_to_package,
+            fields,
+            factory,
+        }
+    }
 }

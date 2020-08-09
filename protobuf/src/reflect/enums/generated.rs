@@ -33,4 +33,15 @@ impl GeneratedEnumDescriptorData {
             get_descriptor: &GetDescriptorImpl(marker::PhantomData::<E>),
         }
     }
+
+    #[doc(hidden)]
+    pub fn new_2<E>(name_in_file: &'static str, index: usize) -> GeneratedEnumDescriptorData
+    where
+        E: ProtobufEnum,
+    {
+        GeneratedEnumDescriptorData {
+            #[cfg(not(rustc_nightly))]
+            get_descriptor: &GetDescriptorImpl(marker::PhantomData::<E>),
+        }
+    }
 }

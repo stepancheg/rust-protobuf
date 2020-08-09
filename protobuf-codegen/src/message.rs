@@ -21,6 +21,7 @@ use crate::scope::MessageWithScope;
 use crate::scope::RootScope;
 use crate::scope::WithScope;
 use crate::serde;
+use crate::FileIndex;
 use std::fmt;
 
 /// Protobuf message Rust type name
@@ -53,6 +54,7 @@ impl RustTypeMessage {
 /// Message info for codegen
 pub(crate) struct MessageGen<'a> {
     pub message: &'a MessageWithScope<'a>,
+    file_index: &'a FileIndex,
     pub root_scope: &'a RootScope<'a>,
     type_name: RustIdentWithPath,
     pub fields: Vec<FieldGen<'a>>,
@@ -65,6 +67,7 @@ pub(crate) struct MessageGen<'a> {
 impl<'a> MessageGen<'a> {
     pub fn new(
         message: &'a MessageWithScope<'a>,
+        file_index: &'a FileIndex,
         root_scope: &'a RootScope<'a>,
         customize: &Customize,
         path: &'a [i32],
@@ -104,6 +107,7 @@ impl<'a> MessageGen<'a> {
         });
         MessageGen {
             message,
+            file_index,
             root_scope,
             type_name: message.rust_name().to_path(),
             fields,
@@ -112,6 +116,10 @@ impl<'a> MessageGen<'a> {
             path,
             info,
         }
+    }
+
+    fn index_in_file(&self) -> u32 {
+        self.file_index.messsage_to_index[&self.message.protobuf_name_to_package()]
     }
 
     pub fn get_file_and_mod(&self) -> FileAndMod {
@@ -424,6 +432,25 @@ impl<'a> MessageGen<'a> {
         });
     }
 
+    fn write_descriptor_static_new(&self, w: &mut CodeWriter) {
+        let sig = format!(
+            "descriptor_static_new() -> {}::reflect::MessageDescriptor",
+            protobuf_crate_path(&self.customize)
+        );
+        w.def_fn(&sig, |w| {
+            w.write_line(&format!(
+                "{}::reflect::MessageDescriptor::new_generated({}(), {})",
+                protobuf_crate_path(&self.customize),
+                self.message
+                    .get_scope()
+                    .rust_path_to_file()
+                    .to_reverse()
+                    .append_ident("file_descriptor".into()),
+                self.index_in_file(),
+            ));
+        });
+    }
+
     fn write_generated_message_descriptor_data(&self, w: &mut CodeWriter) {
         let sig = format!(
             "generated_message_descriptor_data() -> {}::reflect::GeneratedMessageDescriptorData",
@@ -439,12 +466,13 @@ impl<'a> MessageGen<'a> {
                     field.write_descriptor_field("fields", w);
                 }
                 w.write_line(&format!(
-                    "{}::reflect::GeneratedMessageDescriptorData::new::<{}>(",
+                    "{}::reflect::GeneratedMessageDescriptorData::new_2::<{}>(",
                     protobuf_crate_path(&self.customize),
                     self.type_name,
                 ));
                 w.indented(|w| {
                     w.write_line(&format!("\"{}\",", self.message.name_to_package()));
+                    w.write_line(&format!("{},", self.index_in_file()));
                     w.write_line("fields,");
                 });
                 w.write_line(")");
@@ -514,6 +542,8 @@ impl<'a> MessageGen<'a> {
                 if !self.lite_runtime {
                     w.write_line("");
                     self.write_descriptor_static(w);
+                    w.write_line("");
+                    self.write_descriptor_static_new(w);
                 }
                 w.write_line("");
                 self.write_default_instance(w);
@@ -731,8 +761,15 @@ impl<'a> MessageGen<'a> {
                         w.write_line("");
                     }
                     first = false;
-                    MessageGen::new(nested, self.root_scope, &self.customize, &path, self.info)
-                        .write(w);
+                    MessageGen::new(
+                        nested,
+                        self.file_index,
+                        self.root_scope,
+                        &self.customize,
+                        &path,
+                        self.info,
+                    )
+                    .write(w);
                 }
 
                 static ENUM_TYPE_NUMBER: protobuf::rt::LazyV2<i32> = protobuf::rt::LazyV2::INIT;
@@ -756,6 +793,7 @@ impl<'a> MessageGen<'a> {
                     first = false;
                     EnumGen::new(
                         enum_type,
+                        self.file_index,
                         &self.customize,
                         self.root_scope,
                         &path,

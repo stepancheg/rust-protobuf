@@ -103,7 +103,7 @@ impl RustRelativePath {
         self.path.push(ident);
     }
 
-    pub fn _append_ident(mut self, ident: RustIdent) -> RustRelativePath {
+    pub fn append_ident(mut self, ident: RustIdent) -> RustRelativePath {
         self.push_ident(ident);
         self
     }

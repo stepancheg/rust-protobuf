@@ -117,7 +117,7 @@ impl<'a> FileScope<'a> {
         r
     }
 
-    // find all messages in given file descriptor
+    /// Find all messages in given file descriptor
     pub fn find_messages(&self) -> Vec<MessageWithScope<'a>> {
         let mut r = Vec::new();
 
@@ -128,7 +128,15 @@ impl<'a> FileScope<'a> {
         r
     }
 
-    // find all messages and enums in given file descriptor
+    /// Find all messages in given file descriptor, except map messages
+    pub fn find_messages_except_map(&self) -> Vec<MessageWithScope<'a>> {
+        self.find_messages()
+            .into_iter()
+            .filter(|m| !m.is_map())
+            .collect()
+    }
+
+    /// find all messages and enums in given file descriptor
     pub fn find_messages_and_enums(&self) -> Vec<MessageOrEnumWithScope<'a>> {
         let mut r = Vec::new();
 
