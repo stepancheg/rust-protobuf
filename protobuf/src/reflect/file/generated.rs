@@ -6,7 +6,7 @@ use crate::reflect::{FileDescriptor, GeneratedEnumDescriptorData, GeneratedMessa
 /// Reflection for objects defined in `.proto` file (messages, enums, etc).
 #[doc(hidden)]
 pub struct GeneratedFileDescriptor {
-    pub(crate) file_descriptor_proto: &'static FileDescriptorProto,
+    pub(crate) proto: &'static FileDescriptorProto,
     pub(crate) dependencies: Vec<FileDescriptor>,
     pub(crate) messages: Vec<GeneratedMessageDescriptor>,
     pub(crate) enums: Vec<GeneratedEnumDescriptor>,
@@ -32,7 +32,7 @@ impl GeneratedFileDescriptor {
             .collect();
 
         GeneratedFileDescriptor {
-            file_descriptor_proto,
+            proto: file_descriptor_proto,
             dependencies,
             messages,
             enums,
@@ -40,6 +40,6 @@ impl GeneratedFileDescriptor {
     }
     /// `.proto` data for this file.
     pub(crate) fn get_proto(&self) -> &FileDescriptorProto {
-        &*self.file_descriptor_proto
+        &*self.proto
     }
 }

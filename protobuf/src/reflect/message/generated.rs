@@ -6,6 +6,7 @@ use crate::message::Message;
 use crate::reflect::acc::FieldAccessor;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
+use crate::reflect::name::compute_full_name;
 use crate::reflect::FieldDescriptor;
 use crate::reflect::MessageDescriptor;
 use std::collections::HashMap;
@@ -149,10 +150,10 @@ impl GeneratedMessageDescriptor {
         }
 
         GeneratedMessageDescriptor {
-            full_name: MessageDescriptor::compute_full_name(
+            full_name: compute_full_name(
                 file_descriptor_proto.get_package(),
                 &path_to_package,
-                &proto,
+                proto.get_name(),
             ),
             fields,
             index_by_name,

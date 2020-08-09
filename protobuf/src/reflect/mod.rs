@@ -22,6 +22,8 @@ pub(crate) mod reflect_eq;
 
 pub mod rt;
 
+pub(crate) mod name;
+
 pub use self::value::ProtobufValue;
 pub use self::value::ProtobufValueSized;
 pub use self::value::ReflectValueBox;

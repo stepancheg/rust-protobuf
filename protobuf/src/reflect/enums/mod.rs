@@ -15,6 +15,7 @@ use crate::reflect::file::FileDescriptorImpl;
 use crate::reflect::FileDescriptor;
 use crate::reflect::ProtobufValue;
 
+pub(crate) mod dynamic;
 pub(crate) mod generated;
 
 /// Description for enum variant.
@@ -107,9 +108,11 @@ impl EnumDescriptor {
         self.get_generated().proto
     }
 
+    #[deprecated]
     fn get_generated(&self) -> &GeneratedEnumDescriptor {
         match self.file_descriptor.imp {
             FileDescriptorImpl::Generated(g) => &g.enums[self.index as usize],
+            _ => unimplemented!("TODO"),
         }
     }
 
@@ -126,25 +129,6 @@ impl EnumDescriptor {
     /// Get `EnumDescriptor` object for given enum type
     pub fn for_type<E: ProtobufEnum>() -> EnumDescriptor {
         E::enum_descriptor_static()
-    }
-
-    fn compute_full_name(
-        package: &str,
-        path_to_package: &str,
-        proto: &EnumDescriptorProto,
-    ) -> String {
-        let mut full_name = package.to_owned();
-        if path_to_package.len() != 0 {
-            if full_name.len() != 0 {
-                full_name.push('.');
-            }
-            full_name.push_str(path_to_package);
-        }
-        if full_name.len() != 0 {
-            full_name.push('.');
-        }
-        full_name.push_str(proto.get_name());
-        full_name
     }
 
     /// Separate function to reduce generated code size bloat.

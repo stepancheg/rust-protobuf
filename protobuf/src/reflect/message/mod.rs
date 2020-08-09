@@ -5,13 +5,16 @@ use crate::message::Message;
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 
+use crate::reflect::dynamic::DynamicMessage;
 use crate::reflect::file::FileDescriptorImpl;
+use crate::reflect::message::dynamic::DynamicMessageDescriptor;
 use crate::reflect::message::generated::GeneratedMessageDescriptor;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::FieldDescriptor;
 use crate::reflect::FileDescriptor;
 
+pub(crate) mod dynamic;
 pub(crate) mod generated;
 
 /// Dynamic representation of message type.
@@ -34,31 +37,15 @@ impl fmt::Debug for MessageDescriptor {
 impl MessageDescriptor {
     /// Get underlying `DescriptorProto` object.
     pub fn get_proto(&self) -> &DescriptorProto {
-        self.get_generated().proto
+        match self.get_impl() {
+            MessageDescriptorImplRef::Generated(g) => &g.proto,
+            MessageDescriptorImplRef::Dynamic(d) => d.get_proto(),
+        }
     }
 
     /// Get a message descriptor for given message type
     pub fn for_type<M: Message>() -> MessageDescriptor {
         M::descriptor_static()
-    }
-
-    pub(crate) fn compute_full_name(
-        package: &str,
-        path_to_package: &str,
-        proto: &DescriptorProto,
-    ) -> String {
-        let mut full_name = package.to_owned();
-        if path_to_package.len() != 0 {
-            if full_name.len() != 0 {
-                full_name.push('.');
-            }
-            full_name.push_str(path_to_package);
-        }
-        if full_name.len() != 0 {
-            full_name.push('.');
-        }
-        full_name.push_str(proto.get_name());
-        full_name
     }
 
     #[doc(hidden)]
@@ -69,9 +56,22 @@ impl MessageDescriptor {
         }
     }
 
+    #[deprecated]
     fn get_generated(&self) -> &GeneratedMessageDescriptor {
         match self.file_descriptor.imp {
             FileDescriptorImpl::Generated(g) => &g.messages[self.index],
+            _ => unimplemented!("TODO"),
+        }
+    }
+
+    fn get_impl(&self) -> MessageDescriptorImplRef {
+        match &self.file_descriptor.imp {
+            FileDescriptorImpl::Generated(g) => {
+                MessageDescriptorImplRef::Generated(&g.messages[self.index])
+            }
+            FileDescriptorImpl::Dynamic(d) => {
+                MessageDescriptorImplRef::Dynamic(&d.messages[self.index])
+            }
         }
     }
 
@@ -87,13 +87,19 @@ impl MessageDescriptor {
 
     /// New empty message
     pub fn new_instance(&self) -> Box<dyn Message> {
-        self.get_generated().factory.new_instance()
+        match self.get_impl() {
+            MessageDescriptorImplRef::Generated(g) => g.factory.new_instance(),
+            MessageDescriptorImplRef::Dynamic(..) => Box::new(DynamicMessage::new(self.clone())),
+        }
     }
 
     /// Shared immutable empty message
     // TODO: figure out what to do with default instance for dynamic message
     pub fn default_instance(&self) -> &'static dyn Message {
-        self.get_generated().factory.default_instance()
+        match self.get_impl() {
+            MessageDescriptorImplRef::Generated(g) => g.factory.default_instance(),
+            MessageDescriptorImplRef::Dynamic(..) => unimplemented!(),
+        }
     }
 
     /// Clone a message
@@ -107,7 +113,10 @@ impl MessageDescriptor {
     ///
     /// Is any message has different type than this descriptor.
     pub fn eq(&self, a: &dyn Message, b: &dyn Message) -> bool {
-        self.get_generated().factory.eq(a, b)
+        match self.get_impl() {
+            MessageDescriptorImplRef::Generated(g) => g.factory.eq(a, b),
+            MessageDescriptorImplRef::Dynamic(..) => unimplemented!(),
+        }
     }
 
     /// Similar to `eq`, but considers `NaN` values equal.
@@ -142,11 +151,15 @@ impl MessageDescriptor {
 
     /// Fully qualified protobuf message name
     pub fn full_name(&self) -> &str {
-        &self.get_generated().full_name
+        match self.get_impl() {
+            MessageDescriptorImplRef::Generated(g) => &g.full_name,
+            MessageDescriptorImplRef::Dynamic(d) => &d.full_name,
+        }
     }
 
     /// Message field descriptors.
     pub fn fields(&self) -> &[FieldDescriptor] {
+        // TODO: what about dynamic?
         &self.get_generated().fields
     }
 
@@ -170,4 +183,9 @@ impl MessageDescriptor {
         let &index = self.get_generated().index_by_number.get(&number)?;
         Some(&self.get_generated().fields[index])
     }
+}
+
+pub(crate) enum MessageDescriptorImplRef<'a> {
+    Generated(&'static GeneratedMessageDescriptor),
+    Dynamic(&'a DynamicMessageDescriptor),
 }

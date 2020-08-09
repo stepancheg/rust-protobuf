@@ -4,6 +4,7 @@ use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
+use crate::reflect::name::compute_full_name;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::ProtobufValue;
 use crate::ProtobufEnum;
@@ -103,10 +104,10 @@ impl GeneratedEnumDescriptor {
         assert_eq!(proto_values.len(), values.len());
 
         GeneratedEnumDescriptor {
-            full_name: EnumDescriptor::compute_full_name(
+            full_name: compute_full_name(
                 file_descriptor_proto.get_package(),
                 &path_to_package,
-                &proto,
+                proto.get_name(),
             ),
             proto,
             type_id,

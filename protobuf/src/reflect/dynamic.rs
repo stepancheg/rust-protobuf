@@ -25,6 +25,17 @@ pub struct DynamicMessage {
     cached_size: CachedSize,
 }
 
+impl DynamicMessage {
+    pub(crate) fn new(descriptor: MessageDescriptor) -> DynamicMessage {
+        DynamicMessage {
+            descriptor,
+            fields: HashMap::new(),
+            unknown_fields: UnknownFields::new(),
+            cached_size: CachedSize::new(),
+        }
+    }
+}
+
 impl ProtobufValue for DynamicMessage {}
 
 impl Clear for DynamicMessage {

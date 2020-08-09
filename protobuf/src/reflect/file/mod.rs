@@ -1,7 +1,9 @@
 #![allow(dead_code)] // TODO: don't forget to remove
 
 use crate::descriptor::FileDescriptorProto;
+use crate::reflect::file::dynamic::DynamicFileDescriptor;
 use crate::reflect::GeneratedFileDescriptor;
+use std::sync::Arc;
 
 pub(crate) mod dynamic;
 pub(crate) mod generated;
@@ -9,6 +11,7 @@ pub(crate) mod generated;
 #[derive(Clone)]
 pub(crate) enum FileDescriptorImpl {
     Generated(&'static GeneratedFileDescriptor),
+    Dynamic(Arc<DynamicFileDescriptor>),
 }
 
 impl PartialEq for FileDescriptorImpl {
@@ -17,6 +20,8 @@ impl PartialEq for FileDescriptorImpl {
             (FileDescriptorImpl::Generated(a), FileDescriptorImpl::Generated(b)) => {
                 *a as *const GeneratedFileDescriptor == *b as *const GeneratedFileDescriptor
             }
+            (FileDescriptorImpl::Dynamic(a), FileDescriptorImpl::Dynamic(b)) => Arc::ptr_eq(a, b),
+            _ => false,
         }
     }
 }
@@ -39,16 +44,22 @@ impl FileDescriptor {
 
     /// Dynamic message created from [`FileDescriptorProto`] without generated files.
     pub fn new_dynamic(
-        file_descriptor_proto: FileDescriptorProto,
+        proto: FileDescriptorProto,
         dependencies: Vec<FileDescriptor>,
     ) -> FileDescriptor {
-        unimplemented!()
+        FileDescriptor {
+            imp: FileDescriptorImpl::Dynamic(Arc::new(DynamicFileDescriptor::new(
+                proto,
+                dependencies,
+            ))),
+        }
     }
 
     /// `.proto` data for this file.
     pub fn get_proto(&self) -> &FileDescriptorProto {
-        match self.imp {
-            FileDescriptorImpl::Generated(g) => g.get_proto(),
+        match &self.imp {
+            FileDescriptorImpl::Generated(g) => &g.proto,
+            FileDescriptorImpl::Dynamic(d) => &d.proto,
         }
     }
 }
