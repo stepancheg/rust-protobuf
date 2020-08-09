@@ -16,7 +16,7 @@ use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::FieldDescriptor;
 
-mod generated;
+pub(crate) mod generated;
 
 /// Dynamic representation of message type.
 ///

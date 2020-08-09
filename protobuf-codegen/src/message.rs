@@ -342,6 +342,8 @@ impl<'a> MessageGen<'a> {
             });
 
             self.write_field_accessors(w);
+            w.write_line("");
+            self.write_generated_message_descriptor_data(w);
         });
     }
 
@@ -421,6 +423,34 @@ impl<'a> MessageGen<'a> {
                 },
             );
         });
+    }
+
+    fn write_generated_message_descriptor_data(&self, w: &mut CodeWriter) {
+        let sig = format!(
+            "generated_message_descriptor_data() -> {}::reflect::GeneratedMessageDescriptorData",
+            protobuf_crate_path(&self.customize)
+        );
+        w.fn_block(
+            Visibility::Path(self.message.get_scope().rust_path_to_file().to_reverse()),
+            &sig,
+            |w| {
+                let fields = self.fields_except_group();
+                w.write_line(&format!("let mut fields = {};", EXPR_VEC_NEW));
+                for field in fields {
+                    field.write_descriptor_field("fields", w);
+                }
+                w.write_line(&format!(
+                    "{}::reflect::GeneratedMessageDescriptorData::new::<{}>(",
+                    protobuf_crate_path(&self.customize),
+                    self.type_name,
+                ));
+                w.indented(|w| {
+                    w.write_line(&format!("\"{}\",", self.message.name_to_package()));
+                    w.write_line("fields,");
+                });
+                w.write_line(")");
+            },
+        );
     }
 
     fn write_is_initialized(&self, w: &mut CodeWriter) {

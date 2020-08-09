@@ -1,12 +1,14 @@
 // TODO: used by grpc-rust, should move it into separate crate.
 #![doc(hidden)]
 
+use crate::rust_name::RustRelativePath;
 use std::io::Write;
 
 /// Field visibility.
-pub enum Visibility {
+pub(crate) enum Visibility {
     Public,
     Default,
+    Path(RustRelativePath),
 }
 
 pub struct CodeWriter<'a> {
@@ -246,10 +248,11 @@ impl<'a> CodeWriter<'a> {
         self.write_line(&format!("pub {}: {},", name, field_type));
     }
 
-    pub fn field_decl_vis(&mut self, vis: Visibility, name: &str, field_type: &str) {
+    pub(crate) fn field_decl_vis(&mut self, vis: Visibility, name: &str, field_type: &str) {
         match vis {
             Visibility::Public => self.pub_field_decl(name, field_type),
             Visibility::Default => self.field_decl(name, field_type),
+            Visibility::Path(..) => unimplemented!(),
         }
     }
 
@@ -362,14 +365,15 @@ impl<'a> CodeWriter<'a> {
         self.write_line(&format!("fn {};", sig));
     }
 
-    pub fn fn_block<F>(&mut self, public: bool, sig: &str, cb: F)
+    pub(crate) fn fn_block<F>(&mut self, vis: Visibility, sig: &str, cb: F)
     where
         F: FnOnce(&mut CodeWriter),
     {
-        if public {
-            self.expr_block(&format!("pub fn {}", sig), cb);
-        } else {
-            self.expr_block(&format!("fn {}", sig), cb);
+        match vis {
+            Visibility::Public => self.expr_block(&format!("pub fn {}", sig), cb),
+            Visibility::Default => self.expr_block(&format!("fn {}", sig), cb),
+            Visibility::Path(p) if p.is_empty() => self.expr_block(&format!("fn {}", sig), cb),
+            Visibility::Path(p) => self.expr_block(&format!("pub(in {}) fn {}", p, sig), cb),
         }
     }
 
@@ -377,14 +381,14 @@ impl<'a> CodeWriter<'a> {
     where
         F: FnOnce(&mut CodeWriter),
     {
-        self.fn_block(true, sig, cb);
+        self.fn_block(Visibility::Public, sig, cb);
     }
 
     pub fn def_fn<F>(&mut self, sig: &str, cb: F)
     where
         F: Fn(&mut CodeWriter),
     {
-        self.fn_block(false, sig, cb);
+        self.fn_block(Visibility::Default, sig, cb);
     }
 
     pub fn def_mod<F>(&mut self, name: &str, cb: F)

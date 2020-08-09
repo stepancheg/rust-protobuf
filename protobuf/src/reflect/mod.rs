@@ -33,9 +33,13 @@ pub use self::repeated::ReflectRepeatedRef;
 pub use self::map::ReflectMapMut;
 pub use self::map::ReflectMapRef;
 
+#[doc(hidden)]
+pub use self::enums::generated::GeneratedEnumDescriptorData;
 pub use self::enums::EnumDescriptor;
 pub use self::enums::EnumValueDescriptor;
 
+#[doc(hidden)]
+pub use self::message::generated::GeneratedMessageDescriptorData;
 pub use self::message::MessageDescriptor;
 
 pub use self::field::FieldDescriptor;

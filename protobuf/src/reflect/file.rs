@@ -2,8 +2,8 @@
 
 use crate::arc_or_static::ArcOrStatic;
 use crate::descriptor::FileDescriptorProto;
-use crate::reflect::EnumDescriptor;
 use crate::reflect::MessageDescriptor;
+use crate::reflect::{EnumDescriptor, GeneratedEnumDescriptorData, GeneratedMessageDescriptorData};
 
 /// Reflection for objects defined in `.proto` file (messages, enums, etc).
 pub struct FileDescriptor {
@@ -26,6 +26,21 @@ impl FileDescriptor {
             dependencies: dependencies.into_iter().map(ArcOrStatic::Static).collect(),
             messages,
             enums,
+        }
+    }
+
+    /// This function is to be called from generated code.
+    pub fn new_generated(
+        file_descriptor_proto: &'static FileDescriptorProto,
+        dependencies: Vec<&'static FileDescriptor>,
+        messages: Vec<GeneratedMessageDescriptorData>,
+        enums: Vec<GeneratedEnumDescriptorData>,
+    ) -> FileDescriptor {
+        FileDescriptor {
+            file_descriptor_proto: ArcOrStatic::Static(file_descriptor_proto),
+            dependencies: dependencies.into_iter().map(ArcOrStatic::Static).collect(),
+            messages: Vec::new(),
+            enums: Vec::new(),
         }
     }
 

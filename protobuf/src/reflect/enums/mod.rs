@@ -10,9 +10,12 @@ use crate::descriptor::EnumValueDescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 use crate::enums::ProtobufEnum;
 use crate::enums::ProtobufEnumOrUnknown;
+use crate::reflect::enums::generated::{GetDescriptorImpl, GetEnumDescriptor};
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
 use crate::reflect::ProtobufValue;
+
+pub(crate) mod generated;
 
 /// Description for enum variant.
 ///
@@ -87,19 +90,6 @@ impl EnumValueDescriptor {
     pub fn cast<E: ProtobufEnum>(&self) -> Option<E> {
         self.enum_descriptor()
             .cast_to_protobuf_enum::<E>(self.value())
-    }
-}
-
-trait GetEnumDescriptor: Send + Sync + 'static {
-    unsafe fn copy_to(&self, value: i32, dest: *mut ());
-}
-
-struct GetDescriptorImpl<E: ProtobufEnum>(marker::PhantomData<E>);
-
-impl<E: ProtobufEnum> GetEnumDescriptor for GetDescriptorImpl<E> {
-    unsafe fn copy_to(&self, value: i32, dest: *mut ()) {
-        let e = E::from_i32(value).expect("unknown value");
-        (&e as *const E).copy_to(dest as *mut E, 1);
     }
 }
 

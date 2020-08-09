@@ -130,6 +130,14 @@ impl<'a> EnumGen<'a> {
         self.write_impl_default(w);
         w.write_line("");
         self.write_impl_value(w);
+        w.write_line("");
+        self.write_impl_self(w);
+    }
+
+    fn write_impl_self(&self, w: &mut CodeWriter) {
+        w.impl_self_block(&format!("{}", self.type_name), |w| {
+            self.write_generated_enum_descriptor_data(w);
+        });
     }
 
     fn write_enum(&self, w: &mut CodeWriter) {
@@ -231,30 +239,58 @@ impl<'a> EnumGen<'a> {
 
                 if !self.lite_runtime {
                     w.write_line("");
-                    let sig = format!(
-                        "enum_descriptor_static() -> &'static {}::reflect::EnumDescriptor",
-                        protobuf_crate_path(&self.customize)
-                    );
-                    w.def_fn(&sig, |w| {
-                        w.lazy_static_decl_get(
-                            "descriptor",
-                            &format!(
-                                "{}::reflect::EnumDescriptor",
-                                protobuf_crate_path(&self.customize)
-                            ),
-                            &format!("{}", protobuf_crate_path(&self.customize)),
-                            |w| {
-                                w.write_line(&format!(
-                                    "{}::reflect::EnumDescriptor::new::<{}>(\"{}\", {})",
-                                    protobuf_crate_path(&self.customize),
-                                    self.type_name,
-                                    self.enum_with_scope.name_to_package(),
-                                    file_descriptor_proto_expr(&self.enum_with_scope.scope)
-                                ));
-                            },
-                        );
-                    });
+                    self.write_enum_descriptor_static(w);
                 }
+            },
+        );
+    }
+
+    fn write_enum_descriptor_static(&self, w: &mut CodeWriter) {
+        let sig = format!(
+            "enum_descriptor_static() -> &'static {}::reflect::EnumDescriptor",
+            protobuf_crate_path(&self.customize)
+        );
+        w.def_fn(&sig, |w| {
+            w.lazy_static_decl_get(
+                "descriptor",
+                &format!(
+                    "{}::reflect::EnumDescriptor",
+                    protobuf_crate_path(&self.customize)
+                ),
+                &format!("{}", protobuf_crate_path(&self.customize)),
+                |w| {
+                    w.write_line(&format!(
+                        "{}::reflect::EnumDescriptor::new::<{}>(\"{}\", {})",
+                        protobuf_crate_path(&self.customize),
+                        self.type_name,
+                        self.enum_with_scope.name_to_package(),
+                        file_descriptor_proto_expr(&self.enum_with_scope.scope)
+                    ));
+                },
+            );
+        });
+    }
+
+    fn write_generated_enum_descriptor_data(&self, w: &mut CodeWriter) {
+        let sig = format!(
+            "generated_enum_descriptor_data() -> {}::reflect::GeneratedEnumDescriptorData",
+            protobuf_crate_path(&self.customize)
+        );
+        w.fn_block(
+            Visibility::Path(
+                self.enum_with_scope
+                    .get_scope()
+                    .rust_path_to_file()
+                    .to_reverse(),
+            ),
+            &sig,
+            |w| {
+                w.write_line(&format!(
+                    "{}::reflect::GeneratedEnumDescriptorData::new::<{}>(\"{}\")",
+                    protobuf_crate_path(&self.customize),
+                    self.type_name,
+                    self.enum_with_scope.name_to_package(),
+                ));
             },
         );
     }

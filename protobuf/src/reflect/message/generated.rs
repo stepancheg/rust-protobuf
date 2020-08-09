@@ -1,6 +1,7 @@
 //! Generated messages reflection support.
 
 use crate::message::Message;
+use crate::reflect::acc::FieldAccessor;
 use std::marker;
 
 /// Sized to dynamic reflection operations.
@@ -36,5 +37,33 @@ where
         let a: &M = a.downcast_ref().expect("wrong message type");
         let b: &M = b.downcast_ref().expect("wrong message type");
         a == b
+    }
+}
+
+#[doc(hidden)]
+pub struct GeneratedMessageDescriptorData {
+    protobuf_name_to_package: &'static str,
+    fields: Vec<FieldAccessor>,
+    factory: &'static dyn MessageFactory,
+}
+
+impl GeneratedMessageDescriptorData {
+    /// Construct a new message descriptor.
+    ///
+    /// This operation is called from generated code and rarely
+    /// need to be called directly.
+    ///
+    /// This function is not a part of public API.
+    #[doc(hidden)]
+    pub fn new<M: 'static + Message + Default + Clone + PartialEq>(
+        protobuf_name_to_package: &'static str,
+        fields: Vec<FieldAccessor>,
+    ) -> GeneratedMessageDescriptorData {
+        let factory = &MessageFactoryImpl(marker::PhantomData::<M>);
+        GeneratedMessageDescriptorData {
+            protobuf_name_to_package,
+            fields,
+            factory,
+        }
     }
 }

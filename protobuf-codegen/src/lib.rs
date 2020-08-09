@@ -123,23 +123,21 @@ fn write_file_descriptor(
                         continue;
                     }
                     w.write_line(&format!(
-                        "messages.push(<{} as {}::Message>::descriptor_static());",
+                        "messages.push({}::generated_message_descriptor_data());",
                         m.rust_name_to_file(),
-                        protobuf_crate_path(customize),
                     ));
                 }
 
                 w.write_line(&format!("let mut enums = {};", EXPR_VEC_NEW));
                 for e in scope.find_enums() {
                     w.write_line(&format!(
-                        "enums.push(<{} as {}::ProtobufEnum>::enum_descriptor_static());",
+                        "enums.push({}::generated_enum_descriptor_data());",
                         e.rust_name_to_file(),
-                        protobuf_crate_path(customize),
                     ));
                 }
 
                 w.write_line(&format!(
-                    "{}::reflect::FileDescriptor::new(",
+                    "{}::reflect::FileDescriptor::new_generated(",
                     protobuf_crate_path(&customize),
                 ));
                 w.indented(|w| {
