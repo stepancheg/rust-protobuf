@@ -47,6 +47,19 @@ impl DoubleValue {
     pub fn new() -> DoubleValue {
         ::std::default::Default::default()
     }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "value",
+            |m: &DoubleValue| { &m.value },
+            |m: &mut DoubleValue| { &mut m.value },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new::<DoubleValue>(
+            "DoubleValue",
+            fields,
+        )
+    }
 }
 
 impl crate::Message for DoubleValue {
@@ -184,6 +197,19 @@ impl<'a> ::std::default::Default for &'a FloatValue {
 impl FloatValue {
     pub fn new() -> FloatValue {
         ::std::default::Default::default()
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "value",
+            |m: &FloatValue| { &m.value },
+            |m: &mut FloatValue| { &mut m.value },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new::<FloatValue>(
+            "FloatValue",
+            fields,
+        )
     }
 }
 
@@ -323,6 +349,19 @@ impl Int64Value {
     pub fn new() -> Int64Value {
         ::std::default::Default::default()
     }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "value",
+            |m: &Int64Value| { &m.value },
+            |m: &mut Int64Value| { &mut m.value },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new::<Int64Value>(
+            "Int64Value",
+            fields,
+        )
+    }
 }
 
 impl crate::Message for Int64Value {
@@ -460,6 +499,19 @@ impl<'a> ::std::default::Default for &'a UInt64Value {
 impl UInt64Value {
     pub fn new() -> UInt64Value {
         ::std::default::Default::default()
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "value",
+            |m: &UInt64Value| { &m.value },
+            |m: &mut UInt64Value| { &mut m.value },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new::<UInt64Value>(
+            "UInt64Value",
+            fields,
+        )
     }
 }
 
@@ -599,6 +651,19 @@ impl Int32Value {
     pub fn new() -> Int32Value {
         ::std::default::Default::default()
     }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "value",
+            |m: &Int32Value| { &m.value },
+            |m: &mut Int32Value| { &mut m.value },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new::<Int32Value>(
+            "Int32Value",
+            fields,
+        )
+    }
 }
 
 impl crate::Message for Int32Value {
@@ -736,6 +801,19 @@ impl<'a> ::std::default::Default for &'a UInt32Value {
 impl UInt32Value {
     pub fn new() -> UInt32Value {
         ::std::default::Default::default()
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "value",
+            |m: &UInt32Value| { &m.value },
+            |m: &mut UInt32Value| { &mut m.value },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new::<UInt32Value>(
+            "UInt32Value",
+            fields,
+        )
     }
 }
 
@@ -875,6 +953,19 @@ impl BoolValue {
     pub fn new() -> BoolValue {
         ::std::default::Default::default()
     }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "value",
+            |m: &BoolValue| { &m.value },
+            |m: &mut BoolValue| { &mut m.value },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new::<BoolValue>(
+            "BoolValue",
+            fields,
+        )
+    }
 }
 
 impl crate::Message for BoolValue {
@@ -1013,6 +1104,19 @@ impl StringValue {
     pub fn new() -> StringValue {
         ::std::default::Default::default()
     }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "value",
+            |m: &StringValue| { &m.value },
+            |m: &mut StringValue| { &mut m.value },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new::<StringValue>(
+            "StringValue",
+            fields,
+        )
+    }
 }
 
 impl crate::Message for StringValue {
@@ -1150,6 +1254,19 @@ impl<'a> ::std::default::Default for &'a BytesValue {
 impl BytesValue {
     pub fn new() -> BytesValue {
         ::std::default::Default::default()
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "value",
+            |m: &BytesValue| { &m.value },
+            |m: &mut BytesValue| { &mut m.value },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new::<BytesValue>(
+            "BytesValue",
+            fields,
+        )
     }
 }
 
@@ -1392,17 +1509,17 @@ pub fn file_descriptor() -> &'static crate::reflect::FileDescriptor {
     file_descriptor_lazy.get(|| {
         let mut deps = ::std::vec::Vec::new();
         let mut messages = ::std::vec::Vec::new();
-        messages.push(<DoubleValue as crate::Message>::descriptor_static());
-        messages.push(<FloatValue as crate::Message>::descriptor_static());
-        messages.push(<Int64Value as crate::Message>::descriptor_static());
-        messages.push(<UInt64Value as crate::Message>::descriptor_static());
-        messages.push(<Int32Value as crate::Message>::descriptor_static());
-        messages.push(<UInt32Value as crate::Message>::descriptor_static());
-        messages.push(<BoolValue as crate::Message>::descriptor_static());
-        messages.push(<StringValue as crate::Message>::descriptor_static());
-        messages.push(<BytesValue as crate::Message>::descriptor_static());
+        messages.push(DoubleValue::generated_message_descriptor_data());
+        messages.push(FloatValue::generated_message_descriptor_data());
+        messages.push(Int64Value::generated_message_descriptor_data());
+        messages.push(UInt64Value::generated_message_descriptor_data());
+        messages.push(Int32Value::generated_message_descriptor_data());
+        messages.push(UInt32Value::generated_message_descriptor_data());
+        messages.push(BoolValue::generated_message_descriptor_data());
+        messages.push(StringValue::generated_message_descriptor_data());
+        messages.push(BytesValue::generated_message_descriptor_data());
         let mut enums = ::std::vec::Vec::new();
-        crate::reflect::FileDescriptor::new(
+        crate::reflect::FileDescriptor::new_generated(
             file_descriptor_proto(),
             deps,
             messages,

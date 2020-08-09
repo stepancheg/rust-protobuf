@@ -51,6 +51,24 @@ impl Timestamp {
     pub fn new() -> Timestamp {
         ::std::default::Default::default()
     }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "seconds",
+            |m: &Timestamp| { &m.seconds },
+            |m: &mut Timestamp| { &mut m.seconds },
+        ));
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "nanos",
+            |m: &Timestamp| { &m.nanos },
+            |m: &mut Timestamp| { &mut m.nanos },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new::<Timestamp>(
+            "Timestamp",
+            fields,
+        )
+    }
 }
 
 impl crate::Message for Timestamp {
@@ -300,9 +318,9 @@ pub fn file_descriptor() -> &'static crate::reflect::FileDescriptor {
     file_descriptor_lazy.get(|| {
         let mut deps = ::std::vec::Vec::new();
         let mut messages = ::std::vec::Vec::new();
-        messages.push(<Timestamp as crate::Message>::descriptor_static());
+        messages.push(Timestamp::generated_message_descriptor_data());
         let mut enums = ::std::vec::Vec::new();
-        crate::reflect::FileDescriptor::new(
+        crate::reflect::FileDescriptor::new_generated(
             file_descriptor_proto(),
             deps,
             messages,

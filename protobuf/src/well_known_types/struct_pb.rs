@@ -53,6 +53,19 @@ impl Struct {
     pub fn new() -> Struct {
         ::std::default::Default::default()
     }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_map_simpler_accessor::<_, _, _>(
+            "fields",
+            |m: &Struct| { &m.fields },
+            |m: &mut Struct| { &mut m.fields },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new::<Struct>(
+            "Struct",
+            fields,
+        )
+    }
 }
 
 impl crate::Message for Struct {
@@ -404,6 +417,52 @@ impl Value {
             ListValue::new()
         }
     }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_oneof_copy_has_get_set_simpler_accessors::<_, _>(
+            "null_value",
+            Value::has_null_value,
+            Value::get_null_value,
+            Value::set_null_value,
+        ));
+        fields.push(crate::reflect::rt::v2::make_oneof_copy_has_get_set_simpler_accessors::<_, _>(
+            "number_value",
+            Value::has_number_value,
+            Value::get_number_value,
+            Value::set_number_value,
+        ));
+        fields.push(crate::reflect::rt::v2::make_oneof_deref_has_get_set_simpler_accessor::<_, _>(
+            "string_value",
+            Value::has_string_value,
+            Value::get_string_value,
+            Value::set_string_value,
+        ));
+        fields.push(crate::reflect::rt::v2::make_oneof_copy_has_get_set_simpler_accessors::<_, _>(
+            "bool_value",
+            Value::has_bool_value,
+            Value::get_bool_value,
+            Value::set_bool_value,
+        ));
+        fields.push(crate::reflect::rt::v2::make_oneof_message_has_get_mut_set_accessor::<_, Struct>(
+            "struct_value",
+            Value::has_struct_value,
+            Value::get_struct_value,
+            Value::mut_struct_value,
+            Value::set_struct_value,
+        ));
+        fields.push(crate::reflect::rt::v2::make_oneof_message_has_get_mut_set_accessor::<_, ListValue>(
+            "list_value",
+            Value::has_list_value,
+            Value::get_list_value,
+            Value::mut_list_value,
+            Value::set_list_value,
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new::<Value>(
+            "Value",
+            fields,
+        )
+    }
 }
 
 impl crate::Message for Value {
@@ -678,6 +737,19 @@ impl ListValue {
     pub fn new() -> ListValue {
         ::std::default::Default::default()
     }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "values",
+            |m: &ListValue| { &m.values },
+            |m: &mut ListValue| { &mut m.values },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new::<ListValue>(
+            "ListValue",
+            fields,
+        )
+    }
 }
 
 impl crate::Message for ListValue {
@@ -843,6 +915,12 @@ impl crate::reflect::ProtobufValueSized for NullValue {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeEnum<Self>;
 }
 
+impl NullValue {
+    fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
+        crate::reflect::GeneratedEnumDescriptorData::new::<NullValue>("NullValue")
+    }
+}
+
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n\x1cgoogle/protobuf/struct.proto\x12\x0fgoogle.protobuf\"\x98\x01\n\
     \x06Struct\x12;\n\x06fields\x18\x01\x20\x03(\x0b2#.google.protobuf.Struc\
@@ -974,12 +1052,12 @@ pub fn file_descriptor() -> &'static crate::reflect::FileDescriptor {
     file_descriptor_lazy.get(|| {
         let mut deps = ::std::vec::Vec::new();
         let mut messages = ::std::vec::Vec::new();
-        messages.push(<Struct as crate::Message>::descriptor_static());
-        messages.push(<Value as crate::Message>::descriptor_static());
-        messages.push(<ListValue as crate::Message>::descriptor_static());
+        messages.push(Struct::generated_message_descriptor_data());
+        messages.push(Value::generated_message_descriptor_data());
+        messages.push(ListValue::generated_message_descriptor_data());
         let mut enums = ::std::vec::Vec::new();
-        enums.push(<NullValue as crate::ProtobufEnum>::enum_descriptor_static());
-        crate::reflect::FileDescriptor::new(
+        enums.push(NullValue::generated_enum_descriptor_data());
+        crate::reflect::FileDescriptor::new_generated(
             file_descriptor_proto(),
             deps,
             messages,

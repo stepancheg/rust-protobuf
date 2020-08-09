@@ -67,6 +67,24 @@ impl Any {
     pub fn new() -> Any {
         ::std::default::Default::default()
     }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "type_url",
+            |m: &Any| { &m.type_url },
+            |m: &mut Any| { &mut m.type_url },
+        ));
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "value",
+            |m: &Any| { &m.value },
+            |m: &mut Any| { &mut m.value },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new::<Any>(
+            "Any",
+            fields,
+        )
+    }
 }
 
 impl crate::Message for Any {
@@ -335,9 +353,9 @@ pub fn file_descriptor() -> &'static crate::reflect::FileDescriptor {
     file_descriptor_lazy.get(|| {
         let mut deps = ::std::vec::Vec::new();
         let mut messages = ::std::vec::Vec::new();
-        messages.push(<Any as crate::Message>::descriptor_static());
+        messages.push(Any::generated_message_descriptor_data());
         let mut enums = ::std::vec::Vec::new();
-        crate::reflect::FileDescriptor::new(
+        crate::reflect::FileDescriptor::new_generated(
             file_descriptor_proto(),
             deps,
             messages,

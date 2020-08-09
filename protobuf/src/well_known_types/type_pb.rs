@@ -55,6 +55,44 @@ impl Type {
     pub fn new() -> Type {
         ::std::default::Default::default()
     }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "name",
+            |m: &Type| { &m.name },
+            |m: &mut Type| { &mut m.name },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "fields",
+            |m: &Type| { &m.fields },
+            |m: &mut Type| { &mut m.fields },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "oneofs",
+            |m: &Type| { &m.oneofs },
+            |m: &mut Type| { &mut m.oneofs },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "options",
+            |m: &Type| { &m.options },
+            |m: &mut Type| { &mut m.options },
+        ));
+        fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, crate::well_known_types::SourceContext>(
+            "source_context",
+            |m: &Type| { &m.source_context },
+            |m: &mut Type| { &mut m.source_context },
+        ));
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "syntax",
+            |m: &Type| { &m.syntax },
+            |m: &mut Type| { &mut m.syntax },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new::<Type>(
+            "Type",
+            fields,
+        )
+    }
 }
 
 impl crate::Message for Type {
@@ -311,6 +349,64 @@ impl<'a> ::std::default::Default for &'a Field {
 impl Field {
     pub fn new() -> Field {
         ::std::default::Default::default()
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "kind",
+            |m: &Field| { &m.kind },
+            |m: &mut Field| { &mut m.kind },
+        ));
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "cardinality",
+            |m: &Field| { &m.cardinality },
+            |m: &mut Field| { &mut m.cardinality },
+        ));
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "number",
+            |m: &Field| { &m.number },
+            |m: &mut Field| { &mut m.number },
+        ));
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "name",
+            |m: &Field| { &m.name },
+            |m: &mut Field| { &mut m.name },
+        ));
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "type_url",
+            |m: &Field| { &m.type_url },
+            |m: &mut Field| { &mut m.type_url },
+        ));
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "oneof_index",
+            |m: &Field| { &m.oneof_index },
+            |m: &mut Field| { &mut m.oneof_index },
+        ));
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "packed",
+            |m: &Field| { &m.packed },
+            |m: &mut Field| { &mut m.packed },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "options",
+            |m: &Field| { &m.options },
+            |m: &mut Field| { &mut m.options },
+        ));
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "json_name",
+            |m: &Field| { &m.json_name },
+            |m: &mut Field| { &mut m.json_name },
+        ));
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "default_value",
+            |m: &Field| { &m.default_value },
+            |m: &mut Field| { &mut m.default_value },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new::<Field>(
+            "Field",
+            fields,
+        )
     }
 }
 
@@ -701,6 +797,12 @@ pub mod field {
         type RuntimeType = crate::reflect::runtime_types::RuntimeTypeEnum<Self>;
     }
 
+    impl Kind {
+        pub(in super) fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
+            crate::reflect::GeneratedEnumDescriptorData::new::<Kind>("Field.Kind")
+        }
+    }
+
     ///  Whether a field is optional, required, or repeated.
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
     #[cfg_attr(serde, derive(Serialize, Deserialize))]
@@ -756,6 +858,12 @@ pub mod field {
     impl crate::reflect::ProtobufValueSized for Cardinality {
         type RuntimeType = crate::reflect::runtime_types::RuntimeTypeEnum<Self>;
     }
+
+    impl Cardinality {
+        pub(in super) fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
+            crate::reflect::GeneratedEnumDescriptorData::new::<Cardinality>("Field.Cardinality")
+        }
+    }
 }
 
 ///  Enum type definition.
@@ -789,6 +897,39 @@ impl<'a> ::std::default::Default for &'a Enum {
 impl Enum {
     pub fn new() -> Enum {
         ::std::default::Default::default()
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "name",
+            |m: &Enum| { &m.name },
+            |m: &mut Enum| { &mut m.name },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "enumvalue",
+            |m: &Enum| { &m.enumvalue },
+            |m: &mut Enum| { &mut m.enumvalue },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "options",
+            |m: &Enum| { &m.options },
+            |m: &mut Enum| { &mut m.options },
+        ));
+        fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, crate::well_known_types::SourceContext>(
+            "source_context",
+            |m: &Enum| { &m.source_context },
+            |m: &mut Enum| { &mut m.source_context },
+        ));
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "syntax",
+            |m: &Enum| { &m.syntax },
+            |m: &mut Enum| { &mut m.syntax },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new::<Enum>(
+            "Enum",
+            fields,
+        )
     }
 }
 
@@ -1015,6 +1156,29 @@ impl EnumValue {
     pub fn new() -> EnumValue {
         ::std::default::Default::default()
     }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "name",
+            |m: &EnumValue| { &m.name },
+            |m: &mut EnumValue| { &mut m.name },
+        ));
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "number",
+            |m: &EnumValue| { &m.number },
+            |m: &mut EnumValue| { &mut m.number },
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "options",
+            |m: &EnumValue| { &m.options },
+            |m: &mut EnumValue| { &mut m.options },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new::<EnumValue>(
+            "EnumValue",
+            fields,
+        )
+    }
 }
 
 impl crate::Message for EnumValue {
@@ -1194,6 +1358,24 @@ impl<'a> ::std::default::Default for &'a Option {
 impl Option {
     pub fn new() -> Option {
         ::std::default::Default::default()
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "name",
+            |m: &Option| { &m.name },
+            |m: &mut Option| { &mut m.name },
+        ));
+        fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, crate::well_known_types::Any>(
+            "value",
+            |m: &Option| { &m.value },
+            |m: &mut Option| { &mut m.value },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new::<Option>(
+            "Option",
+            fields,
+        )
     }
 }
 
@@ -1377,6 +1559,12 @@ impl crate::reflect::ProtobufValue for Syntax {
 
 impl crate::reflect::ProtobufValueSized for Syntax {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeEnum<Self>;
+}
+
+impl Syntax {
+    fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
+        crate::reflect::GeneratedEnumDescriptorData::new::<Syntax>("Syntax")
+    }
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
@@ -1670,16 +1858,16 @@ pub fn file_descriptor() -> &'static crate::reflect::FileDescriptor {
         deps.push(crate::well_known_types::file_descriptors::any());
         deps.push(crate::well_known_types::file_descriptors::source_context());
         let mut messages = ::std::vec::Vec::new();
-        messages.push(<Type as crate::Message>::descriptor_static());
-        messages.push(<Field as crate::Message>::descriptor_static());
-        messages.push(<Enum as crate::Message>::descriptor_static());
-        messages.push(<EnumValue as crate::Message>::descriptor_static());
-        messages.push(<Option as crate::Message>::descriptor_static());
+        messages.push(Type::generated_message_descriptor_data());
+        messages.push(Field::generated_message_descriptor_data());
+        messages.push(Enum::generated_message_descriptor_data());
+        messages.push(EnumValue::generated_message_descriptor_data());
+        messages.push(Option::generated_message_descriptor_data());
         let mut enums = ::std::vec::Vec::new();
-        enums.push(<Syntax as crate::ProtobufEnum>::enum_descriptor_static());
-        enums.push(<field::Kind as crate::ProtobufEnum>::enum_descriptor_static());
-        enums.push(<field::Cardinality as crate::ProtobufEnum>::enum_descriptor_static());
-        crate::reflect::FileDescriptor::new(
+        enums.push(Syntax::generated_enum_descriptor_data());
+        enums.push(field::Kind::generated_enum_descriptor_data());
+        enums.push(field::Cardinality::generated_enum_descriptor_data());
+        crate::reflect::FileDescriptor::new_generated(
             file_descriptor_proto(),
             deps,
             messages,

@@ -52,6 +52,24 @@ impl Duration {
     pub fn new() -> Duration {
         ::std::default::Default::default()
     }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "seconds",
+            |m: &Duration| { &m.seconds },
+            |m: &mut Duration| { &mut m.seconds },
+        ));
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "nanos",
+            |m: &Duration| { &m.nanos },
+            |m: &mut Duration| { &mut m.nanos },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new::<Duration>(
+            "Duration",
+            fields,
+        )
+    }
 }
 
 impl crate::Message for Duration {
@@ -298,9 +316,9 @@ pub fn file_descriptor() -> &'static crate::reflect::FileDescriptor {
     file_descriptor_lazy.get(|| {
         let mut deps = ::std::vec::Vec::new();
         let mut messages = ::std::vec::Vec::new();
-        messages.push(<Duration as crate::Message>::descriptor_static());
+        messages.push(Duration::generated_message_descriptor_data());
         let mut enums = ::std::vec::Vec::new();
-        crate::reflect::FileDescriptor::new(
+        crate::reflect::FileDescriptor::new_generated(
             file_descriptor_proto(),
             deps,
             messages,

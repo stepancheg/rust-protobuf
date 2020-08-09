@@ -47,6 +47,19 @@ impl SourceContext {
     pub fn new() -> SourceContext {
         ::std::default::Default::default()
     }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
+            "file_name",
+            |m: &SourceContext| { &m.file_name },
+            |m: &mut SourceContext| { &mut m.file_name },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new::<SourceContext>(
+            "SourceContext",
+            fields,
+        )
+    }
 }
 
 impl crate::Message for SourceContext {
@@ -228,9 +241,9 @@ pub fn file_descriptor() -> &'static crate::reflect::FileDescriptor {
     file_descriptor_lazy.get(|| {
         let mut deps = ::std::vec::Vec::new();
         let mut messages = ::std::vec::Vec::new();
-        messages.push(<SourceContext as crate::Message>::descriptor_static());
+        messages.push(SourceContext::generated_message_descriptor_data());
         let mut enums = ::std::vec::Vec::new();
-        crate::reflect::FileDescriptor::new(
+        crate::reflect::FileDescriptor::new_generated(
             file_descriptor_proto(),
             deps,
             messages,

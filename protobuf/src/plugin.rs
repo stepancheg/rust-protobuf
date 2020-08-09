@@ -97,6 +97,30 @@ impl CodeGeneratorRequest {
     pub fn take_parameter(&mut self) -> ::std::string::String {
         self.parameter.take().unwrap_or_else(|| ::std::string::String::new())
     }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "file_to_generate",
+            |m: &CodeGeneratorRequest| { &m.file_to_generate },
+            |m: &mut CodeGeneratorRequest| { &mut m.file_to_generate },
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "parameter",
+            |m: &CodeGeneratorRequest| { &m.parameter },
+            |m: &mut CodeGeneratorRequest| { &mut m.parameter },
+            CodeGeneratorRequest::get_parameter,
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "proto_file",
+            |m: &CodeGeneratorRequest| { &m.proto_file },
+            |m: &mut CodeGeneratorRequest| { &mut m.proto_file },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new::<CodeGeneratorRequest>(
+            "CodeGeneratorRequest",
+            fields,
+        )
+    }
 }
 
 impl crate::Message for CodeGeneratorRequest {
@@ -315,6 +339,25 @@ impl CodeGeneratorResponse {
     // Take field
     pub fn take_error(&mut self) -> ::std::string::String {
         self.error.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "error",
+            |m: &CodeGeneratorResponse| { &m.error },
+            |m: &mut CodeGeneratorResponse| { &mut m.error },
+            CodeGeneratorResponse::get_error,
+        ));
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "file",
+            |m: &CodeGeneratorResponse| { &m.file },
+            |m: &mut CodeGeneratorResponse| { &mut m.file },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new::<CodeGeneratorResponse>(
+            "CodeGeneratorResponse",
+            fields,
+        )
     }
 }
 
@@ -634,6 +677,32 @@ pub mod code_generator_response {
         // Take field
         pub fn take_content(&mut self) -> ::std::string::String {
             self.content.take().unwrap_or_else(|| ::std::string::String::new())
+        }
+
+        pub(in super) fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+            let mut fields = ::std::vec::Vec::new();
+            fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+                "name",
+                |m: &File| { &m.name },
+                |m: &mut File| { &mut m.name },
+                File::get_name,
+            ));
+            fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+                "insertion_point",
+                |m: &File| { &m.insertion_point },
+                |m: &mut File| { &mut m.insertion_point },
+                File::get_insertion_point,
+            ));
+            fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+                "content",
+                |m: &File| { &m.content },
+                |m: &mut File| { &mut m.content },
+                File::get_content,
+            ));
+            crate::reflect::GeneratedMessageDescriptorData::new::<File>(
+                "CodeGeneratorResponse.File",
+                fields,
+            )
         }
     }
 
@@ -994,11 +1063,11 @@ pub fn file_descriptor() -> &'static crate::reflect::FileDescriptor {
         let mut deps = ::std::vec::Vec::new();
         deps.push(crate::descriptor::file_descriptor());
         let mut messages = ::std::vec::Vec::new();
-        messages.push(<CodeGeneratorRequest as crate::Message>::descriptor_static());
-        messages.push(<CodeGeneratorResponse as crate::Message>::descriptor_static());
-        messages.push(<code_generator_response::File as crate::Message>::descriptor_static());
+        messages.push(CodeGeneratorRequest::generated_message_descriptor_data());
+        messages.push(CodeGeneratorResponse::generated_message_descriptor_data());
+        messages.push(code_generator_response::File::generated_message_descriptor_data());
         let mut enums = ::std::vec::Vec::new();
-        crate::reflect::FileDescriptor::new(
+        crate::reflect::FileDescriptor::new_generated(
             file_descriptor_proto(),
             deps,
             messages,

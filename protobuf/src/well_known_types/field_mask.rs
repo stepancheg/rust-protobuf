@@ -44,6 +44,19 @@ impl FieldMask {
     pub fn new() -> FieldMask {
         ::std::default::Default::default()
     }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
+            "paths",
+            |m: &FieldMask| { &m.paths },
+            |m: &mut FieldMask| { &mut m.paths },
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new::<FieldMask>(
+            "FieldMask",
+            fields,
+        )
+    }
 }
 
 impl crate::Message for FieldMask {
@@ -353,9 +366,9 @@ pub fn file_descriptor() -> &'static crate::reflect::FileDescriptor {
     file_descriptor_lazy.get(|| {
         let mut deps = ::std::vec::Vec::new();
         let mut messages = ::std::vec::Vec::new();
-        messages.push(<FieldMask as crate::Message>::descriptor_static());
+        messages.push(FieldMask::generated_message_descriptor_data());
         let mut enums = ::std::vec::Vec::new();
-        crate::reflect::FileDescriptor::new(
+        crate::reflect::FileDescriptor::new_generated(
             file_descriptor_proto(),
             deps,
             messages,

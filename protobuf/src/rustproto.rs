@@ -227,7 +227,7 @@ pub fn file_descriptor() -> &'static crate::reflect::FileDescriptor {
         deps.push(crate::descriptor::file_descriptor());
         let mut messages = ::std::vec::Vec::new();
         let mut enums = ::std::vec::Vec::new();
-        crate::reflect::FileDescriptor::new(
+        crate::reflect::FileDescriptor::new_generated(
             file_descriptor_proto(),
             deps,
             messages,
