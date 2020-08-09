@@ -8,13 +8,16 @@ use crate::reflect::acc::v2::AccessorV2;
 use crate::reflect::acc::FieldAccessorImpl;
 use crate::reflect::map::ReflectMapMut;
 use crate::reflect::map::ReflectMapRef;
-use crate::reflect::reflect_eq::{ReflectEq, ReflectEqMode};
+use crate::reflect::reflect_eq::ReflectEq;
+use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::repeated::ReflectRepeatedMut;
 use crate::reflect::repeated::ReflectRepeatedRef;
+use crate::reflect::value::MessageRef;
 use crate::reflect::value::ReflectValueMut;
+use crate::reflect::MessageDescriptor;
+use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::reflect::RuntimeTypeDynamic;
-use crate::reflect::{MessageDescriptor, ReflectValueBox};
 
 /// Reference to a value stored in a field, optional, repeated or map.
 // TODO: implement Eq
@@ -25,6 +28,16 @@ pub enum ReflectFieldRef<'a> {
     Repeated(ReflectRepeatedRef<'a>),
     /// Map field
     Map(ReflectMapRef<'a>),
+}
+
+impl<'a> ReflectFieldRef<'a> {
+    pub(crate) fn default_for_field(field: &FieldDescriptor) -> ReflectFieldRef<'a> {
+        match field.runtime_field_type() {
+            RuntimeFieldType::Singular(_) => ReflectFieldRef::Optional(None),
+            RuntimeFieldType::Repeated(..) => unimplemented!(),
+            RuntimeFieldType::Map(..) => unimplemented!(),
+        }
+    }
 }
 
 impl<'a> ReflectEq for ReflectFieldRef<'a> {
@@ -157,7 +170,7 @@ impl FieldDescriptor {
     /// # Panics
     /// If this field belongs to a different message type or
     /// field type is not message.
-    pub fn get_message<'a>(&self, m: &'a dyn Message) -> &'a dyn Message {
+    pub fn get_message<'a>(&self, m: &'a dyn Message) -> MessageRef<'a> {
         match self.get_singular_field_or_default(m) {
             ReflectValueRef::Message(m) => m,
             _ => panic!("not message"),

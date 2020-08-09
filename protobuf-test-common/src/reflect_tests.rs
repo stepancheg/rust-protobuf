@@ -11,8 +11,8 @@ use protobuf::well_known_types::value;
 use protobuf::well_known_types::Value;
 use protobuf::Message;
 
-pub fn value_for_runtime_type(field_type: &dyn RuntimeTypeDynamic) -> ReflectValueBox {
-    match field_type.to_box() {
+pub fn value_for_runtime_type(field_type: RuntimeTypeBox) -> ReflectValueBox {
+    match field_type {
         RuntimeTypeBox::U32 => ReflectValueBox::U32(11),
         RuntimeTypeBox::U64 => ReflectValueBox::U64(12),
         RuntimeTypeBox::I32 => ReflectValueBox::I32(13),
@@ -129,15 +129,16 @@ pub fn special_values_for_field(
             // TODO: empty repeated
             // TODO: repeated of more than one element
             let mut m = d.new_instance();
-            f.mut_repeated(&mut *m).push(value_for_runtime_type(t));
+            f.mut_repeated(&mut *m)
+                .push(value_for_runtime_type(t.to_box()));
             r.push(m);
         }
         RuntimeFieldType::Map(k, v) => {
             // TODO: empty map
             // TODO: map of more than one element
             let mut m = d.new_instance();
-            let k = value_for_runtime_type(k);
-            let v = value_for_runtime_type(v);
+            let k = value_for_runtime_type(k.to_box());
+            let v = value_for_runtime_type(v.to_box());
             f.mut_map(&mut *m).insert(k, v);
             r.push(m);
         }

@@ -2,6 +2,7 @@ use std::fmt;
 use std::fmt::Write;
 
 use crate::message::Message;
+use crate::reflect::value::MessageRef;
 use crate::reflect::ReflectFieldRef;
 use crate::reflect::ReflectValueRef;
 
@@ -93,7 +94,7 @@ fn print_field<F: FieldName>(
             if pretty {
                 buf.push_str("\n");
             }
-            print_to_internal(m, buf, pretty, indent + 1);
+            print_to_internal(&m, buf, pretty, indent + 1);
             do_indent(buf, pretty, indent);
             buf.push_str("}");
         }
@@ -138,11 +139,11 @@ fn print_field<F: FieldName>(
     print_end_field(buf, pretty);
 }
 
-fn print_to_internal(m: &dyn Message, buf: &mut String, pretty: bool, indent: usize) {
+fn print_to_internal(m: &MessageRef, buf: &mut String, pretty: bool, indent: usize) {
     let d = m.descriptor();
     let mut first = true;
     for f in d.fields() {
-        match f.get_reflect(m) {
+        match f.get_reflect(&**m) {
             ReflectFieldRef::Map(map) => {
                 for (k, v) in &map {
                     print_start_field(buf, pretty, indent, &mut first, f.name());
@@ -188,12 +189,12 @@ fn print_to_internal(m: &dyn Message, buf: &mut String, pretty: bool, indent: us
 
 /// Text-format
 pub fn print_to(m: &dyn Message, buf: &mut String) {
-    print_to_internal(m, buf, false, 0)
+    print_to_internal(&MessageRef::from(m), buf, false, 0)
 }
 
 fn print_to_string_internal(m: &dyn Message, pretty: bool) -> String {
     let mut r = String::new();
-    print_to_internal(m, &mut r, pretty, 0);
+    print_to_internal(&MessageRef::from(m), &mut r, pretty, 0);
     r.to_string()
 }
 

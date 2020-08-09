@@ -4,11 +4,12 @@ use std::slice;
 use crate::reflect::value::ProtobufValue;
 use crate::reflect::value::ReflectValueRef;
 
+use crate::reflect::dynamic::DynamicRepeated;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
-use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
 use crate::reflect::ProtobufValueSized;
 use crate::reflect::ReflectValueBox;
+use crate::reflect::RuntimeTypeBox;
 
 pub(crate) trait ReflectRepeated: Sync + 'static + fmt::Debug {
     fn reflect_iter(&self) -> ReflectRepeatedIter;
@@ -17,7 +18,7 @@ pub(crate) trait ReflectRepeated: Sync + 'static + fmt::Debug {
     fn set(&mut self, index: usize, value: ReflectValueBox);
     fn push(&mut self, value: ReflectValueBox);
     fn clear(&mut self);
-    fn element_type(&self) -> &'static dyn RuntimeTypeDynamic;
+    fn element_type(&self) -> RuntimeTypeBox;
 }
 
 impl<V: ProtobufValueSized> ReflectRepeated for Vec<V> {
@@ -49,8 +50,8 @@ impl<V: ProtobufValueSized> ReflectRepeated for Vec<V> {
         self.clear()
     }
 
-    fn element_type(&self) -> &'static dyn RuntimeTypeDynamic {
-        V::dynamic()
+    fn element_type(&self) -> RuntimeTypeBox {
+        V::dynamic().to_box()
     }
 }
 
@@ -83,8 +84,8 @@ impl<V: ProtobufValueSized> ReflectRepeated for [V] {
         panic!("clear is not possible for [V]");
     }
 
-    fn element_type(&self) -> &'static dyn RuntimeTypeDynamic {
-        V::dynamic()
+    fn element_type(&self) -> RuntimeTypeBox {
+        V::dynamic().to_box()
     }
 }
 
@@ -125,10 +126,27 @@ impl<'a> IntoIterator for &'a dyn ReflectRepeated {
     }
 }
 
+#[derive(Clone)]
+enum ReflectRepeatedRefImpl<'a> {
+    Generated(&'a dyn ReflectRepeated),
+    Dynamic(&'a DynamicRepeated),
+    DynamicEmpty(DynamicRepeated),
+}
+
+impl<'a> fmt::Debug for ReflectRepeatedRefImpl<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            ReflectRepeatedRefImpl::Generated(r) => fmt::Debug::fmt(r, f),
+            ReflectRepeatedRefImpl::Dynamic(r) => fmt::Debug::fmt(r, f),
+            ReflectRepeatedRefImpl::DynamicEmpty(r) => fmt::Debug::fmt(r, f),
+        }
+    }
+}
+
 /// Dynamic reference to repeated field
-#[derive(Copy, Clone)]
+#[derive(Clone)]
 pub struct ReflectRepeatedRef<'a> {
-    pub(crate) repeated: &'a dyn ReflectRepeated,
+    imp: ReflectRepeatedRefImpl<'a>,
 }
 
 /// Dynamic mutable reference to repeated field
@@ -137,9 +155,19 @@ pub struct ReflectRepeatedMut<'a> {
 }
 
 impl<'a> ReflectRepeatedRef<'a> {
+    pub(crate) fn new_generated(repeated: &'a dyn ReflectRepeated) -> ReflectRepeatedRef<'a> {
+        ReflectRepeatedRef {
+            imp: ReflectRepeatedRefImpl::Generated(repeated),
+        }
+    }
+
     /// Number of elements in repeated field
     pub fn len(&self) -> usize {
-        self.repeated.len()
+        match &self.imp {
+            ReflectRepeatedRefImpl::Generated(g) => g.len(),
+            ReflectRepeatedRefImpl::Dynamic(d) => d.len(),
+            ReflectRepeatedRefImpl::DynamicEmpty(d) => d.len(),
+        }
     }
 
     /// Repeated field is empty
@@ -150,12 +178,20 @@ impl<'a> ReflectRepeatedRef<'a> {
     /// Get item by index
     // TODO: replace with index
     pub fn get(&self, index: usize) -> ReflectValueRef<'a> {
-        self.repeated.get(index)
+        match &self.imp {
+            ReflectRepeatedRefImpl::Generated(r) => r.get(index),
+            ReflectRepeatedRefImpl::Dynamic(r) => r.get(index),
+            ReflectRepeatedRefImpl::DynamicEmpty(..) => panic!("empty"),
+        }
     }
 
     /// Runtime type of element
-    pub fn element_type(&self) -> &dyn RuntimeTypeDynamic {
-        self.repeated.element_type()
+    pub fn element_type(&self) -> RuntimeTypeBox {
+        match &self.imp {
+            ReflectRepeatedRefImpl::Generated(r) => r.element_type(),
+            ReflectRepeatedRefImpl::Dynamic(r) => r.element_type(),
+            ReflectRepeatedRefImpl::DynamicEmpty(r) => r.element_type(),
+        }
     }
 }
 
@@ -231,9 +267,7 @@ impl<'a> PartialEq<ReflectRepeatedRef<'a>> for Vec<ReflectValueBox> {
 
 impl<'a> ReflectRepeatedMut<'a> {
     fn as_ref(&'a self) -> ReflectRepeatedRef<'a> {
-        ReflectRepeatedRef {
-            repeated: self.repeated,
-        }
+        ReflectRepeatedRef::new_generated(self.repeated)
     }
 
     /// Number of elements in repeated field
@@ -254,7 +288,7 @@ impl<'a> ReflectRepeatedMut<'a> {
     }
 
     /// Runtime type of element
-    pub fn element_type(&self) -> &dyn RuntimeTypeDynamic {
+    pub fn element_type(&self) -> RuntimeTypeBox {
         self.repeated.element_type()
     }
 
@@ -309,7 +343,7 @@ impl<'a> IntoIterator for &'a ReflectRepeatedRef<'a> {
 
     fn into_iter(self) -> Self::IntoIter {
         ReflectRepeatedRefIter {
-            repeated: *self,
+            repeated: self.clone(),
             index: 0,
         }
     }
@@ -338,7 +372,7 @@ impl<'a> IntoIterator for &'a ReflectRepeatedMut<'a> {
 
 impl<'a> fmt::Debug for ReflectRepeatedRef<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Debug::fmt(self.repeated, f)
+        fmt::Debug::fmt(&self.imp, f)
     }
 }
 

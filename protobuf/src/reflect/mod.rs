@@ -13,7 +13,7 @@ mod runtime_type_box;
 mod runtime_type_dynamic;
 mod transmute_eq;
 mod type_dynamic;
-mod value;
+pub(crate) mod value;
 
 pub mod runtime_types;
 pub mod types;

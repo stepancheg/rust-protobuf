@@ -10,6 +10,7 @@ use crate::chars::Chars;
 
 use super::*;
 use crate::message::*;
+use crate::reflect::dynamic::DynamicMessage;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::runtime_types::RuntimeType;
@@ -27,6 +28,7 @@ use crate::reflect::runtime_types::RuntimeTypeU32;
 use crate::reflect::runtime_types::RuntimeTypeU64;
 use crate::reflect::runtime_types::RuntimeTypeVecU8;
 use crate::reflect::transmute_eq::transmute_eq;
+use std::ops::Deref;
 
 /// Type implemented by all protobuf singular types
 /// (primitives, string, messages, enums).
@@ -159,6 +161,52 @@ impl<M : Message> ProtobufValue for M {
 }
 */
 
+#[derive(Clone, Debug)]
+enum MessageRefImpl<'a> {
+    Message(&'a dyn Message),
+    EmptyDynamic(DynamicMessage),
+}
+
+#[derive(Clone, Debug)]
+pub struct MessageRef<'a> {
+    imp: MessageRefImpl<'a>,
+}
+
+impl<'a> From<&'a dyn Message> for MessageRef<'a> {
+    fn from(m: &'a dyn Message) -> Self {
+        MessageRef {
+            imp: MessageRefImpl::Message(m),
+        }
+    }
+}
+
+impl<'a, M: Message> From<&'a M> for MessageRef<'a> {
+    fn from(m: &'a M) -> Self {
+        MessageRef {
+            imp: MessageRefImpl::Message(m),
+        }
+    }
+}
+
+impl<'a> MessageRef<'a> {
+    pub fn new_message(message: &'a dyn Message) -> MessageRef<'a> {
+        MessageRef {
+            imp: MessageRefImpl::Message(message),
+        }
+    }
+}
+
+impl<'a> Deref for MessageRef<'a> {
+    type Target = dyn Message;
+
+    fn deref(&self) -> &dyn Message {
+        match &self.imp {
+            MessageRefImpl::Message(m) => *m,
+            MessageRefImpl::EmptyDynamic(e) => e,
+        }
+    }
+}
+
 /// A reference to a value
 #[derive(Debug, Clone)]
 pub enum ReflectValueRef<'a> {
@@ -183,7 +231,7 @@ pub enum ReflectValueRef<'a> {
     /// `enum`
     Enum(EnumDescriptor, i32),
     /// `message`
-    Message(&'a dyn Message),
+    Message(MessageRef<'a>),
 }
 
 impl<'a> ReflectValueRef<'a> {
@@ -277,9 +325,9 @@ impl<'a> ReflectValueRef<'a> {
     }
 
     /// Take message value.
-    pub fn to_message(&self) -> Option<&'a dyn Message> {
-        match *self {
-            ReflectValueRef::Message(m) => Some(m),
+    pub fn to_message(&self) -> Option<MessageRef<'a>> {
+        match self {
+            ReflectValueRef::Message(m) => Some(m.clone()),
             _ => None,
         }
     }
@@ -336,9 +384,9 @@ impl<'a> ReflectEq for ReflectValueRef<'a> {
             (Message(a), Message(b)) => {
                 let ad = a.descriptor();
                 let bd = b.descriptor();
-                ad == bd && ad.reflect_eq(*a, *b, mode)
+                ad == bd && ad.reflect_eq(&**a, &**b, mode)
             }
-            _ => unreachable!(),
+            _ => false,
         }
     }
 }
@@ -463,7 +511,6 @@ type StringOrChars = Chars;
 impl ReflectValueBox {
     /// As ref
     pub fn as_value_ref(&self) -> ReflectValueRef {
-        use std::ops::Deref;
         match self {
             ReflectValueBox::U32(v) => ReflectValueRef::U32(*v),
             ReflectValueBox::U64(v) => ReflectValueRef::U64(*v),
@@ -475,7 +522,7 @@ impl ReflectValueBox {
             ReflectValueBox::String(ref v) => ReflectValueRef::String(v.as_str()),
             ReflectValueBox::Bytes(ref v) => ReflectValueRef::Bytes(v.as_slice()),
             ReflectValueBox::Enum(d, v) => ReflectValueRef::Enum(d.clone(), *v),
-            ReflectValueBox::Message(ref v) => ReflectValueRef::Message(v.deref()),
+            ReflectValueBox::Message(v) => ReflectValueRef::Message(MessageRef::from(&**v)),
         }
     }
 
@@ -522,7 +569,6 @@ impl<'a> PartialEq for ReflectValueRef<'a> {
             (Bytes(a), Bytes(b)) => a == b,
             (Enum(da, a), Enum(db, b)) => da == db && a == b,
             (Message(a), Message(b)) => {
-                use std::ops::Deref;
                 a.descriptor() == b.descriptor() && a.descriptor().eq(a.deref(), b.deref())
             }
             _ => false,

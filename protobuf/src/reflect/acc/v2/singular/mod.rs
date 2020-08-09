@@ -6,6 +6,7 @@ use crate::message::Message;
 use crate::reflect::acc::v2::AccessorV2;
 use crate::reflect::acc::FieldAccessor;
 use crate::reflect::runtime_types::RuntimeTypeWithDeref;
+use crate::reflect::value::MessageRef;
 use crate::reflect::value::ReflectValueMut;
 use crate::reflect::ProtobufValueSized;
 use crate::reflect::ReflectValueBox;
@@ -324,10 +325,12 @@ where
     O: OptionLike<V> + Sync + Send + 'static,
 {
     fn get_singular_field_or_default_impl<'a>(&self, m: &'a M) -> ReflectValueRef<'a> {
-        ReflectValueRef::Message(match (self.get_field)(m).as_option_ref() {
-            Some(v) => v,
-            None => V::default_instance(),
-        })
+        ReflectValueRef::Message(MessageRef::from(
+            match (self.get_field)(m).as_option_ref() {
+                Some(v) => v,
+                None => V::default_instance(),
+            },
+        ))
     }
 }
 

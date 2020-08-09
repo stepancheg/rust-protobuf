@@ -1,10 +1,12 @@
 use crate::json::base64;
 use crate::json::float;
 use crate::message::Message;
+use crate::reflect::value::MessageRef;
+use crate::reflect::EnumDescriptor;
+use crate::reflect::ReflectFieldRef;
 use crate::reflect::ReflectMapRef;
 use crate::reflect::ReflectRepeatedRef;
 use crate::reflect::ReflectValueRef;
-use crate::reflect::{EnumDescriptor, ReflectFieldRef};
 use std::f32;
 use std::f64;
 use std::fmt;
@@ -205,7 +207,7 @@ impl<'a> PrintableToJson for ReflectValueRef<'a> {
             ReflectValueRef::String(v) => w.print_printable::<str>(v),
             ReflectValueRef::Bytes(v) => w.print_printable::<[u8]>(v),
             ReflectValueRef::Enum(d, v) => w.print_enum(d, *v),
-            ReflectValueRef::Message(v) => w.print_message(*v),
+            ReflectValueRef::Message(v) => w.print_message(v),
         }
     }
 }
@@ -418,7 +420,7 @@ impl Printer {
         }
     }
 
-    fn print_message(&mut self, message: &dyn Message) -> PrintResult<()> {
+    fn print_message(&mut self, message: &MessageRef) -> PrintResult<()> {
         if let Some(duration) = message.downcast_ref::<Duration>() {
             self.print_printable(duration)
         } else if let Some(timestamp) = message.downcast_ref::<Timestamp>() {
@@ -456,7 +458,7 @@ impl Printer {
         }
     }
 
-    fn print_regular_message(&mut self, message: &dyn Message) -> Result<(), PrintError> {
+    fn print_regular_message(&mut self, message: &MessageRef) -> Result<(), PrintError> {
         let descriptor = message.descriptor();
 
         write!(self.buf, "{{")?;
@@ -470,7 +472,7 @@ impl Printer {
 
             let field_type = field.runtime_field_type();
 
-            match field.get_reflect(message) {
+            match field.get_reflect(&**message) {
                 ReflectFieldRef::Optional(None) => {
                     if self.print_options.always_output_default_values {
                         let is_message = match field_type {
@@ -484,7 +486,7 @@ impl Printer {
                         let is_oneof = field.proto().has_oneof_index();
 
                         if !is_message && !is_oneof {
-                            let v = field.get_singular_field_or_default(message);
+                            let v = field.get_singular_field_or_default(&**message);
                             self.print_comma_but_first(&mut first)?;
                             write!(self.buf, "\"{}\": ", json_field_name)?;
                             self.print_printable(&v)?;
@@ -564,7 +566,7 @@ pub fn print_to_string_with_options(
         buf: String::new(),
         print_options: print_options.clone(),
     };
-    printer.print_message(message)?;
+    printer.print_message(&MessageRef::from(message))?;
     Ok(printer.buf)
 }
 

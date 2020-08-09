@@ -67,7 +67,7 @@ where
     fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectRepeatedRef<'a> {
         let m = m.downcast_ref().unwrap();
         let repeated = self.fns.get_field(m);
-        ReflectRepeatedRef { repeated }
+        ReflectRepeatedRef::new_generated(repeated)
     }
 
     fn mut_reflect<'a>(&self, m: &'a mut dyn Message) -> ReflectRepeatedMut<'a> {

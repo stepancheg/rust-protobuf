@@ -9,6 +9,7 @@ use bytes::Bytes;
 use crate::reflect::runtime_type_box::RuntimeTypeBox;
 use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
 use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamicImpl;
+use crate::reflect::value::MessageRef;
 use crate::reflect::value::ReflectValueMut;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
@@ -731,7 +732,7 @@ where
     }
 
     fn default_value_ref() -> ReflectValueRef<'static> {
-        ReflectValueRef::Message(M::default_instance())
+        ReflectValueRef::Message(MessageRef::new_message(M::default_instance()))
     }
 
     fn from_value_box(value_box: ReflectValueBox) -> M {
@@ -745,7 +746,7 @@ where
         ReflectValueBox::Message(Box::new(value))
     }
     fn as_ref(value: &M) -> ReflectValueRef {
-        ReflectValueRef::Message(value)
+        ReflectValueRef::Message(MessageRef::new_message(value))
     }
 
     fn as_mut(value: &mut M) -> ReflectValueMut {

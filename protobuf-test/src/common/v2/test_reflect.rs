@@ -1,5 +1,7 @@
+use protobuf::reflect::FieldDescriptor;
+use protobuf::reflect::ReflectFieldRef;
 use protobuf::reflect::ReflectValueBox;
-use protobuf::reflect::{FieldDescriptor, ReflectFieldRef, ReflectValueRef};
+use protobuf::reflect::ReflectValueRef;
 use protobuf::Message;
 use protobuf::ProtobufEnum;
 
@@ -27,7 +29,7 @@ fn test_get_sub_message_via_reflection() {
             .descriptor()
             .get_field_by_name("n")
             .unwrap()
-            .get_singular_field_or_default(sub_m)
+            .get_singular_field_or_default(&*sub_m)
             .to_i32()
             .unwrap()
     );
@@ -58,7 +60,7 @@ fn test_singular_field(message: &mut dyn Message, field: &FieldDescriptor) {
     // should not crash
     field.get_singular_field_or_default(message);
 
-    let value = value_for_runtime_type(field.singular_runtime_type());
+    let value = value_for_runtime_type(field.singular_runtime_type().to_box());
     field.set_singular_field(message, value);
 }
 
@@ -141,7 +143,10 @@ fn test_map_field(message: &mut dyn Message, field: &FieldDescriptor) {
         assert!(map.is_empty());
         assert_eq!(0, map.len());
 
-        assert_eq!(None, map.get(value_for_runtime_type(k).as_value_ref()));
+        assert_eq!(
+            None,
+            map.get(value_for_runtime_type(k.to_box()).as_value_ref())
+        );
     }
 
     {
@@ -149,10 +154,13 @@ fn test_map_field(message: &mut dyn Message, field: &FieldDescriptor) {
         assert!(map.is_empty());
         assert_eq!(0, map.len());
 
-        assert_eq!(None, map.get(value_for_runtime_type(k).as_value_ref()));
+        assert_eq!(
+            None,
+            map.get(value_for_runtime_type(k.to_box()).as_value_ref())
+        );
 
-        let key = value_for_runtime_type(k);
-        let value = value_for_runtime_type(v);
+        let key = value_for_runtime_type(k.to_box());
+        let value = value_for_runtime_type(v.to_box());
 
         map.insert(key.clone(), value.clone());
 
