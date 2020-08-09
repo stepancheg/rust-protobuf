@@ -8,7 +8,6 @@ use super::field::*;
 use super::rust_types_values::*;
 use crate::case_convert::snake_case;
 use crate::file_and_mod::FileAndMod;
-use crate::file_descriptor::file_descriptor_proto_expr;
 use crate::inside::protobuf_crate_path;
 use crate::oneof::OneofGen;
 use crate::oneof::OneofVariantGen;
@@ -397,49 +396,26 @@ impl<'a> MessageGen<'a> {
         });
     }
 
-    fn write_descriptor_static(&self, w: &mut CodeWriter) {
-        let sig = format!(
-            "descriptor_static() -> &'static {}::reflect::MessageDescriptor",
-            protobuf_crate_path(&self.customize)
+    fn write_descriptor(&self, w: &mut CodeWriter) {
+        w.def_fn(
+            &format!(
+                "descriptor(&self) -> {}::reflect::MessageDescriptor",
+                protobuf_crate_path(&self.customize)
+            ),
+            |w| {
+                w.write_line("Self::descriptor_static()");
+            },
         );
-        w.def_fn(&sig, |w| {
-            w.lazy_static_decl_get(
-                "descriptor",
-                &format!(
-                    "{}::reflect::MessageDescriptor",
-                    protobuf_crate_path(&self.customize)
-                ),
-                &format!("{}", protobuf_crate_path(&self.customize)),
-                |w| {
-                    let fields = self.fields_except_group();
-                    w.write_line(&format!("let mut fields = {};", EXPR_VEC_NEW));
-                    for field in fields {
-                        field.write_descriptor_field("fields", w);
-                    }
-                    w.write_line(&format!(
-                        "{}::reflect::MessageDescriptor::new::<{}>(",
-                        protobuf_crate_path(&self.customize),
-                        self.type_name,
-                    ));
-                    w.indented(|w| {
-                        w.write_line(&format!("\"{}\",", self.message.name_to_package()));
-                        w.write_line("fields,");
-                        w.write_line(&file_descriptor_proto_expr(&self.message.scope));
-                    });
-                    w.write_line(")");
-                },
-            );
-        });
     }
 
     fn write_descriptor_static_new(&self, w: &mut CodeWriter) {
         let sig = format!(
-            "descriptor_static_new() -> {}::reflect::MessageDescriptor",
+            "descriptor_static() -> {}::reflect::MessageDescriptor",
             protobuf_crate_path(&self.customize)
         );
         w.def_fn(&sig, |w| {
             w.write_line(&format!(
-                "{}::reflect::MessageDescriptor::new_generated({}(), {})",
+                "{}::reflect::MessageDescriptor::new_generated_2({}(), {})",
                 protobuf_crate_path(&self.customize),
                 self.message
                     .get_scope()
@@ -526,22 +502,12 @@ impl<'a> MessageGen<'a> {
                 w.write_line("");
                 self.write_unknown_fields(w);
                 w.write_line("");
-                w.def_fn(
-                    &format!(
-                        "descriptor(&self) -> &'static {}::reflect::MessageDescriptor",
-                        protobuf_crate_path(&self.customize)
-                    ),
-                    |w| {
-                        w.write_line("Self::descriptor_static()");
-                    },
-                );
+                self.write_descriptor(w);
                 w.write_line("");
                 w.def_fn(&format!("new() -> {}", self.type_name), |w| {
                     w.write_line(&format!("{}::new()", self.type_name));
                 });
                 if !self.lite_runtime {
-                    w.write_line("");
-                    self.write_descriptor_static(w);
                     w.write_line("");
                     self.write_descriptor_static_new(w);
                 }

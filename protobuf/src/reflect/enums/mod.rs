@@ -1,20 +1,16 @@
 use std::any::TypeId;
 use std::collections::HashMap;
+use std::fmt;
 use std::hash::Hash;
 use std::hash::Hasher;
-use std::fmt;
-use std::marker;
 
 use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::EnumValueDescriptorProto;
-use crate::descriptor::FileDescriptorProto;
 use crate::enums::ProtobufEnum;
 use crate::enums::ProtobufEnumOrUnknown;
-use crate::reflect::enums::generated::GetDescriptorImpl;
+use crate::reflect::enums::generated::GeneratedEnumDescriptor;
 #[cfg(not(rustc_nightly))]
 use crate::reflect::enums::generated::GetEnumDescriptor;
-use crate::reflect::find_message_or_enum::find_message_or_enum;
-use crate::reflect::find_message_or_enum::MessageOrEnum;
 use crate::reflect::FileDescriptor;
 use crate::reflect::ProtobufValue;
 
@@ -23,17 +19,10 @@ pub(crate) mod generated;
 /// Description for enum variant.
 ///
 /// Used in reflection.
-#[derive(Clone)]
+#[derive(Clone, Eq, PartialEq)]
 pub struct EnumValueDescriptor {
-    proto: &'static EnumValueDescriptorProto,
-    protobuf_value: &'static dyn ProtobufValue,
-    enum_descriptor_static: fn() -> &'static EnumDescriptor,
-}
-
-impl PartialEq for EnumValueDescriptor {
-    fn eq(&self, other: &EnumValueDescriptor) -> bool {
-        self.enum_descriptor() == other.enum_descriptor() && self.value() == other.value()
-    }
+    pub(crate) enum_descriptor: EnumDescriptor,
+    pub(crate) index: usize,
 }
 
 impl Hash for EnumValueDescriptor {
@@ -50,33 +39,30 @@ fn _assert_send_sync() {
 impl fmt::Debug for EnumValueDescriptor {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_struct("EnumValueDescriptor")
-            .field("proto", self.proto)
+            // TODO: add something
             .field("value", &"...")
             .finish()
     }
 }
 
-impl Copy for EnumValueDescriptor {}
-
 impl EnumValueDescriptor {
+    fn get_proto(&self) -> &EnumValueDescriptorProto {
+        &self.enum_descriptor.get_proto().value[self.index as usize]
+    }
+
     /// Name of enum variant as specified in proto file
-    pub fn name(&self) -> &'static str {
-        self.proto.get_name()
+    pub fn name(&self) -> &str {
+        self.get_proto().get_name()
     }
 
     /// `i32` value of the enum variant
     pub fn value(&self) -> i32 {
-        self.proto.get_number()
-    }
-
-    /// Convert to generic `ProtobufValue`
-    pub fn protobuf_value(&self) -> &'static dyn ProtobufValue {
-        self.protobuf_value
+        self.get_proto().get_number()
     }
 
     /// Get descriptor of enum holding this value.
     pub fn enum_descriptor(&self) -> &EnumDescriptor {
-        (self.enum_descriptor_static)()
+        &self.enum_descriptor
     }
 
     /// Convert this value descriptor into proper enum object.
@@ -86,7 +72,7 @@ impl EnumValueDescriptor {
     /// # use protobuf::ProtobufEnum;
     /// # use protobuf::reflect::EnumValueDescriptor;
     ///
-    /// let value: &EnumValueDescriptor = NullValue::NULL_VALUE.descriptor();
+    /// let value: EnumValueDescriptor = NullValue::NULL_VALUE.descriptor();
     /// let null: Option<NullValue> = value.cast();
     /// assert_eq!(Some(NullValue::NULL_VALUE), null);
     /// ```
@@ -99,51 +85,43 @@ impl EnumValueDescriptor {
 /// Dynamic representation of enum type.
 ///
 /// Can be used in reflective operations.
+#[derive(Clone, Eq, PartialEq)]
 pub struct EnumDescriptor {
-    full_name: String,
-    proto: &'static EnumDescriptorProto,
-    values: Vec<EnumValueDescriptor>,
-    /// Type id of `<E>`
-    type_id: TypeId,
-    /// Type id of `<ProtobufEnumOrUnknown<E>>`
-    enum_or_unknown_type_id: TypeId,
-
-    #[cfg(not(rustc_nightly))]
-    get_descriptor: &'static dyn GetEnumDescriptor,
-
-    index_by_name: HashMap<String, usize>,
-    index_by_number: HashMap<i32, usize>,
+    file_descriptor: FileDescriptor,
+    index: u32,
 }
 
 impl fmt::Debug for EnumDescriptor {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_struct("EnumDescriptor")
-            .field("full_name", &self.full_name)
+            // TODO
+            //.field("full_name", &self.full_name)
             .field("..", &"..")
             .finish()
     }
 }
 
-/// Identity comparison: message descriptor are equal if their addresses are equal
-impl PartialEq for EnumDescriptor {
-    fn eq(&self, other: &EnumDescriptor) -> bool {
-        self as *const EnumDescriptor == other as *const EnumDescriptor
-    }
-}
-
 impl EnumDescriptor {
+    fn get_proto(&self) -> &EnumDescriptorProto {
+        self.get_generated().proto
+    }
+
+    fn get_generated(&self) -> &GeneratedEnumDescriptor {
+        &self.file_descriptor.generated.enums[self.index as usize]
+    }
+
     /// Enum name as given in `.proto` file
     pub fn name(&self) -> &'static str {
-        self.proto.get_name()
+        self.get_generated().proto.get_name()
     }
 
     /// Fully qualified protobuf name of enum
     pub fn full_name(&self) -> &str {
-        &self.full_name[..]
+        &self.get_generated().full_name
     }
 
     /// Get `EnumDescriptor` object for given enum type
-    pub fn for_type<E: ProtobufEnum>() -> &'static EnumDescriptor {
+    pub fn for_type<E: ProtobufEnum>() -> EnumDescriptor {
         E::enum_descriptor_static()
     }
 
@@ -167,7 +145,9 @@ impl EnumDescriptor {
     }
 
     /// Separate function to reduce generated code size bloat.
-    fn make_indices(proto: &EnumDescriptorProto) -> (HashMap<String, usize>, HashMap<i32, usize>) {
+    pub(crate) fn make_indices(
+        proto: &EnumDescriptorProto,
+    ) -> (HashMap<String, usize>, HashMap<i32, usize>) {
         let mut index_by_name = HashMap::new();
         let mut index_by_number = HashMap::new();
         for (i, v) in proto.value.iter().enumerate() {
@@ -178,81 +158,50 @@ impl EnumDescriptor {
         (index_by_name, index_by_number)
     }
 
-    /// Construct `EnumDescriptor` given enum name and `FileDescriptorProto`.
-    ///
-    /// This function is called from generated code, and should rarely be called directly.
-    ///
-    /// This function is not a part of public API.
     #[doc(hidden)]
-    pub fn new<E>(name_in_file: &'static str, file: &'static FileDescriptorProto) -> EnumDescriptor
-    where
-        E: ProtobufEnum,
-    {
-        let (path_to_package, proto) = match find_message_or_enum(file, name_in_file) {
-            (path_to_package, MessageOrEnum::Enum(e)) => (path_to_package, e),
-            (_, MessageOrEnum::Message(_)) => panic!("not an enum"),
-        };
-
-        let (index_by_name, index_by_number) = EnumDescriptor::make_indices(proto);
-
-        let proto_values = &proto.value;
-        let code_values = E::values();
-        assert_eq!(proto_values.len(), code_values.len());
-
-        let values = proto_values
-            .iter()
-            .zip(code_values)
-            .map(|(p, c)| EnumValueDescriptor {
-                proto: p,
-                protobuf_value: c,
-                enum_descriptor_static: E::enum_descriptor_static,
-            })
-            .collect();
-
+    pub fn new_generated_2(file_descriptor: FileDescriptor, index: u32) -> EnumDescriptor {
         EnumDescriptor {
-            full_name: EnumDescriptor::compute_full_name(
-                file.get_package(),
-                &path_to_package,
-                &proto,
-            ),
-            proto,
-            values,
-            type_id: TypeId::of::<E>(),
-            enum_or_unknown_type_id: TypeId::of::<ProtobufEnumOrUnknown<E>>(),
-            #[cfg(not(rustc_nightly))]
-            get_descriptor: &GetDescriptorImpl(marker::PhantomData::<E>),
-            index_by_name,
-            index_by_number,
+            file_descriptor,
+            index,
         }
     }
 
-    #[doc(hidden)]
-    pub fn new_generated(file_descriptor: &'static FileDescriptor, index: usize) -> EnumDescriptor {
-        unimplemented!()
-    }
-
     /// This enum values
-    pub fn values(&self) -> &[EnumValueDescriptor] {
-        &self.values
+    pub fn values(&self) -> Vec<EnumValueDescriptor> {
+        (0..self.get_generated().proto.value.len())
+            .map(|index| EnumValueDescriptor {
+                enum_descriptor: self.clone(),
+                index,
+            })
+            .collect()
     }
 
     /// Find enum variant by name
-    pub fn get_value_by_name<'a>(&'a self, name: &str) -> Option<&'a EnumValueDescriptor> {
-        let &index = self.index_by_name.get(name)?;
-        Some(&self.values[index])
+    pub fn get_value_by_name<'a>(&'a self, name: &str) -> Option<EnumValueDescriptor> {
+        let &index = self.get_generated().index_by_name.get(name)?;
+        Some(EnumValueDescriptor {
+            enum_descriptor: self.clone(),
+            index,
+        })
     }
 
     /// Find enum variant by number
-    pub fn get_value_by_number(&self, number: i32) -> Option<&EnumValueDescriptor> {
-        let &index = self.index_by_number.get(&number)?;
-        Some(&self.values[index])
+    pub fn get_value_by_number(&self, number: i32) -> Option<EnumValueDescriptor> {
+        let &index = self.get_generated().index_by_number.get(&number)?;
+        Some(EnumValueDescriptor {
+            enum_descriptor: self.clone(),
+            index,
+        })
     }
 
     /// Find enum variant by number or return default (first) enum value
-    pub fn get_value_by_number_or_default(&self, number: i32) -> &EnumValueDescriptor {
+    pub fn get_value_by_number_or_default(&self, number: i32) -> EnumValueDescriptor {
         match self.get_value_by_number(number) {
             Some(v) => v,
-            None => &self.values()[0],
+            None => EnumValueDescriptor {
+                enum_descriptor: self.clone(),
+                index: 0,
+            },
         }
     }
 
@@ -268,7 +217,7 @@ impl EnumDescriptor {
     /// assert!(descriptor.is::<Label>())
     /// ```
     pub fn is<E: ProtobufEnum>(&self) -> bool {
-        TypeId::of::<E>() == self.type_id
+        TypeId::of::<E>() == self.get_generated().type_id
     }
 
     /// Create enum object from given value.
@@ -291,7 +240,7 @@ impl EnumDescriptor {
 
     #[cfg(rustc_nightly)]
     fn cast_to_protobuf_enum<E: ProtobufValue>(&self, value: i32) -> Option<E> {
-        if TypeId::of::<E>() != self.type_id {
+        if TypeId::of::<E>() != self.get_generated().type_id {
             return None;
         }
 
@@ -300,14 +249,15 @@ impl EnumDescriptor {
 
     #[cfg(not(rustc_nightly))]
     fn cast_to_protobuf_enum<E: ProtobufValue>(&self, value: i32) -> Option<E> {
-        if TypeId::of::<E>() != self.type_id {
+        if TypeId::of::<E>() != self.get_generated().type_id {
             return None;
         }
 
         use std::mem;
         unsafe {
             let mut r = mem::MaybeUninit::<E>::uninit();
-            self.get_descriptor
+            self.get_generated()
+                .get_descriptor
                 .copy_to(value, r.as_mut_ptr() as *mut ());
             Some(r.assume_init())
         }
@@ -315,7 +265,7 @@ impl EnumDescriptor {
 
     #[cfg(rustc_nightly)]
     fn cast_to_protobuf_enum_or_unknown<E: ProtobufValue>(&self, value: i32) -> Option<E> {
-        if TypeId::of::<E>() != self.enum_or_unknown_type_id {
+        if TypeId::of::<E>() != self.get_generated().enum_or_unknown_type_id {
             return None;
         }
 
@@ -326,7 +276,7 @@ impl EnumDescriptor {
 
     #[cfg(not(rustc_nightly))]
     fn cast_to_protobuf_enum_or_unknown<E: ProtobufValue>(&self, value: i32) -> Option<E> {
-        if TypeId::of::<E>() != self.enum_or_unknown_type_id {
+        if TypeId::of::<E>() != self.get_generated().enum_or_unknown_type_id {
             return None;
         }
 

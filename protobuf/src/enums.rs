@@ -17,29 +17,22 @@ pub trait ProtobufEnum: Eq + Sized + Copy + 'static + ProtobufValue + fmt::Debug
     fn from_i32(v: i32) -> Option<Self>;
 
     /// Get all enum values for enum type.
-    fn values() -> &'static [Self] {
-        panic!();
-    }
+    fn values() -> &'static [Self];
 
     /// Get enum value descriptor.
-    fn descriptor(&self) -> &'static EnumValueDescriptor {
+    fn descriptor(&self) -> EnumValueDescriptor {
         self.enum_descriptor()
             .get_value_by_number(self.value())
             .unwrap()
     }
 
     /// Get enum descriptor.
-    fn enum_descriptor(&self) -> &'static EnumDescriptor {
+    fn enum_descriptor(&self) -> EnumDescriptor {
         Self::enum_descriptor_static()
     }
 
     /// Get enum descriptor by type.
-    fn enum_descriptor_static() -> &'static EnumDescriptor {
-        panic!();
-    }
-
-    /// Get enum descriptor by type.
-    fn enum_descriptor_static_new() -> EnumDescriptor {
+    fn enum_descriptor_static() -> EnumDescriptor {
         panic!();
     }
 }
@@ -101,7 +94,7 @@ impl<E: ProtobufEnum> ProtobufEnumOrUnknown<E> {
     }
 
     /// Get enum descriptor by type.
-    pub fn enum_descriptor_static() -> &'static EnumDescriptor {
+    pub fn enum_descriptor_static() -> EnumDescriptor {
         E::enum_descriptor_static()
     }
 }

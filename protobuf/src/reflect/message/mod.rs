@@ -1,42 +1,31 @@
-use std::collections::HashMap;
 use std::fmt;
-use std::marker;
 
 use crate::message::Message;
 
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 
-use crate::reflect::acc::FieldAccessor;
-use crate::reflect::find_message_or_enum::find_message_or_enum;
-use crate::reflect::find_message_or_enum::MessageOrEnum;
-use crate::reflect::message::generated::MessageFactory;
-use crate::reflect::message::generated::MessageFactoryImpl;
+use crate::reflect::message::generated::GeneratedMessageDescriptor;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
-use crate::reflect::{FieldDescriptor, FileDescriptor};
+use crate::reflect::FieldDescriptor;
+use crate::reflect::FileDescriptor;
 
 pub(crate) mod generated;
 
 /// Dynamic representation of message type.
 ///
 /// Used for reflection.
+#[derive(Clone, Eq, PartialEq)]
 pub struct MessageDescriptor {
-    full_name: String,
-    file_descriptor_proto: &'static FileDescriptorProto,
-    proto: &'static DescriptorProto,
-    factory: &'static dyn MessageFactory,
-    fields: Vec<FieldDescriptor>,
-
-    index_by_name: HashMap<String, usize>,
-    index_by_name_or_json_name: HashMap<String, usize>,
-    index_by_number: HashMap<u32, usize>,
+    file_descriptor: FileDescriptor,
+    index: usize,
 }
 
 impl fmt::Debug for MessageDescriptor {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("MessageDescriptor")
-            .field("full_name", &self.full_name)
+            // TODO: add smth
             .finish()
     }
 }
@@ -44,15 +33,19 @@ impl fmt::Debug for MessageDescriptor {
 impl MessageDescriptor {
     /// Get underlying `DescriptorProto` object.
     pub fn get_proto(&self) -> &DescriptorProto {
-        self.proto
+        self.get_generated().proto
     }
 
     /// Get a message descriptor for given message type
-    pub fn for_type<M: Message>() -> &'static MessageDescriptor {
+    pub fn for_type<M: Message>() -> MessageDescriptor {
         M::descriptor_static()
     }
 
-    fn compute_full_name(package: &str, path_to_package: &str, proto: &DescriptorProto) -> String {
+    pub(crate) fn compute_full_name(
+        package: &str,
+        path_to_package: &str,
+        proto: &DescriptorProto,
+    ) -> String {
         let mut full_name = package.to_owned();
         if path_to_package.len() != 0 {
             if full_name.len() != 0 {
@@ -67,117 +60,42 @@ impl MessageDescriptor {
         full_name
     }
 
-    // Non-generic part of `new` is a separate function
-    // to reduce code bloat from multiple instantiations.
-    fn new_non_generic(
-        protobuf_name_to_package: &'static str,
-        fields: Vec<FieldAccessor>,
-        file_descriptor_proto: &'static FileDescriptorProto,
-        factory: &'static dyn MessageFactory,
-    ) -> MessageDescriptor {
-        let (path_to_package, proto) =
-            match find_message_or_enum(file_descriptor_proto, protobuf_name_to_package) {
-                (path_to_package, MessageOrEnum::Message(m)) => (path_to_package, m),
-                (_, MessageOrEnum::Enum(_)) => panic!("not a message"),
-            };
-
-        let mut field_proto_by_name = HashMap::new();
-        for field_proto in &proto.field {
-            field_proto_by_name.insert(field_proto.get_name(), field_proto);
-        }
-
-        let mut index_by_name = HashMap::new();
-        let mut index_by_name_or_json_name = HashMap::new();
-        let mut index_by_number = HashMap::new();
-
-        let fields: Vec<_> = fields
-            .into_iter()
-            .map(|f| {
-                let proto = *field_proto_by_name.get(f.name).unwrap();
-                FieldDescriptor::new(f, proto)
-            })
-            .collect();
-
-        for (i, f) in fields.iter().enumerate() {
-            assert!(index_by_number
-                .insert(f.proto().get_number() as u32, i)
-                .is_none());
-            assert!(index_by_name
-                .insert(f.proto().get_name().to_owned(), i)
-                .is_none());
-            assert!(index_by_name_or_json_name
-                .insert(f.proto().get_name().to_owned(), i)
-                .is_none());
-
-            let json_name = f.json_name().to_owned();
-
-            if json_name != f.proto().get_name() {
-                assert!(index_by_name_or_json_name.insert(json_name, i).is_none());
-            }
-        }
+    #[doc(hidden)]
+    pub fn new_generated_2(file_descriptor: FileDescriptor, index: usize) -> MessageDescriptor {
         MessageDescriptor {
-            full_name: MessageDescriptor::compute_full_name(
-                file_descriptor_proto.get_package(),
-                &path_to_package,
-                &proto,
-            ),
-            proto,
-            factory,
-            fields,
-            index_by_name,
-            index_by_name_or_json_name,
-            index_by_number,
-            file_descriptor_proto,
+            file_descriptor,
+            index,
         }
     }
 
-    /// Construct a new message descriptor.
-    ///
-    /// This operation is called from generated code and rarely
-    /// need to be called directly.
-    ///
-    /// This function is not a part of public API.
-    #[doc(hidden)]
-    pub fn new<M: 'static + Message + Default + Clone + PartialEq>(
-        protobuf_name_to_package: &'static str,
-        fields: Vec<FieldAccessor>,
-        file_descriptor_proto: &'static FileDescriptorProto,
-    ) -> MessageDescriptor {
-        let factory = &MessageFactoryImpl(marker::PhantomData::<M>);
-        MessageDescriptor::new_non_generic(
-            protobuf_name_to_package,
-            fields,
-            file_descriptor_proto,
-            factory,
-        )
+    fn get_generated(&self) -> &GeneratedMessageDescriptor {
+        &self.file_descriptor.generated.messages[self.index]
     }
 
-    #[doc(hidden)]
-    pub fn new_generated(
-        file_descriptor: &'static FileDescriptor,
-        index: usize,
-    ) -> MessageDescriptor {
-        unimplemented!()
+    /// [`FileDescriptor`] containing this message.
+    pub fn file_descriptor(&self) -> &FileDescriptor {
+        &self.file_descriptor
     }
 
     /// `FileDescriptorProto` containg this message type
     pub fn file_descriptor_proto(&self) -> &FileDescriptorProto {
-        self.file_descriptor_proto
+        self.file_descriptor().get_proto()
     }
 
     /// New empty message
     pub fn new_instance(&self) -> Box<dyn Message> {
-        self.factory.new_instance()
+        self.get_generated().factory.new_instance()
     }
 
     /// Shared immutable empty message
-    pub fn default_instance(&self) -> &dyn Message {
-        self.factory.default_instance()
+    // TODO: figure out what to do with default instance for dynamic message
+    pub fn default_instance(&self) -> &'static dyn Message {
+        self.get_generated().factory.default_instance()
     }
 
     /// Clone a message
-    pub(crate) fn clone(&self, message: &dyn Message) -> Box<dyn Message> {
-        self.factory.clone(message)
+    pub(crate) fn clone_message(&self, message: &dyn Message) -> Box<dyn Message> {
+        self.get_generated().factory.clone(message)
     }
 
     /// Check if two messages equal.
@@ -186,7 +104,7 @@ impl MessageDescriptor {
     ///
     /// Is any message has different type than this descriptor.
     pub fn eq(&self, a: &dyn Message, b: &dyn Message) -> bool {
-        self.factory.eq(a, b)
+        self.get_generated().factory.eq(a, b)
     }
 
     /// Similar to `eq`, but considers `NaN` values equal.
@@ -201,14 +119,8 @@ impl MessageDescriptor {
         mode: &ReflectEqMode,
     ) -> bool {
         // Explicitly force panic even if field list is empty
-        assert_eq!(
-            self as *const MessageDescriptor,
-            a.descriptor() as *const MessageDescriptor
-        );
-        assert_eq!(
-            self as *const MessageDescriptor,
-            b.descriptor() as *const MessageDescriptor
-        );
+        assert_eq!(self, &a.descriptor(),);
+        assert_eq!(self, &b.descriptor(),);
 
         for field in self.fields() {
             let af = field.get_reflect(a);
@@ -221,44 +133,38 @@ impl MessageDescriptor {
     }
 
     /// Message name as given in `.proto` file
-    pub fn name(&self) -> &'static str {
-        self.proto.get_name()
+    pub fn name(&self) -> &str {
+        self.get_proto().get_name()
     }
 
     /// Fully qualified protobuf message name
     pub fn full_name(&self) -> &str {
-        &self.full_name[..]
+        &self.get_generated().full_name
     }
 
     /// Message field descriptors.
     pub fn fields(&self) -> &[FieldDescriptor] {
-        &self.fields
+        &self.get_generated().fields
     }
 
     /// Find message field by protobuf field name
     ///
     /// Note: protobuf field name might be different for Rust field name.
+    // TODO: return value, not pointer, pointer is not compatible with dynamic message
     pub fn get_field_by_name<'a>(&'a self, name: &str) -> Option<&'a FieldDescriptor> {
-        let &index = self.index_by_name.get(name)?;
-        Some(&self.fields[index])
+        let &index = self.get_generated().index_by_name.get(name)?;
+        Some(&self.get_generated().fields[index])
     }
 
     /// Find message field by field name or field JSON name
     pub fn get_field_by_name_or_json_name<'a>(&'a self, name: &str) -> Option<&'a FieldDescriptor> {
-        let &index = self.index_by_name_or_json_name.get(name)?;
-        Some(&self.fields[index])
+        let &index = self.get_generated().index_by_name_or_json_name.get(name)?;
+        Some(&self.get_generated().fields[index])
     }
 
     /// Find message field by field name
     pub fn get_field_by_number(&self, number: u32) -> Option<&FieldDescriptor> {
-        let &index = self.index_by_number.get(&number)?;
-        Some(&self.fields[index])
-    }
-}
-
-/// Identity comparison: message descriptor are equal if their addresses are equal
-impl PartialEq for MessageDescriptor {
-    fn eq(&self, other: &MessageDescriptor) -> bool {
-        self as *const MessageDescriptor == other as *const MessageDescriptor
+        let &index = self.get_generated().index_by_number.get(&number)?;
+        Some(&self.get_generated().fields[index])
     }
 }

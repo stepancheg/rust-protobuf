@@ -46,6 +46,8 @@ pub use self::field::FieldDescriptor;
 pub use self::field::ReflectFieldRef;
 pub use self::field::RuntimeFieldType;
 
+#[doc(hidden)]
+pub use self::file::generated::GeneratedFileDescriptor;
 pub use self::file::FileDescriptor;
 
 pub use self::runtime_type_box::RuntimeTypeBox;

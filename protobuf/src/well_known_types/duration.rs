@@ -65,8 +65,9 @@ impl Duration {
             |m: &Duration| { &m.nanos },
             |m: &mut Duration| { &mut m.nanos },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new::<Duration>(
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<Duration>(
             "Duration",
+            0,
             fields,
         )
     }
@@ -139,7 +140,7 @@ impl crate::Message for Duration {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
+    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -147,26 +148,8 @@ impl crate::Message for Duration {
         Duration::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "seconds",
-                |m: &Duration| { &m.seconds },
-                |m: &mut Duration| { &mut m.seconds },
-            ));
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "nanos",
-                |m: &Duration| { &m.nanos },
-                |m: &mut Duration| { &mut m.nanos },
-            ));
-            crate::reflect::MessageDescriptor::new::<Duration>(
-                "Duration",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 0)
     }
 
     fn default_instance() -> &'static Duration {
@@ -311,18 +294,19 @@ pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProt
 }
 
 /// `FileDescriptor` object which allows dynamic access to files
-pub fn file_descriptor() -> &'static crate::reflect::FileDescriptor {
-    static file_descriptor_lazy: crate::rt::LazyV2<crate::reflect::FileDescriptor> = crate::rt::LazyV2::INIT;
-    file_descriptor_lazy.get(|| {
+pub fn file_descriptor() -> crate::reflect::FileDescriptor {
+    static file_descriptor_lazy: crate::rt::LazyV2<crate::reflect::GeneratedFileDescriptor> = crate::rt::LazyV2::INIT;
+    let file_descriptor = file_descriptor_lazy.get(|| {
         let mut deps = ::std::vec::Vec::new();
         let mut messages = ::std::vec::Vec::new();
         messages.push(Duration::generated_message_descriptor_data());
         let mut enums = ::std::vec::Vec::new();
-        crate::reflect::FileDescriptor::new_generated(
+        crate::reflect::GeneratedFileDescriptor::new_generated(
             file_descriptor_proto(),
             deps,
             messages,
             enums,
         )
-    })
+    });
+    crate::reflect::FileDescriptor::new_generated_2(file_descriptor)
 }

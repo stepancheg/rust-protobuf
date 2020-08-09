@@ -118,8 +118,9 @@ impl Api {
             |m: &Api| { &m.syntax },
             |m: &mut Api| { &mut m.syntax },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new::<Api>(
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<Api>(
             "Api",
+            0,
             fields,
         )
     }
@@ -264,7 +265,7 @@ impl crate::Message for Api {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
+    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -272,51 +273,8 @@ impl crate::Message for Api {
         Api::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "name",
-                |m: &Api| { &m.name },
-                |m: &mut Api| { &mut m.name },
-            ));
-            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
-                "methods",
-                |m: &Api| { &m.methods },
-                |m: &mut Api| { &mut m.methods },
-            ));
-            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
-                "options",
-                |m: &Api| { &m.options },
-                |m: &mut Api| { &mut m.options },
-            ));
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "version",
-                |m: &Api| { &m.version },
-                |m: &mut Api| { &mut m.version },
-            ));
-            fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, crate::well_known_types::SourceContext>(
-                "source_context",
-                |m: &Api| { &m.source_context },
-                |m: &mut Api| { &mut m.source_context },
-            ));
-            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
-                "mixins",
-                |m: &Api| { &m.mixins },
-                |m: &mut Api| { &mut m.mixins },
-            ));
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "syntax",
-                |m: &Api| { &m.syntax },
-                |m: &mut Api| { &mut m.syntax },
-            ));
-            crate::reflect::MessageDescriptor::new::<Api>(
-                "Api",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 0)
     }
 
     fn default_instance() -> &'static Api {
@@ -435,8 +393,9 @@ impl Method {
             |m: &Method| { &m.syntax },
             |m: &mut Method| { &mut m.syntax },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new::<Method>(
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<Method>(
             "Method",
+            1,
             fields,
         )
     }
@@ -572,7 +531,7 @@ impl crate::Message for Method {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
+    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -580,51 +539,8 @@ impl crate::Message for Method {
         Method::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "name",
-                |m: &Method| { &m.name },
-                |m: &mut Method| { &mut m.name },
-            ));
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "request_type_url",
-                |m: &Method| { &m.request_type_url },
-                |m: &mut Method| { &mut m.request_type_url },
-            ));
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "request_streaming",
-                |m: &Method| { &m.request_streaming },
-                |m: &mut Method| { &mut m.request_streaming },
-            ));
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "response_type_url",
-                |m: &Method| { &m.response_type_url },
-                |m: &mut Method| { &mut m.response_type_url },
-            ));
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "response_streaming",
-                |m: &Method| { &m.response_streaming },
-                |m: &mut Method| { &mut m.response_streaming },
-            ));
-            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
-                "options",
-                |m: &Method| { &m.options },
-                |m: &mut Method| { &mut m.options },
-            ));
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "syntax",
-                |m: &Method| { &m.syntax },
-                |m: &mut Method| { &mut m.syntax },
-            ));
-            crate::reflect::MessageDescriptor::new::<Method>(
-                "Method",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 1)
     }
 
     fn default_instance() -> &'static Method {
@@ -708,8 +624,9 @@ impl Mixin {
             |m: &Mixin| { &m.root },
             |m: &mut Mixin| { &mut m.root },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new::<Mixin>(
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<Mixin>(
             "Mixin",
+            2,
             fields,
         )
     }
@@ -782,7 +699,7 @@ impl crate::Message for Mixin {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
+    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -790,26 +707,8 @@ impl crate::Message for Mixin {
         Mixin::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "name",
-                |m: &Mixin| { &m.name },
-                |m: &mut Mixin| { &mut m.name },
-            ));
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "root",
-                |m: &Mixin| { &m.root },
-                |m: &mut Mixin| { &mut m.root },
-            ));
-            crate::reflect::MessageDescriptor::new::<Mixin>(
-                "Mixin",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 2)
     }
 
     fn default_instance() -> &'static Mixin {
@@ -1061,9 +960,9 @@ pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProt
 }
 
 /// `FileDescriptor` object which allows dynamic access to files
-pub fn file_descriptor() -> &'static crate::reflect::FileDescriptor {
-    static file_descriptor_lazy: crate::rt::LazyV2<crate::reflect::FileDescriptor> = crate::rt::LazyV2::INIT;
-    file_descriptor_lazy.get(|| {
+pub fn file_descriptor() -> crate::reflect::FileDescriptor {
+    static file_descriptor_lazy: crate::rt::LazyV2<crate::reflect::GeneratedFileDescriptor> = crate::rt::LazyV2::INIT;
+    let file_descriptor = file_descriptor_lazy.get(|| {
         let mut deps = ::std::vec::Vec::new();
         deps.push(crate::well_known_types::file_descriptors::source_context());
         deps.push(crate::well_known_types::file_descriptors::type_pb());
@@ -1072,11 +971,12 @@ pub fn file_descriptor() -> &'static crate::reflect::FileDescriptor {
         messages.push(Method::generated_message_descriptor_data());
         messages.push(Mixin::generated_message_descriptor_data());
         let mut enums = ::std::vec::Vec::new();
-        crate::reflect::FileDescriptor::new_generated(
+        crate::reflect::GeneratedFileDescriptor::new_generated(
             file_descriptor_proto(),
             deps,
             messages,
             enums,
         )
-    })
+    });
+    crate::reflect::FileDescriptor::new_generated_2(file_descriptor)
 }

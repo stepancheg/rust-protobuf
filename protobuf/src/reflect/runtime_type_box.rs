@@ -24,9 +24,9 @@ pub enum RuntimeTypeBox {
     /// [`Vec<u8>`](std::vec::Vec)
     VecU8,
     /// `enum`
-    Enum(&'static EnumDescriptor),
+    Enum(EnumDescriptor),
     /// `message`
-    Message(&'static MessageDescriptor),
+    Message(MessageDescriptor),
 }
 
 impl fmt::Display for RuntimeTypeBox {

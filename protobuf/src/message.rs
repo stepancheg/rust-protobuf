@@ -23,9 +23,7 @@ use crate::unknown::UnknownFields;
 /// Also, generated messages implement `Clone + Default + PartialEq`
 pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
     /// Message descriptor for this message, used for reflection.
-    fn descriptor(&self) -> &'static MessageDescriptor {
-        unimplemented!()
-    }
+    fn descriptor(&self) -> MessageDescriptor;
 
     /// Get message descriptor for message type.
     ///
@@ -36,7 +34,7 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
     /// assert_eq!("MyMessage", descriptor.name());
     /// # }
     /// ```
-    fn descriptor_static() -> &'static MessageDescriptor
+    fn descriptor_static() -> MessageDescriptor
     where
         Self: Sized,
     {
@@ -44,19 +42,6 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
             "descriptor_static is not implemented for message, \
              LITE_RUNTIME must be used"
         );
-    }
-
-    /// TODO
-    fn descriptor_new(&self) -> MessageDescriptor {
-        unimplemented!();
-    }
-
-    /// TODO
-    fn descriptor_static_new() -> MessageDescriptor
-    where
-        Self: Sized,
-    {
-        unimplemented!();
     }
 
     /// True iff all required fields are initialized.
@@ -170,7 +155,7 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
     fn check_initialized(&self) -> ProtobufResult<()> {
         if !self.is_initialized() {
             Err(ProtobufError::MessageNotInitialized(
-                self.descriptor().name(),
+                self.descriptor().name().to_owned(),
             ))
         } else {
             Ok(())
@@ -321,7 +306,7 @@ impl dyn Message {
 
     /// Clone from a `dyn Message` reference.
     pub fn clone_box(&self) -> Box<dyn Message> {
-        self.descriptor().clone(self)
+        self.descriptor().clone_message(self)
     }
 }
 

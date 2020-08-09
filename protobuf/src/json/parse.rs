@@ -393,10 +393,10 @@ impl<'a> Parser<'a> {
         Ok(base64::decode(s)?)
     }
 
-    fn read_enum<'e>(
+    fn read_enum(
         &mut self,
-        descriptor: &'e EnumDescriptor,
-    ) -> ParseResultWithoutLoc<&'e EnumValueDescriptor> {
+        descriptor: &EnumDescriptor,
+    ) -> ParseResultWithoutLoc<EnumValueDescriptor> {
         if descriptor.is::<NullValue>() {
             return Ok(self.read_wk_null_value()?.descriptor());
         }
@@ -420,11 +420,11 @@ impl<'a> Parser<'a> {
         }
     }
 
-    fn parse_enum<'e>(
+    fn parse_enum(
         &self,
         name: String,
-        descriptor: &'e EnumDescriptor,
-    ) -> ParseResultWithoutLoc<&'e EnumValueDescriptor> {
+        descriptor: &EnumDescriptor,
+    ) -> ParseResultWithoutLoc<EnumValueDescriptor> {
         // TODO: can map key be int
         match descriptor.get_value_by_name(&name) {
             Some(v) => Ok(v),
@@ -459,8 +459,8 @@ impl<'a> Parser<'a> {
             RuntimeTypeBox::Bool => self.read_bool().map(ReflectValueBox::from),
             RuntimeTypeBox::String => self.read_string().map(ReflectValueBox::from),
             RuntimeTypeBox::VecU8 => self.read_bytes().map(ReflectValueBox::from),
-            RuntimeTypeBox::Enum(e) => self.read_enum(e).map(ReflectValueBox::from),
-            RuntimeTypeBox::Message(m) => self.read_message(m).map(ReflectValueBox::from),
+            RuntimeTypeBox::Enum(e) => self.read_enum(&e).map(ReflectValueBox::from),
+            RuntimeTypeBox::Message(m) => self.read_message(&m).map(ReflectValueBox::from),
         }
     }
 
@@ -569,8 +569,8 @@ impl<'a> Parser<'a> {
             RuntimeTypeBox::String => Ok(ReflectValueBox::String(key)),
             RuntimeTypeBox::VecU8 => self.parse_bytes(&key).map(ReflectValueBox::Bytes),
             RuntimeTypeBox::Enum(e) => self
-                .parse_enum(key, e)
-                .map(|v| ReflectValueBox::Enum(v.enum_descriptor(), v.value())),
+                .parse_enum(key, &e)
+                .map(|v| ReflectValueBox::Enum(v.enum_descriptor().clone(), v.value())),
             RuntimeTypeBox::Message(_) => panic!("message cannot be a map key"),
         }
     }

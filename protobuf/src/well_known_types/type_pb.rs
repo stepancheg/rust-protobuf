@@ -88,8 +88,9 @@ impl Type {
             |m: &Type| { &m.syntax },
             |m: &mut Type| { &mut m.syntax },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new::<Type>(
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<Type>(
             "Type",
+            0,
             fields,
         )
     }
@@ -216,7 +217,7 @@ impl crate::Message for Type {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
+    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -224,46 +225,8 @@ impl crate::Message for Type {
         Type::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "name",
-                |m: &Type| { &m.name },
-                |m: &mut Type| { &mut m.name },
-            ));
-            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
-                "fields",
-                |m: &Type| { &m.fields },
-                |m: &mut Type| { &mut m.fields },
-            ));
-            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
-                "oneofs",
-                |m: &Type| { &m.oneofs },
-                |m: &mut Type| { &mut m.oneofs },
-            ));
-            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
-                "options",
-                |m: &Type| { &m.options },
-                |m: &mut Type| { &mut m.options },
-            ));
-            fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, crate::well_known_types::SourceContext>(
-                "source_context",
-                |m: &Type| { &m.source_context },
-                |m: &mut Type| { &mut m.source_context },
-            ));
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "syntax",
-                |m: &Type| { &m.syntax },
-                |m: &mut Type| { &mut m.syntax },
-            ));
-            crate::reflect::MessageDescriptor::new::<Type>(
-                "Type",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 0)
     }
 
     fn default_instance() -> &'static Type {
@@ -403,8 +366,9 @@ impl Field {
             |m: &Field| { &m.default_value },
             |m: &mut Field| { &mut m.default_value },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new::<Field>(
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<Field>(
             "Field",
+            1,
             fields,
         )
     }
@@ -576,7 +540,7 @@ impl crate::Message for Field {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
+    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -584,66 +548,8 @@ impl crate::Message for Field {
         Field::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "kind",
-                |m: &Field| { &m.kind },
-                |m: &mut Field| { &mut m.kind },
-            ));
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "cardinality",
-                |m: &Field| { &m.cardinality },
-                |m: &mut Field| { &mut m.cardinality },
-            ));
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "number",
-                |m: &Field| { &m.number },
-                |m: &mut Field| { &mut m.number },
-            ));
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "name",
-                |m: &Field| { &m.name },
-                |m: &mut Field| { &mut m.name },
-            ));
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "type_url",
-                |m: &Field| { &m.type_url },
-                |m: &mut Field| { &mut m.type_url },
-            ));
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "oneof_index",
-                |m: &Field| { &m.oneof_index },
-                |m: &mut Field| { &mut m.oneof_index },
-            ));
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "packed",
-                |m: &Field| { &m.packed },
-                |m: &mut Field| { &mut m.packed },
-            ));
-            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
-                "options",
-                |m: &Field| { &m.options },
-                |m: &mut Field| { &mut m.options },
-            ));
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "json_name",
-                |m: &Field| { &m.json_name },
-                |m: &mut Field| { &mut m.json_name },
-            ));
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "default_value",
-                |m: &Field| { &m.default_value },
-                |m: &mut Field| { &mut m.default_value },
-            ));
-            crate::reflect::MessageDescriptor::new::<Field>(
-                "Field",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 1)
     }
 
     fn default_instance() -> &'static Field {
@@ -776,11 +682,8 @@ pub mod field {
             values
         }
 
-        fn enum_descriptor_static() -> &'static crate::reflect::EnumDescriptor {
-            static descriptor: crate::rt::LazyV2<crate::reflect::EnumDescriptor> = crate::rt::LazyV2::INIT;
-            descriptor.get(|| {
-                crate::reflect::EnumDescriptor::new::<Kind>("Field.Kind", super::file_descriptor_proto())
-            })
+        fn enum_descriptor_static() -> crate::reflect::EnumDescriptor {
+            crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 1)
         }
     }
 
@@ -799,7 +702,7 @@ pub mod field {
 
     impl Kind {
         pub(in super) fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
-            crate::reflect::GeneratedEnumDescriptorData::new::<Kind>("Field.Kind")
+            crate::reflect::GeneratedEnumDescriptorData::new_2::<Kind>("Field.Kind", 1)
         }
     }
 
@@ -838,11 +741,8 @@ pub mod field {
             values
         }
 
-        fn enum_descriptor_static() -> &'static crate::reflect::EnumDescriptor {
-            static descriptor: crate::rt::LazyV2<crate::reflect::EnumDescriptor> = crate::rt::LazyV2::INIT;
-            descriptor.get(|| {
-                crate::reflect::EnumDescriptor::new::<Cardinality>("Field.Cardinality", super::file_descriptor_proto())
-            })
+        fn enum_descriptor_static() -> crate::reflect::EnumDescriptor {
+            crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 2)
         }
     }
 
@@ -861,7 +761,7 @@ pub mod field {
 
     impl Cardinality {
         pub(in super) fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
-            crate::reflect::GeneratedEnumDescriptorData::new::<Cardinality>("Field.Cardinality")
+            crate::reflect::GeneratedEnumDescriptorData::new_2::<Cardinality>("Field.Cardinality", 2)
         }
     }
 }
@@ -926,8 +826,9 @@ impl Enum {
             |m: &Enum| { &m.syntax },
             |m: &mut Enum| { &mut m.syntax },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new::<Enum>(
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<Enum>(
             "Enum",
+            2,
             fields,
         )
     }
@@ -1045,7 +946,7 @@ impl crate::Message for Enum {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
+    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -1053,41 +954,8 @@ impl crate::Message for Enum {
         Enum::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "name",
-                |m: &Enum| { &m.name },
-                |m: &mut Enum| { &mut m.name },
-            ));
-            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
-                "enumvalue",
-                |m: &Enum| { &m.enumvalue },
-                |m: &mut Enum| { &mut m.enumvalue },
-            ));
-            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
-                "options",
-                |m: &Enum| { &m.options },
-                |m: &mut Enum| { &mut m.options },
-            ));
-            fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, crate::well_known_types::SourceContext>(
-                "source_context",
-                |m: &Enum| { &m.source_context },
-                |m: &mut Enum| { &mut m.source_context },
-            ));
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "syntax",
-                |m: &Enum| { &m.syntax },
-                |m: &mut Enum| { &mut m.syntax },
-            ));
-            crate::reflect::MessageDescriptor::new::<Enum>(
-                "Enum",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 2)
     }
 
     fn default_instance() -> &'static Enum {
@@ -1174,8 +1042,9 @@ impl EnumValue {
             |m: &EnumValue| { &m.options },
             |m: &mut EnumValue| { &mut m.options },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new::<EnumValue>(
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<EnumValue>(
             "EnumValue",
+            3,
             fields,
         )
     }
@@ -1263,7 +1132,7 @@ impl crate::Message for EnumValue {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
+    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -1271,31 +1140,8 @@ impl crate::Message for EnumValue {
         EnumValue::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "name",
-                |m: &EnumValue| { &m.name },
-                |m: &mut EnumValue| { &mut m.name },
-            ));
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "number",
-                |m: &EnumValue| { &m.number },
-                |m: &mut EnumValue| { &mut m.number },
-            ));
-            fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
-                "options",
-                |m: &EnumValue| { &m.options },
-                |m: &mut EnumValue| { &mut m.options },
-            ));
-            crate::reflect::MessageDescriptor::new::<EnumValue>(
-                "EnumValue",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 3)
     }
 
     fn default_instance() -> &'static EnumValue {
@@ -1372,8 +1218,9 @@ impl Option {
             |m: &Option| { &m.value },
             |m: &mut Option| { &mut m.value },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new::<Option>(
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<Option>(
             "Option",
+            4,
             fields,
         )
     }
@@ -1449,7 +1296,7 @@ impl crate::Message for Option {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> &'static crate::reflect::MessageDescriptor {
+    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
         Self::descriptor_static()
     }
 
@@ -1457,26 +1304,8 @@ impl crate::Message for Option {
         Option::new()
     }
 
-    fn descriptor_static() -> &'static crate::reflect::MessageDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::MessageDescriptor> = crate::rt::LazyV2::INIT;
-        descriptor.get(|| {
-            let mut fields = ::std::vec::Vec::new();
-            fields.push(crate::reflect::rt::v2::make_simpler_field_accessor::<_, _>(
-                "name",
-                |m: &Option| { &m.name },
-                |m: &mut Option| { &mut m.name },
-            ));
-            fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, crate::well_known_types::Any>(
-                "value",
-                |m: &Option| { &m.value },
-                |m: &mut Option| { &mut m.value },
-            ));
-            crate::reflect::MessageDescriptor::new::<Option>(
-                "Option",
-                fields,
-                file_descriptor_proto()
-            )
-        })
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 4)
     }
 
     fn default_instance() -> &'static Option {
@@ -1540,11 +1369,8 @@ impl crate::ProtobufEnum for Syntax {
         values
     }
 
-    fn enum_descriptor_static() -> &'static crate::reflect::EnumDescriptor {
-        static descriptor: crate::rt::LazyV2<crate::reflect::EnumDescriptor> = crate::rt::LazyV2::INIT;
-        descriptor.get(|| {
-            crate::reflect::EnumDescriptor::new::<Syntax>("Syntax", file_descriptor_proto())
-        })
+    fn enum_descriptor_static() -> crate::reflect::EnumDescriptor {
+        crate::reflect::EnumDescriptor::new_generated_2(file_descriptor(), 0)
     }
 }
 
@@ -1563,7 +1389,7 @@ impl crate::reflect::ProtobufValueSized for Syntax {
 
 impl Syntax {
     fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
-        crate::reflect::GeneratedEnumDescriptorData::new::<Syntax>("Syntax")
+        crate::reflect::GeneratedEnumDescriptorData::new_2::<Syntax>("Syntax", 0)
     }
 }
 
@@ -1851,9 +1677,9 @@ pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProt
 }
 
 /// `FileDescriptor` object which allows dynamic access to files
-pub fn file_descriptor() -> &'static crate::reflect::FileDescriptor {
-    static file_descriptor_lazy: crate::rt::LazyV2<crate::reflect::FileDescriptor> = crate::rt::LazyV2::INIT;
-    file_descriptor_lazy.get(|| {
+pub fn file_descriptor() -> crate::reflect::FileDescriptor {
+    static file_descriptor_lazy: crate::rt::LazyV2<crate::reflect::GeneratedFileDescriptor> = crate::rt::LazyV2::INIT;
+    let file_descriptor = file_descriptor_lazy.get(|| {
         let mut deps = ::std::vec::Vec::new();
         deps.push(crate::well_known_types::file_descriptors::any());
         deps.push(crate::well_known_types::file_descriptors::source_context());
@@ -1867,11 +1693,12 @@ pub fn file_descriptor() -> &'static crate::reflect::FileDescriptor {
         enums.push(Syntax::generated_enum_descriptor_data());
         enums.push(field::Kind::generated_enum_descriptor_data());
         enums.push(field::Cardinality::generated_enum_descriptor_data());
-        crate::reflect::FileDescriptor::new_generated(
+        crate::reflect::GeneratedFileDescriptor::new_generated(
             file_descriptor_proto(),
             deps,
             messages,
             enums,
         )
-    })
+    });
+    crate::reflect::FileDescriptor::new_generated_2(file_descriptor)
 }

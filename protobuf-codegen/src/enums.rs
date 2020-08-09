@@ -4,7 +4,6 @@ use protobuf::descriptor::*;
 
 use super::code_writer::*;
 use super::customize::Customize;
-use crate::file_descriptor::file_descriptor_proto_expr;
 use crate::inside::protobuf_crate_path;
 use crate::rust::EXPR_NONE;
 use crate::rust_name::RustIdent;
@@ -248,8 +247,6 @@ impl<'a> EnumGen<'a> {
                 if !self.lite_runtime {
                     w.write_line("");
                     self.write_enum_descriptor_static(w);
-                    w.write_line("");
-                    self.write_enum_descriptor_static_new(w);
                 }
             },
         );
@@ -257,38 +254,12 @@ impl<'a> EnumGen<'a> {
 
     fn write_enum_descriptor_static(&self, w: &mut CodeWriter) {
         let sig = format!(
-            "enum_descriptor_static() -> &'static {}::reflect::EnumDescriptor",
-            protobuf_crate_path(&self.customize)
-        );
-        w.def_fn(&sig, |w| {
-            w.lazy_static_decl_get(
-                "descriptor",
-                &format!(
-                    "{}::reflect::EnumDescriptor",
-                    protobuf_crate_path(&self.customize)
-                ),
-                &format!("{}", protobuf_crate_path(&self.customize)),
-                |w| {
-                    w.write_line(&format!(
-                        "{}::reflect::EnumDescriptor::new::<{}>(\"{}\", {})",
-                        protobuf_crate_path(&self.customize),
-                        self.type_name,
-                        self.enum_with_scope.name_to_package(),
-                        file_descriptor_proto_expr(&self.enum_with_scope.scope)
-                    ));
-                },
-            );
-        });
-    }
-
-    fn write_enum_descriptor_static_new(&self, w: &mut CodeWriter) {
-        let sig = format!(
-            "enum_descriptor_static_new() -> {}::reflect::EnumDescriptor",
+            "enum_descriptor_static() -> {}::reflect::EnumDescriptor",
             protobuf_crate_path(&self.customize)
         );
         w.def_fn(&sig, |w| {
             w.write_line(&format!(
-                "{}::reflect::EnumDescriptor::new_generated({}(), {})",
+                "{}::reflect::EnumDescriptor::new_generated_2({}(), {})",
                 protobuf_crate_path(&self.customize),
                 self.enum_with_scope
                     .get_scope()

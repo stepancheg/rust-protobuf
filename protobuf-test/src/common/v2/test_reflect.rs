@@ -14,10 +14,12 @@ fn test_get_sub_message_via_reflection() {
     m.mut_sub_m().set_n(42);
     assert!(m.has_sub_m());
 
-    let descriptor = m.descriptor().get_field_by_name("sub_m").unwrap();
-    assert_eq!("sub_m", descriptor.name());
+    let descriptor = m.descriptor();
 
-    let sub_m = descriptor.get_message(&m);
+    let field_descriptor = descriptor.get_field_by_name("sub_m").unwrap();
+    assert_eq!("sub_m", field_descriptor.name());
+
+    let sub_m = field_descriptor.get_message(&m);
     assert_eq!("test_reflect.SubM", sub_m.descriptor().full_name());
     assert_eq!(
         42,
@@ -190,9 +192,11 @@ fn test_nested_enum() {
 fn test_mut_message() {
     let mut m = TestTypesSingular::new();
     {
-        let message_field_field = m.descriptor().get_field_by_name("message_field").unwrap();
+        let descriptor = m.descriptor();
+        let message_field_field = descriptor.get_field_by_name("message_field").unwrap();
         let sub_m = message_field_field.mut_message(&mut m);
-        let n_field = sub_m.descriptor().get_field_by_name("n").unwrap();
+        let descriptor = sub_m.descriptor();
+        let n_field = descriptor.get_field_by_name("n").unwrap();
         n_field.set_singular_field(sub_m, ReflectValueBox::I32(10));
         // TODO: test `mut_message` works for oneof fields
     }
@@ -203,7 +207,8 @@ fn test_mut_message() {
 fn test_get_reflect_singular() {
     let mut m = TestTypesSingular::new();
     m.set_int64_field(10);
-    let f = m.descriptor().get_field_by_name("int64_field").unwrap();
+    let descriptor = m.descriptor();
+    let f = descriptor.get_field_by_name("int64_field").unwrap();
     match f.get_reflect(&m) {
         ReflectFieldRef::Optional(Some(ReflectValueRef::I64(10))) => {}
         _ => panic!(),
@@ -214,7 +219,8 @@ fn test_get_reflect_singular() {
 fn test_get_reflect_repeated() {
     let mut m = TestTypesRepeated::new();
     m.set_int64_field(vec![10, 20]);
-    let f = m.descriptor().get_field_by_name("int64_field").unwrap();
+    let descriptor = m.descriptor();
+    let f = descriptor.get_field_by_name("int64_field").unwrap();
     match f.get_reflect(&m) {
         ReflectFieldRef::Repeated(repeated) => {
             assert_eq!(2, repeated.len());
@@ -229,7 +235,8 @@ fn test_get_reflect_repeated() {
 fn test_get_reflect_map() {
     let mut m = TestTypesMap::new();
     m.set_int64_field(vec![(10, 33), (20, 44)].into_iter().collect());
-    let f = m.descriptor().get_field_by_name("int64_field").unwrap();
+    let descriptor = m.descriptor();
+    let f = descriptor.get_field_by_name("int64_field").unwrap();
     match f.get_reflect(&m) {
         ReflectFieldRef::Map(map) => {
             assert_eq!(2, map.len());
@@ -248,10 +255,11 @@ fn test_get_reflect_map() {
 
 #[test]
 fn test_json_name() {
-    let descriptor = M::descriptor_static().get_field_by_name("sub_m").unwrap();
+    let descriptor = M::descriptor_static();
+    let field_descriptor = descriptor.get_field_by_name("sub_m").unwrap();
     // Note that we intentionally do not call `descriptor.json_name()`, since
     // that will compute a JSON name if one is not already present in the proto.
     // We want to verify that the compiler has encoded the correct JSON name in
     // the descriptor itself.
-    assert_eq!("subM", descriptor.proto().get_json_name());
+    assert_eq!("subM", field_descriptor.proto().get_json_name());
 }

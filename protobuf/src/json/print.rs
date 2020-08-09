@@ -412,7 +412,7 @@ impl Printer {
             self.print_printable(&v)
         } else {
             match descriptor.get_value_by_number(v) {
-                Some(value) => self.print_enum_known(value),
+                Some(value) => self.print_enum_known(&value),
                 None => self.print_printable(&v),
             }
         }

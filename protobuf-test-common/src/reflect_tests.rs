@@ -28,7 +28,7 @@ pub fn value_for_runtime_type(field_type: &dyn RuntimeTypeDynamic) -> ReflectVal
 }
 
 fn values_for_message_type(descriptor: &MessageDescriptor) -> Vec<Box<dyn Message>> {
-    if descriptor == Value::descriptor_static() {
+    if descriptor == &Value::descriptor_static() {
         // special handling because empty `Value` is not valid
         let mut value = Value::new();
         value.kind = Some(value::Kind::number_value(23.0));
@@ -105,7 +105,7 @@ pub fn values_for_runtime_type(field_type: &dyn RuntimeTypeDynamic) -> Vec<Refle
             ReflectValueBox::from(&e.values()[0]),
             ReflectValueBox::from(&e.values()[e.values().len() - 1]),
         ],
-        RuntimeTypeBox::Message(m) => values_for_message_type(m)
+        RuntimeTypeBox::Message(m) => values_for_message_type(&m)
             .into_iter()
             .map(ReflectValueBox::from)
             .collect(),
@@ -155,7 +155,7 @@ pub fn special_messages(d: &MessageDescriptor) -> Vec<Box<dyn Message>> {
 
 pub fn special_messages_typed<M: Message>() -> Vec<M> {
     let mut r = Vec::new();
-    for m in special_messages(M::descriptor_static()) {
+    for m in special_messages(&M::descriptor_static()) {
         r.push(*m.downcast_box().unwrap());
     }
     r

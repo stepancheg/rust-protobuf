@@ -181,7 +181,7 @@ pub enum ReflectValueRef<'a> {
     /// `bytes`
     Bytes(&'a [u8]),
     /// `enum`
-    Enum(&'static EnumDescriptor, i32),
+    Enum(EnumDescriptor, i32),
     /// `message`
     Message(&'a dyn Message),
 }
@@ -189,17 +189,17 @@ pub enum ReflectValueRef<'a> {
 impl<'a> ReflectValueRef<'a> {
     /// Value is "non-zero"?
     fn _is_non_zero(&self) -> bool {
-        match *self {
-            ReflectValueRef::U32(v) => v != 0,
-            ReflectValueRef::U64(v) => v != 0,
-            ReflectValueRef::I32(v) => v != 0,
-            ReflectValueRef::I64(v) => v != 0,
-            ReflectValueRef::F32(v) => v != 0.,
-            ReflectValueRef::F64(v) => v != 0.,
-            ReflectValueRef::Bool(v) => v,
+        match self {
+            ReflectValueRef::U32(v) => *v != 0,
+            ReflectValueRef::U64(v) => *v != 0,
+            ReflectValueRef::I32(v) => *v != 0,
+            ReflectValueRef::I64(v) => *v != 0,
+            ReflectValueRef::F32(v) => *v != 0.,
+            ReflectValueRef::F64(v) => *v != 0.,
+            ReflectValueRef::Bool(v) => *v,
             ReflectValueRef::String(v) => !v.is_empty(),
             ReflectValueRef::Bytes(v) => !v.is_empty(),
-            ReflectValueRef::Enum(_d, v) => v != 0,
+            ReflectValueRef::Enum(_d, v) => *v != 0,
             ReflectValueRef::Message(_) => true,
         }
     }
@@ -286,17 +286,17 @@ impl<'a> ReflectValueRef<'a> {
 
     /// Clone to a box
     pub fn to_box(&self) -> ReflectValueBox {
-        match *self {
-            ReflectValueRef::U32(v) => ReflectValueBox::U32(v),
-            ReflectValueRef::U64(v) => ReflectValueBox::U64(v),
-            ReflectValueRef::I32(v) => ReflectValueBox::I32(v),
-            ReflectValueRef::I64(v) => ReflectValueBox::I64(v),
-            ReflectValueRef::F32(v) => ReflectValueBox::F32(v),
-            ReflectValueRef::F64(v) => ReflectValueBox::F64(v),
-            ReflectValueRef::Bool(v) => ReflectValueBox::Bool(v),
-            ReflectValueRef::String(v) => ReflectValueBox::String(v.to_owned()),
-            ReflectValueRef::Bytes(v) => ReflectValueBox::Bytes(v.to_owned()),
-            ReflectValueRef::Enum(d, v) => ReflectValueBox::Enum(d, v),
+        match self {
+            ReflectValueRef::U32(v) => ReflectValueBox::U32(*v),
+            ReflectValueRef::U64(v) => ReflectValueBox::U64(*v),
+            ReflectValueRef::I32(v) => ReflectValueBox::I32(*v),
+            ReflectValueRef::I64(v) => ReflectValueBox::I64(*v),
+            ReflectValueRef::F32(v) => ReflectValueBox::F32(*v),
+            ReflectValueRef::F64(v) => ReflectValueBox::F64(*v),
+            ReflectValueRef::Bool(v) => ReflectValueBox::Bool(*v),
+            ReflectValueRef::String(v) => ReflectValueBox::String((*v).to_owned()),
+            ReflectValueRef::Bytes(v) => ReflectValueBox::Bytes((*v).to_owned()),
+            ReflectValueRef::Enum(d, v) => ReflectValueBox::Enum(d.clone(), *v),
             ReflectValueRef::Message(v) => ReflectValueBox::Message(v.clone_box()),
         }
     }
@@ -369,7 +369,7 @@ pub enum ReflectValueBox {
     /// `bytes`
     Bytes(Vec<u8>),
     /// `enum`
-    Enum(&'static EnumDescriptor, i32),
+    Enum(EnumDescriptor, i32),
     /// `message`
     Message(Box<dyn Message>),
 }
@@ -428,9 +428,15 @@ impl From<Vec<u8>> for ReflectValueBox {
     }
 }
 
-impl From<&'static EnumValueDescriptor> for ReflectValueBox {
-    fn from(v: &'static EnumValueDescriptor) -> Self {
-        ReflectValueBox::Enum(v.enum_descriptor(), v.value())
+impl<'a> From<&'a EnumValueDescriptor> for ReflectValueBox {
+    fn from(v: &'a EnumValueDescriptor) -> Self {
+        ReflectValueBox::from(v.clone())
+    }
+}
+
+impl From<EnumValueDescriptor> for ReflectValueBox {
+    fn from(v: EnumValueDescriptor) -> Self {
+        ReflectValueBox::Enum(v.enum_descriptor().clone(), v.value())
     }
 }
 
@@ -458,17 +464,17 @@ impl ReflectValueBox {
     /// As ref
     pub fn as_value_ref(&self) -> ReflectValueRef {
         use std::ops::Deref;
-        match *self {
-            ReflectValueBox::U32(v) => ReflectValueRef::U32(v),
-            ReflectValueBox::U64(v) => ReflectValueRef::U64(v),
-            ReflectValueBox::I32(v) => ReflectValueRef::I32(v),
-            ReflectValueBox::I64(v) => ReflectValueRef::I64(v),
-            ReflectValueBox::F32(v) => ReflectValueRef::F32(v),
-            ReflectValueBox::F64(v) => ReflectValueRef::F64(v),
-            ReflectValueBox::Bool(v) => ReflectValueRef::Bool(v),
+        match self {
+            ReflectValueBox::U32(v) => ReflectValueRef::U32(*v),
+            ReflectValueBox::U64(v) => ReflectValueRef::U64(*v),
+            ReflectValueBox::I32(v) => ReflectValueRef::I32(*v),
+            ReflectValueBox::I64(v) => ReflectValueRef::I64(*v),
+            ReflectValueBox::F32(v) => ReflectValueRef::F32(*v),
+            ReflectValueBox::F64(v) => ReflectValueRef::F64(*v),
+            ReflectValueBox::Bool(v) => ReflectValueRef::Bool(*v),
             ReflectValueBox::String(ref v) => ReflectValueRef::String(v.as_str()),
             ReflectValueBox::Bytes(ref v) => ReflectValueRef::Bytes(v.as_slice()),
-            ReflectValueBox::Enum(d, v) => ReflectValueRef::Enum(d, v),
+            ReflectValueBox::Enum(d, v) => ReflectValueRef::Enum(d.clone(), *v),
             ReflectValueBox::Message(ref v) => ReflectValueRef::Message(v.deref()),
         }
     }

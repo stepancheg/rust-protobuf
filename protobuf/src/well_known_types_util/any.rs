@@ -60,7 +60,7 @@ impl Any {
         type_url_prefix: &str,
     ) -> ProtobufResult<Any> {
         Ok(Any {
-            type_url: Any::type_url(type_url_prefix, message.descriptor()),
+            type_url: Any::type_url(type_url_prefix, &message.descriptor()),
             value: message.write_to_bytes()?,
             ..Default::default()
         })
@@ -68,7 +68,7 @@ impl Any {
 
     /// Check if `Any` contains a message of given type.
     pub fn is<M: Message>(&self) -> bool {
-        self.is_dyn(M::descriptor_static())
+        self.is_dyn(&M::descriptor_static())
     }
 
     /// Check if `Any` contains a message of given type.

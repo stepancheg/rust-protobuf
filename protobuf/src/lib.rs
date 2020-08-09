@@ -41,7 +41,6 @@ pub mod descriptor;
 pub mod plugin;
 pub mod rustproto;
 
-mod arc_or_static;
 mod clear;
 mod enums;
 mod error;

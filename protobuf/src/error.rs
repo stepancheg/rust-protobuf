@@ -52,7 +52,7 @@ pub enum ProtobufError {
     /// Protocol contains a string which is not valid UTF-8 string
     Utf8(str::Utf8Error),
     /// Not all required fields of message set.
-    MessageNotInitialized(&'static str),
+    MessageNotInitialized(String),
 }
 
 impl fmt::Display for ProtobufError {

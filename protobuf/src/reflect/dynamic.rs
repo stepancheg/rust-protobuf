@@ -1,4 +1,3 @@
-use crate::arc_or_static::ArcOrStatic;
 use crate::cached_size::CachedSize;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ProtobufValue;
@@ -20,7 +19,7 @@ enum DynamicFieldValue {
 
 #[derive(Debug)]
 pub struct DynamicMessage {
-    descriptor: ArcOrStatic<MessageDescriptor>,
+    descriptor: MessageDescriptor,
     fields: HashMap<String, DynamicFieldValue>,
     unknown_fields: UnknownFields,
     cached_size: CachedSize,
@@ -35,8 +34,8 @@ impl Clear for DynamicMessage {
 }
 
 impl Message for DynamicMessage {
-    fn descriptor(&self) -> &'static MessageDescriptor {
-        unimplemented!()
+    fn descriptor(&self) -> MessageDescriptor {
+        self.descriptor.clone()
     }
 
     fn is_initialized(&self) -> bool {
