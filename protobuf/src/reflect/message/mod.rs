@@ -5,6 +5,7 @@ use crate::message::Message;
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 
+use crate::reflect::file::FileDescriptorImpl;
 use crate::reflect::message::generated::GeneratedMessageDescriptor;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
@@ -69,7 +70,9 @@ impl MessageDescriptor {
     }
 
     fn get_generated(&self) -> &GeneratedMessageDescriptor {
-        &self.file_descriptor.generated.messages[self.index]
+        match self.file_descriptor.imp {
+            FileDescriptorImpl::Generated(g) => &g.messages[self.index],
+        }
     }
 
     /// [`FileDescriptor`] containing this message.

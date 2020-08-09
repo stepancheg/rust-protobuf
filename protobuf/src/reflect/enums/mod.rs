@@ -11,6 +11,7 @@ use crate::enums::ProtobufEnumOrUnknown;
 use crate::reflect::enums::generated::GeneratedEnumDescriptor;
 #[cfg(not(rustc_nightly))]
 use crate::reflect::enums::generated::GetEnumDescriptor;
+use crate::reflect::file::FileDescriptorImpl;
 use crate::reflect::FileDescriptor;
 use crate::reflect::ProtobufValue;
 
@@ -107,7 +108,9 @@ impl EnumDescriptor {
     }
 
     fn get_generated(&self) -> &GeneratedEnumDescriptor {
-        &self.file_descriptor.generated.enums[self.index as usize]
+        match self.file_descriptor.imp {
+            FileDescriptorImpl::Generated(g) => &g.enums[self.index as usize],
+        }
     }
 
     /// Enum name as given in `.proto` file

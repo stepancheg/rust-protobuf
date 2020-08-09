@@ -3,18 +3,38 @@
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::GeneratedFileDescriptor;
 
+pub(crate) mod dynamic;
 pub(crate) mod generated;
 
-/// Reflection for objects defined in `.proto` file (messages, enums, etc).
 #[derive(Clone)]
+pub(crate) enum FileDescriptorImpl {
+    Generated(&'static GeneratedFileDescriptor),
+}
+
+impl PartialEq for FileDescriptorImpl {
+    fn eq(&self, other: &Self) -> bool {
+        match (self, other) {
+            (FileDescriptorImpl::Generated(a), FileDescriptorImpl::Generated(b)) => {
+                *a as *const GeneratedFileDescriptor == *b as *const GeneratedFileDescriptor
+            }
+        }
+    }
+}
+
+impl Eq for FileDescriptorImpl {}
+
+/// Reflection for objects defined in `.proto` file (messages, enums, etc).
+#[derive(Clone, PartialEq, Eq)]
 pub struct FileDescriptor {
-    pub(crate) generated: &'static GeneratedFileDescriptor,
+    pub(crate) imp: FileDescriptorImpl,
 }
 
 impl FileDescriptor {
     /// This function is called from generated code, it is not stable, and should not be called.
     pub fn new_generated_2(generated: &'static GeneratedFileDescriptor) -> FileDescriptor {
-        FileDescriptor { generated }
+        FileDescriptor {
+            imp: FileDescriptorImpl::Generated(generated),
+        }
     }
 
     /// Dynamic message created from [`FileDescriptorProto`] without generated files.
@@ -27,18 +47,11 @@ impl FileDescriptor {
 
     /// `.proto` data for this file.
     pub fn get_proto(&self) -> &FileDescriptorProto {
-        self.generated.get_proto()
+        match self.imp {
+            FileDescriptorImpl::Generated(g) => g.get_proto(),
+        }
     }
 }
-
-impl PartialEq for FileDescriptor {
-    fn eq(&self, other: &Self) -> bool {
-        self.generated as *const GeneratedFileDescriptor
-            == other.generated as *const GeneratedFileDescriptor
-    }
-}
-
-impl Eq for FileDescriptor {}
 
 #[cfg(test)]
 mod test {
