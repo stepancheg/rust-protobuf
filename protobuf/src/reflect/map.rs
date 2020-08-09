@@ -5,7 +5,6 @@ use std::hash::Hash;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
-use crate::reflect::value::ProtobufValue;
 use crate::reflect::ProtobufValueSized;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;

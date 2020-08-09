@@ -68,7 +68,7 @@ fn test_singular() {
     let descriptor = message.descriptor();
 
     for field in descriptor.fields() {
-        test_singular_field(&mut message, field);
+        test_singular_field(&mut message, &field);
     }
 }
 
@@ -121,7 +121,7 @@ fn test_repeated() {
     let descriptor = message.descriptor();
 
     for field in descriptor.fields() {
-        test_repeated_field(&mut message, field);
+        test_repeated_field(&mut message, &field);
     }
 }
 
@@ -168,7 +168,7 @@ fn test_map() {
     let descriptor = message.descriptor();
 
     for field in descriptor.fields() {
-        test_map_field(&mut message, field);
+        test_map_field(&mut message, &field);
     }
 }
 

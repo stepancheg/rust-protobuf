@@ -8,7 +8,6 @@ use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
 use crate::reflect::message::common::MessageIndices;
 use crate::reflect::name::compute_full_name;
-use crate::reflect::FieldDescriptor;
 use std::collections::HashMap;
 use std::marker;
 
@@ -86,7 +85,7 @@ pub(crate) struct GeneratedMessageDescriptor {
 
     pub(crate) factory: &'static dyn MessageFactory,
 
-    pub(crate) fields: Vec<FieldDescriptor>,
+    pub(crate) fields: Vec<FieldAccessor>,
 
     pub indices: MessageIndices,
 }
@@ -116,14 +115,6 @@ impl GeneratedMessageDescriptor {
         for field_proto in &proto.field {
             field_proto_by_name.insert(field_proto.get_name(), field_proto);
         }
-
-        let fields: Vec<_> = fields
-            .into_iter()
-            .map(|f| {
-                let proto = *field_proto_by_name.get(f.name).unwrap();
-                FieldDescriptor::new(f, proto)
-            })
-            .collect();
 
         let indices = MessageIndices::index(proto);
 

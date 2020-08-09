@@ -148,7 +148,7 @@ pub fn special_values_for_field(
 pub fn special_messages(d: &MessageDescriptor) -> Vec<Box<dyn Message>> {
     let mut r = Vec::new();
     for f in d.fields() {
-        r.extend(special_values_for_field(f, d));
+        r.extend(special_values_for_field(&f, d));
     }
     r
 }

@@ -1,12 +1,10 @@
 use crate::descriptor::field_descriptor_proto;
 use crate::descriptor::FieldDescriptorProto;
-use crate::json::json_name;
 use crate::message::Message;
 use crate::reflect::acc::v2::map::MapFieldAccessorHolder;
 use crate::reflect::acc::v2::repeated::RepeatedFieldAccessorHolder;
 use crate::reflect::acc::v2::singular::SingularFieldAccessorHolder;
 use crate::reflect::acc::v2::AccessorV2;
-use crate::reflect::acc::FieldAccessor;
 use crate::reflect::acc::FieldAccessorImpl;
 use crate::reflect::map::ReflectMapMut;
 use crate::reflect::map::ReflectMapRef;
@@ -14,9 +12,9 @@ use crate::reflect::reflect_eq::{ReflectEq, ReflectEqMode};
 use crate::reflect::repeated::ReflectRepeatedMut;
 use crate::reflect::repeated::ReflectRepeatedRef;
 use crate::reflect::value::ReflectValueMut;
-use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::reflect::RuntimeTypeDynamic;
+use crate::reflect::{MessageDescriptor, ReflectValueBox};
 
 /// Reference to a value stored in a field, optional, repeated or map.
 // TODO: implement Eq
@@ -66,38 +64,20 @@ fn _assert_sync<'a>() {
 ///
 /// Can be used for runtime reflection.
 pub struct FieldDescriptor {
-    proto: &'static FieldDescriptorProto,
-    accessor: FieldAccessorImpl,
-    json_name: String,
+    pub(crate) message_descriptor: MessageDescriptor,
+    pub(crate) index: usize,
 }
 
 impl FieldDescriptor {
-    pub(crate) fn new(
-        accessor: FieldAccessor,
-        proto: &'static FieldDescriptorProto,
-    ) -> FieldDescriptor {
-        assert_eq!(proto.get_name(), accessor.name);
-        let json_name = if !proto.get_json_name().is_empty() {
-            proto.get_json_name().to_string()
-        } else {
-            json_name(proto.get_name())
-        };
-        FieldDescriptor {
-            proto,
-            accessor: accessor.accessor,
-            // probably could be lazy-init
-            json_name,
-        }
-    }
-
     /// Get `.proto` description of field
-    pub fn proto(&self) -> &'static FieldDescriptorProto {
-        self.proto
+    pub fn proto(&self) -> &FieldDescriptorProto {
+        &self.message_descriptor.get_proto().field[self.index]
     }
 
     /// Field name as specified in `.proto` file
     pub fn name(&self) -> &str {
-        self.proto.get_name()
+        // TODO: slow for dynamic
+        self.proto().get_name()
     }
 
     /// JSON field name.
@@ -108,17 +88,22 @@ impl FieldDescriptor {
     ///
     /// [json]: https://developers.google.com/protocol-buffers/docs/proto3#json
     pub fn json_name(&self) -> &str {
-        &self.json_name
+        &self.message_descriptor.get_indices().json_names[self.index]
     }
 
     /// If this field repeated?
     pub fn is_repeated(&self) -> bool {
-        self.proto.get_label() == field_descriptor_proto::Label::LABEL_REPEATED
+        self.proto().get_label() == field_descriptor_proto::Label::LABEL_REPEATED
+    }
+
+    #[deprecated]
+    fn get_accessor(&self) -> &FieldAccessorImpl {
+        &self.message_descriptor.get_generated().fields[self.index].accessor
     }
 
     /// If this field a map field?
     pub fn is_map(&self) -> bool {
-        match self.accessor {
+        match self.get_accessor() {
             FieldAccessorImpl::V2(AccessorV2::Map(..)) => true,
             FieldAccessorImpl::V2(..) => false,
         }
@@ -133,7 +118,7 @@ impl FieldDescriptor {
     ///
     /// If this field belongs to a different message type.
     pub fn has_field(&self, m: &dyn Message) -> bool {
-        match self.accessor {
+        match self.get_accessor() {
             FieldAccessorImpl::V2(AccessorV2::Singular(ref a)) => a.accessor.get_field(m).is_some(),
             FieldAccessorImpl::V2(AccessorV2::Repeated(ref a)) => {
                 a.accessor.get_reflect(m).len() != 0
@@ -145,21 +130,21 @@ impl FieldDescriptor {
     // accessors
 
     fn singular(&self) -> &SingularFieldAccessorHolder {
-        match self.accessor {
+        match self.get_accessor() {
             FieldAccessorImpl::V2(AccessorV2::Singular(ref a)) => a,
             FieldAccessorImpl::V2(..) => panic!("not a singular field: {}", self.name()),
         }
     }
 
     fn repeated(&self) -> &RepeatedFieldAccessorHolder {
-        match self.accessor {
+        match self.get_accessor() {
             FieldAccessorImpl::V2(AccessorV2::Repeated(ref a)) => a,
             FieldAccessorImpl::V2(..) => panic!("not a repeated field: {}", self.name()),
         }
     }
 
     fn map(&self) -> &MapFieldAccessorHolder {
-        match self.accessor {
+        match self.get_accessor() {
             FieldAccessorImpl::V2(AccessorV2::Map(ref a)) => a,
             FieldAccessorImpl::V2(..) => panic!("not a map field: {}", self.name()),
         }
@@ -228,7 +213,7 @@ impl FieldDescriptor {
     /// Dynamic representation of field type.
     pub fn runtime_field_type(&self) -> RuntimeFieldType {
         use self::AccessorV2::*;
-        match self.accessor {
+        match self.get_accessor() {
             FieldAccessorImpl::V2(Singular(ref a)) => RuntimeFieldType::Singular(a.element_type),
             FieldAccessorImpl::V2(Repeated(ref a)) => RuntimeFieldType::Repeated(a.element_type),
             FieldAccessorImpl::V2(Map(ref a)) => RuntimeFieldType::Map(a.key_type, a.value_type),
@@ -242,7 +227,7 @@ impl FieldDescriptor {
     /// If this field belongs to a different message type.
     pub fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectFieldRef<'a> {
         use self::AccessorV2::*;
-        match self.accessor {
+        match self.get_accessor() {
             FieldAccessorImpl::V2(Singular(ref a)) => {
                 ReflectFieldRef::Optional(a.accessor.get_field(m))
             }

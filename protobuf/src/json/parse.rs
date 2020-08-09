@@ -723,7 +723,7 @@ impl<'a> Parser<'a> {
             match descriptor.get_field_by_name_or_json_name(&field_name) {
                 Some(field) => {
                     self.tokenizer.next_symbol_expect_eq(':')?;
-                    self.merge_field(message, field)?;
+                    self.merge_field(message, &field)?;
                 }
                 None if self.parse_options.ignore_unknown_fields => {
                     self.tokenizer.next_symbol_expect_eq(':')?;
