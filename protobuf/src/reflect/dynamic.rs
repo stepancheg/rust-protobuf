@@ -1,4 +1,5 @@
 use crate::cached_size::CachedSize;
+use crate::reflect::repeated::{ReflectRepeated, ReflectRepeatedIter};
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::RuntimeFieldType;
@@ -29,6 +30,36 @@ impl DynamicOptional {
 pub(crate) struct DynamicRepeated {
     elem: RuntimeTypeBox,
     vec: Vec<ReflectValueBox>,
+}
+
+impl ReflectRepeated for DynamicRepeated {
+    fn reflect_iter(&self) -> ReflectRepeatedIter {
+        unimplemented!()
+    }
+
+    fn len(&self) -> usize {
+        self.vec.len()
+    }
+
+    fn get(&self, index: usize) -> ReflectValueRef {
+        self.vec[index].as_value_ref()
+    }
+
+    fn set(&mut self, index: usize, value: ReflectValueBox) {
+        unimplemented!()
+    }
+
+    fn push(&mut self, value: ReflectValueBox) {
+        unimplemented!()
+    }
+
+    fn clear(&mut self) {
+        self.vec.clear();
+    }
+
+    fn element_type(&self) -> RuntimeTypeBox {
+        self.elem.clone()
+    }
 }
 
 impl DynamicRepeated {

@@ -129,7 +129,6 @@ impl<'a> IntoIterator for &'a dyn ReflectRepeated {
 #[derive(Clone)]
 enum ReflectRepeatedRefImpl<'a> {
     Generated(&'a dyn ReflectRepeated),
-    Dynamic(&'a DynamicRepeated),
     DynamicEmpty(DynamicRepeated),
 }
 
@@ -137,7 +136,6 @@ impl<'a> fmt::Debug for ReflectRepeatedRefImpl<'a> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             ReflectRepeatedRefImpl::Generated(r) => fmt::Debug::fmt(r, f),
-            ReflectRepeatedRefImpl::Dynamic(r) => fmt::Debug::fmt(r, f),
             ReflectRepeatedRefImpl::DynamicEmpty(r) => fmt::Debug::fmt(r, f),
         }
     }
@@ -165,7 +163,6 @@ impl<'a> ReflectRepeatedRef<'a> {
     pub fn len(&self) -> usize {
         match &self.imp {
             ReflectRepeatedRefImpl::Generated(g) => g.len(),
-            ReflectRepeatedRefImpl::Dynamic(d) => d.len(),
             ReflectRepeatedRefImpl::DynamicEmpty(d) => d.len(),
         }
     }
@@ -180,7 +177,6 @@ impl<'a> ReflectRepeatedRef<'a> {
     pub fn get(&self, index: usize) -> ReflectValueRef<'a> {
         match &self.imp {
             ReflectRepeatedRefImpl::Generated(r) => r.get(index),
-            ReflectRepeatedRefImpl::Dynamic(r) => r.get(index),
             ReflectRepeatedRefImpl::DynamicEmpty(..) => panic!("empty"),
         }
     }
@@ -189,7 +185,6 @@ impl<'a> ReflectRepeatedRef<'a> {
     pub fn element_type(&self) -> RuntimeTypeBox {
         match &self.imp {
             ReflectRepeatedRefImpl::Generated(r) => r.element_type(),
-            ReflectRepeatedRefImpl::Dynamic(r) => r.element_type(),
             ReflectRepeatedRefImpl::DynamicEmpty(r) => r.element_type(),
         }
     }
