@@ -292,7 +292,7 @@ where
 struct GetOrDefaultOptionRefTypeDefault<M, V, O>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: Message,
     O: OptionLike<V> + Sync + Send + 'static,
 {
     get_field: for<'a> fn(&'a M) -> &'a O,
@@ -320,14 +320,16 @@ where
 impl<M, V, O> GetOrDefaultImpl<M> for GetOrDefaultOptionRefTypeDefault<M, V, O>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: Message,
     O: OptionLike<V> + Sync + Send + 'static,
 {
     fn get_singular_field_or_default_impl<'a>(&self, m: &'a M) -> ReflectValueRef<'a> {
-        match (self.get_field)(m).as_option_ref() {
-            Some(v) => V::as_ref(v),
-            None => V::default_value_ref(),
-        }
+        ReflectValueRef::Message(
+            (match (self.get_field)(m).as_option_ref() {
+                Some(v) => v,
+                None => V::default_instance(),
+            }),
+        )
     }
 }
 

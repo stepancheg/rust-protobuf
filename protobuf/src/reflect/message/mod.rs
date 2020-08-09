@@ -93,12 +93,13 @@ impl MessageDescriptor {
         }
     }
 
-    /// Shared immutable empty message
-    // TODO: figure out what to do with default instance for dynamic message
-    pub fn default_instance(&self) -> &'static dyn Message {
+    /// Shared immutable empty message.
+    ///
+    /// Returns `None` for dynamic message.
+    pub fn default_instance(&self) -> Option<&'static dyn Message> {
         match self.get_impl() {
-            MessageDescriptorImplRef::Generated(g) => g.factory.default_instance(),
-            MessageDescriptorImplRef::Dynamic(..) => unimplemented!(),
+            MessageDescriptorImplRef::Generated(g) => Some(g.factory.default_instance()),
+            MessageDescriptorImplRef::Dynamic(..) => None,
         }
     }
 

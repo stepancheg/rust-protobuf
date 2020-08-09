@@ -731,7 +731,7 @@ where
     }
 
     fn default_value_ref() -> ReflectValueRef<'static> {
-        ReflectValueRef::Message(M::descriptor_static().default_instance())
+        ReflectValueRef::Message(M::default_instance())
     }
 
     fn from_value_box(value_box: ReflectValueBox) -> M {
