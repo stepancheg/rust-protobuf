@@ -475,7 +475,7 @@ impl<'a> Resolver<'a> {
                             &mut options,
                             option
                                 .value
-                                .as_type(field.singular_runtime_type().to_box())?,
+                                .as_type(field.singular_runtime_type())?,
                         );
                     }
                     continue;
