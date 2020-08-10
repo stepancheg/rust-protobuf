@@ -91,7 +91,7 @@ impl GeneratedEnumDescriptor {
         assert!(expected_index == index_in_file);
 
         let (path_to_package, proto) =
-            match find_message_or_enum(file_descriptor_proto, name_in_file) {
+            match find_message_or_enum(file_descriptor_proto, name_in_file).unwrap() {
                 (path_to_package, MessageOrEnum::Enum(e)) => (path_to_package, e),
                 (_, MessageOrEnum::Message(_)) => panic!("not an enum"),
             };

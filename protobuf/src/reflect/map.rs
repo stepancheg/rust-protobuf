@@ -123,7 +123,7 @@ impl<'a> IntoIterator for &'a dyn ReflectMap {
 /// Dynamic reference to `map` field
 #[derive(Copy, Clone)]
 pub struct ReflectMapRef<'a> {
-    pub(crate) map: &'a dyn ReflectMap,
+    map: &'a dyn ReflectMap,
 }
 
 /// Dynamic mutable reference to `map` field
@@ -132,7 +132,7 @@ pub struct ReflectMapMut<'a> {
 }
 
 impl<'a> ReflectMapRef<'a> {
-    pub(crate) fn new(map: &'a mut dyn ReflectMap) -> ReflectMapRef<'a> {
+    pub(crate) fn new(map: &'a dyn ReflectMap) -> ReflectMapRef<'a> {
         ReflectMapRef { map }
     }
 

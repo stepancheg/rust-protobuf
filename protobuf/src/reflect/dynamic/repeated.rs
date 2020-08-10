@@ -24,12 +24,12 @@ impl ReflectRepeated for DynamicRepeated {
     }
 
     fn set(&mut self, index: usize, value: ReflectValueBox) {
-        assert!(self.elem == value.get_type());
+        assert_eq!(self.elem, value.get_type());
         self.vec[index] = value;
     }
 
     fn push(&mut self, value: ReflectValueBox) {
-        assert!(self.elem == value.get_type());
+        assert_eq!(self.elem, value.get_type());
         self.vec.push(value);
     }
 
@@ -48,17 +48,5 @@ impl DynamicRepeated {
             elem,
             vec: Vec::new(),
         }
-    }
-
-    pub fn len(&self) -> usize {
-        self.vec.len()
-    }
-
-    pub fn get(&self, index: usize) -> ReflectValueRef {
-        self.vec[index].as_value_ref()
-    }
-
-    pub fn element_type(&self) -> RuntimeTypeBox {
-        self.elem.clone()
     }
 }

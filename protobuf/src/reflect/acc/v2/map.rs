@@ -40,7 +40,7 @@ where
     fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectMapRef<'a> {
         let m = m.downcast_ref().unwrap();
         let map = (self.get_field)(m);
-        ReflectMapRef { map }
+        ReflectMapRef::new(map)
     }
 
     fn mut_reflect<'a>(&self, m: &'a mut dyn Message) -> ReflectMapMut<'a> {

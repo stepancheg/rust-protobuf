@@ -2,7 +2,9 @@
 
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::file::dynamic::DynamicFileDescriptor;
+use crate::reflect::find_message_or_enum::{find_message_or_enum, MessageOrEnum};
 use crate::reflect::GeneratedFileDescriptor;
+use std::collections::HashSet;
 use std::hash::Hash;
 use std::hash::Hasher;
 use std::sync::Arc;
@@ -76,6 +78,59 @@ impl FileDescriptor {
             FileDescriptorImpl::Generated(g) => &g.proto,
             FileDescriptorImpl::Dynamic(d) => &d.proto,
         }
+    }
+
+    fn get_deps(&self) -> &[FileDescriptor] {
+        match &self.imp {
+            FileDescriptorImpl::Generated(g) => &g.dependencies,
+            FileDescriptorImpl::Dynamic(d) => &d.dependencies,
+        }
+    }
+
+    fn get_all_files(&self) -> Vec<&FileDescriptor> {
+        let mut r = Vec::new();
+        let mut visited = HashSet::new();
+
+        let mut stack = Vec::new();
+        stack.push(self);
+        while let Some(file) = stack.pop() {
+            if !visited.insert(file) {
+                continue;
+            }
+
+            r.push(file);
+            stack.extend(file.get_deps());
+        }
+
+        r
+    }
+
+    pub(crate) fn find_message_or_enum_proto_in_all_files<'a>(
+        &'a self,
+        full_name: &str,
+    ) -> Option<(String, MessageOrEnum<'a>)> {
+        // sanity check
+        assert!(!full_name.starts_with("."));
+        for file in self.get_all_files() {
+            // sanity check
+            let package = file.get_proto().get_package();
+            assert!(!package.starts_with("."));
+
+            let name_to_package = if package.is_empty() {
+                full_name
+            } else {
+                let after_package = &full_name[package.len()..];
+                if !after_package.starts_with(".") {
+                    continue;
+                }
+                &after_package[1..]
+            };
+
+            if let Some(me) = find_message_or_enum(file.get_proto(), name_to_package) {
+                return Some(me);
+            }
+        }
+        None
     }
 }
 

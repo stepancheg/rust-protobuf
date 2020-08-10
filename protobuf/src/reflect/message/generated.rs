@@ -107,8 +107,9 @@ impl GeneratedMessageDescriptor {
 
         let (path_to_package, proto) =
             match find_message_or_enum(file_descriptor_proto, protobuf_name_to_package) {
-                (path_to_package, MessageOrEnum::Message(m)) => (path_to_package, m),
-                (_, MessageOrEnum::Enum(_)) => panic!("not a message"),
+                Some((path_to_package, MessageOrEnum::Message(m))) => (path_to_package, m),
+                Some((_, MessageOrEnum::Enum(_))) => panic!("not a message"),
+                None => panic!("not found"),
             };
 
         let mut field_proto_by_name = HashMap::new();
