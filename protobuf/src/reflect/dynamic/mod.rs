@@ -62,7 +62,7 @@ impl DynamicFieldValue {
 }
 
 #[derive(Debug, Clone)]
-pub struct DynamicMessage {
+pub(crate) struct DynamicMessage {
     descriptor: MessageDescriptor,
     fields: Box<[DynamicFieldValue]>,
     unknown_fields: UnknownFields,

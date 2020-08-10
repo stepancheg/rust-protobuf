@@ -235,6 +235,18 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
     fn default_instance() -> &'static Self
     where
         Self: Sized;
+
+    /// Reflective equality.
+    ///
+    /// # See also
+    ///
+    /// [`dyn Message::reflect_eq_dyn()`], `dyn` version of this function.
+    fn reflect_eq(&self, other: &Self, mode: &ReflectEqMode) -> bool
+    where
+        Self: Sized,
+    {
+        (self as &dyn Message).reflect_eq_dyn(other, mode)
+    }
 }
 
 impl dyn Message {
@@ -296,12 +308,12 @@ impl dyn Message {
     ///
     /// Messages of different types are not equal,
     /// `NaN` values are considered equal (useful for tests).
-    pub fn reflect_eq(&self, other: &dyn Message) -> bool {
-        let d = self.descriptor();
-        if d != other.descriptor() {
-            return false;
-        }
-        d.reflect_eq(self, other, &ReflectEqMode { nan_equal: true })
+    ///
+    /// # See also
+    ///
+    /// * [`Message::reflect_eq()`], sized version of this function.
+    pub fn reflect_eq_dyn(&self, other: &dyn Message, mode: &ReflectEqMode) -> bool {
+        MessageDescriptor::reflect_eq_maybe_unrelated(self, other, mode)
     }
 
     /// Clone from a `dyn Message` reference.

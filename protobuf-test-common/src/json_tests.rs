@@ -1,6 +1,7 @@
 use protobuf::json;
 use protobuf::text_format;
 use protobuf::Message;
+use protobuf::reflect::ReflectEqMode;
 
 pub fn test_json_print_parse_message(s: &str, m: &dyn Message) {
     assert_eq!(s, json::print_to_string(m).expect("print_to_string"));
@@ -14,7 +15,7 @@ pub fn test_json_parse_message(s: &str, m: &dyn Message) {
     let mut new = descriptor.new_instance();
     json::merge_from_str(&mut *new, s).expect("parse");
     assert!(
-        m.reflect_eq(&*new),
+        m.reflect_eq_dyn(&*new, &ReflectEqMode::nan_equal()),
         "{:?} should be == {:?}",
         text_format::print_to_string(m),
         text_format::print_to_string(&*new)
@@ -33,7 +34,7 @@ pub fn test_json_message(m: &dyn Message) {
         s, m
     ));
     assert!(
-        m.reflect_eq(&*new),
+        m.reflect_eq_dyn(&*new, &ReflectEqMode::nan_equal()),
         "{:?} should be == {:?}",
         text_format::print_to_string(m),
         text_format::print_to_string(&*new)

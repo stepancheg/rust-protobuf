@@ -13,6 +13,7 @@ use protobuf::rustproto;
 use protobuf::text_format::merge_from_str;
 use protobuf::text_format::print_to_string;
 use protobuf::Message;
+use protobuf::reflect::ReflectEqMode;
 
 pub fn parse_using_rust_protobuf(
     text: &str,
@@ -194,13 +195,13 @@ pub fn test_text_format_message(message: &dyn Message) {
     let from_protobuf = parse_using_protoc(&printed_with_rust_protobuf, &descriptor);
 
     assert!(
-        message.reflect_eq(&*from_protoc),
+        message.reflect_eq_dyn(&*from_protoc, &ReflectEqMode::nan_equal()),
         "{:?} != {:?}",
         message,
         from_protoc
     );
     assert!(
-        message.reflect_eq(&*from_protobuf),
+        message.reflect_eq_dyn(&*from_protobuf, &ReflectEqMode::nan_equal()),
         "{:?} != {:?}",
         message,
         from_protobuf

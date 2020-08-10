@@ -140,8 +140,8 @@ impl MessageDescriptor {
         mode: &ReflectEqMode,
     ) -> bool {
         // Explicitly force panic even if field list is empty
-        assert_eq!(self, &a.descriptor(),);
-        assert_eq!(self, &b.descriptor(),);
+        assert_eq!(self, &a.descriptor());
+        assert_eq!(self, &b.descriptor());
 
         for field in self.fields() {
             let af = field.get_reflect(a);
@@ -151,6 +151,16 @@ impl MessageDescriptor {
             }
         }
         true
+    }
+
+    pub(crate) fn reflect_eq_maybe_unrelated(
+        a: &dyn Message,
+        b: &dyn Message,
+        mode: &ReflectEqMode,
+    ) -> bool {
+        let ad = a.descriptor();
+        let bd = b.descriptor();
+        ad == bd && ad.reflect_eq(a, b, mode)
     }
 
     /// Message name as given in `.proto` file

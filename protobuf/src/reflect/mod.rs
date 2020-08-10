@@ -54,3 +54,6 @@ pub use self::file::generated::GeneratedFileDescriptor;
 pub use self::file::FileDescriptor;
 
 pub use self::runtime_type_box::RuntimeTypeBox;
+
+pub use self::reflect_eq::ReflectEq;
+pub use self::reflect_eq::ReflectEqMode;
