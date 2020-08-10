@@ -1,7 +1,7 @@
 use protobuf::json;
+use protobuf::reflect::ReflectEqMode;
 use protobuf::text_format;
 use protobuf::Message;
-use protobuf::reflect::ReflectEqMode;
 
 pub fn test_json_print_parse_message(s: &str, m: &dyn Message) {
     assert_eq!(s, json::print_to_string(m).expect("print_to_string"));

@@ -473,9 +473,7 @@ impl<'a> Resolver<'a> {
 
                         field.set_singular_field(
                             &mut options,
-                            option
-                                .value
-                                .as_type(field.singular_runtime_type())?,
+                            option.value.as_type(field.singular_runtime_type())?,
                         );
                     }
                     continue;
