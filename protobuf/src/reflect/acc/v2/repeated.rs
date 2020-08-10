@@ -10,7 +10,6 @@ use crate::reflect::repeated::ReflectRepeatedRef;
 use crate::reflect::ProtobufValueSized;
 use crate::reflect::RuntimeTypeBox;
 
-
 pub(crate) trait RepeatedFieldAccessor: Send + Sync + 'static {
     fn get_repeated<'a>(&self, m: &'a dyn Message) -> ReflectRepeatedRef<'a>;
     fn mut_repeated<'a>(&self, m: &'a mut dyn Message) -> ReflectRepeatedMut<'a>;

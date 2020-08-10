@@ -9,9 +9,9 @@ use crate::reflect::runtime_types::RuntimeTypeWithDeref;
 use crate::reflect::value::MessageRef;
 use crate::reflect::value::ReflectValueMut;
 use crate::reflect::ProtobufValueSized;
-use crate::reflect::RuntimeTypeBox;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
+use crate::reflect::RuntimeTypeBox;
 use crate::MessageField;
 
 pub(crate) mod oneof;

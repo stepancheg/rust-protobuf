@@ -10,7 +10,6 @@ use crate::reflect::map::ReflectMapRef;
 use crate::reflect::ProtobufValueSized;
 use crate::reflect::RuntimeTypeBox;
 
-
 pub(crate) trait MapFieldAccessor: Send + Sync + 'static {
     fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectMapRef<'a>;
     fn mut_reflect<'a>(&self, m: &'a mut dyn Message) -> ReflectMapMut<'a>;
