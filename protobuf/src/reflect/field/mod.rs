@@ -10,6 +10,7 @@ use crate::reflect::dynamic::DynamicMessage;
 use crate::reflect::field::dynamic::DynamicFieldDescriptorRef;
 use crate::reflect::map::ReflectMapMut;
 use crate::reflect::map::ReflectMapRef;
+use crate::reflect::message::MessageDescriptorImplRef;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::repeated::ReflectRepeatedMut;
@@ -20,7 +21,6 @@ use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::reflect::RuntimeTypeBox;
-use crate::reflect::RuntimeTypeDynamic;
 use std::fmt;
 
 pub(crate) mod dynamic;
@@ -115,24 +115,38 @@ impl FieldDescriptor {
         &self.message_descriptor.get_indices().json_names[self.index]
     }
 
-    /// If this field repeated?
-    pub fn is_repeated(&self) -> bool {
+    /// If this field repeated or map?
+    pub fn is_repeated_or_map(&self) -> bool {
         self.proto().get_label() == field_descriptor_proto::Label::LABEL_REPEATED
     }
 
+    /// Is this field repeated, but not map field?
+    pub fn is_repeated(&self) -> bool {
+        match self.runtime_field_type() {
+            RuntimeFieldType::Repeated(..) => true,
+            _ => false,
+        }
+    }
+
     fn get_impl(&self) -> FieldDescriptorImplRef {
-        self.message_descriptor
-            .get_field_descriptor_impl(self.index)
+        match self.message_descriptor.get_impl() {
+            MessageDescriptorImplRef::Generated(g) => {
+                FieldDescriptorImplRef::Generated(&g.fields[self.index].accessor)
+            }
+            MessageDescriptorImplRef::Dynamic(message) => {
+                FieldDescriptorImplRef::Dynamic(DynamicFieldDescriptorRef {
+                    field: self,
+                    message,
+                })
+            }
+        }
     }
 
     /// If this field a map field?
     pub fn is_map(&self) -> bool {
-        match self.get_impl() {
-            FieldDescriptorImplRef::Generated(GeneratedFieldAccessor::V2(AccessorV2::Map(..))) => {
-                true
-            }
-            FieldDescriptorImplRef::Generated(GeneratedFieldAccessor::V2(..)) => false,
-            FieldDescriptorImplRef::Dynamic(..) => unimplemented!(), // TODO
+        match self.runtime_field_type() {
+            RuntimeFieldType::Map(..) => true,
+            _ => false,
         }
     }
 
@@ -247,10 +261,10 @@ impl FieldDescriptor {
     /// # Panics
     ///
     /// If this field belongs to a different message type or field is not singular.
-    pub fn singular_runtime_type(&self) -> &dyn RuntimeTypeDynamic {
-        match self.singular() {
-            SingularFieldAccessorRef::Generated(g) => g.element_type,
-            SingularFieldAccessorRef::Dynamic(..) => unimplemented!(), // TODO
+    pub fn singular_runtime_type(&self) -> RuntimeTypeBox {
+        match self.runtime_field_type() {
+            RuntimeFieldType::Singular(s) => s,
+            _ => panic!("Not a singular field: {}", self),
         }
     }
 
@@ -269,17 +283,8 @@ impl FieldDescriptor {
 
     /// Dynamic representation of field type.
     pub fn runtime_field_type(&self) -> RuntimeFieldType {
-        use self::AccessorV2::*;
         match self.get_impl() {
-            FieldDescriptorImplRef::Generated(GeneratedFieldAccessor::V2(Singular(ref a))) => {
-                RuntimeFieldType::Singular(a.element_type.to_box())
-            }
-            FieldDescriptorImplRef::Generated(GeneratedFieldAccessor::V2(Repeated(ref a))) => {
-                RuntimeFieldType::Repeated(a.element_type.to_box())
-            }
-            FieldDescriptorImplRef::Generated(GeneratedFieldAccessor::V2(Map(ref a))) => {
-                RuntimeFieldType::Map(a.key_type.to_box(), a.value_type.to_box())
-            }
+            FieldDescriptorImplRef::Generated(g) => g.runtime_field_type(),
             FieldDescriptorImplRef::Dynamic(d) => d.runtime_field_type(),
         }
     }
@@ -290,20 +295,9 @@ impl FieldDescriptor {
     ///
     /// If this field belongs to a different message type.
     pub fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectFieldRef<'a> {
-        use self::AccessorV2::*;
         match self.get_impl() {
-            FieldDescriptorImplRef::Generated(GeneratedFieldAccessor::V2(Singular(ref a))) => {
-                ReflectFieldRef::Optional(a.accessor.get_field(m))
-            }
-            FieldDescriptorImplRef::Generated(GeneratedFieldAccessor::V2(Repeated(ref a))) => {
-                ReflectFieldRef::Repeated(a.accessor.get_reflect(m))
-            }
-            FieldDescriptorImplRef::Generated(GeneratedFieldAccessor::V2(Map(ref a))) => {
-                ReflectFieldRef::Map(a.accessor.get_reflect(m))
-            }
-            FieldDescriptorImplRef::Dynamic(..) => {
-                DynamicMessage::downcast_ref(m).get_reflect(self)
-            }
+            FieldDescriptorImplRef::Generated(g) => g.get_reflect(m),
+            FieldDescriptorImplRef::Dynamic(d) => d.get_reflect(m),
         }
     }
 
@@ -328,8 +322,8 @@ impl FieldDescriptor {
     /// If this field belongs to a different message type or field is not `repeated`.
     pub fn mut_repeated<'a>(&self, m: &'a mut dyn Message) -> ReflectRepeatedMut<'a> {
         match self.repeated() {
-            RepeatedFieldAccessorRef::Generated(g) => g.accessor.mut_reflect(m),
-            RepeatedFieldAccessorRef::Dynamic(..) => unimplemented!(), // TODO
+            RepeatedFieldAccessorRef::Generated(g) => g.accessor.mut_repeated(m),
+            RepeatedFieldAccessorRef::Dynamic(d) => d.mut_repeated(m),
         }
     }
 
@@ -355,7 +349,7 @@ impl FieldDescriptor {
     pub fn mut_map<'a>(&self, m: &'a mut dyn Message) -> ReflectMapMut<'a> {
         match self.map() {
             MapFieldAccessorRef::Generated(g) => g.accessor.mut_reflect(m),
-            MapFieldAccessorRef::Dynamic(..) => DynamicMessage::downcast_mut(m).mut_map(self),
+            MapFieldAccessorRef::Dynamic(d) => d.mut_map(m),
         }
     }
 }

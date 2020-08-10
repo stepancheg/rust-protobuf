@@ -11,8 +11,8 @@ use crate::reflect::ProtobufValueSized;
 use crate::reflect::RuntimeTypeDynamic;
 
 pub(crate) trait RepeatedFieldAccessor: Send + Sync + 'static {
-    fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectRepeatedRef<'a>;
-    fn mut_reflect<'a>(&self, m: &'a mut dyn Message) -> ReflectRepeatedMut<'a>;
+    fn get_repeated<'a>(&self, m: &'a dyn Message) -> ReflectRepeatedRef<'a>;
+    fn mut_repeated<'a>(&self, m: &'a mut dyn Message) -> ReflectRepeatedMut<'a>;
 }
 
 pub(crate) struct RepeatedFieldAccessorHolder {
@@ -64,16 +64,16 @@ where
     M: Message,
     V: ProtobufValueSized,
 {
-    fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectRepeatedRef<'a> {
+    fn get_repeated<'a>(&self, m: &'a dyn Message) -> ReflectRepeatedRef<'a> {
         let m = m.downcast_ref().unwrap();
         let repeated = self.fns.get_field(m);
-        ReflectRepeatedRef::new_repeated(repeated)
+        ReflectRepeatedRef::new(repeated)
     }
 
-    fn mut_reflect<'a>(&self, m: &'a mut dyn Message) -> ReflectRepeatedMut<'a> {
+    fn mut_repeated<'a>(&self, m: &'a mut dyn Message) -> ReflectRepeatedMut<'a> {
         let m = m.downcast_mut().unwrap();
         let repeated = self.fns.mut_field(m);
-        ReflectRepeatedMut { repeated }
+        ReflectRepeatedMut::new(repeated)
     }
 }
 

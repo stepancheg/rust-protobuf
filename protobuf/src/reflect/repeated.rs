@@ -149,11 +149,11 @@ pub struct ReflectRepeatedRef<'a> {
 
 /// Dynamic mutable reference to repeated field
 pub struct ReflectRepeatedMut<'a> {
-    pub(crate) repeated: &'a mut dyn ReflectRepeated,
+    repeated: &'a mut dyn ReflectRepeated,
 }
 
 impl<'a> ReflectRepeatedRef<'a> {
-    pub(crate) fn new_repeated(repeated: &'a dyn ReflectRepeated) -> ReflectRepeatedRef<'a> {
+    pub(crate) fn new(repeated: &'a dyn ReflectRepeated) -> ReflectRepeatedRef<'a> {
         ReflectRepeatedRef {
             imp: ReflectRepeatedRefImpl::Generated(repeated),
         }
@@ -267,8 +267,12 @@ impl<'a> PartialEq<ReflectRepeatedRef<'a>> for Vec<ReflectValueBox> {
 }
 
 impl<'a> ReflectRepeatedMut<'a> {
+    pub(crate) fn new(repeated: &'a mut dyn ReflectRepeated) -> ReflectRepeatedMut<'a> {
+        ReflectRepeatedMut { repeated }
+    }
+
     fn as_ref(&'a self) -> ReflectRepeatedRef<'a> {
-        ReflectRepeatedRef::new_repeated(self.repeated)
+        ReflectRepeatedRef::new(self.repeated)
     }
 
     /// Number of elements in repeated field

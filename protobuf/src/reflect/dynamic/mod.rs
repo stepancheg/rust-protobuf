@@ -7,6 +7,7 @@ use crate::reflect::MessageDescriptor;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectFieldRef;
 use crate::reflect::ReflectMapMut;
+use crate::reflect::ReflectRepeatedMut;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::reflect::RuntimeFieldType;
@@ -114,7 +115,19 @@ impl DynamicMessage {
         unimplemented!(); // TODO
     }
 
-    pub(crate) fn mut_map(&mut self, field: &FieldDescriptor) -> ReflectMapMut {
+    pub(crate) fn mut_repeated<'a>(
+        &'a mut self,
+        field: &FieldDescriptor,
+    ) -> ReflectRepeatedMut<'a> {
+        assert_eq!(self.descriptor, field.message_descriptor);
+        self.init_fields();
+        match &mut self.fields[field.index] {
+            DynamicFieldValue::Repeated(r) => ReflectRepeatedMut::new(r),
+            _ => panic!("Not a repeated field: {}", field),
+        }
+    }
+
+    pub(crate) fn mut_map<'a>(&'a mut self, field: &FieldDescriptor) -> ReflectMapMut<'a> {
         assert_eq!(field.message_descriptor, self.descriptor);
         self.init_fields();
         match &mut self.fields[field.index] {

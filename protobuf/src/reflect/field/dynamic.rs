@@ -1,21 +1,25 @@
 use crate::descriptor::field_descriptor_proto;
 use crate::descriptor::field_descriptor_proto::Type;
 use crate::descriptor::FieldDescriptorProto;
+use crate::reflect::dynamic::DynamicMessage;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
 use crate::reflect::message::dynamic::DynamicMessageDescriptor;
-use crate::reflect::FileDescriptor;
+use crate::reflect::FieldDescriptor;
+use crate::reflect::ReflectFieldRef;
+use crate::reflect::ReflectMapMut;
+use crate::reflect::ReflectRepeatedMut;
 use crate::reflect::RuntimeFieldType;
 use crate::reflect::RuntimeTypeBox;
+use crate::Message;
 
 pub(crate) struct DynamicFieldDescriptorRef<'a> {
-    pub(crate) file: &'a FileDescriptor,
+    pub(crate) field: &'a FieldDescriptor,
     pub(crate) message: &'a DynamicMessageDescriptor,
-    pub(crate) index: usize,
 }
 
 impl<'a> DynamicFieldDescriptorRef<'a> {
     fn get_proto(&self) -> &FieldDescriptorProto {
-        &self.message.get_proto().field[self.index]
+        &self.message.get_proto().field[self.field.index]
     }
 
     fn element_type(&self) -> RuntimeTypeBox {
@@ -53,7 +57,9 @@ impl<'a> DynamicFieldDescriptorRef<'a> {
 
         // TODO: unnecessary complicated: we know the message is declared in the same file
         let m = match self
-            .file
+            .field
+            .message_descriptor
+            .file_descriptor
             .find_message_or_enum_proto_in_all_files(self.get_proto().get_type_name())
         {
             Some((_, MessageOrEnum::Message(m))) => m,
@@ -83,5 +89,17 @@ impl<'a> DynamicFieldDescriptorRef<'a> {
                 RuntimeFieldType::Repeated(self.element_type())
             }
         }
+    }
+
+    pub(crate) fn get_reflect<'b>(&self, message: &'b dyn Message) -> ReflectFieldRef<'b> {
+        DynamicMessage::downcast_ref(message).get_reflect(&self.field)
+    }
+
+    pub(crate) fn mut_repeated<'b>(&self, message: &'b mut dyn Message) -> ReflectRepeatedMut<'b> {
+        DynamicMessage::downcast_mut(message).mut_repeated(&self.field)
+    }
+
+    pub(crate) fn mut_map<'b>(&self, message: &'b mut dyn Message) -> ReflectMapMut<'b> {
+        DynamicMessage::downcast_mut(message).mut_map(&self.field)
     }
 }

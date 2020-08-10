@@ -61,7 +61,7 @@ fn test_singular_field(message: &mut dyn Message, field: &FieldDescriptor) {
     // should not crash
     field.get_singular_field_or_default(message);
 
-    let value = value_for_runtime_type(&field.singular_runtime_type().to_box());
+    let value = value_for_runtime_type(&field.singular_runtime_type());
     field.set_singular_field(message, value);
 }
 

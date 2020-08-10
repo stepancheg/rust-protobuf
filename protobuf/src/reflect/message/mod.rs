@@ -6,8 +6,6 @@ use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 
 use crate::reflect::dynamic::DynamicMessage;
-use crate::reflect::field::dynamic::DynamicFieldDescriptorRef;
-use crate::reflect::field::FieldDescriptorImplRef;
 use crate::reflect::file::FileDescriptorImpl;
 use crate::reflect::message::common::MessageIndices;
 use crate::reflect::message::dynamic::DynamicMessageDescriptor;
@@ -26,7 +24,7 @@ pub(crate) mod generated;
 /// Used for reflection.
 #[derive(Clone, Eq, PartialEq)]
 pub struct MessageDescriptor {
-    file_descriptor: FileDescriptor,
+    pub(crate) file_descriptor: FileDescriptor,
     index: usize,
 }
 
@@ -66,28 +64,13 @@ impl MessageDescriptor {
         }
     }
 
-    fn get_impl(&self) -> MessageDescriptorImplRef {
+    pub(crate) fn get_impl(&self) -> MessageDescriptorImplRef {
         match &self.file_descriptor.imp {
             FileDescriptorImpl::Generated(g) => {
                 MessageDescriptorImplRef::Generated(&g.messages[self.index])
             }
             FileDescriptorImpl::Dynamic(d) => {
                 MessageDescriptorImplRef::Dynamic(&d.messages[self.index])
-            }
-        }
-    }
-
-    pub(crate) fn get_field_descriptor_impl(&self, index: usize) -> FieldDescriptorImplRef {
-        match self.get_impl() {
-            MessageDescriptorImplRef::Generated(g) => {
-                FieldDescriptorImplRef::Generated(&g.fields[index].accessor)
-            }
-            MessageDescriptorImplRef::Dynamic(message) => {
-                FieldDescriptorImplRef::Dynamic(DynamicFieldDescriptorRef {
-                    file: &self.file_descriptor,
-                    message,
-                    index,
-                })
             }
         }
     }
@@ -230,7 +213,7 @@ impl MessageDescriptor {
     }
 }
 
-enum MessageDescriptorImplRef<'a> {
+pub(crate) enum MessageDescriptorImplRef<'a> {
     Generated(&'static GeneratedMessageDescriptor),
     Dynamic(&'a DynamicMessageDescriptor),
 }

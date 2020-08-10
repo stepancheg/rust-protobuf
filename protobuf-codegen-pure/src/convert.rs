@@ -467,7 +467,7 @@ impl<'a> Resolver<'a> {
             match option.name.get_simple() {
                 Some(simple) => {
                     if let Some(field) = M::descriptor_static().get_field_by_name(simple.get()) {
-                        if field.is_repeated() || field.is_map() {
+                        if field.is_repeated_or_map() {
                             continue;
                         }
 
