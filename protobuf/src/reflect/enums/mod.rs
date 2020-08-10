@@ -88,7 +88,7 @@ impl EnumValueDescriptor {
 /// Dynamic representation of enum type.
 ///
 /// Can be used in reflective operations.
-#[derive(Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq, Hash)]
 pub struct EnumDescriptor {
     file_descriptor: FileDescriptor,
     index: usize,
@@ -186,14 +186,19 @@ impl EnumDescriptor {
         })
     }
 
+    /// Default enum value (first variant)
+    pub fn get_default_value(&self) -> EnumValueDescriptor {
+        EnumValueDescriptor {
+            enum_descriptor: self.clone(),
+            index: 0,
+        }
+    }
+
     /// Find enum variant by number or return default (first) enum value
     pub fn get_value_by_number_or_default(&self, number: i32) -> EnumValueDescriptor {
         match self.get_value_by_number(number) {
             Some(v) => v,
-            None => EnumValueDescriptor {
-                enum_descriptor: self.clone(),
-                index: 0,
-            },
+            None => self.get_default_value(),
         }
     }
 

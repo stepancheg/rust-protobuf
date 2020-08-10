@@ -24,6 +24,7 @@ pub mod rt;
 
 pub(crate) mod name;
 
+pub use self::value::hashable::ReflectValueBoxHashable;
 pub use self::value::ProtobufValue;
 pub use self::value::ProtobufValueSized;
 pub use self::value::ReflectValueBox;

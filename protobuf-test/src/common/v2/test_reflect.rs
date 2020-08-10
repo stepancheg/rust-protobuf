@@ -1,6 +1,7 @@
 use protobuf::reflect::FieldDescriptor;
 use protobuf::reflect::ReflectFieldRef;
 use protobuf::reflect::ReflectValueBox;
+use protobuf::reflect::ReflectValueBoxHashable;
 use protobuf::reflect::ReflectValueRef;
 use protobuf::Message;
 use protobuf::ProtobufEnum;
@@ -60,7 +61,7 @@ fn test_singular_field(message: &mut dyn Message, field: &FieldDescriptor) {
     // should not crash
     field.get_singular_field_or_default(message);
 
-    let value = value_for_runtime_type(field.singular_runtime_type().to_box());
+    let value = value_for_runtime_type(&field.singular_runtime_type().to_box());
     field.set_singular_field(message, value);
 }
 
@@ -96,7 +97,7 @@ fn test_repeated_field(message: &mut dyn Message, field: &FieldDescriptor) {
         let mut repeated = field.mut_repeated(message);
 
         for i in 0..3 {
-            let value = value_for_runtime_type(repeated.element_type());
+            let value = value_for_runtime_type(&repeated.element_type());
             expected.push(value.clone());
             repeated.push(value.clone());
             let fetched = repeated.get(i);
@@ -143,10 +144,7 @@ fn test_map_field(message: &mut dyn Message, field: &FieldDescriptor) {
         assert!(map.is_empty());
         assert_eq!(0, map.len());
 
-        assert_eq!(
-            None,
-            map.get(value_for_runtime_type(k.to_box()).as_value_ref())
-        );
+        assert_eq!(None, map.get(value_for_runtime_type(&k).as_value_ref()));
     }
 
     {
@@ -154,15 +152,15 @@ fn test_map_field(message: &mut dyn Message, field: &FieldDescriptor) {
         assert!(map.is_empty());
         assert_eq!(0, map.len());
 
-        assert_eq!(
-            None,
-            map.get(value_for_runtime_type(k.to_box()).as_value_ref())
+        assert_eq!(None, map.get(value_for_runtime_type(&k).as_value_ref()));
+
+        let key = value_for_runtime_type(&k);
+        let value = value_for_runtime_type(&v);
+
+        map.insert(
+            ReflectValueBoxHashable::from_box(key.clone()),
+            value.clone(),
         );
-
-        let key = value_for_runtime_type(k.to_box());
-        let value = value_for_runtime_type(v.to_box());
-
-        map.insert(key.clone(), value.clone());
 
         assert_eq!(Some(value.as_value_ref()), map.get(key.as_value_ref()));
 

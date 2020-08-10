@@ -46,7 +46,7 @@ where
     fn mut_reflect<'a>(&self, m: &'a mut dyn Message) -> ReflectMapMut<'a> {
         let m = m.downcast_mut().unwrap();
         let map = (self.mut_field)(m);
-        ReflectMapMut { map }
+        ReflectMapMut::new(map)
     }
 }
 

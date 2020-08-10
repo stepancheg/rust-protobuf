@@ -17,7 +17,6 @@ use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::RuntimeFieldType;
 use crate::reflect::RuntimeTypeBox;
-use crate::reflect::RuntimeTypeDynamic;
 use crate::text_format::lexer::Lexer;
 use crate::text_format::lexer::LexerError;
 use crate::text_format::lexer::Loc;
@@ -31,6 +30,7 @@ use super::rfc_3339;
 use crate::text_format::lexer::JsonNumberLit;
 
 use crate::json::well_known_wrapper::WellKnownWrapper;
+use crate::reflect::value::hashable::ReflectValueBoxHashable;
 use crate::well_known_types::value;
 use crate::well_known_types::Any;
 use crate::well_known_types::BoolValue;
@@ -448,8 +448,8 @@ impl<'a> Parser<'a> {
         Ok(m)
     }
 
-    fn read_value(&mut self, t: &dyn RuntimeTypeDynamic) -> ParseResultWithoutLoc<ReflectValueBox> {
-        match t.to_box() {
+    fn read_value(&mut self, t: &RuntimeTypeBox) -> ParseResultWithoutLoc<ReflectValueBox> {
+        match t {
             RuntimeTypeBox::I32 => self.read_i32().map(ReflectValueBox::from),
             RuntimeTypeBox::I64 => self.read_i64().map(ReflectValueBox::from),
             RuntimeTypeBox::U32 => self.read_u32().map(ReflectValueBox::from),
@@ -468,7 +468,7 @@ impl<'a> Parser<'a> {
         &mut self,
         message: &mut dyn Message,
         field: &FieldDescriptor,
-        t: &dyn RuntimeTypeDynamic,
+        t: &RuntimeTypeBox,
     ) -> ParseResultWithoutLoc<()> {
         field.set_singular_field(message, self.read_value(t)?);
         Ok(())
@@ -501,7 +501,7 @@ impl<'a> Parser<'a> {
         &mut self,
         message: &mut dyn Message,
         field: &FieldDescriptor,
-        t: &dyn RuntimeTypeDynamic,
+        t: &RuntimeTypeBox,
     ) -> ParseResultWithoutLoc<()> {
         let mut repeated = field.mut_repeated(message);
         repeated.clear();
@@ -555,22 +555,30 @@ impl<'a> Parser<'a> {
     fn parse_key(
         &self,
         key: String,
-        t: &dyn RuntimeTypeDynamic,
-    ) -> ParseResultWithoutLoc<ReflectValueBox> {
-        match t.to_box() {
-            RuntimeTypeBox::I32 => self.parse_number::<i32>(&key).map(ReflectValueBox::I32),
-            RuntimeTypeBox::I64 => self.parse_number::<i64>(&key).map(ReflectValueBox::I64),
-            RuntimeTypeBox::U32 => self.parse_number::<u32>(&key).map(ReflectValueBox::U32),
-            RuntimeTypeBox::U64 => self.parse_number::<u64>(&key).map(ReflectValueBox::U64),
-            // technically f32 and f64 cannot be map keys
-            RuntimeTypeBox::F32 => self.parse_number::<f32>(&key).map(ReflectValueBox::F32),
-            RuntimeTypeBox::F64 => self.parse_number::<f64>(&key).map(ReflectValueBox::F64),
-            RuntimeTypeBox::Bool => self.parse_bool(&key).map(ReflectValueBox::from),
-            RuntimeTypeBox::String => Ok(ReflectValueBox::String(key)),
-            RuntimeTypeBox::VecU8 => self.parse_bytes(&key).map(ReflectValueBox::Bytes),
+        t: &RuntimeTypeBox,
+    ) -> ParseResultWithoutLoc<ReflectValueBoxHashable> {
+        match t {
+            RuntimeTypeBox::I32 => self
+                .parse_number::<i32>(&key)
+                .map(ReflectValueBoxHashable::I32),
+            RuntimeTypeBox::I64 => self
+                .parse_number::<i64>(&key)
+                .map(ReflectValueBoxHashable::I64),
+            RuntimeTypeBox::U32 => self
+                .parse_number::<u32>(&key)
+                .map(ReflectValueBoxHashable::U32),
+            RuntimeTypeBox::U64 => self
+                .parse_number::<u64>(&key)
+                .map(ReflectValueBoxHashable::U64),
+            RuntimeTypeBox::Bool => self.parse_bool(&key).map(ReflectValueBoxHashable::Bool),
+            RuntimeTypeBox::String => Ok(ReflectValueBoxHashable::String(key)),
+            RuntimeTypeBox::VecU8 => self.parse_bytes(&key).map(ReflectValueBoxHashable::Bytes),
             RuntimeTypeBox::Enum(e) => self
                 .parse_enum(key, &e)
-                .map(|v| ReflectValueBox::Enum(v.enum_descriptor().clone(), v.value())),
+                .map(|v| ReflectValueBoxHashable::Enum(v.enum_descriptor().clone(), v.value())),
+            t @ RuntimeTypeBox::F32 | t @ RuntimeTypeBox::F64 => {
+                panic!("{} cannot be a map key", t)
+            }
             RuntimeTypeBox::Message(_) => panic!("message cannot be a map key"),
         }
     }
@@ -579,8 +587,8 @@ impl<'a> Parser<'a> {
         &mut self,
         message: &mut dyn Message,
         field: &FieldDescriptor,
-        kt: &dyn RuntimeTypeDynamic,
-        vt: &dyn RuntimeTypeDynamic,
+        kt: &RuntimeTypeBox,
+        vt: &RuntimeTypeBox,
     ) -> ParseResultWithoutLoc<()> {
         let mut map = field.mut_map(message);
         map.clear();
@@ -636,9 +644,9 @@ impl<'a> Parser<'a> {
         field: &FieldDescriptor,
     ) -> ParseResultWithoutLoc<()> {
         match field.runtime_field_type() {
-            RuntimeFieldType::Singular(t) => self.merge_singular_field(message, field, t),
-            RuntimeFieldType::Repeated(t) => self.merge_repeated_field(message, field, t),
-            RuntimeFieldType::Map(kt, vt) => self.merge_map_field(message, field, kt, vt),
+            RuntimeFieldType::Singular(t) => self.merge_singular_field(message, field, &t),
+            RuntimeFieldType::Repeated(t) => self.merge_repeated_field(message, field, &t),
+            RuntimeFieldType::Map(kt, vt) => self.merge_map_field(message, field, &kt, &vt),
         }
     }
 

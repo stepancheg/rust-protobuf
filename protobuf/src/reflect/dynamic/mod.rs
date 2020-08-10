@@ -1,18 +1,25 @@
 use crate::cached_size::CachedSize;
-use crate::reflect::repeated::{ReflectRepeated, ReflectRepeatedIter};
+use crate::reflect::dynamic::map::DynamicMap;
+use crate::reflect::dynamic::repeated::DynamicRepeated;
+use crate::reflect::value::ReflectValueMut;
+use crate::reflect::FieldDescriptor;
+use crate::reflect::MessageDescriptor;
 use crate::reflect::ProtobufValue;
+use crate::reflect::ReflectFieldRef;
+use crate::reflect::ReflectMapMut;
 use crate::reflect::ReflectValueBox;
+use crate::reflect::ReflectValueRef;
 use crate::reflect::RuntimeFieldType;
 use crate::reflect::RuntimeTypeBox;
-use crate::reflect::{FieldDescriptor, MessageDescriptor};
-use crate::reflect::{ReflectFieldRef, ReflectValueRef};
 use crate::Clear;
 use crate::CodedInputStream;
 use crate::CodedOutputStream;
 use crate::Message;
 use crate::ProtobufResult;
 use crate::UnknownFields;
-use std::collections::HashMap;
+
+pub(crate) mod map;
+pub(crate) mod repeated;
 
 #[derive(Debug, Clone)]
 struct DynamicOptional {
@@ -23,80 +30,6 @@ struct DynamicOptional {
 impl DynamicOptional {
     fn none(elem: RuntimeTypeBox) -> DynamicOptional {
         DynamicOptional { elem, value: None }
-    }
-}
-
-#[derive(Debug, Clone)]
-pub(crate) struct DynamicRepeated {
-    elem: RuntimeTypeBox,
-    vec: Vec<ReflectValueBox>,
-}
-
-impl ReflectRepeated for DynamicRepeated {
-    fn reflect_iter(&self) -> ReflectRepeatedIter {
-        unimplemented!()
-    }
-
-    fn len(&self) -> usize {
-        self.vec.len()
-    }
-
-    fn get(&self, index: usize) -> ReflectValueRef {
-        self.vec[index].as_value_ref()
-    }
-
-    fn set(&mut self, index: usize, value: ReflectValueBox) {
-        unimplemented!()
-    }
-
-    fn push(&mut self, value: ReflectValueBox) {
-        unimplemented!()
-    }
-
-    fn clear(&mut self) {
-        self.vec.clear();
-    }
-
-    fn element_type(&self) -> RuntimeTypeBox {
-        self.elem.clone()
-    }
-}
-
-impl DynamicRepeated {
-    fn new(elem: RuntimeTypeBox) -> DynamicRepeated {
-        DynamicRepeated {
-            elem,
-            vec: Vec::new(),
-        }
-    }
-
-    pub fn len(&self) -> usize {
-        self.vec.len()
-    }
-
-    pub fn get(&self, index: usize) -> ReflectValueRef {
-        self.vec[index].as_value_ref()
-    }
-
-    pub fn element_type(&self) -> RuntimeTypeBox {
-        self.elem.clone()
-    }
-}
-
-#[derive(Debug, Clone)]
-pub(crate) struct DynamicMap {
-    key: RuntimeTypeBox,
-    value: RuntimeTypeBox,
-    map: HashMap<ReflectValueBox, ReflectValueBox>,
-}
-
-impl DynamicMap {
-    fn new(key: RuntimeTypeBox, value: RuntimeTypeBox) -> DynamicMap {
-        DynamicMap {
-            key,
-            value,
-            map: HashMap::new(),
-        }
     }
 }
 
@@ -118,21 +51,11 @@ impl DynamicFieldValue {
 }
 
 impl DynamicFieldValue {
-    fn default_static_for_field(field: &FieldDescriptor) -> &'static DynamicFieldValue {
-        unimplemented!()
-    }
-
     fn default_for_field(field: &FieldDescriptor) -> DynamicFieldValue {
         match field.runtime_field_type() {
-            RuntimeFieldType::Singular(s) => {
-                DynamicFieldValue::Singular(DynamicOptional::none(s.to_box()))
-            }
-            RuntimeFieldType::Repeated(r) => {
-                DynamicFieldValue::Repeated(DynamicRepeated::new(r.to_box()))
-            }
-            RuntimeFieldType::Map(k, v) => {
-                DynamicFieldValue::Map(DynamicMap::new(k.to_box(), v.to_box()))
-            }
+            RuntimeFieldType::Singular(s) => DynamicFieldValue::Singular(DynamicOptional::none(s)),
+            RuntimeFieldType::Repeated(r) => DynamicFieldValue::Repeated(DynamicRepeated::new(r)),
+            RuntimeFieldType::Map(k, v) => DynamicFieldValue::Map(DynamicMap::new(k, v)),
         }
     }
 }
@@ -166,13 +89,46 @@ impl DynamicMessage {
         }
     }
 
-    fn get_field<'a>(&'a self, field: &FieldDescriptor) -> ReflectFieldRef<'a> {
-        assert!(self.descriptor == field.message_descriptor);
+    pub(crate) fn get_reflect<'a>(&'a self, field: &FieldDescriptor) -> ReflectFieldRef<'a> {
+        assert_eq!(self.descriptor, field.message_descriptor);
         if self.fields.is_empty() {
             ReflectFieldRef::default_for_field(field)
         } else {
             self.fields[field.index].as_ref()
         }
+    }
+
+    pub(crate) fn get_singular_field_or_default<'a>(
+        &self,
+        field: &FieldDescriptor,
+    ) -> ReflectValueRef<'a> {
+        assert_eq!(field.message_descriptor, self.descriptor);
+        unimplemented!(); // TODO
+    }
+
+    pub(crate) fn mut_singular_field_or_default<'a>(
+        &mut self,
+        field: &FieldDescriptor,
+    ) -> ReflectValueMut<'a> {
+        assert_eq!(field.message_descriptor, self.descriptor);
+        unimplemented!(); // TODO
+    }
+
+    pub(crate) fn mut_map(&mut self, field: &FieldDescriptor) -> ReflectMapMut {
+        assert_eq!(field.message_descriptor, self.descriptor);
+        self.init_fields();
+        match &mut self.fields[field.index] {
+            DynamicFieldValue::Map(m) => ReflectMapMut::new(m),
+            _ => panic!("Not a map field: {}", field),
+        }
+    }
+
+    pub fn downcast_ref(message: &dyn Message) -> &DynamicMessage {
+        Message::downcast_ref(message).unwrap()
+    }
+
+    pub fn downcast_mut(message: &mut dyn Message) -> &mut DynamicMessage {
+        Message::downcast_mut(message).unwrap()
     }
 }
 

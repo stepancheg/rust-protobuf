@@ -30,6 +30,8 @@ use crate::reflect::runtime_types::RuntimeTypeVecU8;
 use crate::reflect::transmute_eq::transmute_eq;
 use std::ops::Deref;
 
+pub(crate) mod hashable;
+
 /// Type implemented by all protobuf singular types
 /// (primitives, string, messages, enums).
 ///
@@ -194,6 +196,15 @@ impl<'a> MessageRef<'a> {
             imp: MessageRefImpl::Message(message),
         }
     }
+
+    pub fn default_instance(message: &MessageDescriptor) -> MessageRef<'static> {
+        match message.default_instance() {
+            Some(m) => MessageRef::new_message(m),
+            None => MessageRef {
+                imp: MessageRefImpl::EmptyDynamic(DynamicMessage::new(message.clone())),
+            },
+        }
+    }
 }
 
 impl<'a> Deref for MessageRef<'a> {
@@ -235,6 +246,23 @@ pub enum ReflectValueRef<'a> {
 }
 
 impl<'a> ReflectValueRef<'a> {
+    /// Get type of this value.
+    pub fn get_type(&self) -> RuntimeTypeBox {
+        match self {
+            ReflectValueRef::U32(..) => RuntimeTypeBox::U32,
+            ReflectValueRef::U64(..) => RuntimeTypeBox::U64,
+            ReflectValueRef::I32(..) => RuntimeTypeBox::I32,
+            ReflectValueRef::I64(..) => RuntimeTypeBox::I64,
+            ReflectValueRef::F32(..) => RuntimeTypeBox::F32,
+            ReflectValueRef::F64(..) => RuntimeTypeBox::F64,
+            ReflectValueRef::Bool(..) => RuntimeTypeBox::Bool,
+            ReflectValueRef::String(..) => RuntimeTypeBox::String,
+            ReflectValueRef::Bytes(..) => RuntimeTypeBox::VecU8,
+            ReflectValueRef::Enum(d, ..) => RuntimeTypeBox::Enum(d.clone()),
+            ReflectValueRef::Message(m) => RuntimeTypeBox::Message(m.descriptor()),
+        }
+    }
+
     /// Value is "non-zero"?
     fn _is_non_zero(&self) -> bool {
         match self {
@@ -509,6 +537,11 @@ type StringOrChars = String;
 type StringOrChars = Chars;
 
 impl ReflectValueBox {
+    /// Type of this value.
+    pub fn get_type(&self) -> RuntimeTypeBox {
+        self.as_value_ref().get_type()
+    }
+
     /// As ref
     pub fn as_value_ref(&self) -> ReflectValueRef {
         match self {

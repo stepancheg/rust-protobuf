@@ -5,9 +5,11 @@ use std::hash::Hash;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
+use crate::reflect::value::hashable::ReflectValueBoxHashable;
 use crate::reflect::ProtobufValueSized;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
+use crate::reflect::RuntimeTypeBox;
 
 /// Implemented for `HashMap` with appropriate keys and values
 pub(crate) trait ReflectMap: Send + Sync + 'static {
@@ -19,13 +21,13 @@ pub(crate) trait ReflectMap: Send + Sync + 'static {
 
     fn get<'a>(&'a self, key: ReflectValueRef) -> Option<ReflectValueRef<'a>>;
 
-    fn insert(&mut self, key: ReflectValueBox, value: ReflectValueBox);
+    fn insert(&mut self, key: ReflectValueBoxHashable, value: ReflectValueBox);
 
     fn clear(&mut self);
 
-    fn key_type(&self) -> &'static dyn RuntimeTypeDynamic;
+    fn key_type(&self) -> RuntimeTypeBox;
 
-    fn value_type(&self) -> &'static dyn RuntimeTypeDynamic;
+    fn value_type(&self) -> RuntimeTypeBox;
 }
 
 impl<K: ProtobufValueSized + Eq + Hash, V: ProtobufValueSized> ReflectMap for HashMap<K, V> {
@@ -49,7 +51,7 @@ impl<K: ProtobufValueSized + Eq + Hash, V: ProtobufValueSized> ReflectMap for Ha
         self.get(&key).map(V::as_ref)
     }
 
-    fn insert(&mut self, key: ReflectValueBox, value: ReflectValueBox) {
+    fn insert(&mut self, key: ReflectValueBoxHashable, value: ReflectValueBox) {
         let key: K = key.downcast().expect("wrong key type");
         let value: V = value.downcast().expect("wrong value type");
         self.insert(key, value);
@@ -59,12 +61,12 @@ impl<K: ProtobufValueSized + Eq + Hash, V: ProtobufValueSized> ReflectMap for Ha
         self.clear();
     }
 
-    fn key_type(&self) -> &'static dyn RuntimeTypeDynamic {
-        K::dynamic()
+    fn key_type(&self) -> RuntimeTypeBox {
+        K::dynamic().to_box()
     }
 
-    fn value_type(&self) -> &'static dyn RuntimeTypeDynamic {
-        V::dynamic()
+    fn value_type(&self) -> RuntimeTypeBox {
+        V::dynamic().to_box()
     }
 }
 
@@ -126,10 +128,14 @@ pub struct ReflectMapRef<'a> {
 
 /// Dynamic mutable reference to `map` field
 pub struct ReflectMapMut<'a> {
-    pub(crate) map: &'a mut dyn ReflectMap,
+    map: &'a mut dyn ReflectMap,
 }
 
 impl<'a> ReflectMapRef<'a> {
+    pub(crate) fn new(map: &'a mut dyn ReflectMap) -> ReflectMapRef<'a> {
+        ReflectMapRef { map }
+    }
+
     /// Size of the map
     pub fn len(&self) -> usize {
         self.map.len()
@@ -146,12 +152,12 @@ impl<'a> ReflectMapRef<'a> {
     }
 
     /// Map key type
-    pub fn key_type(&self) -> &dyn RuntimeTypeDynamic {
+    pub fn key_type(&self) -> RuntimeTypeBox {
         self.map.key_type()
     }
 
     /// Map value type
-    pub fn value_type(&self) -> &dyn RuntimeTypeDynamic {
+    pub fn value_type(&self) -> RuntimeTypeBox {
         self.map.value_type()
     }
 }
@@ -180,17 +186,21 @@ impl<'a> ReflectEq for ReflectMapRef<'a> {
 }
 
 impl<'a> ReflectMapMut<'a> {
+    pub(crate) fn new(map: &'a mut dyn ReflectMap) -> ReflectMapMut<'a> {
+        ReflectMapMut { map }
+    }
+
     fn as_ref(&'a self) -> ReflectMapRef<'a> {
         ReflectMapRef { map: self.map }
     }
 
     /// Map key type
-    pub fn key_type(&self) -> &dyn RuntimeTypeDynamic {
+    pub fn key_type(&self) -> RuntimeTypeBox {
         self.map.key_type()
     }
 
     /// Map value type
-    pub fn value_type(&self) -> &dyn RuntimeTypeDynamic {
+    pub fn value_type(&self) -> RuntimeTypeBox {
         self.map.value_type()
     }
 
@@ -210,7 +220,7 @@ impl<'a> ReflectMapMut<'a> {
     }
 
     /// Insert a value into the map
-    pub fn insert(&mut self, key: ReflectValueBox, value: ReflectValueBox) {
+    pub fn insert(&mut self, key: ReflectValueBoxHashable, value: ReflectValueBox) {
         self.map.insert(key, value)
     }
 

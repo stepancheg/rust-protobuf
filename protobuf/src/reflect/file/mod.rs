@@ -3,6 +3,8 @@
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::file::dynamic::DynamicFileDescriptor;
 use crate::reflect::GeneratedFileDescriptor;
+use std::hash::Hash;
+use std::hash::Hasher;
 use std::sync::Arc;
 
 pub(crate) mod dynamic;
@@ -26,10 +28,23 @@ impl PartialEq for FileDescriptorImpl {
     }
 }
 
+impl Hash for FileDescriptorImpl {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        match self {
+            FileDescriptorImpl::Generated(g) => {
+                Hash::hash(&(*g as *const GeneratedFileDescriptor), state)
+            }
+            FileDescriptorImpl::Dynamic(a) => {
+                Hash::hash(&(&**a as *const DynamicFileDescriptor), state)
+            }
+        }
+    }
+}
+
 impl Eq for FileDescriptorImpl {}
 
 /// Reflection for objects defined in `.proto` file (messages, enums, etc).
-#[derive(Clone, PartialEq, Eq)]
+#[derive(Clone, PartialEq, Eq, Hash)]
 pub struct FileDescriptor {
     pub(crate) imp: FileDescriptorImpl,
 }

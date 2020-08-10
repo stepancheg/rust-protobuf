@@ -5,8 +5,9 @@ use crate::message::Message;
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 
-use crate::reflect::acc::FieldAccessorImpl;
 use crate::reflect::dynamic::DynamicMessage;
+use crate::reflect::field::dynamic::DynamicFieldDescriptorRef;
+use crate::reflect::field::FieldDescriptorImplRef;
 use crate::reflect::file::FileDescriptorImpl;
 use crate::reflect::message::common::MessageIndices;
 use crate::reflect::message::dynamic::DynamicMessageDescriptor;
@@ -27,6 +28,12 @@ pub(crate) mod generated;
 pub struct MessageDescriptor {
     file_descriptor: FileDescriptor,
     index: usize,
+}
+
+impl fmt::Display for MessageDescriptor {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.full_name())
+    }
 }
 
 impl fmt::Debug for MessageDescriptor {
@@ -70,10 +77,18 @@ impl MessageDescriptor {
         }
     }
 
-    pub(crate) fn get_accessor(&self, index: usize) -> &FieldAccessorImpl {
+    pub(crate) fn get_field_descriptor_impl(&self, index: usize) -> FieldDescriptorImplRef {
         match self.get_impl() {
-            MessageDescriptorImplRef::Generated(g) => &g.fields[index].accessor,
-            MessageDescriptorImplRef::Dynamic(..) => &FieldAccessorImpl::Dynamic,
+            MessageDescriptorImplRef::Generated(g) => {
+                FieldDescriptorImplRef::Generated(&g.fields[index].accessor)
+            }
+            MessageDescriptorImplRef::Dynamic(message) => {
+                FieldDescriptorImplRef::Dynamic(DynamicFieldDescriptorRef {
+                    file: &self.file_descriptor,
+                    message,
+                    index,
+                })
+            }
         }
     }
 

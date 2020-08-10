@@ -4,7 +4,7 @@ use std::slice;
 use crate::reflect::value::ProtobufValue;
 use crate::reflect::value::ReflectValueRef;
 
-use crate::reflect::dynamic::DynamicRepeated;
+use crate::reflect::dynamic::repeated::DynamicRepeated;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::ProtobufValueSized;
@@ -153,9 +153,15 @@ pub struct ReflectRepeatedMut<'a> {
 }
 
 impl<'a> ReflectRepeatedRef<'a> {
-    pub(crate) fn new_generated(repeated: &'a dyn ReflectRepeated) -> ReflectRepeatedRef<'a> {
+    pub(crate) fn new_repeated(repeated: &'a dyn ReflectRepeated) -> ReflectRepeatedRef<'a> {
         ReflectRepeatedRef {
             imp: ReflectRepeatedRefImpl::Generated(repeated),
+        }
+    }
+
+    pub(crate) fn new_empty(elem: RuntimeTypeBox) -> ReflectRepeatedRef<'static> {
+        ReflectRepeatedRef {
+            imp: ReflectRepeatedRefImpl::DynamicEmpty(DynamicRepeated::new(elem)),
         }
     }
 
@@ -262,7 +268,7 @@ impl<'a> PartialEq<ReflectRepeatedRef<'a>> for Vec<ReflectValueBox> {
 
 impl<'a> ReflectRepeatedMut<'a> {
     fn as_ref(&'a self) -> ReflectRepeatedRef<'a> {
-        ReflectRepeatedRef::new_generated(self.repeated)
+        ReflectRepeatedRef::new_repeated(self.repeated)
     }
 
     /// Number of elements in repeated field

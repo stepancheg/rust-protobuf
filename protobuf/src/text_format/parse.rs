@@ -3,13 +3,13 @@ use std::str;
 
 use crate::message::Message;
 
+use crate::reflect::value::hashable::ReflectValueBoxHashable;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::EnumValueDescriptor;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::RuntimeFieldType;
 use crate::reflect::RuntimeTypeBox;
-use crate::reflect::RuntimeTypeDynamic;
 use crate::text_format::lexer::int;
 use crate::text_format::lexer::Loc;
 use crate::text_format::lexer::ParserLanguage;
@@ -24,6 +24,7 @@ pub enum ParseErrorWithoutLoc {
     UnknownField(String),
     UnknownEnumValue(String),
     MapFieldIsSpecifiedMoreThanOnce(String),
+    TypeIsNotHashable,
     IntegerOverflow,
     ExpectingBool,
     MessageNotInitialized,
@@ -195,9 +196,9 @@ impl<'a> Parser<'a> {
 
     fn read_map_entry(
         &mut self,
-        k: &dyn RuntimeTypeDynamic,
-        v: &dyn RuntimeTypeDynamic,
-    ) -> ParseResult<(ReflectValueBox, ReflectValueBox)> {
+        k: &RuntimeTypeBox,
+        v: &RuntimeTypeBox,
+    ) -> ParseResult<(ReflectValueBoxHashable, ReflectValueBox)> {
         let key_field_name: &str = "key";
         let value_field_name: &str = "value";
 
@@ -231,14 +232,16 @@ impl<'a> Parser<'a> {
             Some(value) => value,
             None => v.default_value_ref().to_box(),
         };
+        let key = ReflectValueBoxHashable::try_from(key)
+            .map_err(|_| ParseErrorWithoutLoc::TypeIsNotHashable)?;
         Ok((key, value))
     }
 
-    fn read_value_of_type(&mut self, t: &dyn RuntimeTypeDynamic) -> ParseResult<ReflectValueBox> {
-        Ok(match t.to_box() {
+    fn read_value_of_type(&mut self, t: &RuntimeTypeBox) -> ParseResult<ReflectValueBox> {
+        Ok(match t {
             RuntimeTypeBox::Enum(d) => {
                 let value = self.read_enum(&d)?.value();
-                ReflectValueBox::Enum(d, value)
+                ReflectValueBox::Enum(d.clone(), value)
             }
             RuntimeTypeBox::U32 => ReflectValueBox::U32(self.read_u32()?),
             RuntimeTypeBox::U64 => ReflectValueBox::U64(self.read_u64()?),
@@ -270,15 +273,15 @@ impl<'a> Parser<'a> {
 
         match field.runtime_field_type() {
             RuntimeFieldType::Singular(t) => {
-                let value = self.read_value_of_type(t)?;
+                let value = self.read_value_of_type(&t)?;
                 field.set_singular_field(message, value);
             }
             RuntimeFieldType::Repeated(t) => {
-                let value = self.read_value_of_type(t)?;
+                let value = self.read_value_of_type(&t)?;
                 field.mut_repeated(message).push(value);
             }
             RuntimeFieldType::Map(k, v) => {
-                let (k, v) = self.read_map_entry(k, v)?;
+                let (k, v) = self.read_map_entry(&k, &v)?;
                 field.mut_map(message).insert(k, v);
             }
         };

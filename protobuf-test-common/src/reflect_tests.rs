@@ -4,14 +4,14 @@ use std::f64;
 use protobuf::reflect::FieldDescriptor;
 use protobuf::reflect::MessageDescriptor;
 use protobuf::reflect::ReflectValueBox;
+use protobuf::reflect::ReflectValueBoxHashable;
 use protobuf::reflect::RuntimeFieldType;
 use protobuf::reflect::RuntimeTypeBox;
-use protobuf::reflect::RuntimeTypeDynamic;
 use protobuf::well_known_types::value;
 use protobuf::well_known_types::Value;
 use protobuf::Message;
 
-pub fn value_for_runtime_type(field_type: RuntimeTypeBox) -> ReflectValueBox {
+pub fn value_for_runtime_type(field_type: &RuntimeTypeBox) -> ReflectValueBox {
     match field_type {
         RuntimeTypeBox::U32 => ReflectValueBox::U32(11),
         RuntimeTypeBox::U64 => ReflectValueBox::U64(12),
@@ -41,8 +41,8 @@ fn values_for_message_type(descriptor: &MessageDescriptor) -> Vec<Box<dyn Messag
     }
 }
 
-pub fn values_for_runtime_type(field_type: &dyn RuntimeTypeDynamic) -> Vec<ReflectValueBox> {
-    match field_type.to_box() {
+pub fn values_for_runtime_type(field_type: &RuntimeTypeBox) -> Vec<ReflectValueBox> {
+    match field_type {
         RuntimeTypeBox::U32 => vec![
             ReflectValueBox::U32(11),
             ReflectValueBox::U32(0),
@@ -119,7 +119,7 @@ pub fn special_values_for_field(
     let mut r = Vec::new();
     match f.runtime_field_type() {
         RuntimeFieldType::Singular(t) => {
-            for v in values_for_runtime_type(t) {
+            for v in values_for_runtime_type(&t) {
                 let mut m = d.new_instance();
                 f.set_singular_field(&mut *m, v);
                 r.push(m);
@@ -129,16 +129,15 @@ pub fn special_values_for_field(
             // TODO: empty repeated
             // TODO: repeated of more than one element
             let mut m = d.new_instance();
-            f.mut_repeated(&mut *m)
-                .push(value_for_runtime_type(t.to_box()));
+            f.mut_repeated(&mut *m).push(value_for_runtime_type(&t));
             r.push(m);
         }
         RuntimeFieldType::Map(k, v) => {
             // TODO: empty map
             // TODO: map of more than one element
             let mut m = d.new_instance();
-            let k = value_for_runtime_type(k.to_box());
-            let v = value_for_runtime_type(v.to_box());
+            let k = ReflectValueBoxHashable::from_box(value_for_runtime_type(&k));
+            let v = value_for_runtime_type(&v);
             f.mut_map(&mut *m).insert(k, v);
             r.push(m);
         }

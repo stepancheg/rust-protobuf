@@ -476,7 +476,7 @@ impl Printer {
                 ReflectFieldRef::Optional(None) => {
                     if self.print_options.always_output_default_values {
                         let is_message = match field_type {
-                            RuntimeFieldType::Singular(s) => match s.to_box() {
+                            RuntimeFieldType::Singular(s) => match s {
                                 RuntimeTypeBox::Message(_) => true,
                                 _ => false,
                             },

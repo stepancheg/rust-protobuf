@@ -1,9 +1,11 @@
+use crate::reflect::value::MessageRef;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::MessageDescriptor;
+use crate::reflect::ReflectValueRef;
 use std::fmt;
 
 /// Runtime representation of elementary protobuf type.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub enum RuntimeTypeBox {
     /// `i32`
     I32,
@@ -27,6 +29,26 @@ pub enum RuntimeTypeBox {
     Enum(EnumDescriptor),
     /// `message`
     Message(MessageDescriptor),
+}
+
+impl RuntimeTypeBox {
+    pub(crate) fn default_value_ref(&self) -> ReflectValueRef<'static> {
+        match self {
+            RuntimeTypeBox::I32 => ReflectValueRef::I32(0),
+            RuntimeTypeBox::I64 => ReflectValueRef::I64(0),
+            RuntimeTypeBox::U32 => ReflectValueRef::U32(0),
+            RuntimeTypeBox::U64 => ReflectValueRef::U64(0),
+            RuntimeTypeBox::F32 => ReflectValueRef::F32(0.0),
+            RuntimeTypeBox::F64 => ReflectValueRef::F64(0.0),
+            RuntimeTypeBox::Bool => ReflectValueRef::Bool(false),
+            RuntimeTypeBox::String => ReflectValueRef::String(""),
+            RuntimeTypeBox::VecU8 => ReflectValueRef::Bytes(b""),
+            RuntimeTypeBox::Enum(e) => {
+                ReflectValueRef::Enum(e.clone(), e.get_default_value().value())
+            }
+            RuntimeTypeBox::Message(m) => ReflectValueRef::Message(MessageRef::default_instance(m)),
+        }
+    }
 }
 
 impl fmt::Display for RuntimeTypeBox {
