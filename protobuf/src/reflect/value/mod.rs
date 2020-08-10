@@ -190,6 +190,14 @@ impl<'a, M: Message> From<&'a M> for MessageRef<'a> {
     }
 }
 
+impl<'a> ReflectEq for MessageRef<'a> {
+    fn reflect_eq(&self, that: &Self, mode: &ReflectEqMode) -> bool {
+        let ad = self.descriptor();
+        let bd = that.descriptor();
+        ad == bd && ad.reflect_eq(&**self, &**that, mode)
+    }
+}
+
 impl<'a> MessageRef<'a> {
     pub fn new_message(message: &'a dyn Message) -> MessageRef<'a> {
         MessageRef {
@@ -409,11 +417,7 @@ impl<'a> ReflectEq for ReflectValueRef<'a> {
             (String(a), String(b)) => a == b,
             (Bytes(a), Bytes(b)) => a == b,
             (Enum(ad, a), Enum(bd, b)) => ad == bd && a == b,
-            (Message(a), Message(b)) => {
-                let ad = a.descriptor();
-                let bd = b.descriptor();
-                ad == bd && ad.reflect_eq(&**a, &**b, mode)
-            }
+            (Message(a), Message(b)) => a.reflect_eq(b, mode),
             _ => false,
         }
     }
