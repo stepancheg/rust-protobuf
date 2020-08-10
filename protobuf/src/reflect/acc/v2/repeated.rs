@@ -8,16 +8,17 @@ use crate::reflect::repeated::ReflectRepeated;
 use crate::reflect::repeated::ReflectRepeatedMut;
 use crate::reflect::repeated::ReflectRepeatedRef;
 use crate::reflect::ProtobufValueSized;
-use crate::reflect::RuntimeTypeDynamic;
+use crate::reflect::RuntimeTypeBox;
+
 
 pub(crate) trait RepeatedFieldAccessor: Send + Sync + 'static {
     fn get_repeated<'a>(&self, m: &'a dyn Message) -> ReflectRepeatedRef<'a>;
     fn mut_repeated<'a>(&self, m: &'a mut dyn Message) -> ReflectRepeatedMut<'a>;
+    fn element_type(&self) -> RuntimeTypeBox;
 }
 
 pub(crate) struct RepeatedFieldAccessorHolder {
     pub accessor: Box<dyn RepeatedFieldAccessor>,
-    pub element_type: &'static dyn RuntimeTypeDynamic,
 }
 
 trait RepeatedFieldGetMut<M, R: ?Sized>: Send + Sync + 'static
@@ -75,6 +76,10 @@ where
         let repeated = self.fns.mut_field(m);
         ReflectRepeatedMut::new(repeated)
     }
+
+    fn element_type(&self) -> RuntimeTypeBox {
+        V::runtime_type_box()
+    }
 }
 
 /// Make accessor for `Vec` field
@@ -97,7 +102,6 @@ where
                 }),
                 _marker: marker::PhantomData::<V>,
             }),
-            element_type: V::dynamic(),
         }),
     )
 }

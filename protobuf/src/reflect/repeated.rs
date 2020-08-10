@@ -51,7 +51,7 @@ impl<V: ProtobufValueSized> ReflectRepeated for Vec<V> {
     }
 
     fn element_type(&self) -> RuntimeTypeBox {
-        V::dynamic().to_box()
+        V::runtime_type_box()
     }
 }
 
@@ -85,7 +85,7 @@ impl<V: ProtobufValueSized> ReflectRepeated for [V] {
     }
 
     fn element_type(&self) -> RuntimeTypeBox {
-        V::dynamic().to_box()
+        V::runtime_type_box()
     }
 }
 

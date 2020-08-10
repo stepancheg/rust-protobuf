@@ -7,8 +7,6 @@ use std::marker;
 use bytes::Bytes;
 
 use crate::reflect::runtime_type_box::RuntimeTypeBox;
-use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
-use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamicImpl;
 use crate::reflect::value::MessageRef;
 use crate::reflect::value::ReflectValueMut;
 use crate::reflect::ReflectValueBox;
@@ -32,14 +30,6 @@ use crate::message::Message;
 pub trait RuntimeType: fmt::Debug + Send + Sync + 'static {
     /// Actual value for this type.
     type Value: ProtobufValue + Clone + Sized + fmt::Debug + Default;
-
-    /// Dynamic version of the type.
-    fn dynamic() -> &'static dyn RuntimeTypeDynamic
-    where
-        Self: Sized,
-    {
-        &RuntimeTypeDynamicImpl::<Self>(marker::PhantomData)
-    }
 
     /// "Box" version of type type.
     fn runtime_type_box() -> RuntimeTypeBox

@@ -46,8 +46,8 @@ pub trait ProtobufValueSized: ProtobufValue + Sized + Clone + Default + fmt::Deb
     // TODO: inline the rest
 
     /// Dynamic version of the type.
-    fn dynamic() -> &'static dyn RuntimeTypeDynamic {
-        Self::RuntimeType::dynamic()
+    fn runtime_type_box() -> RuntimeTypeBox {
+        Self::RuntimeType::runtime_type_box()
     }
 
     /// Pointer to a dynamic reference.

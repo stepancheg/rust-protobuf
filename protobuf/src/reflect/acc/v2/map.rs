@@ -8,17 +8,17 @@ use crate::reflect::acc::FieldAccessor;
 use crate::reflect::map::ReflectMapMut;
 use crate::reflect::map::ReflectMapRef;
 use crate::reflect::ProtobufValueSized;
-use crate::reflect::RuntimeTypeDynamic;
+use crate::reflect::RuntimeTypeBox;
+
 
 pub(crate) trait MapFieldAccessor: Send + Sync + 'static {
     fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectMapRef<'a>;
     fn mut_reflect<'a>(&self, m: &'a mut dyn Message) -> ReflectMapMut<'a>;
+    fn element_type(&self) -> (RuntimeTypeBox, RuntimeTypeBox);
 }
 
 pub(crate) struct MapFieldAccessorHolder {
     pub accessor: Box<dyn MapFieldAccessor>,
-    pub key_type: &'static dyn RuntimeTypeDynamic,
-    pub value_type: &'static dyn RuntimeTypeDynamic,
 }
 
 struct MapFieldAccessorImpl<M, K, V>
@@ -48,6 +48,10 @@ where
         let map = (self.mut_field)(m);
         ReflectMapMut::new(map)
     }
+
+    fn element_type(&self) -> (RuntimeTypeBox, RuntimeTypeBox) {
+        (K::runtime_type_box(), V::runtime_type_box())
+    }
 }
 
 /// Make accessor for map field
@@ -69,8 +73,6 @@ where
                 get_field,
                 mut_field,
             }),
-            key_type: K::dynamic(),
-            value_type: V::dynamic(),
         }),
     )
 }

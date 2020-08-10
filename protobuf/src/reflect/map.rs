@@ -4,7 +4,6 @@ use std::hash::Hash;
 
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
-use crate::reflect::runtime_type_dynamic::RuntimeTypeDynamic;
 use crate::reflect::value::hashable::ReflectValueBoxHashable;
 use crate::reflect::ProtobufValueSized;
 use crate::reflect::ReflectValueBox;
@@ -62,18 +61,18 @@ impl<K: ProtobufValueSized + Eq + Hash, V: ProtobufValueSized> ReflectMap for Ha
     }
 
     fn key_type(&self) -> RuntimeTypeBox {
-        K::dynamic().to_box()
+        K::runtime_type_box()
     }
 
     fn value_type(&self) -> RuntimeTypeBox {
-        V::dynamic().to_box()
+        V::runtime_type_box()
     }
 }
 
 trait ReflectMapIterTrait<'a> {
     fn next(&mut self) -> Option<(ReflectValueRef<'a>, ReflectValueRef<'a>)>;
-    fn key_type(&self) -> &'static dyn RuntimeTypeDynamic;
-    fn value_type(&self) -> &'static dyn RuntimeTypeDynamic;
+    fn key_type(&self) -> RuntimeTypeBox;
+    fn value_type(&self) -> RuntimeTypeBox;
 }
 
 struct ReflectMapIterImpl<'a, K: Eq + Hash + 'static, V: 'static> {
@@ -90,12 +89,12 @@ impl<'a, K: ProtobufValueSized + Eq + Hash, V: ProtobufValueSized> ReflectMapIte
         }
     }
 
-    fn key_type(&self) -> &'static dyn RuntimeTypeDynamic {
-        K::dynamic()
+    fn key_type(&self) -> RuntimeTypeBox {
+        K::runtime_type_box()
     }
 
-    fn value_type(&self) -> &'static dyn RuntimeTypeDynamic {
-        V::dynamic()
+    fn value_type(&self) -> RuntimeTypeBox {
+        V::runtime_type_box()
     }
 }
 
@@ -236,11 +235,11 @@ pub struct ReflectMapRefIter<'a> {
 }
 
 impl<'a> ReflectMapRefIter<'a> {
-    fn _key_type(&self) -> &'static dyn RuntimeTypeDynamic {
+    fn _key_type(&self) -> RuntimeTypeBox {
         self.iter.imp.key_type()
     }
 
-    fn _value_type(&self) -> &'static dyn RuntimeTypeDynamic {
+    fn _value_type(&self) -> RuntimeTypeBox {
         self.iter.imp.value_type()
     }
 }

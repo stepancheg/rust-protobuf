@@ -34,13 +34,14 @@ impl GeneratedFieldAccessor {
     pub(crate) fn runtime_field_type(&self) -> RuntimeFieldType {
         match self {
             GeneratedFieldAccessor::V2(AccessorV2::Singular(ref a)) => {
-                RuntimeFieldType::Singular(a.element_type.to_box())
+                RuntimeFieldType::Singular(a.accessor.element_type())
             }
             GeneratedFieldAccessor::V2(AccessorV2::Repeated(ref a)) => {
-                RuntimeFieldType::Repeated(a.element_type.to_box())
+                RuntimeFieldType::Repeated(a.accessor.element_type())
             }
             GeneratedFieldAccessor::V2(AccessorV2::Map(ref a)) => {
-                RuntimeFieldType::Map(a.key_type.to_box(), a.value_type.to_box())
+                let (k, v) = a.accessor.element_type();
+                RuntimeFieldType::Map(k, v)
             }
         }
     }

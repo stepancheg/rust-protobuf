@@ -9,9 +9,9 @@ use crate::reflect::runtime_types::RuntimeTypeWithDeref;
 use crate::reflect::value::MessageRef;
 use crate::reflect::value::ReflectValueMut;
 use crate::reflect::ProtobufValueSized;
+use crate::reflect::RuntimeTypeBox;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
-use crate::reflect::RuntimeTypeDynamic;
 use crate::MessageField;
 
 pub(crate) mod oneof;
@@ -58,11 +58,11 @@ pub(crate) trait SingularFieldAccessor: Send + Sync + 'static {
     fn get_field_or_default<'a>(&self, m: &'a dyn Message) -> ReflectValueRef<'a>;
     fn mut_field_or_default<'a>(&self, m: &'a mut dyn Message) -> ReflectValueMut<'a>;
     fn set_field(&self, m: &mut dyn Message, value: ReflectValueBox);
+    fn element_type(&self) -> RuntimeTypeBox;
 }
 
 pub(crate) struct SingularFieldAccessorHolder {
     pub accessor: Box<dyn SingularFieldAccessor>,
-    pub element_type: &'static dyn RuntimeTypeDynamic,
 }
 
 trait GetOptionImpl<M>: Send + Sync + 'static {
@@ -153,6 +153,10 @@ where
     fn set_field(&self, m: &mut dyn Message, value: ReflectValueBox) {
         let m = m.downcast_mut().unwrap();
         self.set_impl.set_singular_field(m, value)
+    }
+
+    fn element_type(&self) -> RuntimeTypeBox {
+        V::runtime_type_box()
     }
 }
 
@@ -488,7 +492,6 @@ where
                 },
                 _marker: marker::PhantomData,
             }),
-            element_type: V::dynamic(),
         }),
     )
 }
@@ -522,7 +525,6 @@ where
                 },
                 _marker: marker::PhantomData,
             }),
-            element_type: V::dynamic(),
         }),
     )
 }
@@ -589,7 +591,6 @@ where
                 },
                 _marker: marker::PhantomData,
             }),
-            element_type: ProtobufEnumOrUnknown::<E>::dynamic(),
         }),
     )
 }
@@ -624,7 +625,6 @@ where
                 },
                 _marker: marker::PhantomData,
             }),
-            element_type: V::dynamic(),
         }),
     )
 }
@@ -649,7 +649,6 @@ where
                 set_impl: SetImplFieldPointer::<M, V> { mut_field },
                 _marker: marker::PhantomData,
             }),
-            element_type: V::dynamic(),
         }),
     )
 }

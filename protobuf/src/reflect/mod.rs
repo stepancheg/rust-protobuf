@@ -10,7 +10,6 @@ mod map;
 mod message;
 mod repeated;
 mod runtime_type_box;
-mod runtime_type_dynamic;
 mod transmute_eq;
 mod type_dynamic;
 pub(crate) mod value;
@@ -54,4 +53,3 @@ pub use self::file::generated::GeneratedFileDescriptor;
 pub use self::file::FileDescriptor;
 
 pub use self::runtime_type_box::RuntimeTypeBox;
-pub use self::runtime_type_dynamic::RuntimeTypeDynamic;

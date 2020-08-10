@@ -41,7 +41,6 @@ where
                 set_impl: SetImplSetField::<M, F> { set_field },
                 _marker: marker::PhantomData,
             }),
-            element_type: F::dynamic(),
         }),
     )
 }
@@ -67,7 +66,6 @@ where
                 set_impl: SetImplSetField::<M, V> { set_field: set },
                 _marker: marker::PhantomData,
             }),
-            element_type: V::dynamic(),
         }),
     )
 }
@@ -94,7 +92,6 @@ where
                 set_impl: SetImplSetField::<M, F> { set_field: set },
                 _marker: marker::PhantomData,
             }),
-            element_type: F::dynamic(),
         }),
     )
 }
