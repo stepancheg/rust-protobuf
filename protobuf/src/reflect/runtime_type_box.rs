@@ -1,7 +1,6 @@
-use crate::reflect::value::MessageRef;
-use crate::reflect::EnumDescriptor;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectValueRef;
+use crate::reflect::{EnumDescriptor, MessageRef};
 use std::fmt;
 
 /// Runtime representation of elementary protobuf type.

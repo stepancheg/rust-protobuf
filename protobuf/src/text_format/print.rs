@@ -2,7 +2,7 @@ use std::fmt;
 use std::fmt::Write;
 
 use crate::message::Message;
-use crate::reflect::value::MessageRef;
+use crate::reflect::MessageRef;
 use crate::reflect::ReflectFieldRef;
 use crate::reflect::ReflectValueRef;
 

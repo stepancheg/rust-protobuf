@@ -7,10 +7,9 @@ use std::marker;
 use bytes::Bytes;
 
 use crate::reflect::runtime_type_box::RuntimeTypeBox;
-use crate::reflect::value::MessageRef;
 use crate::reflect::value::ReflectValueMut;
-use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
+use crate::reflect::{MessageRef, ReflectValueBox};
 use crate::reflect::{ProtobufValue, ProtobufValueSized};
 
 #[cfg(feature = "bytes")]
@@ -722,7 +721,7 @@ where
     }
 
     fn default_value_ref() -> ReflectValueRef<'static> {
-        ReflectValueRef::Message(MessageRef::new_message(M::default_instance()))
+        ReflectValueRef::Message(MessageRef::new(M::default_instance()))
     }
 
     fn from_value_box(value_box: ReflectValueBox) -> M {
@@ -736,7 +735,7 @@ where
         ReflectValueBox::Message(Box::new(value))
     }
     fn as_ref(value: &M) -> ReflectValueRef {
-        ReflectValueRef::Message(MessageRef::new_message(value))
+        ReflectValueRef::Message(MessageRef::new(value))
     }
 
     fn as_mut(value: &mut M) -> ReflectValueMut {

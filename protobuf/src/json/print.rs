@@ -1,8 +1,8 @@
 use crate::json::base64;
 use crate::json::float;
 use crate::message::Message;
-use crate::reflect::value::MessageRef;
 use crate::reflect::EnumDescriptor;
+use crate::reflect::MessageRef;
 use crate::reflect::ReflectFieldRef;
 use crate::reflect::ReflectMapRef;
 use crate::reflect::ReflectRepeatedRef;

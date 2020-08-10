@@ -1,16 +1,15 @@
 use std::any::Any;
+use std::fmt;
 use std::hash::Hash;
 use std::hash::Hasher;
-use std::{fmt, mem};
+use std::mem;
 
 #[cfg(feature = "bytes")]
 use crate::bytes::Bytes;
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;
 
-use super::*;
-use crate::message::*;
-use crate::reflect::dynamic::DynamicMessage;
+use crate::reflect::message::message_ref::MessageRef;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::runtime_types::RuntimeType;
@@ -28,6 +27,10 @@ use crate::reflect::runtime_types::RuntimeTypeU32;
 use crate::reflect::runtime_types::RuntimeTypeU64;
 use crate::reflect::runtime_types::RuntimeTypeVecU8;
 use crate::reflect::transmute_eq::transmute_eq;
+use crate::reflect::EnumDescriptor;
+use crate::reflect::EnumValueDescriptor;
+use crate::reflect::RuntimeTypeBox;
+use crate::Message;
 use std::ops::Deref;
 
 pub(crate) mod hashable;
@@ -162,69 +165,6 @@ impl<E : ProtobufEnum> ProtobufValue for E {
 impl<M : Message> ProtobufValue for M {
 }
 */
-
-#[derive(Clone, Debug)]
-enum MessageRefImpl<'a> {
-    Message(&'a dyn Message),
-    EmptyDynamic(DynamicMessage),
-}
-
-#[derive(Clone, Debug)]
-pub struct MessageRef<'a> {
-    imp: MessageRefImpl<'a>,
-}
-
-impl<'a> From<&'a dyn Message> for MessageRef<'a> {
-    fn from(m: &'a dyn Message) -> Self {
-        MessageRef {
-            imp: MessageRefImpl::Message(m),
-        }
-    }
-}
-
-impl<'a, M: Message> From<&'a M> for MessageRef<'a> {
-    fn from(m: &'a M) -> Self {
-        MessageRef {
-            imp: MessageRefImpl::Message(m),
-        }
-    }
-}
-
-impl<'a> ReflectEq for MessageRef<'a> {
-    fn reflect_eq(&self, that: &Self, mode: &ReflectEqMode) -> bool {
-        let ad = self.descriptor();
-        let bd = that.descriptor();
-        ad == bd && ad.reflect_eq(&**self, &**that, mode)
-    }
-}
-
-impl<'a> MessageRef<'a> {
-    pub fn new_message(message: &'a dyn Message) -> MessageRef<'a> {
-        MessageRef {
-            imp: MessageRefImpl::Message(message),
-        }
-    }
-
-    pub fn default_instance(message: &MessageDescriptor) -> MessageRef<'static> {
-        match message.default_instance() {
-            Some(m) => MessageRef::new_message(m),
-            None => MessageRef {
-                imp: MessageRefImpl::EmptyDynamic(DynamicMessage::new(message.clone())),
-            },
-        }
-    }
-}
-
-impl<'a> Deref for MessageRef<'a> {
-    type Target = dyn Message;
-
-    fn deref(&self) -> &dyn Message {
-        match &self.imp {
-            MessageRefImpl::Message(m) => *m,
-            MessageRefImpl::EmptyDynamic(e) => e,
-        }
-    }
-}
 
 /// A reference to a value
 #[derive(Debug, Clone)]

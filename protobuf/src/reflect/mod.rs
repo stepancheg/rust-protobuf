@@ -42,6 +42,7 @@ pub use self::enums::EnumValueDescriptor;
 
 #[doc(hidden)]
 pub use self::message::generated::GeneratedMessageDescriptorData;
+pub use self::message::message_ref::MessageRef;
 pub use self::message::MessageDescriptor;
 
 pub use self::field::FieldDescriptor;

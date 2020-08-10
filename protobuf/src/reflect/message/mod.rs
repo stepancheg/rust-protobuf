@@ -18,6 +18,7 @@ use crate::reflect::FileDescriptor;
 pub(crate) mod common;
 pub(crate) mod dynamic;
 pub(crate) mod generated;
+pub(crate) mod message_ref;
 
 /// Dynamic representation of message type.
 ///
