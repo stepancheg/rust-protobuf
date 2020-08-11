@@ -33,6 +33,13 @@ impl DynamicOptional {
     fn none(elem: RuntimeTypeBox) -> DynamicOptional {
         DynamicOptional { elem, value: None }
     }
+
+    fn mut_or_default(&mut self) -> ReflectValueMut {
+        if let None = self.value {
+            self.value = Some(self.elem.default_value_ref().to_box());
+        }
+        self.value.as_mut().unwrap().as_value_mut()
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -109,11 +116,16 @@ impl DynamicMessage {
     }
 
     pub(crate) fn mut_singular_field_or_default<'a>(
-        &mut self,
+        &'a mut self,
         field: &FieldDescriptor,
     ) -> ReflectValueMut<'a> {
         assert_eq!(field.message_descriptor, self.descriptor);
-        unimplemented!(); // TODO
+        self.init_fields();
+        // TODO: reset oneof group fields
+        match &mut self.fields[field.index] {
+            DynamicFieldValue::Singular(f) => f.mut_or_default(),
+            _ => panic!("Not a singular field"),
+        }
     }
 
     pub(crate) fn mut_repeated<'a>(
@@ -122,6 +134,7 @@ impl DynamicMessage {
     ) -> ReflectRepeatedMut<'a> {
         assert_eq!(self.descriptor, field.message_descriptor);
         self.init_fields();
+        // TODO: reset oneof group fields
         match &mut self.fields[field.index] {
             DynamicFieldValue::Repeated(r) => ReflectRepeatedMut::new(r),
             _ => panic!("Not a repeated field: {}", field),
@@ -131,6 +144,7 @@ impl DynamicMessage {
     pub(crate) fn mut_map<'a>(&'a mut self, field: &FieldDescriptor) -> ReflectMapMut<'a> {
         assert_eq!(field.message_descriptor, self.descriptor);
         self.init_fields();
+        // TODO: reset oneof group fields
         match &mut self.fields[field.index] {
             DynamicFieldValue::Map(m) => ReflectMapMut::new(m),
             _ => panic!("Not a map field: {}", field),

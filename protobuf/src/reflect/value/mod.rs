@@ -503,6 +503,16 @@ impl ReflectValueBox {
         }
     }
 
+    pub(crate) fn as_value_mut(&mut self) -> ReflectValueMut {
+        match self {
+            ReflectValueBox::Message(m) => ReflectValueMut::Message(&mut **m),
+            _ => panic!(
+                "ReflectValueMut cannot be constructed from {:?}",
+                self.get_type()
+            ),
+        }
+    }
+
     /// Downcast to real typed value.
     ///
     /// For `enum` `V` can be either `V: ProtobufEnum` or `V: ProtobufEnumOrUnknown<E>`.
