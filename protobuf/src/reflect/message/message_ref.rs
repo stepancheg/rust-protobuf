@@ -53,7 +53,7 @@ impl<'a> MessageRef<'a> {
         // Note we create a native generated instance for generated types
         // and dynamic message for dynamic types.
         match message.default_instance() {
-            Some(m) => MessageRef::new(m),
+            Some(m) => MessageRef::new(m.as_message_todo()),
             None => MessageRef {
                 imp: MessageRefImpl::EmptyDynamic(DynamicMessage::new(message.clone())),
             },

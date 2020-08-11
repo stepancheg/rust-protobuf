@@ -3,6 +3,7 @@
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 use crate::message::Message;
+use crate::message_dyn::MessageDyn;
 use crate::reflect::acc::FieldAccessor;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
@@ -14,7 +15,7 @@ use std::marker;
 /// Sized to dynamic reflection operations.
 pub(crate) trait MessageFactory: Send + Sync + 'static {
     fn new_instance(&self) -> Box<dyn Message>;
-    fn default_instance(&self) -> &dyn Message;
+    fn default_instance(&self) -> &dyn MessageDyn;
     fn clone(&self, message: &dyn Message) -> Box<dyn Message>;
     fn eq(&self, a: &dyn Message, b: &dyn Message) -> bool;
 }
@@ -31,8 +32,8 @@ where
         Box::new(m)
     }
 
-    fn default_instance(&self) -> &dyn Message {
-        M::default_instance() as &dyn Message
+    fn default_instance(&self) -> &dyn MessageDyn {
+        M::default_instance() as &dyn MessageDyn
     }
 
     fn clone(&self, message: &dyn Message) -> Box<dyn Message> {

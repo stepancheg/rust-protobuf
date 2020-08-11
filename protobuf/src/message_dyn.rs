@@ -25,6 +25,9 @@ pub trait MessageDyn {
     fn get_unknown_fields(&self) -> &UnknownFields;
     /// Get a mutable reference to unknown fields.
     fn mut_unknown_fields(&mut self) -> &mut UnknownFields;
+
+    /// Temporary for migration
+    fn as_message_todo(&self) -> &dyn Message;
 }
 
 impl<M: Message> MessageDyn for M {
@@ -54,6 +57,10 @@ impl<M: Message> MessageDyn for M {
 
     fn mut_unknown_fields(&mut self) -> &mut UnknownFields {
         self.mut_unknown_fields()
+    }
+
+    fn as_message_todo(&self) -> &dyn Message {
+        self
     }
 }
 

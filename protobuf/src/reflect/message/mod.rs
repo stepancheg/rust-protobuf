@@ -5,6 +5,7 @@ use crate::message::Message;
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 
+use crate::message_dyn::MessageDyn;
 use crate::reflect::dynamic::DynamicMessage;
 use crate::reflect::file::FileDescriptorImpl;
 use crate::reflect::message::common::MessageIndices;
@@ -97,7 +98,7 @@ impl MessageDescriptor {
     /// Shared immutable empty message.
     ///
     /// Returns `None` for dynamic message.
-    pub fn default_instance(&self) -> Option<&'static dyn Message> {
+    pub fn default_instance(&self) -> Option<&'static dyn MessageDyn> {
         match self.get_impl() {
             MessageDescriptorImplRef::Generated(g) => Some(g.factory.default_instance()),
             MessageDescriptorImplRef::Dynamic(..) => None,
