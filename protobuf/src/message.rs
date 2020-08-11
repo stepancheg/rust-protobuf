@@ -1,5 +1,3 @@
-use std::any::Any;
-use std::any::TypeId;
 use std::fmt;
 use std::io::Read;
 use std::io::Write;
@@ -249,61 +247,5 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
         Self: Sized,
     {
         MessageDyn::reflect_eq_dyn(self, other, mode)
-    }
-}
-
-impl dyn Message {
-    /// Downcast `Box<dyn Message>` to specific message type.
-    ///
-    /// ```
-    /// # use protobuf::Message;
-    /// # fn foo<MyMessage: Message>(message: Box<dyn Message>) {
-    /// let m: Box<dyn Message> = message;
-    /// let m: Box<MyMessage> = Message::downcast_box(m).unwrap();
-    /// # }
-    /// ```
-    pub fn downcast_box<T: Any>(self: Box<dyn Message>) -> Result<Box<T>, Box<dyn Message>> {
-        if Any::type_id(&*self) == TypeId::of::<T>() {
-            unsafe {
-                let raw: *mut dyn Message = Box::into_raw(self);
-                Ok(Box::from_raw(raw as *mut T))
-            }
-        } else {
-            Err(self)
-        }
-    }
-
-    /// Downcast `&dyn Message` to specific message type.
-    ///
-    /// ```
-    /// # use protobuf::Message;
-    /// # fn foo<MyMessage: Message>(message: &dyn Message) {
-    /// let m: &dyn Message = message;
-    /// let m: &MyMessage = Message::downcast_ref(m).unwrap();
-    /// # }
-    /// ```
-    pub fn downcast_ref<'a, M: Message + 'a>(&'a self) -> Option<&'a M> {
-        if Any::type_id(&*self) == TypeId::of::<M>() {
-            unsafe { Some(&*(self as *const dyn Message as *const M)) }
-        } else {
-            None
-        }
-    }
-
-    /// Downcast `&mut dyn Message` to specific message type.
-    ///
-    /// ```
-    /// # use protobuf::Message;
-    /// # fn foo<MyMessage: Message>(message: &mut dyn Message) {
-    /// let m: &mut dyn Message = message;
-    /// let m: &mut MyMessage = Message::downcast_mut(m).unwrap();
-    /// # }
-    /// ```
-    pub fn downcast_mut<'a, M: Message + 'a>(&'a mut self) -> Option<&'a mut M> {
-        if Any::type_id(&*self) == TypeId::of::<M>() {
-            unsafe { Some(&mut *(self as *mut dyn Message as *mut M)) }
-        } else {
-            None
-        }
     }
 }
