@@ -24,7 +24,9 @@ use crate::unknown::UnknownFields;
 /// Also, generated messages implement `Clone + Default + PartialEq`
 pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
     /// Message descriptor for this message, used for reflection.
-    fn descriptor(&self) -> MessageDescriptor;
+    fn descriptor(&self) -> MessageDescriptor {
+        panic!("TODO: remove")
+    }
 
     /// Get message descriptor for message type.
     ///

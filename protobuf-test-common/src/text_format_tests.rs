@@ -6,6 +6,7 @@ use std::process;
 
 use tempfile;
 
+use protobuf::descriptor;
 use protobuf::descriptor::FileDescriptorSet;
 use protobuf::reflect::MessageDescriptor;
 use protobuf::reflect::ReflectEqMode;
@@ -13,7 +14,6 @@ use protobuf::rustproto;
 use protobuf::text_format::merge_from_str;
 use protobuf::text_format::print_to_string;
 use protobuf::Message;
-use protobuf::descriptor;
 use protobuf::MessageDyn;
 
 pub fn parse_using_rust_protobuf(

@@ -5,7 +5,7 @@ use protobuf::Message;
 fn test_regular() {
     let m = TestReflectDefault::new();
 
-    let descriptor = m.descriptor();
+    let descriptor = TestReflectDefault::descriptor_static();
 
     let i = descriptor.get_field_by_name("i").unwrap();
     assert_eq!(10, i.get_singular_field_or_default(&m).to_i32().unwrap());
@@ -26,7 +26,7 @@ fn test_regular() {
 fn test_oneof() {
     let m = TestReflectDefault::new();
 
-    let descriptor = m.descriptor();
+    let descriptor = TestReflectDefault::descriptor_static();
 
     let i = descriptor.get_field_by_name("oi").unwrap();
     assert_eq!(10, i.get_singular_field_or_default(&m).to_i32().unwrap());

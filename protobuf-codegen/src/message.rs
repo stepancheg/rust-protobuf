@@ -396,18 +396,6 @@ impl<'a> MessageGen<'a> {
         });
     }
 
-    fn write_descriptor(&self, w: &mut CodeWriter) {
-        w.def_fn(
-            &format!(
-                "descriptor(&self) -> {}::reflect::MessageDescriptor",
-                protobuf_crate_path(&self.customize)
-            ),
-            |w| {
-                w.write_line("Self::descriptor_static()");
-            },
-        );
-    }
-
     fn write_descriptor_static_new(&self, w: &mut CodeWriter) {
         let sig = format!(
             "descriptor_static() -> {}::reflect::MessageDescriptor",
@@ -501,8 +489,6 @@ impl<'a> MessageGen<'a> {
                 self.write_get_cached_size(w);
                 w.write_line("");
                 self.write_unknown_fields(w);
-                w.write_line("");
-                self.write_descriptor(w);
                 w.write_line("");
                 w.def_fn(&format!("new() -> {}", self.type_name), |w| {
                     w.write_line(&format!("{}::new()", self.type_name));

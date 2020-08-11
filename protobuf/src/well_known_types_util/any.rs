@@ -41,28 +41,28 @@ impl Any {
     /// # Examples
     ///
     /// ```
-    /// use protobuf::Message;
+    /// use protobuf::{Message, MessageDyn};
     /// # use protobuf::ProtobufResult;
     /// use protobuf::well_known_types::Any;
     ///
     /// # fn the_test(message: &dyn Message) -> ProtobufResult<()> {
-    /// let message: &dyn Message = message;
+    /// let message: &dyn MessageDyn = message;
     /// let any = Any::pack_dyn(message)?;
-    /// assert!(any.is_dyn(message.descriptor()));
+    /// assert!(any.is_dyn(&message.descriptor_dyn()));
     /// #   Ok(())
     /// # }
     /// ```
-    pub fn pack_dyn(message: &dyn Message) -> ProtobufResult<Any> {
+    pub fn pack_dyn(message: &dyn MessageDyn) -> ProtobufResult<Any> {
         Any::pack_with_type_url_prefix(message, "type.googleapis.com")
     }
 
     fn pack_with_type_url_prefix(
-        message: &dyn Message,
+        message: &dyn MessageDyn,
         type_url_prefix: &str,
     ) -> ProtobufResult<Any> {
         Ok(Any {
-            type_url: Any::type_url(type_url_prefix, &message.descriptor()),
-            value: message.write_to_bytes()?,
+            type_url: Any::type_url(type_url_prefix, &message.descriptor_dyn()),
+            value: message.write_to_bytes_dyn()?,
             ..Default::default()
         })
     }

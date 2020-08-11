@@ -1,5 +1,5 @@
-use crate::reflect::ProtobufValue;
 use crate::reflect::MessageDescriptor;
+use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectEqMode;
 use crate::stream::WithCodedOutputStream;
 use crate::CodedInputStream;
@@ -15,7 +15,7 @@ use std::io::Write;
 
 /// Dynamic-dispatch version of [`Message`].
 pub trait MessageDyn: ProtobufValue + fmt::Debug + Send + Sync + 'static {
-    /// Message descriptor for this message.
+    /// Message descriptor for this message, used for reflection.
     fn descriptor_dyn(&self) -> MessageDescriptor;
 
     /// Update this message fields with contents of given stream.
@@ -42,7 +42,7 @@ pub trait MessageDyn: ProtobufValue + fmt::Debug + Send + Sync + 'static {
 
 impl<M: Message> MessageDyn for M {
     fn descriptor_dyn(&self) -> MessageDescriptor {
-        self.descriptor()
+        M::descriptor_static()
     }
 
     fn merge_from_dyn(&mut self, is: &mut CodedInputStream) -> ProtobufResult<()> {
