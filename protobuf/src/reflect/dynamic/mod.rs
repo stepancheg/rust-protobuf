@@ -1,7 +1,10 @@
 use crate::cached_size::CachedSize;
 use crate::message_dyn::MessageDyn;
 use crate::reflect::dynamic::map::DynamicMap;
+use crate::reflect::dynamic::optional::DynamicOptional;
 use crate::reflect::dynamic::repeated::DynamicRepeated;
+use crate::reflect::map::ReflectMap;
+use crate::reflect::repeated::ReflectRepeated;
 use crate::reflect::value::ReflectValueMut;
 use crate::reflect::FieldDescriptor;
 use crate::reflect::MessageDescriptor;
@@ -9,10 +12,8 @@ use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectFieldRef;
 use crate::reflect::ReflectMapMut;
 use crate::reflect::ReflectRepeatedMut;
-use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::reflect::RuntimeFieldType;
-use crate::reflect::RuntimeTypeBox;
 use crate::Clear;
 use crate::CodedInputStream;
 use crate::CodedOutputStream;
@@ -21,26 +22,8 @@ use crate::ProtobufResult;
 use crate::UnknownFields;
 
 pub(crate) mod map;
+pub(crate) mod optional;
 pub(crate) mod repeated;
-
-#[derive(Debug, Clone)]
-struct DynamicOptional {
-    elem: RuntimeTypeBox,
-    value: Option<ReflectValueBox>,
-}
-
-impl DynamicOptional {
-    fn none(elem: RuntimeTypeBox) -> DynamicOptional {
-        DynamicOptional { elem, value: None }
-    }
-
-    fn mut_or_default(&mut self) -> ReflectValueMut {
-        if let None = self.value {
-            self.value = Some(self.elem.default_value_ref().to_box());
-        }
-        self.value.as_mut().unwrap().as_value_mut()
-    }
-}
 
 #[derive(Debug, Clone)]
 enum DynamicFieldValue {
@@ -55,6 +38,14 @@ impl DynamicFieldValue {
             DynamicFieldValue::Singular(_v) => unimplemented!(),
             DynamicFieldValue::Repeated(_r) => unimplemented!(),
             DynamicFieldValue::Map(_r) => unimplemented!(),
+        }
+    }
+
+    fn clear(&mut self) {
+        match self {
+            DynamicFieldValue::Singular(o) => o.clear(),
+            DynamicFieldValue::Repeated(r) => r.clear(),
+            DynamicFieldValue::Map(m) => m.clear(),
         }
     }
 }
@@ -115,12 +106,33 @@ impl DynamicMessage {
         unimplemented!(); // TODO
     }
 
+    pub fn clear_field(&mut self, field: &FieldDescriptor) {
+        assert_eq!(field.message_descriptor, self.descriptor);
+        if self.fields.is_empty() {
+            return;
+        }
+
+        self.fields[field.index].clear();
+    }
+
+    fn clear_oneof_group_fields_except(&mut self, field: &FieldDescriptor) {
+        if let Some(oneof) = field.containing_oneof() {
+            for next in oneof.fields() {
+                if &next == field {
+                    continue;
+                }
+                self.clear_field(&next);
+            }
+        }
+    }
+
     pub(crate) fn mut_singular_field_or_default<'a>(
         &'a mut self,
         field: &FieldDescriptor,
     ) -> ReflectValueMut<'a> {
         assert_eq!(field.message_descriptor, self.descriptor);
         self.init_fields();
+        self.clear_oneof_group_fields_except(field);
         // TODO: reset oneof group fields
         match &mut self.fields[field.index] {
             DynamicFieldValue::Singular(f) => f.mut_or_default(),

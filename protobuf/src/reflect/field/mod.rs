@@ -12,6 +12,7 @@ use crate::reflect::map::ReflectMapMut;
 use crate::reflect::map::ReflectMapRef;
 use crate::reflect::message::message_ref::MessageRef;
 use crate::reflect::message::MessageDescriptorImplRef;
+use crate::reflect::oneof::OneofDescriptor;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::repeated::ReflectRepeatedMut;
@@ -81,6 +82,7 @@ fn _assert_sync<'a>() {
 /// Field descriptor.
 ///
 /// Can be used for runtime reflection.
+#[derive(Eq, PartialEq)]
 pub struct FieldDescriptor {
     pub(crate) message_descriptor: MessageDescriptor,
     pub(crate) index: usize,
@@ -102,6 +104,19 @@ impl FieldDescriptor {
     pub fn name(&self) -> &str {
         // TODO: slow for dynamic
         self.proto().get_name()
+    }
+
+    /// Oneof descriptor containing this field.
+    pub fn containing_oneof(&self) -> Option<OneofDescriptor> {
+        let proto = self.proto();
+        if proto.has_oneof_index() {
+            Some(OneofDescriptor {
+                message_descriptor: self.message_descriptor.clone(),
+                index: proto.get_oneof_index() as usize,
+            })
+        } else {
+            None
+        }
     }
 
     /// JSON field name.

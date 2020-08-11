@@ -14,7 +14,7 @@ pub(crate) struct DynamicMap {
 }
 
 impl DynamicMap {
-    pub(crate) fn new(key: RuntimeTypeBox, value: RuntimeTypeBox) -> DynamicMap {
+    pub fn new(key: RuntimeTypeBox, value: RuntimeTypeBox) -> DynamicMap {
         DynamicMap {
             key,
             value,

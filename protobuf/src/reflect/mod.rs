@@ -8,6 +8,7 @@ mod file;
 mod find_message_or_enum;
 mod map;
 mod message;
+mod oneof;
 mod repeated;
 mod runtime_type_box;
 mod transmute_eq;
@@ -48,6 +49,8 @@ pub use self::message::MessageDescriptor;
 pub use self::field::FieldDescriptor;
 pub use self::field::ReflectFieldRef;
 pub use self::field::RuntimeFieldType;
+
+pub use self::oneof::OneofDescriptor;
 
 #[doc(hidden)]
 pub use self::file::generated::GeneratedFileDescriptor;
