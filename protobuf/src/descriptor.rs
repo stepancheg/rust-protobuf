@@ -119,10 +119,6 @@ impl crate::Message for FileDescriptorSet {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> FileDescriptorSet {
         FileDescriptorSet::new()
     }
@@ -584,10 +580,6 @@ impl crate::Message for FileDescriptorProto {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> FileDescriptorProto {
         FileDescriptorProto::new()
     }
@@ -964,10 +956,6 @@ impl crate::Message for DescriptorProto {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> DescriptorProto {
         DescriptorProto::new()
     }
@@ -1177,10 +1165,6 @@ pub mod descriptor_proto {
             &mut self.unknown_fields
         }
 
-        fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-            Self::descriptor_static()
-        }
-
         fn new() -> ExtensionRange {
             ExtensionRange::new()
         }
@@ -1373,10 +1357,6 @@ pub mod descriptor_proto {
 
         fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
             &mut self.unknown_fields
-        }
-
-        fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-            Self::descriptor_static()
         }
 
         fn new() -> ReservedRange {
@@ -1971,10 +1951,6 @@ impl crate::Message for FieldDescriptorProto {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> FieldDescriptorProto {
         FieldDescriptorProto::new()
     }
@@ -2343,10 +2319,6 @@ impl crate::Message for OneofDescriptorProto {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> OneofDescriptorProto {
         OneofDescriptorProto::new()
     }
@@ -2558,10 +2530,6 @@ impl crate::Message for EnumDescriptorProto {
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
     }
 
     fn new() -> EnumDescriptorProto {
@@ -2796,10 +2764,6 @@ impl crate::Message for EnumValueDescriptorProto {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> EnumValueDescriptorProto {
         EnumValueDescriptorProto::new()
     }
@@ -3013,10 +2977,6 @@ impl crate::Message for ServiceDescriptorProto {
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
     }
 
     fn new() -> ServiceDescriptorProto {
@@ -3401,10 +3361,6 @@ impl crate::Message for MethodDescriptorProto {
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
     }
 
     fn new() -> MethodDescriptorProto {
@@ -4218,10 +4174,6 @@ impl crate::Message for FileOptions {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> FileOptions {
         FileOptions::new()
     }
@@ -4602,10 +4554,6 @@ impl crate::Message for MessageOptions {
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
     }
 
     fn new() -> MessageOptions {
@@ -5036,10 +4984,6 @@ impl crate::Message for FieldOptions {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> FieldOptions {
         FieldOptions::new()
     }
@@ -5300,10 +5244,6 @@ impl crate::Message for OneofOptions {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> OneofOptions {
         OneofOptions::new()
     }
@@ -5521,10 +5461,6 @@ impl crate::Message for EnumOptions {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> EnumOptions {
         EnumOptions::new()
     }
@@ -5706,10 +5642,6 @@ impl crate::Message for EnumValueOptions {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> EnumValueOptions {
         EnumValueOptions::new()
     }
@@ -5889,10 +5821,6 @@ impl crate::Message for ServiceOptions {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> ServiceOptions {
         ServiceOptions::new()
     }
@@ -6070,10 +5998,6 @@ impl crate::Message for MethodOptions {
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
     }
 
     fn new() -> MethodOptions {
@@ -6499,10 +6423,6 @@ impl crate::Message for UninterpretedOption {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> UninterpretedOption {
         UninterpretedOption::new()
     }
@@ -6734,10 +6654,6 @@ pub mod uninterpreted_option {
             &mut self.unknown_fields
         }
 
-        fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-            Self::descriptor_static()
-        }
-
         fn new() -> NamePart {
             NamePart::new()
         }
@@ -6875,10 +6791,6 @@ impl crate::Message for SourceCodeInfo {
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
     }
 
     fn new() -> SourceCodeInfo {
@@ -7166,10 +7078,6 @@ pub mod source_code_info {
             &mut self.unknown_fields
         }
 
-        fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-            Self::descriptor_static()
-        }
-
         fn new() -> Location {
             Location::new()
         }
@@ -7316,10 +7224,6 @@ impl crate::Message for GeneratedCodeInfo {
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
     }
 
     fn new() -> GeneratedCodeInfo {
@@ -7594,10 +7498,6 @@ pub mod generated_code_info {
 
         fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
             &mut self.unknown_fields
-        }
-
-        fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-            Self::descriptor_static()
         }
 
         fn new() -> Annotation {

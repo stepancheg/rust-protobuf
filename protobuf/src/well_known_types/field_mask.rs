@@ -112,10 +112,6 @@ impl crate::Message for FieldMask {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> FieldMask {
         FieldMask::new()
     }

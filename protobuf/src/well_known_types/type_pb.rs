@@ -217,10 +217,6 @@ impl crate::Message for Type {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> Type {
         Type::new()
     }
@@ -538,10 +534,6 @@ impl crate::Message for Field {
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
     }
 
     fn new() -> Field {
@@ -946,10 +938,6 @@ impl crate::Message for Enum {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> Enum {
         Enum::new()
     }
@@ -1132,10 +1120,6 @@ impl crate::Message for EnumValue {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> EnumValue {
         EnumValue::new()
     }
@@ -1294,10 +1278,6 @@ impl crate::Message for Option {
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
     }
 
     fn new() -> Option {

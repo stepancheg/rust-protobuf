@@ -265,10 +265,6 @@ impl crate::Message for Api {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> Api {
         Api::new()
     }
@@ -531,10 +527,6 @@ impl crate::Message for Method {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> Method {
         Method::new()
     }
@@ -697,10 +689,6 @@ impl crate::Message for Mixin {
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
     }
 
     fn new() -> Mixin {

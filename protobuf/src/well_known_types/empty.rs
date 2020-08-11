@@ -95,10 +95,6 @@ impl crate::Message for Empty {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> Empty {
         Empty::new()
     }

@@ -203,10 +203,6 @@ impl crate::Message for CodeGeneratorRequest {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> CodeGeneratorRequest {
         CodeGeneratorRequest::new()
     }
@@ -407,10 +403,6 @@ impl crate::Message for CodeGeneratorResponse {
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
     }
 
     fn new() -> CodeGeneratorResponse {
@@ -743,10 +735,6 @@ pub mod code_generator_response {
 
         fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
             &mut self.unknown_fields
-        }
-
-        fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-            Self::descriptor_static()
         }
 
         fn new() -> File {

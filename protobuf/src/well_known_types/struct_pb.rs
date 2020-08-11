@@ -117,10 +117,6 @@ impl crate::Message for Struct {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> Struct {
         Struct::new()
     }
@@ -589,10 +585,6 @@ impl crate::Message for Value {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> Value {
         Value::new()
     }
@@ -752,10 +744,6 @@ impl crate::Message for ListValue {
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
     }
 
     fn new() -> ListValue {

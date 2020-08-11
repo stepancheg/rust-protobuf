@@ -118,10 +118,6 @@ impl crate::Message for DoubleValue {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> DoubleValue {
         DoubleValue::new()
     }
@@ -255,10 +251,6 @@ impl crate::Message for FloatValue {
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
     }
 
     fn new() -> FloatValue {
@@ -396,10 +388,6 @@ impl crate::Message for Int64Value {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> Int64Value {
         Int64Value::new()
     }
@@ -533,10 +521,6 @@ impl crate::Message for UInt64Value {
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
     }
 
     fn new() -> UInt64Value {
@@ -674,10 +658,6 @@ impl crate::Message for Int32Value {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> Int32Value {
         Int32Value::new()
     }
@@ -811,10 +791,6 @@ impl crate::Message for UInt32Value {
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
     }
 
     fn new() -> UInt32Value {
@@ -952,10 +928,6 @@ impl crate::Message for BoolValue {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> BoolValue {
         BoolValue::new()
     }
@@ -1091,10 +1063,6 @@ impl crate::Message for StringValue {
         &mut self.unknown_fields
     }
 
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     fn new() -> StringValue {
         StringValue::new()
     }
@@ -1228,10 +1196,6 @@ impl crate::Message for BytesValue {
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn descriptor(&self) -> crate::reflect::MessageDescriptor {
-        Self::descriptor_static()
     }
 
     fn new() -> BytesValue {
