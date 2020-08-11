@@ -35,14 +35,11 @@ pub trait MessageDyn: ProtobufValue + fmt::Debug + Send + Sync + 'static {
     fn get_unknown_fields_dyn(&self) -> &UnknownFields;
     /// Get a mutable reference to unknown fields.
     fn mut_unknown_fields_dyn(&mut self) -> &mut UnknownFields;
-
-    /// Temporary for migration
-    fn as_message_todo(&self) -> &dyn Message;
 }
 
 impl<M: Message> MessageDyn for M {
     fn descriptor_dyn(&self) -> MessageDescriptor {
-        M::descriptor_static()
+        self.descriptor_by_instance()
     }
 
     fn merge_from_dyn(&mut self, is: &mut CodedInputStream) -> ProtobufResult<()> {
@@ -67,10 +64,6 @@ impl<M: Message> MessageDyn for M {
 
     fn mut_unknown_fields_dyn(&mut self) -> &mut UnknownFields {
         self.mut_unknown_fields()
-    }
-
-    fn as_message_todo(&self) -> &dyn Message {
-        self
     }
 }
 

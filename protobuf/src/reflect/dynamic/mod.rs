@@ -155,7 +155,7 @@ impl Clear for DynamicMessage {
 }
 
 impl Message for DynamicMessage {
-    fn descriptor(&self) -> MessageDescriptor {
+    fn descriptor_by_instance(&self) -> MessageDescriptor {
         self.descriptor.clone()
     }
 

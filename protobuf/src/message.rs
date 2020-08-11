@@ -20,10 +20,13 @@ use crate::unknown::UnknownFields;
 /// Trait implemented for all generated structs for protobuf messages.
 ///
 /// Also, generated messages implement `Clone + Default + PartialEq`
-pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
+pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue + Sized {
     /// Message descriptor for this message, used for reflection.
-    fn descriptor(&self) -> MessageDescriptor {
-        panic!("TODO: remove")
+    ///
+    /// This function is rarely needed to be called directly, use
+    /// [`Message::descriptor_static()`] instead.
+    fn descriptor_by_instance(&self) -> MessageDescriptor {
+        Self::descriptor_static()
     }
 
     /// Get message descriptor for message type.
@@ -35,10 +38,7 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
     /// assert_eq!("MyMessage", descriptor.name());
     /// # }
     /// ```
-    fn descriptor_static() -> MessageDescriptor
-    where
-        Self: Sized,
-    {
+    fn descriptor_static() -> MessageDescriptor {
         panic!(
             "descriptor_static is not implemented for message, \
              LITE_RUNTIME must be used"
@@ -53,10 +53,7 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
     fn merge_from(&mut self, is: &mut CodedInputStream) -> ProtobufResult<()>;
 
     /// Parse message from stream.
-    fn parse_from(is: &mut CodedInputStream) -> ProtobufResult<Self>
-    where
-        Self: Sized,
-    {
+    fn parse_from(is: &mut CodedInputStream) -> ProtobufResult<Self> {
         let mut r: Self = Message::new();
         r.merge_from(is)?;
         r.check_initialized()?;
@@ -156,7 +153,7 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
     fn check_initialized(&self) -> ProtobufResult<()> {
         if !self.is_initialized() {
             Err(ProtobufError::MessageNotInitialized(
-                self.descriptor().name().to_owned(),
+                self.descriptor_by_instance().name().to_owned(),
             ))
         } else {
             Ok(())
@@ -221,9 +218,7 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
     /// let m = MyMessage::new();
     /// # }
     /// ```
-    fn new() -> Self
-    where
-        Self: Sized;
+    fn new() -> Self;
 
     /// Return a pointer to default immutable message with static lifetime.
     ///
@@ -233,19 +228,14 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
     /// let m: &MyMessage = MyMessage::default_instance();
     /// # }
     /// ```
-    fn default_instance() -> &'static Self
-    where
-        Self: Sized;
+    fn default_instance() -> &'static Self;
 
     /// Reflective equality.
     ///
     /// # See also
     ///
     /// [`dyn Message::reflect_eq_dyn()`], `dyn` version of this function.
-    fn reflect_eq(&self, other: &Self, mode: &ReflectEqMode) -> bool
-    where
-        Self: Sized,
-    {
+    fn reflect_eq(&self, other: &Self, mode: &ReflectEqMode) -> bool {
         MessageDyn::reflect_eq_dyn(self, other, mode)
     }
 }
