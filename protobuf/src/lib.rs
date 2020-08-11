@@ -48,6 +48,7 @@ pub mod ext;
 pub mod json;
 mod lazy_v2;
 mod message;
+mod message_dyn;
 mod message_field;
 mod oneof;
 pub mod reflect;
