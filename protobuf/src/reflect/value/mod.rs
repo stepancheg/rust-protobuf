@@ -9,6 +9,7 @@ use crate::bytes::Bytes;
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;
 
+use crate::message_dyn::MessageDyn;
 use crate::reflect::message::message_ref::MessageRef;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
@@ -29,9 +30,8 @@ use crate::reflect::runtime_types::RuntimeTypeVecU8;
 use crate::reflect::transmute_eq::transmute_eq;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::EnumValueDescriptor;
+use crate::reflect::MessageDescriptor;
 use crate::reflect::RuntimeTypeBox;
-use crate::Message;
-use std::ops::Deref;
 
 pub(crate) mod hashable;
 
@@ -207,7 +207,7 @@ impl<'a> ReflectValueRef<'a> {
             ReflectValueRef::String(..) => RuntimeTypeBox::String,
             ReflectValueRef::Bytes(..) => RuntimeTypeBox::VecU8,
             ReflectValueRef::Enum(d, ..) => RuntimeTypeBox::Enum(d.clone()),
-            ReflectValueRef::Message(m) => RuntimeTypeBox::Message(m.descriptor()),
+            ReflectValueRef::Message(m) => RuntimeTypeBox::Message(m.descriptor_dyn()),
         }
     }
 
@@ -364,7 +364,7 @@ impl<'a> ReflectEq for ReflectValueRef<'a> {
 }
 
 pub enum ReflectValueMut<'a> {
-    Message(&'a mut dyn Message),
+    Message(&'a mut dyn MessageDyn),
 }
 
 /// Owner value of any elementary type
@@ -391,7 +391,7 @@ pub enum ReflectValueBox {
     /// `enum`
     Enum(EnumDescriptor, i32),
     /// `message`
-    Message(Box<dyn Message>),
+    Message(Box<dyn MessageDyn>),
 }
 
 impl From<u32> for ReflectValueBox {
@@ -460,8 +460,8 @@ impl From<EnumValueDescriptor> for ReflectValueBox {
     }
 }
 
-impl From<Box<dyn Message>> for ReflectValueBox {
-    fn from(v: Box<dyn Message>) -> Self {
+impl From<Box<dyn MessageDyn>> for ReflectValueBox {
+    fn from(v: Box<dyn MessageDyn>) -> Self {
         ReflectValueBox::Message(v)
     }
 }
@@ -546,7 +546,7 @@ impl<'a> PartialEq for ReflectValueRef<'a> {
             (Bytes(a), Bytes(b)) => a == b,
             (Enum(da, a), Enum(db, b)) => da == db && a == b,
             (Message(a), Message(b)) => {
-                a.descriptor() == b.descriptor() && a.descriptor().eq(a.deref(), b.deref())
+                MessageDescriptor::reflect_eq_maybe_unrelated(&**a, &**b, &ReflectEqMode::default())
             }
             _ => false,
         }

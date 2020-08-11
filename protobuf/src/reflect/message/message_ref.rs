@@ -1,3 +1,4 @@
+use crate::message_dyn::MessageDyn;
 use crate::reflect::dynamic::DynamicMessage;
 use crate::reflect::reflect_eq::{ReflectEq, ReflectEqMode};
 use crate::reflect::MessageDescriptor;
@@ -6,7 +7,7 @@ use std::ops::Deref;
 
 #[derive(Clone, Debug)]
 enum MessageRefImpl<'a> {
-    Message(&'a dyn Message),
+    Message(&'a dyn MessageDyn),
     EmptyDynamic(DynamicMessage),
 }
 
@@ -16,8 +17,8 @@ pub struct MessageRef<'a> {
     imp: MessageRefImpl<'a>,
 }
 
-impl<'a> From<&'a dyn Message> for MessageRef<'a> {
-    fn from(m: &'a dyn Message) -> Self {
+impl<'a> From<&'a dyn MessageDyn> for MessageRef<'a> {
+    fn from(m: &'a dyn MessageDyn) -> Self {
         MessageRef {
             imp: MessageRefImpl::Message(m),
         }
@@ -34,15 +35,15 @@ impl<'a, M: Message> From<&'a M> for MessageRef<'a> {
 
 impl<'a> ReflectEq for MessageRef<'a> {
     fn reflect_eq(&self, that: &Self, mode: &ReflectEqMode) -> bool {
-        let ad = self.descriptor();
-        let bd = that.descriptor();
+        let ad = self.descriptor_dyn();
+        let bd = that.descriptor_dyn();
         ad == bd && ad.reflect_eq(&**self, &**that, mode)
     }
 }
 
 impl<'a> MessageRef<'a> {
     /// Wrap a message.
-    pub fn new(message: &'a dyn Message) -> MessageRef<'a> {
+    pub fn new(message: &'a dyn MessageDyn) -> MessageRef<'a> {
         MessageRef {
             imp: MessageRefImpl::Message(message),
         }
@@ -53,7 +54,7 @@ impl<'a> MessageRef<'a> {
         // Note we create a native generated instance for generated types
         // and dynamic message for dynamic types.
         match message.default_instance() {
-            Some(m) => MessageRef::new(m.as_message_todo()),
+            Some(m) => MessageRef::new(m),
             None => MessageRef {
                 imp: MessageRefImpl::EmptyDynamic(DynamicMessage::new(message.clone())),
             },
@@ -62,9 +63,9 @@ impl<'a> MessageRef<'a> {
 }
 
 impl<'a> Deref for MessageRef<'a> {
-    type Target = dyn Message;
+    type Target = dyn MessageDyn;
 
-    fn deref(&self) -> &dyn Message {
+    fn deref(&self) -> &dyn MessageDyn {
         match &self.imp {
             MessageRefImpl::Message(m) => *m,
             MessageRefImpl::EmptyDynamic(e) => e,

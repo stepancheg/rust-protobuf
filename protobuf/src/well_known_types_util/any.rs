@@ -1,3 +1,4 @@
+use crate::message_dyn::MessageDyn;
 use crate::reflect::MessageDescriptor;
 use crate::well_known_types::Any;
 use crate::Message;
@@ -101,13 +102,13 @@ impl Any {
     pub fn unpack_dyn(
         &self,
         descriptor: &MessageDescriptor,
-    ) -> ProtobufResult<Option<Box<dyn Message>>> {
+    ) -> ProtobufResult<Option<Box<dyn MessageDyn>>> {
         if !self.is_dyn(descriptor) {
             return Ok(None);
         }
         let mut message = descriptor.new_instance();
-        message.merge_from_bytes(&self.value)?;
-        message.check_initialized()?;
+        message.merge_from_bytes_dyn(&self.value)?;
+        message.check_initialized_dyn()?;
         Ok(Some(message))
     }
 }

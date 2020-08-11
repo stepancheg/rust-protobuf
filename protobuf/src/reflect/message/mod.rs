@@ -88,7 +88,7 @@ impl MessageDescriptor {
     }
 
     /// New empty message
-    pub fn new_instance(&self) -> Box<dyn Message> {
+    pub fn new_instance(&self) -> Box<dyn MessageDyn> {
         match self.get_impl() {
             MessageDescriptorImplRef::Generated(g) => g.factory.new_instance(),
             MessageDescriptorImplRef::Dynamic(..) => Box::new(DynamicMessage::new(self.clone())),
@@ -106,12 +106,12 @@ impl MessageDescriptor {
     }
 
     /// Clone a message
-    pub(crate) fn clone_message(&self, message: &dyn Message) -> Box<dyn Message> {
-        assert!(&message.descriptor() == self);
+    pub(crate) fn clone_message(&self, message: &dyn MessageDyn) -> Box<dyn MessageDyn> {
+        assert!(&message.descriptor_dyn() == self);
         match self.get_impl() {
             MessageDescriptorImplRef::Generated(g) => g.factory.clone(message),
             MessageDescriptorImplRef::Dynamic(..) => {
-                let message: &DynamicMessage = Message::downcast_ref(message).unwrap();
+                let message: &DynamicMessage = MessageDyn::downcast_ref(message).unwrap();
                 Box::new(message.clone())
             }
         }
@@ -122,7 +122,7 @@ impl MessageDescriptor {
     /// # Panics
     ///
     /// Is any message has different type than this descriptor.
-    pub fn eq(&self, a: &dyn Message, b: &dyn Message) -> bool {
+    pub fn eq(&self, a: &dyn MessageDyn, b: &dyn MessageDyn) -> bool {
         match self.get_impl() {
             MessageDescriptorImplRef::Generated(g) => g.factory.eq(a, b),
             MessageDescriptorImplRef::Dynamic(..) => unimplemented!(),
@@ -136,13 +136,13 @@ impl MessageDescriptor {
     /// Is any message has different type than this descriptor.
     pub(crate) fn reflect_eq(
         &self,
-        a: &dyn Message,
-        b: &dyn Message,
+        a: &dyn MessageDyn,
+        b: &dyn MessageDyn,
         mode: &ReflectEqMode,
     ) -> bool {
         // Explicitly force panic even if field list is empty
-        assert_eq!(self, &a.descriptor());
-        assert_eq!(self, &b.descriptor());
+        assert_eq!(self, &a.descriptor_dyn());
+        assert_eq!(self, &b.descriptor_dyn());
 
         for field in self.fields() {
             let af = field.get_reflect(a);
@@ -155,12 +155,12 @@ impl MessageDescriptor {
     }
 
     pub(crate) fn reflect_eq_maybe_unrelated(
-        a: &dyn Message,
-        b: &dyn Message,
+        a: &dyn MessageDyn,
+        b: &dyn MessageDyn,
         mode: &ReflectEqMode,
     ) -> bool {
-        let ad = a.descriptor();
-        let bd = b.descriptor();
+        let ad = a.descriptor_dyn();
+        let bd = b.descriptor_dyn();
         ad == bd && ad.reflect_eq(a, b, mode)
     }
 

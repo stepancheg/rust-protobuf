@@ -3,6 +3,7 @@ use std::marker;
 use crate::enums::ProtobufEnum;
 use crate::enums::ProtobufEnumOrUnknown;
 use crate::message::Message;
+use crate::message_dyn::MessageDyn;
 use crate::reflect::acc::v2::AccessorV2;
 use crate::reflect::acc::FieldAccessor;
 use crate::reflect::runtime_types::RuntimeTypeWithDeref;
@@ -54,10 +55,10 @@ impl<T> OptionLike<T> for MessageField<T> {
 
 /// This trait should not be used directly, use `FieldDescriptor` instead
 pub(crate) trait SingularFieldAccessor: Send + Sync + 'static {
-    fn get_field<'a>(&self, m: &'a dyn Message) -> Option<ReflectValueRef<'a>>;
-    fn get_field_or_default<'a>(&self, m: &'a dyn Message) -> ReflectValueRef<'a>;
-    fn mut_field_or_default<'a>(&self, m: &'a mut dyn Message) -> ReflectValueMut<'a>;
-    fn set_field(&self, m: &mut dyn Message, value: ReflectValueBox);
+    fn get_field<'a>(&self, m: &'a dyn MessageDyn) -> Option<ReflectValueRef<'a>>;
+    fn get_field_or_default<'a>(&self, m: &'a dyn MessageDyn) -> ReflectValueRef<'a>;
+    fn mut_field_or_default<'a>(&self, m: &'a mut dyn MessageDyn) -> ReflectValueMut<'a>;
+    fn set_field(&self, m: &mut dyn MessageDyn, value: ReflectValueBox);
     fn element_type(&self) -> RuntimeTypeBox;
 }
 
@@ -133,24 +134,24 @@ where
     E: MutOrDefaultImpl<M>,
     S: SetImpl<M>,
 {
-    fn get_field<'a>(&self, m: &'a dyn Message) -> Option<ReflectValueRef<'a>> {
+    fn get_field<'a>(&self, m: &'a dyn MessageDyn) -> Option<ReflectValueRef<'a>> {
         let m = m.downcast_ref().unwrap();
         self.get_option_impl.get_reflect_impl(m)
     }
 
-    fn get_field_or_default<'a>(&self, m: &'a dyn Message) -> ReflectValueRef<'a> {
+    fn get_field_or_default<'a>(&self, m: &'a dyn MessageDyn) -> ReflectValueRef<'a> {
         let m = m.downcast_ref().unwrap();
         self.get_or_default_impl
             .get_singular_field_or_default_impl(m)
     }
 
-    fn mut_field_or_default<'a>(&self, m: &'a mut dyn Message) -> ReflectValueMut<'a> {
+    fn mut_field_or_default<'a>(&self, m: &'a mut dyn MessageDyn) -> ReflectValueMut<'a> {
         let m = m.downcast_mut().unwrap();
         self.mut_or_default_impl
             .mut_singular_field_or_default_impl(m)
     }
 
-    fn set_field(&self, m: &mut dyn Message, value: ReflectValueBox) {
+    fn set_field(&self, m: &mut dyn MessageDyn, value: ReflectValueBox) {
         let m = m.downcast_mut().unwrap();
         self.set_impl.set_singular_field(m, value)
     }

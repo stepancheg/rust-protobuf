@@ -1,6 +1,5 @@
 use crate::json::base64;
 use crate::json::float;
-use crate::message::Message;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::MessageRef;
 use crate::reflect::ReflectFieldRef;
@@ -34,6 +33,7 @@ use crate::well_known_types::Value;
 use crate::json::well_known_wrapper::WellKnownWrapper;
 
 use crate::json::rfc_3339::TmUtc;
+use crate::message_dyn::MessageDyn;
 use crate::reflect::EnumValueDescriptor;
 use crate::reflect::RuntimeFieldType;
 use crate::reflect::RuntimeTypeBox;
@@ -459,7 +459,7 @@ impl Printer {
     }
 
     fn print_regular_message(&mut self, message: &MessageRef) -> Result<(), PrintError> {
-        let descriptor = message.descriptor();
+        let descriptor = message.descriptor_dyn();
 
         write!(self.buf, "{{")?;
         let mut first = true;
@@ -559,7 +559,7 @@ pub struct PrintOptions {
 
 /// Serialize message to JSON according to protobuf specification.
 pub fn print_to_string_with_options(
-    message: &dyn Message,
+    message: &dyn MessageDyn,
     print_options: &PrintOptions,
 ) -> PrintResult<String> {
     let mut printer = Printer {
@@ -571,6 +571,6 @@ pub fn print_to_string_with_options(
 }
 
 /// Serialize message to JSON according to protobuf specification.
-pub fn print_to_string(message: &dyn Message) -> PrintResult<String> {
+pub fn print_to_string(message: &dyn MessageDyn) -> PrintResult<String> {
     print_to_string_with_options(message, &PrintOptions::default())
 }

@@ -3,6 +3,7 @@ use std::hash::Hash;
 
 use crate::message::Message;
 
+use crate::message_dyn::MessageDyn;
 use crate::reflect::acc::v2::AccessorV2;
 use crate::reflect::acc::FieldAccessor;
 use crate::reflect::map::ReflectMapMut;
@@ -11,8 +12,8 @@ use crate::reflect::ProtobufValueSized;
 use crate::reflect::RuntimeTypeBox;
 
 pub(crate) trait MapFieldAccessor: Send + Sync + 'static {
-    fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectMapRef<'a>;
-    fn mut_reflect<'a>(&self, m: &'a mut dyn Message) -> ReflectMapMut<'a>;
+    fn get_reflect<'a>(&self, m: &'a dyn MessageDyn) -> ReflectMapRef<'a>;
+    fn mut_reflect<'a>(&self, m: &'a mut dyn MessageDyn) -> ReflectMapMut<'a>;
     fn element_type(&self) -> (RuntimeTypeBox, RuntimeTypeBox);
 }
 
@@ -36,13 +37,13 @@ where
     K: ProtobufValueSized + Eq + Hash,
     V: ProtobufValueSized,
 {
-    fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectMapRef<'a> {
+    fn get_reflect<'a>(&self, m: &'a dyn MessageDyn) -> ReflectMapRef<'a> {
         let m = m.downcast_ref().unwrap();
         let map = (self.get_field)(m);
         ReflectMapRef::new(map)
     }
 
-    fn mut_reflect<'a>(&self, m: &'a mut dyn Message) -> ReflectMapMut<'a> {
+    fn mut_reflect<'a>(&self, m: &'a mut dyn MessageDyn) -> ReflectMapMut<'a> {
         let m = m.downcast_mut().unwrap();
         let map = (self.mut_field)(m);
         ReflectMapMut::new(map)

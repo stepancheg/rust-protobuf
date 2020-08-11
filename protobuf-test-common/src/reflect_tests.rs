@@ -9,7 +9,7 @@ use protobuf::reflect::RuntimeFieldType;
 use protobuf::reflect::RuntimeTypeBox;
 use protobuf::well_known_types::value;
 use protobuf::well_known_types::Value;
-use protobuf::Message;
+use protobuf::{Message, MessageDyn};
 
 pub fn value_for_runtime_type(field_type: &RuntimeTypeBox) -> ReflectValueBox {
     match field_type {
@@ -27,7 +27,7 @@ pub fn value_for_runtime_type(field_type: &RuntimeTypeBox) -> ReflectValueBox {
     }
 }
 
-fn values_for_message_type(descriptor: &MessageDescriptor) -> Vec<Box<dyn Message>> {
+fn values_for_message_type(descriptor: &MessageDescriptor) -> Vec<Box<dyn MessageDyn>> {
     if descriptor == &Value::descriptor_static() {
         // special handling because empty `Value` is not valid
         let mut value = Value::new();
@@ -115,7 +115,7 @@ pub fn values_for_runtime_type(field_type: &RuntimeTypeBox) -> Vec<ReflectValueB
 pub fn special_values_for_field(
     f: &FieldDescriptor,
     d: &MessageDescriptor,
-) -> Vec<Box<dyn Message>> {
+) -> Vec<Box<dyn MessageDyn>> {
     let mut r = Vec::new();
     match f.runtime_field_type() {
         RuntimeFieldType::Singular(t) => {
@@ -145,7 +145,7 @@ pub fn special_values_for_field(
     r
 }
 
-pub fn special_messages(d: &MessageDescriptor) -> Vec<Box<dyn Message>> {
+pub fn special_messages(d: &MessageDescriptor) -> Vec<Box<dyn MessageDyn>> {
     let mut r = Vec::new();
     for f in d.fields() {
         r.extend(special_values_for_field(&f, d));

@@ -1,6 +1,6 @@
 use crate::descriptor::field_descriptor_proto;
 use crate::descriptor::FieldDescriptorProto;
-use crate::message::Message;
+use crate::message_dyn::MessageDyn;
 use crate::reflect::acc::v2::map::MapFieldAccessorHolder;
 use crate::reflect::acc::v2::repeated::RepeatedFieldAccessorHolder;
 use crate::reflect::acc::v2::singular::SingularFieldAccessorHolder;
@@ -158,7 +158,7 @@ impl FieldDescriptor {
     /// # Panics
     ///
     /// If this field belongs to a different message type.
-    pub fn has_field(&self, m: &dyn Message) -> bool {
+    pub fn has_field(&self, m: &dyn MessageDyn) -> bool {
         match self.get_reflect(m) {
             ReflectFieldRef::Optional(Some(..)) => true,
             ReflectFieldRef::Optional(None) => false,
@@ -210,7 +210,7 @@ impl FieldDescriptor {
     /// # Panics
     /// If this field belongs to a different message type or
     /// field type is not message.
-    pub fn get_message<'a>(&self, m: &'a dyn Message) -> MessageRef<'a> {
+    pub fn get_message<'a>(&self, m: &'a dyn MessageDyn) -> MessageRef<'a> {
         match self.get_singular_field_or_default(m) {
             ReflectValueRef::Message(m) => m,
             _ => panic!("not message field: {}", self),
@@ -224,7 +224,7 @@ impl FieldDescriptor {
     ///
     /// If this field belongs to a different message type or
     /// field type is not singular message.
-    pub fn mut_message<'a>(&self, m: &'a mut dyn Message) -> &'a mut dyn Message {
+    pub fn mut_message<'a>(&self, m: &'a mut dyn MessageDyn) -> &'a mut dyn MessageDyn {
         match self.mut_singular_field_or_default(m) {
             ReflectValueMut::Message(m) => m,
         }
@@ -237,7 +237,7 @@ impl FieldDescriptor {
     /// # Panics
     ///
     /// If this field belongs to a different message type or fields is not singular.
-    pub fn get_singular_field_or_default<'a>(&self, m: &'a dyn Message) -> ReflectValueRef<'a> {
+    pub fn get_singular_field_or_default<'a>(&self, m: &'a dyn MessageDyn) -> ReflectValueRef<'a> {
         match self.singular() {
             SingularFieldAccessorRef::Generated(g) => g.accessor.get_field_or_default(m),
             SingularFieldAccessorRef::Dynamic(..) => {
@@ -247,7 +247,7 @@ impl FieldDescriptor {
     }
 
     // Not public because it is not implemented for all types
-    fn mut_singular_field_or_default<'a>(&self, m: &'a mut dyn Message) -> ReflectValueMut<'a> {
+    fn mut_singular_field_or_default<'a>(&self, m: &'a mut dyn MessageDyn) -> ReflectValueMut<'a> {
         match self.singular() {
             SingularFieldAccessorRef::Generated(g) => g.accessor.mut_field_or_default(m),
             SingularFieldAccessorRef::Dynamic(..) => {
@@ -274,7 +274,7 @@ impl FieldDescriptor {
     ///
     /// If this field belongs to a different message type or
     /// field is not singular or value is of different type.
-    pub fn set_singular_field(&self, m: &mut dyn Message, value: ReflectValueBox) {
+    pub fn set_singular_field(&self, m: &mut dyn MessageDyn, value: ReflectValueBox) {
         match self.singular() {
             SingularFieldAccessorRef::Generated(g) => g.accessor.set_field(m, value),
             SingularFieldAccessorRef::Dynamic(..) => unimplemented!(), // TODO
@@ -294,7 +294,7 @@ impl FieldDescriptor {
     /// # Panics
     ///
     /// If this field belongs to a different message type.
-    pub fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectFieldRef<'a> {
+    pub fn get_reflect<'a>(&self, m: &'a dyn MessageDyn) -> ReflectFieldRef<'a> {
         match self.get_impl() {
             FieldDescriptorImplRef::Generated(g) => g.get_reflect(m),
             FieldDescriptorImplRef::Dynamic(d) => d.get_reflect(m),
@@ -308,7 +308,7 @@ impl FieldDescriptor {
     /// # Panics
     ///
     /// If this field belongs to a different message type or field is not repeated.
-    pub fn get_repeated<'a>(&self, m: &'a dyn Message) -> ReflectRepeatedRef<'a> {
+    pub fn get_repeated<'a>(&self, m: &'a dyn MessageDyn) -> ReflectRepeatedRef<'a> {
         match self.get_reflect(m) {
             ReflectFieldRef::Repeated(r) => r,
             _ => panic!("not a repeated field"),
@@ -320,7 +320,7 @@ impl FieldDescriptor {
     /// # Panics
     ///
     /// If this field belongs to a different message type or field is not `repeated`.
-    pub fn mut_repeated<'a>(&self, m: &'a mut dyn Message) -> ReflectRepeatedMut<'a> {
+    pub fn mut_repeated<'a>(&self, m: &'a mut dyn MessageDyn) -> ReflectRepeatedMut<'a> {
         match self.repeated() {
             RepeatedFieldAccessorRef::Generated(g) => g.accessor.mut_repeated(m),
             RepeatedFieldAccessorRef::Dynamic(d) => d.mut_repeated(m),
@@ -334,7 +334,7 @@ impl FieldDescriptor {
     /// # Panics
     ///
     /// If this field belongs to a different message type or field is not `map`.
-    pub fn get_map<'a>(&self, m: &'a dyn Message) -> ReflectMapRef<'a> {
+    pub fn get_map<'a>(&self, m: &'a dyn MessageDyn) -> ReflectMapRef<'a> {
         match self.get_reflect(m) {
             ReflectFieldRef::Map(m) => m,
             _ => panic!("not a map field"),
@@ -346,7 +346,7 @@ impl FieldDescriptor {
     /// # Panics
     ///
     /// If this field belongs to a different message type or field is not `map`.
-    pub fn mut_map<'a>(&self, m: &'a mut dyn Message) -> ReflectMapMut<'a> {
+    pub fn mut_map<'a>(&self, m: &'a mut dyn MessageDyn) -> ReflectMapMut<'a> {
         match self.map() {
             MapFieldAccessorRef::Generated(g) => g.accessor.mut_reflect(m),
             MapFieldAccessorRef::Dynamic(d) => d.mut_map(m),

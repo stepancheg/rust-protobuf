@@ -1,4 +1,5 @@
 use crate::cached_size::CachedSize;
+use crate::message_dyn::MessageDyn;
 use crate::reflect::dynamic::map::DynamicMap;
 use crate::reflect::dynamic::repeated::DynamicRepeated;
 use crate::reflect::value::ReflectValueMut;
@@ -136,12 +137,12 @@ impl DynamicMessage {
         }
     }
 
-    pub fn downcast_ref(message: &dyn Message) -> &DynamicMessage {
-        Message::downcast_ref(message).unwrap()
+    pub fn downcast_ref(message: &dyn MessageDyn) -> &DynamicMessage {
+        MessageDyn::downcast_ref(message).unwrap()
     }
 
-    pub fn downcast_mut(message: &mut dyn Message) -> &mut DynamicMessage {
-        Message::downcast_mut(message).unwrap()
+    pub fn downcast_mut(message: &mut dyn MessageDyn) -> &mut DynamicMessage {
+        MessageDyn::downcast_mut(message).unwrap()
     }
 }
 

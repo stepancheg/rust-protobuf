@@ -14,10 +14,10 @@ use std::marker;
 
 /// Sized to dynamic reflection operations.
 pub(crate) trait MessageFactory: Send + Sync + 'static {
-    fn new_instance(&self) -> Box<dyn Message>;
+    fn new_instance(&self) -> Box<dyn MessageDyn>;
     fn default_instance(&self) -> &dyn MessageDyn;
-    fn clone(&self, message: &dyn Message) -> Box<dyn Message>;
-    fn eq(&self, a: &dyn Message, b: &dyn Message) -> bool;
+    fn clone(&self, message: &dyn MessageDyn) -> Box<dyn MessageDyn>;
+    fn eq(&self, a: &dyn MessageDyn, b: &dyn MessageDyn) -> bool;
 }
 
 /// The only message factory implementation.
@@ -27,7 +27,7 @@ impl<M> MessageFactory for MessageFactoryImpl<M>
 where
     M: 'static + Message + Default + Clone + PartialEq,
 {
-    fn new_instance(&self) -> Box<dyn Message> {
+    fn new_instance(&self) -> Box<dyn MessageDyn> {
         let m: M = Default::default();
         Box::new(m)
     }
@@ -36,12 +36,12 @@ where
         M::default_instance() as &dyn MessageDyn
     }
 
-    fn clone(&self, message: &dyn Message) -> Box<dyn Message> {
+    fn clone(&self, message: &dyn MessageDyn) -> Box<dyn MessageDyn> {
         let m: &M = message.downcast_ref().expect("wrong message type");
         Box::new(m.clone())
     }
 
-    fn eq(&self, a: &dyn Message, b: &dyn Message) -> bool {
+    fn eq(&self, a: &dyn MessageDyn, b: &dyn MessageDyn) -> bool {
         let a: &M = a.downcast_ref().expect("wrong message type");
         let b: &M = b.downcast_ref().expect("wrong message type");
         a == b

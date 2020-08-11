@@ -3,6 +3,7 @@ use std::str;
 
 use crate::message::Message;
 
+use crate::message_dyn::MessageDyn;
 use crate::reflect::value::hashable::ReflectValueBoxHashable;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::EnumValueDescriptor;
@@ -182,7 +183,7 @@ impl<'a> Parser<'a> {
             .and_then(|s| s.decode_bytes().map_err(From::from))?)
     }
 
-    fn read_message(&mut self, descriptor: &MessageDescriptor) -> ParseResult<Box<dyn Message>> {
+    fn read_message(&mut self, descriptor: &MessageDescriptor) -> ParseResult<Box<dyn MessageDyn>> {
         let mut message = descriptor.new_instance();
 
         let symbol = self.tokenizer.next_symbol_expect_eq_oneof(&['{', '<'])?;
@@ -258,7 +259,7 @@ impl<'a> Parser<'a> {
 
     fn merge_field(
         &mut self,
-        message: &mut dyn Message,
+        message: &mut dyn MessageDyn,
         descriptor: &MessageDescriptor,
     ) -> ParseResult<()> {
         let field_name = self.next_field_name()?;
@@ -289,18 +290,18 @@ impl<'a> Parser<'a> {
         Ok(())
     }
 
-    fn merge_inner(&mut self, message: &mut dyn Message) -> ParseResult<()> {
+    fn merge_inner(&mut self, message: &mut dyn MessageDyn) -> ParseResult<()> {
         loop {
             if self.tokenizer.syntax_eof()? {
                 break;
             }
-            let descriptor = message.descriptor();
+            let descriptor = message.descriptor_dyn();
             self.merge_field(message, &descriptor)?;
         }
         Ok(())
     }
 
-    fn merge(&mut self, message: &mut dyn Message) -> ParseWithLocResult<()> {
+    fn merge(&mut self, message: &mut dyn MessageDyn) -> ParseWithLocResult<()> {
         match self.merge_inner(message) {
             Ok(()) => Ok(()),
             Err(error) => Err(ParseError {
@@ -314,7 +315,7 @@ impl<'a> Parser<'a> {
 /// Parse text format message.
 ///
 /// This function does not check if message required fields are set.
-pub fn merge_from_str(message: &mut dyn Message, input: &str) -> ParseWithLocResult<()> {
+pub fn merge_from_str(message: &mut dyn MessageDyn, input: &str) -> ParseWithLocResult<()> {
     let mut parser = Parser {
         tokenizer: Tokenizer::new(input, ParserLanguage::TextFormat),
     };

@@ -1,7 +1,7 @@
 use std::fmt;
 use std::fmt::Write;
 
-use crate::message::Message;
+use crate::message_dyn::MessageDyn;
 use crate::reflect::MessageRef;
 use crate::reflect::ReflectFieldRef;
 use crate::reflect::ReflectValueRef;
@@ -140,7 +140,7 @@ fn print_field<F: FieldName>(
 }
 
 fn print_to_internal(m: &MessageRef, buf: &mut String, pretty: bool, indent: usize) {
-    let d = m.descriptor();
+    let d = m.descriptor_dyn();
     let mut first = true;
     for f in d.fields() {
         match f.get_reflect(&**m) {
@@ -175,8 +175,8 @@ fn print_to_internal(m: &MessageRef, buf: &mut String, pretty: bool, indent: usi
         }
     }
 
-    let unknown_fields = m.get_unknown_fields();
-    let mut numbers: Vec<u32> = m.get_unknown_fields().iter().map(|(n, _)| n).collect();
+    let unknown_fields = m.get_unknown_fields_dyn();
+    let mut numbers: Vec<u32> = m.get_unknown_fields_dyn().iter().map(|(n, _)| n).collect();
     // Sort for stable output
     numbers.sort();
     for &n in &numbers {
@@ -188,23 +188,23 @@ fn print_to_internal(m: &MessageRef, buf: &mut String, pretty: bool, indent: usi
 }
 
 /// Text-format
-pub fn print_to(m: &dyn Message, buf: &mut String) {
+pub fn print_to(m: &dyn MessageDyn, buf: &mut String) {
     print_to_internal(&MessageRef::from(m), buf, false, 0)
 }
 
-fn print_to_string_internal(m: &dyn Message, pretty: bool) -> String {
+fn print_to_string_internal(m: &dyn MessageDyn, pretty: bool) -> String {
     let mut r = String::new();
     print_to_internal(&MessageRef::from(m), &mut r, pretty, 0);
     r.to_string()
 }
 
 /// Text-format
-pub fn print_to_string(m: &dyn Message) -> String {
+pub fn print_to_string(m: &dyn MessageDyn) -> String {
     print_to_string_internal(m, false)
 }
 
 /// Text-format to `fmt::Formatter`.
-pub fn fmt(m: &dyn Message, f: &mut fmt::Formatter) -> fmt::Result {
+pub fn fmt(m: &dyn MessageDyn, f: &mut fmt::Formatter) -> fmt::Result {
     let pretty = f.alternate();
     f.write_str(&print_to_string_internal(m, pretty))
 }

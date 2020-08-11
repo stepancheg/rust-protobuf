@@ -1,5 +1,6 @@
-use crate::reflect::MessageDescriptor;
 use crate::reflect::ProtobufValue;
+use crate::reflect::MessageDescriptor;
+use crate::reflect::ReflectEqMode;
 use crate::stream::WithCodedOutputStream;
 use crate::CodedInputStream;
 use crate::CodedOutputStream;
@@ -7,58 +8,64 @@ use crate::Message;
 use crate::ProtobufError;
 use crate::ProtobufResult;
 use crate::UnknownFields;
+use std::any::Any;
+use std::any::TypeId;
 use std::fmt;
 use std::io::Write;
 
 /// Dynamic-dispatch version of [`Message`].
 pub trait MessageDyn: ProtobufValue + fmt::Debug + Send + Sync + 'static {
-    fn descriptor(&self) -> MessageDescriptor;
+    /// Message descriptor for this message.
+    fn descriptor_dyn(&self) -> MessageDescriptor;
 
-    fn merge_from(&mut self, is: &mut CodedInputStream) -> ProtobufResult<()>;
+    /// Update this message fields with contents of given stream.
+    fn merge_from_dyn(&mut self, is: &mut CodedInputStream) -> ProtobufResult<()>;
 
-    fn write_to_with_cached_sizes(&self, os: &mut CodedOutputStream) -> ProtobufResult<()>;
+    /// Write the message.
+    fn write_to_with_cached_sizes_dyn(&self, os: &mut CodedOutputStream) -> ProtobufResult<()>;
 
-    fn compute_size(&self) -> u32;
+    /// Compute (and cache) the message size.
+    fn compute_size_dyn(&self) -> u32;
 
     /// True iff all required fields are initialized.
     /// Always returns `true` for protobuf 3.
-    fn is_initialized(&self) -> bool;
+    fn is_initialized_dyn(&self) -> bool;
 
     /// Get a reference to unknown fields.
-    fn get_unknown_fields(&self) -> &UnknownFields;
+    fn get_unknown_fields_dyn(&self) -> &UnknownFields;
     /// Get a mutable reference to unknown fields.
-    fn mut_unknown_fields(&mut self) -> &mut UnknownFields;
+    fn mut_unknown_fields_dyn(&mut self) -> &mut UnknownFields;
 
     /// Temporary for migration
     fn as_message_todo(&self) -> &dyn Message;
 }
 
 impl<M: Message> MessageDyn for M {
-    fn descriptor(&self) -> MessageDescriptor {
+    fn descriptor_dyn(&self) -> MessageDescriptor {
         self.descriptor()
     }
 
-    fn merge_from(&mut self, is: &mut CodedInputStream) -> ProtobufResult<()> {
+    fn merge_from_dyn(&mut self, is: &mut CodedInputStream) -> ProtobufResult<()> {
         self.merge_from(is)
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut CodedOutputStream) -> ProtobufResult<()> {
+    fn write_to_with_cached_sizes_dyn(&self, os: &mut CodedOutputStream) -> ProtobufResult<()> {
         self.write_to_with_cached_sizes(os)
     }
 
-    fn compute_size(&self) -> u32 {
+    fn compute_size_dyn(&self) -> u32 {
         self.compute_size()
     }
 
-    fn is_initialized(&self) -> bool {
+    fn is_initialized_dyn(&self) -> bool {
         self.is_initialized()
     }
 
-    fn get_unknown_fields(&self) -> &UnknownFields {
+    fn get_unknown_fields_dyn(&self) -> &UnknownFields {
         self.get_unknown_fields()
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut UnknownFields {
+    fn mut_unknown_fields_dyn(&mut self) -> &mut UnknownFields {
         self.mut_unknown_fields()
     }
 
@@ -69,10 +76,10 @@ impl<M: Message> MessageDyn for M {
 
 impl dyn MessageDyn {
     /// Check if all required fields of this object are initialized.
-    fn check_initialized(&self) -> ProtobufResult<()> {
-        if !self.is_initialized() {
+    pub fn check_initialized_dyn(&self) -> ProtobufResult<()> {
+        if !self.is_initialized_dyn() {
             Err(ProtobufError::MessageNotInitialized(
-                self.descriptor().name().to_owned(),
+                self.descriptor_dyn().name().to_owned(),
             ))
         } else {
             Ok(())
@@ -80,52 +87,52 @@ impl dyn MessageDyn {
     }
 
     /// Write the message to the writer.
-    fn write_to_writer(&self, w: &mut dyn Write) -> ProtobufResult<()> {
-        w.with_coded_output_stream(|os| self.write_to(os))
+    pub fn write_to_writer_dyn(&self, w: &mut dyn Write) -> ProtobufResult<()> {
+        w.with_coded_output_stream(|os| self.write_to_dyn(os))
     }
 
     /// Write the message to bytes vec.
-    fn write_to_vec(&self, v: &mut Vec<u8>) -> ProtobufResult<()> {
-        v.with_coded_output_stream(|os| self.write_to(os))
+    pub fn write_to_vec_dyn(&self, v: &mut Vec<u8>) -> ProtobufResult<()> {
+        v.with_coded_output_stream(|os| self.write_to_dyn(os))
     }
 
     /// Write the message to the stream.
     ///
     /// Results in error if message is not fully initialized.
-    fn write_to(&self, os: &mut CodedOutputStream) -> ProtobufResult<()> {
-        self.check_initialized()?;
+    pub fn write_to_dyn(&self, os: &mut CodedOutputStream) -> ProtobufResult<()> {
+        self.check_initialized_dyn()?;
 
         // cache sizes
-        self.compute_size();
+        self.compute_size_dyn();
         // TODO: reserve additional
-        self.write_to_with_cached_sizes(os)?;
+        self.write_to_with_cached_sizes_dyn(os)?;
 
         Ok(())
     }
 
     /// Write the message to the vec, prepend the message with message length
     /// encoded as varint.
-    fn write_length_delimited_to_vec(&self, vec: &mut Vec<u8>) -> ProtobufResult<()> {
+    pub fn write_length_delimited_to_vec_dyn(&self, vec: &mut Vec<u8>) -> ProtobufResult<()> {
         let mut os = CodedOutputStream::vec(vec);
-        self.write_length_delimited_to(&mut os)?;
+        self.write_length_delimited_to_dyn(&mut os)?;
         os.flush()?;
         Ok(())
     }
 
     /// Update this message object with fields read from given stream.
-    fn merge_from_bytes(&mut self, bytes: &[u8]) -> ProtobufResult<()> {
+    pub fn merge_from_bytes_dyn(&mut self, bytes: &[u8]) -> ProtobufResult<()> {
         let mut is = CodedInputStream::from_bytes(bytes);
-        self.merge_from(&mut is)
+        self.merge_from_dyn(&mut is)
     }
 
     /// Write the message to bytes vec.
     ///
     /// > **Note**: You can use [`Message::parse_from_bytes`]
     /// to do the reverse.
-    fn write_to_bytes(&self) -> ProtobufResult<Vec<u8>> {
-        self.check_initialized()?;
+    pub fn write_to_bytes_dyn(&self) -> ProtobufResult<Vec<u8>> {
+        self.check_initialized_dyn()?;
 
-        let size = self.compute_size() as usize;
+        let size = self.compute_size_dyn() as usize;
         let mut v = Vec::with_capacity(size);
         // skip zerofill
         unsafe {
@@ -133,7 +140,7 @@ impl dyn MessageDyn {
         }
         {
             let mut os = CodedOutputStream::bytes(&mut v);
-            self.write_to_with_cached_sizes(&mut os)?;
+            self.write_to_with_cached_sizes_dyn(&mut os)?;
             os.check_eof();
         }
         Ok(v)
@@ -141,10 +148,10 @@ impl dyn MessageDyn {
 
     /// Write the message to the stream prepending the message with message length
     /// encoded as varint.
-    pub fn write_length_delimited_to(&self, os: &mut CodedOutputStream) -> ProtobufResult<()> {
-        let size = self.compute_size();
+    pub fn write_length_delimited_to_dyn(&self, os: &mut CodedOutputStream) -> ProtobufResult<()> {
+        let size = self.compute_size_dyn();
         os.write_raw_varint32(size)?;
-        self.write_to_with_cached_sizes(os)?;
+        self.write_to_with_cached_sizes_dyn(os)?;
 
         // TODO: assert we've written same number of bytes as computed
 
@@ -153,15 +160,91 @@ impl dyn MessageDyn {
 
     /// Write the message to the writer, prepend the message with message length
     /// encoded as varint.
-    fn write_length_delimited_to_writer(&self, w: &mut dyn Write) -> ProtobufResult<()> {
-        w.with_coded_output_stream(|os| self.write_length_delimited_to(os))
+    pub fn write_length_delimited_to_writer_dyn(&self, w: &mut dyn Write) -> ProtobufResult<()> {
+        w.with_coded_output_stream(|os| self.write_length_delimited_to_dyn(os))
     }
 
     /// Write the message to the bytes vec, prepend the message with message length
     /// encoded as varint.
-    fn write_length_delimited_to_bytes(&self) -> ProtobufResult<Vec<u8>> {
+    pub fn write_length_delimited_to_bytes_dyn(&self) -> ProtobufResult<Vec<u8>> {
         let mut v = Vec::new();
-        v.with_coded_output_stream(|os| self.write_length_delimited_to(os))?;
+        v.with_coded_output_stream(|os| self.write_length_delimited_to_dyn(os))?;
         Ok(v)
+    }
+
+    /// Downcast `Box<dyn Message>` to specific message type.
+    ///
+    /// ```
+    /// # use protobuf::Message;
+    /// # fn foo<MyMessage: Message>(message: Box<dyn Message>) {
+    /// let m: Box<dyn Message> = message;
+    /// let m: Box<MyMessage> = Message::downcast_box(m).unwrap();
+    /// # }
+    /// ```
+    pub fn downcast_box<T: Any>(self: Box<dyn MessageDyn>) -> Result<Box<T>, Box<dyn MessageDyn>> {
+        if Any::type_id(&*self) == TypeId::of::<T>() {
+            unsafe {
+                let raw: *mut dyn MessageDyn = Box::into_raw(self);
+                Ok(Box::from_raw(raw as *mut T))
+            }
+        } else {
+            Err(self)
+        }
+    }
+
+    /// Downcast `&dyn Message` to specific message type.
+    ///
+    /// ```
+    /// # use protobuf::Message;
+    /// # fn foo<MyMessage: Message>(message: &dyn Message) {
+    /// let m: &dyn Message = message;
+    /// let m: &MyMessage = Message::downcast_ref(m).unwrap();
+    /// # }
+    /// ```
+    pub fn downcast_ref<'a, M: Message + 'a>(&'a self) -> Option<&'a M> {
+        if Any::type_id(&*self) == TypeId::of::<M>() {
+            unsafe { Some(&*(self as *const dyn MessageDyn as *const M)) }
+        } else {
+            None
+        }
+    }
+
+    /// Downcast `&mut dyn Message` to specific message type.
+    ///
+    /// ```
+    /// # use protobuf::Message;
+    /// # fn foo<MyMessage: Message>(message: &mut dyn Message) {
+    /// let m: &mut dyn Message = message;
+    /// let m: &mut MyMessage = Message::downcast_mut(m).unwrap();
+    /// # }
+    /// ```
+    pub fn downcast_mut<'a, M: Message + 'a>(&'a mut self) -> Option<&'a mut M> {
+        if Any::type_id(&*self) == TypeId::of::<M>() {
+            unsafe { Some(&mut *(self as *mut dyn MessageDyn as *mut M)) }
+        } else {
+            None
+        }
+    }
+
+    /// Clone from a `dyn Message` reference.
+    pub fn clone_box(&self) -> Box<dyn MessageDyn> {
+        self.descriptor_dyn().clone_message(self)
+    }
+
+    /// Reflectively compare the messages.
+    pub fn reflect_eq_dyn(&self, other: &dyn MessageDyn, mode: &ReflectEqMode) -> bool {
+        MessageDescriptor::reflect_eq_maybe_unrelated(self, other, mode)
+    }
+}
+
+impl Clone for Box<dyn MessageDyn> {
+    fn clone(&self) -> Self {
+        (*self).clone_box()
+    }
+}
+
+impl PartialEq for Box<dyn MessageDyn> {
+    fn eq(&self, other: &Box<dyn MessageDyn>) -> bool {
+        MessageDescriptor::reflect_eq_maybe_unrelated(&**self, &**other, &ReflectEqMode::default())
     }
 }

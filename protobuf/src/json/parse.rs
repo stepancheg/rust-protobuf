@@ -30,6 +30,7 @@ use super::rfc_3339;
 use crate::text_format::lexer::JsonNumberLit;
 
 use crate::json::well_known_wrapper::WellKnownWrapper;
+use crate::message_dyn::MessageDyn;
 use crate::reflect::value::hashable::ReflectValueBoxHashable;
 use crate::well_known_types::value;
 use crate::well_known_types::Any;
@@ -442,7 +443,7 @@ impl<'a> Parser<'a> {
     fn read_message(
         &mut self,
         descriptor: &MessageDescriptor,
-    ) -> ParseResultWithoutLoc<Box<dyn Message>> {
+    ) -> ParseResultWithoutLoc<Box<dyn MessageDyn>> {
         let mut m = descriptor.new_instance();
         self.merge_inner(&mut *m)?;
         Ok(m)
@@ -466,7 +467,7 @@ impl<'a> Parser<'a> {
 
     fn merge_singular_field(
         &mut self,
-        message: &mut dyn Message,
+        message: &mut dyn MessageDyn,
         field: &FieldDescriptor,
         t: &RuntimeTypeBox,
     ) -> ParseResultWithoutLoc<()> {
@@ -499,7 +500,7 @@ impl<'a> Parser<'a> {
 
     fn merge_repeated_field(
         &mut self,
-        message: &mut dyn Message,
+        message: &mut dyn MessageDyn,
         field: &FieldDescriptor,
         t: &RuntimeTypeBox,
     ) -> ParseResultWithoutLoc<()> {
@@ -585,7 +586,7 @@ impl<'a> Parser<'a> {
 
     fn merge_map_field(
         &mut self,
-        message: &mut dyn Message,
+        message: &mut dyn MessageDyn,
         field: &FieldDescriptor,
         kt: &RuntimeTypeBox,
         vt: &RuntimeTypeBox,
@@ -640,7 +641,7 @@ impl<'a> Parser<'a> {
 
     fn merge_field(
         &mut self,
-        message: &mut dyn Message,
+        message: &mut dyn MessageDyn,
         field: &FieldDescriptor,
     ) -> ParseResultWithoutLoc<()> {
         match field.runtime_field_type() {
@@ -650,7 +651,7 @@ impl<'a> Parser<'a> {
         }
     }
 
-    fn merge_inner(&mut self, message: &mut dyn Message) -> ParseResultWithoutLoc<()> {
+    fn merge_inner(&mut self, message: &mut dyn MessageDyn) -> ParseResultWithoutLoc<()> {
         if let Some(duration) = message.downcast_mut() {
             return self.merge_wk_duration(duration);
         }
@@ -715,7 +716,7 @@ impl<'a> Parser<'a> {
             return self.merge_wk_struct(value);
         }
 
-        let descriptor = message.descriptor();
+        let descriptor = message.descriptor_dyn();
 
         self.tokenizer.next_symbol_expect_eq('{')?;
         let mut first = true;
@@ -884,7 +885,7 @@ impl<'a> Parser<'a> {
         Ok(v)
     }
 
-    fn merge(&mut self, message: &mut dyn Message) -> ParseResult<()> {
+    fn merge(&mut self, message: &mut dyn MessageDyn) -> ParseResult<()> {
         match self.merge_inner(message) {
             Ok(()) => Ok(()),
             Err(error) => Err(ParseError {
@@ -919,7 +920,7 @@ pub struct ParseOptions {
 
 /// Merge JSON into provided message
 pub fn merge_from_str_with_options(
-    message: &mut dyn Message,
+    message: &mut dyn MessageDyn,
     json: &str,
     parse_options: &ParseOptions,
 ) -> ParseResult<()> {
@@ -931,7 +932,7 @@ pub fn merge_from_str_with_options(
 }
 
 /// Merge JSON into provided message
-pub fn merge_from_str(message: &mut dyn Message, json: &str) -> ParseResult<()> {
+pub fn merge_from_str(message: &mut dyn MessageDyn, json: &str) -> ParseResult<()> {
     merge_from_str_with_options(message, json, &ParseOptions::default())
 }
 
@@ -940,10 +941,10 @@ pub fn parse_dynamic_from_str_with_options(
     d: &MessageDescriptor,
     json: &str,
     parse_options: &ParseOptions,
-) -> ParseResult<Box<dyn Message>> {
+) -> ParseResult<Box<dyn MessageDyn>> {
     let mut m = d.new_instance();
     merge_from_str_with_options(&mut *m, json, parse_options)?;
-    if let Err(_) = m.check_initialized() {
+    if let Err(_) = m.check_initialized_dyn() {
         return Err(ParseError {
             error: ParseErrorWithoutLoc(ParseErrorWithoutLocInner::MessageNotInitialized),
             loc: Loc::start(),
@@ -953,7 +954,10 @@ pub fn parse_dynamic_from_str_with_options(
 }
 
 /// Parse JSON to protobuf message.
-pub fn parse_dynamic_from_str(d: &MessageDescriptor, json: &str) -> ParseResult<Box<dyn Message>> {
+pub fn parse_dynamic_from_str(
+    d: &MessageDescriptor,
+    json: &str,
+) -> ParseResult<Box<dyn MessageDyn>> {
     parse_dynamic_from_str_with_options(d, json, &ParseOptions::default())
 }
 

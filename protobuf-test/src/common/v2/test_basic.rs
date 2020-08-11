@@ -1,9 +1,8 @@
-use protobuf::*;
-
 use protobuf_test_common::hex::decode_hex;
 use protobuf_test_common::*;
 
 use super::test_basic_pb::*;
+use protobuf::{descriptor, reflect, CodedInputStream, Message, ProtobufEnum};
 
 #[test]
 fn test1() {

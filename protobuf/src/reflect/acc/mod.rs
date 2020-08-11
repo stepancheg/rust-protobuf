@@ -1,7 +1,7 @@
+use crate::message_dyn::MessageDyn;
 use crate::reflect::acc::v2::AccessorV2;
 use crate::reflect::ReflectFieldRef;
 use crate::reflect::RuntimeFieldType;
-use crate::Message;
 
 pub(crate) mod v2;
 
@@ -17,7 +17,7 @@ pub struct FieldAccessor {
 }
 
 impl GeneratedFieldAccessor {
-    pub(crate) fn get_reflect<'a>(&self, m: &'a dyn Message) -> ReflectFieldRef<'a> {
+    pub(crate) fn get_reflect<'a>(&self, m: &'a dyn MessageDyn) -> ReflectFieldRef<'a> {
         match self {
             GeneratedFieldAccessor::V2(AccessorV2::Singular(ref a)) => {
                 ReflectFieldRef::Optional(a.accessor.get_field(m))

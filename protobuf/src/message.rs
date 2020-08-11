@@ -10,6 +10,7 @@ use bytes::Bytes;
 use crate::clear::Clear;
 use crate::error::ProtobufError;
 use crate::error::ProtobufResult;
+use crate::message_dyn::MessageDyn;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ProtobufValue;
@@ -245,7 +246,7 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue {
     where
         Self: Sized,
     {
-        (self as &dyn Message).reflect_eq_dyn(other, mode)
+        MessageDyn::reflect_eq_dyn(self, other, mode)
     }
 }
 
@@ -302,36 +303,5 @@ impl dyn Message {
         } else {
             None
         }
-    }
-
-    /// Check two messages for equality.
-    ///
-    /// Messages of different types are not equal,
-    /// `NaN` values are considered equal (useful for tests).
-    ///
-    /// # See also
-    ///
-    /// * [`Message::reflect_eq()`], sized version of this function.
-    pub fn reflect_eq_dyn(&self, other: &dyn Message, mode: &ReflectEqMode) -> bool {
-        MessageDescriptor::reflect_eq_maybe_unrelated(self, other, mode)
-    }
-
-    /// Clone from a `dyn Message` reference.
-    pub fn clone_box(&self) -> Box<dyn Message> {
-        self.descriptor().clone_message(self)
-    }
-}
-
-impl Clone for Box<dyn Message> {
-    fn clone(&self) -> Self {
-        (*self).clone_box()
-    }
-}
-
-#[cfg(off)] // don't need it
-impl PartialEq for Box<dyn Message> {
-    fn eq(&self, other: &Box<dyn Message>) -> bool {
-        use std::ops::Deref;
-        self.descriptor() == other.descriptor() && self.descriptor().eq(self.deref(), other.deref())
     }
 }

@@ -61,7 +61,7 @@ impl Any {
         type_url_prefix: &str,
     ) -> ProtobufResult<Any> {
         Ok(Any {
-            type_url: Any::get_type_url(type_url_prefix, message.descriptor()),
+            type_url: Any::get_type_url(type_url_prefix, message.descriptor_dyn()),
             value: message.write_to_bytes()?,
             ..Default::default()
         })

@@ -1,6 +1,5 @@
-use protobuf::*;
-
 use super::test_required_pb::*;
+use protobuf::Message;
 
 #[test]
 fn test_write_missing_required() {
