@@ -1,4 +1,5 @@
 use crate::reflect::MessageDescriptor;
+use crate::reflect::ProtobufValue;
 use crate::stream::WithCodedOutputStream;
 use crate::CodedInputStream;
 use crate::CodedOutputStream;
@@ -6,9 +7,11 @@ use crate::Message;
 use crate::ProtobufError;
 use crate::ProtobufResult;
 use crate::UnknownFields;
+use std::fmt;
 use std::io::Write;
 
-pub trait MessageDyn {
+/// Dynamic-dispatch version of [`Message`].
+pub trait MessageDyn: ProtobufValue + fmt::Debug + Send + Sync + 'static {
     fn descriptor(&self) -> MessageDescriptor;
 
     fn merge_from(&mut self, is: &mut CodedInputStream) -> ProtobufResult<()>;
