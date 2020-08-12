@@ -52,6 +52,12 @@ impl Hash for FileDescriptorImpl {
 impl Eq for FileDescriptorImpl {}
 
 /// Reflection for objects defined in `.proto` file (messages, enums, etc).
+///
+/// The object is refcounted: clone is shallow.
+///
+/// The equality performs pointer comparison: two clones of the same `FileDescriptor`
+/// objects are equal, but two `FileDescriptor` objects created from the same `FileDescriptorProto`
+/// objects are **not** equal.
 #[derive(Clone, PartialEq, Eq, Hash, Debug)]
 pub struct FileDescriptor {
     pub(crate) imp: FileDescriptorImpl,
@@ -85,6 +91,8 @@ impl FileDescriptor {
     }
 
     /// This function is called from generated code, it is not stable, and should not be called.
+    #[doc(hidden)]
+    // TODO: rename
     pub fn new_generated_2(generated: &'static GeneratedFileDescriptor) -> FileDescriptor {
         FileDescriptor {
             imp: FileDescriptorImpl::Generated(generated),
