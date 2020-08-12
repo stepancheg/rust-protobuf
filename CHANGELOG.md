@@ -33,6 +33,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.17] - Unreleased
 
+## [2.17.0] - 2020-08-12
+
 - `protoc` crate now depends on `which` crate for `protoc` binary lookup
 - pure rust codegen output adjusted to be closer to `protoc`-command based output
 - `RepeatedField::retain` is implemented
