@@ -24,7 +24,7 @@ mod test {
 
         if cfg!(windows) {
             assert_eq!(
-                "bar\\foo.proto",
+                "bar/foo.proto",
                 fs_path_to_proto_path(Path::new("bar\\foo.proto"))
             );
         }
