@@ -10,6 +10,7 @@ use crate::reflect::map::ReflectMapMut;
 use crate::reflect::map::ReflectMapRef;
 use crate::reflect::ProtobufValueSized;
 use crate::reflect::RuntimeTypeBox;
+use std::fmt;
 
 pub(crate) trait MapFieldAccessor: Send + Sync + 'static {
     fn get_reflect<'a>(&self, m: &'a dyn MessageDyn) -> ReflectMapRef<'a>;
@@ -19,6 +20,12 @@ pub(crate) trait MapFieldAccessor: Send + Sync + 'static {
 
 pub(crate) struct MapFieldAccessorHolder {
     pub accessor: Box<dyn MapFieldAccessor>,
+}
+
+impl<'a> fmt::Debug for MapFieldAccessorHolder {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("MapFieldAccessorHolder").finish()
+    }
 }
 
 struct MapFieldAccessorImpl<M, K, V>

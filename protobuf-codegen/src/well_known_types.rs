@@ -3,8 +3,9 @@ use crate::compiler_plugin;
 use crate::file::proto_path_to_rust_mod;
 use crate::protobuf_abs_path::ProtobufAbsolutePath;
 use crate::protobuf_rel_path::ProtobufRelativePath;
-use crate::scope::{FileScope, WithScope};
-use protobuf::descriptor::FileDescriptorProto;
+use crate::scope::FileScope;
+use crate::scope::WithScope;
+use protobuf::reflect::FileDescriptor;
 
 pub(crate) static WELL_KNOWN_TYPES_PROTO_FILE_NAMES: &[&str] = &[
     "any.proto",
@@ -83,17 +84,20 @@ pub fn is_well_known_type_full(name: &ProtobufAbsolutePath) -> Option<ProtobufRe
 }
 
 fn find_file_descriptor<'a>(
-    file_descriptors: &'a [FileDescriptorProto],
+    file_descriptors: &'a [FileDescriptor],
     file_name: &str,
-) -> &'a FileDescriptorProto {
-    match file_descriptors.iter().find(|f| f.get_name() == file_name) {
+) -> &'a FileDescriptor {
+    match file_descriptors
+        .iter()
+        .find(|f| f.get_proto().get_name() == file_name)
+    {
         Some(f) => f,
         None => panic!(
             "file descriptor not found for {}, all names: {}",
             file_name,
             file_descriptors
                 .iter()
-                .map(|f| f.get_name().to_owned())
+                .map(|f| f.get_proto().get_name().to_owned())
                 .collect::<Vec<_>>()
                 .join(", ")
         ),
@@ -101,7 +105,7 @@ fn find_file_descriptor<'a>(
 }
 
 pub(crate) fn gen_well_known_types_mod(
-    file_descriptors: &[FileDescriptorProto],
+    file_descriptors: &[FileDescriptor],
 ) -> compiler_plugin::GenResult {
     let mut v = Vec::new();
 

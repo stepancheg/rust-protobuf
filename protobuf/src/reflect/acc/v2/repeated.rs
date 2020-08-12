@@ -1,4 +1,4 @@
-use std::marker;
+use std::{fmt, marker};
 
 use crate::message::Message;
 
@@ -19,6 +19,12 @@ pub(crate) trait RepeatedFieldAccessor: Send + Sync + 'static {
 
 pub(crate) struct RepeatedFieldAccessorHolder {
     pub accessor: Box<dyn RepeatedFieldAccessor>,
+}
+
+impl<'a> fmt::Debug for RepeatedFieldAccessorHolder {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("RepeatedFieldAccessorHolder").finish()
+    }
 }
 
 trait RepeatedFieldGetMut<M, R: ?Sized>: Send + Sync + 'static

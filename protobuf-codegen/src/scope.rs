@@ -20,9 +20,10 @@ use protobuf::descriptor::EnumValueDescriptorProto;
 use protobuf::descriptor::FieldDescriptorProto;
 use protobuf::descriptor::FileDescriptorProto;
 use protobuf::descriptor::OneofDescriptorProto;
+use protobuf::reflect::FileDescriptor;
 
 pub(crate) struct RootScope<'a> {
-    pub file_descriptors: &'a [FileDescriptorProto],
+    pub file_descriptors: &'a [FileDescriptor],
 }
 
 impl<'a> RootScope<'a> {
@@ -67,16 +68,16 @@ impl<'a> RootScope<'a> {
 
 #[derive(Clone, Debug)]
 pub(crate) struct FileScope<'a> {
-    pub file_descriptor: &'a FileDescriptorProto,
+    pub file_descriptor: &'a FileDescriptor,
 }
 
 impl<'a> FileScope<'a> {
     fn get_package(&self) -> ProtobufAbsolutePath {
-        ProtobufRelativePath::from(self.file_descriptor.get_package()).into_absolute()
+        ProtobufRelativePath::from(self.file_descriptor.get_proto().get_package()).into_absolute()
     }
 
     pub fn syntax(&self) -> Syntax {
-        Syntax::parse(self.file_descriptor.get_syntax())
+        Syntax::parse(self.file_descriptor.get_proto().get_syntax())
     }
 
     pub fn to_scope(&self) -> Scope<'a> {
@@ -156,13 +157,13 @@ pub(crate) struct Scope<'a> {
 
 impl<'a> Scope<'a> {
     pub fn get_file_descriptor(&self) -> &'a FileDescriptorProto {
-        self.file_scope.file_descriptor
+        self.file_scope.file_descriptor.get_proto()
     }
 
     // get message descriptors in this scope
     fn get_message_descriptors(&self) -> &'a [DescriptorProto] {
         if self.path.is_empty() {
-            &self.file_scope.file_descriptor.message_type
+            &self.file_scope.file_descriptor.get_proto().message_type
         } else {
             &self.path.last().unwrap().nested_type
         }
@@ -171,7 +172,7 @@ impl<'a> Scope<'a> {
     // get enum descriptors in this scope
     fn get_enum_descriptors(&self) -> &'a [EnumDescriptorProto] {
         if self.path.is_empty() {
-            &self.file_scope.file_descriptor.enum_type
+            &self.file_scope.file_descriptor.get_proto().enum_type
         } else {
             &self.path.last().unwrap().enum_type
         }
@@ -276,7 +277,12 @@ impl<'a> Scope<'a> {
 
     pub fn get_file_and_mod(&self, customize: Customize) -> FileAndMod {
         FileAndMod {
-            file: self.file_scope.file_descriptor.get_name().to_owned(),
+            file: self
+                .file_scope
+                .file_descriptor
+                .get_proto()
+                .get_name()
+                .to_owned(),
             relative_mod: self.rust_path_to_file(),
             customize,
         }

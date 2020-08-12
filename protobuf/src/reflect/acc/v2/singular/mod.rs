@@ -1,3 +1,4 @@
+use std::fmt;
 use std::marker;
 
 use crate::enums::ProtobufEnum;
@@ -64,6 +65,12 @@ pub(crate) trait SingularFieldAccessor: Send + Sync + 'static {
 
 pub(crate) struct SingularFieldAccessorHolder {
     pub accessor: Box<dyn SingularFieldAccessor>,
+}
+
+impl<'a> fmt::Debug for SingularFieldAccessorHolder {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("SingularFieldAccessorHolder").finish()
+    }
 }
 
 trait GetOptionImpl<M>: Send + Sync + 'static {

@@ -7,6 +7,16 @@ pub(crate) fn append_path(name: &mut String, append: &str) {
     }
 }
 
+pub(crate) fn concat_paths(a: &str, b: &str) -> String {
+    if a.is_empty() {
+        b.to_owned()
+    } else if b.is_empty() {
+        b.to_owned()
+    } else {
+        format!("{}.{}", a, b)
+    }
+}
+
 pub(crate) fn compute_full_name(package: &str, path_to_package: &str, name: &str) -> String {
     assert!(!name.is_empty());
 

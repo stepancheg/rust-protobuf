@@ -15,9 +15,9 @@ use crate::reflect::file::FileDescriptorImpl;
 use crate::reflect::FileDescriptor;
 use crate::reflect::ProtobufValue;
 
-pub(crate) mod common;
 pub(crate) mod dynamic;
 pub(crate) mod generated;
+pub(crate) mod index;
 
 /// Description for enum variant.
 ///

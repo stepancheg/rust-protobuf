@@ -2,6 +2,8 @@
 
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::file::dynamic::DynamicFileDescriptor;
+use crate::reflect::file::fds::FdsBuilder;
+use crate::reflect::file::index::FileIndex;
 use crate::reflect::find_message_or_enum::{find_message_or_enum, MessageOrEnum};
 use crate::reflect::GeneratedFileDescriptor;
 use std::collections::HashSet;
@@ -10,9 +12,11 @@ use std::hash::Hasher;
 use std::sync::Arc;
 
 pub(crate) mod dynamic;
+pub(crate) mod fds;
 pub(crate) mod generated;
+pub(crate) mod index;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub(crate) enum FileDescriptorImpl {
     Generated(&'static GeneratedFileDescriptor),
     Dynamic(Arc<DynamicFileDescriptor>),
@@ -46,12 +50,19 @@ impl Hash for FileDescriptorImpl {
 impl Eq for FileDescriptorImpl {}
 
 /// Reflection for objects defined in `.proto` file (messages, enums, etc).
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash, Debug)]
 pub struct FileDescriptor {
     pub(crate) imp: FileDescriptorImpl,
 }
 
 impl FileDescriptor {
+    fn get_index(&self) -> &FileIndex {
+        match &self.imp {
+            FileDescriptorImpl::Generated(g) => &g.index,
+            FileDescriptorImpl::Dynamic(d) => &d.index,
+        }
+    }
+
     /// This function is called from generated code, it is not stable, and should not be called.
     pub fn new_generated_2(generated: &'static GeneratedFileDescriptor) -> FileDescriptor {
         FileDescriptor {
@@ -70,6 +81,11 @@ impl FileDescriptor {
                 dependencies,
             ))),
         }
+    }
+
+    /// Create a set of file descriptors from individual file descriptors.
+    pub fn new_dynamic_fds(protos: Vec<FileDescriptorProto>) -> Vec<FileDescriptor> {
+        FdsBuilder::build(protos)
     }
 
     /// `.proto` data for this file.

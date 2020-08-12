@@ -1,41 +1,40 @@
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
-use crate::reflect::message::common::MessageIndices;
+use crate::reflect::message::index::MessageIndex;
+use crate::reflect::message::path::MessagePath;
 use crate::reflect::name::append_path;
 use std::sync::Arc;
 
+#[derive(Debug)]
 pub(crate) struct DynamicMessageDescriptor {
     pub full_name: String,
     file_descriptor_proto: Arc<FileDescriptorProto>,
-    path: Vec<usize>,
-    pub indices: MessageIndices,
+    path: MessagePath,
+    pub indices: MessageIndex,
 }
 
 impl DynamicMessageDescriptor {
-    pub fn new(proto: Arc<FileDescriptorProto>, path: &[usize]) -> DynamicMessageDescriptor {
+    pub fn new(proto: Arc<FileDescriptorProto>, path: &MessagePath) -> DynamicMessageDescriptor {
         let mut full_name = proto.get_package().to_owned();
-        let mut m = &proto.message_type[path[0]];
-        append_path(&mut full_name, m.get_name());
-        for &p in &path[1..] {
-            m = &m.nested_type[p];
+
+        let messages = path.eval_path(&*proto);
+        for m in &messages {
             append_path(&mut full_name, m.get_name());
         }
 
-        let indices = MessageIndices::index(m);
+        let m = messages.last().unwrap();
+
+        let indices = MessageIndex::index(m);
 
         DynamicMessageDescriptor {
             file_descriptor_proto: proto,
             full_name,
-            path: path.to_owned(),
+            path: path.clone(),
             indices,
         }
     }
 
     pub fn get_proto(&self) -> &DescriptorProto {
-        let mut m = &self.file_descriptor_proto.message_type[self.path[0]];
-        for &p in &self.path[1..] {
-            m = &m.nested_type[p];
-        }
-        m
+        self.path.eval(&self.file_descriptor_proto).unwrap()
     }
 }

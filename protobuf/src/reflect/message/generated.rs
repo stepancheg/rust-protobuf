@@ -5,11 +5,13 @@ use crate::descriptor::FileDescriptorProto;
 use crate::message::Message;
 use crate::message_dyn::MessageDyn;
 use crate::reflect::acc::FieldAccessor;
+use crate::reflect::file::index::FileIndex;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
-use crate::reflect::message::common::MessageIndices;
+use crate::reflect::message::index::MessageIndex;
 use crate::reflect::name::compute_full_name;
 use std::collections::HashMap;
+use std::fmt;
 use std::marker;
 
 /// Sized to dynamic reflection operations.
@@ -18,6 +20,12 @@ pub(crate) trait MessageFactory: Send + Sync + 'static {
     fn default_instance(&self) -> &dyn MessageDyn;
     fn clone(&self, message: &dyn MessageDyn) -> Box<dyn MessageDyn>;
     fn eq(&self, a: &dyn MessageDyn, b: &dyn MessageDyn) -> bool;
+}
+
+impl<'a> fmt::Debug for &'a dyn MessageFactory {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("MessageFactory").finish()
+    }
 }
 
 /// The only message factory implementation.
@@ -79,6 +87,7 @@ impl GeneratedMessageDescriptorData {
     }
 }
 
+#[derive(Debug)]
 pub(crate) struct GeneratedMessageDescriptor {
     pub(crate) proto: &'static DescriptorProto,
 
@@ -88,7 +97,7 @@ pub(crate) struct GeneratedMessageDescriptor {
 
     pub(crate) fields: Vec<FieldAccessor>,
 
-    pub indices: MessageIndices,
+    pub index: MessageIndex,
 }
 
 impl GeneratedMessageDescriptor {
@@ -96,6 +105,7 @@ impl GeneratedMessageDescriptor {
         data: GeneratedMessageDescriptorData,
         expected_index: u32,
         file_descriptor_proto: &'static FileDescriptorProto,
+        _file_index: &FileIndex,
     ) -> GeneratedMessageDescriptor {
         let GeneratedMessageDescriptorData {
             index,
@@ -104,7 +114,7 @@ impl GeneratedMessageDescriptor {
             factory,
         } = data;
 
-        assert!(expected_index == index);
+        assert_eq!(expected_index, index);
 
         let (path_to_package, proto) =
             match find_message_or_enum(file_descriptor_proto, protobuf_name_to_package) {
@@ -118,7 +128,7 @@ impl GeneratedMessageDescriptor {
             field_proto_by_name.insert(field_proto.get_name(), field_proto);
         }
 
-        let indices = MessageIndices::index(proto);
+        let index = MessageIndex::index(proto);
 
         GeneratedMessageDescriptor {
             full_name: compute_full_name(
@@ -127,7 +137,7 @@ impl GeneratedMessageDescriptor {
                 proto.get_name(),
             ),
             fields,
-            indices,
+            index,
             factory,
             proto,
         }

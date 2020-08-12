@@ -2,7 +2,7 @@
 
 use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::FileDescriptorProto;
-use crate::reflect::enums::common::EnumIndices;
+use crate::reflect::enums::index::EnumIndex;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
 use crate::reflect::name::compute_full_name;
@@ -10,11 +10,18 @@ use crate::reflect::ProtobufValue;
 use crate::ProtobufEnum;
 use crate::ProtobufEnumOrUnknown;
 use std::any::TypeId;
+use std::fmt;
 use std::marker;
 
 pub(crate) trait GetEnumDescriptor: Send + Sync + 'static {
     #[cfg(not(rustc_nightly))]
     unsafe fn copy_to(&self, value: i32, dest: *mut ());
+}
+
+impl<'a> fmt::Debug for &'a dyn GetEnumDescriptor {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("GetEnumDescriptor").finish()
+    }
 }
 
 pub(crate) struct GetEnumDescriptorImpl<E: ProtobufEnum>(marker::PhantomData<E>);
@@ -59,6 +66,7 @@ impl GeneratedEnumDescriptorData {
     }
 }
 
+#[derive(Debug)]
 pub(crate) struct GeneratedEnumDescriptor {
     pub(crate) full_name: String,
     pub(crate) proto: &'static EnumDescriptorProto,
@@ -67,7 +75,7 @@ pub(crate) struct GeneratedEnumDescriptor {
     /// Type id of `<ProtobufEnumOrUnknown<E>>`
     pub(crate) enum_or_unknown_type_id: TypeId,
 
-    pub indices: EnumIndices<&'static str>,
+    pub indices: EnumIndex<&'static str>,
 
     #[allow(dead_code)]
     pub(crate) get_descriptor: &'static dyn GetEnumDescriptor,
@@ -96,7 +104,7 @@ impl GeneratedEnumDescriptor {
                 (_, MessageOrEnum::Message(_)) => panic!("not an enum"),
             };
 
-        let indices = EnumIndices::<&'static str>::index::<&'static str>(proto);
+        let indices = EnumIndex::<&'static str>::index::<&'static str>(proto);
 
         let proto_values = &proto.value;
         assert_eq!(proto_values.len(), values.len());

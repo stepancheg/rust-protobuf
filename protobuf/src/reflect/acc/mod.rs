@@ -5,12 +5,14 @@ use crate::reflect::RuntimeFieldType;
 
 pub(crate) mod v2;
 
+#[derive(Debug)]
 pub(crate) enum GeneratedFieldAccessor {
     V2(AccessorV2),
 }
 
 /// Accessor object is constructed in generated code.
 /// Should not be used directly.
+#[derive(Debug)]
 pub struct FieldAccessor {
     pub(crate) name: &'static str,
     pub(crate) accessor: GeneratedFieldAccessor,

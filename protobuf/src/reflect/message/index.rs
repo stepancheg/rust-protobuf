@@ -2,15 +2,16 @@ use crate::descriptor::DescriptorProto;
 use crate::json::json_name;
 use std::collections::HashMap;
 
-pub(crate) struct MessageIndices {
+#[derive(Debug)]
+pub(crate) struct MessageIndex {
     pub index_by_name: HashMap<String, usize>,
     pub index_by_name_or_json_name: HashMap<String, usize>,
     pub index_by_number: HashMap<u32, usize>,
     pub json_names: Vec<String>,
 }
 
-impl MessageIndices {
-    pub fn index(proto: &DescriptorProto) -> MessageIndices {
+impl MessageIndex {
+    pub fn index(proto: &DescriptorProto) -> MessageIndex {
         let mut index_by_name = HashMap::new();
         let mut index_by_name_or_json_name = HashMap::new();
         let mut index_by_number = HashMap::new();
@@ -36,7 +37,7 @@ impl MessageIndices {
             }
         }
 
-        MessageIndices {
+        MessageIndex {
             index_by_name,
             index_by_name_or_json_name,
             index_by_number,

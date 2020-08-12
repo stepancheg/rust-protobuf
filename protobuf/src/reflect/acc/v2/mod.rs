@@ -6,6 +6,7 @@ pub(crate) mod map;
 pub(crate) mod repeated;
 pub(crate) mod singular;
 
+#[derive(Debug)]
 pub(crate) enum AccessorV2 {
     Singular(SingularFieldAccessorHolder),
     Repeated(RepeatedFieldAccessorHolder),

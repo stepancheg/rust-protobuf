@@ -8,18 +8,19 @@ use crate::descriptor::FileDescriptorProto;
 use crate::message_dyn::MessageDyn;
 use crate::reflect::dynamic::DynamicMessage;
 use crate::reflect::file::FileDescriptorImpl;
-use crate::reflect::message::common::MessageIndices;
 use crate::reflect::message::dynamic::DynamicMessageDescriptor;
 use crate::reflect::message::generated::GeneratedMessageDescriptor;
+use crate::reflect::message::index::MessageIndex;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::FieldDescriptor;
 use crate::reflect::FileDescriptor;
 
-pub(crate) mod common;
 pub(crate) mod dynamic;
 pub(crate) mod generated;
+pub(crate) mod index;
 pub(crate) mod message_ref;
+pub(crate) mod path;
 
 /// Dynamic representation of message type.
 ///
@@ -187,9 +188,9 @@ impl MessageDescriptor {
             .collect()
     }
 
-    pub(crate) fn get_indices(&self) -> &MessageIndices {
+    pub(crate) fn get_indices(&self) -> &MessageIndex {
         match self.get_impl() {
-            MessageDescriptorImplRef::Generated(g) => &g.indices,
+            MessageDescriptorImplRef::Generated(g) => &g.index,
             MessageDescriptorImplRef::Dynamic(d) => &d.indices,
         }
     }

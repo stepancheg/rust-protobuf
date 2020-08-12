@@ -1,42 +1,43 @@
 use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::FileDescriptorProto;
-use crate::reflect::enums::common::EnumIndices;
+use crate::reflect::enums::index::EnumIndex;
+use crate::reflect::message::path::MessagePath;
 use crate::reflect::name::append_path;
 use std::sync::Arc;
 
+#[derive(Debug)]
 pub(crate) struct DynamicEnumValueDescriptor {}
 
+#[derive(Debug)]
 pub(crate) struct DynamicEnumDescriptor {
     pub full_name: String,
     file_descriptor_proto: Arc<FileDescriptorProto>,
-    path: Vec<usize>,
+    path: MessagePath,
     enum_index: usize,
     pub values: Vec<DynamicEnumValueDescriptor>,
 
-    pub(crate) indices: EnumIndices<String>,
+    pub(crate) indices: EnumIndex<String>,
 }
 
 impl DynamicEnumDescriptor {
     pub fn new(
         proto: Arc<FileDescriptorProto>,
-        path: &[usize],
+        path: &MessagePath,
         enum_index: usize,
     ) -> DynamicEnumDescriptor {
         let mut full_name = proto.get_package().to_owned();
         let e = if path.len() == 0 {
             &proto.enum_type[enum_index]
         } else {
-            let mut m = &proto.message_type[path[0]];
-            append_path(&mut full_name, m.get_name());
-            for &p in &path[1..] {
-                m = &m.nested_type[p];
+            let messages = path.eval_path(&*proto);
+            for m in &messages {
                 append_path(&mut full_name, m.get_name());
             }
-            &m.enum_type[enum_index]
+            &messages.last().cloned().unwrap().enum_type[enum_index]
         };
         append_path(&mut full_name, e.get_name());
 
-        let indices = EnumIndices::<String>::index(e);
+        let indices = EnumIndex::<String>::index(e);
 
         let values = e
             .value
@@ -47,7 +48,7 @@ impl DynamicEnumDescriptor {
         DynamicEnumDescriptor {
             full_name,
             file_descriptor_proto: proto,
-            path: path.to_owned(),
+            path: path.clone(),
             enum_index,
             values,
             indices,
@@ -55,14 +56,9 @@ impl DynamicEnumDescriptor {
     }
 
     pub fn get_proto(&self) -> &EnumDescriptorProto {
-        if self.path.is_empty() {
-            &self.file_descriptor_proto.enum_type[self.enum_index]
-        } else {
-            let mut m = &self.file_descriptor_proto.message_type[self.path[0]];
-            for &p in &self.path[1..] {
-                m = &m.nested_type[p];
-            }
-            &m.enum_type[self.enum_index]
+        match self.path.eval(&self.file_descriptor_proto) {
+            None => &self.file_descriptor_proto.enum_type[self.enum_index],
+            Some(m) => &m.enum_type[self.enum_index],
         }
     }
 }

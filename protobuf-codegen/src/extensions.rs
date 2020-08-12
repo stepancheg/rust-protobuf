@@ -10,9 +10,10 @@ use crate::rust_name::RustIdentWithPath;
 use crate::rust_name::RustRelativePath;
 use crate::scope::RootScope;
 use protobuf::descriptor::*;
+use protobuf::reflect::FileDescriptor;
 
 struct ExtGen<'a> {
-    file: &'a FileDescriptorProto,
+    file: &'a FileDescriptor,
     root_scope: &'a RootScope<'a>,
     field: &'a FieldDescriptorProto,
     customize: Customize,
@@ -23,7 +24,7 @@ impl<'a> ExtGen<'a> {
         type_name_to_rust_relative(
             &ProtobufAbsolutePath::from(self.field.get_extendee()),
             &FileAndMod {
-                file: self.file.get_name().to_owned(),
+                file: self.file.get_proto().get_name().to_owned(),
                 relative_mod: RustRelativePath::from("exts"),
                 customize: self.customize.clone(),
             },
@@ -46,7 +47,7 @@ impl<'a> ExtGen<'a> {
             let rust_name_relative = type_name_to_rust_relative(
                 &ProtobufAbsolutePath::from(self.field.get_type_name()),
                 &FileAndMod {
-                    file: self.file.get_name().to_owned(),
+                    file: self.file.get_proto().get_name().to_owned(),
                     relative_mod: RustRelativePath::from("exts"),
                     customize: self.customize.clone(),
                 },
@@ -91,19 +92,19 @@ impl<'a> ExtGen<'a> {
 }
 
 pub(crate) fn write_extensions(
-    file: &FileDescriptorProto,
+    file: &FileDescriptor,
     root_scope: &RootScope,
     w: &mut CodeWriter,
     customize: &Customize,
 ) {
-    if file.extension.is_empty() {
+    if file.get_proto().extension.is_empty() {
         return;
     }
 
     w.write_line("");
     w.write_line("/// Extension fields");
     w.pub_mod("exts", |w| {
-        for field in &file.extension {
+        for field in &file.get_proto().extension {
             if field.get_field_type() == field_descriptor_proto::Type::TYPE_GROUP {
                 continue;
             }

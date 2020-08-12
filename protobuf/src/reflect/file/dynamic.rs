@@ -1,15 +1,19 @@
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::enums::dynamic::DynamicEnumDescriptor;
+use crate::reflect::file::index::FileIndex;
 use crate::reflect::message::dynamic::DynamicMessageDescriptor;
+use crate::reflect::message::path::MessagePath;
 use crate::reflect::FileDescriptor;
 use std::sync::Arc;
 
+#[derive(Debug)]
 pub(crate) struct DynamicFileDescriptor {
     pub proto: Arc<FileDescriptorProto>,
     pub dependencies: Vec<FileDescriptor>,
     pub messages: Vec<DynamicMessageDescriptor>,
     pub enums: Vec<DynamicEnumDescriptor>,
+    pub index: FileIndex,
 }
 
 impl DynamicFileDescriptor {
@@ -18,17 +22,21 @@ impl DynamicFileDescriptor {
         dependencies: Vec<FileDescriptor>,
     ) -> DynamicFileDescriptor {
         let proto = Arc::new(proto);
+
+        let index = FileIndex::index(&*proto);
+
         DynamicFileDescriptor {
             messages: Self::messages(&proto),
             enums: Self::enums(&proto),
             proto,
             dependencies,
+            index,
         }
     }
 
     fn messages(proto: &Arc<FileDescriptorProto>) -> Vec<DynamicMessageDescriptor> {
         let mut r = Vec::new();
-        let mut path = Vec::new();
+        let mut path = MessagePath(Vec::new());
         for (i, m) in proto.message_type.iter().enumerate() {
             path.push(i);
             r.push(DynamicMessageDescriptor::new(proto.clone(), &path));
@@ -43,7 +51,7 @@ impl DynamicFileDescriptor {
         proto: &Arc<FileDescriptorProto>,
         scope: &DescriptorProto,
         r: &mut Vec<DynamicMessageDescriptor>,
-        path: &mut Vec<usize>,
+        path: &mut MessagePath,
     ) {
         for (i, m) in scope.nested_type.iter().enumerate() {
             path.push(i);
@@ -55,14 +63,14 @@ impl DynamicFileDescriptor {
 
     fn enums(proto: &Arc<FileDescriptorProto>) -> Vec<DynamicEnumDescriptor> {
         let mut r = Vec::new();
-        let mut path = Vec::new();
+        let mut path = MessagePath(Vec::new());
         for (i, _e) in proto.enum_type.iter().enumerate() {
             r.push(DynamicEnumDescriptor::new(proto.clone(), &path, i));
         }
         for (i, m) in proto.message_type.iter().enumerate() {
-            path.push(i);
+            path.0.push(i);
             Self::enums_from(proto, m, &mut r, &mut path);
-            path.pop().unwrap();
+            path.0.pop().unwrap();
         }
         assert!(path.is_empty());
         r
@@ -72,9 +80,9 @@ impl DynamicFileDescriptor {
         proto: &Arc<FileDescriptorProto>,
         scope: &DescriptorProto,
         r: &mut Vec<DynamicEnumDescriptor>,
-        path: &mut Vec<usize>,
+        path: &mut MessagePath,
     ) {
-        for (i, _e) in scope.nested_type.iter().enumerate() {
+        for (i, _e) in scope.enum_type.iter().enumerate() {
             r.push(DynamicEnumDescriptor::new(proto.clone(), &path, i));
         }
         for (i, m) in scope.nested_type.iter().enumerate() {
