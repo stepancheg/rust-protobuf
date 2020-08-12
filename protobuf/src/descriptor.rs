@@ -1170,7 +1170,7 @@ pub mod descriptor_proto {
         }
 
         fn descriptor_static() -> crate::reflect::MessageDescriptor {
-            crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 20)
+            crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 3)
         }
 
         fn default_instance() -> &'static ExtensionRange {
@@ -1364,7 +1364,7 @@ pub mod descriptor_proto {
         }
 
         fn descriptor_static() -> crate::reflect::MessageDescriptor {
-            crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 21)
+            crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 4)
         }
 
         fn default_instance() -> &'static ReservedRange {
@@ -1956,7 +1956,7 @@ impl crate::Message for FieldDescriptorProto {
     }
 
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 3)
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 5)
     }
 
     fn default_instance() -> &'static FieldDescriptorProto {
@@ -2324,7 +2324,7 @@ impl crate::Message for OneofDescriptorProto {
     }
 
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 4)
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 6)
     }
 
     fn default_instance() -> &'static OneofDescriptorProto {
@@ -2537,7 +2537,7 @@ impl crate::Message for EnumDescriptorProto {
     }
 
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 5)
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 7)
     }
 
     fn default_instance() -> &'static EnumDescriptorProto {
@@ -2769,7 +2769,7 @@ impl crate::Message for EnumValueDescriptorProto {
     }
 
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 6)
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 8)
     }
 
     fn default_instance() -> &'static EnumValueDescriptorProto {
@@ -2984,7 +2984,7 @@ impl crate::Message for ServiceDescriptorProto {
     }
 
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 7)
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 9)
     }
 
     fn default_instance() -> &'static ServiceDescriptorProto {
@@ -3368,7 +3368,7 @@ impl crate::Message for MethodDescriptorProto {
     }
 
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 8)
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 10)
     }
 
     fn default_instance() -> &'static MethodDescriptorProto {
@@ -4179,7 +4179,7 @@ impl crate::Message for FileOptions {
     }
 
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 9)
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 11)
     }
 
     fn default_instance() -> &'static FileOptions {
@@ -4561,7 +4561,7 @@ impl crate::Message for MessageOptions {
     }
 
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 10)
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 12)
     }
 
     fn default_instance() -> &'static MessageOptions {
@@ -4989,7 +4989,7 @@ impl crate::Message for FieldOptions {
     }
 
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 11)
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 13)
     }
 
     fn default_instance() -> &'static FieldOptions {
@@ -5249,7 +5249,7 @@ impl crate::Message for OneofOptions {
     }
 
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 12)
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 14)
     }
 
     fn default_instance() -> &'static OneofOptions {
@@ -5466,7 +5466,7 @@ impl crate::Message for EnumOptions {
     }
 
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 13)
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 15)
     }
 
     fn default_instance() -> &'static EnumOptions {
@@ -5647,7 +5647,7 @@ impl crate::Message for EnumValueOptions {
     }
 
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 14)
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 16)
     }
 
     fn default_instance() -> &'static EnumValueOptions {
@@ -5826,7 +5826,7 @@ impl crate::Message for ServiceOptions {
     }
 
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 15)
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 17)
     }
 
     fn default_instance() -> &'static ServiceOptions {
@@ -6005,7 +6005,7 @@ impl crate::Message for MethodOptions {
     }
 
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 16)
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 18)
     }
 
     fn default_instance() -> &'static MethodOptions {
@@ -6428,7 +6428,7 @@ impl crate::Message for UninterpretedOption {
     }
 
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 17)
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 19)
     }
 
     fn default_instance() -> &'static UninterpretedOption {
@@ -6659,7 +6659,7 @@ pub mod uninterpreted_option {
         }
 
         fn descriptor_static() -> crate::reflect::MessageDescriptor {
-            crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 22)
+            crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 20)
         }
 
         fn default_instance() -> &'static NamePart {
@@ -6798,7 +6798,7 @@ impl crate::Message for SourceCodeInfo {
     }
 
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 18)
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 21)
     }
 
     fn default_instance() -> &'static SourceCodeInfo {
@@ -7083,7 +7083,7 @@ pub mod source_code_info {
         }
 
         fn descriptor_static() -> crate::reflect::MessageDescriptor {
-            crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 23)
+            crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 22)
         }
 
         fn default_instance() -> &'static Location {
@@ -7231,7 +7231,7 @@ impl crate::Message for GeneratedCodeInfo {
     }
 
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 19)
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 23)
     }
 
     fn default_instance() -> &'static GeneratedCodeInfo {

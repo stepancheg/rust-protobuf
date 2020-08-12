@@ -7,6 +7,7 @@ use crate::descriptor::FileDescriptorProto;
 
 use crate::message_dyn::MessageDyn;
 use crate::reflect::dynamic::DynamicMessage;
+use crate::reflect::file::index::FileIndexMessageEntry;
 use crate::reflect::file::FileDescriptorImpl;
 use crate::reflect::message::dynamic::DynamicMessageDescriptor;
 use crate::reflect::message::generated::GeneratedMessageDescriptor;
@@ -27,7 +28,7 @@ pub(crate) mod path;
 /// Used for reflection.
 #[derive(Clone, Eq, PartialEq)]
 pub struct MessageDescriptor {
-    pub(crate) file_descriptor: FileDescriptor,
+    file_descriptor: FileDescriptor,
     index: usize,
 }
 
@@ -46,12 +47,34 @@ impl fmt::Debug for MessageDescriptor {
 }
 
 impl MessageDescriptor {
+    pub(crate) fn new(file_descriptor: FileDescriptor, index: usize) -> MessageDescriptor {
+        let message_index_entry = file_descriptor.get_message_index_entry(index);
+        assert!(
+            !message_index_entry.map_entry,
+            "map field: {}: {}",
+            index, message_index_entry.full_name
+        );
+        MessageDescriptor {
+            file_descriptor,
+            index,
+        }
+    }
+
+    /// Get internal index.
+    ///
+    /// Only needed for codegen.
+    #[doc(hidden)]
+    pub fn get_index_in_file_for_codegen(&self) -> usize {
+        self.index
+    }
+
     /// Get underlying `DescriptorProto` object.
     pub fn get_proto(&self) -> &DescriptorProto {
-        match self.get_impl() {
-            MessageDescriptorImplRef::Generated(g) => &g.proto,
-            MessageDescriptorImplRef::Dynamic(d) => d.get_proto(),
-        }
+        self.file_descriptor.get_message_proto(self.index)
+    }
+
+    fn get_index_entry(&self) -> &FileIndexMessageEntry {
+        self.file_descriptor.get_message_index_entry(self.index)
     }
 
     /// Get a message descriptor for given message type
@@ -61,10 +84,7 @@ impl MessageDescriptor {
 
     #[doc(hidden)]
     pub fn new_generated_2(file_descriptor: FileDescriptor, index: usize) -> MessageDescriptor {
-        MessageDescriptor {
-            file_descriptor,
-            index,
-        }
+        MessageDescriptor::new(file_descriptor, index)
     }
 
     pub(crate) fn get_impl(&self) -> MessageDescriptorImplRef {
@@ -91,7 +111,7 @@ impl MessageDescriptor {
     /// New empty message
     pub fn new_instance(&self) -> Box<dyn MessageDyn> {
         match self.get_impl() {
-            MessageDescriptorImplRef::Generated(g) => g.factory.new_instance(),
+            MessageDescriptorImplRef::Generated(g) => g.non_map().factory.new_instance(),
             MessageDescriptorImplRef::Dynamic(..) => Box::new(DynamicMessage::new(self.clone())),
         }
     }
@@ -101,7 +121,7 @@ impl MessageDescriptor {
     /// Returns `None` for dynamic message.
     pub fn default_instance(&self) -> Option<&'static dyn MessageDyn> {
         match self.get_impl() {
-            MessageDescriptorImplRef::Generated(g) => Some(g.factory.default_instance()),
+            MessageDescriptorImplRef::Generated(g) => Some(g.non_map().factory.default_instance()),
             MessageDescriptorImplRef::Dynamic(..) => None,
         }
     }
@@ -110,7 +130,7 @@ impl MessageDescriptor {
     pub(crate) fn clone_message(&self, message: &dyn MessageDyn) -> Box<dyn MessageDyn> {
         assert!(&message.descriptor_dyn() == self);
         match self.get_impl() {
-            MessageDescriptorImplRef::Generated(g) => g.factory.clone(message),
+            MessageDescriptorImplRef::Generated(g) => g.non_map().factory.clone(message),
             MessageDescriptorImplRef::Dynamic(..) => {
                 let message: &DynamicMessage = MessageDyn::downcast_ref(message).unwrap();
                 Box::new(message.clone())
@@ -125,7 +145,7 @@ impl MessageDescriptor {
     /// Is any message has different type than this descriptor.
     pub fn eq(&self, a: &dyn MessageDyn, b: &dyn MessageDyn) -> bool {
         match self.get_impl() {
-            MessageDescriptorImplRef::Generated(g) => g.factory.eq(a, b),
+            MessageDescriptorImplRef::Generated(g) => g.non_map().factory.eq(a, b),
             MessageDescriptorImplRef::Dynamic(..) => unimplemented!(),
         }
     }
@@ -172,10 +192,7 @@ impl MessageDescriptor {
 
     /// Fully qualified protobuf message name
     pub fn full_name(&self) -> &str {
-        match self.get_impl() {
-            MessageDescriptorImplRef::Generated(g) => &g.full_name,
-            MessageDescriptorImplRef::Dynamic(d) => &d.full_name,
-        }
+        &self.get_index_entry().full_name
     }
 
     /// Message field descriptors.
@@ -190,7 +207,7 @@ impl MessageDescriptor {
 
     pub(crate) fn get_indices(&self) -> &MessageIndex {
         match self.get_impl() {
-            MessageDescriptorImplRef::Generated(g) => &g.index,
+            MessageDescriptorImplRef::Generated(g) => &g.non_map().index,
             MessageDescriptorImplRef::Dynamic(d) => &d.indices,
         }
     }

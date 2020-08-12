@@ -25,39 +25,20 @@ impl DynamicFileDescriptor {
 
         let index = FileIndex::index(&*proto);
 
+        let messages = index
+            .messages
+            .iter()
+            .map(|message_index_entry| {
+                DynamicMessageDescriptor::new(&*proto, &message_index_entry.path)
+            })
+            .collect();
+
         DynamicFileDescriptor {
-            messages: Self::messages(&proto),
+            messages,
             enums: Self::enums(&proto),
             proto,
             dependencies,
             index,
-        }
-    }
-
-    fn messages(proto: &Arc<FileDescriptorProto>) -> Vec<DynamicMessageDescriptor> {
-        let mut r = Vec::new();
-        let mut path = MessagePath(Vec::new());
-        for (i, m) in proto.message_type.iter().enumerate() {
-            path.push(i);
-            r.push(DynamicMessageDescriptor::new(proto.clone(), &path));
-            Self::messages_from(proto, m, &mut r, &mut path);
-            path.pop().unwrap();
-        }
-        assert!(path.is_empty());
-        r
-    }
-
-    fn messages_from(
-        proto: &Arc<FileDescriptorProto>,
-        scope: &DescriptorProto,
-        r: &mut Vec<DynamicMessageDescriptor>,
-        path: &mut MessagePath,
-    ) {
-        for (i, m) in scope.nested_type.iter().enumerate() {
-            path.push(i);
-            r.push(DynamicMessageDescriptor::new(proto.clone(), &path));
-            Self::messages_from(proto, m, r, path);
-            path.pop().unwrap();
         }
     }
 

@@ -226,7 +226,7 @@ impl FileIndex {
     fn index(file_scope: &FileScope) -> FileIndex {
         FileIndex {
             messsage_to_index: file_scope
-                .find_messages_except_map()
+                .find_messages()
                 .into_iter()
                 .map(|m| m.protobuf_name_to_package())
                 .enumerate()
@@ -244,7 +244,7 @@ impl FileIndex {
 }
 
 fn gen_file(
-    file: &FileDescriptor,
+    file_descriptor: &FileDescriptor,
     _files_map: &HashMap<&Path, &FileDescriptor>,
     root_scope: &RootScope,
     customize: &Customize,
@@ -254,15 +254,17 @@ fn gen_file(
     let mut customize = customize.clone();
     // options specified in invocation have precedence over options specified in file
     customize.update_with(&customize_from_rustproto_for_file(
-        file.get_proto().options.get_or_default(),
+        file_descriptor.get_proto().options.get_or_default(),
     ));
 
-    let file_scope = FileScope {
-        file_descriptor: file,
-    };
+    let file_scope = FileScope { file_descriptor };
     let scope = file_scope.to_scope();
     let lite_runtime = customize.lite_runtime.unwrap_or_else(|| {
-        file.get_proto().options.get_or_default().get_optimize_for()
+        file_descriptor
+            .get_proto()
+            .options
+            .get_or_default()
+            .get_optimize_for()
             == file_options::OptimizeMode::LITE_RUNTIME
     });
 
@@ -278,7 +280,7 @@ fn gen_file(
         w.write_line("");
         w.write_line(&format!(
             "//! Generated file from `{}`",
-            file.get_proto().get_name()
+            file_descriptor.get_proto().get_name()
         ));
         if customize.inside_protobuf != Some(true) {
             w.write_line("");
@@ -308,12 +310,13 @@ fn gen_file(
 
                 w.write_line("");
                 MessageGen::new(
+                    file_descriptor,
                     message,
                     &file_index,
                     &root_scope,
                     &customize,
                     &path,
-                    file.get_proto().source_code_info.as_ref(),
+                    file_descriptor.get_proto().source_code_info.as_ref(),
                 )
                 .write(&mut w);
             }
@@ -339,21 +342,21 @@ fn gen_file(
                 &customize,
                 root_scope,
                 &path,
-                file.get_proto().source_code_info.as_ref(),
+                file_descriptor.get_proto().source_code_info.as_ref(),
             )
             .write(&mut w);
         }
 
-        write_extensions(file, &root_scope, &mut w, &customize);
+        write_extensions(file_descriptor, &root_scope, &mut w, &customize);
 
         if !lite_runtime {
             w.write_line("");
-            write_file_descriptor_data(file, &customize, &mut w);
+            write_file_descriptor_data(file_descriptor, &customize, &mut w);
         }
     }
 
     Some(compiler_plugin::GenResult {
-        name: proto_name_to_rs(file.get_proto().get_name()),
+        name: proto_name_to_rs(file_descriptor.get_proto().get_name()),
         content: v,
     })
 }

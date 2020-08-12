@@ -21,6 +21,8 @@ use crate::scope::RootScope;
 use crate::scope::WithScope;
 use crate::serde;
 use crate::FileIndex;
+use protobuf::reflect::FileDescriptor;
+use protobuf::reflect::MessageDescriptor;
 use std::fmt;
 
 /// Protobuf message Rust type name
@@ -52,6 +54,8 @@ impl RustTypeMessage {
 
 /// Message info for codegen
 pub(crate) struct MessageGen<'a> {
+    file_descriptor: &'a FileDescriptor,
+    message_descriptor: MessageDescriptor,
     pub message: &'a MessageWithScope<'a>,
     file_index: &'a FileIndex,
     pub root_scope: &'a RootScope<'a>,
@@ -65,6 +69,7 @@ pub(crate) struct MessageGen<'a> {
 
 impl<'a> MessageGen<'a> {
     pub fn new(
+        file_descriptor: &'a FileDescriptor,
         message: &'a MessageWithScope<'a>,
         file_index: &'a FileIndex,
         root_scope: &'a RootScope<'a>,
@@ -72,6 +77,9 @@ impl<'a> MessageGen<'a> {
         path: &'a [i32],
         info: Option<&'a SourceCodeInfo>,
     ) -> MessageGen<'a> {
+        let message_descriptor = file_descriptor
+            .get_message_by_package_relative_name(message.protobuf_name_to_package().get());
+
         let mut customize = customize.clone();
         customize.update_with(&customize_from_rustproto_for_message(
             message.message.options.get_or_default(),
@@ -105,6 +113,8 @@ impl<'a> MessageGen<'a> {
                 == file_options::OptimizeMode::LITE_RUNTIME
         });
         MessageGen {
+            message_descriptor,
+            file_descriptor,
             message,
             file_index,
             root_scope,
@@ -410,7 +420,7 @@ impl<'a> MessageGen<'a> {
                     .rust_path_to_file()
                     .to_reverse()
                     .append_ident("file_descriptor".into()),
-                self.index_in_file(),
+                self.message_descriptor.get_index_in_file_for_codegen(),
             ));
         });
     }
@@ -714,6 +724,7 @@ impl<'a> MessageGen<'a> {
                     }
                     first = false;
                     MessageGen::new(
+                        &self.file_descriptor,
                         nested,
                         self.file_index,
                         self.root_scope,

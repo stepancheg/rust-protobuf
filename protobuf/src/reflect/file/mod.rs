@@ -1,11 +1,13 @@
-#![allow(dead_code)] // TODO: don't forget to remove
-
+use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::file::dynamic::DynamicFileDescriptor;
 use crate::reflect::file::fds::FdsBuilder;
 use crate::reflect::file::index::FileIndex;
-use crate::reflect::find_message_or_enum::{find_message_or_enum, MessageOrEnum};
+use crate::reflect::file::index::FileIndexMessageEntry;
+use crate::reflect::find_message_or_enum::find_message_or_enum;
+use crate::reflect::find_message_or_enum::MessageOrEnum;
 use crate::reflect::GeneratedFileDescriptor;
+use crate::reflect::MessageDescriptor;
 use std::collections::HashSet;
 use std::hash::Hash;
 use std::hash::Hasher;
@@ -61,6 +63,25 @@ impl FileDescriptor {
             FileDescriptorImpl::Generated(g) => &g.index,
             FileDescriptorImpl::Dynamic(d) => &d.index,
         }
+    }
+
+    pub(crate) fn get_message_index_entry(&self, index: usize) -> &FileIndexMessageEntry {
+        &self.get_index().messages[index]
+    }
+
+    pub(crate) fn get_message_proto(&self, index: usize) -> &DescriptorProto {
+        self.get_message_index_entry(index)
+            .path
+            .eval(self.get_proto())
+            .unwrap()
+    }
+
+    /// Find message by name relative to the package.
+    ///
+    /// Only search in the current file, not in any dependencies.
+    pub fn get_message_by_package_relative_name(&self, name: &str) -> MessageDescriptor {
+        let index = self.get_index().message_by_name_to_package[name];
+        MessageDescriptor::new(self.clone(), index)
     }
 
     /// This function is called from generated code, it is not stable, and should not be called.

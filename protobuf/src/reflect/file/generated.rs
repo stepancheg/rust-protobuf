@@ -2,7 +2,10 @@ use crate::descriptor::FileDescriptorProto;
 use crate::reflect::enums::generated::GeneratedEnumDescriptor;
 use crate::reflect::file::index::FileIndex;
 use crate::reflect::message::generated::GeneratedMessageDescriptor;
-use crate::reflect::{FileDescriptor, GeneratedEnumDescriptorData, GeneratedMessageDescriptorData};
+use crate::reflect::FileDescriptor;
+use crate::reflect::GeneratedEnumDescriptorData;
+use crate::reflect::GeneratedMessageDescriptorData;
+use std::collections::HashMap;
 
 /// Reflection for objects defined in `.proto` file (messages, enums, etc).
 #[doc(hidden)]
@@ -25,13 +28,26 @@ impl GeneratedFileDescriptor {
     ) -> GeneratedFileDescriptor {
         let index = FileIndex::index(file_descriptor_proto);
 
-        let messages = messages
+        let mut messages: HashMap<&str, GeneratedMessageDescriptorData> = messages
             .into_iter()
-            .enumerate()
-            .map(|(i, m)| {
-                GeneratedMessageDescriptor::new(m, i as u32, file_descriptor_proto, &index)
+            .map(|m| (m.protobuf_name_to_package, m))
+            .collect();
+
+        let messages = index
+            .messages
+            .iter()
+            .map(|message_index| {
+                if message_index.map_entry {
+                    GeneratedMessageDescriptor::new_map_entry()
+                } else {
+                    let message = messages
+                        .remove(message_index.name_to_package.as_str())
+                        .unwrap();
+                    GeneratedMessageDescriptor::new(message, file_descriptor_proto, &index)
+                }
             })
             .collect();
+
         let enums = enums
             .into_iter()
             .enumerate()
@@ -45,9 +61,5 @@ impl GeneratedFileDescriptor {
             enums,
             index,
         }
-    }
-    /// `.proto` data for this file.
-    pub(crate) fn get_proto(&self) -> &FileDescriptorProto {
-        &*self.proto
     }
 }

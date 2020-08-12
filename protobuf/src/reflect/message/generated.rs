@@ -1,6 +1,5 @@
 //! Generated messages reflection support.
 
-use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 use crate::message::Message;
 use crate::message_dyn::MessageDyn;
@@ -9,7 +8,6 @@ use crate::reflect::file::index::FileIndex;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
 use crate::reflect::message::index::MessageIndex;
-use crate::reflect::name::compute_full_name;
 use std::collections::HashMap;
 use std::fmt;
 use std::marker;
@@ -58,7 +56,6 @@ where
 
 #[doc(hidden)]
 pub struct GeneratedMessageDescriptorData {
-    index: u32,
     pub(crate) protobuf_name_to_package: &'static str,
     pub(crate) fields: Vec<FieldAccessor>,
     pub(crate) factory: &'static dyn MessageFactory,
@@ -74,12 +71,11 @@ impl GeneratedMessageDescriptorData {
     #[doc(hidden)]
     pub fn new_2<M: 'static + Message + Default + Clone + PartialEq>(
         protobuf_name_to_package: &'static str,
-        index: u32,
+        _index: u32,
         fields: Vec<FieldAccessor>,
     ) -> GeneratedMessageDescriptorData {
         let factory = &MessageFactoryImpl(marker::PhantomData::<M>);
         GeneratedMessageDescriptorData {
-            index,
             protobuf_name_to_package,
             fields,
             factory,
@@ -88,35 +84,36 @@ impl GeneratedMessageDescriptorData {
 }
 
 #[derive(Debug)]
-pub(crate) struct GeneratedMessageDescriptor {
-    pub(crate) proto: &'static DescriptorProto,
-
-    pub(crate) full_name: String,
-
+pub(crate) struct NonMapMessageDescriptor {
     pub(crate) factory: &'static dyn MessageFactory,
 
     pub(crate) fields: Vec<FieldAccessor>,
 
-    pub index: MessageIndex,
+    pub(crate) index: MessageIndex,
+}
+
+#[derive(Debug)]
+pub(crate) struct GeneratedMessageDescriptor {
+    pub non_map: Option<NonMapMessageDescriptor>,
 }
 
 impl GeneratedMessageDescriptor {
+    pub fn new_map_entry() -> GeneratedMessageDescriptor {
+        GeneratedMessageDescriptor { non_map: None }
+    }
+
     pub fn new(
         data: GeneratedMessageDescriptorData,
-        expected_index: u32,
         file_descriptor_proto: &'static FileDescriptorProto,
         _file_index: &FileIndex,
     ) -> GeneratedMessageDescriptor {
         let GeneratedMessageDescriptorData {
-            index,
             protobuf_name_to_package,
             fields,
             factory,
         } = data;
 
-        assert_eq!(expected_index, index);
-
-        let (path_to_package, proto) =
+        let (_path_to_package, proto) =
             match find_message_or_enum(file_descriptor_proto, protobuf_name_to_package) {
                 Some((path_to_package, MessageOrEnum::Message(m))) => (path_to_package, m),
                 Some((_, MessageOrEnum::Enum(_))) => panic!("not a message"),
@@ -131,15 +128,18 @@ impl GeneratedMessageDescriptor {
         let index = MessageIndex::index(proto);
 
         GeneratedMessageDescriptor {
-            full_name: compute_full_name(
-                file_descriptor_proto.get_package(),
-                &path_to_package,
-                proto.get_name(),
-            ),
-            fields,
-            index,
-            factory,
-            proto,
+            non_map: Some(NonMapMessageDescriptor {
+                factory,
+                fields,
+                index,
+            }),
+        }
+    }
+
+    pub fn non_map(&self) -> &NonMapMessageDescriptor {
+        match &self.non_map {
+            Some(non_map) => non_map,
+            None => panic!("map message"),
         }
     }
 }

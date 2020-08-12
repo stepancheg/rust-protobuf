@@ -146,7 +146,7 @@ impl FieldDescriptor {
     fn get_impl(&self) -> FieldDescriptorImplRef {
         match self.message_descriptor.get_impl() {
             MessageDescriptorImplRef::Generated(g) => {
-                FieldDescriptorImplRef::Generated(&g.fields[self.index].accessor)
+                FieldDescriptorImplRef::Generated(&g.non_map().fields[self.index].accessor)
             }
             MessageDescriptorImplRef::Dynamic(message) => {
                 FieldDescriptorImplRef::Dynamic(DynamicFieldDescriptorRef {

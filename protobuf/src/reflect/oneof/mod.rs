@@ -1,5 +1,6 @@
 use crate::descriptor::OneofDescriptorProto;
-use crate::reflect::{FieldDescriptor, MessageDescriptor};
+use crate::reflect::FieldDescriptor;
+use crate::reflect::MessageDescriptor;
 
 /// Oneof descriptor.
 #[derive(Eq, PartialEq)]
