@@ -14,8 +14,8 @@ use crate::reflect::message::generated::GeneratedMessageDescriptor;
 use crate::reflect::message::index::MessageIndex;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
-use crate::reflect::FieldDescriptor;
 use crate::reflect::FileDescriptor;
+use crate::reflect::{EnumDescriptor, FieldDescriptor, OneofDescriptor};
 
 pub(crate) mod dynamic;
 pub(crate) mod generated;
@@ -48,12 +48,6 @@ impl fmt::Debug for MessageDescriptor {
 
 impl MessageDescriptor {
     pub(crate) fn new(file_descriptor: FileDescriptor, index: usize) -> MessageDescriptor {
-        let message_index_entry = file_descriptor.get_message_index_entry(index);
-        assert!(
-            !message_index_entry.map_entry,
-            "map field: {}: {}",
-            index, message_index_entry.full_name
-        );
         MessageDescriptor {
             file_descriptor,
             index,
@@ -73,6 +67,22 @@ impl MessageDescriptor {
         self.file_descriptor.get_message_proto(self.index)
     }
 
+    /// Message name as specified in `.proto` file.
+    pub fn get_name(&self) -> &str {
+        self.get_proto().get_name()
+    }
+
+    /// Get enums declared in this message.
+    pub fn get_enums(&self) -> Vec<EnumDescriptor> {
+        let first_enum_index = self.get_index_entry().first_enum_index;
+        self.get_proto()
+            .enum_type
+            .iter()
+            .enumerate()
+            .map(|(i, _)| EnumDescriptor::new(self.file_descriptor.clone(), first_enum_index + i))
+            .collect()
+    }
+
     fn get_index_entry(&self) -> &FileIndexMessageEntry {
         self.file_descriptor.get_message_index_entry(self.index)
     }
@@ -85,6 +95,15 @@ impl MessageDescriptor {
     #[doc(hidden)]
     pub fn new_generated_2(file_descriptor: FileDescriptor, index: usize) -> MessageDescriptor {
         MessageDescriptor::new(file_descriptor, index)
+    }
+
+    /// Messages declared in this messages.
+    pub fn get_nested_messages(&self) -> Vec<MessageDescriptor> {
+        self.get_index_entry()
+            .nested_messages
+            .iter()
+            .map(|i| MessageDescriptor::new(self.file_descriptor.clone(), *i))
+            .collect()
     }
 
     pub(crate) fn get_impl(&self) -> MessageDescriptorImplRef {
@@ -108,8 +127,26 @@ impl MessageDescriptor {
         self.file_descriptor().get_proto()
     }
 
-    /// New empty message
+    /// This message descriptor is a map entry.
+    pub fn is_map_entry(&self) -> bool {
+        self.get_proto().options.get_or_default().get_map_entry()
+    }
+
+    fn assert_not_map_entry(&self) {
+        assert!(
+            !self.is_map_entry(),
+            "message is map entry: {}",
+            self.full_name()
+        );
+    }
+
+    /// New empty message.
+    ///
+    /// # Panics
+    ///
+    /// If this message is a map entry message.
     pub fn new_instance(&self) -> Box<dyn MessageDyn> {
+        self.assert_not_map_entry();
         match self.get_impl() {
             MessageDescriptorImplRef::Generated(g) => g.non_map().factory.new_instance(),
             MessageDescriptorImplRef::Dynamic(..) => Box::new(DynamicMessage::new(self.clone())),
@@ -119,7 +156,12 @@ impl MessageDescriptor {
     /// Shared immutable empty message.
     ///
     /// Returns `None` for dynamic message.
+    ///
+    /// # Panics
+    ///
+    /// If this message is a map entry message.
     pub fn default_instance(&self) -> Option<&'static dyn MessageDyn> {
+        self.assert_not_map_entry();
         match self.get_impl() {
             MessageDescriptorImplRef::Generated(g) => Some(g.non_map().factory.default_instance()),
             MessageDescriptorImplRef::Dynamic(..) => None,
@@ -197,8 +239,21 @@ impl MessageDescriptor {
 
     /// Message field descriptors.
     pub fn fields(&self) -> Vec<FieldDescriptor> {
-        (0..self.get_indices().fields_len())
+        (0..self.get_indices().fields.len())
             .map(|index| FieldDescriptor {
+                message_descriptor: self.clone(),
+                index,
+            })
+            .collect()
+    }
+
+    /// Nested oneofs
+    pub fn oneofs(&self) -> Vec<OneofDescriptor> {
+        self.get_proto()
+            .oneof_decl
+            .iter()
+            .enumerate()
+            .map(|(index, _)| OneofDescriptor {
                 message_descriptor: self.clone(),
                 index,
             })

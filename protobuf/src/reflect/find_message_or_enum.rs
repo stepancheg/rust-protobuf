@@ -25,6 +25,9 @@ pub(crate) fn find_message_or_enum<'a>(
     file: &'a FileDescriptorProto,
     name_to_package: &str,
 ) -> Option<(String, MessageOrEnum<'a>)> {
+    assert!(!name_to_package.starts_with("."));
+    assert!(!name_to_package.is_empty());
+
     let mut path = name_to_package.split('.');
     let first = path.next().unwrap();
     let child_message = file.message_type.iter().find(|m| m.get_name() == first);

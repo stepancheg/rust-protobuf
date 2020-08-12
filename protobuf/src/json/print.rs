@@ -404,7 +404,7 @@ impl Printer {
             if self.print_options.enum_values_int {
                 self.print_printable(&value.value())
             } else {
-                Ok(write!(self.buf, "\"{}\"", value.name())?)
+                Ok(write!(self.buf, "\"{}\"", value.get_name())?)
             }
         }
     }
@@ -465,7 +465,7 @@ impl Printer {
         let mut first = true;
         for field in descriptor.fields() {
             let json_field_name = if self.print_options.proto_field_name {
-                field.name()
+                field.get_name()
             } else {
                 field.json_name()
             };
@@ -483,7 +483,7 @@ impl Printer {
                             _ => unreachable!(),
                         };
 
-                        let is_oneof = field.proto().has_oneof_index();
+                        let is_oneof = field.get_proto().has_oneof_index();
 
                         if !is_message && !is_oneof {
                             let v = field.get_singular_field_or_default(&**message);

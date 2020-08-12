@@ -8,6 +8,7 @@ use crate::reflect::acc::v2::AccessorV2;
 use crate::reflect::acc::GeneratedFieldAccessor;
 use crate::reflect::dynamic::DynamicMessage;
 use crate::reflect::field::dynamic::DynamicFieldDescriptorRef;
+use crate::reflect::field::index::FieldIndex;
 use crate::reflect::map::ReflectMapMut;
 use crate::reflect::map::ReflectMapRef;
 use crate::reflect::message::message_ref::MessageRef;
@@ -17,7 +18,7 @@ use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::repeated::ReflectRepeatedMut;
 use crate::reflect::repeated::ReflectRepeatedRef;
-use crate::reflect::value::ReflectValueMut;
+use crate::reflect::value::value_ref::ReflectValueMut;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
@@ -25,6 +26,7 @@ use crate::reflect::RuntimeTypeBox;
 use std::fmt;
 
 pub(crate) mod dynamic;
+pub(crate) mod index;
 
 /// Reference to a value stored in a field, optional, repeated or map.
 // TODO: implement Eq
@@ -82,7 +84,7 @@ fn _assert_sync<'a>() {
 /// Field descriptor.
 ///
 /// Can be used for runtime reflection.
-#[derive(Eq, PartialEq)]
+#[derive(Eq, PartialEq, Clone)]
 pub struct FieldDescriptor {
     pub(crate) message_descriptor: MessageDescriptor,
     pub(crate) index: usize,
@@ -90,25 +92,25 @@ pub struct FieldDescriptor {
 
 impl fmt::Display for FieldDescriptor {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}.{}", self.message_descriptor, self.name())
+        write!(f, "{}.{}", self.message_descriptor, self.get_name())
     }
 }
 
 impl FieldDescriptor {
     /// Get `.proto` description of field
-    pub fn proto(&self) -> &FieldDescriptorProto {
+    pub fn get_proto(&self) -> &FieldDescriptorProto {
         &self.message_descriptor.get_proto().field[self.index]
     }
 
     /// Field name as specified in `.proto` file
-    pub fn name(&self) -> &str {
+    pub fn get_name(&self) -> &str {
         // TODO: slow for dynamic
-        self.proto().get_name()
+        self.get_proto().get_name()
     }
 
     /// Oneof descriptor containing this field.
     pub fn containing_oneof(&self) -> Option<OneofDescriptor> {
-        let proto = self.proto();
+        let proto = self.get_proto();
         if proto.has_oneof_index() {
             Some(OneofDescriptor {
                 message_descriptor: self.message_descriptor.clone(),
@@ -119,6 +121,10 @@ impl FieldDescriptor {
         }
     }
 
+    fn get_index(&self) -> &FieldIndex {
+        &self.message_descriptor.get_indices().fields[self.index]
+    }
+
     /// JSON field name.
     ///
     /// Can be different from `.proto` field name.
@@ -127,12 +133,21 @@ impl FieldDescriptor {
     ///
     /// [json]: https://developers.google.com/protocol-buffers/docs/proto3#json
     pub fn json_name(&self) -> &str {
-        &self.message_descriptor.get_indices().json_names[self.index]
+        &self.get_index().json_name
+    }
+
+    /// If this field is optional or required.
+    pub fn is_singular(&self) -> bool {
+        match self.get_proto().get_label() {
+            field_descriptor_proto::Label::LABEL_REQUIRED => true,
+            field_descriptor_proto::Label::LABEL_OPTIONAL => true,
+            field_descriptor_proto::Label::LABEL_REPEATED => false,
+        }
     }
 
     /// If this field repeated or map?
     pub fn is_repeated_or_map(&self) -> bool {
-        self.proto().get_label() == field_descriptor_proto::Label::LABEL_REPEATED
+        self.get_proto().get_label() == field_descriptor_proto::Label::LABEL_REPEATED
     }
 
     /// Is this field repeated, but not map field?
@@ -243,6 +258,15 @@ impl FieldDescriptor {
         match self.mut_singular_field_or_default(m) {
             ReflectValueMut::Message(m) => m,
         }
+    }
+
+    /// Default value.
+    ///
+    /// # Panics
+    ///
+    /// If field is not singular.
+    pub fn singular_default_value(&self) -> ReflectValueRef {
+        unimplemented!()
     }
 
     /// Get singular field value.

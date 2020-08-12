@@ -1,4 +1,5 @@
 use crate::descriptor::FileDescriptorProto;
+use crate::reflect::file::building::FileDescriptorBuilding;
 use crate::reflect::message::index::MessageIndex;
 use crate::reflect::message::path::MessagePath;
 
@@ -8,9 +9,13 @@ pub(crate) struct DynamicMessageDescriptor {
 }
 
 impl DynamicMessageDescriptor {
-    pub fn new(proto: &FileDescriptorProto, path: &MessagePath) -> DynamicMessageDescriptor {
+    pub fn new(
+        proto: &FileDescriptorProto,
+        path: &MessagePath,
+        building: &FileDescriptorBuilding,
+    ) -> DynamicMessageDescriptor {
         let m = path.eval(proto).unwrap();
-        let indices = MessageIndex::index(m);
+        let indices = MessageIndex::index(m, building);
 
         DynamicMessageDescriptor { indices }
     }

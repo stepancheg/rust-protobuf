@@ -7,7 +7,7 @@ use std::marker;
 use bytes::Bytes;
 
 use crate::reflect::runtime_type_box::RuntimeTypeBox;
-use crate::reflect::value::ReflectValueMut;
+use crate::reflect::value::value_ref::ReflectValueMut;
 use crate::reflect::ReflectValueRef;
 use crate::reflect::{MessageRef, ReflectValueBox};
 use crate::reflect::{ProtobufValue, ProtobufValueSized};

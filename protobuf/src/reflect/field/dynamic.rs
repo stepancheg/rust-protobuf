@@ -18,7 +18,7 @@ pub(crate) struct DynamicFieldDescriptorRef<'a> {
 
 impl<'a> DynamicFieldDescriptorRef<'a> {
     fn element_type(&self) -> RuntimeTypeBox {
-        match self.field.proto().get_field_type() {
+        match self.field.get_proto().get_field_type() {
             field_descriptor_proto::Type::TYPE_BOOL => RuntimeTypeBox::Bool,
             Type::TYPE_DOUBLE => RuntimeTypeBox::F64,
             Type::TYPE_FLOAT => RuntimeTypeBox::F32,
@@ -46,7 +46,7 @@ impl<'a> DynamicFieldDescriptorRef<'a> {
     }
 
     fn try_map_type(&self) -> Option<RuntimeFieldType> {
-        if self.field.proto().get_field_type() != field_descriptor_proto::Type::TYPE_MESSAGE {
+        if self.field.get_proto().get_field_type() != field_descriptor_proto::Type::TYPE_MESSAGE {
             return None;
         }
 
@@ -55,7 +55,7 @@ impl<'a> DynamicFieldDescriptorRef<'a> {
             .field
             .message_descriptor
             .file_descriptor()
-            .find_message_or_enum_proto_in_all_files(self.field.proto().get_type_name())
+            .find_message_or_enum_proto_in_all_files(self.field.get_proto().get_type_name())
         {
             Some((_, MessageOrEnum::Message(m))) => m,
             Some((_, MessageOrEnum::Enum(..))) | None => return None,
@@ -70,7 +70,7 @@ impl<'a> DynamicFieldDescriptorRef<'a> {
     }
 
     pub fn runtime_field_type(&self) -> RuntimeFieldType {
-        match self.field.proto().get_label() {
+        match self.field.get_proto().get_label() {
             field_descriptor_proto::Label::LABEL_OPTIONAL
             | field_descriptor_proto::Label::LABEL_REQUIRED => {
                 RuntimeFieldType::Singular(self.element_type())

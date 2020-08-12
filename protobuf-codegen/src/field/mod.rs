@@ -365,7 +365,7 @@ impl<'a> FieldElemEnum<'a> {
         RustType::Enum(
             self.rust_name_relative(reference),
             self.default_value.rust_name(),
-            self.default_value.proto.get_number(),
+            self.default_value.proto.get_proto().get_number(),
         )
     }
 
@@ -373,7 +373,7 @@ impl<'a> FieldElemEnum<'a> {
         RustType::EnumOrUnknown(
             self.rust_name_relative(reference),
             self.default_value.rust_name(),
-            self.default_value.proto.get_number(),
+            self.default_value.proto.get_proto().get_number(),
         )
     }
 
@@ -481,12 +481,13 @@ fn field_elem<'a>(
     customize: &Customize,
     current_file_path: &RustRelativePath,
 ) -> FieldElem<'a> {
-    if field.field.get_field_type() == field_descriptor_proto::Type::TYPE_GROUP {
+    if field.field.get_proto().get_field_type() == field_descriptor_proto::Type::TYPE_GROUP {
         FieldElem::Group
-    } else if field.field.has_type_name() {
-        let message_or_enum = root_scope
-            .find_message_or_enum(&ProtobufAbsolutePath::from(field.field.get_type_name()));
-        match (field.field.get_field_type(), message_or_enum) {
+    } else if field.field.get_proto().has_type_name() {
+        let message_or_enum = root_scope.find_message_or_enum(&ProtobufAbsolutePath::from(
+            field.field.get_proto().get_type_name(),
+        ));
+        match (field.field.get_proto().get_field_type(), message_or_enum) {
             (
                 field_descriptor_proto::Type::TYPE_MESSAGE,
                 MessageOrEnumWithScope::Message(message),
@@ -509,20 +510,23 @@ fn field_elem<'a>(
                 field_descriptor_proto::Type::TYPE_ENUM,
                 MessageOrEnumWithScope::Enum(enum_with_scope),
             ) => {
-                let default_value = if field.field.has_default_value() {
-                    enum_with_scope.value_by_name(field.field.get_default_value())
+                let default_value = if field.field.get_proto().has_default_value() {
+                    enum_with_scope.value_by_name(field.field.get_proto().get_default_value())
                 } else {
                     enum_with_scope.values()[0].clone()
                 };
                 FieldElem::Enum(FieldElemEnum { default_value })
             }
-            _ => panic!("unknown named type: {:?}", field.field.get_field_type()),
+            _ => panic!(
+                "unknown named type: {:?}",
+                field.field.get_proto().get_field_type()
+            ),
         }
-    } else if field.field.has_field_type() {
+    } else if field.field.get_proto().has_field_type() {
         let carllerche_for_bytes = customize.carllerche_bytes_for_bytes.unwrap_or(false);
         let carllerche_for_string = customize.carllerche_bytes_for_string.unwrap_or(false);
 
-        let elem = match field.field.get_field_type() {
+        let elem = match field.field.get_proto().get_field_type() {
             field_descriptor_proto::Type::TYPE_STRING if carllerche_for_string => {
                 FieldElem::Primitive(
                     field_descriptor_proto::Type::TYPE_STRING,
@@ -576,7 +580,7 @@ impl<'a> FieldGen<'a> {
     ) -> FieldGen<'a> {
         let mut customize = customize.clone();
         customize.update_with(&customize_from_rustproto_for_field(
-            field.field.options.get_or_default(),
+            field.field.get_proto().options.get_or_default(),
         ));
 
         let elem = field_elem(
@@ -590,8 +594,9 @@ impl<'a> FieldGen<'a> {
         let syntax = field.message.scope.file_scope.syntax();
 
         let field_may_have_custom_default_value = syntax == Syntax::PROTO2
-            && field.field.get_label() != field_descriptor_proto::Label::LABEL_REPEATED
-            && field.field.get_field_type() != field_descriptor_proto::Type::TYPE_MESSAGE;
+            && field.field.get_proto().get_label() != field_descriptor_proto::Label::LABEL_REPEATED
+            && field.field.get_proto().get_field_type()
+                != field_descriptor_proto::Type::TYPE_MESSAGE;
 
         let default_expose_field = !field_may_have_custom_default_value;
         let expose_field = customize.expose_fields.unwrap_or(default_expose_field);
@@ -606,7 +611,9 @@ impl<'a> FieldGen<'a> {
         let generate_getter =
             customize.generate_getter.unwrap_or(default_generate_getter) || field.is_oneof();
 
-        let kind = if field.field.get_label() == field_descriptor_proto::Label::LABEL_REPEATED {
+        let kind = if field.field.get_proto().get_label()
+            == field_descriptor_proto::Label::LABEL_REPEATED
+        {
             match (elem, true) {
                 // map field
                 (
@@ -624,20 +631,26 @@ impl<'a> FieldGen<'a> {
                 // regular repeated field
                 (elem, _) => FieldKind::Repeated(RepeatedField {
                     elem,
-                    packed: field.field.options.get_or_default().get_packed(),
+                    packed: field
+                        .field
+                        .get_proto()
+                        .options
+                        .get_or_default()
+                        .get_packed(),
                 }),
             }
         } else if let Some(oneof) = field.oneof() {
             FieldKind::Oneof(OneofField::parse(&oneof, &field, elem, root_scope))
         } else {
             let flag = if field.message.scope.file_scope.syntax() == Syntax::PROTO3
-                && field.field.get_field_type() != field_descriptor_proto::Type::TYPE_MESSAGE
+                && field.field.get_proto().get_field_type()
+                    != field_descriptor_proto::Type::TYPE_MESSAGE
             {
                 SingularFieldFlag::WithoutFlag
             } else {
-                let required =
-                    field.field.get_label() == field_descriptor_proto::Label::LABEL_REQUIRED;
-                let option_kind = match field.field.get_field_type() {
+                let required = field.field.get_proto().get_label()
+                    == field_descriptor_proto::Label::LABEL_REQUIRED;
+                let option_kind = match field.field.get_proto().get_field_type() {
                     field_descriptor_proto::Type::TYPE_MESSAGE => OptionKind::MessageField,
                     _ => OptionKind::Option,
                 };
@@ -654,8 +667,8 @@ impl<'a> FieldGen<'a> {
             root_scope,
             syntax: field.message.get_scope().file_scope.syntax(),
             rust_name: rust_field_name_for_protobuf_field_name(&field.field.get_name()),
-            proto_type: field.field.get_field_type(),
-            wire_type: field_type_wire_type(field.field.get_field_type()),
+            proto_type: field.field.get_proto().get_field_type(),
+            wire_type: field_type_wire_type(field.field.get_proto().get_field_type()),
             serde_name: field.field.get_name().to_string(),
             proto_field: field,
             kind,
@@ -842,14 +855,14 @@ impl<'a> FieldGen<'a> {
     }
 
     fn defaut_value_from_proto_float(&self) -> String {
-        assert!(self.proto_field.field.has_default_value());
+        assert!(self.proto_field.field.get_proto().has_default_value());
 
         let type_name = match self.proto_type {
             field_descriptor_proto::Type::TYPE_FLOAT => "f32",
             field_descriptor_proto::Type::TYPE_DOUBLE => "f64",
             _ => unreachable!(),
         };
-        let proto_default = self.proto_field.field.get_default_value();
+        let proto_default = self.proto_field.field.get_proto().get_default_value();
 
         let f = float::parse_protobuf_float(proto_default)
             .expect(&format!("failed to parse float: {:?}", proto_default));
@@ -873,8 +886,8 @@ impl<'a> FieldGen<'a> {
                 "{}",
                 e.default_value_rust_expr(&self.get_file_and_mod())
             ))
-        } else if self.proto_field.field.has_default_value() {
-            let proto_default = self.proto_field.field.get_default_value();
+        } else if self.proto_field.field.get_proto().has_default_value() {
+            let proto_default = self.proto_field.field.get_proto().get_default_value();
             Some(match self.proto_type {
                 // For numeric types, contains the original text representation of the value
                 field_descriptor_proto::Type::TYPE_DOUBLE
@@ -982,7 +995,7 @@ impl<'a> FieldGen<'a> {
     }
 
     pub fn reconstruct_def(&self) -> String {
-        let prefix = match (self.proto_field.field.get_label(), self.syntax) {
+        let prefix = match (self.proto_field.field.get_proto().get_label(), self.syntax) {
             (field_descriptor_proto::Label::LABEL_REPEATED, _) => "repeated ",
             (_, Syntax::PROTO3) => "",
             (field_descriptor_proto::Label::LABEL_OPTIONAL, _) => "optional ",
@@ -991,7 +1004,7 @@ impl<'a> FieldGen<'a> {
         format!(
             "{}{} {} = {}",
             prefix,
-            field_type_protobuf_name(&self.proto_field.field),
+            field_type_protobuf_name(self.proto_field.field.get_proto()),
             self.proto_field.name(),
             self.proto_field.number()
         )

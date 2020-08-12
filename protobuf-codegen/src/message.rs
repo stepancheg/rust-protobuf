@@ -82,7 +82,7 @@ impl<'a> MessageGen<'a> {
 
         let mut customize = customize.clone();
         customize.update_with(&customize_from_rustproto_for_message(
-            message.message.options.get_or_default(),
+            message.message.get_proto().options.get_or_default(),
         ));
 
         static FIELD_NUMBER: protobuf::rt::LazyV2<i32> = protobuf::rt::LazyV2::INIT;
@@ -90,7 +90,7 @@ impl<'a> MessageGen<'a> {
             protobuf::reflect::MessageDescriptor::for_type::<DescriptorProto>()
                 .get_field_by_name("field")
                 .expect("`field` must exist")
-                .proto()
+                .get_proto()
                 .get_number()
         });
 
@@ -709,7 +709,7 @@ impl<'a> MessageGen<'a> {
                     protobuf::reflect::MessageDescriptor::for_type::<DescriptorProto>()
                         .get_field_by_name("nested_type")
                         .expect("`nested_type` must exist")
-                        .proto()
+                        .get_proto()
                         .get_number()
                 });
 
@@ -740,7 +740,7 @@ impl<'a> MessageGen<'a> {
                     protobuf::reflect::MessageDescriptor::for_type::<DescriptorProto>()
                         .get_field_by_name("enum_type")
                         .expect("`enum_type` must exist")
-                        .proto()
+                        .get_proto()
                         .get_number()
                 });
 

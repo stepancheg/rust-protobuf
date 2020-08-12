@@ -13,19 +13,21 @@ pub(crate) struct FileIndexMessageEntry {
     pub nested_messages: Vec<usize>,
     pub nested_enums: Vec<usize>,
     pub map_entry: bool,
+    pub first_enum_index: usize,
 }
 
 #[derive(Debug)]
-struct FileIndexEnumEntry {
-    message_path: MessagePath,
-    enum_index: usize,
+pub(crate) struct FileIndexEnumEntry {
+    pub message_path: MessagePath,
+    pub enum_index: usize,
 }
 
 #[derive(Debug)]
 pub(crate) struct FileIndex {
     pub(crate) messages: Vec<FileIndexMessageEntry>,
     pub(crate) message_by_name_to_package: HashMap<String, usize>,
-    enums: Vec<FileIndexEnumEntry>,
+    pub(crate) top_level_messages: Vec<usize>,
+    pub(crate) enums: Vec<FileIndexEnumEntry>,
 }
 
 impl FileIndex {
@@ -34,11 +36,21 @@ impl FileIndex {
             messages: Vec::new(),
             message_by_name_to_package: HashMap::new(),
             enums: Vec::new(), // TODO
+            top_level_messages: Vec::with_capacity(file.message_type.len()),
         };
+
+        // Top-level enums start with zero
+        for (_, _) in file.enum_type.iter().enumerate() {
+            index.enums.push(FileIndexEnumEntry {
+                message_path: MessagePath(Vec::new()),
+                enum_index: index.enums.len(),
+            });
+        }
 
         for (i, message) in file.message_type.iter().enumerate() {
             let path = MessagePath(vec![i]);
-            index.index_message_and_inners(file, message, &path, None, "");
+            let message_index = index.index_message_and_inners(file, message, &path, None, "");
+            index.top_level_messages.push(message_index);
         }
 
         index.build_message_by_name_to_package();
@@ -65,7 +77,15 @@ impl FileIndex {
             nested_messages: Vec::with_capacity(message.nested_type.len()),
             nested_enums: Vec::with_capacity(message.enum_type.len()), // TODO
             map_entry: message.options.get_or_default().get_map_entry(),
+            first_enum_index: self.enums.len(),
         });
+
+        for (_, _) in message.enum_type.iter().enumerate() {
+            self.enums.push(FileIndexEnumEntry {
+                message_path: path.clone(),
+                enum_index: self.enums.len(),
+            });
+        }
 
         for (i, nested) in message.nested_type.iter().enumerate() {
             let mut nested_path = path.clone();

@@ -8,7 +8,7 @@ use crate::message_dyn::MessageDyn;
 use crate::reflect::acc::v2::AccessorV2;
 use crate::reflect::acc::FieldAccessor;
 use crate::reflect::runtime_types::RuntimeTypeWithDeref;
-use crate::reflect::value::ReflectValueMut;
+use crate::reflect::value::value_ref::ReflectValueMut;
 use crate::reflect::MessageRef;
 use crate::reflect::ProtobufValueSized;
 use crate::reflect::ReflectValueBox;

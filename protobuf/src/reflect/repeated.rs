@@ -1,8 +1,8 @@
 use std::fmt;
 use std::slice;
 
+use crate::reflect::value::value_ref::ReflectValueRef;
 use crate::reflect::value::ProtobufValue;
-use crate::reflect::value::ReflectValueRef;
 
 use crate::reflect::dynamic::repeated::DynamicRepeated;
 use crate::reflect::reflect_eq::ReflectEq;

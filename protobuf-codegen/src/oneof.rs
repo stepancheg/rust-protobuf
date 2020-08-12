@@ -39,8 +39,11 @@ impl<'a> OneofField<'a> {
         let mut visited_messages = HashSet::new();
         let mut fields = vec![field.clone()];
         while let Some(field) = fields.pop() {
-            if field.field.get_field_type() == field_descriptor_proto::Type::TYPE_MESSAGE {
-                let message_name = ProtobufAbsolutePath::from(field.field.get_type_name());
+            if field.field.get_proto().get_field_type()
+                == field_descriptor_proto::Type::TYPE_MESSAGE
+            {
+                let message_name =
+                    ProtobufAbsolutePath::from(field.field.get_proto().get_type_name());
                 if !visited_messages.insert(message_name.clone()) {
                     continue;
                 }

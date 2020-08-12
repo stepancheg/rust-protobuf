@@ -6,13 +6,14 @@ use crate::reflect::file::index::FileIndex;
 use crate::reflect::file::index::FileIndexMessageEntry;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
-use crate::reflect::GeneratedFileDescriptor;
 use crate::reflect::MessageDescriptor;
+use crate::reflect::{EnumDescriptor, GeneratedFileDescriptor};
 use std::collections::HashSet;
 use std::hash::Hash;
 use std::hash::Hasher;
 use std::sync::Arc;
 
+pub(crate) mod building;
 pub(crate) mod dynamic;
 pub(crate) mod fds;
 pub(crate) mod generated;
@@ -80,6 +81,25 @@ impl FileDescriptor {
             .path
             .eval(self.get_proto())
             .unwrap()
+    }
+
+    /// Get top-level messages.
+    pub fn get_messages(&self) -> Vec<MessageDescriptor> {
+        self.get_index()
+            .top_level_messages
+            .iter()
+            .map(|i| MessageDescriptor::new(self.clone(), *i))
+            .collect()
+    }
+
+    /// Get top-level enums.
+    pub fn get_enums(&self) -> Vec<EnumDescriptor> {
+        self.get_proto()
+            .enum_type
+            .iter()
+            .enumerate()
+            .map(|(i, _)| EnumDescriptor::new(self.clone(), i))
+            .collect()
     }
 
     /// Find message by name relative to the package.

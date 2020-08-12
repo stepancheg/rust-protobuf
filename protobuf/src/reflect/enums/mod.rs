@@ -49,12 +49,20 @@ impl fmt::Debug for EnumValueDescriptor {
 }
 
 impl EnumValueDescriptor {
-    fn get_proto(&self) -> &EnumValueDescriptorProto {
+    pub(crate) fn new(enum_descriptor: EnumDescriptor, index: usize) -> EnumValueDescriptor {
+        EnumValueDescriptor {
+            enum_descriptor,
+            index,
+        }
+    }
+
+    /// `.proto` object which declared this value.
+    pub fn get_proto(&self) -> &EnumValueDescriptorProto {
         &self.enum_descriptor.get_proto().value[self.index as usize]
     }
 
     /// Name of enum variant as specified in proto file
-    pub fn name(&self) -> &str {
+    pub fn get_name(&self) -> &str {
         self.get_proto().get_name()
     }
 
@@ -105,6 +113,13 @@ impl fmt::Debug for EnumDescriptor {
 }
 
 impl EnumDescriptor {
+    pub(crate) fn new(file_descriptor: FileDescriptor, index: usize) -> EnumDescriptor {
+        EnumDescriptor {
+            file_descriptor,
+            index,
+        }
+    }
+
     fn get_impl(&self) -> EnumDescriptorImplRef {
         match &self.file_descriptor.imp {
             FileDescriptorImpl::Generated(g) => {
@@ -114,7 +129,8 @@ impl EnumDescriptor {
         }
     }
 
-    fn get_proto(&self) -> &EnumDescriptorProto {
+    /// Descriptor objects which defined this enum.
+    pub fn get_proto(&self) -> &EnumDescriptorProto {
         match self.get_impl() {
             EnumDescriptorImplRef::Generated(g) => &g.proto,
             EnumDescriptorImplRef::Dynamic(d) => d.get_proto(),
@@ -122,7 +138,7 @@ impl EnumDescriptor {
     }
 
     /// Enum name as given in `.proto` file
-    pub fn name(&self) -> &str {
+    pub fn get_name(&self) -> &str {
         // TODO: get_proto is inefficient
         self.get_proto().get_name()
     }

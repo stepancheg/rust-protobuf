@@ -323,7 +323,7 @@ impl<'a> CodeWriter<'a> {
     /// let id = MessageDescriptor::for_type::<FileDescriptorProto>()
     ///     .get_field_by_name("message_type")
     ///     .expect("`message_type` must exist")
-    ///     .proto()
+    ///     .get_proto()
     ///     .get_number();
     ///
     /// assert_eq!(id, 4);

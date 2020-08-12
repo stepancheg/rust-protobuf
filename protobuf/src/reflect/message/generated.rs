@@ -4,6 +4,7 @@ use crate::descriptor::FileDescriptorProto;
 use crate::message::Message;
 use crate::message_dyn::MessageDyn;
 use crate::reflect::acc::FieldAccessor;
+use crate::reflect::file::building::FileDescriptorBuilding;
 use crate::reflect::file::index::FileIndex;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
@@ -102,10 +103,11 @@ impl GeneratedMessageDescriptor {
         GeneratedMessageDescriptor { non_map: None }
     }
 
-    pub fn new(
+    pub(crate) fn new(
         data: GeneratedMessageDescriptorData,
         file_descriptor_proto: &'static FileDescriptorProto,
         _file_index: &FileIndex,
+        building: &FileDescriptorBuilding,
     ) -> GeneratedMessageDescriptor {
         let GeneratedMessageDescriptorData {
             protobuf_name_to_package,
@@ -125,7 +127,7 @@ impl GeneratedMessageDescriptor {
             field_proto_by_name.insert(field_proto.get_name(), field_proto);
         }
 
-        let index = MessageIndex::index(proto);
+        let index = MessageIndex::index(proto, building);
 
         GeneratedMessageDescriptor {
             non_map: Some(NonMapMessageDescriptor {

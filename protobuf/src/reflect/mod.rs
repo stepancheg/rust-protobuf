@@ -7,7 +7,7 @@ mod field;
 mod file;
 mod find_message_or_enum;
 mod map;
-mod message;
+pub(crate) mod message;
 mod oneof;
 mod repeated;
 mod runtime_type_box;
@@ -25,10 +25,10 @@ pub mod rt;
 pub(crate) mod name;
 
 pub use self::value::hashable::ReflectValueBoxHashable;
+pub use self::value::value_box::ReflectValueBox;
+pub use self::value::value_ref::ReflectValueRef;
 pub use self::value::ProtobufValue;
 pub use self::value::ProtobufValueSized;
-pub use self::value::ReflectValueBox;
-pub use self::value::ReflectValueRef;
 
 pub use self::repeated::ReflectRepeatedMut;
 pub use self::repeated::ReflectRepeatedRef;

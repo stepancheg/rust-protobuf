@@ -209,12 +209,12 @@ fn test_message_descriptor() {
 #[test]
 fn test_enum_descriptor() {
     let d = TestEnumDescriptor::RED.enum_descriptor();
-    assert_eq!("TestEnumDescriptor", d.name());
+    assert_eq!("TestEnumDescriptor", d.get_name());
     assert_eq!(
         "TestEnumDescriptor",
-        reflect::EnumDescriptor::for_type::<TestEnumDescriptor>().name()
+        reflect::EnumDescriptor::for_type::<TestEnumDescriptor>().get_name()
     );
-    assert_eq!("GREEN", d.get_value_by_name("GREEN").unwrap().name());
+    assert_eq!("GREEN", d.get_value_by_name("GREEN").unwrap().get_name());
 }
 
 #[test]

@@ -6,18 +6,23 @@ use protobuf::descriptor::field_descriptor_proto;
 pub(crate) fn map_entry<'a>(
     d: &'a MessageWithScope,
 ) -> Option<(FieldWithContext<'a>, FieldWithContext<'a>)> {
-    if d.message.options.get_or_default().get_map_entry() {
+    if d.message
+        .get_proto()
+        .options
+        .get_or_default()
+        .get_map_entry()
+    {
         // Must be consistent with
         // DescriptorBuilder::ValidateMapEntry
 
-        assert!(d.message.get_name().ends_with("Entry"));
+        assert!(d.message.get_proto().get_name().ends_with("Entry"));
 
-        assert_eq!(0, d.message.extension.len());
-        assert_eq!(0, d.message.extension_range.len());
-        assert_eq!(0, d.message.nested_type.len());
-        assert_eq!(0, d.message.enum_type.len());
+        assert_eq!(0, d.message.get_proto().extension.len());
+        assert_eq!(0, d.message.get_proto().extension_range.len());
+        assert_eq!(0, d.message.get_proto().nested_type.len());
+        assert_eq!(0, d.message.get_proto().enum_type.len());
 
-        assert_eq!(2, d.fields().len());
+        assert_eq!(2, d.message.fields().len());
         let key = d.fields()[0].clone();
         let value = d.fields()[1].clone();
 
@@ -29,11 +34,11 @@ pub(crate) fn map_entry<'a>(
 
         assert_eq!(
             field_descriptor_proto::Label::LABEL_OPTIONAL,
-            key.field.get_label()
+            key.field.get_proto().get_label()
         );
         assert_eq!(
             field_descriptor_proto::Label::LABEL_OPTIONAL,
-            value.field.get_label()
+            value.field.get_proto().get_label()
         );
 
         Some((key, value))

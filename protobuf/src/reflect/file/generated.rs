@@ -1,5 +1,6 @@
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::enums::generated::GeneratedEnumDescriptor;
+use crate::reflect::file::building::FileDescriptorBuilding;
 use crate::reflect::file::index::FileIndex;
 use crate::reflect::message::generated::GeneratedMessageDescriptor;
 use crate::reflect::FileDescriptor;
@@ -43,7 +44,15 @@ impl GeneratedFileDescriptor {
                     let message = messages
                         .remove(message_index.name_to_package.as_str())
                         .unwrap();
-                    GeneratedMessageDescriptor::new(message, file_descriptor_proto, &index)
+                    GeneratedMessageDescriptor::new(
+                        message,
+                        file_descriptor_proto,
+                        &index,
+                        &FileDescriptorBuilding {
+                            file_descriptor: file_descriptor_proto,
+                            deps: &dependencies,
+                        },
+                    )
                 }
             })
             .collect();

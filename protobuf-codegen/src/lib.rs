@@ -298,7 +298,7 @@ fn gen_file(
             protobuf::reflect::MessageDescriptor::for_type::<FileDescriptorProto>()
                 .get_field_by_name("message_type")
                 .expect("`message_type` must exist")
-                .proto()
+                .get_proto()
                 .get_number()
         });
 
@@ -327,7 +327,7 @@ fn gen_file(
             protobuf::reflect::MessageDescriptor::for_type::<FileDescriptorProto>()
                 .get_field_by_name("enum_type")
                 .expect("`enum_type` must exist")
-                .proto()
+                .get_proto()
                 .get_number()
         });
 
