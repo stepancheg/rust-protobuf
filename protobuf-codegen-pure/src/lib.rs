@@ -38,6 +38,7 @@ use std::path::PathBuf;
 mod linked_hash_map;
 mod model;
 mod parser;
+mod path;
 
 use linked_hash_map::LinkedHashMap;
 use protobuf_codegen::amend_io_error;

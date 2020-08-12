@@ -13,6 +13,7 @@ use protobuf::UnknownFields;
 use protobuf::UnknownValue;
 
 use crate::model::ProtobufOptionName;
+use crate::path::fs_path_to_proto_path;
 use crate::protobuf_codegen::case_convert::camel_case;
 use crate::protobuf_codegen::ProtobufAbsolutePath;
 use crate::protobuf_codegen::ProtobufIdent;
@@ -1039,15 +1040,13 @@ pub fn file_descriptor(
     input: &model::FileDescriptor,
     deps: &[model::FileDescriptor],
 ) -> ConvertResult<protobuf::descriptor::FileDescriptorProto> {
-    let name = name.to_str().expect("not a valid UTF-8 name");
-
     let resolver = Resolver {
         current_file: &input,
         deps,
     };
 
     let mut output = protobuf::descriptor::FileDescriptorProto::new();
-    output.set_name(name.to_owned());
+    output.set_name(fs_path_to_proto_path(name));
     output.set_syntax(syntax(input.syntax));
 
     if let Some(package) = &input.package {
