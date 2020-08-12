@@ -379,18 +379,18 @@ pub fn parse_and_typecheck(
     })
 }
 
-const RUSTPROTO_PROTO: &str = include_str!("../../proto/rustproto.proto");
-const ANY_PROTO: &str = include_str!("../../proto/google/protobuf/any.proto");
-const API_PROTO: &str = include_str!("../../proto/google/protobuf/api.proto");
-const DESCRIPTOR_PROTO: &str = include_str!("../../proto/google/protobuf/descriptor.proto");
-const DURATION_PROTO: &str = include_str!("../../proto/google/protobuf/duration.proto");
-const EMPTY_PROTO: &str = include_str!("../../proto/google/protobuf/empty.proto");
-const FIELD_MASK_PROTO: &str = include_str!("../../proto/google/protobuf/field_mask.proto");
-const SOURCE_CONTEXT_PROTO: &str = include_str!("../../proto/google/protobuf/source_context.proto");
-const STRUCT_PROTO: &str = include_str!("../../proto/google/protobuf/struct.proto");
-const TIMESTAMP_PROTO: &str = include_str!("../../proto/google/protobuf/timestamp.proto");
-const TYPE_PROTO: &str = include_str!("../../proto/google/protobuf/type.proto");
-const WRAPPERS_PROTO: &str = include_str!("../../proto/google/protobuf/wrappers.proto");
+const RUSTPROTO_PROTO: &str = include_str!("../proto/rustproto.proto");
+const ANY_PROTO: &str = include_str!("../proto/google/protobuf/any.proto");
+const API_PROTO: &str = include_str!("../proto/google/protobuf/api.proto");
+const DESCRIPTOR_PROTO: &str = include_str!("../proto/google/protobuf/descriptor.proto");
+const DURATION_PROTO: &str = include_str!("../proto/google/protobuf/duration.proto");
+const EMPTY_PROTO: &str = include_str!("../proto/google/protobuf/empty.proto");
+const FIELD_MASK_PROTO: &str = include_str!("../proto/google/protobuf/field_mask.proto");
+const SOURCE_CONTEXT_PROTO: &str = include_str!("../proto/google/protobuf/source_context.proto");
+const STRUCT_PROTO: &str = include_str!("../proto/google/protobuf/struct.proto");
+const TIMESTAMP_PROTO: &str = include_str!("../proto/google/protobuf/timestamp.proto");
+const TYPE_PROTO: &str = include_str!("../proto/google/protobuf/type.proto");
+const WRAPPERS_PROTO: &str = include_str!("../proto/google/protobuf/wrappers.proto");
 
 /// Like `protoc --rust_out=...` but without requiring `protoc` or `protoc-gen-rust`
 /// commands in `$PATH`.
