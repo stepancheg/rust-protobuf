@@ -1,5 +1,5 @@
 use crate::reflect::EnumDescriptor;
-use crate::reflect::ProtobufValue;
+use crate::reflect::ProtobufValueSized;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::reflect::RuntimeTypeBox;
@@ -83,7 +83,7 @@ impl ReflectValueBoxHashable {
     }
 
     /// Try downcast.
-    pub fn downcast<T: ProtobufValue>(self) -> Result<T, Self> {
+    pub fn downcast<T: ProtobufValueSized>(self) -> Result<T, Self> {
         self.into_value_box()
             .downcast()
             .map_err(ReflectValueBoxHashable::from_box)

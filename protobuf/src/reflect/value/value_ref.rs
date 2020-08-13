@@ -3,7 +3,7 @@ use crate::reflect::EnumDescriptor;
 use crate::reflect::EnumValueDescriptor;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::MessageRef;
-use crate::reflect::ProtobufValue;
+use crate::reflect::ProtobufValueSized;
 use crate::reflect::ReflectEq;
 use crate::reflect::ReflectEqMode;
 use crate::reflect::RuntimeTypeBox;
@@ -172,7 +172,7 @@ impl<'a> ReflectValueRef<'a> {
     }
 
     /// Convert a value to arbitrary value.
-    pub fn downcast_clone<V: ProtobufValue>(&self) -> Result<V, Self> {
+    pub fn downcast_clone<V: ProtobufValueSized>(&self) -> Result<V, Self> {
         self.to_box().downcast().map_err(|_| self.clone())
     }
 }

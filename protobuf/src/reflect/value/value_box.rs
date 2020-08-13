@@ -6,7 +6,7 @@ use crate::reflect::value::StringOrChars;
 use crate::reflect::value::VecU8OrBytes;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::EnumValueDescriptor;
-use crate::reflect::ProtobufValue;
+use crate::reflect::ProtobufValueSized;
 use crate::reflect::RuntimeTypeBox;
 use crate::MessageDyn;
 use std::hash::Hash;
@@ -153,7 +153,8 @@ impl ReflectValueBox {
     /// Downcast to real typed value.
     ///
     /// For `enum` `V` can be either `V: ProtobufEnum` or `V: ProtobufEnumOrUnknown<E>`.
-    pub fn downcast<V: ProtobufValue>(self) -> Result<V, Self> {
+    // TODO: this horrible magic is no longer needed: call ProtobufValueSized::downcast from here
+    pub fn downcast<V: ProtobufValueSized>(self) -> Result<V, Self> {
         match self {
             ReflectValueBox::U32(v) => transmute_eq(v).map_err(ReflectValueBox::U32),
             ReflectValueBox::U64(v) => transmute_eq(v).map_err(ReflectValueBox::U64),
