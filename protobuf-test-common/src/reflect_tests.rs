@@ -22,7 +22,7 @@ pub fn value_for_runtime_type(field_type: &RuntimeTypeBox) -> ReflectValueBox {
         RuntimeTypeBox::Bool => ReflectValueBox::Bool(true),
         RuntimeTypeBox::String => ReflectValueBox::String("here".to_owned()),
         RuntimeTypeBox::VecU8 => ReflectValueBox::Bytes(b"there".as_ref().to_owned()),
-        RuntimeTypeBox::Enum(e) => ReflectValueBox::from(&e.values()[0]),
+        RuntimeTypeBox::Enum(e) => ReflectValueBox::from(e.first_value()),
         RuntimeTypeBox::Message(m) => ReflectValueBox::Message(m.new_instance()),
     }
 }
@@ -102,8 +102,8 @@ pub fn values_for_runtime_type(field_type: &RuntimeTypeBox) -> Vec<ReflectValueB
             ReflectValueBox::Bytes(b"".as_ref().to_owned()),
         ],
         RuntimeTypeBox::Enum(e) => vec![
-            ReflectValueBox::from(&e.values()[0]),
-            ReflectValueBox::from(&e.values()[e.values().len() - 1]),
+            ReflectValueBox::from(e.values().next().unwrap()),
+            ReflectValueBox::from(e.values().last().unwrap()),
         ],
         RuntimeTypeBox::Message(m) => values_for_message_type(&m)
             .into_iter()

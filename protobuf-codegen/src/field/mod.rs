@@ -613,22 +613,19 @@ impl<'a> FieldGen<'a> {
         let kind = if field.field.get_proto().get_label()
             == field_descriptor_proto::Label::LABEL_REPEATED
         {
-            match (elem, true) {
+            match elem {
                 // map field
-                (
-                    FieldElem::Message(FieldElemMessage {
-                        message,
-                        map_entry: Some(key_value),
-                        ..
-                    }),
-                    true,
-                ) => FieldKind::Map(MapField {
+                FieldElem::Message(FieldElemMessage {
+                    message,
+                    map_entry: Some(key_value),
+                    ..
+                }) => FieldKind::Map(MapField {
                     message: message.clone(),
                     key: key_value.0.clone(),
                     value: key_value.1.clone(),
                 }),
                 // regular repeated field
-                (elem, _) => FieldKind::Repeated(RepeatedField {
+                elem => FieldKind::Repeated(RepeatedField {
                     elem,
                     packed: field
                         .field

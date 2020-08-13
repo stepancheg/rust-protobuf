@@ -626,7 +626,7 @@ where
     fn default_value_ref() -> ReflectValueRef<'static> {
         ReflectValueRef::Enum(
             E::enum_descriptor_static(),
-            E::enum_descriptor_static().values()[0].value(),
+            E::enum_descriptor_static().first_value().value(),
         )
     }
 
@@ -675,7 +675,7 @@ where
     fn default_value_ref() -> ReflectValueRef<'static> {
         ReflectValueRef::Enum(
             E::enum_descriptor_static(),
-            E::enum_descriptor_static().values()[0].value(),
+            E::enum_descriptor_static().first_value().value(),
         )
     }
 

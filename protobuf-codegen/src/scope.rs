@@ -392,11 +392,9 @@ impl<'a> MessageWithScope<'a> {
         self.message
             .oneofs()
             .into_iter()
-            .enumerate()
-            .map(|(index, oneof)| OneofWithContext {
+            .map(|oneof| OneofWithContext {
                 message: self.clone(),
                 oneof,
-                index: index as u32,
             })
             .collect()
     }
@@ -563,7 +561,6 @@ pub(crate) struct OneofVariantWithContext<'a> {
 #[derive(Clone)]
 pub(crate) struct OneofWithContext<'a> {
     pub oneof: OneofDescriptor,
-    pub index: u32,
     pub message: MessageWithScope<'a>,
 }
 
@@ -587,10 +584,7 @@ impl<'a> OneofWithContext<'a> {
         self.message
             .fields()
             .into_iter()
-            .filter(|f| {
-                f.field.get_proto().has_oneof_index()
-                    && f.field.get_proto().get_oneof_index() == self.index as i32
-            })
+            .filter(|f| f.field.containing_oneof().as_ref() == Some(&self.oneof))
             .map(|f| OneofVariantWithContext {
                 oneof: self,
                 field: f.field,

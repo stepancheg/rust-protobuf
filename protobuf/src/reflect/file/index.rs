@@ -39,7 +39,7 @@ impl FileIndex {
             message_by_name_to_package: HashMap::new(),
             enums: Vec::new(),
             top_level_messages: Vec::with_capacity(file.message_type.len()),
-            enums_by_name_to_package: HashMap::new(), // TODO
+            enums_by_name_to_package: HashMap::new(),
         };
 
         // Top-level enums start with zero

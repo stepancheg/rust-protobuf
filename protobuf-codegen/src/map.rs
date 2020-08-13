@@ -22,7 +22,7 @@ pub(crate) fn map_entry<'a>(
         assert_eq!(0, d.message.get_proto().nested_type.len());
         assert_eq!(0, d.message.get_proto().enum_type.len());
 
-        assert_eq!(2, d.message.fields().len());
+        assert_eq!(2, d.message.fields().count());
         let key = d.fields()[0].clone();
         let value = d.fields()[1].clone();
 

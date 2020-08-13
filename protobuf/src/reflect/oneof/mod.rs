@@ -21,11 +21,9 @@ impl OneofDescriptor {
     }
 
     /// Fields in this oneof.
-    pub fn fields(&self) -> Vec<FieldDescriptor> {
+    pub fn fields<'a>(&'a self) -> impl Iterator<Item = FieldDescriptor> + 'a {
         self.message_descriptor
             .fields()
-            .into_iter()
-            .filter(|f| f.containing_oneof().as_ref() == Some(self))
-            .collect()
+            .filter(move |f| f.containing_oneof().as_ref() == Some(self))
     }
 }

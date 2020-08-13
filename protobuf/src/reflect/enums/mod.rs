@@ -165,17 +165,17 @@ impl EnumDescriptor {
     }
 
     /// This enum values
-    pub fn values(&self) -> Vec<EnumValueDescriptor> {
-        let value_len = match self.get_impl() {
-            EnumDescriptorImplRef::Generated(g) => g.proto.value.len(),
-            EnumDescriptorImplRef::Dynamic(d) => d.values.len(),
-        };
-        (0..value_len)
-            .map(|index| EnumValueDescriptor {
-                enum_descriptor: self.clone(),
-                index,
-            })
-            .collect()
+    pub fn values<'a>(&'a self) -> impl Iterator<Item = EnumValueDescriptor> + 'a {
+        let value_len = self.get_proto().value.len();
+        (0..value_len).map(move |index| EnumValueDescriptor {
+            enum_descriptor: self.clone(),
+            index,
+        })
+    }
+
+    /// First variant (also default in proto3).
+    pub fn first_value(&self) -> EnumValueDescriptor {
+        self.values().next().unwrap()
     }
 
     /// Find enum variant by name

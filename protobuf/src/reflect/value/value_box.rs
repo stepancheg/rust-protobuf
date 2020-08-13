@@ -101,7 +101,8 @@ impl<'a> From<&'a EnumValueDescriptor> for ReflectValueBox {
 
 impl From<EnumValueDescriptor> for ReflectValueBox {
     fn from(v: EnumValueDescriptor) -> Self {
-        ReflectValueBox::Enum(v.enum_descriptor().clone(), v.value())
+        let number = v.value();
+        ReflectValueBox::Enum(v.enum_descriptor, number)
     }
 }
 

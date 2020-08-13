@@ -238,13 +238,11 @@ impl MessageDescriptor {
     }
 
     /// Message field descriptors.
-    pub fn fields(&self) -> Vec<FieldDescriptor> {
-        (0..self.get_indices().fields.len())
-            .map(|index| FieldDescriptor {
-                message_descriptor: self.clone(),
-                index,
-            })
-            .collect()
+    pub fn fields<'a>(&'a self) -> impl Iterator<Item = FieldDescriptor> + 'a {
+        (0..self.get_indices().fields.len()).map(move |index| FieldDescriptor {
+            message_descriptor: self.clone(),
+            index,
+        })
     }
 
     /// Nested oneofs

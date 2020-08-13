@@ -83,7 +83,6 @@ impl DynamicMessage {
             self.fields = self
                 .descriptor
                 .fields()
-                .into_iter()
                 .map(|f| DynamicFieldValue::default_for_field(&f))
                 .collect();
         }
