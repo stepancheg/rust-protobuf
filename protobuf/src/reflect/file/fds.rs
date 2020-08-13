@@ -1,6 +1,6 @@
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::FileDescriptor;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 pub(crate) struct FdsBuilder {
     names: Vec<String>,
@@ -59,4 +59,23 @@ impl FdsBuilder {
             .map(|n| processed.remove(n).unwrap())
             .collect()
     }
+}
+
+pub(crate) fn fds_extend_with_public(file_descriptors: Vec<FileDescriptor>) -> Vec<FileDescriptor> {
+    let mut visited = HashSet::new();
+
+    let mut r = Vec::new();
+    let mut stack = file_descriptors;
+    stack.reverse();
+
+    while let Some(f) = stack.pop() {
+        if !visited.insert(f.get_proto().get_name().to_owned()) {
+            continue;
+        }
+
+        stack.extend(f.public_deps());
+
+        r.push(f);
+    }
+    r
 }

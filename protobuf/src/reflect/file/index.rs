@@ -20,6 +20,7 @@ pub(crate) struct FileIndexMessageEntry {
 pub(crate) struct FileIndexEnumEntry {
     pub message_path: MessagePath,
     pub enum_index: usize,
+    pub name_to_package: String,
 }
 
 #[derive(Debug)]
@@ -28,6 +29,7 @@ pub(crate) struct FileIndex {
     pub(crate) message_by_name_to_package: HashMap<String, usize>,
     pub(crate) top_level_messages: Vec<usize>,
     pub(crate) enums: Vec<FileIndexEnumEntry>,
+    pub(crate) enums_by_name_to_package: HashMap<String, usize>,
 }
 
 impl FileIndex {
@@ -35,15 +37,17 @@ impl FileIndex {
         let mut index = FileIndex {
             messages: Vec::new(),
             message_by_name_to_package: HashMap::new(),
-            enums: Vec::new(), // TODO
+            enums: Vec::new(),
             top_level_messages: Vec::with_capacity(file.message_type.len()),
+            enums_by_name_to_package: HashMap::new(), // TODO
         };
 
         // Top-level enums start with zero
-        for (_, _) in file.enum_type.iter().enumerate() {
+        for (_, e) in file.enum_type.iter().enumerate() {
             index.enums.push(FileIndexEnumEntry {
                 message_path: MessagePath(Vec::new()),
                 enum_index: index.enums.len(),
+                name_to_package: e.get_name().to_owned(),
             });
         }
 
@@ -54,6 +58,7 @@ impl FileIndex {
         }
 
         index.build_message_by_name_to_package();
+        index.build_enum_by_name_to_package();
 
         index
     }
@@ -80,10 +85,11 @@ impl FileIndex {
             first_enum_index: self.enums.len(),
         });
 
-        for (_, _) in message.enum_type.iter().enumerate() {
+        for (_, e) in message.enum_type.iter().enumerate() {
             self.enums.push(FileIndexEnumEntry {
                 message_path: path.clone(),
                 enum_index: self.enums.len(),
+                name_to_package: concat_paths(&name_to_package, e.get_name()),
             });
         }
 
@@ -109,12 +115,20 @@ impl FileIndex {
     }
 
     fn build_message_by_name_to_package(&mut self) {
-        let map = self
+        self.message_by_name_to_package = self
             .messages
             .iter()
             .enumerate()
             .map(|(i, m)| (m.name_to_package.to_owned(), i))
             .collect();
-        self.message_by_name_to_package = map;
+    }
+
+    fn build_enum_by_name_to_package(&mut self) {
+        self.enums_by_name_to_package = self
+            .enums
+            .iter()
+            .enumerate()
+            .map(|(i, e)| (e.name_to_package.to_owned(), i))
+            .collect();
     }
 }

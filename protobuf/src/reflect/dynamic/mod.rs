@@ -3,11 +3,9 @@ use crate::message_dyn::MessageDyn;
 use crate::reflect::dynamic::map::DynamicMap;
 use crate::reflect::dynamic::optional::DynamicOptional;
 use crate::reflect::dynamic::repeated::DynamicRepeated;
-use crate::reflect::field::index::FieldDefaultValue;
 use crate::reflect::map::ReflectMap;
 use crate::reflect::repeated::ReflectRepeated;
 use crate::reflect::value::value_ref::ReflectValueMut;
-use crate::reflect::EnumValueDescriptor;
 use crate::reflect::FieldDescriptor;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ProtobufValue;
@@ -16,7 +14,6 @@ use crate::reflect::ReflectMapMut;
 use crate::reflect::ReflectRepeatedMut;
 use crate::reflect::ReflectValueRef;
 use crate::reflect::RuntimeFieldType;
-use crate::reflect::RuntimeTypeBox;
 use crate::Clear;
 use crate::CodedInputStream;
 use crate::CodedOutputStream;
@@ -101,18 +98,8 @@ impl DynamicMessage {
         }
     }
 
-    fn get_default_value<'a>(&'a self, field: &FieldDescriptor) -> ReflectValueRef<'a> {
-        match &self.descriptor.get_indices().fields[field.index].default_value {
-            Some(FieldDefaultValue::ReflectValueBox(v)) => v.as_value_ref(),
-            Some(FieldDefaultValue::Enum(v)) => match field.singular_runtime_type() {
-                RuntimeTypeBox::Enum(e) => {
-                    let ev = EnumValueDescriptor::new(e.clone(), *v);
-                    ReflectValueRef::from(ev)
-                }
-                t => panic!("wrong type {:?} for default value enum", t),
-            },
-            None => field.singular_runtime_type().default_value_ref(),
-        }
+    fn singular_field_default_value<'a>(&'a self, field: &FieldDescriptor) -> ReflectValueRef<'a> {
+        self.descriptor.get_indices().fields[field.index].default_value(field)
     }
 
     pub(crate) fn get_singular_field_or_default<'a>(
@@ -122,7 +109,7 @@ impl DynamicMessage {
         assert_eq!(field.message_descriptor, self.descriptor);
         assert!(field.is_singular());
         if self.fields.is_empty() {
-            self.get_default_value(field)
+            self.singular_field_default_value(field)
         } else {
             unimplemented!()
         }

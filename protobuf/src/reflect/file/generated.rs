@@ -1,6 +1,7 @@
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::enums::generated::GeneratedEnumDescriptor;
 use crate::reflect::file::building::FileDescriptorBuilding;
+use crate::reflect::file::fds::fds_extend_with_public;
 use crate::reflect::file::index::FileIndex;
 use crate::reflect::message::generated::GeneratedMessageDescriptor;
 use crate::reflect::FileDescriptor;
@@ -49,8 +50,9 @@ impl GeneratedFileDescriptor {
                         file_descriptor_proto,
                         &index,
                         &FileDescriptorBuilding {
-                            file_descriptor: file_descriptor_proto,
-                            deps: &dependencies,
+                            current_file_index: &index,
+                            current_file_descriptor: file_descriptor_proto,
+                            deps_with_public: &fds_extend_with_public(dependencies.clone()),
                         },
                     )
                 }

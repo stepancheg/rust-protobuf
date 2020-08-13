@@ -2,6 +2,7 @@ use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::enums::dynamic::DynamicEnumDescriptor;
 use crate::reflect::file::building::FileDescriptorBuilding;
+use crate::reflect::file::fds::fds_extend_with_public;
 use crate::reflect::file::index::FileIndex;
 use crate::reflect::message::dynamic::DynamicMessageDescriptor;
 use crate::reflect::message::path::MessagePath;
@@ -34,8 +35,9 @@ impl DynamicFileDescriptor {
                     &*proto,
                     &message_index_entry.path,
                     &FileDescriptorBuilding {
-                        file_descriptor: &proto,
-                        deps: &dependencies,
+                        current_file_index: &index,
+                        current_file_descriptor: &proto,
+                        deps_with_public: &fds_extend_with_public(dependencies.clone()),
                     },
                 )
             })

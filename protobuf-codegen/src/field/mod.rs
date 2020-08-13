@@ -2,8 +2,6 @@ use crate::protobuf_abs_path::ProtobufAbsolutePath;
 use crate::rust;
 use protobuf::descriptor::*;
 use protobuf::rt;
-use protobuf::text_format;
-use protobuf::text_format::lexer::float;
 use protobuf::wire_format;
 
 use crate::code_writer::CodeWriter;
@@ -30,6 +28,7 @@ use crate::scope::RootScope;
 use crate::scope::WithScope;
 use crate::serde;
 use crate::syntax::Syntax;
+use protobuf::reflect::ReflectValueRef;
 use protobuf::wire_format::WireType;
 
 mod accessor;
@@ -854,19 +853,7 @@ impl<'a> FieldGen<'a> {
         type_is_copy(self.proto_type)
     }
 
-    fn defaut_value_from_proto_float(&self) -> String {
-        assert!(self.proto_field.field.get_proto().has_default_value());
-
-        let type_name = match self.proto_type {
-            field_descriptor_proto::Type::TYPE_FLOAT => "f32",
-            field_descriptor_proto::Type::TYPE_DOUBLE => "f64",
-            _ => unreachable!(),
-        };
-        let proto_default = self.proto_field.field.get_proto().get_default_value();
-
-        let f = float::parse_protobuf_float(proto_default)
-            .expect(&format!("failed to parse float: {:?}", proto_default));
-
+    fn defaut_value_from_proto_float(f: f64, type_name: &str) -> String {
         if f.is_nan() {
             format!("::std::{}::NAN", type_name)
         } else if f.is_infinite() {
@@ -881,51 +868,30 @@ impl<'a> FieldGen<'a> {
     }
 
     fn singular_or_oneof_default_value_from_proto(&self, elem: &FieldElem) -> Option<String> {
-        if let &FieldElem::Enum(ref e) = elem {
-            Some(format!(
-                "{}",
-                e.default_value_rust_expr(&self.get_file_and_mod())
-            ))
-        } else if self.proto_field.field.get_proto().has_default_value() {
-            let proto_default = self.proto_field.field.get_proto().get_default_value();
-            Some(match self.proto_type {
-                // For numeric types, contains the original text representation of the value
-                field_descriptor_proto::Type::TYPE_DOUBLE
-                | field_descriptor_proto::Type::TYPE_FLOAT => self.defaut_value_from_proto_float(),
-                field_descriptor_proto::Type::TYPE_INT32
-                | field_descriptor_proto::Type::TYPE_SINT32
-                | field_descriptor_proto::Type::TYPE_SFIXED32 => format!("{}i32", proto_default),
-                field_descriptor_proto::Type::TYPE_UINT32
-                | field_descriptor_proto::Type::TYPE_FIXED32 => format!("{}u32", proto_default),
-                field_descriptor_proto::Type::TYPE_INT64
-                | field_descriptor_proto::Type::TYPE_SINT64
-                | field_descriptor_proto::Type::TYPE_SFIXED64 => format!("{}i64", proto_default),
-                field_descriptor_proto::Type::TYPE_UINT64
-                | field_descriptor_proto::Type::TYPE_FIXED64 => format!("{}u64", proto_default),
-
-                // For booleans, "true" or "false"
-                field_descriptor_proto::Type::TYPE_BOOL => format!("{}", proto_default),
-                // For strings, contains the default text contents (not escaped in any way)
-                field_descriptor_proto::Type::TYPE_STRING => rust::quote_escape_str(proto_default),
-                // For bytes, contains the C escaped value.  All bytes >= 128 are escaped
-                field_descriptor_proto::Type::TYPE_BYTES => rust::quote_escape_bytes(
-                    &text_format::lexer::StrLit {
-                        escaped: proto_default.to_owned(),
-                    }
-                    .decode_bytes()
-                    .expect("decoded bytes default value"),
-                ),
-                // TODO: resolve outer message prefix
-                field_descriptor_proto::Type::TYPE_GROUP
-                | field_descriptor_proto::Type::TYPE_ENUM => unreachable!(),
-                field_descriptor_proto::Type::TYPE_MESSAGE => panic!(
-                    "default value is not implemented for type: {:?}",
-                    self.proto_type
-                ),
-            })
-        } else {
-            None
+        if !self.proto_field.field.get_proto().has_default_value() {
+            return None;
         }
+
+        let default_value = self.proto_field.field.singular_default_value();
+        Some(match default_value {
+            ReflectValueRef::Bool(b) => format!("{}", b),
+            ReflectValueRef::I32(v) => format!("{}i32", v),
+            ReflectValueRef::I64(v) => format!("{}i64", v),
+            ReflectValueRef::U32(v) => format!("{}u32", v),
+            ReflectValueRef::U64(v) => format!("{}u64", v),
+            ReflectValueRef::String(v) => rust::quote_escape_str(v),
+            ReflectValueRef::Bytes(v) => rust::quote_escape_bytes(v),
+            ReflectValueRef::F32(v) => Self::defaut_value_from_proto_float(v as f64, "f32"),
+            ReflectValueRef::F64(v) => Self::defaut_value_from_proto_float(v as f64, "f64"),
+            ReflectValueRef::Enum(_e, _v) => {
+                if let &FieldElem::Enum(ref e) = elem {
+                    format!("{}", e.default_value_rust_expr(&self.get_file_and_mod()))
+                } else {
+                    unreachable!()
+                }
+            }
+            t => panic!("default value is not implemented for type: {:?}", t),
+        })
     }
 
     fn default_value_from_proto(&self) -> Option<String> {

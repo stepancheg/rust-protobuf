@@ -2,7 +2,55 @@ use crate::descriptor::field_descriptor_proto;
 use crate::descriptor::FieldDescriptorProto;
 use crate::json::json_name;
 use crate::reflect::file::building::FileDescriptorBuilding;
-use crate::reflect::{ReflectValueBox, RuntimeTypeBox};
+use crate::reflect::EnumDescriptor;
+use crate::reflect::EnumValueDescriptor;
+use crate::reflect::FieldDescriptor;
+use crate::reflect::MessageDescriptor;
+use crate::reflect::ReflectValueBox;
+use crate::reflect::ReflectValueRef;
+use crate::reflect::RuntimeFieldType;
+use crate::reflect::RuntimeTypeBox;
+
+#[derive(Debug)]
+pub(crate) enum ForwardRuntimeTypeBox {
+    RuntimeTypeBox(RuntimeTypeBox),
+    CurrentFileEnum(usize),
+    CurrentFileMessage(usize),
+}
+
+impl ForwardRuntimeTypeBox {
+    fn resolve(&self, field: &FieldDescriptor) -> RuntimeTypeBox {
+        match self {
+            ForwardRuntimeTypeBox::RuntimeTypeBox(t) => t.clone(),
+            ForwardRuntimeTypeBox::CurrentFileMessage(m) => RuntimeTypeBox::Message(
+                MessageDescriptor::new(field.message_descriptor.file_descriptor().clone(), *m),
+            ),
+            ForwardRuntimeTypeBox::CurrentFileEnum(m) => RuntimeTypeBox::Enum(EnumDescriptor::new(
+                field.message_descriptor.file_descriptor().clone(),
+                *m,
+            )),
+        }
+    }
+}
+
+#[derive(Debug)]
+pub(crate) enum ForwardRuntimeFieldType {
+    Singular(ForwardRuntimeTypeBox),
+    Repeated(ForwardRuntimeTypeBox),
+    Map(ForwardRuntimeTypeBox, ForwardRuntimeTypeBox),
+}
+
+impl ForwardRuntimeFieldType {
+    pub fn resolve(&self, field: &FieldDescriptor) -> RuntimeFieldType {
+        match self {
+            ForwardRuntimeFieldType::Singular(t) => RuntimeFieldType::Singular(t.resolve(field)),
+            ForwardRuntimeFieldType::Repeated(t) => RuntimeFieldType::Repeated(t.resolve(field)),
+            ForwardRuntimeFieldType::Map(k, v) => {
+                RuntimeFieldType::Map(k.resolve(field), v.resolve(field))
+            }
+        }
+    }
+}
 
 #[derive(Debug)]
 pub(crate) enum FieldDefaultValue {
@@ -13,6 +61,7 @@ pub(crate) enum FieldDefaultValue {
 #[derive(Debug)]
 pub(crate) struct FieldIndex {
     pub(crate) json_name: String,
+    pub(crate) field_type: ForwardRuntimeFieldType,
     pub(crate) default_value: Option<FieldDefaultValue>,
 }
 
@@ -37,7 +86,7 @@ impl FieldIndex {
         FieldDefaultValue::Enum(n)
     }
 
-    fn default_value(
+    fn parse_default_value(
         field: &FieldDescriptorProto,
         building: &FileDescriptorBuilding,
     ) -> FieldDefaultValue {
@@ -56,7 +105,7 @@ impl FieldIndex {
 
     pub fn index(field: &FieldDescriptorProto, building: &FileDescriptorBuilding) -> FieldIndex {
         let default_value = if field.has_default_value() {
-            Some(Self::default_value(field, building))
+            Some(Self::parse_default_value(field, building))
         } else {
             None
         };
@@ -70,6 +119,21 @@ impl FieldIndex {
         FieldIndex {
             default_value,
             json_name,
+            field_type: building.resolve_field_type(field),
+        }
+    }
+
+    pub(crate) fn default_value<'a>(&'a self, field: &FieldDescriptor) -> ReflectValueRef<'a> {
+        match &self.default_value {
+            Some(FieldDefaultValue::ReflectValueBox(v)) => v.as_value_ref(),
+            Some(FieldDefaultValue::Enum(v)) => match field.singular_runtime_type() {
+                RuntimeTypeBox::Enum(e) => {
+                    let ev = EnumValueDescriptor::new(e.clone(), *v);
+                    ReflectValueRef::from(ev)
+                }
+                t => panic!("wrong type {:?} for default value enum", t),
+            },
+            None => field.singular_runtime_type().default_value_ref(),
         }
     }
 }

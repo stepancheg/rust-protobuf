@@ -4,11 +4,10 @@ use crate::reflect::file::dynamic::DynamicFileDescriptor;
 use crate::reflect::file::fds::FdsBuilder;
 use crate::reflect::file::index::FileIndex;
 use crate::reflect::file::index::FileIndexMessageEntry;
-use crate::reflect::find_message_or_enum::find_message_or_enum;
-use crate::reflect::find_message_or_enum::MessageOrEnum;
+use crate::reflect::name::protobuf_name_starts_with_package;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::{EnumDescriptor, GeneratedFileDescriptor};
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 use std::hash::Hasher;
 use std::sync::Arc;
@@ -105,9 +104,47 @@ impl FileDescriptor {
     /// Find message by name relative to the package.
     ///
     /// Only search in the current file, not in any dependencies.
-    pub fn get_message_by_package_relative_name(&self, name: &str) -> MessageDescriptor {
-        let index = self.get_index().message_by_name_to_package[name];
-        MessageDescriptor::new(self.clone(), index)
+    pub fn get_message_by_package_relative_name(&self, name: &str) -> Option<MessageDescriptor> {
+        self.get_index()
+            .message_by_name_to_package
+            .get(name)
+            .map(|&index| MessageDescriptor::new(self.clone(), index))
+    }
+
+    /// Find message by name relative to the package.
+    ///
+    /// Only search in the current file, not in any dependencies.
+    pub fn get_enum_by_package_relative_name(&self, name: &str) -> Option<EnumDescriptor> {
+        self.get_index()
+            .enums_by_name_to_package
+            .get(name)
+            .map(|&index| EnumDescriptor::new(self.clone(), index))
+    }
+
+    /// Find message by fully-qualified name.
+    ///
+    /// Only search in the current file, not in any dependencies.
+    pub fn get_message_by_full_name(&self, name: &str) -> Option<MessageDescriptor> {
+        if let Some(name_to_package) =
+            protobuf_name_starts_with_package(name, self.get_proto().get_package())
+        {
+            self.get_message_by_package_relative_name(name_to_package)
+        } else {
+            None
+        }
+    }
+
+    /// Find enum by name fully-qualified name.
+    ///
+    /// Only search in the current file, not in any dependencies.
+    pub fn get_enum_by_full_name(&self, name: &str) -> Option<EnumDescriptor> {
+        if let Some(name_to_package) =
+            protobuf_name_starts_with_package(name, self.get_proto().get_package())
+        {
+            self.get_enum_by_package_relative_name(name_to_package)
+        } else {
+            None
+        }
     }
 
     /// This function is called from generated code, it is not stable, and should not be called.
@@ -124,6 +161,17 @@ impl FileDescriptor {
         proto: FileDescriptorProto,
         dependencies: Vec<FileDescriptor>,
     ) -> FileDescriptor {
+        // remove undeclared dependencies
+        let dependencies: HashMap<_, _> = dependencies
+            .iter()
+            .map(|d| (d.get_proto().get_name(), d))
+            .collect();
+        let dependencies: Vec<_> = proto
+            .dependency
+            .iter()
+            .map(|d| dependencies[d.as_str()].clone())
+            .collect();
+
         FileDescriptor {
             imp: FileDescriptorImpl::Dynamic(Arc::new(DynamicFileDescriptor::new(
                 proto,
@@ -152,7 +200,16 @@ impl FileDescriptor {
         }
     }
 
-    fn get_all_files(&self) -> Vec<&FileDescriptor> {
+    /// Subset of dependencies which are public
+    pub fn public_deps(&self) -> Vec<FileDescriptor> {
+        self.get_proto()
+            .public_dependency
+            .iter()
+            .map(|&i| self.get_deps()[i as usize].clone())
+            .collect()
+    }
+
+    fn _get_all_files(&self) -> Vec<&FileDescriptor> {
         let mut r = Vec::new();
         let mut visited = HashSet::new();
 
@@ -168,34 +225,6 @@ impl FileDescriptor {
         }
 
         r
-    }
-
-    pub(crate) fn find_message_or_enum_proto_in_all_files<'a>(
-        &'a self,
-        full_name: &str,
-    ) -> Option<(String, MessageOrEnum<'a>)> {
-        // sanity check
-        assert!(!full_name.starts_with("."));
-        for file in self.get_all_files() {
-            // sanity check
-            let package = file.get_proto().get_package();
-            assert!(!package.starts_with("."));
-
-            let name_to_package = if package.is_empty() {
-                full_name
-            } else {
-                let after_package = &full_name[package.len()..];
-                if !after_package.starts_with(".") {
-                    continue;
-                }
-                &after_package[1..]
-            };
-
-            if let Some(me) = find_message_or_enum(file.get_proto(), name_to_package) {
-                return Some(me);
-            }
-        }
-        None
     }
 }
 

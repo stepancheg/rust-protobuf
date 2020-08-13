@@ -163,11 +163,8 @@ impl FieldDescriptor {
             MessageDescriptorImplRef::Generated(g) => {
                 FieldDescriptorImplRef::Generated(&g.non_map().fields[self.index].accessor)
             }
-            MessageDescriptorImplRef::Dynamic(message) => {
-                FieldDescriptorImplRef::Dynamic(DynamicFieldDescriptorRef {
-                    field: self,
-                    message,
-                })
+            MessageDescriptorImplRef::Dynamic(_) => {
+                FieldDescriptorImplRef::Dynamic(DynamicFieldDescriptorRef { field: self })
             }
         }
     }
@@ -266,7 +263,7 @@ impl FieldDescriptor {
     ///
     /// If field is not singular.
     pub fn singular_default_value(&self) -> ReflectValueRef {
-        unimplemented!()
+        self.get_index().default_value(self)
     }
 
     /// Get singular field value.
@@ -322,10 +319,7 @@ impl FieldDescriptor {
 
     /// Dynamic representation of field type.
     pub fn runtime_field_type(&self) -> RuntimeFieldType {
-        match self.get_impl() {
-            FieldDescriptorImplRef::Generated(g) => g.runtime_field_type(),
-            FieldDescriptorImplRef::Dynamic(d) => d.runtime_field_type(),
-        }
+        self.get_index().field_type.resolve(self)
     }
 
     /// Get field of any type.

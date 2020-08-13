@@ -86,6 +86,7 @@ impl RuntimeTypeBox {
 
     pub(crate) fn parse_proto_default_value(&self, value: &str) -> ReflectValueBox {
         match self {
+            // For booleans, "true" or "false"
             RuntimeTypeBox::Bool => ReflectValueBox::Bool(if value == "true" {
                 true
             } else if value == "false" {
@@ -101,7 +102,9 @@ impl RuntimeTypeBox {
                 ReflectValueBox::F32(parse_protobuf_float(value).unwrap() as f32)
             }
             RuntimeTypeBox::F64 => ReflectValueBox::F64(parse_protobuf_float(value).unwrap()),
+            // For strings, contains the default text contents (not escaped in any way)
             RuntimeTypeBox::String => ReflectValueBox::String(value.to_owned()),
+            // For bytes, contains the C escaped value.  All bytes >= 128 are escaped
             RuntimeTypeBox::VecU8 => ReflectValueBox::Bytes(
                 text_format::lexer::StrLit {
                     escaped: value.to_owned(),

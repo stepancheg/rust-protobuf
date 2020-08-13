@@ -1,7 +1,6 @@
 use crate::message_dyn::MessageDyn;
 use crate::reflect::acc::v2::AccessorV2;
 use crate::reflect::ReflectFieldRef;
-use crate::reflect::RuntimeFieldType;
 
 pub(crate) mod v2;
 
@@ -29,21 +28,6 @@ impl GeneratedFieldAccessor {
             }
             GeneratedFieldAccessor::V2(AccessorV2::Map(ref a)) => {
                 ReflectFieldRef::Map(a.accessor.get_reflect(m))
-            }
-        }
-    }
-
-    pub(crate) fn runtime_field_type(&self) -> RuntimeFieldType {
-        match self {
-            GeneratedFieldAccessor::V2(AccessorV2::Singular(ref a)) => {
-                RuntimeFieldType::Singular(a.accessor.element_type())
-            }
-            GeneratedFieldAccessor::V2(AccessorV2::Repeated(ref a)) => {
-                RuntimeFieldType::Repeated(a.accessor.element_type())
-            }
-            GeneratedFieldAccessor::V2(AccessorV2::Map(ref a)) => {
-                let (k, v) = a.accessor.element_type();
-                RuntimeFieldType::Map(k, v)
             }
         }
     }

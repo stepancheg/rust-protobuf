@@ -78,7 +78,8 @@ impl<'a> MessageGen<'a> {
         info: Option<&'a SourceCodeInfo>,
     ) -> MessageGen<'a> {
         let message_descriptor = file_descriptor
-            .get_message_by_package_relative_name(message.protobuf_name_to_package().get());
+            .get_message_by_package_relative_name(message.protobuf_name_to_package().get())
+            .unwrap();
 
         let mut customize = customize.clone();
         customize.update_with(&customize_from_rustproto_for_message(
