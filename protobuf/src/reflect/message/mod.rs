@@ -238,7 +238,7 @@ impl MessageDescriptor {
     }
 
     /// Message field descriptors.
-    pub fn fields<'a>(&'a self) -> impl Iterator<Item = FieldDescriptor> + 'a {
+    pub fn fields<'a>(&'a self) -> impl ExactSizeIterator<Item = FieldDescriptor> + 'a {
         (0..self.get_index().fields.len()).map(move |index| FieldDescriptor {
             message_descriptor: self.clone(),
             index,
@@ -246,16 +246,15 @@ impl MessageDescriptor {
     }
 
     /// Nested oneofs
-    pub fn oneofs(&self) -> Vec<OneofDescriptor> {
+    pub fn oneofs<'a>(&'a self) -> impl ExactSizeIterator<Item = OneofDescriptor> + 'a {
         self.get_proto()
             .oneof_decl
             .iter()
             .enumerate()
-            .map(|(index, _)| OneofDescriptor {
+            .map(move |(index, _)| OneofDescriptor {
                 message_descriptor: self.clone(),
                 index,
             })
-            .collect()
     }
 
     pub(crate) fn get_index(&self) -> &MessageIndex {

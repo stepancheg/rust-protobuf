@@ -418,7 +418,7 @@ impl<'a> MessageWithScope<'a> {
         if !self.to_scope().get_enums().is_empty() {
             return true;
         }
-        if !self.message.oneofs().is_empty() {
+        if self.message.oneofs().len() != 0 {
             return true;
         }
         false
