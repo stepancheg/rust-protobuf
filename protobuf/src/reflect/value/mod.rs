@@ -62,7 +62,7 @@ pub trait ProtobufValueSized: ProtobufValue + Sized + Clone + Default + fmt::Deb
     /// # Panics
     ///
     /// If reflective value is of incompatible type.
-    fn from_value_box(value_box: ReflectValueBox) -> Self {
+    fn from_value_box(value_box: ReflectValueBox) -> Result<Self, ReflectValueBox> {
         Self::RuntimeType::from_value_box(value_box)
     }
 

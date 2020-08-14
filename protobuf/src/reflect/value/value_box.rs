@@ -1,9 +1,6 @@
 use crate::reflect::message::message_ref::MessageRef;
-use crate::reflect::transmute_eq::transmute_eq;
 use crate::reflect::value::value_ref::ReflectValueMut;
 use crate::reflect::value::value_ref::ReflectValueRef;
-use crate::reflect::value::StringOrChars;
-use crate::reflect::value::VecU8OrBytes;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::EnumValueDescriptor;
 use crate::reflect::ProtobufValueSized;
@@ -153,28 +150,8 @@ impl ReflectValueBox {
     /// Downcast to real typed value.
     ///
     /// For `enum` `V` can be either `V: ProtobufEnum` or `V: ProtobufEnumOrUnknown<E>`.
-    // TODO: this horrible magic is no longer needed: call ProtobufValueSized::downcast from here
     pub fn downcast<V: ProtobufValueSized>(self) -> Result<V, Self> {
-        match self {
-            ReflectValueBox::U32(v) => transmute_eq(v).map_err(ReflectValueBox::U32),
-            ReflectValueBox::U64(v) => transmute_eq(v).map_err(ReflectValueBox::U64),
-            ReflectValueBox::I32(v) => transmute_eq(v).map_err(ReflectValueBox::I32),
-            ReflectValueBox::I64(v) => transmute_eq(v).map_err(ReflectValueBox::I64),
-            ReflectValueBox::F32(v) => transmute_eq(v).map_err(ReflectValueBox::F32),
-            ReflectValueBox::F64(v) => transmute_eq(v).map_err(ReflectValueBox::F64),
-            ReflectValueBox::Bool(v) => transmute_eq(v).map_err(ReflectValueBox::Bool),
-            ReflectValueBox::String(v) => transmute_eq::<String, _>(v)
-                .or_else(|v: String| transmute_eq::<StringOrChars, _>(v.into()))
-                .map_err(|v: StringOrChars| ReflectValueBox::String(v.into())),
-            ReflectValueBox::Bytes(v) => transmute_eq::<Vec<u8>, _>(v)
-                .or_else(|v: Vec<u8>| transmute_eq::<VecU8OrBytes, _>(v.into()))
-                .map_err(|v: VecU8OrBytes| ReflectValueBox::Bytes(v.into())),
-            ReflectValueBox::Enum(d, e) => d.cast(e).ok_or(ReflectValueBox::Enum(d, e)),
-            ReflectValueBox::Message(m) => m
-                .downcast_box::<V>()
-                .map(|m| *m)
-                .map_err(ReflectValueBox::Message),
-        }
+        V::from_value_box(self)
     }
 }
 

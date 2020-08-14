@@ -244,7 +244,7 @@ impl EnumDescriptor {
     /// # Panics
     ///
     /// This operation panics of `E` is `ProtobufEnum` and `value` is unknown.
-    pub(crate) fn cast<E: ProtobufValue>(&self, value: i32) -> Option<E> {
+    pub(crate) fn _cast<E: ProtobufValue>(&self, value: i32) -> Option<E> {
         if let Some(e) = self.cast_to_protobuf_enum(value) {
             return Some(e);
         }

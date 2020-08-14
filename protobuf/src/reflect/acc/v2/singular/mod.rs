@@ -453,7 +453,7 @@ where
     O: OptionLike<V> + Sync + Send + 'static,
 {
     fn set_singular_field(&self, m: &mut M, value: ReflectValueBox) {
-        (self.mut_field)(m).set_value(V::from_value_box(value));
+        (self.mut_field)(m).set_value(V::from_value_box(value).expect("wrong type"));
     }
 }
 

@@ -11,7 +11,6 @@ pub(crate) mod message;
 mod oneof;
 mod repeated;
 mod runtime_type_box;
-mod transmute_eq;
 mod type_dynamic;
 pub(crate) mod value;
 

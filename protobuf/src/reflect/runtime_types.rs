@@ -43,7 +43,7 @@ pub trait RuntimeType: fmt::Debug + Send + Sync + 'static {
     /// # Panics
     ///
     /// If reflective value is of incompatible type.
-    fn from_value_box(value_box: ReflectValueBox) -> Self::Value;
+    fn from_value_box(value_box: ReflectValueBox) -> Result<Self::Value, ReflectValueBox>;
 
     /// Convert a value into a refletive box value.
     fn into_value_box(value: Self::Value) -> ReflectValueBox;
@@ -68,7 +68,7 @@ pub trait RuntimeType: fmt::Debug + Send + Sync + 'static {
 
     /// Write the value.
     fn set_from_value_box(target: &mut Self::Value, value_box: ReflectValueBox) {
-        *target = Self::from_value_box(value_box);
+        *target = Self::from_value_box(value_box).expect("wrong type");
     }
 }
 
@@ -143,10 +143,10 @@ impl RuntimeType for RuntimeTypeF32 {
         ReflectValueRef::F32(0.0)
     }
 
-    fn from_value_box(value_box: ReflectValueBox) -> f32 {
+    fn from_value_box(value_box: ReflectValueBox) -> Result<f32, ReflectValueBox> {
         match value_box {
-            ReflectValueBox::F32(v) => v,
-            _ => panic!("wrong type"),
+            ReflectValueBox::F32(v) => Ok(v),
+            b => Err(b),
         }
     }
     fn into_value_box(value: f32) -> ReflectValueBox {
@@ -183,10 +183,10 @@ impl RuntimeType for RuntimeTypeF64 {
         RuntimeTypeBox::F64
     }
 
-    fn from_value_box(value_box: ReflectValueBox) -> f64 {
+    fn from_value_box(value_box: ReflectValueBox) -> Result<f64, ReflectValueBox> {
         match value_box {
-            ReflectValueBox::F64(v) => v,
-            _ => panic!("wrong type"),
+            ReflectValueBox::F64(v) => Ok(v),
+            b => Err(b),
         }
     }
 
@@ -225,10 +225,10 @@ impl RuntimeType for RuntimeTypeI32 {
         RuntimeTypeBox::I32
     }
 
-    fn from_value_box(value_box: ReflectValueBox) -> i32 {
+    fn from_value_box(value_box: ReflectValueBox) -> Result<i32, ReflectValueBox> {
         match value_box {
-            ReflectValueBox::I32(v) => v,
-            _ => panic!("wrong type"),
+            ReflectValueBox::I32(v) => Ok(v),
+            b => Err(b),
         }
     }
 
@@ -267,10 +267,10 @@ impl RuntimeType for RuntimeTypeI64 {
         RuntimeTypeBox::I64
     }
 
-    fn from_value_box(value_box: ReflectValueBox) -> i64 {
+    fn from_value_box(value_box: ReflectValueBox) -> Result<i64, ReflectValueBox> {
         match value_box {
-            ReflectValueBox::I64(v) => v,
-            _ => panic!("wrong type"),
+            ReflectValueBox::I64(v) => Ok(v),
+            b => Err(b),
         }
     }
 
@@ -309,10 +309,10 @@ impl RuntimeType for RuntimeTypeU32 {
         ReflectValueRef::U32(0)
     }
 
-    fn from_value_box(value_box: ReflectValueBox) -> u32 {
+    fn from_value_box(value_box: ReflectValueBox) -> Result<u32, ReflectValueBox> {
         match value_box {
-            ReflectValueBox::U32(v) => v,
-            _ => panic!("wrong type"),
+            ReflectValueBox::U32(v) => Ok(v),
+            b => Err(b),
         }
     }
 
@@ -351,10 +351,10 @@ impl RuntimeType for RuntimeTypeU64 {
         RuntimeTypeBox::U64
     }
 
-    fn from_value_box(value_box: ReflectValueBox) -> u64 {
+    fn from_value_box(value_box: ReflectValueBox) -> Result<u64, ReflectValueBox> {
         match value_box {
-            ReflectValueBox::U64(v) => v,
-            _ => panic!("wrong type"),
+            ReflectValueBox::U64(v) => Ok(v),
+            b => Err(b),
         }
     }
 
@@ -393,10 +393,10 @@ impl RuntimeType for RuntimeTypeBool {
         RuntimeTypeBox::Bool
     }
 
-    fn from_value_box(value_box: ReflectValueBox) -> bool {
+    fn from_value_box(value_box: ReflectValueBox) -> Result<bool, ReflectValueBox> {
         match value_box {
-            ReflectValueBox::Bool(v) => v,
-            _ => panic!("wrong type"),
+            ReflectValueBox::Bool(v) => Ok(v),
+            b => Err(b),
         }
     }
 
@@ -435,10 +435,10 @@ impl RuntimeType for RuntimeTypeString {
         ReflectValueRef::String("")
     }
 
-    fn from_value_box(value_box: ReflectValueBox) -> String {
+    fn from_value_box(value_box: ReflectValueBox) -> Result<String, ReflectValueBox> {
         match value_box {
-            ReflectValueBox::String(v) => v,
-            _ => panic!("wrong type"),
+            ReflectValueBox::String(v) => Ok(v),
+            b => Err(b),
         }
     }
 
@@ -481,10 +481,10 @@ impl RuntimeType for RuntimeTypeVecU8 {
         ReflectValueRef::Bytes(b"")
     }
 
-    fn from_value_box(value_box: ReflectValueBox) -> Vec<u8> {
+    fn from_value_box(value_box: ReflectValueBox) -> Result<Vec<u8>, ReflectValueBox> {
         match value_box {
-            ReflectValueBox::Bytes(v) => v,
-            _ => panic!("wrong type"),
+            ReflectValueBox::Bytes(v) => Ok(v),
+            b => Err(b),
         }
     }
 
@@ -630,11 +630,13 @@ where
         )
     }
 
-    fn from_value_box(value_box: ReflectValueBox) -> E {
+    fn from_value_box(value_box: ReflectValueBox) -> Result<E, ReflectValueBox> {
         match value_box {
             // TODO: panic
-            ReflectValueBox::Enum(_d, v) => E::from_i32(v).expect("unknown enum value"),
-            _ => panic!("wrong type"),
+            ReflectValueBox::Enum(d, v) if d == E::enum_descriptor_static() => {
+                Ok(E::from_i32(v).expect("unknown enum value"))
+            }
+            b => Err(b),
         }
     }
 
@@ -679,10 +681,14 @@ where
         )
     }
 
-    fn from_value_box(value_box: ReflectValueBox) -> ProtobufEnumOrUnknown<E> {
+    fn from_value_box(
+        value_box: ReflectValueBox,
+    ) -> Result<ProtobufEnumOrUnknown<E>, ReflectValueBox> {
         match value_box {
-            ReflectValueBox::Enum(_d, v) => ProtobufEnumOrUnknown::from_i32(v),
-            _ => panic!("wrong type"),
+            ReflectValueBox::Enum(d, v) if d == E::enum_descriptor_static() => {
+                Ok(ProtobufEnumOrUnknown::from_i32(v))
+            }
+            b => Err(b),
         }
     }
 
@@ -724,10 +730,13 @@ where
         ReflectValueRef::Message(MessageRef::new(M::default_instance()))
     }
 
-    fn from_value_box(value_box: ReflectValueBox) -> M {
+    fn from_value_box(value_box: ReflectValueBox) -> Result<M, ReflectValueBox> {
         match value_box {
-            ReflectValueBox::Message(v) => *v.downcast_box().expect("wrong message type"),
-            _ => panic!("wrong type"),
+            ReflectValueBox::Message(v) => v
+                .downcast_box()
+                .map(|v| *v)
+                .map_err(ReflectValueBox::Message),
+            b => Err(b),
         }
     }
 
