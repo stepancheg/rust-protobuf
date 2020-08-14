@@ -202,20 +202,4 @@ mod test {
             ReflectValueBox::Bool(false).downcast::<String>()
         );
     }
-
-    #[test]
-    fn reflect_value_box_downcast_chars() {
-        assert_eq!(
-            Ok(StringOrChars::from("aa".to_owned())),
-            ReflectValueBox::String("aa".to_owned()).downcast::<StringOrChars>()
-        );
-        assert_eq!(
-            Err(ReflectValueBox::String("aa".to_owned())),
-            ReflectValueBox::String("aa".to_owned()).downcast::<u32>()
-        );
-        assert_eq!(
-            Err(ReflectValueBox::Bool(false)),
-            ReflectValueBox::Bool(false).downcast::<StringOrChars>()
-        );
-    }
 }
