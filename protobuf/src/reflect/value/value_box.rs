@@ -6,8 +6,6 @@ use crate::reflect::EnumValueDescriptor;
 use crate::reflect::ProtobufValueSized;
 use crate::reflect::RuntimeTypeBox;
 use crate::MessageDyn;
-use std::hash::Hash;
-use std::hash::Hasher;
 
 /// Owner value of any elementary type
 #[derive(Debug, Clone)]
@@ -164,13 +162,6 @@ impl<'a> PartialEq for ReflectValueBox {
 impl<'a> PartialEq<ReflectValueBox> for ReflectValueRef<'a> {
     fn eq(&self, other: &ReflectValueBox) -> bool {
         *self == other.as_value_ref()
-    }
-}
-
-// Panics if contained type is not hashable
-impl Hash for ReflectValueBox {
-    fn hash<H: Hasher>(&self, state: &mut H) {
-        Hash::hash(&self.as_value_ref(), state)
     }
 }
 
