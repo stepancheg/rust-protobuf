@@ -13,7 +13,6 @@ use crate::reflect::MessageRef;
 use crate::reflect::ProtobufValueSized;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
-use crate::reflect::RuntimeTypeBox;
 use crate::MessageField;
 
 pub(crate) mod oneof;
@@ -60,7 +59,6 @@ pub(crate) trait SingularFieldAccessor: Send + Sync + 'static {
     fn get_field_or_default<'a>(&self, m: &'a dyn MessageDyn) -> ReflectValueRef<'a>;
     fn mut_field_or_default<'a>(&self, m: &'a mut dyn MessageDyn) -> ReflectValueMut<'a>;
     fn set_field(&self, m: &mut dyn MessageDyn, value: ReflectValueBox);
-    fn element_type(&self) -> RuntimeTypeBox;
 }
 
 pub(crate) struct SingularFieldAccessorHolder {
@@ -161,10 +159,6 @@ where
     fn set_field(&self, m: &mut dyn MessageDyn, value: ReflectValueBox) {
         let m = m.downcast_mut().unwrap();
         self.set_impl.set_singular_field(m, value)
-    }
-
-    fn element_type(&self) -> RuntimeTypeBox {
-        V::runtime_type_box()
     }
 }
 
