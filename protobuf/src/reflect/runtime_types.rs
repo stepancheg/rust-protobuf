@@ -528,10 +528,10 @@ impl RuntimeType for RuntimeTypeCarllercheBytes {
         RuntimeTypeBox::VecU8
     }
 
-    fn from_value_box(value_box: ReflectValueBox) -> Bytes {
+    fn from_value_box(value_box: ReflectValueBox) -> Result<Bytes, ReflectValueBox> {
         match value_box {
-            ReflectValueBox::Bytes(v) => v.into(),
-            _ => panic!("wrong type"),
+            ReflectValueBox::Bytes(v) => Ok(v.into()),
+            b => Err(b),
         }
     }
 
@@ -577,10 +577,10 @@ impl RuntimeType for RuntimeTypeCarllercheChars {
         RuntimeTypeBox::String
     }
 
-    fn from_value_box(value_box: ReflectValueBox) -> Chars {
+    fn from_value_box(value_box: ReflectValueBox) -> Result<Chars, ReflectValueBox> {
         match value_box {
-            ReflectValueBox::String(v) => v.into(),
-            _ => panic!("wrong type"),
+            ReflectValueBox::String(v) => Ok(v.into()),
+            b => Err(b),
         }
     }
 
