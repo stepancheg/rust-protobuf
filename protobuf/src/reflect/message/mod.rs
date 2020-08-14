@@ -239,7 +239,7 @@ impl MessageDescriptor {
 
     /// Message field descriptors.
     pub fn fields<'a>(&'a self) -> impl Iterator<Item = FieldDescriptor> + 'a {
-        (0..self.get_indices().fields.len()).map(move |index| FieldDescriptor {
+        (0..self.get_index().fields.len()).map(move |index| FieldDescriptor {
             message_descriptor: self.clone(),
             index,
         })
@@ -258,10 +258,17 @@ impl MessageDescriptor {
             .collect()
     }
 
-    pub(crate) fn get_indices(&self) -> &MessageIndex {
+    pub(crate) fn get_index(&self) -> &MessageIndex {
         match self.get_impl() {
             MessageDescriptorImplRef::Generated(g) => &g.non_map().index,
             MessageDescriptorImplRef::Dynamic(d) => &d.indices,
+        }
+    }
+
+    pub(crate) fn get_generated_index(&self) -> &'static MessageIndex {
+        match self.get_impl() {
+            MessageDescriptorImplRef::Generated(g) => &g.non_map().index,
+            MessageDescriptorImplRef::Dynamic(_) => panic!("dynamic message: {}", self),
         }
     }
 
@@ -270,7 +277,7 @@ impl MessageDescriptor {
     /// Note: protobuf field name might be different for Rust field name.
     // TODO: return value, not pointer, pointer is not compatible with dynamic message
     pub fn get_field_by_name<'a>(&'a self, name: &str) -> Option<FieldDescriptor> {
-        let &index = self.get_indices().index_by_name.get(name)?;
+        let &index = self.get_index().index_by_name.get(name)?;
         Some(FieldDescriptor {
             message_descriptor: self.clone(),
             index,
@@ -279,7 +286,7 @@ impl MessageDescriptor {
 
     /// Find message field by field name or field JSON name
     pub fn get_field_by_name_or_json_name<'a>(&'a self, name: &str) -> Option<FieldDescriptor> {
-        let &index = self.get_indices().index_by_name_or_json_name.get(name)?;
+        let &index = self.get_index().index_by_name_or_json_name.get(name)?;
         Some(FieldDescriptor {
             message_descriptor: self.clone(),
             index,
@@ -288,7 +295,7 @@ impl MessageDescriptor {
 
     /// Find message field by field name
     pub fn get_field_by_number(&self, number: u32) -> Option<FieldDescriptor> {
-        let &index = self.get_indices().index_by_number.get(&number)?;
+        let &index = self.get_index().index_by_number.get(&number)?;
         Some(FieldDescriptor {
             message_descriptor: self.clone(),
             index,

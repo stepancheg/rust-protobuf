@@ -122,7 +122,7 @@ impl FieldDescriptor {
     }
 
     fn get_index(&self) -> &FieldIndex {
-        &self.message_descriptor.get_indices().fields[self.index]
+        &self.message_descriptor.get_index().fields[self.index]
     }
 
     /// JSON field name.
@@ -274,10 +274,18 @@ impl FieldDescriptor {
     ///
     /// If this field belongs to a different message type or fields is not singular.
     pub fn get_singular_field_or_default<'a>(&self, m: &'a dyn MessageDyn) -> ReflectValueRef<'a> {
-        match self.singular() {
-            SingularFieldAccessorRef::Generated(g) => g.accessor.get_field_or_default(m),
-            SingularFieldAccessorRef::Dynamic(..) => {
-                DynamicMessage::downcast_ref(m).get_singular_field_or_default(self)
+        match self.get_singular(m) {
+            Some(m) => m,
+            None => {
+                let message_index = match self.singular() {
+                    SingularFieldAccessorRef::Generated(..) => {
+                        self.message_descriptor.get_generated_index()
+                    }
+                    SingularFieldAccessorRef::Dynamic(..) => {
+                        DynamicMessage::downcast_ref(m).descriptor.get_index()
+                    }
+                };
+                message_index.fields[self.index].default_value(self)
             }
         }
     }
@@ -331,6 +339,13 @@ impl FieldDescriptor {
         match self.get_impl() {
             FieldDescriptorImplRef::Generated(g) => g.get_reflect(m),
             FieldDescriptorImplRef::Dynamic(d) => d.get_reflect(m),
+        }
+    }
+
+    fn get_singular<'a>(&self, m: &'a dyn MessageDyn) -> Option<ReflectValueRef<'a>> {
+        match self.get_reflect(m) {
+            ReflectFieldRef::Optional(o) => o,
+            _ => panic!("not a singular field"),
         }
     }
 

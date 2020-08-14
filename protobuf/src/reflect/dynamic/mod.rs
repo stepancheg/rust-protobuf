@@ -12,7 +12,6 @@ use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectFieldRef;
 use crate::reflect::ReflectMapMut;
 use crate::reflect::ReflectRepeatedMut;
-use crate::reflect::ReflectValueRef;
 use crate::reflect::RuntimeFieldType;
 use crate::Clear;
 use crate::CodedInputStream;
@@ -62,7 +61,7 @@ impl DynamicFieldValue {
 
 #[derive(Debug, Clone)]
 pub(crate) struct DynamicMessage {
-    descriptor: MessageDescriptor,
+    pub(crate) descriptor: MessageDescriptor,
     fields: Box<[DynamicFieldValue]>,
     unknown_fields: UnknownFields,
     cached_size: CachedSize,
@@ -94,23 +93,6 @@ impl DynamicMessage {
             ReflectFieldRef::default_for_field(field)
         } else {
             self.fields[field.index].as_ref()
-        }
-    }
-
-    fn singular_field_default_value<'a>(&'a self, field: &FieldDescriptor) -> ReflectValueRef<'a> {
-        self.descriptor.get_indices().fields[field.index].default_value(field)
-    }
-
-    pub(crate) fn get_singular_field_or_default<'a>(
-        &'a self,
-        field: &FieldDescriptor,
-    ) -> ReflectValueRef<'a> {
-        assert_eq!(field.message_descriptor, self.descriptor);
-        assert!(field.is_singular());
-        if self.fields.is_empty() {
-            self.singular_field_default_value(field)
-        } else {
-            unimplemented!()
         }
     }
 
