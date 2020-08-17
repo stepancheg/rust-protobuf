@@ -36,7 +36,9 @@ pub(crate) mod value_ref;
 pub trait ProtobufValue: Any + 'static + Send + Sync {}
 
 /// Sized version of [`ProtobufValue`].
-pub trait ProtobufValueSized: ProtobufValue + Sized + Clone + Default + fmt::Debug {
+pub trait ProtobufValueSized:
+    Any + Clone + Default + fmt::Debug + Send + Sync + Sized + 'static
+{
     /// Actual implementation of type properties.
     type RuntimeType: RuntimeType<Value = Self>;
 
