@@ -517,15 +517,6 @@ impl<'a> MessageGen<'a> {
     fn write_impl_value(&self, w: &mut CodeWriter) {
         w.impl_for_block(
             &format!(
-                "{}::reflect::ProtobufValue",
-                protobuf_crate_path(&self.customize)
-            ),
-            &format!("{}", self.type_name),
-            |_w| {},
-        );
-        w.write_line("");
-        w.impl_for_block(
-            &format!(
                 "{}::reflect::ProtobufValueSized",
                 protobuf_crate_path(&self.customize)
             ),
