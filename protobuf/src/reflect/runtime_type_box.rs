@@ -90,7 +90,7 @@ impl RuntimeTypeBox {
             RuntimeTypeBox::Bool => ReflectValueBox::Bool(if value == "true" {
                 true
             } else if value == "false" {
-                true
+                false
             } else {
                 panic!("cannot parse bool default value: {}", value)
             }),

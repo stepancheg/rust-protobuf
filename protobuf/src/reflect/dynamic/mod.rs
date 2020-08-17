@@ -8,7 +8,6 @@ use crate::reflect::repeated::ReflectRepeated;
 use crate::reflect::value::value_ref::ReflectValueMut;
 use crate::reflect::FieldDescriptor;
 use crate::reflect::MessageDescriptor;
-use crate::reflect::ProtobufValueSized;
 use crate::reflect::ReflectFieldRef;
 use crate::reflect::ReflectMapMut;
 use crate::reflect::ReflectRepeatedMut;
