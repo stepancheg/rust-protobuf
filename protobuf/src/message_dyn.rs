@@ -13,7 +13,7 @@ use std::fmt;
 use std::io::Write;
 
 /// Dynamic-dispatch version of [`Message`].
-pub trait MessageDyn: fmt::Debug + Send + Sync + 'static {
+pub trait MessageDyn: Any + fmt::Debug + Send + Sync + 'static {
     /// Message descriptor for this message, used for reflection.
     fn descriptor_dyn(&self) -> MessageDescriptor;
 
@@ -238,5 +238,41 @@ impl Clone for Box<dyn MessageDyn> {
 impl PartialEq for Box<dyn MessageDyn> {
     fn eq(&self, other: &Box<dyn MessageDyn>) -> bool {
         MessageDescriptor::reflect_eq_maybe_unrelated(&**self, &**other, &ReflectEqMode::default())
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use crate::descriptor::FileDescriptorProto;
+    use crate::message::Message;
+    use crate::MessageDyn;
+
+    #[test]
+    fn downcast_ref() {
+        let mut m = FileDescriptorProto::new();
+        let mut d = &m as &dyn MessageDyn;
+        let mut c: &FileDescriptorProto = d.downcast_ref().unwrap();
+        assert_eq!(
+            c as *const FileDescriptorProto,
+            &m as *const FileDescriptorProto
+        );
+    }
+
+    #[test]
+    fn downcast_mut() {
+        let mut m = FileDescriptorProto::new();
+        let mut d = &mut m as &mut dyn MessageDyn;
+        let mut c: &mut FileDescriptorProto = d.downcast_mut().unwrap();
+        assert_eq!(
+            c as *const FileDescriptorProto,
+            &m as *const FileDescriptorProto
+        );
+    }
+
+    #[test]
+    fn downcast_box() {
+        let mut m = FileDescriptorProto::new();
+        let mut d: Box<dyn MessageDyn> = Box::new(m);
+        let mut _c: Box<FileDescriptorProto> = d.downcast_box().unwrap();
     }
 }
