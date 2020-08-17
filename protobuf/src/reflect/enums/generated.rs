@@ -6,7 +6,6 @@ use crate::reflect::enums::index::EnumIndex;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
 use crate::reflect::name::compute_full_name;
-use crate::reflect::ProtobufValue;
 use crate::ProtobufEnum;
 use crate::ProtobufEnumOrUnknown;
 use std::any::TypeId;
@@ -37,7 +36,6 @@ impl<E: ProtobufEnum> GetEnumDescriptor for GetEnumDescriptorImpl<E> {
 #[doc(hidden)]
 pub struct GeneratedEnumDescriptorData {
     get_descriptor: &'static dyn GetEnumDescriptor,
-    values: Vec<&'static dyn ProtobufValue>,
     name_in_file: &'static str,
     type_id: TypeId,
     enum_or_unknown_type_id: TypeId,
@@ -50,15 +48,9 @@ impl GeneratedEnumDescriptorData {
     where
         E: ProtobufEnum,
     {
-        let values = E::values()
-            .iter()
-            .map(|e| e as &dyn ProtobufValue)
-            .collect();
-
         GeneratedEnumDescriptorData {
             index_in_file,
             get_descriptor: &GetEnumDescriptorImpl(marker::PhantomData::<E>),
-            values,
             name_in_file,
             type_id: TypeId::of::<E>(),
             enum_or_unknown_type_id: TypeId::of::<ProtobufEnumOrUnknown<E>>(),
@@ -88,7 +80,6 @@ impl GeneratedEnumDescriptor {
         file_descriptor_proto: &'static FileDescriptorProto,
     ) -> GeneratedEnumDescriptor {
         let GeneratedEnumDescriptorData {
-            values,
             name_in_file,
             type_id,
             enum_or_unknown_type_id,
@@ -105,9 +96,6 @@ impl GeneratedEnumDescriptor {
             };
 
         let indices = EnumIndex::<&'static str>::index::<&'static str>(proto);
-
-        let proto_values = &proto.value;
-        assert_eq!(proto_values.len(), values.len());
 
         GeneratedEnumDescriptor {
             full_name: compute_full_name(
