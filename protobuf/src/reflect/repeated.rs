@@ -90,18 +90,18 @@ impl<V: ProtobufValueSized> ReflectRepeated for [V] {
 }
 
 trait ReflectRepeatedIterTrait<'a> {
-    fn next(&mut self) -> Option<&'a dyn ProtobufValue>;
+    fn next(&mut self) -> Option<ReflectValueRef<'a>>;
 }
 
 struct ReflectRepeatedIterImplSlice<'a, V: ProtobufValue + 'static> {
     iter: slice::Iter<'a, V>,
 }
 
-impl<'a, V: ProtobufValue + 'static> ReflectRepeatedIterTrait<'a>
+impl<'a, V: ProtobufValueSized + 'static> ReflectRepeatedIterTrait<'a>
     for ReflectRepeatedIterImplSlice<'a, V>
 {
-    fn next(&mut self) -> Option<&'a dyn ProtobufValue> {
-        self.iter.next().map(|v| v as &dyn ProtobufValue)
+    fn next(&mut self) -> Option<ReflectValueRef<'a>> {
+        self.iter.next().map(ProtobufValueSized::as_ref)
     }
 }
 
@@ -110,15 +110,15 @@ pub struct ReflectRepeatedIter<'a> {
 }
 
 impl<'a> Iterator for ReflectRepeatedIter<'a> {
-    type Item = &'a dyn ProtobufValue;
+    type Item = ReflectValueRef<'a>;
 
-    fn next(&mut self) -> Option<Self::Item> {
+    fn next(&mut self) -> Option<ReflectValueRef<'a>> {
         self.imp.next()
     }
 }
 
 impl<'a> IntoIterator for &'a dyn ReflectRepeated {
-    type Item = &'a dyn ProtobufValue;
+    type Item = ReflectValueRef<'a>;
     type IntoIter = ReflectRepeatedIter<'a>;
 
     fn into_iter(self) -> Self::IntoIter {
