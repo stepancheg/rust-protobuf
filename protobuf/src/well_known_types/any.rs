@@ -188,9 +188,6 @@ impl ::std::fmt::Debug for Any {
     }
 }
 
-impl crate::reflect::ProtobufValue for Any {
-}
-
 impl crate::reflect::ProtobufValueSized for Any {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }

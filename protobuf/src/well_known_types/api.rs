@@ -308,9 +308,6 @@ impl ::std::fmt::Debug for Api {
     }
 }
 
-impl crate::reflect::ProtobufValue for Api {
-}
-
 impl crate::reflect::ProtobufValueSized for Api {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
@@ -570,9 +567,6 @@ impl ::std::fmt::Debug for Method {
     }
 }
 
-impl crate::reflect::ProtobufValue for Method {
-}
-
 impl crate::reflect::ProtobufValueSized for Method {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
@@ -722,9 +716,6 @@ impl ::std::fmt::Debug for Mixin {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         crate::text_format::fmt(self, f)
     }
-}
-
-impl crate::reflect::ProtobufValue for Mixin {
 }
 
 impl crate::reflect::ProtobufValueSized for Mixin {

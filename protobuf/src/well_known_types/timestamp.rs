@@ -172,9 +172,6 @@ impl ::std::fmt::Debug for Timestamp {
     }
 }
 
-impl crate::reflect::ProtobufValue for Timestamp {
-}
-
 impl crate::reflect::ProtobufValueSized for Timestamp {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }

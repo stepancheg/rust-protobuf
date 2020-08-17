@@ -143,9 +143,6 @@ impl ::std::fmt::Debug for FieldMask {
     }
 }
 
-impl crate::reflect::ProtobufValue for FieldMask {
-}
-
 impl crate::reflect::ProtobufValueSized for FieldMask {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }

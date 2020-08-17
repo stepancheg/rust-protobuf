@@ -238,9 +238,6 @@ impl ::std::fmt::Debug for CodeGeneratorRequest {
     }
 }
 
-impl crate::reflect::ProtobufValue for CodeGeneratorRequest {
-}
-
 impl crate::reflect::ProtobufValueSized for CodeGeneratorRequest {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
@@ -436,9 +433,6 @@ impl ::std::fmt::Debug for CodeGeneratorResponse {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         crate::text_format::fmt(self, f)
     }
-}
-
-impl crate::reflect::ProtobufValue for CodeGeneratorResponse {
 }
 
 impl crate::reflect::ProtobufValueSized for CodeGeneratorResponse {
@@ -770,9 +764,6 @@ pub mod code_generator_response {
         fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
             crate::text_format::fmt(self, f)
         }
-    }
-
-    impl crate::reflect::ProtobufValue for File {
     }
 
     impl crate::reflect::ProtobufValueSized for File {

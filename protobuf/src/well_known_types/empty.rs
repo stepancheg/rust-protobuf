@@ -124,9 +124,6 @@ impl ::std::fmt::Debug for Empty {
     }
 }
 
-impl crate::reflect::ProtobufValue for Empty {
-}
-
 impl crate::reflect::ProtobufValueSized for Empty {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
