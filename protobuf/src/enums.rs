@@ -4,7 +4,6 @@ use std::marker;
 use crate::reflect::runtime_types::RuntimeTypeEnumOrUnknown;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::EnumValueDescriptor;
-use crate::reflect::ProtobufValue;
 use crate::reflect::ProtobufValueSized;
 
 /// Trait implemented by all protobuf enum types.
@@ -121,8 +120,6 @@ impl<E: ProtobufEnum> fmt::Debug for ProtobufEnumOrUnknown<E> {
         }
     }
 }
-
-impl<E: ProtobufEnum> ProtobufValue for ProtobufEnumOrUnknown<E> {}
 
 impl<E: ProtobufEnum + ProtobufValueSized> ProtobufValueSized for ProtobufEnumOrUnknown<E> {
     type RuntimeType = RuntimeTypeEnumOrUnknown<E>;

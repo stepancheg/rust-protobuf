@@ -32,10 +32,7 @@ pub(crate) mod value_ref;
 /// Type implemented by all protobuf singular types
 /// (primitives, string, messages, enums).
 ///
-/// Used for dynamic casting in reflection.
-pub trait ProtobufValue: Any + 'static + Send + Sync {}
-
-/// Sized version of [`ProtobufValue`].
+/// Used in reflection.
 pub trait ProtobufValueSized:
     Any + Clone + Default + fmt::Debug + Send + Sync + Sized + 'static
 {
