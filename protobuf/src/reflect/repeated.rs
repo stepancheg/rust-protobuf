@@ -1,12 +1,10 @@
 use std::fmt;
 use std::slice;
 
-use crate::reflect::value::value_ref::ReflectValueRef;
-use crate::reflect::value::ProtobufValue;
-
 use crate::reflect::dynamic::repeated::DynamicRepeated;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
+use crate::reflect::value::value_ref::ReflectValueRef;
 use crate::reflect::ProtobufValueSized;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::RuntimeTypeBox;
@@ -93,7 +91,7 @@ trait ReflectRepeatedIterTrait<'a> {
     fn next(&mut self) -> Option<ReflectValueRef<'a>>;
 }
 
-struct ReflectRepeatedIterImplSlice<'a, V: ProtobufValue + 'static> {
+struct ReflectRepeatedIterImplSlice<'a, V: ProtobufValueSized + 'static> {
     iter: slice::Iter<'a, V>,
 }
 

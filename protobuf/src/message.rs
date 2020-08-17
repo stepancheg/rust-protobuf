@@ -11,7 +11,6 @@ use crate::error::ProtobufResult;
 use crate::message_dyn::MessageDyn;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::MessageDescriptor;
-use crate::reflect::ProtobufValue;
 use crate::stream::CodedInputStream;
 use crate::stream::CodedOutputStream;
 use crate::stream::WithCodedOutputStream;
@@ -20,7 +19,7 @@ use crate::unknown::UnknownFields;
 /// Trait implemented for all generated structs for protobuf messages.
 ///
 /// Also, generated messages implement `Clone + Default + PartialEq`
-pub trait Message: fmt::Debug + Clear + Send + Sync + ProtobufValue + Sized {
+pub trait Message: fmt::Debug + Clear + Send + Sync + Sized + 'static {
     /// Message descriptor for this message, used for reflection.
     ///
     /// This function is rarely needed to be called directly, use

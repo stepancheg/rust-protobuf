@@ -8,9 +8,10 @@ use bytes::Bytes;
 
 use crate::reflect::runtime_type_box::RuntimeTypeBox;
 use crate::reflect::value::value_ref::ReflectValueMut;
+use crate::reflect::MessageRef;
+use crate::reflect::ProtobufValueSized;
+use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
-use crate::reflect::{MessageRef, ReflectValueBox};
-use crate::reflect::{ProtobufValue, ProtobufValueSized};
 
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;
@@ -28,7 +29,7 @@ use crate::message::Message;
 /// in a lot of places.
 pub trait RuntimeType: fmt::Debug + Send + Sync + 'static {
     /// Actual value for this type.
-    type Value: ProtobufValue + Clone + Sized + fmt::Debug + Default;
+    type Value: ProtobufValueSized + Clone + Sized + fmt::Debug + Default;
 
     /// "Box" version of type type.
     fn runtime_type_box() -> RuntimeTypeBox
@@ -715,7 +716,7 @@ where
 
 impl<M> RuntimeType for RuntimeTypeMessage<M>
 where
-    M: Message + Clone + ProtobufValue + Default,
+    M: Message + ProtobufValueSized + Clone + Default,
 {
     type Value = M;
 
