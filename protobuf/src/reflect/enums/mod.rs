@@ -6,14 +6,12 @@ use std::hash::Hasher;
 use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::EnumValueDescriptorProto;
 use crate::enums::ProtobufEnum;
-use crate::enums::ProtobufEnumOrUnknown;
 use crate::reflect::enums::dynamic::DynamicEnumDescriptor;
 use crate::reflect::enums::generated::GeneratedEnumDescriptor;
 #[cfg(not(rustc_nightly))]
 use crate::reflect::enums::generated::GetEnumDescriptor;
 use crate::reflect::file::FileDescriptorImpl;
 use crate::reflect::FileDescriptor;
-use crate::reflect::ProtobufValue;
 
 pub(crate) mod dynamic;
 pub(crate) mod generated;
@@ -88,8 +86,10 @@ impl EnumValueDescriptor {
     /// assert_eq!(Some(NullValue::NULL_VALUE), null);
     /// ```
     pub fn cast<E: ProtobufEnum>(&self) -> Option<E> {
-        self.enum_descriptor()
-            .cast_to_protobuf_enum::<E>(self.value())
+        if self.enum_descriptor != E::enum_descriptor_static() {
+            return None;
+        }
+        E::from_i32(self.value())
     }
 }
 
@@ -233,128 +233,6 @@ impl EnumDescriptor {
         match self.get_impl() {
             EnumDescriptorImplRef::Generated(g) => g.type_id == TypeId::of::<E>(),
             EnumDescriptorImplRef::Dynamic(..) => false,
-        }
-    }
-
-    /// Create enum object from given value.
-    ///
-    /// Type parameter `E` can be either [`ProtobufEnum`](crate::ProtobufEnum)
-    /// or [`ProtobufEnumOrUnknown`](crate::ProtobufEnumOrUnknown).
-    ///
-    /// # Panics
-    ///
-    /// This operation panics of `E` is `ProtobufEnum` and `value` is unknown.
-    pub(crate) fn _cast<E: ProtobufValue>(&self, value: i32) -> Option<E> {
-        if let Some(e) = self.cast_to_protobuf_enum(value) {
-            return Some(e);
-        }
-        if let Some(e) = self.cast_to_protobuf_enum_or_unknown(value) {
-            return Some(e);
-        }
-        None
-    }
-
-    #[cfg(rustc_nightly)]
-    fn cast_to_protobuf_enum<E: ProtobufValue>(&self, value: i32) -> Option<E> {
-        let g = match self.get_impl() {
-            EnumDescriptorImplRef::Dynamic(..) => return None,
-            EnumDescriptorImplRef::Generated(g) => g,
-        };
-        if TypeId::of::<E>() != g.type_id {
-            return None;
-        }
-
-        Some(<E as cast_impl::CastValueToProtobufEnum>::cast(value))
-    }
-
-    #[cfg(not(rustc_nightly))]
-    fn cast_to_protobuf_enum<E: ProtobufValue>(&self, value: i32) -> Option<E> {
-        let g = match self.get_impl() {
-            EnumDescriptorImplRef::Dynamic(..) => return None,
-            EnumDescriptorImplRef::Generated(g) => g,
-        };
-        if TypeId::of::<E>() != g.type_id {
-            return None;
-        }
-
-        use std::mem;
-        unsafe {
-            let mut r = mem::MaybeUninit::<E>::uninit();
-            g.get_descriptor.copy_to(value, r.as_mut_ptr() as *mut ());
-            Some(r.assume_init())
-        }
-    }
-
-    #[cfg(rustc_nightly)]
-    fn cast_to_protobuf_enum_or_unknown<E: ProtobufValue>(&self, value: i32) -> Option<E> {
-        let g = match self.get_impl() {
-            EnumDescriptorImplRef::Dynamic(..) => return None,
-            EnumDescriptorImplRef::Generated(g) => g,
-        };
-        if TypeId::of::<E>() != g.enum_or_unknown_type_id {
-            return None;
-        }
-
-        Some(<E as cast_impl::CastValueToProtobufEnumOrUnknown>::cast(
-            value,
-        ))
-    }
-
-    #[cfg(not(rustc_nightly))]
-    fn cast_to_protobuf_enum_or_unknown<E: ProtobufValue>(&self, value: i32) -> Option<E> {
-        let g = match self.get_impl() {
-            EnumDescriptorImplRef::Dynamic(..) => return None,
-            EnumDescriptorImplRef::Generated(g) => g,
-        };
-        if TypeId::of::<E>() != g.enum_or_unknown_type_id {
-            return None;
-        }
-
-        use std::mem;
-        use std::ptr;
-        debug_assert_eq!(mem::size_of::<E>(), mem::size_of::<i32>());
-        unsafe {
-            // This works because `ProtobufEnumOrUnknown<E>` is `#[repr(transparent)]`
-            let mut r = mem::MaybeUninit::<E>::uninit();
-            ptr::copy(&value, r.as_mut_ptr() as *mut i32, 1);
-            Some(r.assume_init())
-        }
-    }
-}
-
-#[cfg(rustc_nightly)]
-mod cast_impl {
-    use super::*;
-
-    pub(crate) trait CastValueToProtobufEnumOrUnknown: Sized {
-        fn cast(value: i32) -> Self;
-    }
-
-    impl<T> CastValueToProtobufEnumOrUnknown for T {
-        default fn cast(_value: i32) -> T {
-            unreachable!();
-        }
-    }
-
-    impl<E: ProtobufEnum> CastValueToProtobufEnumOrUnknown for ProtobufEnumOrUnknown<E> {
-        fn cast(value: i32) -> ProtobufEnumOrUnknown<E> {
-            ProtobufEnumOrUnknown::from_i32(value)
-        }
-    }
-
-    pub(crate) trait CastValueToProtobufEnum: Sized {
-        fn cast(value: i32) -> Self;
-    }
-
-    impl<T> CastValueToProtobufEnum for T {
-        default fn cast(_value: i32) -> T {
-            unreachable!();
-        }
-    }
-
-    impl<E: ProtobufEnum> CastValueToProtobufEnum for E {
-        fn cast(value: i32) -> E {
-            E::from_i32(value).expect(&format!("unknown enum value: {}", value))
         }
     }
 }
