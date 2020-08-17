@@ -3,7 +3,7 @@
 use std::marker;
 
 use crate::reflect::types::ProtobufType;
-use crate::reflect::{ProtobufValueSized, RuntimeTypeBox};
+use crate::reflect::{ProtobufValue, RuntimeTypeBox};
 use crate::wire_format::WireType;
 
 /// Dynamic version of [`ProtobufType`](crate::reflect::types::ProtobufType).
@@ -25,6 +25,6 @@ impl<T: ProtobufType> ProtobufTypeDynamic for ProtobufTypeDynamicImpl<T> {
     }
 
     fn runtime_type(&self) -> RuntimeTypeBox {
-        <T::ProtobufValue as ProtobufValueSized>::runtime_type_box()
+        <T::ProtobufValue as ProtobufValue>::runtime_type_box()
     }
 }

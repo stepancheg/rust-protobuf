@@ -33,7 +33,7 @@ pub(crate) mod value_ref;
 /// (primitives, string, messages, enums).
 ///
 /// Used in reflection.
-pub trait ProtobufValueSized:
+pub trait ProtobufValue:
     Any + Clone + Default + fmt::Debug + Send + Sync + Sized + 'static
 {
     /// Actual implementation of type properties.
@@ -90,49 +90,49 @@ pub trait ProtobufValueSized:
     }
 }
 
-impl ProtobufValueSized for u32 {
+impl ProtobufValue for u32 {
     type RuntimeType = RuntimeTypeU32;
 }
 
-impl ProtobufValueSized for u64 {
+impl ProtobufValue for u64 {
     type RuntimeType = RuntimeTypeU64;
 }
 
-impl ProtobufValueSized for i32 {
+impl ProtobufValue for i32 {
     type RuntimeType = RuntimeTypeI32;
 }
 
-impl ProtobufValueSized for i64 {
+impl ProtobufValue for i64 {
     type RuntimeType = RuntimeTypeI64;
 }
 
-impl ProtobufValueSized for f32 {
+impl ProtobufValue for f32 {
     type RuntimeType = RuntimeTypeF32;
 }
 
-impl ProtobufValueSized for f64 {
+impl ProtobufValue for f64 {
     type RuntimeType = RuntimeTypeF64;
 }
 
-impl ProtobufValueSized for bool {
+impl ProtobufValue for bool {
     type RuntimeType = RuntimeTypeBool;
 }
 
-impl ProtobufValueSized for String {
+impl ProtobufValue for String {
     type RuntimeType = RuntimeTypeString;
 }
 
-impl ProtobufValueSized for Vec<u8> {
+impl ProtobufValue for Vec<u8> {
     type RuntimeType = RuntimeTypeVecU8;
 }
 
 #[cfg(feature = "bytes")]
-impl ProtobufValueSized for Bytes {
+impl ProtobufValue for Bytes {
     type RuntimeType = RuntimeTypeCarllercheBytes;
 }
 
 #[cfg(feature = "bytes")]
-impl ProtobufValueSized for Chars {
+impl ProtobufValue for Chars {
     type RuntimeType = RuntimeTypeCarllercheChars;
 }
 

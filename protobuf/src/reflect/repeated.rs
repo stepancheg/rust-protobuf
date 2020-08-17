@@ -5,7 +5,7 @@ use crate::reflect::dynamic::repeated::DynamicRepeated;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::value::value_ref::ReflectValueRef;
-use crate::reflect::ProtobufValueSized;
+use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::RuntimeTypeBox;
 
@@ -19,7 +19,7 @@ pub(crate) trait ReflectRepeated: Sync + 'static + fmt::Debug {
     fn element_type(&self) -> RuntimeTypeBox;
 }
 
-impl<V: ProtobufValueSized> ReflectRepeated for Vec<V> {
+impl<V: ProtobufValue> ReflectRepeated for Vec<V> {
     fn reflect_iter<'a>(&'a self) -> ReflectRepeatedIter<'a> {
         ReflectRepeatedIter {
             imp: Box::new(ReflectRepeatedIterImplSlice::<'a, V> { iter: self.iter() }),
@@ -54,7 +54,7 @@ impl<V: ProtobufValueSized> ReflectRepeated for Vec<V> {
 }
 
 // useless
-impl<V: ProtobufValueSized> ReflectRepeated for [V] {
+impl<V: ProtobufValue> ReflectRepeated for [V] {
     fn reflect_iter<'a>(&'a self) -> ReflectRepeatedIter<'a> {
         ReflectRepeatedIter {
             imp: Box::new(ReflectRepeatedIterImplSlice::<'a, V> { iter: self.iter() }),
@@ -91,15 +91,15 @@ trait ReflectRepeatedIterTrait<'a> {
     fn next(&mut self) -> Option<ReflectValueRef<'a>>;
 }
 
-struct ReflectRepeatedIterImplSlice<'a, V: ProtobufValueSized + 'static> {
+struct ReflectRepeatedIterImplSlice<'a, V: ProtobufValue + 'static> {
     iter: slice::Iter<'a, V>,
 }
 
-impl<'a, V: ProtobufValueSized + 'static> ReflectRepeatedIterTrait<'a>
+impl<'a, V: ProtobufValue + 'static> ReflectRepeatedIterTrait<'a>
     for ReflectRepeatedIterImplSlice<'a, V>
 {
     fn next(&mut self) -> Option<ReflectValueRef<'a>> {
-        self.iter.next().map(ProtobufValueSized::as_ref)
+        self.iter.next().map(ProtobufValue::as_ref)
     }
 }
 

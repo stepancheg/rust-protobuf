@@ -144,7 +144,7 @@ impl ::std::fmt::Debug for Struct {
     }
 }
 
-impl crate::reflect::ProtobufValueSized for Struct {
+impl crate::reflect::ProtobufValue for Struct {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
@@ -618,7 +618,7 @@ impl ::std::fmt::Debug for Value {
     }
 }
 
-impl crate::reflect::ProtobufValueSized for Value {
+impl crate::reflect::ProtobufValue for Value {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
@@ -771,7 +771,7 @@ impl ::std::fmt::Debug for ListValue {
     }
 }
 
-impl crate::reflect::ProtobufValueSized for ListValue {
+impl crate::reflect::ProtobufValue for ListValue {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
@@ -815,7 +815,7 @@ impl ::std::default::Default for NullValue {
     }
 }
 
-impl crate::reflect::ProtobufValueSized for NullValue {
+impl crate::reflect::ProtobufValue for NullValue {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeEnum<Self>;
 }
 

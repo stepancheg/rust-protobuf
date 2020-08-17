@@ -300,7 +300,7 @@ impl<'a> EnumGen<'a> {
     fn write_impl_value(&self, w: &mut CodeWriter) {
         w.impl_for_block(
             &format!(
-                "{}::reflect::ProtobufValueSized",
+                "{}::reflect::ProtobufValue",
                 protobuf_crate_path(&self.customize)
             ),
             &format!("{}", self.type_name),

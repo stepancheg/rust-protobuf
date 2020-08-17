@@ -15,7 +15,7 @@ use crate::enums::ProtobufEnumOrUnknown;
 use crate::error::ProtobufResult;
 use crate::message::Message;
 use crate::reflect::type_dynamic::ProtobufTypeDynamicImpl;
-use crate::reflect::ProtobufValueSized;
+use crate::reflect::ProtobufValue;
 use crate::rt;
 use crate::stream::CodedInputStream;
 use crate::stream::CodedOutputStream;
@@ -29,7 +29,7 @@ pub use crate::reflect::type_dynamic::ProtobufTypeDynamic;
 /// Encapsulate type-specific serialization and conversion logic
 pub trait ProtobufType: Send + Sync + Clone + 'static {
     /// Rust type for this protobuf type.
-    type ProtobufValue: ProtobufValueSized;
+    type ProtobufValue: ProtobufValue;
 
     /// Dynamic version of this
     fn dynamic() -> &'static dyn ProtobufTypeDynamic
@@ -644,7 +644,7 @@ impl ProtobufType for ProtobufTypeCarllercheChars {
     }
 }
 
-impl<E: ProtobufEnum + ProtobufValueSized + fmt::Debug> ProtobufType for ProtobufTypeEnum<E> {
+impl<E: ProtobufEnum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufTypeEnum<E> {
     type ProtobufValue = E;
 
     const WIRE_TYPE: WireType = WireType::WireTypeVarint;
@@ -672,9 +672,7 @@ impl<E: ProtobufEnum + ProtobufValueSized + fmt::Debug> ProtobufType for Protobu
     }
 }
 
-impl<E: ProtobufEnum + ProtobufValueSized + fmt::Debug> ProtobufType
-    for ProtobufTypeEnumOrUnknown<E>
-{
+impl<E: ProtobufEnum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufTypeEnumOrUnknown<E> {
     type ProtobufValue = ProtobufEnumOrUnknown<E>;
 
     const WIRE_TYPE: WireType = WireType::WireTypeVarint;
@@ -701,7 +699,7 @@ impl<E: ProtobufEnum + ProtobufValueSized + fmt::Debug> ProtobufType
     }
 }
 
-impl<M: Message + Clone + ProtobufValueSized + Default> ProtobufType for ProtobufTypeMessage<M> {
+impl<M: Message + Clone + ProtobufValue + Default> ProtobufType for ProtobufTypeMessage<M> {
     type ProtobufValue = M;
 
     const WIRE_TYPE: WireType = WireType::WireTypeLengthDelimited;

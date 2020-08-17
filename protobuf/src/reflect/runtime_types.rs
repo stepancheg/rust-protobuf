@@ -9,7 +9,7 @@ use bytes::Bytes;
 use crate::reflect::runtime_type_box::RuntimeTypeBox;
 use crate::reflect::value::value_ref::ReflectValueMut;
 use crate::reflect::MessageRef;
-use crate::reflect::ProtobufValueSized;
+use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 
@@ -29,7 +29,7 @@ use crate::message::Message;
 /// in a lot of places.
 pub trait RuntimeType: fmt::Debug + Send + Sync + 'static {
     /// Actual value for this type.
-    type Value: ProtobufValueSized + Clone + Sized + fmt::Debug + Default;
+    type Value: ProtobufValue + Clone + Sized + fmt::Debug + Default;
 
     /// "Box" version of type type.
     fn runtime_type_box() -> RuntimeTypeBox
@@ -122,10 +122,10 @@ pub struct RuntimeTypeCarllercheChars;
 
 /// Implementation for enum.
 #[derive(Debug, Copy, Clone)]
-pub struct RuntimeTypeEnum<E: ProtobufEnum + ProtobufValueSized>(marker::PhantomData<E>);
+pub struct RuntimeTypeEnum<E: ProtobufEnum + ProtobufValue>(marker::PhantomData<E>);
 /// Implementation for enum.
 #[derive(Debug, Copy, Clone)]
-pub struct RuntimeTypeEnumOrUnknown<E: ProtobufEnum + ProtobufValueSized>(marker::PhantomData<E>);
+pub struct RuntimeTypeEnumOrUnknown<E: ProtobufEnum + ProtobufValue>(marker::PhantomData<E>);
 /// Implementation for [`Message`].
 #[derive(Debug, Copy, Clone)]
 pub struct RuntimeTypeMessage<M: Message>(marker::PhantomData<M>);
@@ -613,7 +613,7 @@ impl RuntimeTypeWithDeref for RuntimeTypeCarllercheChars {
 
 impl<E> RuntimeType for RuntimeTypeEnum<E>
 where
-    E: ProtobufEnum + ProtobufValueSized + fmt::Debug,
+    E: ProtobufEnum + ProtobufValue + fmt::Debug,
 {
     type Value = E;
 
@@ -664,7 +664,7 @@ where
 
 impl<E> RuntimeType for RuntimeTypeEnumOrUnknown<E>
 where
-    E: ProtobufEnum + ProtobufValueSized + fmt::Debug,
+    E: ProtobufEnum + ProtobufValue + fmt::Debug,
 {
     type Value = ProtobufEnumOrUnknown<E>;
 
@@ -716,7 +716,7 @@ where
 
 impl<M> RuntimeType for RuntimeTypeMessage<M>
 where
-    M: Message + ProtobufValueSized + Clone + Default,
+    M: Message + ProtobufValue + Clone + Default,
 {
     type Value = M;
 

@@ -149,7 +149,7 @@ impl ::std::fmt::Debug for SourceContext {
     }
 }
 
-impl crate::reflect::ProtobufValueSized for SourceContext {
+impl crate::reflect::ProtobufValue for SourceContext {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 

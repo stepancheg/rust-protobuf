@@ -4,12 +4,10 @@ use std::marker;
 use crate::reflect::runtime_types::RuntimeTypeEnumOrUnknown;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::EnumValueDescriptor;
-use crate::reflect::ProtobufValueSized;
+use crate::reflect::ProtobufValue;
 
 /// Trait implemented by all protobuf enum types.
-pub trait ProtobufEnum:
-    Eq + Sized + Copy + 'static + ProtobufValueSized + fmt::Debug + Default
-{
+pub trait ProtobufEnum: Eq + Sized + Copy + 'static + ProtobufValue + fmt::Debug + Default {
     /// Get enum `i32` value.
     fn value(&self) -> i32;
 
@@ -121,7 +119,7 @@ impl<E: ProtobufEnum> fmt::Debug for ProtobufEnumOrUnknown<E> {
     }
 }
 
-impl<E: ProtobufEnum + ProtobufValueSized> ProtobufValueSized for ProtobufEnumOrUnknown<E> {
+impl<E: ProtobufEnum + ProtobufValue> ProtobufValue for ProtobufEnumOrUnknown<E> {
     type RuntimeType = RuntimeTypeEnumOrUnknown<E>;
 }
 

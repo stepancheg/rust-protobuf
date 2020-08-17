@@ -12,7 +12,7 @@ use crate::reflect::acc::v2::singular::SingularFieldAccessorImpl;
 use crate::reflect::acc::v2::AccessorV2;
 use crate::reflect::acc::FieldAccessor;
 use crate::reflect::runtime_types::RuntimeTypeWithDeref;
-use crate::reflect::ProtobufValueSized;
+use crate::reflect::ProtobufValue;
 use crate::Message;
 use std::marker;
 
@@ -26,7 +26,7 @@ pub fn make_oneof_message_has_get_mut_set_accessor<M, F>(
 ) -> FieldAccessor
 where
     M: Message + 'static,
-    F: Message + ProtobufValueSized,
+    F: Message + ProtobufValue,
 {
     FieldAccessor::new_v2(
         name,
@@ -54,7 +54,7 @@ pub fn make_oneof_copy_has_get_set_simpler_accessors<M, V>(
 ) -> FieldAccessor
 where
     M: Message + 'static,
-    V: ProtobufValueSized + Copy,
+    V: ProtobufValue + Copy,
 {
     FieldAccessor::new_v2(
         name,
@@ -79,7 +79,7 @@ pub fn make_oneof_deref_has_get_set_simpler_accessor<M, F>(
 ) -> FieldAccessor
 where
     M: Message + 'static,
-    F: ProtobufValueSized,
+    F: ProtobufValue,
     F::RuntimeType: RuntimeTypeWithDeref,
 {
     FieldAccessor::new_v2(

@@ -173,7 +173,7 @@ impl ::std::fmt::Debug for Duration {
     }
 }
 
-impl crate::reflect::ProtobufValueSized for Duration {
+impl crate::reflect::ProtobufValue for Duration {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 

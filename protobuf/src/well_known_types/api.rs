@@ -308,7 +308,7 @@ impl ::std::fmt::Debug for Api {
     }
 }
 
-impl crate::reflect::ProtobufValueSized for Api {
+impl crate::reflect::ProtobufValue for Api {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
@@ -567,7 +567,7 @@ impl ::std::fmt::Debug for Method {
     }
 }
 
-impl crate::reflect::ProtobufValueSized for Method {
+impl crate::reflect::ProtobufValue for Method {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
@@ -718,7 +718,7 @@ impl ::std::fmt::Debug for Mixin {
     }
 }
 
-impl crate::reflect::ProtobufValueSized for Mixin {
+impl crate::reflect::ProtobufValue for Mixin {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 

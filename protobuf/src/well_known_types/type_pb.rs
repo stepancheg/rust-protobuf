@@ -258,7 +258,7 @@ impl ::std::fmt::Debug for Type {
     }
 }
 
-impl crate::reflect::ProtobufValueSized for Type {
+impl crate::reflect::ProtobufValue for Type {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
@@ -582,7 +582,7 @@ impl ::std::fmt::Debug for Field {
     }
 }
 
-impl crate::reflect::ProtobufValueSized for Field {
+impl crate::reflect::ProtobufValue for Field {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
@@ -679,7 +679,7 @@ pub mod field {
         }
     }
 
-    impl crate::reflect::ProtobufValueSized for Kind {
+    impl crate::reflect::ProtobufValue for Kind {
         type RuntimeType = crate::reflect::runtime_types::RuntimeTypeEnum<Self>;
     }
 
@@ -735,7 +735,7 @@ pub mod field {
         }
     }
 
-    impl crate::reflect::ProtobufValueSized for Cardinality {
+    impl crate::reflect::ProtobufValue for Cardinality {
         type RuntimeType = crate::reflect::runtime_types::RuntimeTypeEnum<Self>;
     }
 
@@ -965,7 +965,7 @@ impl ::std::fmt::Debug for Enum {
     }
 }
 
-impl crate::reflect::ProtobufValueSized for Enum {
+impl crate::reflect::ProtobufValue for Enum {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
@@ -1140,7 +1140,7 @@ impl ::std::fmt::Debug for EnumValue {
     }
 }
 
-impl crate::reflect::ProtobufValueSized for EnumValue {
+impl crate::reflect::ProtobufValue for EnumValue {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
@@ -1295,7 +1295,7 @@ impl ::std::fmt::Debug for Option {
     }
 }
 
-impl crate::reflect::ProtobufValueSized for Option {
+impl crate::reflect::ProtobufValue for Option {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
@@ -1339,7 +1339,7 @@ impl ::std::default::Default for Syntax {
     }
 }
 
-impl crate::reflect::ProtobufValueSized for Syntax {
+impl crate::reflect::ProtobufValue for Syntax {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeEnum<Self>;
 }
 

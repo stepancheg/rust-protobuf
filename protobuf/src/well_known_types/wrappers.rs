@@ -149,7 +149,7 @@ impl ::std::fmt::Debug for DoubleValue {
     }
 }
 
-impl crate::reflect::ProtobufValueSized for DoubleValue {
+impl crate::reflect::ProtobufValue for DoubleValue {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
@@ -281,7 +281,7 @@ impl ::std::fmt::Debug for FloatValue {
     }
 }
 
-impl crate::reflect::ProtobufValueSized for FloatValue {
+impl crate::reflect::ProtobufValue for FloatValue {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
@@ -413,7 +413,7 @@ impl ::std::fmt::Debug for Int64Value {
     }
 }
 
-impl crate::reflect::ProtobufValueSized for Int64Value {
+impl crate::reflect::ProtobufValue for Int64Value {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
@@ -545,7 +545,7 @@ impl ::std::fmt::Debug for UInt64Value {
     }
 }
 
-impl crate::reflect::ProtobufValueSized for UInt64Value {
+impl crate::reflect::ProtobufValue for UInt64Value {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
@@ -677,7 +677,7 @@ impl ::std::fmt::Debug for Int32Value {
     }
 }
 
-impl crate::reflect::ProtobufValueSized for Int32Value {
+impl crate::reflect::ProtobufValue for Int32Value {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
@@ -809,7 +809,7 @@ impl ::std::fmt::Debug for UInt32Value {
     }
 }
 
-impl crate::reflect::ProtobufValueSized for UInt32Value {
+impl crate::reflect::ProtobufValue for UInt32Value {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
@@ -941,7 +941,7 @@ impl ::std::fmt::Debug for BoolValue {
     }
 }
 
-impl crate::reflect::ProtobufValueSized for BoolValue {
+impl crate::reflect::ProtobufValue for BoolValue {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
@@ -1073,7 +1073,7 @@ impl ::std::fmt::Debug for StringValue {
     }
 }
 
-impl crate::reflect::ProtobufValueSized for StringValue {
+impl crate::reflect::ProtobufValue for StringValue {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
@@ -1205,7 +1205,7 @@ impl ::std::fmt::Debug for BytesValue {
     }
 }
 
-impl crate::reflect::ProtobufValueSized for BytesValue {
+impl crate::reflect::ProtobufValue for BytesValue {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 

@@ -10,7 +10,7 @@ use crate::reflect::acc::FieldAccessor;
 use crate::reflect::runtime_types::RuntimeTypeWithDeref;
 use crate::reflect::value::value_ref::ReflectValueMut;
 use crate::reflect::MessageRef;
-use crate::reflect::ProtobufValueSized;
+use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::MessageField;
@@ -117,7 +117,7 @@ where
 struct SingularFieldAccessorImpl<M, V, G, D, E, S>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
     G: GetOptionImpl<M>,
     D: GetOrDefaultImpl<M>,
     E: MutOrDefaultImpl<M>,
@@ -133,7 +133,7 @@ where
 impl<M, V, G, D, E, S> SingularFieldAccessor for SingularFieldAccessorImpl<M, V, G, D, E, S>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
     G: GetOptionImpl<M>,
     D: GetOrDefaultImpl<M>,
     E: MutOrDefaultImpl<M>,
@@ -165,7 +165,7 @@ where
 struct GetOptionImplFieldPointer<M, V>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
 {
     get_field: for<'a> fn(&'a M) -> &'a V,
 }
@@ -173,7 +173,7 @@ where
 struct GetOptionImplOptionFieldPointer<M, V, O>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
     O: OptionLike<V> + Sync + Send + 'static,
 {
     get_field: for<'a> fn(&'a M) -> &'a O,
@@ -183,7 +183,7 @@ where
 struct GetOptionImplHasGetRef<M, V>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
 {
     has: for<'a> fn(&'a M) -> bool,
     get: for<'a> fn(&'a M) -> &'a V,
@@ -192,7 +192,7 @@ where
 struct GetOptionImplHasGetRefDeref<M, V>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
     V::RuntimeType: RuntimeTypeWithDeref,
 {
     has: for<'a> fn(&'a M) -> bool,
@@ -202,7 +202,7 @@ where
 struct GetOptionImplHasGetCopy<M, V>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
 {
     has: for<'a> fn(&'a M) -> bool,
     get: for<'a> fn(&'a M) -> V,
@@ -211,7 +211,7 @@ where
 impl<M, V> GetOptionImpl<M> for GetOptionImplFieldPointer<M, V>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
 {
     fn get_reflect_impl<'a>(&self, m: &'a M) -> Option<ReflectValueRef<'a>> {
         let v = (self.get_field)(m);
@@ -226,7 +226,7 @@ where
 impl<M, V, O> GetOptionImpl<M> for GetOptionImplOptionFieldPointer<M, V, O>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
     O: OptionLike<V> + Sync + Send + 'static,
 {
     fn get_reflect_impl<'a>(&self, m: &'a M) -> Option<ReflectValueRef<'a>> {
@@ -237,7 +237,7 @@ where
 impl<M, V> GetOptionImpl<M> for GetOptionImplHasGetRef<M, V>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
 {
     fn get_reflect_impl<'a>(&self, m: &'a M) -> Option<ReflectValueRef<'a>> {
         if (self.has)(m) {
@@ -251,7 +251,7 @@ where
 impl<M, V> GetOptionImpl<M> for GetOptionImplHasGetRefDeref<M, V>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
     V::RuntimeType: RuntimeTypeWithDeref,
 {
     fn get_reflect_impl<'a>(&self, m: &'a M) -> Option<ReflectValueRef<'a>> {
@@ -268,7 +268,7 @@ where
 impl<M, V> GetOptionImpl<M> for GetOptionImplHasGetCopy<M, V>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
 {
     fn get_reflect_impl<'a>(&self, m: &'a M) -> Option<ReflectValueRef<'a>> {
         if (self.has)(m) {
@@ -282,7 +282,7 @@ where
 struct GetOrDefaultGetRef<M, V>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
 {
     get_field: for<'a> fn(&'a M) -> &'a V,
 }
@@ -290,10 +290,14 @@ where
 struct GetOrDefaultGetRefDeref<M, V>
 where
     M: Message,
-    V: ProtobufValueSized,
-    V::RuntimeType : RuntimeTypeWithDeref,
+    V: ProtobufValue,
+    V::RuntimeType: RuntimeTypeWithDeref,
 {
-    get_field: for<'a> fn(&'a M) -> &'a <<V as ProtobufValueSized>::RuntimeType as RuntimeTypeWithDeref>::DerefTarget,
+    get_field:
+        for<'a> fn(
+            &'a M,
+        )
+            -> &'a <<V as ProtobufValue>::RuntimeType as RuntimeTypeWithDeref>::DerefTarget,
 }
 
 struct GetOrDefaultOptionRefTypeDefault<M, V, O>
@@ -309,7 +313,7 @@ where
 struct GetOrDefaultGetCopy<M, V>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
 {
     get_field: for<'a> fn(&'a M) -> V,
 }
@@ -317,7 +321,7 @@ where
 impl<M, V> GetOrDefaultImpl<M> for GetOrDefaultGetRef<M, V>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
 {
     fn get_singular_field_or_default_impl<'a>(&self, m: &'a M) -> ReflectValueRef<'a> {
         V::as_ref((self.get_field)(m))
@@ -343,7 +347,7 @@ where
 impl<M, V> GetOrDefaultImpl<M> for GetOrDefaultGetRefDeref<M, V>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
     V::RuntimeType: RuntimeTypeWithDeref,
 {
     fn get_singular_field_or_default_impl<'a>(&self, m: &'a M) -> ReflectValueRef<'a> {
@@ -354,7 +358,7 @@ where
 impl<M, V> GetOrDefaultImpl<M> for GetOrDefaultGetCopy<M, V>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
 {
     fn get_singular_field_or_default_impl<'a>(&self, m: &'a M) -> ReflectValueRef<'a> {
         V::into_static_value_ref((self.get_field)(m))
@@ -364,7 +368,7 @@ where
 struct MutOrDefaultGetMut<M, V>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
 {
     mut_field: for<'a> fn(&'a mut M) -> &'a mut V,
 }
@@ -372,7 +376,7 @@ where
 impl<M, V> MutOrDefaultImpl<M> for MutOrDefaultGetMut<M, V>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
 {
     fn mut_singular_field_or_default_impl<'a>(&self, m: &'a mut M) -> ReflectValueMut<'a> {
         V::as_mut((self.mut_field)(m))
@@ -382,7 +386,7 @@ where
 struct MutOrDefaultOptionMut<M, V, O>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
     O: OptionLike<V> + Sync + Send + 'static,
 {
     mut_field: for<'a> fn(&'a mut M) -> &'a mut O,
@@ -392,7 +396,7 @@ where
 impl<M, V, O> MutOrDefaultImpl<M> for MutOrDefaultOptionMut<M, V, O>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
     O: OptionLike<V> + Sync + Send + 'static,
 {
     fn mut_singular_field_or_default_impl<'a>(&self, m: &'a mut M) -> ReflectValueMut<'a> {
@@ -407,7 +411,7 @@ where
 struct SetImplFieldPointer<M, V>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
 {
     mut_field: for<'a> fn(&'a mut M) -> &'a mut V,
 }
@@ -415,7 +419,7 @@ where
 struct SetImplOptionFieldPointer<M, V, O>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
     O: OptionLike<V> + Sync + Send + 'static,
 {
     mut_field: for<'a> fn(&'a mut M) -> &'a mut O,
@@ -425,7 +429,7 @@ where
 struct SetImplSetField<M, V>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
 {
     set_field: for<'a> fn(&'a mut M, V),
 }
@@ -433,7 +437,7 @@ where
 impl<M, V> SetImpl<M> for SetImplFieldPointer<M, V>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
 {
     fn set_singular_field(&self, m: &mut M, value: ReflectValueBox) {
         V::set_from_value_box((self.mut_field)(m), value);
@@ -443,7 +447,7 @@ where
 impl<M, V, O> SetImpl<M> for SetImplOptionFieldPointer<M, V, O>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
     O: OptionLike<V> + Sync + Send + 'static,
 {
     fn set_singular_field(&self, m: &mut M, value: ReflectValueBox) {
@@ -454,7 +458,7 @@ where
 impl<M, V> SetImpl<M> for SetImplSetField<M, V>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
 {
     fn set_singular_field(&self, m: &mut M, value: ReflectValueBox) {
         let value = value.downcast::<V>().expect("message");
@@ -470,7 +474,7 @@ pub fn make_message_field_accessor<M, V>(
 ) -> FieldAccessor
 where
     M: Message + 'static,
-    V: Message + ProtobufValueSized + 'static,
+    V: Message + ProtobufValue + 'static,
 {
     FieldAccessor::new_v2(
         name,
@@ -507,7 +511,7 @@ pub fn make_option_get_copy_simpler_accessor<M, V>(
 ) -> FieldAccessor
 where
     M: Message + 'static,
-    V: ProtobufValueSized + 'static,
+    V: ProtobufValue + 'static,
 {
     FieldAccessor::new_v2(
         name,
@@ -557,7 +561,7 @@ pub fn make_option_enum_accessor<M, E>(
 ) -> FieldAccessor
 where
     M: Message + 'static,
-    E: ProtobufEnum + ProtobufValueSized,
+    E: ProtobufEnum + ProtobufValue,
 {
     FieldAccessor::new_v2(
         name,
@@ -606,7 +610,7 @@ pub fn make_option_get_ref_simpler_accessor<M, V>(
 ) -> FieldAccessor
 where
     M: Message + 'static,
-    V: ProtobufValueSized + 'static,
+    V: ProtobufValue + 'static,
     V::RuntimeType: RuntimeTypeWithDeref,
 {
     FieldAccessor::new_v2(
@@ -639,7 +643,7 @@ pub fn make_simpler_field_accessor<M, V>(
 ) -> FieldAccessor
 where
     M: Message + 'static,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
 {
     FieldAccessor::new_v2(
         name,

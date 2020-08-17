@@ -124,7 +124,7 @@ impl ::std::fmt::Debug for MyMessage {
     }
 }
 
-impl crate::reflect::ProtobufValueSized for MyMessage {
+impl crate::reflect::ProtobufValue for MyMessage {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 

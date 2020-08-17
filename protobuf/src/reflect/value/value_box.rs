@@ -3,7 +3,7 @@ use crate::reflect::value::value_ref::ReflectValueMut;
 use crate::reflect::value::value_ref::ReflectValueRef;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::EnumValueDescriptor;
-use crate::reflect::ProtobufValueSized;
+use crate::reflect::ProtobufValue;
 use crate::reflect::RuntimeTypeBox;
 use crate::MessageDyn;
 
@@ -148,7 +148,7 @@ impl ReflectValueBox {
     /// Downcast to real typed value.
     ///
     /// For `enum` `V` can be either `V: ProtobufEnum` or `V: ProtobufEnumOrUnknown<E>`.
-    pub fn downcast<V: ProtobufValueSized>(self) -> Result<V, Self> {
+    pub fn downcast<V: ProtobufValue>(self) -> Result<V, Self> {
         V::from_value_box(self)
     }
 }

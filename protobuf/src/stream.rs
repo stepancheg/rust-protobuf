@@ -43,7 +43,7 @@ use crate::reflect::types::ProtobufTypeSint32;
 use crate::reflect::types::ProtobufTypeSint64;
 use crate::reflect::types::ProtobufTypeUint32;
 use crate::reflect::types::ProtobufTypeUint64;
-use crate::reflect::ProtobufValueSized;
+use crate::reflect::ProtobufValue;
 
 // Equal to the default buffer size of `BufWriter`, so when
 // `CodedOutputStream` wraps `BufWriter`, it often skips double buffering.
@@ -525,7 +525,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     /// Read repeated packed `enum` into `ProtobufEnum`
-    pub fn read_repeated_packed_enum_into<E: ProtobufEnum + ProtobufValueSized>(
+    pub fn read_repeated_packed_enum_into<E: ProtobufEnum + ProtobufValue>(
         &mut self,
         target: &mut Vec<E>,
     ) -> ProtobufResult<()> {

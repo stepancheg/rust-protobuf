@@ -238,7 +238,7 @@ impl ::std::fmt::Debug for CodeGeneratorRequest {
     }
 }
 
-impl crate::reflect::ProtobufValueSized for CodeGeneratorRequest {
+impl crate::reflect::ProtobufValue for CodeGeneratorRequest {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
@@ -435,7 +435,7 @@ impl ::std::fmt::Debug for CodeGeneratorResponse {
     }
 }
 
-impl crate::reflect::ProtobufValueSized for CodeGeneratorResponse {
+impl crate::reflect::ProtobufValue for CodeGeneratorResponse {
     type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
 }
 
@@ -766,7 +766,7 @@ pub mod code_generator_response {
         }
     }
 
-    impl crate::reflect::ProtobufValueSized for File {
+    impl crate::reflect::ProtobufValue for File {
         type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
     }
 }

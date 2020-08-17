@@ -33,7 +33,7 @@ use crate::unknown::UnknownFields;
 
 pub use crate::cached_size::CachedSize;
 pub use crate::lazy_v2::LazyV2;
-use crate::reflect::ProtobufValueSized;
+use crate::reflect::ProtobufValue;
 
 /// Given `u64` value compute varint encoded length.
 pub fn compute_raw_varint64_size(value: u64) -> u32 {
@@ -508,7 +508,7 @@ pub fn read_repeated_bool_into(
 
 /// Read repeated `enum` field into given vec.
 /// This function is no longer called from generated code, remove in 1.5.
-pub fn read_repeated_enum_into<E: ProtobufEnum + ProtobufValueSized>(
+pub fn read_repeated_enum_into<E: ProtobufEnum + ProtobufValue>(
     wire_type: WireType,
     is: &mut CodedInputStream,
     target: &mut Vec<E>,

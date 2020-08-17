@@ -5,7 +5,7 @@ use std::hash::Hash;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::value::hashable::ReflectValueBoxHashable;
-use crate::reflect::ProtobufValueSized;
+use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::reflect::RuntimeTypeBox;
@@ -29,7 +29,7 @@ pub(crate) trait ReflectMap: Send + Sync + 'static {
     fn value_type(&self) -> RuntimeTypeBox;
 }
 
-impl<K: ProtobufValueSized + Eq + Hash, V: ProtobufValueSized> ReflectMap for HashMap<K, V> {
+impl<K: ProtobufValue + Eq + Hash, V: ProtobufValue> ReflectMap for HashMap<K, V> {
     fn reflect_iter<'a>(&'a self) -> ReflectMapIter<'a> {
         ReflectMapIter {
             imp: Box::new(ReflectMapIterImpl::<'a, K, V> { iter: self.iter() }),
@@ -79,7 +79,7 @@ struct ReflectMapIterImpl<'a, K: Eq + Hash + 'static, V: 'static> {
     iter: hash_map::Iter<'a, K, V>,
 }
 
-impl<'a, K: ProtobufValueSized + Eq + Hash, V: ProtobufValueSized> ReflectMapIterTrait<'a>
+impl<'a, K: ProtobufValue + Eq + Hash, V: ProtobufValue> ReflectMapIterTrait<'a>
     for ReflectMapIterImpl<'a, K, V>
 {
     fn next(&mut self) -> Option<(ReflectValueRef<'a>, ReflectValueRef<'a>)> {

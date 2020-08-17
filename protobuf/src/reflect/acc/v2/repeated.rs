@@ -8,7 +8,7 @@ use crate::reflect::acc::FieldAccessor;
 use crate::reflect::repeated::ReflectRepeated;
 use crate::reflect::repeated::ReflectRepeatedMut;
 use crate::reflect::repeated::ReflectRepeatedRef;
-use crate::reflect::ProtobufValueSized;
+use crate::reflect::ProtobufValue;
 use crate::reflect::RuntimeTypeBox;
 
 pub(crate) trait RepeatedFieldAccessor: Send + Sync + 'static {
@@ -46,7 +46,7 @@ where
 impl<M, V> RepeatedFieldGetMut<M, dyn ReflectRepeated> for RepeatedFieldGetMutImpl<M, Vec<V>>
 where
     M: Message + 'static,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
 {
     fn get_field<'a>(&self, m: &'a M) -> &'a dyn ReflectRepeated {
         (self.get_field)(m) as &dyn ReflectRepeated
@@ -60,7 +60,7 @@ where
 struct RepeatedFieldAccessorImpl<M, V>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
 {
     fns: Box<dyn RepeatedFieldGetMut<M, dyn ReflectRepeated>>,
     _marker: marker::PhantomData<V>,
@@ -69,7 +69,7 @@ where
 impl<M, V> RepeatedFieldAccessor for RepeatedFieldAccessorImpl<M, V>
 where
     M: Message,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
 {
     fn get_repeated<'a>(&self, m: &'a dyn MessageDyn) -> ReflectRepeatedRef<'a> {
         let m = m.downcast_ref().unwrap();
@@ -96,7 +96,7 @@ pub fn make_vec_simpler_accessor<M, V>(
 ) -> FieldAccessor
 where
     M: Message + 'static,
-    V: ProtobufValueSized,
+    V: ProtobufValue,
 {
     FieldAccessor::new_v2(
         name,
