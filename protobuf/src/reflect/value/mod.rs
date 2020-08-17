@@ -93,61 +93,47 @@ pub trait ProtobufValueSized:
     }
 }
 
-impl ProtobufValue for u32 {}
-
 impl ProtobufValueSized for u32 {
     type RuntimeType = RuntimeTypeU32;
 }
 
-impl ProtobufValue for u64 {}
 impl ProtobufValueSized for u64 {
     type RuntimeType = RuntimeTypeU64;
 }
 
-impl ProtobufValue for i32 {}
 impl ProtobufValueSized for i32 {
     type RuntimeType = RuntimeTypeI32;
 }
 
-impl ProtobufValue for i64 {}
 impl ProtobufValueSized for i64 {
     type RuntimeType = RuntimeTypeI64;
 }
 
-impl ProtobufValue for f32 {}
 impl ProtobufValueSized for f32 {
     type RuntimeType = RuntimeTypeF32;
 }
 
-impl ProtobufValue for f64 {}
 impl ProtobufValueSized for f64 {
     type RuntimeType = RuntimeTypeF64;
 }
 
-impl ProtobufValue for bool {}
 impl ProtobufValueSized for bool {
     type RuntimeType = RuntimeTypeBool;
 }
 
-impl ProtobufValue for String {}
 impl ProtobufValueSized for String {
     type RuntimeType = RuntimeTypeString;
 }
 
-impl ProtobufValue for Vec<u8> {}
 impl ProtobufValueSized for Vec<u8> {
     type RuntimeType = RuntimeTypeVecU8;
 }
 
 #[cfg(feature = "bytes")]
-impl ProtobufValue for Bytes {}
-#[cfg(feature = "bytes")]
 impl ProtobufValueSized for Bytes {
     type RuntimeType = RuntimeTypeCarllercheBytes;
 }
 
-#[cfg(feature = "bytes")]
-impl ProtobufValue for Chars {}
 #[cfg(feature = "bytes")]
 impl ProtobufValueSized for Chars {
     type RuntimeType = RuntimeTypeCarllercheChars;
