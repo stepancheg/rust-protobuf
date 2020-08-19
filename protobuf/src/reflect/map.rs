@@ -4,6 +4,7 @@ use std::hash::Hash;
 
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
+use crate::reflect::runtime_types::RuntimeTypeHashable;
 use crate::reflect::value::hashable::ReflectValueBoxHashable;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
@@ -29,7 +30,12 @@ pub(crate) trait ReflectMap: Send + Sync + 'static {
     fn value_type(&self) -> RuntimeTypeBox;
 }
 
-impl<K: ProtobufValue + Eq + Hash, V: ProtobufValue> ReflectMap for HashMap<K, V> {
+impl<K, V> ReflectMap for HashMap<K, V>
+where
+    K: ProtobufValue + Eq + Hash,
+    V: ProtobufValue,
+    K::RuntimeType: RuntimeTypeHashable,
+{
     fn reflect_iter<'a>(&'a self) -> ReflectMapIter<'a> {
         ReflectMapIter {
             imp: Box::new(ReflectMapIterImpl::<'a, K, V> { iter: self.iter() }),
@@ -45,9 +51,7 @@ impl<K: ProtobufValue + Eq + Hash, V: ProtobufValue> ReflectMap for HashMap<K, V
     }
 
     fn get<'a>(&'a self, key: ReflectValueRef) -> Option<ReflectValueRef<'a>> {
-        // TODO: malloc for string or bytes
-        let key: K = key.to_box().downcast().expect("wrong key type");
-        self.get(&key).map(V::as_ref)
+        <K::RuntimeType as RuntimeTypeHashable>::hash_map_get(self, key).map(V::as_ref)
     }
 
     fn insert(&mut self, key: ReflectValueBoxHashable, value: ReflectValueBox) {

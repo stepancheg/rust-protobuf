@@ -8,6 +8,7 @@ use crate::reflect::acc::v2::AccessorV2;
 use crate::reflect::acc::FieldAccessor;
 use crate::reflect::map::ReflectMapMut;
 use crate::reflect::map::ReflectMapRef;
+use crate::reflect::runtime_types::RuntimeTypeHashable;
 use crate::reflect::ProtobufValue;
 use crate::reflect::RuntimeTypeBox;
 use std::fmt;
@@ -42,6 +43,7 @@ impl<M, K, V> MapFieldAccessor for MapFieldAccessorImpl<M, K, V>
 where
     M: Message,
     K: ProtobufValue + Eq + Hash,
+    K::RuntimeType: RuntimeTypeHashable,
     V: ProtobufValue,
 {
     fn get_reflect<'a>(&self, m: &'a dyn MessageDyn) -> ReflectMapRef<'a> {
@@ -69,9 +71,9 @@ pub fn make_map_simpler_accessor<M, K, V>(
 ) -> FieldAccessor
 where
     M: Message + 'static,
-    K: ProtobufValue,
+    K: ProtobufValue + Hash + Eq,
+    K::RuntimeType: RuntimeTypeHashable,
     V: ProtobufValue,
-    K: Hash + Eq,
 {
     FieldAccessor::new_v2(
         name,

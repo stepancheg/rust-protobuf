@@ -18,6 +18,7 @@ use crate::chars::Chars;
 use crate::enums::ProtobufEnum;
 use crate::enums::ProtobufEnumOrUnknown;
 use crate::message::Message;
+use std::collections::HashMap;
 
 /// `RuntimeType` is not implemented by all protobuf types directly
 /// because it's not possible to implement `RuntimeType` for all `Message`
@@ -81,6 +82,21 @@ pub trait RuntimeTypeWithDeref: RuntimeType {
     /// Deref.
     // TODO: rename to `deref`
     fn defef_as_ref(value: &Self::DerefTarget) -> ReflectValueRef;
+}
+
+/// Object wrapper can be used to query hashmap.
+pub enum RefOrValue<'a, Q: ?Sized, K> {
+    /// A reference
+    Ref(&'a Q),
+    /// A value
+    Value(K),
+}
+
+/// Types which can be hashmap keys.
+pub trait RuntimeTypeHashable: RuntimeType {
+    /// Query hash map with a given key.
+    fn hash_map_get<'a, V>(map: &'a HashMap<Self::Value, V>, key: ReflectValueRef)
+        -> Option<&'a V>;
 }
 
 /// Implementation for `f32`
@@ -253,6 +269,14 @@ impl RuntimeType for RuntimeTypeI32 {
         unimplemented!()
     }
 }
+impl RuntimeTypeHashable for RuntimeTypeI32 {
+    fn hash_map_get<'a, V>(map: &'a HashMap<i32, V>, key: ReflectValueRef) -> Option<&'a V> {
+        match key {
+            ReflectValueRef::I32(i) => map.get(&i),
+            _ => None,
+        }
+    }
+}
 
 impl RuntimeType for RuntimeTypeI64 {
     type Value = i64;
@@ -293,6 +317,14 @@ impl RuntimeType for RuntimeTypeI64 {
 
     fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {
         unimplemented!()
+    }
+}
+impl RuntimeTypeHashable for RuntimeTypeI64 {
+    fn hash_map_get<'a, V>(map: &'a HashMap<i64, V>, key: ReflectValueRef) -> Option<&'a V> {
+        match key {
+            ReflectValueRef::I64(i) => map.get(&i),
+            _ => None,
+        }
     }
 }
 
@@ -337,6 +369,14 @@ impl RuntimeType for RuntimeTypeU32 {
         *value != 0
     }
 }
+impl RuntimeTypeHashable for RuntimeTypeU32 {
+    fn hash_map_get<'a, V>(map: &'a HashMap<u32, V>, key: ReflectValueRef) -> Option<&'a V> {
+        match key {
+            ReflectValueRef::U32(i) => map.get(&i),
+            _ => None,
+        }
+    }
+}
 
 impl RuntimeType for RuntimeTypeU64 {
     type Value = u64;
@@ -377,6 +417,14 @@ impl RuntimeType for RuntimeTypeU64 {
 
     fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {
         unimplemented!()
+    }
+}
+impl RuntimeTypeHashable for RuntimeTypeU64 {
+    fn hash_map_get<'a, V>(map: &'a HashMap<u64, V>, key: ReflectValueRef) -> Option<&'a V> {
+        match key {
+            ReflectValueRef::U64(i) => map.get(&i),
+            _ => None,
+        }
     }
 }
 
@@ -421,6 +469,14 @@ impl RuntimeType for RuntimeTypeBool {
         unimplemented!()
     }
 }
+impl RuntimeTypeHashable for RuntimeTypeBool {
+    fn hash_map_get<'a, V>(map: &'a HashMap<bool, V>, key: ReflectValueRef) -> Option<&'a V> {
+        match key {
+            ReflectValueRef::Bool(i) => map.get(&i),
+            _ => None,
+        }
+    }
+}
 
 impl RuntimeType for RuntimeTypeString {
     type Value = String;
@@ -459,12 +515,19 @@ impl RuntimeType for RuntimeTypeString {
         !value.is_empty()
     }
 }
-
 impl RuntimeTypeWithDeref for RuntimeTypeString {
     type DerefTarget = str;
 
     fn defef_as_ref(value: &str) -> ReflectValueRef {
         ReflectValueRef::String(value)
+    }
+}
+impl RuntimeTypeHashable for RuntimeTypeString {
+    fn hash_map_get<'a, V>(map: &'a HashMap<String, V>, key: ReflectValueRef) -> Option<&'a V> {
+        match key {
+            ReflectValueRef::String(s) => map.get(*&s),
+            _ => None,
+        }
     }
 }
 
@@ -505,12 +568,19 @@ impl RuntimeType for RuntimeTypeVecU8 {
         !value.is_empty()
     }
 }
-
 impl RuntimeTypeWithDeref for RuntimeTypeVecU8 {
     type DerefTarget = [u8];
 
     fn defef_as_ref(value: &[u8]) -> ReflectValueRef {
         ReflectValueRef::Bytes(value)
+    }
+}
+impl RuntimeTypeHashable for RuntimeTypeVecU8 {
+    fn hash_map_get<'a, V>(map: &'a HashMap<Vec<u8>, V>, key: ReflectValueRef) -> Option<&'a V> {
+        match key {
+            ReflectValueRef::Bytes(s) => map.get(&*s),
+            _ => None,
+        }
     }
 }
 
@@ -553,13 +623,21 @@ impl RuntimeType for RuntimeTypeCarllercheBytes {
         unimplemented!()
     }
 }
-
 #[cfg(feature = "bytes")]
 impl RuntimeTypeWithDeref for RuntimeTypeCarllercheBytes {
     type DerefTarget = [u8];
 
     fn defef_as_ref(value: &[u8]) -> ReflectValueRef {
         ReflectValueRef::Bytes(value)
+    }
+}
+#[cfg(feature = "bytes")]
+impl RuntimeTypeHashable for RuntimeTypeCarllercheBytes {
+    fn hash_map_get<'a, V>(map: &'a HashMap<Bytes, V>, key: ReflectValueRef) -> Option<&'a V> {
+        match key {
+            ReflectValueRef::Bytes(s) => map.get(&*s),
+            _ => None,
+        }
     }
 }
 
@@ -601,13 +679,21 @@ impl RuntimeType for RuntimeTypeCarllercheChars {
         unimplemented!()
     }
 }
-
 #[cfg(feature = "bytes")]
 impl RuntimeTypeWithDeref for RuntimeTypeCarllercheChars {
     type DerefTarget = str;
 
     fn defef_as_ref(value: &str) -> ReflectValueRef {
         ReflectValueRef::String(value)
+    }
+}
+#[cfg(feature = "bytes")]
+impl RuntimeTypeHashable for RuntimeTypeCarllercheChars {
+    fn hash_map_get<'a, V>(map: &'a HashMap<String, V>, key: ReflectValueRef) -> Option<&'a V> {
+        match key {
+            ReflectValueRef::String(s) => map.get(&*s),
+            _ => None,
+        }
     }
 }
 
