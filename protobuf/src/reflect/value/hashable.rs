@@ -3,6 +3,7 @@ use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::reflect::RuntimeTypeBox;
+use std::borrow::Borrow;
 
 /// Subset of [`ReflectValueBox`], only hashable types.
 #[derive(Eq, PartialEq, Hash, Debug, Clone)]
@@ -87,5 +88,24 @@ impl ReflectValueBoxHashable {
         self.into_value_box()
             .downcast()
             .map_err(ReflectValueBoxHashable::from_box)
+    }
+}
+
+// TODO: implement hash consistently
+impl Borrow<str> for ReflectValueBoxHashable {
+    fn borrow(&self) -> &str {
+        match self {
+            ReflectValueBoxHashable::String(s) => s.as_str(),
+            _ => panic!("not a str"),
+        }
+    }
+}
+
+impl Borrow<[u8]> for ReflectValueBoxHashable {
+    fn borrow(&self) -> &[u8] {
+        match self {
+            ReflectValueBoxHashable::Bytes(s) => s.as_slice(),
+            _ => panic!("not a [u8]"),
+        }
     }
 }

@@ -25,6 +25,7 @@ impl DynamicMap {
 
 impl ReflectMap for DynamicMap {
     fn reflect_iter(&self) -> ReflectMapIter {
+        // TODO
         unimplemented!()
     }
 
@@ -40,10 +41,15 @@ impl ReflectMap for DynamicMap {
         if key.get_type() != self.key {
             return None;
         }
-        // TODO: performs allocation for string and bytes
-        self.map
-            .get(&ReflectValueBoxHashable::from_box(key.to_box()))
-            .map(ReflectValueBox::as_value_ref)
+
+        match key {
+            ReflectValueRef::String(s) => self.map.get(s),
+            ReflectValueRef::Bytes(s) => self.map.get(s),
+            key => self
+                .map
+                .get(&ReflectValueBoxHashable::from_box(key.to_box())),
+        }
+        .map(ReflectValueBox::as_value_ref)
     }
 
     fn insert(&mut self, key: ReflectValueBoxHashable, value: ReflectValueBox) {
