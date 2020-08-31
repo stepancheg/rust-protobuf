@@ -25,7 +25,7 @@ pub(crate) trait ReflectMap: Send + Sync + 'static {
     fn value_type(&self) -> RuntimeTypeBox;
 }
 
-trait ReflectMapIterTrait<'a> {
+pub(crate) trait ReflectMapIterTrait<'a> {
     fn next(&mut self) -> Option<(ReflectValueRef<'a>, ReflectValueRef<'a>)>;
     fn key_type(&self) -> RuntimeTypeBox;
     fn value_type(&self) -> RuntimeTypeBox;
@@ -33,6 +33,12 @@ trait ReflectMapIterTrait<'a> {
 
 pub struct ReflectMapIter<'a> {
     imp: Box<dyn ReflectMapIterTrait<'a> + 'a>,
+}
+
+impl<'a> ReflectMapIter<'a> {
+    pub(crate) fn new<I: ReflectMapIterTrait<'a> + 'a>(imp: I) -> ReflectMapIter<'a> {
+        ReflectMapIter { imp: Box::new(imp) }
+    }
 }
 
 impl<'a> Iterator for ReflectMapIter<'a> {

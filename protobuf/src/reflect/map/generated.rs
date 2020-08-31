@@ -16,9 +16,7 @@ where
     K::RuntimeType: RuntimeTypeHashable,
 {
     fn reflect_iter<'a>(&'a self) -> ReflectMapIter<'a> {
-        ReflectMapIter {
-            imp: Box::new(GeneratedMapIterImpl::<'a, K, V> { iter: self.iter() }),
-        }
+        ReflectMapIter::new(GeneratedMapIterImpl::<'a, K, V> { iter: self.iter() })
     }
 
     fn len(&self) -> usize {

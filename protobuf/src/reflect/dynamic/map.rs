@@ -1,9 +1,14 @@
-use crate::reflect::map::ReflectMap;
 use crate::reflect::map::ReflectMapIter;
-use crate::reflect::ReflectValueBox;
+use crate::reflect::map::ReflectMap;
+use crate::reflect::map::ReflectMapIterTrait;
+use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::ReflectValueRef;
 use crate::reflect::RuntimeTypeBox;
+use crate::reflect::ProtobufValue;
+use crate::reflect::ReflectValueBox;
+use std::collections::hash_map;
 use std::collections::HashMap;
+use std::hash::Hash;
 
 #[derive(Debug, Clone)]
 enum Maps {
@@ -84,10 +89,57 @@ impl DynamicMap {
     }
 }
 
+struct DynamicMapIterImpl<'a, K: ProtobufValue + Eq + Hash + 'static> {
+    iter: hash_map::Iter<'a, K, ReflectValueBox>,
+    value: &'a RuntimeTypeBox,
+}
+
+impl<'a, K: ProtobufValue + Eq + Hash + 'static> ReflectMapIterTrait<'a>
+    for DynamicMapIterImpl<'a, K>
+{
+    fn next(&mut self) -> Option<(ReflectValueRef<'a>, ReflectValueRef<'a>)> {
+        self.iter
+            .next()
+            .map(|(k, v)| (K::as_ref(k), v.as_value_ref()))
+    }
+
+    fn key_type(&self) -> RuntimeTypeBox {
+        K::RuntimeType::runtime_type_box()
+    }
+
+    fn value_type(&self) -> RuntimeTypeBox {
+        self.value.clone()
+    }
+}
+
 impl ReflectMap for DynamicMap {
     fn reflect_iter(&self) -> ReflectMapIter {
-        // TODO
-        unimplemented!()
+        match &self.maps {
+            Maps::U32(m) => ReflectMapIter::new(DynamicMapIterImpl {
+                iter: m.iter(),
+                value: &self.value,
+            }),
+            Maps::I32(m) => ReflectMapIter::new(DynamicMapIterImpl {
+                iter: m.iter(),
+                value: &self.value,
+            }),
+            Maps::U64(m) => ReflectMapIter::new(DynamicMapIterImpl {
+                iter: m.iter(),
+                value: &self.value,
+            }),
+            Maps::I64(m) => ReflectMapIter::new(DynamicMapIterImpl {
+                iter: m.iter(),
+                value: &self.value,
+            }),
+            Maps::Bool(m) => ReflectMapIter::new(DynamicMapIterImpl {
+                iter: m.iter(),
+                value: &self.value,
+            }),
+            Maps::String(m) => ReflectMapIter::new(DynamicMapIterImpl {
+                iter: m.iter(),
+                value: &self.value,
+            }),
+        }
     }
 
     fn len(&self) -> usize {
