@@ -7,6 +7,7 @@ use std::str;
 use bytes::Bytes;
 
 use crate::clear::Clear;
+use std::borrow::Borrow;
 
 /// Thin wrapper around `Bytes` which guarantees that bytes are valid UTF-8 string.
 /// Should be API-compatible to `String`.
@@ -68,6 +69,12 @@ impl Deref for Chars {
     fn deref(&self) -> &str {
         // This is safe because `Chars` is guaranteed to store a valid UTF-8 string
         unsafe { str::from_utf8_unchecked(&self.0) }
+    }
+}
+
+impl Borrow<str> for Chars {
+    fn borrow(&self) -> &str {
+        &*self
     }
 }
 

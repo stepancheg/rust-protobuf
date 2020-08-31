@@ -672,7 +672,7 @@ impl RuntimeTypeWithDeref for RuntimeTypeCarllercheChars {
 }
 #[cfg(feature = "bytes")]
 impl RuntimeTypeHashable for RuntimeTypeCarllercheChars {
-    fn hash_map_get<'a, V>(map: &'a HashMap<String, V>, key: ReflectValueRef) -> Option<&'a V> {
+    fn hash_map_get<'a, V>(map: &'a HashMap<Chars, V>, key: ReflectValueRef) -> Option<&'a V> {
         match key {
             ReflectValueRef::String(s) => map.get(&*s),
             _ => None,
