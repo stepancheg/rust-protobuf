@@ -4,7 +4,6 @@ use std::str;
 use crate::message::Message;
 
 use crate::message_dyn::MessageDyn;
-use crate::reflect::value::hashable::ReflectValueBoxHashable;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::EnumValueDescriptor;
 use crate::reflect::MessageDescriptor;
@@ -25,7 +24,6 @@ pub enum ParseErrorWithoutLoc {
     UnknownField(String),
     UnknownEnumValue(String),
     MapFieldIsSpecifiedMoreThanOnce(String),
-    TypeIsNotHashable,
     IntegerOverflow,
     ExpectingBool,
     MessageNotInitialized,
@@ -199,7 +197,7 @@ impl<'a> Parser<'a> {
         &mut self,
         k: &RuntimeTypeBox,
         v: &RuntimeTypeBox,
-    ) -> ParseResult<(ReflectValueBoxHashable, ReflectValueBox)> {
+    ) -> ParseResult<(ReflectValueBox, ReflectValueBox)> {
         let key_field_name: &str = "key";
         let value_field_name: &str = "value";
 
@@ -233,8 +231,6 @@ impl<'a> Parser<'a> {
             Some(value) => value,
             None => v.default_value_ref().to_box(),
         };
-        let key = ReflectValueBoxHashable::try_from(key)
-            .map_err(|_| ParseErrorWithoutLoc::TypeIsNotHashable)?;
         Ok((key, value))
     }
 

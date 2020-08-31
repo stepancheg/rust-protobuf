@@ -5,7 +5,6 @@ use std::hash::Hash;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::runtime_types::RuntimeTypeHashable;
-use crate::reflect::value::hashable::ReflectValueBoxHashable;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
@@ -21,7 +20,7 @@ pub(crate) trait ReflectMap: Send + Sync + 'static {
 
     fn get<'a>(&'a self, key: ReflectValueRef) -> Option<ReflectValueRef<'a>>;
 
-    fn insert(&mut self, key: ReflectValueBoxHashable, value: ReflectValueBox);
+    fn insert(&mut self, key: ReflectValueBox, value: ReflectValueBox);
 
     fn clear(&mut self);
 
@@ -54,7 +53,7 @@ where
         <K::RuntimeType as RuntimeTypeHashable>::hash_map_get(self, key).map(V::as_ref)
     }
 
-    fn insert(&mut self, key: ReflectValueBoxHashable, value: ReflectValueBox) {
+    fn insert(&mut self, key: ReflectValueBox, value: ReflectValueBox) {
         let key: K = key.downcast().expect("wrong key type");
         let value: V = value.downcast().expect("wrong value type");
         self.insert(key, value);
@@ -222,8 +221,12 @@ impl<'a> ReflectMapMut<'a> {
         self.map.get(key)
     }
 
-    /// Insert a value into the map
-    pub fn insert(&mut self, key: ReflectValueBoxHashable, value: ReflectValueBox) {
+    /// Insert a value into the map.
+    ///
+    /// # Panics
+    ///
+    /// If given key has an incompatible key type.
+    pub fn insert(&mut self, key: ReflectValueBox, value: ReflectValueBox) {
         self.map.insert(key, value)
     }
 

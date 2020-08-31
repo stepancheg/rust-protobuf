@@ -4,7 +4,6 @@ use std::f64;
 use protobuf::reflect::FieldDescriptor;
 use protobuf::reflect::MessageDescriptor;
 use protobuf::reflect::ReflectValueBox;
-use protobuf::reflect::ReflectValueBoxHashable;
 use protobuf::reflect::RuntimeFieldType;
 use protobuf::reflect::RuntimeTypeBox;
 use protobuf::well_known_types::value;
@@ -136,7 +135,7 @@ pub fn special_values_for_field(
             // TODO: empty map
             // TODO: map of more than one element
             let mut m = d.new_instance();
-            let k = ReflectValueBoxHashable::from_box(value_for_runtime_type(&k));
+            let k = value_for_runtime_type(&k);
             let v = value_for_runtime_type(&v);
             f.mut_map(&mut *m).insert(k, v);
             r.push(m);

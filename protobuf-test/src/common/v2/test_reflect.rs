@@ -1,10 +1,10 @@
 use protobuf::reflect::FieldDescriptor;
 use protobuf::reflect::ReflectFieldRef;
 use protobuf::reflect::ReflectValueBox;
-use protobuf::reflect::ReflectValueBoxHashable;
 use protobuf::reflect::ReflectValueRef;
+use protobuf::Message;
+use protobuf::MessageDyn;
 use protobuf::ProtobufEnum;
-use protobuf::{Message, MessageDyn};
 
 use super::test_reflect_pb::*;
 use protobuf::reflect::RuntimeFieldType;
@@ -157,10 +157,7 @@ fn test_map_field(message: &mut dyn MessageDyn, field: &FieldDescriptor) {
         let key = value_for_runtime_type(&k);
         let value = value_for_runtime_type(&v);
 
-        map.insert(
-            ReflectValueBoxHashable::from_box(key.clone()),
-            value.clone(),
-        );
+        map.insert(key.clone(), value.clone());
 
         assert_eq!(Some(value.as_value_ref()), map.get(key.as_value_ref()));
 

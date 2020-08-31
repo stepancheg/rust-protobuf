@@ -31,7 +31,6 @@ use crate::text_format::lexer::JsonNumberLit;
 
 use crate::json::well_known_wrapper::WellKnownWrapper;
 use crate::message_dyn::MessageDyn;
-use crate::reflect::value::hashable::ReflectValueBoxHashable;
 use crate::well_known_types::value;
 use crate::well_known_types::Any;
 use crate::well_known_types::BoolValue;
@@ -553,26 +552,14 @@ impl<'a> Parser<'a> {
         Ok(())
     }
 
-    fn parse_key(
-        &self,
-        key: String,
-        t: &RuntimeTypeBox,
-    ) -> ParseResultWithoutLoc<ReflectValueBoxHashable> {
+    fn parse_key(&self, key: String, t: &RuntimeTypeBox) -> ParseResultWithoutLoc<ReflectValueBox> {
         match t {
-            RuntimeTypeBox::I32 => self
-                .parse_number::<i32>(&key)
-                .map(ReflectValueBoxHashable::I32),
-            RuntimeTypeBox::I64 => self
-                .parse_number::<i64>(&key)
-                .map(ReflectValueBoxHashable::I64),
-            RuntimeTypeBox::U32 => self
-                .parse_number::<u32>(&key)
-                .map(ReflectValueBoxHashable::U32),
-            RuntimeTypeBox::U64 => self
-                .parse_number::<u64>(&key)
-                .map(ReflectValueBoxHashable::U64),
-            RuntimeTypeBox::Bool => self.parse_bool(&key).map(ReflectValueBoxHashable::Bool),
-            RuntimeTypeBox::String => Ok(ReflectValueBoxHashable::String(key)),
+            RuntimeTypeBox::I32 => self.parse_number::<i32>(&key).map(ReflectValueBox::I32),
+            RuntimeTypeBox::I64 => self.parse_number::<i64>(&key).map(ReflectValueBox::I64),
+            RuntimeTypeBox::U32 => self.parse_number::<u32>(&key).map(ReflectValueBox::U32),
+            RuntimeTypeBox::U64 => self.parse_number::<u64>(&key).map(ReflectValueBox::U64),
+            RuntimeTypeBox::Bool => self.parse_bool(&key).map(ReflectValueBox::Bool),
+            RuntimeTypeBox::String => Ok(ReflectValueBox::String(key)),
             t @ RuntimeTypeBox::F32
             | t @ RuntimeTypeBox::F64
             | t @ RuntimeTypeBox::VecU8

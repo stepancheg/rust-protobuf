@@ -1,6 +1,5 @@
 use crate::reflect::map::ReflectMap;
 use crate::reflect::map::ReflectMapIter;
-use crate::reflect::value::hashable::ReflectValueBoxHashable;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::reflect::RuntimeTypeBox;
@@ -112,16 +111,16 @@ impl ReflectMap for DynamicMap {
         .map(ReflectValueBox::as_value_ref)
     }
 
-    fn insert(&mut self, key: ReflectValueBoxHashable, value: ReflectValueBox) {
+    fn insert(&mut self, key: ReflectValueBox, value: ReflectValueBox) {
         assert!(value.get_type() == self.value);
         match (&mut self.maps, &key) {
-            (Maps::U32(m), ReflectValueBoxHashable::U32(k)) => m.insert(*k, value),
-            (Maps::U64(m), ReflectValueBoxHashable::U64(k)) => m.insert(*k, value),
-            (Maps::I32(m), ReflectValueBoxHashable::I32(k)) => m.insert(*k, value),
-            (Maps::I64(m), ReflectValueBoxHashable::I64(k)) => m.insert(*k, value),
-            (Maps::Bool(m), ReflectValueBoxHashable::Bool(k)) => m.insert(*k, value),
+            (Maps::U32(m), ReflectValueBox::U32(k)) => m.insert(*k, value),
+            (Maps::U64(m), ReflectValueBox::U64(k)) => m.insert(*k, value),
+            (Maps::I32(m), ReflectValueBox::I32(k)) => m.insert(*k, value),
+            (Maps::I64(m), ReflectValueBox::I64(k)) => m.insert(*k, value),
+            (Maps::Bool(m), ReflectValueBox::Bool(k)) => m.insert(*k, value),
             (Maps::String(m), _) => match key {
-                ReflectValueBoxHashable::String(k) => m.insert(k, value),
+                ReflectValueBox::String(k) => m.insert(k, value),
                 _ => panic!("wrong key type"),
             },
             _ => panic!("wrong key type"),
