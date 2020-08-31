@@ -1,4 +1,3 @@
-use crate::reflect::EnumDescriptor;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
@@ -20,10 +19,6 @@ pub enum ReflectValueBoxHashable {
     Bool(bool),
     /// `string`
     String(String),
-    /// `bytes`
-    Bytes(Vec<u8>),
-    /// `enum`
-    Enum(EnumDescriptor, i32),
 }
 
 impl ReflectValueBoxHashable {
@@ -36,8 +31,6 @@ impl ReflectValueBoxHashable {
             ReflectValueBox::I64(v) => ReflectValueBoxHashable::I64(v),
             ReflectValueBox::Bool(v) => ReflectValueBoxHashable::Bool(v),
             ReflectValueBox::String(v) => ReflectValueBoxHashable::String(v),
-            ReflectValueBox::Bytes(v) => ReflectValueBoxHashable::Bytes(v),
-            ReflectValueBox::Enum(e, v) => ReflectValueBoxHashable::Enum(e, v),
             v => return Err(v),
         })
     }
@@ -59,8 +52,6 @@ impl ReflectValueBoxHashable {
             ReflectValueBoxHashable::I64(v) => ReflectValueRef::I64(*v),
             ReflectValueBoxHashable::Bool(v) => ReflectValueRef::Bool(*v),
             ReflectValueBoxHashable::String(v) => ReflectValueRef::String(v),
-            ReflectValueBoxHashable::Bytes(v) => ReflectValueRef::Bytes(v),
-            ReflectValueBoxHashable::Enum(e, v) => ReflectValueRef::Enum(e.clone(), *v),
         }
     }
 
@@ -73,8 +64,6 @@ impl ReflectValueBoxHashable {
             ReflectValueBoxHashable::I64(v) => ReflectValueBox::I64(v),
             ReflectValueBoxHashable::Bool(v) => ReflectValueBox::Bool(v),
             ReflectValueBoxHashable::String(v) => ReflectValueBox::String(v),
-            ReflectValueBoxHashable::Bytes(v) => ReflectValueBox::Bytes(v),
-            ReflectValueBoxHashable::Enum(e, v) => ReflectValueBox::Enum(e.clone(), v),
         }
     }
 
@@ -97,15 +86,6 @@ impl Borrow<str> for ReflectValueBoxHashable {
         match self {
             ReflectValueBoxHashable::String(s) => s.as_str(),
             _ => panic!("not a str"),
-        }
-    }
-}
-
-impl Borrow<[u8]> for ReflectValueBoxHashable {
-    fn borrow(&self) -> &[u8] {
-        match self {
-            ReflectValueBoxHashable::Bytes(s) => s.as_slice(),
-            _ => panic!("not a [u8]"),
         }
     }
 }

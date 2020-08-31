@@ -44,7 +44,6 @@ impl ReflectMap for DynamicMap {
 
         match key {
             ReflectValueRef::String(s) => self.map.get(s),
-            ReflectValueRef::Bytes(s) => self.map.get(s),
             key => self
                 .map
                 .get(&ReflectValueBoxHashable::from_box(key.to_box())),

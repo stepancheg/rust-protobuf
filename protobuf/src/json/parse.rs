@@ -573,13 +573,10 @@ impl<'a> Parser<'a> {
                 .map(ReflectValueBoxHashable::U64),
             RuntimeTypeBox::Bool => self.parse_bool(&key).map(ReflectValueBoxHashable::Bool),
             RuntimeTypeBox::String => Ok(ReflectValueBoxHashable::String(key)),
-            RuntimeTypeBox::VecU8 => self.parse_bytes(&key).map(ReflectValueBoxHashable::Bytes),
-            RuntimeTypeBox::Enum(e) => self
-                .parse_enum(key, &e)
-                .map(|v| ReflectValueBoxHashable::Enum(v.enum_descriptor().clone(), v.value())),
-            t @ RuntimeTypeBox::F32 | t @ RuntimeTypeBox::F64 => {
-                panic!("{} cannot be a map key", t)
-            }
+            t @ RuntimeTypeBox::F32
+            | t @ RuntimeTypeBox::F64
+            | t @ RuntimeTypeBox::VecU8
+            | t @ RuntimeTypeBox::Enum(..) => panic!("{} cannot be a map key", t),
             RuntimeTypeBox::Message(_) => panic!("message cannot be a map key"),
         }
     }

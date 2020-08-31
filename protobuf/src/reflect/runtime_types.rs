@@ -575,14 +575,6 @@ impl RuntimeTypeWithDeref for RuntimeTypeVecU8 {
         ReflectValueRef::Bytes(value)
     }
 }
-impl RuntimeTypeHashable for RuntimeTypeVecU8 {
-    fn hash_map_get<'a, V>(map: &'a HashMap<Vec<u8>, V>, key: ReflectValueRef) -> Option<&'a V> {
-        match key {
-            ReflectValueRef::Bytes(s) => map.get(&*s),
-            _ => None,
-        }
-    }
-}
 
 #[cfg(feature = "bytes")]
 impl RuntimeType for RuntimeTypeCarllercheBytes {
@@ -629,15 +621,6 @@ impl RuntimeTypeWithDeref for RuntimeTypeCarllercheBytes {
 
     fn defef_as_ref(value: &[u8]) -> ReflectValueRef {
         ReflectValueRef::Bytes(value)
-    }
-}
-#[cfg(feature = "bytes")]
-impl RuntimeTypeHashable for RuntimeTypeCarllercheBytes {
-    fn hash_map_get<'a, V>(map: &'a HashMap<Bytes, V>, key: ReflectValueRef) -> Option<&'a V> {
-        match key {
-            ReflectValueRef::Bytes(s) => map.get(&*s),
-            _ => None,
-        }
     }
 }
 
