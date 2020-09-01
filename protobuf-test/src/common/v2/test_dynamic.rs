@@ -1,9 +1,16 @@
-use protobuf::reflect::FileDescriptor;
 use protobuf::reflect::ReflectValueRef;
+use protobuf::reflect::{FileDescriptor, ReflectValueBox};
 
 use super::test_dynamic_pb;
 
-fn do_test(file_descriptor: &FileDescriptor) {
+fn dynamic_file_descriptor() -> FileDescriptor {
+    FileDescriptor::new_dynamic(
+        test_dynamic_pb::file_descriptor().get_proto().clone(),
+        Vec::new(),
+    )
+}
+
+fn do_test_get_set(file_descriptor: &FileDescriptor) {
     let m = file_descriptor
         .get_message_by_package_relative_name("ForDynamicTest")
         .unwrap();
@@ -18,14 +25,33 @@ fn do_test(file_descriptor: &FileDescriptor) {
 }
 
 #[test]
-fn test_generated() {
-    do_test(&test_dynamic_pb::file_descriptor());
+fn generated_get_set() {
+    do_test_get_set(&test_dynamic_pb::file_descriptor());
 }
 
 #[test]
-fn test_dynamic() {
-    do_test(&FileDescriptor::new_dynamic(
-        test_dynamic_pb::file_descriptor().get_proto().clone(),
-        Vec::new(),
-    ));
+fn dynamic_get_set() {
+    do_test_get_set(&dynamic_file_descriptor());
+}
+
+fn do_test_set_panic_on_wrong_field_type(file_descriptor: &FileDescriptor) {
+    let m = file_descriptor
+        .get_message_by_package_relative_name("ForDynamicTest")
+        .unwrap();
+    let f = m.get_field_by_name("ff").unwrap();
+    let mut m = m.new_instance();
+    let m = &mut *m;
+    f.set_singular_field(m, ReflectValueBox::from(10i64));
+}
+
+#[test]
+#[should_panic]
+fn generated_set_panic_on_wrong_field_type() {
+    do_test_set_panic_on_wrong_field_type(&test_dynamic_pb::file_descriptor());
+}
+
+#[test]
+#[should_panic]
+fn dynamic_set_panic_on_wrong_field_type() {
+    do_test_set_panic_on_wrong_field_type(&dynamic_file_descriptor());
 }
