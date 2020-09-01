@@ -4,6 +4,7 @@ use crate::reflect::FieldDescriptor;
 use crate::reflect::ReflectFieldRef;
 use crate::reflect::ReflectMapMut;
 use crate::reflect::ReflectRepeatedMut;
+use crate::reflect::ReflectValueBox;
 
 pub(crate) struct DynamicFieldDescriptorRef<'a> {
     pub(crate) field: &'a FieldDescriptor,
@@ -23,5 +24,9 @@ impl<'a> DynamicFieldDescriptorRef<'a> {
 
     pub(crate) fn mut_map<'b>(&self, message: &'b mut dyn MessageDyn) -> ReflectMapMut<'b> {
         DynamicMessage::downcast_mut(message).mut_map(&self.field)
+    }
+
+    pub(crate) fn set_field(&self, message: &mut dyn MessageDyn, value: ReflectValueBox) {
+        DynamicMessage::downcast_mut(message).set_field(&self.field, value)
     }
 }

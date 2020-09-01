@@ -10,7 +10,10 @@ use crate::reflect::FieldDescriptor;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectFieldRef;
 use crate::reflect::ReflectMapMut;
+use crate::reflect::ReflectMapRef;
 use crate::reflect::ReflectRepeatedMut;
+use crate::reflect::ReflectRepeatedRef;
+use crate::reflect::ReflectValueBox;
 use crate::reflect::RuntimeFieldType;
 use crate::Clear;
 use crate::CodedInputStream;
@@ -33,9 +36,9 @@ enum DynamicFieldValue {
 impl DynamicFieldValue {
     fn as_ref(&self) -> ReflectFieldRef {
         match self {
-            DynamicFieldValue::Singular(_v) => unimplemented!(),
-            DynamicFieldValue::Repeated(_r) => unimplemented!(),
-            DynamicFieldValue::Map(_r) => unimplemented!(),
+            DynamicFieldValue::Singular(v) => ReflectFieldRef::Optional(v.get()),
+            DynamicFieldValue::Repeated(r) => ReflectFieldRef::Repeated(ReflectRepeatedRef::new(r)),
+            DynamicFieldValue::Map(m) => ReflectFieldRef::Map(ReflectMapRef::new(m)),
         }
     }
 
@@ -149,6 +152,16 @@ impl DynamicMessage {
         match &mut self.fields[field.index] {
             DynamicFieldValue::Map(m) => ReflectMapMut::new(m),
             _ => panic!("Not a map field: {}", field),
+        }
+    }
+
+    pub(crate) fn set_field(&mut self, field: &FieldDescriptor, value: ReflectValueBox) {
+        assert_eq!(field.message_descriptor, self.descriptor);
+        self.init_fields();
+        // TODO: reset oneof group fields
+        match &mut self.fields[field.index] {
+            DynamicFieldValue::Singular(s) => s.set(value),
+            _ => panic!("Not a singular field: {}", field),
         }
     }
 

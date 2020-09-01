@@ -267,3 +267,57 @@ impl<'a> From<EnumValueDescriptor> for ReflectValueRef<'a> {
         ReflectValueRef::Enum(v.enum_descriptor, number)
     }
 }
+
+impl From<u32> for ReflectValueRef<'_> {
+    fn from(v: u32) -> Self {
+        ReflectValueRef::U32(v)
+    }
+}
+
+impl From<i32> for ReflectValueRef<'_> {
+    fn from(v: i32) -> Self {
+        ReflectValueRef::I32(v)
+    }
+}
+
+impl From<u64> for ReflectValueRef<'_> {
+    fn from(v: u64) -> Self {
+        ReflectValueRef::U64(v)
+    }
+}
+
+impl From<i64> for ReflectValueRef<'_> {
+    fn from(v: i64) -> Self {
+        ReflectValueRef::I64(v)
+    }
+}
+
+impl From<f32> for ReflectValueRef<'_> {
+    fn from(v: f32) -> Self {
+        ReflectValueRef::F32(v)
+    }
+}
+
+impl From<f64> for ReflectValueRef<'_> {
+    fn from(v: f64) -> Self {
+        ReflectValueRef::F64(v)
+    }
+}
+
+impl From<bool> for ReflectValueRef<'_> {
+    fn from(v: bool) -> Self {
+        ReflectValueRef::Bool(v)
+    }
+}
+
+impl<'a> From<&'a str> for ReflectValueRef<'a> {
+    fn from(v: &'a str) -> Self {
+        ReflectValueRef::String(v)
+    }
+}
+
+impl<'a> From<&'a [u8]> for ReflectValueRef<'a> {
+    fn from(v: &'a [u8]) -> Self {
+        ReflectValueRef::Bytes(v)
+    }
+}

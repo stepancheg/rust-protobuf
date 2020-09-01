@@ -321,7 +321,7 @@ impl FieldDescriptor {
     pub fn set_singular_field(&self, m: &mut dyn MessageDyn, value: ReflectValueBox) {
         match self.singular() {
             SingularFieldAccessorRef::Generated(g) => g.accessor.set_field(m, value),
-            SingularFieldAccessorRef::Dynamic(..) => unimplemented!(), // TODO
+            SingularFieldAccessorRef::Dynamic(d) => d.set_field(m, value),
         }
     }
 
@@ -342,7 +342,14 @@ impl FieldDescriptor {
         }
     }
 
-    fn get_singular<'a>(&self, m: &'a dyn MessageDyn) -> Option<ReflectValueRef<'a>> {
+    /// Get singular field value.
+    ///
+    /// Return `None` if field is unset.
+    ///
+    /// # Panics
+    ///
+    /// If this field belongs to a different message type or fields is not singular.
+    pub fn get_singular<'a>(&self, m: &'a dyn MessageDyn) -> Option<ReflectValueRef<'a>> {
         match self.get_reflect(m) {
             ReflectFieldRef::Optional(o) => o,
             _ => panic!("not a singular field"),

@@ -1,0 +1,5 @@
+syntax = "proto2";
+
+message ForDynamicTest {
+    optional uint32 ff = 1;
+}

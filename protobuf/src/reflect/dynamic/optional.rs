@@ -1,5 +1,7 @@
 use crate::reflect::value::value_ref::ReflectValueMut;
-use crate::reflect::{ReflectValueBox, RuntimeTypeBox};
+use crate::reflect::ReflectValueBox;
+use crate::reflect::ReflectValueRef;
+use crate::reflect::RuntimeTypeBox;
 
 #[derive(Debug, Clone)]
 pub(crate) struct DynamicOptional {
@@ -21,5 +23,14 @@ impl DynamicOptional {
 
     pub fn clear(&mut self) {
         self.value = None;
+    }
+
+    pub fn get(&self) -> Option<ReflectValueRef> {
+        self.value.as_ref().map(ReflectValueBox::as_value_ref)
+    }
+
+    pub fn set(&mut self, value: ReflectValueBox) {
+        assert_eq!(value.get_type(), self.elem);
+        self.value = Some(value);
     }
 }
