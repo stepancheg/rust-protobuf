@@ -274,8 +274,16 @@ fn gen_file(
 
     {
         let mut w = CodeWriter::new(&mut v);
+        if let Some(ref m) = customize.wrap_in_module {
+            w.write_line(&format!("pub mod {} {{", m));
+        }
 
-        w.write_generated_by("rust-protobuf", env!("CARGO_PKG_VERSION"), parser);
+        w.write_generated_by(
+            "rust-protobuf",
+            env!("CARGO_PKG_VERSION"),
+            parser,
+            &customize,
+        );
 
         w.write_line("");
         w.write_line(&format!(
@@ -352,6 +360,10 @@ fn gen_file(
         if !lite_runtime {
             w.write_line("");
             write_file_descriptor_data(file_descriptor, &customize, &mut w);
+        }
+
+        if let Some(ref m) = customize.wrap_in_module {
+            w.write_line(format!("}} // {}", m));
         }
     }
 
