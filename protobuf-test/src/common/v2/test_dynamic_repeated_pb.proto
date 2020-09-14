@@ -1,0 +1,5 @@
+syntax = "proto2";
+
+message ForDynamicRepeatedTest {
+    repeated uint32 ii = 1;
+}
