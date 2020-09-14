@@ -24,7 +24,7 @@ impl<'a> ExtGen<'a> {
         type_name_to_rust_relative(
             &ProtobufAbsolutePath::from(self.field.get_extendee()),
             &FileAndMod {
-                file: self.file.get_proto().get_name().to_owned(),
+                file: self.file.proto().get_name().to_owned(),
                 relative_mod: RustRelativePath::from("exts"),
                 customize: self.customize.clone(),
             },
@@ -47,7 +47,7 @@ impl<'a> ExtGen<'a> {
             let rust_name_relative = type_name_to_rust_relative(
                 &ProtobufAbsolutePath::from(self.field.get_type_name()),
                 &FileAndMod {
-                    file: self.file.get_proto().get_name().to_owned(),
+                    file: self.file.proto().get_name().to_owned(),
                     relative_mod: RustRelativePath::from("exts"),
                     customize: self.customize.clone(),
                 },
@@ -97,14 +97,14 @@ pub(crate) fn write_extensions(
     w: &mut CodeWriter,
     customize: &Customize,
 ) {
-    if file.get_proto().extension.is_empty() {
+    if file.proto().extension.is_empty() {
         return;
     }
 
     w.write_line("");
     w.write_line("/// Extension fields");
     w.pub_mod("exts", |w| {
-        for field in &file.get_proto().extension {
+        for field in &file.proto().extension {
             if field.get_field_type() == field_descriptor_proto::Type::TYPE_GROUP {
                 continue;
             }

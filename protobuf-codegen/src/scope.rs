@@ -73,11 +73,11 @@ pub(crate) struct FileScope<'a> {
 
 impl<'a> FileScope<'a> {
     fn get_package(&self) -> ProtobufAbsolutePath {
-        ProtobufRelativePath::from(self.file_descriptor.get_proto().get_package()).into_absolute()
+        ProtobufRelativePath::from(self.file_descriptor.proto().get_package()).into_absolute()
     }
 
     pub fn syntax(&self) -> Syntax {
-        Syntax::parse(self.file_descriptor.get_proto().get_syntax())
+        Syntax::parse(self.file_descriptor.proto().get_syntax())
     }
 
     pub fn to_scope(&self) -> Scope<'a> {
@@ -157,13 +157,13 @@ pub(crate) struct Scope<'a> {
 
 impl<'a> Scope<'a> {
     pub fn get_file_descriptor(&self) -> &'a FileDescriptorProto {
-        self.file_scope.file_descriptor.get_proto()
+        self.file_scope.file_descriptor.proto()
     }
 
     // get message descriptors in this scope
     fn get_message_descriptors(&self) -> Vec<MessageDescriptor> {
         if self.path.is_empty() {
-            self.file_scope.file_descriptor.get_messages()
+            self.file_scope.file_descriptor.messages()
         } else {
             self.path.last().unwrap().get_nested_messages()
         }
@@ -172,7 +172,7 @@ impl<'a> Scope<'a> {
     // get enum descriptors in this scope
     fn get_enum_descriptors(&self) -> Vec<EnumDescriptor> {
         if self.path.is_empty() {
-            self.file_scope.file_descriptor.get_enums()
+            self.file_scope.file_descriptor.enums()
         } else {
             self.path.last().unwrap().get_enums()
         }
@@ -280,7 +280,7 @@ impl<'a> Scope<'a> {
             file: self
                 .file_scope
                 .file_descriptor
-                .get_proto()
+                .proto()
                 .get_name()
                 .to_owned(),
             relative_mod: self.rust_path_to_file(),

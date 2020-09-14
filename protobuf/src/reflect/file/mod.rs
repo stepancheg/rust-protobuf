@@ -64,27 +64,27 @@ pub struct FileDescriptor {
 }
 
 impl FileDescriptor {
-    fn get_index(&self) -> &FileIndex {
+    fn index(&self) -> &FileIndex {
         match &self.imp {
             FileDescriptorImpl::Generated(g) => &g.index,
             FileDescriptorImpl::Dynamic(d) => &d.index,
         }
     }
 
-    pub(crate) fn get_message_index_entry(&self, index: usize) -> &FileIndexMessageEntry {
-        &self.get_index().messages[index]
+    pub(crate) fn message_index_entry(&self, index: usize) -> &FileIndexMessageEntry {
+        &self.index().messages[index]
     }
 
-    pub(crate) fn get_message_proto(&self, index: usize) -> &DescriptorProto {
-        self.get_message_index_entry(index)
+    pub(crate) fn message_proto(&self, index: usize) -> &DescriptorProto {
+        self.message_index_entry(index)
             .path
-            .eval(self.get_proto())
+            .eval(self.proto())
             .unwrap()
     }
 
     /// Get top-level messages.
-    pub fn get_messages(&self) -> Vec<MessageDescriptor> {
-        self.get_index()
+    pub fn messages(&self) -> Vec<MessageDescriptor> {
+        self.index()
             .top_level_messages
             .iter()
             .map(|i| MessageDescriptor::new(self.clone(), *i))
@@ -92,8 +92,8 @@ impl FileDescriptor {
     }
 
     /// Get top-level enums.
-    pub fn get_enums(&self) -> Vec<EnumDescriptor> {
-        self.get_proto()
+    pub fn enums(&self) -> Vec<EnumDescriptor> {
+        self.proto()
             .enum_type
             .iter()
             .enumerate()
@@ -104,8 +104,8 @@ impl FileDescriptor {
     /// Find message by name relative to the package.
     ///
     /// Only search in the current file, not in any dependencies.
-    pub fn get_message_by_package_relative_name(&self, name: &str) -> Option<MessageDescriptor> {
-        self.get_index()
+    pub fn message_by_package_relative_name(&self, name: &str) -> Option<MessageDescriptor> {
+        self.index()
             .message_by_name_to_package
             .get(name)
             .map(|&index| MessageDescriptor::new(self.clone(), index))
@@ -114,8 +114,8 @@ impl FileDescriptor {
     /// Find message by name relative to the package.
     ///
     /// Only search in the current file, not in any dependencies.
-    pub fn get_enum_by_package_relative_name(&self, name: &str) -> Option<EnumDescriptor> {
-        self.get_index()
+    pub fn enum_by_package_relative_name(&self, name: &str) -> Option<EnumDescriptor> {
+        self.index()
             .enums_by_name_to_package
             .get(name)
             .map(|&index| EnumDescriptor::new(self.clone(), index))
@@ -124,11 +124,11 @@ impl FileDescriptor {
     /// Find message by fully-qualified name.
     ///
     /// Only search in the current file, not in any dependencies.
-    pub fn get_message_by_full_name(&self, name: &str) -> Option<MessageDescriptor> {
+    pub fn message_by_full_name(&self, name: &str) -> Option<MessageDescriptor> {
         if let Some(name_to_package) =
-            protobuf_name_starts_with_package(name, self.get_proto().get_package())
+            protobuf_name_starts_with_package(name, self.proto().get_package())
         {
-            self.get_message_by_package_relative_name(name_to_package)
+            self.message_by_package_relative_name(name_to_package)
         } else {
             None
         }
@@ -137,11 +137,11 @@ impl FileDescriptor {
     /// Find enum by name fully-qualified name.
     ///
     /// Only search in the current file, not in any dependencies.
-    pub fn get_enum_by_full_name(&self, name: &str) -> Option<EnumDescriptor> {
+    pub fn enum_by_full_name(&self, name: &str) -> Option<EnumDescriptor> {
         if let Some(name_to_package) =
-            protobuf_name_starts_with_package(name, self.get_proto().get_package())
+            protobuf_name_starts_with_package(name, self.proto().get_package())
         {
-            self.get_enum_by_package_relative_name(name_to_package)
+            self.enum_by_package_relative_name(name_to_package)
         } else {
             None
         }
@@ -164,7 +164,7 @@ impl FileDescriptor {
         // remove undeclared dependencies
         let dependencies: HashMap<_, _> = dependencies
             .iter()
-            .map(|d| (d.get_proto().get_name(), d))
+            .map(|d| (d.proto().get_name(), d))
             .collect();
         let dependencies: Vec<_> = proto
             .dependency
@@ -186,14 +186,14 @@ impl FileDescriptor {
     }
 
     /// `.proto` data for this file.
-    pub fn get_proto(&self) -> &FileDescriptorProto {
+    pub fn proto(&self) -> &FileDescriptorProto {
         match &self.imp {
             FileDescriptorImpl::Generated(g) => &g.proto,
             FileDescriptorImpl::Dynamic(d) => &d.proto,
         }
     }
 
-    fn get_deps(&self) -> &[FileDescriptor] {
+    fn deps(&self) -> &[FileDescriptor] {
         match &self.imp {
             FileDescriptorImpl::Generated(g) => &g.dependencies,
             FileDescriptorImpl::Dynamic(d) => &d.dependencies,
@@ -202,14 +202,14 @@ impl FileDescriptor {
 
     /// Subset of dependencies which are public
     pub fn public_deps(&self) -> Vec<FileDescriptor> {
-        self.get_proto()
+        self.proto()
             .public_dependency
             .iter()
-            .map(|&i| self.get_deps()[i as usize].clone())
+            .map(|&i| self.deps()[i as usize].clone())
             .collect()
     }
 
-    fn _get_all_files(&self) -> Vec<&FileDescriptor> {
+    fn _all_files(&self) -> Vec<&FileDescriptor> {
         let mut r = Vec::new();
         let mut visited = HashSet::new();
 
@@ -221,7 +221,7 @@ impl FileDescriptor {
             }
 
             r.push(file);
-            stack.extend(file.get_deps());
+            stack.extend(file.deps());
         }
 
         r

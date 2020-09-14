@@ -110,7 +110,7 @@ fn write_file_descriptor(
                 "});",
                 |w| {
                     w.write_line(&format!("let mut deps = {};", EXPR_VEC_NEW));
-                    for f in &file_descriptor.get_proto().dependency {
+                    for f in &file_descriptor.proto().dependency {
                         w.write_line(&format!(
                             "deps.push({}());",
                             proto_path_to_fn_file_descriptor(f, customize)
@@ -160,7 +160,7 @@ fn write_file_descriptor(
 }
 
 fn write_file_descriptor_data(file: &FileDescriptor, customize: &Customize, w: &mut CodeWriter) {
-    let fdp_bytes = file.get_proto().write_to_bytes().unwrap();
+    let fdp_bytes = file.proto().write_to_bytes().unwrap();
     w.write_line("static file_descriptor_proto_data: &'static [u8] = b\"\\");
     w.indented(|w| {
         const MAX_LINE_LEN: usize = 72;
@@ -254,14 +254,14 @@ fn gen_file(
     let mut customize = customize.clone();
     // options specified in invocation have precedence over options specified in file
     customize.update_with(&customize_from_rustproto_for_file(
-        file_descriptor.get_proto().options.get_or_default(),
+        file_descriptor.proto().options.get_or_default(),
     ));
 
     let file_scope = FileScope { file_descriptor };
     let scope = file_scope.to_scope();
     let lite_runtime = customize.lite_runtime.unwrap_or_else(|| {
         file_descriptor
-            .get_proto()
+            .proto()
             .options
             .get_or_default()
             .get_optimize_for()
@@ -280,7 +280,7 @@ fn gen_file(
         w.write_line("");
         w.write_line(&format!(
             "//! Generated file from `{}`",
-            file_descriptor.get_proto().get_name()
+            file_descriptor.proto().get_name()
         ));
         if customize.inside_protobuf != Some(true) {
             w.write_line("");
@@ -316,7 +316,7 @@ fn gen_file(
                     &root_scope,
                     &customize,
                     &path,
-                    file_descriptor.get_proto().source_code_info.as_ref(),
+                    file_descriptor.proto().source_code_info.as_ref(),
                 )
                 .write(&mut w);
             }
@@ -342,7 +342,7 @@ fn gen_file(
                 &customize,
                 root_scope,
                 &path,
-                file_descriptor.get_proto().source_code_info.as_ref(),
+                file_descriptor.proto().source_code_info.as_ref(),
             )
             .write(&mut w);
         }
@@ -356,7 +356,7 @@ fn gen_file(
     }
 
     Some(compiler_plugin::GenResult {
-        name: proto_name_to_rs(file_descriptor.get_proto().get_name()),
+        name: proto_name_to_rs(file_descriptor.proto().get_name()),
         content: v,
     })
 }
@@ -379,7 +379,7 @@ pub fn gen(
     let mut results: Vec<compiler_plugin::GenResult> = Vec::new();
     let files_map: HashMap<&Path, &FileDescriptor> = file_descriptors
         .iter()
-        .map(|f| (Path::new(f.get_proto().get_name()), f))
+        .map(|f| (Path::new(f.proto().get_name()), f))
         .collect();
 
     for file_name in files_to_generate {

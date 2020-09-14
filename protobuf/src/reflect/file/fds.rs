@@ -69,7 +69,7 @@ pub(crate) fn fds_extend_with_public(file_descriptors: Vec<FileDescriptor>) -> V
     stack.reverse();
 
     while let Some(f) = stack.pop() {
-        if !visited.insert(f.get_proto().get_name().to_owned()) {
+        if !visited.insert(f.proto().get_name().to_owned()) {
             continue;
         }
 

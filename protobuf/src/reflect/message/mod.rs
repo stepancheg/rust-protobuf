@@ -64,7 +64,7 @@ impl MessageDescriptor {
 
     /// Get underlying `DescriptorProto` object.
     pub fn get_proto(&self) -> &DescriptorProto {
-        self.file_descriptor.get_message_proto(self.index)
+        self.file_descriptor.message_proto(self.index)
     }
 
     /// Message name as specified in `.proto` file.
@@ -84,7 +84,7 @@ impl MessageDescriptor {
     }
 
     fn get_index_entry(&self) -> &FileIndexMessageEntry {
-        self.file_descriptor.get_message_index_entry(self.index)
+        self.file_descriptor.message_index_entry(self.index)
     }
 
     /// Get a message descriptor for given message type
@@ -124,7 +124,7 @@ impl MessageDescriptor {
 
     /// `FileDescriptorProto` containg this message type
     pub fn file_descriptor_proto(&self) -> &FileDescriptorProto {
-        self.file_descriptor().get_proto()
+        self.file_descriptor().proto()
     }
 
     /// This message descriptor is a map entry.

@@ -22,7 +22,7 @@ pub(crate) struct FileDescriptorBuilding<'a> {
 impl<'a> FileDescriptorBuilding<'a> {
     fn all_descriptors(&self) -> impl Iterator<Item = &'a FileDescriptorProto> {
         iter::once(self.current_file_descriptor)
-            .chain(self.deps_with_public.iter().map(|d| d.get_proto()))
+            .chain(self.deps_with_public.iter().map(|d| d.proto()))
     }
 
     pub fn find_enum(&self, full_name: &str) -> &'a EnumDescriptorProto {
@@ -100,7 +100,7 @@ impl<'a> FileDescriptorBuilding<'a> {
                     }
                 }
                 for dep in self.deps_with_public {
-                    if let Some(m) = dep.get_message_by_full_name(field.get_type_name()) {
+                    if let Some(m) = dep.message_by_full_name(field.get_type_name()) {
                         return ForwardRuntimeTypeBox::RuntimeTypeBox(RuntimeTypeBox::Message(m));
                     }
                 }
@@ -124,7 +124,7 @@ impl<'a> FileDescriptorBuilding<'a> {
                     }
                 }
                 for dep in self.deps_with_public {
-                    if let Some(m) = dep.get_enum_by_full_name(field.get_type_name()) {
+                    if let Some(m) = dep.enum_by_full_name(field.get_type_name()) {
                         return ForwardRuntimeTypeBox::RuntimeTypeBox(RuntimeTypeBox::Enum(m));
                     }
                 }
