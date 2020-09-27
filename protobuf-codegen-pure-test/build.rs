@@ -9,6 +9,7 @@ extern crate protobuf_test_common;
 use std::io::Read;
 use std::io::Write;
 
+use std::env;
 use std::fs;
 use std::path::Path;
 
@@ -19,7 +20,7 @@ fn copy_test<P1: AsRef<Path>, P2: AsRef<Path>>(src: P1, dst: P2) {
     fs::File::open(src.as_ref())
         .expect(&format!("open {}", src.as_ref().display()))
         .read_to_end(&mut content)
-        .expect("read_to_end");
+        .expect(&format!("read_to_end {}", src.as_ref().display()));
 
     let mut write = fs::File::create(dst).expect("create");
     writeln!(write, "// generated").expect("write");
@@ -95,6 +96,27 @@ fn generate_interop() {
     .unwrap();
 }
 
+fn generate_include_generated() {
+    copy_from_protobuf_test("src/include_generated/mod.rs");
+
+    let dir = format!("{}/include_generated", env::var("OUT_DIR").unwrap());
+    if Path::new(&dir).exists() {
+        fs::remove_dir_all(&dir).unwrap();
+    }
+    fs::create_dir(&dir).unwrap();
+    protobuf_codegen_pure::Codegen::new()
+        .out_dir(dir)
+        .input("../protobuf-test/src/include_generated/v2.proto")
+        .input("../protobuf-test/src/include_generated/v3.proto")
+        .customize(Customize {
+            gen_mod_rs: Some(true),
+            ..Default::default()
+        })
+        .include("../protobuf-test/src/include_generated")
+        .run()
+        .unwrap();
+}
+
 fn generate_pb_rs() {
     copy_tests("src/v2");
     gen_in_dir("src/v2", "src/v2");
@@ -112,6 +134,8 @@ fn generate_pb_rs() {
     gen_in_dir("src/google/protobuf", "src");
 
     generate_interop();
+
+    generate_include_generated();
 }
 
 fn main() {
