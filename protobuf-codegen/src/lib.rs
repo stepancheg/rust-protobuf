@@ -249,7 +249,7 @@ fn gen_file(
     root_scope: &RootScope,
     customize: &Customize,
     parser: &str,
-) -> Option<compiler_plugin::GenResult> {
+) -> compiler_plugin::GenResult {
     // TODO: use it
     let mut customize = customize.clone();
     // options specified in invocation have precedence over options specified in file
@@ -355,10 +355,10 @@ fn gen_file(
         }
     }
 
-    Some(compiler_plugin::GenResult {
+    compiler_plugin::GenResult {
         name: proto_name_to_rs(file_descriptor.proto().get_name()),
         content: v,
-    })
+    }
 }
 
 // This function is also used externally by cargo plugin
@@ -388,7 +388,7 @@ pub fn gen(
             file_name,
             files_map.keys()
         ));
-        results.extend(gen_file(file, &files_map, &root_scope, customize, parser));
+        results.push(gen_file(file, &files_map, &root_scope, customize, parser));
     }
 
     if customize.inside_protobuf.unwrap_or(false) {
