@@ -167,7 +167,7 @@ fn gen_file(
     _files_map: &HashMap<&str, &FileDescriptorProto>,
     root_scope: &RootScope,
     customize: &Customize,
-) -> Option<compiler_plugin::GenResult> {
+) -> compiler_plugin::GenResult {
     // TODO: use it
     let mut customize = customize.clone();
     // options specified in invocation have precedence over options specified in file
@@ -221,10 +221,10 @@ fn gen_file(
         }
     }
 
-    Some(compiler_plugin::GenResult {
+    compiler_plugin::GenResult {
         name: format!("{}.rs", proto_path_to_rust_mod(file.get_name())),
         content: v,
-    })
+    }
 }
 
 // This function is also used externally by cargo plugin
@@ -251,7 +251,7 @@ pub fn gen(
             "file not found in file descriptors: {:?}, files: {:?}",
             file_name, all_file_names
         ));
-        results.extend(gen_file(file, &files_map, &root_scope, customize));
+        results.push(gen_file(file, &files_map, &root_scope, customize));
     }
     results
 }
