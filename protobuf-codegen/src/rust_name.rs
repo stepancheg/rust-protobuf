@@ -22,7 +22,7 @@ impl RustIdent {
         &self.0
     }
 
-    pub fn _into_string(self) -> String {
+    pub fn into_string(self) -> String {
         self.0
     }
 

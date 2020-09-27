@@ -7,9 +7,14 @@ extern crate protoc_rust;
 
 extern crate protobuf_test_common;
 
+use std::env;
+use std::fs;
+use std::io::Write;
+use std::path::Path;
+use std::path::PathBuf;
+
 use protobuf_test_common::build::*;
 use protoc::Protoc;
-use std::path::PathBuf;
 
 fn test_protoc_bin_path() -> PathBuf {
     let path = protoc_bin_vendored::protoc_bin_path().unwrap();
@@ -66,10 +71,30 @@ fn generate_interop() {
         .unwrap();
 }
 
+fn generate_include_generated() {
+    let dir = format!("{}/include_generated", env::var("OUT_DIR").unwrap());
+    if Path::new(&dir).exists() {
+        fs::remove_dir_all(&dir).unwrap();
+    }
+    fs::create_dir(&dir).unwrap();
+    protoc_rust::Codegen::new()
+        .out_dir(dir)
+        .input("src/include_generated/v2.proto")
+        .input("src/include_generated/v3.proto")
+        .customize(Customize {
+            gen_mod_rs: Some(true),
+            ..Default::default()
+        })
+        .include("src/include_generated")
+        .run()
+        .unwrap();
+}
+
 fn generate_pb_rs() {
     generate_in_common();
     generate_in_v2_v3();
     generate_interop();
+    generate_include_generated();
 }
 
 fn main() {

@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+import "v2.proto";
+
+message V3Message {
+    // Test we can include other protos
+    V2Message v2 = 1;
+}
