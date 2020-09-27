@@ -26,6 +26,12 @@ pub struct Customize {
     pub serde_derive_cfg: Option<String>,
     /// Enable lite runtime
     pub lite_runtime: Option<bool>,
+    /// Generate `mod.rs` in the output directory.
+    ///
+    /// This option allows inclusion of generated files from cargo output directory.
+    ///
+    /// This option will likely be on by default in rust-protobuf version 3.
+    pub gen_mod_rs: Option<bool>,
     /// Used internally to generate protos bundled in protobuf crate
     /// like `descriptor.proto`
     pub inside_protobuf: Option<bool>,
@@ -75,6 +81,9 @@ impl Customize {
         if let Some(v) = that.lite_runtime {
             self.lite_runtime = Some(v);
         }
+        if let Some(v) = that.gen_mod_rs {
+            self.gen_mod_rs = Some(v);
+        }
         if let Some(v) = that.inside_protobuf {
             self.inside_protobuf = Some(v);
         }
@@ -122,6 +131,8 @@ impl Customize {
                 r.serde_derive_cfg = Some(v.to_owned());
             } else if n == "lite_runtime" {
                 r.lite_runtime = Some(parse_bool(v)?);
+            } else if n == "gen_mod_rs" {
+                r.gen_mod_rs = Some(parse_bool(v)?);
             } else if n == "inside_protobuf" {
                 r.inside_protobuf = Some(parse_bool(v)?);
             } else {
@@ -144,6 +155,7 @@ pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customiz
     let serde_derive = rustproto::exts::serde_derive.get(source);
     let serde_derive_cfg = rustproto::exts::serde_derive_cfg.get(source);
     let lite_runtime = None;
+    let gen_mod_rs = None;
     let inside_protobuf = None;
     Customize {
         expose_oneof,
@@ -155,6 +167,7 @@ pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customiz
         serde_derive,
         serde_derive_cfg,
         lite_runtime,
+        gen_mod_rs,
         inside_protobuf,
         _future_options: (),
     }
@@ -171,6 +184,7 @@ pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
     let serde_derive = None;
     let serde_derive_cfg = None;
     let lite_runtime = None;
+    let gen_mod_rs = None;
     let inside_protobuf = None;
     Customize {
         expose_oneof,
@@ -182,6 +196,7 @@ pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
         serde_derive,
         serde_derive_cfg,
         lite_runtime,
+        gen_mod_rs,
         inside_protobuf,
         _future_options: (),
     }
@@ -197,6 +212,7 @@ pub fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
     let serde_derive = rustproto::exts::serde_derive_all.get(source);
     let serde_derive_cfg = rustproto::exts::serde_derive_cfg_all.get(source);
     let lite_runtime = rustproto::exts::lite_runtime_all.get(source);
+    let gen_mod_rs = None;
     let inside_protobuf = None;
     Customize {
         expose_oneof,
@@ -209,6 +225,7 @@ pub fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
         serde_derive_cfg,
         lite_runtime,
         inside_protobuf,
+        gen_mod_rs,
         _future_options: (),
     }
 }

@@ -53,7 +53,7 @@ pub use amend_io_error_util::amend_io_error;
 use scope::FileScope;
 use scope::RootScope;
 
-use crate::file::proto_path_to_fn_file_descriptor;
+use crate::file::{proto_path_to_fn_file_descriptor, proto_path_to_rust_mod};
 use inside::protobuf_crate_path;
 pub use protobuf_abs_path::ProtobufAbsolutePath;
 pub use protobuf_ident::ProtobufIdent;
@@ -243,13 +243,18 @@ impl FileIndex {
     }
 }
 
+struct GenFileResult {
+    compiler_plugin_result: compiler_plugin::GenResult,
+    mod_name: String,
+}
+
 fn gen_file(
     file_descriptor: &FileDescriptor,
     _files_map: &HashMap<&Path, &FileDescriptor>,
     root_scope: &RootScope,
     customize: &Customize,
     parser: &str,
-) -> compiler_plugin::GenResult {
+) -> GenFileResult {
     // TODO: use it
     let mut customize = customize.clone();
     // options specified in invocation have precedence over options specified in file
@@ -355,8 +360,26 @@ fn gen_file(
         }
     }
 
+    GenFileResult {
+        compiler_plugin_result: compiler_plugin::GenResult {
+            name: proto_name_to_rs(file_descriptor.proto().get_name()),
+            content: v,
+        },
+        mod_name: proto_path_to_rust_mod(file_descriptor.proto().get_name()).into_string(),
+    }
+}
+
+fn gen_mod_rs(mods: &[String]) -> compiler_plugin::GenResult {
+    let mut v = Vec::new();
+    let mut w = CodeWriter::new(&mut v);
+    w.comment("@generated");
+    w.write_line("");
+    for m in mods {
+        w.write_line(&format!("pub mod {};", m));
+    }
+    drop(w);
     compiler_plugin::GenResult {
-        name: proto_name_to_rs(file_descriptor.proto().get_name()),
+        name: "mod.rs".to_owned(),
         content: v,
     }
 }
@@ -382,17 +405,25 @@ pub fn gen(
         .map(|f| (Path::new(f.proto().get_name()), f))
         .collect();
 
+    let mut mods = Vec::new();
+
     for file_name in files_to_generate {
         let file = files_map.get(file_name.as_path()).expect(&format!(
             "file not found in file descriptors: {:?}, files: {:?}",
             file_name,
             files_map.keys()
         ));
-        results.push(gen_file(file, &files_map, &root_scope, customize, parser));
+        let gen_file_result = gen_file(file, &files_map, &root_scope, customize, parser);
+        results.push(gen_file_result.compiler_plugin_result);
+        mods.push(gen_file_result.mod_name);
     }
 
     if customize.inside_protobuf.unwrap_or(false) {
         results.push(gen_well_known_types_mod(&file_descriptors));
+    }
+
+    if customize.gen_mod_rs.unwrap_or(false) {
+        results.push(gen_mod_rs(&mods));
     }
 
     results

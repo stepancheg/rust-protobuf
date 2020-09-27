@@ -28,3 +28,5 @@ mod common;
 mod google;
 
 mod interop;
+
+mod include_generated;
