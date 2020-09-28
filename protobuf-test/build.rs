@@ -8,9 +8,16 @@ extern crate protoc_rust;
 extern crate protobuf_test_common;
 
 use std::fs;
-use std::io::Write;
 
 use protobuf_test_common::build::*;
+use protoc::Protoc;
+use std::path::PathBuf;
+
+fn test_protoc_bin_path() -> PathBuf {
+    let path = protoc_bin_vendored::protoc_bin_path().unwrap();
+    assert!(Protoc::from_path(&path).version().unwrap().is_3());
+    path
+}
 
 fn gen_in_dir(dir: &str, include_dir: &str) {
     gen_in_dir_impl(
@@ -21,6 +28,7 @@ fn gen_in_dir(dir: &str, include_dir: &str) {
              customize,
          }| {
             protoc_rust::Codegen::new()
+                .protoc_path(test_protoc_bin_path())
                 .out_dir(out_dir)
                 .inputs(input)
                 .includes(&["../proto", include_dir])
@@ -31,31 +39,14 @@ fn gen_in_dir(dir: &str, include_dir: &str) {
 }
 
 fn generate_in_common() {
-    let v3 = protoc::Protoc::from_env_path()
-        .version()
-        .expect("version")
-        .is_3();
-
     gen_in_dir("src/common/v2", "src/common/v2");
 
-    if v3 {
-        copy_tests_v2_v3("src/common/v2", "src/common/v3");
-        gen_in_dir("src/common/v3", "src/common/v3");
-    } else {
-        let mut mod_rs = fs::File::create("src/common/v3/mod.rs").expect("create");
-        writeln!(mod_rs, "// @generated").expect("write");
-        writeln!(mod_rs, "// no tests because protoc is not v3").expect("write");
-        mod_rs.flush().expect("flush");
-    }
+    copy_tests_v2_v3("src/common/v2", "src/common/v3");
+    gen_in_dir("src/common/v3", "src/common/v3");
 }
 
 fn generate_in_v2_v3() {
     gen_in_dir("src/v2", "src/v2");
-
-    assert!(protoc::Protoc::from_env_path()
-        .version()
-        .expect("version")
-        .is_3());
 
     gen_in_dir("src/v3", "src/v3");
 
@@ -64,6 +55,7 @@ fn generate_in_v2_v3() {
 
 fn generate_interop() {
     protoc_rust::Codegen::new()
+        .protoc_path(test_protoc_bin_path())
         .out_dir("src/interop")
         .includes(&["../interop/cxx", "../proto"])
         .input("../interop/cxx/interop_pb.proto")
@@ -85,12 +77,4 @@ fn main() {
     clean_old_files();
 
     generate_pb_rs();
-
-    if protoc::Protoc::from_env_path()
-        .version()
-        .expect("version")
-        .is_3()
-    {
-        println!("cargo:rustc-cfg=proto3");
-    }
 }
