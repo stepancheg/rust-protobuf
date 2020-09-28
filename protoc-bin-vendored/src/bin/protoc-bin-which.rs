@@ -6,7 +6,7 @@ fn main() {
         Err(e) => {
             eprintln!("protoc binary not found: {}", e);
             process::exit(1);
-        },
+        }
     };
     println!("{}", protoc_bin_path.display());
 }
