@@ -104,7 +104,7 @@ fn print_diff(dir: &Path, a: &Path, b: &Path) {
 
 fn protoc_descriptor_set(includes: &[PathBuf], inputs: &[PathBuf]) -> FileDescriptorSet {
     let mut temp_file = NamedTempFile::new().unwrap();
-    protoc::Protoc::from_env_path()
+    protoc::Protoc::from_path(protoc_bin_vendored::protoc_bin_path().unwrap())
         .descriptor_set_out_args()
         .out(temp_file.path())
         .includes(includes)
