@@ -287,6 +287,7 @@ where
     fs::create_dir(&pure_dir).unwrap();
 
     protoc_rust::Codegen::new()
+        .protoc_path(protoc_bin_vendored::protoc_bin_path().unwrap())
         .inputs(&inputs)
         .includes(&includes)
         .out_dir(&protoc_dir)
