@@ -21,6 +21,294 @@
 
 //! Generated file from `google/protobuf/compiler/plugin.proto`
 
+///  The version number of protocol compiler.
+#[derive(PartialEq,Clone,Default)]
+#[cfg_attr(serde, derive(Serialize, Deserialize))]
+pub struct Version {
+    // message fields
+    major: ::std::option::Option<i32>,
+    minor: ::std::option::Option<i32>,
+    patch: ::std::option::Option<i32>,
+    ///  A suffix for alpha, beta or rc release, e.g., "alpha-1", "rc2". It should
+    ///  be empty for mainline stable releases.
+    suffix: ::std::option::Option<::std::string::String>,
+    // special fields
+    #[cfg_attr(serde, serde(skip))]
+    pub unknown_fields: crate::UnknownFields,
+    #[cfg_attr(serde, serde(skip))]
+    pub cached_size: crate::rt::CachedSize,
+}
+
+impl<'a> ::std::default::Default for &'a Version {
+    fn default() -> &'a Version {
+        <Version as crate::Message>::default_instance()
+    }
+}
+
+impl Version {
+    pub fn new() -> Version {
+        ::std::default::Default::default()
+    }
+
+    // optional int32 major = 1;
+
+    pub fn get_major(&self) -> i32 {
+        self.major.unwrap_or(0)
+    }
+
+    pub fn clear_major(&mut self) {
+        self.major = ::std::option::Option::None;
+    }
+
+    pub fn has_major(&self) -> bool {
+        self.major.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_major(&mut self, v: i32) {
+        self.major = ::std::option::Option::Some(v);
+    }
+
+    // optional int32 minor = 2;
+
+    pub fn get_minor(&self) -> i32 {
+        self.minor.unwrap_or(0)
+    }
+
+    pub fn clear_minor(&mut self) {
+        self.minor = ::std::option::Option::None;
+    }
+
+    pub fn has_minor(&self) -> bool {
+        self.minor.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_minor(&mut self, v: i32) {
+        self.minor = ::std::option::Option::Some(v);
+    }
+
+    // optional int32 patch = 3;
+
+    pub fn get_patch(&self) -> i32 {
+        self.patch.unwrap_or(0)
+    }
+
+    pub fn clear_patch(&mut self) {
+        self.patch = ::std::option::Option::None;
+    }
+
+    pub fn has_patch(&self) -> bool {
+        self.patch.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_patch(&mut self, v: i32) {
+        self.patch = ::std::option::Option::Some(v);
+    }
+
+    // optional string suffix = 4;
+
+    pub fn get_suffix(&self) -> &str {
+        match self.suffix.as_ref() {
+            Some(v) => v,
+            None => "",
+        }
+    }
+
+    pub fn clear_suffix(&mut self) {
+        self.suffix = ::std::option::Option::None;
+    }
+
+    pub fn has_suffix(&self) -> bool {
+        self.suffix.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_suffix(&mut self, v: ::std::string::String) {
+        self.suffix = ::std::option::Option::Some(v);
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_suffix(&mut self) -> &mut ::std::string::String {
+        if self.suffix.is_none() {
+            self.suffix = ::std::option::Option::Some(::std::string::String::new());
+        }
+        self.suffix.as_mut().unwrap()
+    }
+
+    // Take field
+    pub fn take_suffix(&mut self) -> ::std::string::String {
+        self.suffix.take().unwrap_or_else(|| ::std::string::String::new())
+    }
+
+    fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
+        let mut fields = ::std::vec::Vec::new();
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "major",
+            |m: &Version| { &m.major },
+            |m: &mut Version| { &mut m.major },
+            Version::get_major,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "minor",
+            |m: &Version| { &m.minor },
+            |m: &mut Version| { &mut m.minor },
+            Version::get_minor,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "patch",
+            |m: &Version| { &m.patch },
+            |m: &mut Version| { &mut m.patch },
+            Version::get_patch,
+        ));
+        fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
+            "suffix",
+            |m: &Version| { &m.suffix },
+            |m: &mut Version| { &mut m.suffix },
+            Version::get_suffix,
+        ));
+        crate::reflect::GeneratedMessageDescriptorData::new_2::<Version>(
+            "Version",
+            0,
+            fields,
+        )
+    }
+}
+
+impl crate::Message for Version {
+    fn is_initialized(&self) -> bool {
+        true
+    }
+
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
+        while !is.eof()? {
+            let (field_number, wire_type) = is.read_tag_unpack()?;
+            match field_number {
+                1 => {
+                    if wire_type != crate::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.major = ::std::option::Option::Some(is.read_int32()?);
+                },
+                2 => {
+                    if wire_type != crate::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.minor = ::std::option::Option::Some(is.read_int32()?);
+                },
+                3 => {
+                    if wire_type != crate::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.patch = ::std::option::Option::Some(is.read_int32()?);
+                },
+                4 => {
+                    if wire_type != crate::wire_format::WireTypeLengthDelimited {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.suffix = ::std::option::Option::Some(is.read_string()?);
+                },
+                _ => {
+                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                },
+            };
+        }
+        ::std::result::Result::Ok(())
+    }
+
+    // Compute sizes of nested messages
+    #[allow(unused_variables)]
+    fn compute_size(&self) -> u32 {
+        let mut my_size = 0;
+        if let Some(v) = self.major {
+            my_size += crate::rt::value_size(1, v, crate::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.minor {
+            my_size += crate::rt::value_size(2, v, crate::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.patch {
+            my_size += crate::rt::value_size(3, v, crate::wire_format::WireTypeVarint);
+        }
+        if let Some(v) = self.suffix.as_ref() {
+            my_size += crate::rt::string_size(4, &v);
+        }
+        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        self.cached_size.set(my_size);
+        my_size
+    }
+
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+        if let Some(v) = self.major {
+            os.write_int32(1, v)?;
+        }
+        if let Some(v) = self.minor {
+            os.write_int32(2, v)?;
+        }
+        if let Some(v) = self.patch {
+            os.write_int32(3, v)?;
+        }
+        if let Some(v) = self.suffix.as_ref() {
+            os.write_string(4, v)?;
+        }
+        os.write_unknown_fields(self.get_unknown_fields())?;
+        ::std::result::Result::Ok(())
+    }
+
+    fn get_cached_size(&self) -> u32 {
+        self.cached_size.get()
+    }
+
+    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+        &self.unknown_fields
+    }
+
+    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
+        &mut self.unknown_fields
+    }
+
+    fn new() -> Version {
+        Version::new()
+    }
+
+    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 0)
+    }
+
+    fn default_instance() -> &'static Version {
+        static instance: Version = Version {
+            major: ::std::option::Option::None,
+            minor: ::std::option::Option::None,
+            patch: ::std::option::Option::None,
+            suffix: ::std::option::Option::None,
+            unknown_fields: crate::UnknownFields::new(),
+            cached_size: crate::rt::CachedSize::new(),
+        };
+        &instance
+    }
+}
+
+impl crate::Clear for Version {
+    fn clear(&mut self) {
+        self.major = ::std::option::Option::None;
+        self.minor = ::std::option::Option::None;
+        self.patch = ::std::option::Option::None;
+        self.suffix = ::std::option::Option::None;
+        self.unknown_fields.clear();
+    }
+}
+
+impl ::std::fmt::Debug for Version {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        crate::text_format::fmt(self, f)
+    }
+}
+
+impl crate::reflect::ProtobufValue for Version {
+    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+}
+
 ///  An encoded CodeGeneratorRequest is written to the plugin's stdin.
 #[derive(PartialEq,Clone,Default)]
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
@@ -43,7 +331,12 @@ pub struct CodeGeneratorRequest {
     ///  the entire set into memory at once.  However, as of this writing, this
     ///  is not similarly optimized on protoc's end -- it will store all fields in
     ///  memory at once before sending them to the plugin.
+    ///
+    ///  Type names of fields and extensions in the FileDescriptorProto are always
+    ///  fully qualified.
     pub proto_file: ::std::vec::Vec<crate::descriptor::FileDescriptorProto>,
+    ///  The version number of protocol compiler.
+    pub compiler_version: crate::MessageField<Version>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
@@ -116,9 +409,14 @@ impl CodeGeneratorRequest {
             |m: &CodeGeneratorRequest| { &m.proto_file },
             |m: &mut CodeGeneratorRequest| { &mut m.proto_file },
         ));
+        fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, Version>(
+            "compiler_version",
+            |m: &CodeGeneratorRequest| { &m.compiler_version },
+            |m: &mut CodeGeneratorRequest| { &mut m.compiler_version },
+        ));
         crate::reflect::GeneratedMessageDescriptorData::new_2::<CodeGeneratorRequest>(
             "CodeGeneratorRequest",
-            0,
+            1,
             fields,
         )
     }
@@ -127,6 +425,11 @@ impl CodeGeneratorRequest {
 impl crate::Message for CodeGeneratorRequest {
     fn is_initialized(&self) -> bool {
         for v in &self.proto_file {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
+        for v in &self.compiler_version {
             if !v.is_initialized() {
                 return false;
             }
@@ -150,6 +453,9 @@ impl crate::Message for CodeGeneratorRequest {
                 15 => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.proto_file)?;
                 },
+                3 => {
+                    crate::rt::read_singular_message_into_field(wire_type, is, &mut self.compiler_version)?;
+                },
                 _ => {
                     crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
@@ -172,6 +478,10 @@ impl crate::Message for CodeGeneratorRequest {
             let len = value.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
+        if let Some(v) = self.compiler_version.as_ref() {
+            let len = v.compute_size();
+            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+        }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
@@ -187,6 +497,9 @@ impl crate::Message for CodeGeneratorRequest {
         for v in &self.proto_file {
             crate::rt::write_message_field_with_cached_size(15, v, os)?;
         };
+        if let Some(v) = self.compiler_version.as_ref() {
+            crate::rt::write_message_field_with_cached_size(3, v, os)?;
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -208,7 +521,7 @@ impl crate::Message for CodeGeneratorRequest {
     }
 
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 0)
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 1)
     }
 
     fn default_instance() -> &'static CodeGeneratorRequest {
@@ -216,6 +529,7 @@ impl crate::Message for CodeGeneratorRequest {
             file_to_generate: ::std::vec::Vec::new(),
             parameter: ::std::option::Option::None,
             proto_file: ::std::vec::Vec::new(),
+            compiler_version: crate::MessageField::none(),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };
@@ -228,6 +542,7 @@ impl crate::Clear for CodeGeneratorRequest {
         self.file_to_generate.clear();
         self.parameter = ::std::option::Option::None;
         self.proto_file.clear();
+        self.compiler_version.clear();
         self.unknown_fields.clear();
     }
 }
@@ -256,6 +571,9 @@ pub struct CodeGeneratorResponse {
     ///  unparseable -- should be reported by writing a message to stderr and
     ///  exiting with a non-zero status code.
     error: ::std::option::Option<::std::string::String>,
+    ///  A bitmask of supported features that the code generator supports.
+    ///  This is a bitwise "or" of values from the Feature enum.
+    supported_features: ::std::option::Option<u64>,
     pub file: ::std::vec::Vec<code_generator_response::File>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
@@ -311,6 +629,25 @@ impl CodeGeneratorResponse {
         self.error.take().unwrap_or_else(|| ::std::string::String::new())
     }
 
+    // optional uint64 supported_features = 2;
+
+    pub fn get_supported_features(&self) -> u64 {
+        self.supported_features.unwrap_or(0)
+    }
+
+    pub fn clear_supported_features(&mut self) {
+        self.supported_features = ::std::option::Option::None;
+    }
+
+    pub fn has_supported_features(&self) -> bool {
+        self.supported_features.is_some()
+    }
+
+    // Param is passed by value, moved
+    pub fn set_supported_features(&mut self, v: u64) {
+        self.supported_features = ::std::option::Option::Some(v);
+    }
+
     fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
         let mut fields = ::std::vec::Vec::new();
         fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
@@ -319,6 +656,12 @@ impl CodeGeneratorResponse {
             |m: &mut CodeGeneratorResponse| { &mut m.error },
             CodeGeneratorResponse::get_error,
         ));
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+            "supported_features",
+            |m: &CodeGeneratorResponse| { &m.supported_features },
+            |m: &mut CodeGeneratorResponse| { &mut m.supported_features },
+            CodeGeneratorResponse::get_supported_features,
+        ));
         fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
             "file",
             |m: &CodeGeneratorResponse| { &m.file },
@@ -326,7 +669,7 @@ impl CodeGeneratorResponse {
         ));
         crate::reflect::GeneratedMessageDescriptorData::new_2::<CodeGeneratorResponse>(
             "CodeGeneratorResponse",
-            1,
+            2,
             fields,
         )
     }
@@ -352,6 +695,12 @@ impl crate::Message for CodeGeneratorResponse {
                     }
                     self.error = ::std::option::Option::Some(is.read_string()?);
                 },
+                2 => {
+                    if wire_type != crate::wire_format::WireTypeVarint {
+                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
+                    }
+                    self.supported_features = ::std::option::Option::Some(is.read_uint64()?);
+                },
                 15 => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.file)?;
                 },
@@ -370,6 +719,9 @@ impl crate::Message for CodeGeneratorResponse {
         if let Some(v) = self.error.as_ref() {
             my_size += crate::rt::string_size(1, &v);
         }
+        if let Some(v) = self.supported_features {
+            my_size += crate::rt::value_size(2, v, crate::wire_format::WireTypeVarint);
+        }
         for value in &self.file {
             let len = value.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
@@ -382,6 +734,9 @@ impl crate::Message for CodeGeneratorResponse {
     fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
         if let Some(v) = self.error.as_ref() {
             os.write_string(1, v)?;
+        }
+        if let Some(v) = self.supported_features {
+            os.write_uint64(2, v)?;
         }
         for v in &self.file {
             crate::rt::write_message_field_with_cached_size(15, v, os)?;
@@ -407,12 +762,13 @@ impl crate::Message for CodeGeneratorResponse {
     }
 
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 1)
+        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 2)
     }
 
     fn default_instance() -> &'static CodeGeneratorResponse {
         static instance: CodeGeneratorResponse = CodeGeneratorResponse {
             error: ::std::option::Option::None,
+            supported_features: ::std::option::Option::None,
             file: ::std::vec::Vec::new(),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
@@ -424,6 +780,7 @@ impl crate::Message for CodeGeneratorResponse {
 impl crate::Clear for CodeGeneratorResponse {
     fn clear(&mut self) {
         self.error = ::std::option::Option::None;
+        self.supported_features = ::std::option::Option::None;
         self.file.clear();
         self.unknown_fields.clear();
     }
@@ -646,7 +1003,7 @@ pub mod code_generator_response {
             ));
             crate::reflect::GeneratedMessageDescriptorData::new_2::<File>(
                 "CodeGeneratorResponse.File",
-                2,
+                3,
                 fields,
             )
         }
@@ -736,7 +1093,7 @@ pub mod code_generator_response {
         }
 
         fn descriptor_static() -> crate::reflect::MessageDescriptor {
-            crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 2)
+            crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 3)
         }
 
         fn default_instance() -> &'static File {
@@ -769,89 +1126,164 @@ pub mod code_generator_response {
     impl crate::reflect::ProtobufValue for File {
         type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
     }
+
+    ///  Sync with code_generator.h.
+    #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+    #[cfg_attr(serde, derive(Serialize, Deserialize))]
+    pub enum Feature {
+        FEATURE_NONE = 0,
+        FEATURE_PROTO3_OPTIONAL = 1,
+    }
+
+    impl crate::ProtobufEnum for Feature {
+        fn value(&self) -> i32 {
+            *self as i32
+        }
+
+        fn from_i32(value: i32) -> ::std::option::Option<Feature> {
+            match value {
+                0 => ::std::option::Option::Some(Feature::FEATURE_NONE),
+                1 => ::std::option::Option::Some(Feature::FEATURE_PROTO3_OPTIONAL),
+                _ => ::std::option::Option::None
+            }
+        }
+
+        fn values() -> &'static [Self] {
+            static values: &'static [Feature] = &[
+                Feature::FEATURE_NONE,
+                Feature::FEATURE_PROTO3_OPTIONAL,
+            ];
+            values
+        }
+
+        fn enum_descriptor_static() -> crate::reflect::EnumDescriptor {
+            crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 0)
+        }
+    }
+
+    impl ::std::default::Default for Feature {
+        fn default() -> Self {
+            Feature::FEATURE_NONE
+        }
+    }
+
+    impl crate::reflect::ProtobufValue for Feature {
+        type RuntimeType = crate::reflect::runtime_types::RuntimeTypeEnum<Self>;
+    }
+
+    impl Feature {
+        pub(in super) fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
+            crate::reflect::GeneratedEnumDescriptorData::new_2::<Feature>("CodeGeneratorResponse.Feature", 0)
+        }
+    }
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
     \n%google/protobuf/compiler/plugin.proto\x12\x18google.protobuf.compiler\
-    \x1a\x20google/protobuf/descriptor.proto\"\xa3\x01\n\x14CodeGeneratorReq\
-    uest\x12(\n\x10file_to_generate\x18\x01\x20\x03(\tR\x0efileToGenerate\
+    \x1a\x20google/protobuf/descriptor.proto\"c\n\x07Version\x12\x14\n\x05ma\
+    jor\x18\x01\x20\x01(\x05R\x05major\x12\x14\n\x05minor\x18\x02\x20\x01(\
+    \x05R\x05minor\x12\x14\n\x05patch\x18\x03\x20\x01(\x05R\x05patch\x12\x16\
+    \n\x06suffix\x18\x04\x20\x01(\tR\x06suffix\"\xf1\x01\n\x14CodeGeneratorR\
+    equest\x12(\n\x10file_to_generate\x18\x01\x20\x03(\tR\x0efileToGenerate\
     \x12\x1c\n\tparameter\x18\x02\x20\x01(\tR\tparameter\x12C\n\nproto_file\
     \x18\x0f\x20\x03(\x0b2$.google.protobuf.FileDescriptorProtoR\tprotoFile\
-    \"\xd6\x01\n\x15CodeGeneratorResponse\x12\x14\n\x05error\x18\x01\x20\x01\
-    (\tR\x05error\x12H\n\x04file\x18\x0f\x20\x03(\x0b24.google.protobuf.comp\
-    iler.CodeGeneratorResponse.FileR\x04file\x1a]\n\x04File\x12\x12\n\x04nam\
-    e\x18\x01\x20\x01(\tR\x04name\x12'\n\x0finsertion_point\x18\x02\x20\x01(\
-    \tR\x0einsertionPoint\x12\x18\n\x07content\x18\x0f\x20\x01(\tR\x07conten\
-    tB7\n\x1ccom.google.protobuf.compilerB\x0cPluginProtosZ\tplugin_goJ\xd29\
-    \n\x07\x12\x05.\0\x95\x01\x01\n\xca\x11\n\x01\x0c\x12\x03.\0\x122\xc1\
-    \x0c\x20Protocol\x20Buffers\x20-\x20Google's\x20data\x20interchange\x20f\
-    ormat\n\x20Copyright\x202008\x20Google\x20Inc.\x20\x20All\x20rights\x20r\
-    eserved.\n\x20https://developers.google.com/protocol-buffers/\n\n\x20Red\
-    istribution\x20and\x20use\x20in\x20source\x20and\x20binary\x20forms,\x20\
-    with\x20or\x20without\n\x20modification,\x20are\x20permitted\x20provided\
-    \x20that\x20the\x20following\x20conditions\x20are\n\x20met:\n\n\x20\x20\
-    \x20\x20\x20*\x20Redistributions\x20of\x20source\x20code\x20must\x20reta\
-    in\x20the\x20above\x20copyright\n\x20notice,\x20this\x20list\x20of\x20co\
-    nditions\x20and\x20the\x20following\x20disclaimer.\n\x20\x20\x20\x20\x20\
-    *\x20Redistributions\x20in\x20binary\x20form\x20must\x20reproduce\x20the\
-    \x20above\n\x20copyright\x20notice,\x20this\x20list\x20of\x20conditions\
-    \x20and\x20the\x20following\x20disclaimer\n\x20in\x20the\x20documentatio\
-    n\x20and/or\x20other\x20materials\x20provided\x20with\x20the\n\x20distri\
-    bution.\n\x20\x20\x20\x20\x20*\x20Neither\x20the\x20name\x20of\x20Google\
-    \x20Inc.\x20nor\x20the\x20names\x20of\x20its\n\x20contributors\x20may\
-    \x20be\x20used\x20to\x20endorse\x20or\x20promote\x20products\x20derived\
-    \x20from\n\x20this\x20software\x20without\x20specific\x20prior\x20writte\
-    n\x20permission.\n\n\x20THIS\x20SOFTWARE\x20IS\x20PROVIDED\x20BY\x20THE\
-    \x20COPYRIGHT\x20HOLDERS\x20AND\x20CONTRIBUTORS\n\x20\"AS\x20IS\"\x20AND\
-    \x20ANY\x20EXPRESS\x20OR\x20IMPLIED\x20WARRANTIES,\x20INCLUDING,\x20BUT\
-    \x20NOT\n\x20LIMITED\x20TO,\x20THE\x20IMPLIED\x20WARRANTIES\x20OF\x20MER\
-    CHANTABILITY\x20AND\x20FITNESS\x20FOR\n\x20A\x20PARTICULAR\x20PURPOSE\
-    \x20ARE\x20DISCLAIMED.\x20IN\x20NO\x20EVENT\x20SHALL\x20THE\x20COPYRIGHT\
-    \n\x20OWNER\x20OR\x20CONTRIBUTORS\x20BE\x20LIABLE\x20FOR\x20ANY\x20DIREC\
-    T,\x20INDIRECT,\x20INCIDENTAL,\n\x20SPECIAL,\x20EXEMPLARY,\x20OR\x20CONS\
-    EQUENTIAL\x20DAMAGES\x20(INCLUDING,\x20BUT\x20NOT\n\x20LIMITED\x20TO,\
-    \x20PROCUREMENT\x20OF\x20SUBSTITUTE\x20GOODS\x20OR\x20SERVICES;\x20LOSS\
-    \x20OF\x20USE,\n\x20DATA,\x20OR\x20PROFITS;\x20OR\x20BUSINESS\x20INTERRU\
-    PTION)\x20HOWEVER\x20CAUSED\x20AND\x20ON\x20ANY\n\x20THEORY\x20OF\x20LIA\
-    BILITY,\x20WHETHER\x20IN\x20CONTRACT,\x20STRICT\x20LIABILITY,\x20OR\x20T\
-    ORT\n\x20(INCLUDING\x20NEGLIGENCE\x20OR\x20OTHERWISE)\x20ARISING\x20IN\
-    \x20ANY\x20WAY\x20OUT\x20OF\x20THE\x20USE\n\x20OF\x20THIS\x20SOFTWARE,\
-    \x20EVEN\x20IF\x20ADVISED\x20OF\x20THE\x20POSSIBILITY\x20OF\x20SUCH\x20D\
-    AMAGE.\n2\xfb\x04\x20Author:\x20kenton@google.com\x20(Kenton\x20Varda)\n\
-    \n\x20WARNING:\x20\x20The\x20plugin\x20interface\x20is\x20currently\x20E\
-    XPERIMENTAL\x20and\x20is\x20subject\x20to\n\x20\x20\x20change.\n\n\x20pr\
-    otoc\x20(aka\x20the\x20Protocol\x20Compiler)\x20can\x20be\x20extended\
-    \x20via\x20plugins.\x20\x20A\x20plugin\x20is\n\x20just\x20a\x20program\
-    \x20that\x20reads\x20a\x20CodeGeneratorRequest\x20from\x20stdin\x20and\
-    \x20writes\x20a\n\x20CodeGeneratorResponse\x20to\x20stdout.\n\n\x20Plugi\
-    ns\x20written\x20using\x20C++\x20can\x20use\x20google/protobuf/compiler/\
-    plugin.h\x20instead\n\x20of\x20dealing\x20with\x20the\x20raw\x20protocol\
-    \x20defined\x20here.\n\n\x20A\x20plugin\x20executable\x20needs\x20only\
-    \x20to\x20be\x20placed\x20somewhere\x20in\x20the\x20path.\x20\x20The\n\
-    \x20plugin\x20should\x20be\x20named\x20\"protoc-gen-$NAME\",\x20and\x20w\
-    ill\x20then\x20be\x20used\x20when\x20the\n\x20flag\x20\"--${NAME}_out\"\
-    \x20is\x20passed\x20to\x20protoc.\n\n\x08\n\x01\x02\x12\x03/\0!\n\x08\n\
-    \x01\x08\x12\x030\05\n\t\n\x02\x08\x01\x12\x030\05\n\x08\n\x01\x08\x12\
-    \x031\0-\n\t\n\x02\x08\x08\x12\x031\0-\n\x08\n\x01\x08\x12\x033\0\x20\n\
-    \t\n\x02\x08\x0b\x12\x033\0\x20\n\t\n\x02\x03\0\x12\x035\0*\nO\n\x02\x04\
-    \0\x12\x048\0M\x01\x1aC\x20An\x20encoded\x20CodeGeneratorRequest\x20is\
-    \x20written\x20to\x20the\x20plugin's\x20stdin.\n\n\n\n\x03\x04\0\x01\x12\
-    \x038\x08\x1c\n\xd1\x01\n\x04\x04\0\x02\0\x12\x03<\x02'\x1a\xc3\x01\x20T\
-    he\x20.proto\x20files\x20that\x20were\x20explicitly\x20listed\x20on\x20t\
-    he\x20command-line.\x20\x20The\n\x20code\x20generator\x20should\x20gener\
-    ate\x20code\x20only\x20for\x20these\x20files.\x20\x20Each\x20file's\n\
-    \x20descriptor\x20will\x20be\x20included\x20in\x20proto_file,\x20below.\
-    \n\n\x0c\n\x05\x04\0\x02\0\x04\x12\x03<\x02\n\n\x0c\n\x05\x04\0\x02\0\
-    \x05\x12\x03<\x0b\x11\n\x0c\n\x05\x04\0\x02\0\x01\x12\x03<\x12\"\n\x0c\n\
-    \x05\x04\0\x02\0\x03\x12\x03<%&\nB\n\x04\x04\0\x02\x01\x12\x03?\x02\x20\
-    \x1a5\x20The\x20generator\x20parameter\x20passed\x20on\x20the\x20command\
-    -line.\n\n\x0c\n\x05\x04\0\x02\x01\x04\x12\x03?\x02\n\n\x0c\n\x05\x04\0\
-    \x02\x01\x05\x12\x03?\x0b\x11\n\x0c\n\x05\x04\0\x02\x01\x01\x12\x03?\x12\
-    \x1b\n\x0c\n\x05\x04\0\x02\x01\x03\x12\x03?\x1e\x1f\n\xa9\x05\n\x04\x04\
-    \0\x02\x02\x12\x03L\x02/\x1a\x9b\x05\x20FileDescriptorProtos\x20for\x20a\
-    ll\x20files\x20in\x20files_to_generate\x20and\x20everything\n\x20they\
-    \x20import.\x20\x20The\x20files\x20will\x20appear\x20in\x20topological\
-    \x20order,\x20so\x20each\x20file\n\x20appears\x20before\x20any\x20file\
+    \x12L\n\x10compiler_version\x18\x03\x20\x01(\x0b2!.google.protobuf.compi\
+    ler.VersionR\x0fcompilerVersion\"\xbf\x02\n\x15CodeGeneratorResponse\x12\
+    \x14\n\x05error\x18\x01\x20\x01(\tR\x05error\x12-\n\x12supported_feature\
+    s\x18\x02\x20\x01(\x04R\x11supportedFeatures\x12H\n\x04file\x18\x0f\x20\
+    \x03(\x0b24.google.protobuf.compiler.CodeGeneratorResponse.FileR\x04file\
+    \x1a]\n\x04File\x12\x12\n\x04name\x18\x01\x20\x01(\tR\x04name\x12'\n\x0f\
+    insertion_point\x18\x02\x20\x01(\tR\x0einsertionPoint\x12\x18\n\x07conte\
+    nt\x18\x0f\x20\x01(\tR\x07content\"8\n\x07Feature\x12\x10\n\x0cFEATURE_N\
+    ONE\x10\0\x12\x1b\n\x17FEATURE_PROTO3_OPTIONAL\x10\x01Bg\n\x1ccom.google\
+    .protobuf.compilerB\x0cPluginProtosZ9github.com/golang/protobuf/protoc-g\
+    en-go/plugin;plugin_goJ\xd1A\n\x07\x12\x05.\0\xb1\x01\x01\n\xca\x11\n\
+    \x01\x0c\x12\x03.\0\x122\xc1\x0c\x20Protocol\x20Buffers\x20-\x20Google's\
+    \x20data\x20interchange\x20format\n\x20Copyright\x202008\x20Google\x20In\
+    c.\x20\x20All\x20rights\x20reserved.\n\x20https://developers.google.com/\
+    protocol-buffers/\n\n\x20Redistribution\x20and\x20use\x20in\x20source\
+    \x20and\x20binary\x20forms,\x20with\x20or\x20without\n\x20modification,\
+    \x20are\x20permitted\x20provided\x20that\x20the\x20following\x20conditio\
+    ns\x20are\n\x20met:\n\n\x20\x20\x20\x20\x20*\x20Redistributions\x20of\
+    \x20source\x20code\x20must\x20retain\x20the\x20above\x20copyright\n\x20n\
+    otice,\x20this\x20list\x20of\x20conditions\x20and\x20the\x20following\
+    \x20disclaimer.\n\x20\x20\x20\x20\x20*\x20Redistributions\x20in\x20binar\
+    y\x20form\x20must\x20reproduce\x20the\x20above\n\x20copyright\x20notice,\
+    \x20this\x20list\x20of\x20conditions\x20and\x20the\x20following\x20discl\
+    aimer\n\x20in\x20the\x20documentation\x20and/or\x20other\x20materials\
+    \x20provided\x20with\x20the\n\x20distribution.\n\x20\x20\x20\x20\x20*\
+    \x20Neither\x20the\x20name\x20of\x20Google\x20Inc.\x20nor\x20the\x20name\
+    s\x20of\x20its\n\x20contributors\x20may\x20be\x20used\x20to\x20endorse\
+    \x20or\x20promote\x20products\x20derived\x20from\n\x20this\x20software\
+    \x20without\x20specific\x20prior\x20written\x20permission.\n\n\x20THIS\
+    \x20SOFTWARE\x20IS\x20PROVIDED\x20BY\x20THE\x20COPYRIGHT\x20HOLDERS\x20A\
+    ND\x20CONTRIBUTORS\n\x20\"AS\x20IS\"\x20AND\x20ANY\x20EXPRESS\x20OR\x20I\
+    MPLIED\x20WARRANTIES,\x20INCLUDING,\x20BUT\x20NOT\n\x20LIMITED\x20TO,\
+    \x20THE\x20IMPLIED\x20WARRANTIES\x20OF\x20MERCHANTABILITY\x20AND\x20FITN\
+    ESS\x20FOR\n\x20A\x20PARTICULAR\x20PURPOSE\x20ARE\x20DISCLAIMED.\x20IN\
+    \x20NO\x20EVENT\x20SHALL\x20THE\x20COPYRIGHT\n\x20OWNER\x20OR\x20CONTRIB\
+    UTORS\x20BE\x20LIABLE\x20FOR\x20ANY\x20DIRECT,\x20INDIRECT,\x20INCIDENTA\
+    L,\n\x20SPECIAL,\x20EXEMPLARY,\x20OR\x20CONSEQUENTIAL\x20DAMAGES\x20(INC\
+    LUDING,\x20BUT\x20NOT\n\x20LIMITED\x20TO,\x20PROCUREMENT\x20OF\x20SUBSTI\
+    TUTE\x20GOODS\x20OR\x20SERVICES;\x20LOSS\x20OF\x20USE,\n\x20DATA,\x20OR\
+    \x20PROFITS;\x20OR\x20BUSINESS\x20INTERRUPTION)\x20HOWEVER\x20CAUSED\x20\
+    AND\x20ON\x20ANY\n\x20THEORY\x20OF\x20LIABILITY,\x20WHETHER\x20IN\x20CON\
+    TRACT,\x20STRICT\x20LIABILITY,\x20OR\x20TORT\n\x20(INCLUDING\x20NEGLIGEN\
+    CE\x20OR\x20OTHERWISE)\x20ARISING\x20IN\x20ANY\x20WAY\x20OUT\x20OF\x20TH\
+    E\x20USE\n\x20OF\x20THIS\x20SOFTWARE,\x20EVEN\x20IF\x20ADVISED\x20OF\x20\
+    THE\x20POSSIBILITY\x20OF\x20SUCH\x20DAMAGE.\n2\xfb\x04\x20Author:\x20ken\
+    ton@google.com\x20(Kenton\x20Varda)\n\n\x20WARNING:\x20\x20The\x20plugin\
+    \x20interface\x20is\x20currently\x20EXPERIMENTAL\x20and\x20is\x20subject\
+    \x20to\n\x20\x20\x20change.\n\n\x20protoc\x20(aka\x20the\x20Protocol\x20\
+    Compiler)\x20can\x20be\x20extended\x20via\x20plugins.\x20\x20A\x20plugin\
+    \x20is\n\x20just\x20a\x20program\x20that\x20reads\x20a\x20CodeGeneratorR\
+    equest\x20from\x20stdin\x20and\x20writes\x20a\n\x20CodeGeneratorResponse\
+    \x20to\x20stdout.\n\n\x20Plugins\x20written\x20using\x20C++\x20can\x20us\
+    e\x20google/protobuf/compiler/plugin.h\x20instead\n\x20of\x20dealing\x20\
+    with\x20the\x20raw\x20protocol\x20defined\x20here.\n\n\x20A\x20plugin\
+    \x20executable\x20needs\x20only\x20to\x20be\x20placed\x20somewhere\x20in\
+    \x20the\x20path.\x20\x20The\n\x20plugin\x20should\x20be\x20named\x20\"pr\
+    otoc-gen-$NAME\",\x20and\x20will\x20then\x20be\x20used\x20when\x20the\n\
+    \x20flag\x20\"--${NAME}_out\"\x20is\x20passed\x20to\x20protoc.\n\n\x08\n\
+    \x01\x02\x12\x030\0!\n\x08\n\x01\x08\x12\x031\05\n\t\n\x02\x08\x01\x12\
+    \x031\05\n\x08\n\x01\x08\x12\x032\0-\n\t\n\x02\x08\x08\x12\x032\0-\n\x08\
+    \n\x01\x08\x12\x034\0P\n\t\n\x02\x08\x0b\x12\x034\0P\n\t\n\x02\x03\0\x12\
+    \x036\0*\n6\n\x02\x04\0\x12\x049\0@\x01\x1a*\x20The\x20version\x20number\
+    \x20of\x20protocol\x20compiler.\n\n\n\n\x03\x04\0\x01\x12\x039\x08\x0f\n\
+    \x0b\n\x04\x04\0\x02\0\x12\x03:\x02\x1b\n\x0c\n\x05\x04\0\x02\0\x04\x12\
+    \x03:\x02\n\n\x0c\n\x05\x04\0\x02\0\x05\x12\x03:\x0b\x10\n\x0c\n\x05\x04\
+    \0\x02\0\x01\x12\x03:\x11\x16\n\x0c\n\x05\x04\0\x02\0\x03\x12\x03:\x19\
+    \x1a\n\x0b\n\x04\x04\0\x02\x01\x12\x03;\x02\x1b\n\x0c\n\x05\x04\0\x02\
+    \x01\x04\x12\x03;\x02\n\n\x0c\n\x05\x04\0\x02\x01\x05\x12\x03;\x0b\x10\n\
+    \x0c\n\x05\x04\0\x02\x01\x01\x12\x03;\x11\x16\n\x0c\n\x05\x04\0\x02\x01\
+    \x03\x12\x03;\x19\x1a\n\x0b\n\x04\x04\0\x02\x02\x12\x03<\x02\x1b\n\x0c\n\
+    \x05\x04\0\x02\x02\x04\x12\x03<\x02\n\n\x0c\n\x05\x04\0\x02\x02\x05\x12\
+    \x03<\x0b\x10\n\x0c\n\x05\x04\0\x02\x02\x01\x12\x03<\x11\x16\n\x0c\n\x05\
+    \x04\0\x02\x02\x03\x12\x03<\x19\x1a\n\x80\x01\n\x04\x04\0\x02\x03\x12\
+    \x03?\x02\x1d\x1as\x20A\x20suffix\x20for\x20alpha,\x20beta\x20or\x20rc\
+    \x20release,\x20e.g.,\x20\"alpha-1\",\x20\"rc2\".\x20It\x20should\n\x20b\
+    e\x20empty\x20for\x20mainline\x20stable\x20releases.\n\n\x0c\n\x05\x04\0\
+    \x02\x03\x04\x12\x03?\x02\n\n\x0c\n\x05\x04\0\x02\x03\x05\x12\x03?\x0b\
+    \x11\n\x0c\n\x05\x04\0\x02\x03\x01\x12\x03?\x12\x18\n\x0c\n\x05\x04\0\
+    \x02\x03\x03\x12\x03?\x1b\x1c\nO\n\x02\x04\x01\x12\x04C\0_\x01\x1aC\x20A\
+    n\x20encoded\x20CodeGeneratorRequest\x20is\x20written\x20to\x20the\x20pl\
+    ugin's\x20stdin.\n\n\n\n\x03\x04\x01\x01\x12\x03C\x08\x1c\n\xd1\x01\n\
+    \x04\x04\x01\x02\0\x12\x03G\x02'\x1a\xc3\x01\x20The\x20.proto\x20files\
+    \x20that\x20were\x20explicitly\x20listed\x20on\x20the\x20command-line.\
+    \x20\x20The\n\x20code\x20generator\x20should\x20generate\x20code\x20only\
+    \x20for\x20these\x20files.\x20\x20Each\x20file's\n\x20descriptor\x20will\
+    \x20be\x20included\x20in\x20proto_file,\x20below.\n\n\x0c\n\x05\x04\x01\
+    \x02\0\x04\x12\x03G\x02\n\n\x0c\n\x05\x04\x01\x02\0\x05\x12\x03G\x0b\x11\
+    \n\x0c\n\x05\x04\x01\x02\0\x01\x12\x03G\x12\"\n\x0c\n\x05\x04\x01\x02\0\
+    \x03\x12\x03G%&\nB\n\x04\x04\x01\x02\x01\x12\x03J\x02\x20\x1a5\x20The\
+    \x20generator\x20parameter\x20passed\x20on\x20the\x20command-line.\n\n\
+    \x0c\n\x05\x04\x01\x02\x01\x04\x12\x03J\x02\n\n\x0c\n\x05\x04\x01\x02\
+    \x01\x05\x12\x03J\x0b\x11\n\x0c\n\x05\x04\x01\x02\x01\x01\x12\x03J\x12\
+    \x1b\n\x0c\n\x05\x04\x01\x02\x01\x03\x12\x03J\x1e\x1f\n\x87\x06\n\x04\
+    \x04\x01\x02\x02\x12\x03Z\x02/\x1a\xf9\x05\x20FileDescriptorProtos\x20fo\
+    r\x20all\x20files\x20in\x20files_to_generate\x20and\x20everything\n\x20t\
+    hey\x20import.\x20\x20The\x20files\x20will\x20appear\x20in\x20topologica\
+    l\x20order,\x20so\x20each\x20file\n\x20appears\x20before\x20any\x20file\
     \x20that\x20imports\x20it.\n\n\x20protoc\x20guarantees\x20that\x20all\
     \x20proto_files\x20will\x20be\x20written\x20after\n\x20the\x20fields\x20\
     above,\x20even\x20though\x20this\x20is\x20not\x20technically\x20guarante\
@@ -862,47 +1294,66 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x20at\x20once.\x20\x20However,\x20as\x20of\x20this\x20writing,\x20this\
     \n\x20is\x20not\x20similarly\x20optimized\x20on\x20protoc's\x20end\x20--\
     \x20it\x20will\x20store\x20all\x20fields\x20in\n\x20memory\x20at\x20once\
-    \x20before\x20sending\x20them\x20to\x20the\x20plugin.\n\n\x0c\n\x05\x04\
-    \0\x02\x02\x04\x12\x03L\x02\n\n\x0c\n\x05\x04\0\x02\x02\x06\x12\x03L\x0b\
-    \x1e\n\x0c\n\x05\x04\0\x02\x02\x01\x12\x03L\x1f)\n\x0c\n\x05\x04\0\x02\
-    \x02\x03\x12\x03L,.\nL\n\x02\x04\x01\x12\x05P\0\x95\x01\x01\x1a?\x20The\
-    \x20plugin\x20writes\x20an\x20encoded\x20CodeGeneratorResponse\x20to\x20\
-    stdout.\n\n\n\n\x03\x04\x01\x01\x12\x03P\x08\x1d\n\xed\x03\n\x04\x04\x01\
-    \x02\0\x12\x03Y\x02\x1c\x1a\xdf\x03\x20Error\x20message.\x20\x20If\x20no\
-    n-empty,\x20code\x20generation\x20failed.\x20\x20The\x20plugin\x20proces\
-    s\n\x20should\x20exit\x20with\x20status\x20code\x20zero\x20even\x20if\
-    \x20it\x20reports\x20an\x20error\x20in\x20this\x20way.\n\n\x20This\x20sh\
-    ould\x20be\x20used\x20to\x20indicate\x20errors\x20in\x20.proto\x20files\
-    \x20which\x20prevent\x20the\n\x20code\x20generator\x20from\x20generating\
-    \x20correct\x20code.\x20\x20Errors\x20which\x20indicate\x20a\n\x20proble\
-    m\x20in\x20protoc\x20itself\x20--\x20such\x20as\x20the\x20input\x20CodeG\
-    eneratorRequest\x20being\n\x20unparseable\x20--\x20should\x20be\x20repor\
-    ted\x20by\x20writing\x20a\x20message\x20to\x20stderr\x20and\n\x20exiting\
-    \x20with\x20a\x20non-zero\x20status\x20code.\n\n\x0c\n\x05\x04\x01\x02\0\
-    \x04\x12\x03Y\x02\n\n\x0c\n\x05\x04\x01\x02\0\x05\x12\x03Y\x0b\x11\n\x0c\
-    \n\x05\x04\x01\x02\0\x01\x12\x03Y\x12\x17\n\x0c\n\x05\x04\x01\x02\0\x03\
-    \x12\x03Y\x1a\x1b\n4\n\x04\x04\x01\x03\0\x12\x05\\\x02\x93\x01\x03\x1a%\
-    \x20Represents\x20a\x20single\x20generated\x20file.\n\n\x0c\n\x05\x04\
-    \x01\x03\0\x01\x12\x03\\\n\x0e\n\xad\x05\n\x06\x04\x01\x03\0\x02\0\x12\
-    \x03h\x04\x1d\x1a\x9d\x05\x20The\x20file\x20name,\x20relative\x20to\x20t\
-    he\x20output\x20directory.\x20\x20The\x20name\x20must\x20not\n\x20contai\
-    n\x20\".\"\x20or\x20\"..\"\x20components\x20and\x20must\x20be\x20relativ\
-    e,\x20not\x20be\x20absolute\x20(so,\n\x20the\x20file\x20cannot\x20lie\
-    \x20outside\x20the\x20output\x20directory).\x20\x20\"/\"\x20must\x20be\
-    \x20used\x20as\n\x20the\x20path\x20separator,\x20not\x20\"\\\".\n\n\x20I\
-    f\x20the\x20name\x20is\x20omitted,\x20the\x20content\x20will\x20be\x20ap\
-    pended\x20to\x20the\x20previous\n\x20file.\x20\x20This\x20allows\x20the\
-    \x20generator\x20to\x20break\x20large\x20files\x20into\x20small\x20chunk\
-    s,\n\x20and\x20allows\x20the\x20generated\x20text\x20to\x20be\x20streame\
-    d\x20back\x20to\x20protoc\x20so\x20that\x20large\n\x20files\x20need\x20n\
-    ot\x20reside\x20completely\x20in\x20memory\x20at\x20one\x20time.\x20\x20\
-    Note\x20that\x20as\x20of\n\x20this\x20writing\x20protoc\x20does\x20not\
-    \x20optimize\x20for\x20this\x20--\x20it\x20will\x20read\x20the\x20entire\
-    \n\x20CodeGeneratorResponse\x20before\x20writing\x20files\x20to\x20disk.\
-    \n\n\x0e\n\x07\x04\x01\x03\0\x02\0\x04\x12\x03h\x04\x0c\n\x0e\n\x07\x04\
-    \x01\x03\0\x02\0\x05\x12\x03h\r\x13\n\x0e\n\x07\x04\x01\x03\0\x02\0\x01\
-    \x12\x03h\x14\x18\n\x0e\n\x07\x04\x01\x03\0\x02\0\x03\x12\x03h\x1b\x1c\n\
-    \xae\x10\n\x06\x04\x01\x03\0\x02\x01\x12\x04\x8f\x01\x04(\x1a\x9d\x10\
+    \x20before\x20sending\x20them\x20to\x20the\x20plugin.\n\n\x20Type\x20nam\
+    es\x20of\x20fields\x20and\x20extensions\x20in\x20the\x20FileDescriptorPr\
+    oto\x20are\x20always\n\x20fully\x20qualified.\n\n\x0c\n\x05\x04\x01\x02\
+    \x02\x04\x12\x03Z\x02\n\n\x0c\n\x05\x04\x01\x02\x02\x06\x12\x03Z\x0b\x1e\
+    \n\x0c\n\x05\x04\x01\x02\x02\x01\x12\x03Z\x1f)\n\x0c\n\x05\x04\x01\x02\
+    \x02\x03\x12\x03Z,.\n7\n\x04\x04\x01\x02\x03\x12\x03]\x02(\x1a*\x20The\
+    \x20version\x20number\x20of\x20protocol\x20compiler.\n\n\x0c\n\x05\x04\
+    \x01\x02\x03\x04\x12\x03]\x02\n\n\x0c\n\x05\x04\x01\x02\x03\x06\x12\x03]\
+    \x0b\x12\n\x0c\n\x05\x04\x01\x02\x03\x01\x12\x03]\x13#\n\x0c\n\x05\x04\
+    \x01\x02\x03\x03\x12\x03]&'\nL\n\x02\x04\x02\x12\x05b\0\xb1\x01\x01\x1a?\
+    \x20The\x20plugin\x20writes\x20an\x20encoded\x20CodeGeneratorResponse\
+    \x20to\x20stdout.\n\n\n\n\x03\x04\x02\x01\x12\x03b\x08\x1d\n\xed\x03\n\
+    \x04\x04\x02\x02\0\x12\x03k\x02\x1c\x1a\xdf\x03\x20Error\x20message.\x20\
+    \x20If\x20non-empty,\x20code\x20generation\x20failed.\x20\x20The\x20plug\
+    in\x20process\n\x20should\x20exit\x20with\x20status\x20code\x20zero\x20e\
+    ven\x20if\x20it\x20reports\x20an\x20error\x20in\x20this\x20way.\n\n\x20T\
+    his\x20should\x20be\x20used\x20to\x20indicate\x20errors\x20in\x20.proto\
+    \x20files\x20which\x20prevent\x20the\n\x20code\x20generator\x20from\x20g\
+    enerating\x20correct\x20code.\x20\x20Errors\x20which\x20indicate\x20a\n\
+    \x20problem\x20in\x20protoc\x20itself\x20--\x20such\x20as\x20the\x20inpu\
+    t\x20CodeGeneratorRequest\x20being\n\x20unparseable\x20--\x20should\x20b\
+    e\x20reported\x20by\x20writing\x20a\x20message\x20to\x20stderr\x20and\n\
+    \x20exiting\x20with\x20a\x20non-zero\x20status\x20code.\n\n\x0c\n\x05\
+    \x04\x02\x02\0\x04\x12\x03k\x02\n\n\x0c\n\x05\x04\x02\x02\0\x05\x12\x03k\
+    \x0b\x11\n\x0c\n\x05\x04\x02\x02\0\x01\x12\x03k\x12\x17\n\x0c\n\x05\x04\
+    \x02\x02\0\x03\x12\x03k\x1a\x1b\n\x89\x01\n\x04\x04\x02\x02\x01\x12\x03o\
+    \x02)\x1a|\x20A\x20bitmask\x20of\x20supported\x20features\x20that\x20the\
+    \x20code\x20generator\x20supports.\n\x20This\x20is\x20a\x20bitwise\x20\"\
+    or\"\x20of\x20values\x20from\x20the\x20Feature\x20enum.\n\n\x0c\n\x05\
+    \x04\x02\x02\x01\x04\x12\x03o\x02\n\n\x0c\n\x05\x04\x02\x02\x01\x05\x12\
+    \x03o\x0b\x11\n\x0c\n\x05\x04\x02\x02\x01\x01\x12\x03o\x12$\n\x0c\n\x05\
+    \x04\x02\x02\x01\x03\x12\x03o'(\n+\n\x04\x04\x02\x04\0\x12\x04r\x02u\x03\
+    \x1a\x1d\x20Sync\x20with\x20code_generator.h.\n\n\x0c\n\x05\x04\x02\x04\
+    \0\x01\x12\x03r\x07\x0e\n\r\n\x06\x04\x02\x04\0\x02\0\x12\x03s\x04\x15\n\
+    \x0e\n\x07\x04\x02\x04\0\x02\0\x01\x12\x03s\x04\x10\n\x0e\n\x07\x04\x02\
+    \x04\0\x02\0\x02\x12\x03s\x13\x14\n\r\n\x06\x04\x02\x04\0\x02\x01\x12\
+    \x03t\x04\x20\n\x0e\n\x07\x04\x02\x04\0\x02\x01\x01\x12\x03t\x04\x1b\n\
+    \x0e\n\x07\x04\x02\x04\0\x02\x01\x02\x12\x03t\x1e\x1f\n4\n\x04\x04\x02\
+    \x03\0\x12\x05x\x02\xaf\x01\x03\x1a%\x20Represents\x20a\x20single\x20gen\
+    erated\x20file.\n\n\x0c\n\x05\x04\x02\x03\0\x01\x12\x03x\n\x0e\n\xae\x05\
+    \n\x06\x04\x02\x03\0\x02\0\x12\x04\x84\x01\x04\x1d\x1a\x9d\x05\x20The\
+    \x20file\x20name,\x20relative\x20to\x20the\x20output\x20directory.\x20\
+    \x20The\x20name\x20must\x20not\n\x20contain\x20\".\"\x20or\x20\"..\"\x20\
+    components\x20and\x20must\x20be\x20relative,\x20not\x20be\x20absolute\
+    \x20(so,\n\x20the\x20file\x20cannot\x20lie\x20outside\x20the\x20output\
+    \x20directory).\x20\x20\"/\"\x20must\x20be\x20used\x20as\n\x20the\x20pat\
+    h\x20separator,\x20not\x20\"\\\".\n\n\x20If\x20the\x20name\x20is\x20omit\
+    ted,\x20the\x20content\x20will\x20be\x20appended\x20to\x20the\x20previou\
+    s\n\x20file.\x20\x20This\x20allows\x20the\x20generator\x20to\x20break\
+    \x20large\x20files\x20into\x20small\x20chunks,\n\x20and\x20allows\x20the\
+    \x20generated\x20text\x20to\x20be\x20streamed\x20back\x20to\x20protoc\
+    \x20so\x20that\x20large\n\x20files\x20need\x20not\x20reside\x20completel\
+    y\x20in\x20memory\x20at\x20one\x20time.\x20\x20Note\x20that\x20as\x20of\
+    \n\x20this\x20writing\x20protoc\x20does\x20not\x20optimize\x20for\x20thi\
+    s\x20--\x20it\x20will\x20read\x20the\x20entire\n\x20CodeGeneratorRespons\
+    e\x20before\x20writing\x20files\x20to\x20disk.\n\n\x0f\n\x07\x04\x02\x03\
+    \0\x02\0\x04\x12\x04\x84\x01\x04\x0c\n\x0f\n\x07\x04\x02\x03\0\x02\0\x05\
+    \x12\x04\x84\x01\r\x13\n\x0f\n\x07\x04\x02\x03\0\x02\0\x01\x12\x04\x84\
+    \x01\x14\x18\n\x0f\n\x07\x04\x02\x03\0\x02\0\x03\x12\x04\x84\x01\x1b\x1c\
+    \n\xae\x10\n\x06\x04\x02\x03\0\x02\x01\x12\x04\xab\x01\x04(\x1a\x9d\x10\
     \x20If\x20non-empty,\x20indicates\x20that\x20the\x20named\x20file\x20sho\
     uld\x20already\x20exist,\x20and\x20the\n\x20content\x20here\x20is\x20to\
     \x20be\x20inserted\x20into\x20that\x20file\x20at\x20a\x20defined\x20inse\
@@ -947,18 +1398,18 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     e\x20executed\x20in\x20the\x20order\x20in\x20which\x20they\x20appear\x20\
     on\x20the\n\x20command\x20line.\n\n\x20If\x20|insertion_point|\x20is\x20\
     present,\x20|name|\x20must\x20also\x20be\x20present.\n\n\x0f\n\x07\x04\
-    \x01\x03\0\x02\x01\x04\x12\x04\x8f\x01\x04\x0c\n\x0f\n\x07\x04\x01\x03\0\
-    \x02\x01\x05\x12\x04\x8f\x01\r\x13\n\x0f\n\x07\x04\x01\x03\0\x02\x01\x01\
-    \x12\x04\x8f\x01\x14#\n\x0f\n\x07\x04\x01\x03\0\x02\x01\x03\x12\x04\x8f\
-    \x01&'\n$\n\x06\x04\x01\x03\0\x02\x02\x12\x04\x92\x01\x04!\x1a\x14\x20Th\
-    e\x20file\x20contents.\n\n\x0f\n\x07\x04\x01\x03\0\x02\x02\x04\x12\x04\
-    \x92\x01\x04\x0c\n\x0f\n\x07\x04\x01\x03\0\x02\x02\x05\x12\x04\x92\x01\r\
-    \x13\n\x0f\n\x07\x04\x01\x03\0\x02\x02\x01\x12\x04\x92\x01\x14\x1b\n\x0f\
-    \n\x07\x04\x01\x03\0\x02\x02\x03\x12\x04\x92\x01\x1e\x20\n\x0c\n\x04\x04\
-    \x01\x02\x01\x12\x04\x94\x01\x02\x1a\n\r\n\x05\x04\x01\x02\x01\x04\x12\
-    \x04\x94\x01\x02\n\n\r\n\x05\x04\x01\x02\x01\x06\x12\x04\x94\x01\x0b\x0f\
-    \n\r\n\x05\x04\x01\x02\x01\x01\x12\x04\x94\x01\x10\x14\n\r\n\x05\x04\x01\
-    \x02\x01\x03\x12\x04\x94\x01\x17\x19\
+    \x02\x03\0\x02\x01\x04\x12\x04\xab\x01\x04\x0c\n\x0f\n\x07\x04\x02\x03\0\
+    \x02\x01\x05\x12\x04\xab\x01\r\x13\n\x0f\n\x07\x04\x02\x03\0\x02\x01\x01\
+    \x12\x04\xab\x01\x14#\n\x0f\n\x07\x04\x02\x03\0\x02\x01\x03\x12\x04\xab\
+    \x01&'\n$\n\x06\x04\x02\x03\0\x02\x02\x12\x04\xae\x01\x04!\x1a\x14\x20Th\
+    e\x20file\x20contents.\n\n\x0f\n\x07\x04\x02\x03\0\x02\x02\x04\x12\x04\
+    \xae\x01\x04\x0c\n\x0f\n\x07\x04\x02\x03\0\x02\x02\x05\x12\x04\xae\x01\r\
+    \x13\n\x0f\n\x07\x04\x02\x03\0\x02\x02\x01\x12\x04\xae\x01\x14\x1b\n\x0f\
+    \n\x07\x04\x02\x03\0\x02\x02\x03\x12\x04\xae\x01\x1e\x20\n\x0c\n\x04\x04\
+    \x02\x02\x02\x12\x04\xb0\x01\x02\x1a\n\r\n\x05\x04\x02\x02\x02\x04\x12\
+    \x04\xb0\x01\x02\n\n\r\n\x05\x04\x02\x02\x02\x06\x12\x04\xb0\x01\x0b\x0f\
+    \n\r\n\x05\x04\x02\x02\x02\x01\x12\x04\xb0\x01\x10\x14\n\r\n\x05\x04\x02\
+    \x02\x02\x03\x12\x04\xb0\x01\x17\x19\
 ";
 
 /// `FileDescriptorProto` object which was a source for this generated file
@@ -976,10 +1427,12 @@ pub fn file_descriptor() -> crate::reflect::FileDescriptor {
         let mut deps = ::std::vec::Vec::new();
         deps.push(crate::descriptor::file_descriptor());
         let mut messages = ::std::vec::Vec::new();
+        messages.push(Version::generated_message_descriptor_data());
         messages.push(CodeGeneratorRequest::generated_message_descriptor_data());
         messages.push(CodeGeneratorResponse::generated_message_descriptor_data());
         messages.push(code_generator_response::File::generated_message_descriptor_data());
         let mut enums = ::std::vec::Vec::new();
+        enums.push(code_generator_response::Feature::generated_enum_descriptor_data());
         crate::reflect::GeneratedFileDescriptor::new_generated(
             file_descriptor_proto(),
             deps,

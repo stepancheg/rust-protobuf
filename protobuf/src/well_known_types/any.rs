@@ -25,17 +25,19 @@
 #[cfg_attr(serde, derive(Serialize, Deserialize))]
 pub struct Any {
     // message fields
-    ///  A URL/resource name whose content describes the type of the
-    ///  serialized protocol buffer message.
+    ///  A URL/resource name that uniquely identifies the type of the serialized
+    ///  protocol buffer message. This string must contain at least
+    ///  one "/" character. The last segment of the URL's path must represent
+    ///  the fully qualified name of the type (as in
+    ///  `path/google.protobuf.Duration`). The name should be in a canonical form
+    ///  (e.g., leading "." is not accepted).
     ///
-    ///  For URLs which use the scheme `http`, `https`, or no scheme, the
-    ///  following restrictions and interpretations apply:
+    ///  In practice, teams usually precompile into the binary all types that they
+    ///  expect it to use in the context of Any. However, for URLs which use the
+    ///  scheme `http`, `https`, or no scheme, one can optionally set up a type
+    ///  server that maps type URLs to message definitions as follows:
     ///
     ///  * If no scheme is provided, `https` is assumed.
-    ///  * The last segment of the URL's path must represent the fully
-    ///    qualified name of the type (as in `path/google.protobuf.Duration`).
-    ///    The name should be in a canonical form (e.g., leading "." is
-    ///    not accepted).
     ///  * An HTTP GET on the URL must yield a [google.protobuf.Type][]
     ///    value in binary format, or produce an error.
     ///  * Applications are allowed to cache lookup results based on the
@@ -43,6 +45,10 @@ pub struct Any {
     ///    lookup. Therefore, binary compatibility needs to be preserved
     ///    on changes to types. (Use versioned type names to manage
     ///    breaking changes.)
+    ///
+    ///  Note: this functionality is not currently available in the official
+    ///  protobuf release, and it is not used for type URLs beginning with
+    ///  type.googleapis.com.
     ///
     ///  Schemes other than `http`, `https` (or the empty scheme) might be
     ///  used with implementation specific semantics.
@@ -197,7 +203,7 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x19\n\x08type_url\x18\x01\x20\x01(\tR\x07typeUrl\x12\x14\n\x05value\x18\
     \x02\x20\x01(\x0cR\x05valueBo\n\x13com.google.protobufB\x08AnyProtoP\x01\
     Z%github.com/golang/protobuf/ptypes/any\xa2\x02\x03GPB\xaa\x02\x1eGoogle\
-    .Protobuf.WellKnownTypesJ\x8a&\n\x07\x12\x05\x1e\0\x8a\x01\x01\n\xcc\x0c\
+    .Protobuf.WellKnownTypesJ\xe0*\n\x07\x12\x05\x1e\0\x9a\x01\x01\n\xcc\x0c\
     \n\x01\x0c\x12\x03\x1e\0\x122\xc1\x0c\x20Protocol\x20Buffers\x20-\x20Goo\
     gle's\x20data\x20interchange\x20format\n\x20Copyright\x202008\x20Google\
     \x20Inc.\x20\x20All\x20rights\x20reserved.\n\x20https://developers.googl\
@@ -237,7 +243,7 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x12\x03$\0,\n\t\n\x02\x08\x01\x12\x03$\0,\n\x08\n\x01\x08\x12\x03%\0)\n\
     \t\n\x02\x08\x08\x12\x03%\0)\n\x08\n\x01\x08\x12\x03&\0\"\n\t\n\x02\x08\
     \n\x12\x03&\0\"\n\x08\n\x01\x08\x12\x03'\0!\n\t\n\x02\x08$\x12\x03'\0!\n\
-    \x81\x0f\n\x02\x04\0\x12\x05o\0\x8a\x01\x01\x1a\xf3\x0e\x20`Any`\x20cont\
+    \xe4\x10\n\x02\x04\0\x12\x05y\0\x9a\x01\x01\x1a\xd6\x10\x20`Any`\x20cont\
     ains\x20an\x20arbitrary\x20serialized\x20protocol\x20buffer\x20message\
     \x20along\x20with\x20a\n\x20URL\x20that\x20describes\x20the\x20type\x20o\
     f\x20the\x20serialized\x20message.\n\n\x20Protobuf\x20library\x20provide\
@@ -258,61 +264,75 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x20any\x20=\x20Any()\n\x20\x20\x20\x20\x20any.Pack(foo)\n\x20\x20\x20\
     \x20\x20...\n\x20\x20\x20\x20\x20if\x20any.Is(Foo.DESCRIPTOR):\n\x20\x20\
     \x20\x20\x20\x20\x20any.Unpack(foo)\n\x20\x20\x20\x20\x20\x20\x20...\n\n\
-    \x20The\x20pack\x20methods\x20provided\x20by\x20protobuf\x20library\x20w\
-    ill\x20by\x20default\x20use\n\x20'type.googleapis.com/full.type.name'\
-    \x20as\x20the\x20type\x20URL\x20and\x20the\x20unpack\n\x20methods\x20onl\
-    y\x20use\x20the\x20fully\x20qualified\x20type\x20name\x20after\x20the\
-    \x20last\x20'/'\n\x20in\x20the\x20type\x20URL,\x20for\x20example\x20\"fo\
-    o.bar.com/x/y.z\"\x20will\x20yield\x20type\n\x20name\x20\"y.z\".\n\n\n\
-    \x20JSON\n\x20====\n\x20The\x20JSON\x20representation\x20of\x20an\x20`An\
-    y`\x20value\x20uses\x20the\x20regular\n\x20representation\x20of\x20the\
-    \x20deserialized,\x20embedded\x20message,\x20with\x20an\n\x20additional\
-    \x20field\x20`@type`\x20which\x20contains\x20the\x20type\x20URL.\x20Exam\
-    ple:\n\n\x20\x20\x20\x20\x20package\x20google.profile;\n\x20\x20\x20\x20\
-    \x20message\x20Person\x20{\n\x20\x20\x20\x20\x20\x20\x20string\x20first_\
-    name\x20=\x201;\n\x20\x20\x20\x20\x20\x20\x20string\x20last_name\x20=\
-    \x202;\n\x20\x20\x20\x20\x20}\n\n\x20\x20\x20\x20\x20{\n\x20\x20\x20\x20\
-    \x20\x20\x20\"@type\":\x20\"type.googleapis.com/google.profile.Person\",\
-    \n\x20\x20\x20\x20\x20\x20\x20\"firstName\":\x20<string>,\n\x20\x20\x20\
-    \x20\x20\x20\x20\"lastName\":\x20<string>\n\x20\x20\x20\x20\x20}\n\n\x20\
-    If\x20the\x20embedded\x20message\x20type\x20is\x20well-known\x20and\x20h\
-    as\x20a\x20custom\x20JSON\n\x20representation,\x20that\x20representation\
-    \x20will\x20be\x20embedded\x20adding\x20a\x20field\n\x20`value`\x20which\
-    \x20holds\x20the\x20custom\x20JSON\x20in\x20addition\x20to\x20the\x20`@t\
-    ype`\n\x20field.\x20Example\x20(for\x20message\x20[google.protobuf.Durat\
-    ion][]):\n\n\x20\x20\x20\x20\x20{\n\x20\x20\x20\x20\x20\x20\x20\"@type\"\
-    :\x20\"type.googleapis.com/google.protobuf.Duration\",\n\x20\x20\x20\x20\
-    \x20\x20\x20\"value\":\x20\"1.212s\"\n\x20\x20\x20\x20\x20}\n\n\n\n\n\
-    \x03\x04\0\x01\x12\x03o\x08\x0b\n\xe4\x07\n\x04\x04\0\x02\0\x12\x04\x86\
-    \x01\x02\x16\x1a\xd5\x07\x20A\x20URL/resource\x20name\x20whose\x20conten\
-    t\x20describes\x20the\x20type\x20of\x20the\n\x20serialized\x20protocol\
-    \x20buffer\x20message.\n\n\x20For\x20URLs\x20which\x20use\x20the\x20sche\
-    me\x20`http`,\x20`https`,\x20or\x20no\x20scheme,\x20the\n\x20following\
-    \x20restrictions\x20and\x20interpretations\x20apply:\n\n\x20*\x20If\x20n\
-    o\x20scheme\x20is\x20provided,\x20`https`\x20is\x20assumed.\n\x20*\x20Th\
-    e\x20last\x20segment\x20of\x20the\x20URL's\x20path\x20must\x20represent\
-    \x20the\x20fully\n\x20\x20\x20qualified\x20name\x20of\x20the\x20type\x20\
-    (as\x20in\x20`path/google.protobuf.Duration`).\n\x20\x20\x20The\x20name\
-    \x20should\x20be\x20in\x20a\x20canonical\x20form\x20(e.g.,\x20leading\
-    \x20\".\"\x20is\n\x20\x20\x20not\x20accepted).\n\x20*\x20An\x20HTTP\x20G\
-    ET\x20on\x20the\x20URL\x20must\x20yield\x20a\x20[google.protobuf.Type][]\
-    \n\x20\x20\x20value\x20in\x20binary\x20format,\x20or\x20produce\x20an\
-    \x20error.\n\x20*\x20Applications\x20are\x20allowed\x20to\x20cache\x20lo\
-    okup\x20results\x20based\x20on\x20the\n\x20\x20\x20URL,\x20or\x20have\
-    \x20them\x20precompiled\x20into\x20a\x20binary\x20to\x20avoid\x20any\n\
-    \x20\x20\x20lookup.\x20Therefore,\x20binary\x20compatibility\x20needs\
-    \x20to\x20be\x20preserved\n\x20\x20\x20on\x20changes\x20to\x20types.\x20\
-    (Use\x20versioned\x20type\x20names\x20to\x20manage\n\x20\x20\x20breaking\
-    \x20changes.)\n\n\x20Schemes\x20other\x20than\x20`http`,\x20`https`\x20(\
-    or\x20the\x20empty\x20scheme)\x20might\x20be\n\x20used\x20with\x20implem\
-    entation\x20specific\x20semantics.\n\n\n\r\n\x05\x04\0\x02\0\x05\x12\x04\
-    \x86\x01\x02\x08\n\r\n\x05\x04\0\x02\0\x01\x12\x04\x86\x01\t\x11\n\r\n\
-    \x05\x04\0\x02\0\x03\x12\x04\x86\x01\x14\x15\nW\n\x04\x04\0\x02\x01\x12\
-    \x04\x89\x01\x02\x12\x1aI\x20Must\x20be\x20a\x20valid\x20serialized\x20p\
-    rotocol\x20buffer\x20of\x20the\x20above\x20specified\x20type.\n\n\r\n\
-    \x05\x04\0\x02\x01\x05\x12\x04\x89\x01\x02\x07\n\r\n\x05\x04\0\x02\x01\
-    \x01\x12\x04\x89\x01\x08\r\n\r\n\x05\x04\0\x02\x01\x03\x12\x04\x89\x01\
-    \x10\x11b\x06proto3\
+    \x20\x20Example\x204:\x20Pack\x20and\x20unpack\x20a\x20message\x20in\x20\
+    Go\n\n\x20\x20\x20\x20\x20\x20foo\x20:=\x20&pb.Foo{...}\n\x20\x20\x20\
+    \x20\x20\x20any,\x20err\x20:=\x20ptypes.MarshalAny(foo)\n\x20\x20\x20\
+    \x20\x20\x20...\n\x20\x20\x20\x20\x20\x20foo\x20:=\x20&pb.Foo{}\n\x20\
+    \x20\x20\x20\x20\x20if\x20err\x20:=\x20ptypes.UnmarshalAny(any,\x20foo);\
+    \x20err\x20!=\x20nil\x20{\n\x20\x20\x20\x20\x20\x20\x20\x20...\n\x20\x20\
+    \x20\x20\x20\x20}\n\n\x20The\x20pack\x20methods\x20provided\x20by\x20pro\
+    tobuf\x20library\x20will\x20by\x20default\x20use\n\x20'type.googleapis.c\
+    om/full.type.name'\x20as\x20the\x20type\x20URL\x20and\x20the\x20unpack\n\
+    \x20methods\x20only\x20use\x20the\x20fully\x20qualified\x20type\x20name\
+    \x20after\x20the\x20last\x20'/'\n\x20in\x20the\x20type\x20URL,\x20for\
+    \x20example\x20\"foo.bar.com/x/y.z\"\x20will\x20yield\x20type\n\x20name\
+    \x20\"y.z\".\n\n\n\x20JSON\n\x20====\n\x20The\x20JSON\x20representation\
+    \x20of\x20an\x20`Any`\x20value\x20uses\x20the\x20regular\n\x20representa\
+    tion\x20of\x20the\x20deserialized,\x20embedded\x20message,\x20with\x20an\
+    \n\x20additional\x20field\x20`@type`\x20which\x20contains\x20the\x20type\
+    \x20URL.\x20Example:\n\n\x20\x20\x20\x20\x20package\x20google.profile;\n\
+    \x20\x20\x20\x20\x20message\x20Person\x20{\n\x20\x20\x20\x20\x20\x20\x20\
+    string\x20first_name\x20=\x201;\n\x20\x20\x20\x20\x20\x20\x20string\x20l\
+    ast_name\x20=\x202;\n\x20\x20\x20\x20\x20}\n\n\x20\x20\x20\x20\x20{\n\
+    \x20\x20\x20\x20\x20\x20\x20\"@type\":\x20\"type.googleapis.com/google.p\
+    rofile.Person\",\n\x20\x20\x20\x20\x20\x20\x20\"firstName\":\x20<string>\
+    ,\n\x20\x20\x20\x20\x20\x20\x20\"lastName\":\x20<string>\n\x20\x20\x20\
+    \x20\x20}\n\n\x20If\x20the\x20embedded\x20message\x20type\x20is\x20well-\
+    known\x20and\x20has\x20a\x20custom\x20JSON\n\x20representation,\x20that\
+    \x20representation\x20will\x20be\x20embedded\x20adding\x20a\x20field\n\
+    \x20`value`\x20which\x20holds\x20the\x20custom\x20JSON\x20in\x20addition\
+    \x20to\x20the\x20`@type`\n\x20field.\x20Example\x20(for\x20message\x20[g\
+    oogle.protobuf.Duration][]):\n\n\x20\x20\x20\x20\x20{\n\x20\x20\x20\x20\
+    \x20\x20\x20\"@type\":\x20\"type.googleapis.com/google.protobuf.Duration\
+    \",\n\x20\x20\x20\x20\x20\x20\x20\"value\":\x20\"1.212s\"\n\x20\x20\x20\
+    \x20\x20}\n\n\n\n\n\x03\x04\0\x01\x12\x03y\x08\x0b\n\xd7\n\n\x04\x04\0\
+    \x02\0\x12\x04\x96\x01\x02\x16\x1a\xc8\n\x20A\x20URL/resource\x20name\
+    \x20that\x20uniquely\x20identifies\x20the\x20type\x20of\x20the\x20serial\
+    ized\n\x20protocol\x20buffer\x20message.\x20This\x20string\x20must\x20co\
+    ntain\x20at\x20least\n\x20one\x20\"/\"\x20character.\x20The\x20last\x20s\
+    egment\x20of\x20the\x20URL's\x20path\x20must\x20represent\n\x20the\x20fu\
+    lly\x20qualified\x20name\x20of\x20the\x20type\x20(as\x20in\n\x20`path/go\
+    ogle.protobuf.Duration`).\x20The\x20name\x20should\x20be\x20in\x20a\x20c\
+    anonical\x20form\n\x20(e.g.,\x20leading\x20\".\"\x20is\x20not\x20accepte\
+    d).\n\n\x20In\x20practice,\x20teams\x20usually\x20precompile\x20into\x20\
+    the\x20binary\x20all\x20types\x20that\x20they\n\x20expect\x20it\x20to\
+    \x20use\x20in\x20the\x20context\x20of\x20Any.\x20However,\x20for\x20URLs\
+    \x20which\x20use\x20the\n\x20scheme\x20`http`,\x20`https`,\x20or\x20no\
+    \x20scheme,\x20one\x20can\x20optionally\x20set\x20up\x20a\x20type\n\x20s\
+    erver\x20that\x20maps\x20type\x20URLs\x20to\x20message\x20definitions\
+    \x20as\x20follows:\n\n\x20*\x20If\x20no\x20scheme\x20is\x20provided,\x20\
+    `https`\x20is\x20assumed.\n\x20*\x20An\x20HTTP\x20GET\x20on\x20the\x20UR\
+    L\x20must\x20yield\x20a\x20[google.protobuf.Type][]\n\x20\x20\x20value\
+    \x20in\x20binary\x20format,\x20or\x20produce\x20an\x20error.\n\x20*\x20A\
+    pplications\x20are\x20allowed\x20to\x20cache\x20lookup\x20results\x20bas\
+    ed\x20on\x20the\n\x20\x20\x20URL,\x20or\x20have\x20them\x20precompiled\
+    \x20into\x20a\x20binary\x20to\x20avoid\x20any\n\x20\x20\x20lookup.\x20Th\
+    erefore,\x20binary\x20compatibility\x20needs\x20to\x20be\x20preserved\n\
+    \x20\x20\x20on\x20changes\x20to\x20types.\x20(Use\x20versioned\x20type\
+    \x20names\x20to\x20manage\n\x20\x20\x20breaking\x20changes.)\n\n\x20Note\
+    :\x20this\x20functionality\x20is\x20not\x20currently\x20available\x20in\
+    \x20the\x20official\n\x20protobuf\x20release,\x20and\x20it\x20is\x20not\
+    \x20used\x20for\x20type\x20URLs\x20beginning\x20with\n\x20type.googleapi\
+    s.com.\n\n\x20Schemes\x20other\x20than\x20`http`,\x20`https`\x20(or\x20t\
+    he\x20empty\x20scheme)\x20might\x20be\n\x20used\x20with\x20implementatio\
+    n\x20specific\x20semantics.\n\n\n\r\n\x05\x04\0\x02\0\x05\x12\x04\x96\
+    \x01\x02\x08\n\r\n\x05\x04\0\x02\0\x01\x12\x04\x96\x01\t\x11\n\r\n\x05\
+    \x04\0\x02\0\x03\x12\x04\x96\x01\x14\x15\nW\n\x04\x04\0\x02\x01\x12\x04\
+    \x99\x01\x02\x12\x1aI\x20Must\x20be\x20a\x20valid\x20serialized\x20proto\
+    col\x20buffer\x20of\x20the\x20above\x20specified\x20type.\n\n\r\n\x05\
+    \x04\0\x02\x01\x05\x12\x04\x99\x01\x02\x07\n\r\n\x05\x04\0\x02\x01\x01\
+    \x12\x04\x99\x01\x08\r\n\r\n\x05\x04\0\x02\x01\x03\x12\x04\x99\x01\x10\
+    \x11b\x06proto3\
 ";
 
 /// `FileDescriptorProto` object which was a source for this generated file

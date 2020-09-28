@@ -13,7 +13,7 @@ for f in descriptor.proto compiler/plugin.proto \
     type.proto \
     wrappers.proto \
 ; do
-    curl -s https://raw.githubusercontent.com/google/protobuf/v3.1.0/src/google/protobuf/$f \
+    curl -s https://raw.githubusercontent.com/google/protobuf/v3.13.0/src/google/protobuf/$f \
         > $f
 done
 
