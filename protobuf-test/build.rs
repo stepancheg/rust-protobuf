@@ -7,8 +7,6 @@ extern crate protoc_rust;
 
 extern crate protobuf_test_common;
 
-use std::fs;
-
 use protobuf_test_common::build::*;
 use protoc::Protoc;
 use std::path::PathBuf;
@@ -19,6 +17,13 @@ fn test_protoc_bin_path() -> PathBuf {
     path
 }
 
+fn codegen() -> protoc_rust::Codegen {
+    let mut codegen = protoc_rust::Codegen::new();
+    codegen.protoc_path(test_protoc_bin_path());
+    codegen.extra_arg("--experimental_allow_proto3_optional");
+    codegen
+}
+
 fn gen_in_dir(dir: &str, include_dir: &str) {
     gen_in_dir_impl(
         dir,
@@ -27,8 +32,7 @@ fn gen_in_dir(dir: &str, include_dir: &str) {
              input,
              customize,
          }| {
-            protoc_rust::Codegen::new()
-                .protoc_path(test_protoc_bin_path())
+            codegen()
                 .out_dir(out_dir)
                 .inputs(input)
                 .includes(&["../proto", include_dir])
@@ -54,8 +58,7 @@ fn generate_in_v2_v3() {
 }
 
 fn generate_interop() {
-    protoc_rust::Codegen::new()
-        .protoc_path(test_protoc_bin_path())
+    codegen()
         .out_dir("src/interop")
         .includes(&["../interop/cxx", "../proto"])
         .input("../interop/cxx/interop_pb.proto")

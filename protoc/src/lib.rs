@@ -174,6 +174,8 @@ pub struct DescriptorSetOutArgs {
     inputs: Vec<PathBuf>,
     /// `--include_imports`
     include_imports: bool,
+    /// Extra command line flags (like `--experimental_allow_proto3_optional`)
+    extra_args: Vec<OsString>,
 }
 
 impl DescriptorSetOutArgs {
@@ -217,6 +219,20 @@ impl DescriptorSetOutArgs {
         self
     }
 
+    /// Add command line flags like `--experimental_allow_proto3_optional`.
+    pub fn extra_arg(&mut self, arg: impl Into<OsString>) -> &mut Self {
+        self.extra_args.push(arg.into());
+        self
+    }
+
+    /// Add command line flags like `--experimental_allow_proto3_optional`.
+    pub fn extra_args(&mut self, args: impl IntoIterator<Item = impl Into<OsString>>) -> &mut Self {
+        for arg in args {
+            self.extra_arg(arg);
+        }
+        self
+    }
+
     /// Execute `protoc --descriptor_set_out=`
     pub fn write_descriptor_set(&self) -> Result<()> {
         if self.inputs.is_empty() {
@@ -247,6 +263,7 @@ impl DescriptorSetOutArgs {
         cmd_args.push(descriptor_set_out_flag);
         cmd_args.extend(include_imports_flag);
         cmd_args.extend(self.inputs.iter().map(|path| path.as_os_str().to_owned()));
+        cmd_args.extend(self.extra_args.iter().cloned());
         self.protoc.run_with_args(cmd_args)
     }
 }
@@ -374,6 +391,7 @@ impl Protoc {
             includes: Vec::new(),
             inputs: Vec::new(),
             include_imports: false,
+            extra_args: Vec::new(),
         }
     }
 }

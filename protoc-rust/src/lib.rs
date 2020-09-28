@@ -41,6 +41,7 @@ use protobuf::descriptor::FileDescriptorSet;
 use protobuf::Message;
 pub use protobuf_codegen::Customize;
 use protoc::Protoc;
+use std::ffi::OsString;
 
 /// `Protoc --rust_out...` args
 #[derive(Debug, Default)]
@@ -55,6 +56,8 @@ pub struct Codegen {
     customize: Customize,
     /// Protoc command path
     protoc: Option<Protoc>,
+    /// Extra `protoc` args
+    extra_args: Vec<OsString>,
 }
 
 impl Codegen {
@@ -127,6 +130,14 @@ impl Codegen {
         self
     }
 
+    /// Extra command line flags for `protoc` invocation.
+    ///
+    /// For example, `--experimental_allow_proto3_optional` option.
+    pub fn extra_arg(&mut self, arg: impl Into<OsString>) -> &mut Self {
+        self.extra_args.push(arg.into());
+        self
+    }
+
     /// Like `protoc --rust_out=...` but without requiring `protoc-gen-rust` command in `$PATH`.
     pub fn run(&self) -> Result<()> {
         let protoc = match self.protoc.clone() {
@@ -144,6 +155,7 @@ impl Codegen {
             .includes(&self.includes)
             .inputs(&self.inputs)
             .include_imports(true)
+            .extra_args(self.extra_args.iter())
             .write_descriptor_set()?;
 
         let fds = fs::read(temp_file)?;
