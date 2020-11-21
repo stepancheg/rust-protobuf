@@ -6,6 +6,10 @@ publish = false
 edition = "2018"
 description = "Test protoc-based and pure rust codegen produce identical output"
 
+[lib]
+test = false
+doctest = false
+
 [dev-dependencies]
 protobuf = { path = "../protobuf" }
 protobuf-codegen = { path = "../protobuf-codegen" }
