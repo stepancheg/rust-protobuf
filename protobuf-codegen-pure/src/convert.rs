@@ -275,7 +275,7 @@ impl<'a> Resolver<'a> {
                         &f.name,
                         &t.0,
                         &t.1,
-                        path_in_file,
+                        &nested_path_in_file,
                     )?);
                 }
                 model::FieldType::Group { name, fields } => {
