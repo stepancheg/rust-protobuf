@@ -143,12 +143,3 @@ impl<E : ProtobufEnum> ProtobufValue for E {
 impl<M : Message> ProtobufValue for M {
 }
 */
-
-#[cfg(not(feature = "bytes"))]
-type VecU8OrBytes = Vec<u8>;
-#[cfg(feature = "bytes")]
-type VecU8OrBytes = Vec<u8>;
-#[cfg(not(feature = "bytes"))]
-type StringOrChars = String;
-#[cfg(feature = "bytes")]
-type StringOrChars = Chars;
