@@ -6,7 +6,7 @@
 //! can be used, which does not require `protoc-gen-rust` present in `$PATH`.
 
 #![deny(missing_docs)]
-#![deny(intra_doc_link_resolution_failure)]
+#![deny(broken_intra_doc_links)]
 
 use std::ffi::{OsStr, OsString};
 use std::fmt;

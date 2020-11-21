@@ -21,7 +21,7 @@
 //! The alternative is to use `protoc-rust` crate.
 
 #![deny(missing_docs)]
-#![deny(intra_doc_link_resolution_failure)]
+#![deny(broken_intra_doc_links)]
 
 extern crate protobuf;
 extern crate protobuf_codegen;
