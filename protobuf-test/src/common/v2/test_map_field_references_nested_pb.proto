@@ -1,0 +1,7 @@
+syntax = "proto2";
+
+message MapFieldReferencesNested {
+    message NestedMessageReferencedInMapEntry {}
+
+    map<int32, NestedMessageReferencedInMapEntry> x = 1;
+}

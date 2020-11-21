@@ -365,7 +365,8 @@ impl<'a> Resolver<'a> {
         for f in input.regular_fields_including_in_oneofs() {
             match &f.t.typ {
                 model::FieldType::Map(t) => {
-                    let message = self.map_entry_message(&f.t.name, &t.0, &t.1, path_in_file)?;
+                    let message =
+                        self.map_entry_message(&f.t.name, &t.0, &t.1, &nested_path_in_file)?;
                     nested_messages.push(model::WithLoc {
                         t: message,
                         loc: f.loc,
