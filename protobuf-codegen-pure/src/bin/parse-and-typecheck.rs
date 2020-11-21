@@ -2,12 +2,22 @@ extern crate protobuf_codegen_pure;
 
 use std::env;
 use std::path::PathBuf;
+use std::process::exit;
 
 fn main() {
     let args = env::args_os()
         .skip(1)
         .map(PathBuf::from)
         .collect::<Vec<_>>();
+
+    if args.len() != 2 {
+        eprintln!(
+            "usage: {} <input.proto> <include>",
+            env::args().next().unwrap()
+        );
+        exit(1);
+    }
+
     assert!(args.len() >= 2);
     let (input, includes) = args.split_at(1);
     let t =
