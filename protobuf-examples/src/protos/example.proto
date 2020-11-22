@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+message GetRequest {
+  string name = 1;
+  int32 age = 2;
+  repeated string features = 3;
+}
+
+message GetResponse {
+  enum Status {
+    OK = 0;
+    ERR = 1;
+    NOT_FOUND = 2;
+  }
+  Status status = 1;
+  string address = 2;
+  string city = 3;
+  int32 zipcode = 4;
+}
+

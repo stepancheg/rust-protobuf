@@ -338,6 +338,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "rust-protobuf-example"
+version = "0.0.0"
+dependencies = [
+ "protobuf",
+ "protobuf-codegen-pure",
+ "protoc-rust",
+]
+
+[[package]]
 name = "ryu"
 version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
