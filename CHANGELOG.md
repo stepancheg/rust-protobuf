@@ -395,3 +395,6 @@ Republished as 2.0.0
 
 ## [1.4] - 2017-06-24
 - Start of changelog
+
+## [0.0.0] - 2013-07-28
+- First commit added to the repository
