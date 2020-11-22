@@ -33,6 +33,10 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.18] - Unreleased
 
+## [2.18.1] - 2020-11-22
+
+- [map field referencing nested messages](https://github.com/stepancheg/rust-protobuf/issues/531)
+
 ## [2.18.0] - 2020-10-04
 
 - `gen_mod_rs` codegen option can be used to generate `.rs` files friendlier to generating files in `$OUT_DIR`
