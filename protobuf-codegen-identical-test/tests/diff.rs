@@ -16,7 +16,7 @@ use protobuf::descriptor::FieldDescriptorProto_Type;
 use protobuf::descriptor::FileDescriptorProto;
 use protobuf::descriptor::FileDescriptorSet;
 use protobuf::descriptor::OneofDescriptorProto;
-use protobuf::parse_from_reader;
+use protobuf::Message;
 use protobuf_codegen::float::parse_protobuf_float;
 use protobuf_test_common::build::copy_tests_v2_v3;
 use protobuf_test_common::build::glob_simple;
@@ -115,7 +115,7 @@ fn protoc_descriptor_set(includes: &[PathBuf], inputs: &[PathBuf]) -> FileDescri
             include_imports: false,
         })
         .unwrap();
-    parse_from_reader(&mut temp_file).unwrap()
+    FileDescriptorSet::parse_from_reader(&mut temp_file).unwrap()
 }
 
 // TODO: expose this utility from protobuf-codegen-pure crate.
