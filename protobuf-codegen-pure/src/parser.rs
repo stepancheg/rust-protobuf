@@ -1914,25 +1914,6 @@ mod test {
     }
 
     #[test]
-    fn test_import() {
-        let msg = r#"syntax = "proto3";
-
-    import "test_import_nested_imported_pb.proto";
-
-    message ContainsImportedNested {
-        ContainerForNested.NestedMessage m = 1;
-        ContainerForNested.NestedEnum e = 2;
-    }
-    "#;
-        let desc = parse(msg, |p| p.next_proto());
-
-        assert_eq!(
-            vec!["test_import_nested_imported_pb.proto"],
-            desc.import_paths
-        );
-    }
-
-    #[test]
     fn test_package() {
         let msg = r#"
         package foo.bar;
