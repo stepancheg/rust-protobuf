@@ -29,6 +29,7 @@ fn copy_test<P1: AsRef<Path>, P2: AsRef<Path>>(src: P1, dst: P2) {
     writeln!(write, "// copied from {}", src.as_ref().display()).expect("write");
     writeln!(write, "").expect("write");
     write.write_all(&content).expect("write_all");
+    // Print generated twice to avoid overlooking it accidentally
     writeln!(write, "// @generated").expect("write");
     write.flush().expect("flush");
 }
