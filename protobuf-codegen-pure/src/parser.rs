@@ -3,10 +3,9 @@ use std::fmt;
 use std::num::ParseIntError;
 use std::str;
 
-use crate::str_lit::StrLit;
-use crate::str_lit::StrLitDecodeError;
 use model::*;
 use protobuf_codegen::float;
+use protobuf::text_format::lexer::{StrLitDecodeError, StrLit};
 
 const FIRST_LINE: u32 = 1;
 const FIRST_COL: u32 = 1;

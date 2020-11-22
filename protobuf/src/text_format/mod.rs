@@ -26,6 +26,12 @@ use std;
 use std::fmt;
 use std::fmt::Write;
 
+// Used by text format parser and by pure-rust codegen parsed
+// this it is public but hidden module.
+// https://github.com/rust-lang/rust/issues/44663
+#[doc(hidden)]
+pub mod lexer;
+
 fn quote_bytes_to(bytes: &[u8], buf: &mut String) {
     for &c in bytes {
         match c {

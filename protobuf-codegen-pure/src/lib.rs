@@ -39,7 +39,6 @@ use std::path::PathBuf;
 mod linked_hash_map;
 mod model;
 mod parser;
-mod str_lit;
 
 use linked_hash_map::LinkedHashMap;
 pub use protobuf_codegen::Customize;

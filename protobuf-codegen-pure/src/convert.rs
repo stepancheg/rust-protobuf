@@ -13,7 +13,7 @@ use protobuf_codegen::ProtobufIdent;
 use protobuf_codegen::ProtobufRelativePath;
 
 use crate::model::FieldOrOneOf;
-use str_lit::StrLitDecodeError;
+use protobuf::text_format::lexer::StrLitDecodeError;
 
 #[derive(Debug)]
 pub enum ConvertError {

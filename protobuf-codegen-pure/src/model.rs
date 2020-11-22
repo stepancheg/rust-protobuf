@@ -10,7 +10,7 @@ pub use parser::ParserError;
 pub use parser::ParserErrorWithLocation;
 
 use protobuf_codegen::float;
-use str_lit::StrLit;
+use protobuf::text_format::lexer::StrLit;
 
 /// Protobox syntax
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
