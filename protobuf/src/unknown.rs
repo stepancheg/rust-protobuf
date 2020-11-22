@@ -243,6 +243,13 @@ impl UnknownFields {
         self.find_field(&number).add_value(value);
     }
 
+    /// Remove unknown field by number
+    pub fn remove(&mut self, field_number: u32) {
+        if let Some(fields) = &mut self.fields {
+            fields.remove(&field_number);
+        }
+    }
+
     /// Iterate over all unknowns
     pub fn iter<'s>(&'s self) -> UnknownFieldsIter<'s> {
         UnknownFieldsIter {
