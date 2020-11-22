@@ -159,6 +159,7 @@ dependencies = [
  "protobuf-codegen-pure",
  "protobuf-test-common",
  "protoc",
+ "protoc-bin-vendored",
  "protoc-rust",
  "regex",
  "tempfile",
