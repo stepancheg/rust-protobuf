@@ -283,7 +283,7 @@ mod test {
     fn test_print_to_bytes() {
         assert_eq!("ab", escape(b"ab"));
         assert_eq!("a\\\\023", escape(b"a\\023"));
-        assert_eq!("a\\r\\n\\t '\\\"\\\\", escape(b"a\r\n\t '\"\\"));
+        assert_eq!("a\\r\\n\\t \\'\\\"\\\\", escape(b"a\r\n\t '\"\\"));
         assert_eq!("\\344\\275\\240\\345\\245\\275", escape("你好".as_bytes()));
     }
 
