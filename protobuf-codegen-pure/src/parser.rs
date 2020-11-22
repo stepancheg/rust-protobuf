@@ -1490,23 +1490,6 @@ mod test {
     }
 
     #[test]
-    fn test_service() {
-        let msg = r#"service SearchService {
-            rpc Search (SearchRequest) returns (SearchResponse);
-        }"#;
-        let service = parse_opt(msg, |p| p.next_service_opt());
-
-        assert_eq!("SearchService", service.name);
-        assert_eq!(1, service.methods.len());
-        let method = &service.methods[0];
-        assert_eq!("Search", method.name);
-        assert_eq!("SearchRequest", method.input_type);
-        assert_eq!("SearchResponse", method.output_type);
-        assert!(!method.client_streaming);
-        assert!(!method.server_streaming);
-    }
-
-    #[test]
     fn test_incorrect_file_descriptor() {
         let msg = r#"
             message Foo {}
