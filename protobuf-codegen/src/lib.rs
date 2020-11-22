@@ -144,7 +144,7 @@ fn write_file_descriptor_data(
         ),
         |w| {
             w.write_line(&format!(
-                "{}::parse_from_bytes(file_descriptor_proto_data).unwrap()",
+                "{}::Message::parse_from_bytes(file_descriptor_proto_data).unwrap()",
                 protobuf_crate_path(customize)
             ));
         },
