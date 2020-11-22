@@ -18,6 +18,11 @@ fn main() {
         exit(1);
     }
 
+    eprintln!(
+        "{} is not a part of public interface",
+        env::args().next().unwrap()
+    );
+
     assert!(args.len() >= 2);
     let (input, includes) = args.split_at(1);
     let t =
