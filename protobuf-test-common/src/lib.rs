@@ -21,3 +21,6 @@ pub use json_tests::*;
 
 mod reflect_tests;
 pub use reflect_tests::*;
+
+mod cargo;
+pub use cargo::*;
