@@ -15,6 +15,11 @@ fn main() {
         exit(1);
     }
 
+    eprintln!(
+        "{} is not a part of public interface",
+        env::args().next().unwrap()
+    );
+
     let includes = vec![Path::new(&args[0][..])];
     let input = vec![Path::new(&args[1][..])];
     let t =
