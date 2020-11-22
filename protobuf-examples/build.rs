@@ -2,6 +2,7 @@ use std::env;
 use std::fs;
 
 use protobuf_codegen_pure::Customize;
+use std::path::Path;
 
 fn main() {
     let out_dir = env::var("OUT_DIR").unwrap();
@@ -18,8 +19,12 @@ fn main() {
     let generated_with_pure_dir = format!("{}/generated_with_pure", out_dir);
     let generated_with_native_dir = format!("{}/generated_with_native", out_dir);
 
-    fs::remove_dir_all(&generated_with_pure_dir).unwrap();
-    fs::remove_dir_all(&generated_with_native_dir).unwrap();
+    if Path::new(&generated_with_pure_dir).exists() {
+        fs::remove_dir_all(&generated_with_pure_dir).unwrap();
+    }
+    if Path::new(&generated_with_native_dir).exists() {
+        fs::remove_dir_all(&generated_with_native_dir).unwrap();
+    }
     fs::create_dir(&generated_with_pure_dir).unwrap();
     fs::create_dir(&generated_with_native_dir).unwrap();
 
