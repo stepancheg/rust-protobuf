@@ -14,6 +14,7 @@ use std::fs;
 use std::path::Path;
 
 use protobuf_test_common::build::*;
+use protobuf_test_common::print_rerun_if_changed_recursively;
 
 fn copy_test<P1: AsRef<Path>, P2: AsRef<Path>>(src: P1, dst: P2) {
     eprintln!("copy {:?} to {:?}", src.as_ref(), dst.as_ref());
@@ -119,6 +120,8 @@ fn generate_include_generated() {
 }
 
 fn generate_pb_rs() {
+    print_rerun_if_changed_recursively("../protobuf-test");
+
     copy_tests("src/v2");
     gen_in_dir("src/v2", "src/v2");
 
