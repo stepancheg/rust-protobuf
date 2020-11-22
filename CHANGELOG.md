@@ -36,6 +36,7 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - Add `UnknownFields::remove`
 - Fix several inconsistencies between `protoc` parser and pure rust parser
 - `protobuf::parse_from*` functions are deprecated, use `protobuf::Message::parse_from*` instead
+- impl `IntoIterator` for `&mut RepeatedField<T>` and for `RepeatedField<T>`
 
 ## [2.18.1] - 2020-11-22
 
