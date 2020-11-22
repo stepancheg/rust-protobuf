@@ -219,7 +219,7 @@ fn print_field(
     print_end_field(buf, pretty);
 }
 
-fn print_to_internal(m: &Message, buf: &mut String, pretty: bool, indent: usize) {
+fn print_to_internal(m: &dyn Message, buf: &mut String, pretty: bool, indent: usize) {
     let d = m.descriptor();
     let mut first = true;
     for f in d.fields() {
@@ -266,23 +266,23 @@ fn print_to_internal(m: &Message, buf: &mut String, pretty: bool, indent: usize)
 }
 
 /// Text-format
-pub fn print_to(m: &Message, buf: &mut String) {
+pub fn print_to(m: &dyn Message, buf: &mut String) {
     print_to_internal(m, buf, false, 0)
 }
 
-fn print_to_string_internal(m: &Message, pretty: bool) -> String {
+fn print_to_string_internal(m: &dyn Message, pretty: bool) -> String {
     let mut r = String::new();
     print_to_internal(m, &mut r, pretty, 0);
     r.to_string()
 }
 
 /// Text-format
-pub fn print_to_string(m: &Message) -> String {
+pub fn print_to_string(m: &dyn Message) -> String {
     print_to_string_internal(m, false)
 }
 
 /// Text-format to `fmt::Formatter`.
-pub fn fmt(m: &Message, f: &mut fmt::Formatter) -> fmt::Result {
+pub fn fmt(m: &dyn Message, f: &mut fmt::Formatter) -> fmt::Result {
     let pretty = f.alternate();
     f.write_str(&print_to_string_internal(m, pretty))
 }

@@ -97,7 +97,7 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
     }
 
     /// Write the message to the writer.
-    fn write_to_writer(&self, w: &mut Write) -> ProtobufResult<()> {
+    fn write_to_writer(&self, w: &mut dyn Write) -> ProtobufResult<()> {
         w.with_coded_output_stream(|os| self.write_to(os))
     }
 
@@ -126,7 +126,7 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
 
     /// Write the message to the writer, prepend the message with message length
     /// encoded as varint.
-    fn write_length_delimited_to_writer(&self, w: &mut Write) -> ProtobufResult<()> {
+    fn write_length_delimited_to_writer(&self, w: &mut dyn Write) -> ProtobufResult<()> {
         w.with_coded_output_stream(|os| self.write_length_delimited_to(os))
     }
 
@@ -147,15 +147,15 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
     }
 
     /// View self as `Any`.
-    fn as_any(&self) -> &Any;
+    fn as_any(&self) -> &dyn Any;
 
     /// View self as mutable `Any`.
-    fn as_any_mut(&mut self) -> &mut Any {
+    fn as_any_mut(&mut self) -> &mut dyn Any {
         panic!()
     }
 
     /// Convert boxed self to boxed `Any`.
-    fn into_any(self: Box<Self>) -> Box<Any> {
+    fn into_any(self: Box<Self>) -> Box<dyn Any> {
         panic!()
     }
 
@@ -209,7 +209,7 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
         Self: Sized;
 }
 
-pub fn message_down_cast<'a, M: Message + 'a>(m: &'a Message) -> &'a M {
+pub fn message_down_cast<'a, M: Message + 'a>(m: &'a dyn Message) -> &'a M {
     m.as_any().downcast_ref::<M>().unwrap()
 }
 
@@ -223,7 +223,7 @@ pub fn parse_from<M: Message>(is: &mut CodedInputStream) -> ProtobufResult<M> {
 
 /// Parse message from reader.
 /// Parse stops on EOF or when error encountered.
-pub fn parse_from_reader<M: Message>(reader: &mut Read) -> ProtobufResult<M> {
+pub fn parse_from_reader<M: Message>(reader: &mut dyn Read) -> ProtobufResult<M> {
     reader.with_coded_input_stream(|is| parse_from::<M>(is))
 }
 
@@ -254,7 +254,7 @@ pub fn parse_length_delimited_from<M: Message>(is: &mut CodedInputStream) -> Pro
 ///
 /// This function is deprecated and will be removed in the next major release.
 #[deprecated]
-pub fn parse_length_delimited_from_reader<M: Message>(r: &mut Read) -> ProtobufResult<M> {
+pub fn parse_length_delimited_from_reader<M: Message>(r: &mut dyn Read) -> ProtobufResult<M> {
     // TODO: wrong: we may read length first, and then read exact number of bytes needed
     r.with_coded_input_stream(|is| is.read_message::<M>())
 }

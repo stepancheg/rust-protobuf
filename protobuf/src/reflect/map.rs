@@ -26,7 +26,7 @@ impl<K: ProtobufValue + Eq + Hash + 'static, V: ProtobufValue + 'static> Reflect
 }
 
 trait ReflectMapIterTrait<'a> {
-    fn next(&mut self) -> Option<(&'a ProtobufValue, &'a ProtobufValue)>;
+    fn next(&mut self) -> Option<(&'a dyn ProtobufValue, &'a dyn ProtobufValue)>;
 }
 
 struct ReflectMapIterImpl<'a, K: Eq + Hash + 'static, V: 'static> {
@@ -36,29 +36,29 @@ struct ReflectMapIterImpl<'a, K: Eq + Hash + 'static, V: 'static> {
 impl<'a, K: ProtobufValue + Eq + Hash + 'static, V: ProtobufValue + 'static> ReflectMapIterTrait<'a>
     for ReflectMapIterImpl<'a, K, V>
 {
-    fn next(&mut self) -> Option<(&'a ProtobufValue, &'a ProtobufValue)> {
+    fn next(&mut self) -> Option<(&'a dyn ProtobufValue, &'a dyn ProtobufValue)> {
         match self.iter.next() {
-            Some((k, v)) => Some((k as &ProtobufValue, v as &ProtobufValue)),
+            Some((k, v)) => Some((k as &dyn ProtobufValue, v as &dyn ProtobufValue)),
             None => None,
         }
     }
 }
 
 pub struct ReflectMapIter<'a> {
-    imp: Box<ReflectMapIterTrait<'a> + 'a>,
+    imp: Box<dyn ReflectMapIterTrait<'a> + 'a>,
 }
 
 impl<'a> Iterator for ReflectMapIter<'a> {
-    type Item = (&'a ProtobufValue, &'a ProtobufValue);
+    type Item = (&'a dyn ProtobufValue, &'a dyn ProtobufValue);
 
-    fn next(&mut self) -> Option<(&'a ProtobufValue, &'a ProtobufValue)> {
+    fn next(&mut self) -> Option<(&'a dyn ProtobufValue, &'a dyn ProtobufValue)> {
         self.imp.next()
     }
 }
 
-impl<'a> IntoIterator for &'a ReflectMap {
+impl<'a> IntoIterator for &'a dyn ReflectMap {
     type IntoIter = ReflectMapIter<'a>;
-    type Item = (&'a ProtobufValue, &'a ProtobufValue);
+    type Item = (&'a dyn ProtobufValue, &'a dyn ProtobufValue);
 
     fn into_iter(self) -> Self::IntoIter {
         self.reflect_iter()

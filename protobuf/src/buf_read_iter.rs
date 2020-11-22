@@ -29,8 +29,8 @@ const NO_LIMIT: u64 = u64::MAX;
 
 /// Hold all possible combinations of input source
 enum InputSource<'a> {
-    BufRead(&'a mut BufRead),
-    Read(BufReader<&'a mut Read>),
+    BufRead(&'a mut dyn BufRead),
+    Read(BufReader<&'a mut dyn Read>),
     Slice(&'a [u8]),
     #[cfg(feature = "bytes")]
     Bytes(&'a Bytes),

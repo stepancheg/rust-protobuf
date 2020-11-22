@@ -14,7 +14,7 @@ pub trait ProtobufValue: Any + 'static {
     fn as_ref(&self) -> ReflectValueRef;
 
     /// Convert to `Any`
-    fn as_any(&self) -> &Any {
+    fn as_any(&self) -> &dyn Any {
         unimplemented!()
     }
 
