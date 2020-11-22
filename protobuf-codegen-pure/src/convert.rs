@@ -801,6 +801,17 @@ pub fn file_descriptor(
         output.set_package(package.clone());
     }
 
+    for import in &input.imports {
+        if import.vis == model::ImportVis::Public {
+            output
+                .public_dependency
+                .push(output.dependency.len() as i32);
+        } else if import.vis == model::ImportVis::Weak {
+            output.weak_dependency.push(output.dependency.len() as i32);
+        }
+        output.dependency.push(import.path.clone());
+    }
+
     let mut messages = protobuf::RepeatedField::new();
     for m in &input.messages {
         messages.push(resolver.message(&m, &ProtobufRelativePath::empty())?);

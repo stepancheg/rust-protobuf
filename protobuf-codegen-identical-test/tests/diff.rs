@@ -157,9 +157,6 @@ fn normalize_file_descriptor(desc: &mut FileDescriptorProto) {
     // TODO: don't clear services.
     desc.service.clear();
 
-    // TODO: do not clear
-    desc.dependency.clear();
-
     // for unittest_custom_options.proto where a custom option
     // is an extension. Probably nobody outside of Google uses it.
     desc.mut_options().unknown_fields.remove(15478479);

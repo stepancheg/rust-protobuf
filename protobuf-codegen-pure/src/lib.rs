@@ -221,8 +221,8 @@ impl<'a> Run<'a> {
         parsed: &model::FileDescriptor,
         result: &mut LinkedHashMap<String, FileDescriptorPair>,
     ) {
-        for import in &parsed.import_paths {
-            self.get_file_and_all_deps_already_parsed(import, result);
+        for import in &parsed.imports {
+            self.get_file_and_all_deps_already_parsed(&import.path, result);
         }
     }
 
@@ -253,8 +253,8 @@ impl<'a> Run<'a> {
             )
         })?;
 
-        for import_path in &parsed.import_paths {
-            self.add_imported_file(import_path)?;
+        for import_path in &parsed.imports {
+            self.add_imported_file(&import_path.path)?;
         }
 
         let mut this_file_deps = LinkedHashMap::new();

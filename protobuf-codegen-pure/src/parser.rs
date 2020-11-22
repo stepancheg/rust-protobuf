@@ -1107,12 +1107,18 @@ impl<'a> Parser<'a> {
     // Import Statement
 
     // import = "import" [ "weak" | "public" ] strLit ";"
-    fn next_import_opt(&mut self) -> ParserResult<Option<String>> {
+    fn next_import_opt(&mut self) -> ParserResult<Option<Import>> {
         if self.next_ident_if_eq("import")? {
-            self.next_ident_if_in(&["weak", "public"])?;
-            let import_path = self.next_str_lit()?.decode_utf8()?;
+            let vis = if self.next_ident_if_eq("weak")? {
+                ImportVis::Weak
+            } else if self.next_ident_if_eq("public")? {
+                ImportVis::Public
+            } else {
+                ImportVis::Default
+            };
+            let path = self.next_str_lit()?.decode_utf8()?;
             self.next_symbol_expect_eq(';')?;
-            Ok(Some(import_path))
+            Ok(Some(Import { path, vis }))
         } else {
             Ok(None)
         }
@@ -1691,7 +1697,7 @@ impl<'a> Parser<'a> {
         let syntax = self.next_syntax()?.unwrap_or(Syntax::Proto2);
         self.syntax = syntax;
 
-        let mut import_paths = Vec::new();
+        let mut imports = Vec::new();
         let mut package = None;
         let mut messages = Vec::new();
         let mut enums = Vec::new();
@@ -1699,8 +1705,8 @@ impl<'a> Parser<'a> {
         let mut options = Vec::new();
 
         while !self.syntax_eof()? {
-            if let Some(import_path) = self.next_import_opt()? {
-                import_paths.push(import_path);
+            if let Some(import) = self.next_import_opt()? {
+                imports.push(import);
                 continue;
             }
 
@@ -1741,7 +1747,7 @@ impl<'a> Parser<'a> {
         }
 
         Ok(FileDescriptor {
-            import_paths,
+            imports,
             package,
             syntax,
             messages,
