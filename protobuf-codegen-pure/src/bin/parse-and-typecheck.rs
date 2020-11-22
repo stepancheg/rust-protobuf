@@ -20,11 +20,11 @@ fn main() {
         env::args().next().unwrap()
     );
 
-    let includes = vec![Path::new(&args[0][..])];
-    let input = vec![Path::new(&args[1][..])];
+    let input = vec![Path::new(&args[0][..])];
+    let includes = vec![Path::new(&args[1][..])];
     let t =
         protobuf_codegen_pure::parse_and_typecheck(&includes, &input).expect("parse_and_typecheck");
     for fd in t.file_descriptors {
-        println!("{:?}", fd);
+        println!("{:#?}", fd);
     }
 }
