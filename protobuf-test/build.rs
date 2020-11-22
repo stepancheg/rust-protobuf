@@ -15,8 +15,6 @@ use std::path::Path;
 
 use protobuf_test_common::build::*;
 
-use protobuf_test_common::build::*;
-
 fn protoc_is_v3() -> bool {
     protoc::Protoc::from_env_path()
         .version()
@@ -34,12 +32,12 @@ fn gen_in_dir(dir: &str, include_dir: &str) {
              input,
              customize,
          }| {
-            protoc_rust::run(protoc_rust::Args {
-                out_dir,
-                input,
-                includes: &["../proto", include_dir],
-                customize,
-            })
+            protoc_rust::Codegen::new()
+                .out_dir(out_dir)
+                .inputs(input)
+                .includes(&["../proto", include_dir])
+                .customize(customize)
+                .run()
         },
     );
 }
@@ -88,13 +86,12 @@ fn generate_in_v2_v3() {
 }
 
 fn generate_interop() {
-    protoc_rust::run(protoc_rust::Args {
-        out_dir: "src/interop",
-        includes: &["../interop/cxx", "../proto"],
-        input: &["../interop/cxx/interop_pb.proto"],
-        ..Default::default()
-    })
-    .unwrap();
+    protoc_rust::Codegen::new()
+        .out_dir("src/interop")
+        .includes(&["../interop/cxx", "../proto"])
+        .inputs(&["../interop/cxx/interop_pb.proto"])
+        .run()
+        .unwrap()
 }
 
 fn generate_include_generated() {
