@@ -503,7 +503,7 @@ pub struct FileDescriptor {
     /// Extensions
     pub extensions: Vec<WithLoc<Extension>>,
     /// Services
-    pub services: Vec<Service>,
+    pub services: Vec<WithLoc<Service>>,
     /// Non-builtin options
     pub options: Vec<ProtobufOption>,
 }

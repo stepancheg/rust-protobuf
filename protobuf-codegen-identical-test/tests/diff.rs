@@ -16,6 +16,7 @@ use protobuf::descriptor::FieldDescriptorProto;
 use protobuf::descriptor::FileDescriptorProto;
 use protobuf::descriptor::FileDescriptorSet;
 use protobuf::descriptor::OneofDescriptorProto;
+use protobuf::descriptor::ServiceDescriptorProto;
 use protobuf::text_format::lexer::float::parse_protobuf_float;
 use protobuf::Message;
 use protobuf_test_common::build::copy_tests_v2_v3;
@@ -152,8 +153,9 @@ fn normalize_file_descriptor(desc: &mut FileDescriptorProto) {
     }
     desc.options.mut_or_default();
 
-    // TODO: don't clear services.
-    desc.service.clear();
+    for service in &mut desc.service {
+        normalize_service(service);
+    }
 
     // for unittest_custom_options.proto where a custom option
     // is an extension. Probably nobody outside of Google uses it.
@@ -206,6 +208,12 @@ fn normalize_descriptor(desc: &mut DescriptorProto) {
             ext.set_end(0x20000000);
         }
     }
+}
+
+fn normalize_service(service: &mut ServiceDescriptorProto) {
+    // TODO: do not clean
+    service.method.clear();
+    service.options.clear();
 }
 
 fn normalize_field(field: &mut FieldDescriptorProto) {

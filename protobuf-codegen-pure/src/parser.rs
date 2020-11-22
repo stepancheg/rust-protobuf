@@ -1072,7 +1072,9 @@ impl<'a> Parser<'a> {
     //
     // proto3:
     // service = "service" serviceName "{" { option | rpc | emptyStatement } "}"
-    fn next_service_opt(&mut self) -> ParserResult<Option<Service>> {
+    fn next_service_opt(&mut self) -> ParserResult<Option<WithLoc<Service>>> {
+        let loc = self.tokenizer.lookahead_loc();
+
         if self.tokenizer.next_ident_if_eq("service")? {
             let name = self.tokenizer.next_ident()?;
             let mut methods = Vec::new();
@@ -1103,10 +1105,13 @@ impl<'a> Parser<'a> {
                 return Err(ParserError::IncorrectInput);
             }
             self.tokenizer.next_symbol_expect_eq('}')?;
-            Ok(Some(Service {
-                name,
-                methods,
-                options,
+            Ok(Some(WithLoc {
+                loc,
+                t: Service {
+                    name,
+                    methods,
+                    options,
+                },
             }))
         } else {
             Ok(None)

@@ -454,6 +454,16 @@ impl<'a> Resolver<'a> {
         Ok(output)
     }
 
+    fn service(
+        &self,
+        input: &model::Service,
+    ) -> ConvertResult<protobuf::descriptor::ServiceDescriptorProto> {
+        let mut output = protobuf::descriptor::ServiceDescriptorProto::new();
+        output.set_name(input.name.clone());
+
+        Ok(output)
+    }
+
     fn custom_options<M>(
         &self,
         input: &[model::ProtobufOption],
@@ -1066,6 +1076,7 @@ pub fn file_descriptor(
     }
 
     let mut messages = Vec::new();
+    let mut services = Vec::new();
 
     let mut extensions = Vec::new();
     for e in &input.extensions {
@@ -1083,6 +1094,14 @@ pub fn file_descriptor(
         });
     }
 
+    for s in &input.services {
+        let service = resolver.service(&s.t)?;
+        services.push(model::WithLoc {
+            t: service,
+            loc: s.loc,
+        })
+    }
+
     // Preserve declaration order
     messages.sort_by_key(|m| m.loc);
     output.message_type = messages
@@ -1095,6 +1114,11 @@ pub fn file_descriptor(
         .iter()
         .map(|e| resolver.enumeration(e, &ProtobufRelativePath::empty()))
         .collect::<Result<_, _>>()?;
+
+    output.service = services
+        .into_iter()
+        .map(|model::WithLoc { t, .. }| t)
+        .collect();
 
     output.options =
         Some(resolver.file_options(&input.options, &ProtobufRelativePath::empty())?).into();
