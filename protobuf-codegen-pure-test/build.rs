@@ -16,6 +16,7 @@ use std::path::Path;
 use protobuf_test_common::build::*;
 
 fn copy_test<P1: AsRef<Path>, P2: AsRef<Path>>(src: P1, dst: P2) {
+    eprintln!("copy {:?} to {:?}", src.as_ref(), dst.as_ref());
     let mut content = Vec::new();
     fs::File::open(src.as_ref())
         .expect(&format!("open {}", src.as_ref().display()))
@@ -23,7 +24,7 @@ fn copy_test<P1: AsRef<Path>, P2: AsRef<Path>>(src: P1, dst: P2) {
         .expect(&format!("read_to_end {}", src.as_ref().display()));
 
     let mut write = fs::File::create(dst).expect("create");
-    writeln!(write, "// generated").expect("write");
+    writeln!(write, "// @generated").expect("write");
     writeln!(write, "// copied from {}", src.as_ref().display()).expect("write");
     writeln!(write, "").expect("write");
     write.write_all(&content).expect("write_all");
