@@ -369,6 +369,24 @@ impl<'a, T> IntoIterator for &'a RepeatedField<T> {
     }
 }
 
+impl<'a, T> IntoIterator for &'a mut RepeatedField<T> {
+    type Item = &'a mut T;
+    type IntoIter = slice::IterMut<'a, T>;
+
+    fn into_iter(self) -> slice::IterMut<'a, T> {
+        self.iter_mut()
+    }
+}
+
+impl<'a, T> IntoIterator for RepeatedField<T> {
+    type Item = T;
+    type IntoIter = vec::IntoIter<T>;
+
+    fn into_iter(self) -> vec::IntoIter<T> {
+        self.into_iter()
+    }
+}
+
 impl<T: PartialEq> PartialEq for RepeatedField<T> {
     #[inline]
     fn eq(&self, other: &RepeatedField<T>) -> bool {
