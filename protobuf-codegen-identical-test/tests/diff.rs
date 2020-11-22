@@ -82,7 +82,7 @@ fn print_diff(dir: &Path, a: &Path, b: &Path) {
     print!("{}", str::from_utf8(&output.stderr).unwrap());
 }
 
-fn test_diff_in<F>(root: &str, s: &str, include: &str, should_skip: F)
+fn test_diff_in<F>(root: &str, sources_dir: &str, include: &str, should_skip: F)
 where
     F: Fn(&str) -> bool,
 {
@@ -94,7 +94,7 @@ where
     };
 
     let include_full = format!("{}/{}", root, include);
-    let s_full = format!("{}/{}", root, s);
+    let s_full = format!("{}/{}", root, sources_dir);
 
     let inputs_glob = format!("{}/*.proto", s_full);
     let inputs = to_paths(glob_simple(&inputs_glob));
@@ -169,7 +169,9 @@ where
 
     println!("{:?}", stats);
     assert!(
-        stats.passed != 0 || s == "src/google/protobuf" || s == "../interop/cxx",
+        stats.passed != 0
+            || sources_dir == "src/google/protobuf"
+            || sources_dir == "../interop/cxx",
         "sanity check"
     );
     assert!(stats.failed == 0, "at least one test failed");
