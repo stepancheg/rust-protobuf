@@ -17,9 +17,12 @@ pub use crate::clear::Clear;
 pub use crate::enums::ProtobufEnum;
 pub use crate::error::ProtobufError;
 pub use crate::error::ProtobufResult;
+#[allow(deprecated)]
 pub use crate::message::parse_from_bytes;
 #[cfg(feature = "bytes")]
+#[allow(deprecated)]
 pub use crate::message::parse_from_carllerche_bytes;
+#[allow(deprecated)]
 pub use crate::message::parse_from_reader;
 #[allow(deprecated)]
 pub use crate::message::parse_length_delimited_from;

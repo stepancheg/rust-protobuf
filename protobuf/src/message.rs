@@ -32,6 +32,14 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
     /// Update this message object with fields read from given stream.
     fn merge_from(&mut self, is: &mut CodedInputStream) -> ProtobufResult<()>;
 
+    /// Parse message from stream.
+    fn parse_from(is: &mut CodedInputStream) -> ProtobufResult<Self> where Self: Sized {
+        let mut r: Self = Message::new();
+        r.merge_from(is)?;
+        r.check_initialized()?;
+        Ok(r)
+    }
+
     /// Write message to the stream.
     ///
     /// Sizes of this messages and nested messages must be cached
@@ -83,6 +91,42 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
     fn merge_from_bytes(&mut self, bytes: &[u8]) -> ProtobufResult<()> {
         let mut is = CodedInputStream::from_bytes(bytes);
         self.merge_from(&mut is)
+    }
+
+    /// Parse message from reader.
+    /// Parse stops on EOF or when error encountered.
+    fn parse_from_reader(reader: &mut dyn Read) -> ProtobufResult<Self>
+    where
+        Self: Sized,
+    {
+        let mut is = CodedInputStream::new(reader);
+        let r = Message::parse_from(&mut is)?;
+        is.check_eof()?;
+        Ok(r)
+    }
+
+    /// Parse message from byte array.
+    fn parse_from_bytes(bytes: &[u8]) -> ProtobufResult<Self>
+    where
+        Self: Sized,
+    {
+        let mut is = CodedInputStream::from_bytes(bytes);
+        let r = Message::parse_from(&mut is)?;
+        is.check_eof()?;
+        Ok(r)
+    }
+
+    /// Parse message from `Bytes` object.
+    /// Resulting message may share references to the passed bytes object.
+    #[cfg(feature = "bytes")]
+    fn parse_from_carllerche_bytes(bytes: &Bytes) -> ProtobufResult<Self>
+    where
+        Self: Sized,
+    {
+        let mut is = CodedInputStream::from_carllerche_bytes(bytes);
+        let r = Self::parse_from(&mut is)?;
+        is.check_eof()?;
+        Ok(r)
     }
 
     /// Check if all required fields of this object are initialized.
@@ -214,30 +258,30 @@ pub fn message_down_cast<'a, M: Message + 'a>(m: &'a dyn Message) -> &'a M {
 }
 
 /// Parse message from stream.
+#[deprecated(since = "2.19", note = "Use Message::parse_from instead")]
 pub fn parse_from<M: Message>(is: &mut CodedInputStream) -> ProtobufResult<M> {
-    let mut r: M = Message::new();
-    r.merge_from(is)?;
-    r.check_initialized()?;
-    Ok(r)
+    M::parse_from(is)
 }
 
 /// Parse message from reader.
 /// Parse stops on EOF or when error encountered.
+#[deprecated(since = "2.19", note = "Use Message::parse_from_reader instead")]
 pub fn parse_from_reader<M: Message>(reader: &mut dyn Read) -> ProtobufResult<M> {
-    reader.with_coded_input_stream(|is| parse_from::<M>(is))
+    M::parse_from_reader(reader)
 }
 
 /// Parse message from byte array.
+#[deprecated(since = "2.19", note = "Use Message::parse_from_bytes instead")]
 pub fn parse_from_bytes<M: Message>(bytes: &[u8]) -> ProtobufResult<M> {
-    bytes.with_coded_input_stream(|is| parse_from::<M>(is))
+    M::parse_from_bytes(bytes)
 }
 
 /// Parse message from `Bytes` object.
 /// Resulting message may share references to the passed bytes object.
 #[cfg(feature = "bytes")]
+#[deprecated(since = "2.19", note = "Use Message::parse_from_carllerche_bytes instead")]
 pub fn parse_from_carllerche_bytes<M: Message>(bytes: &Bytes) -> ProtobufResult<M> {
-    // Call trait explicitly to avoid accidental construction from `&[u8]`
-    WithCodedInputStream::with_coded_input_stream(bytes, |is| parse_from::<M>(is))
+    M::parse_from_carllerche_bytes(bytes)
 }
 
 /// Parse length-delimited message from stream.
