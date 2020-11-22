@@ -2,7 +2,6 @@
 #![doc(hidden)]
 
 use crate::descriptor::FileDescriptorProto;
-use crate::parse_from_reader;
 use crate::plugin::*;
 use crate::Message;
 use std::io::stdin;
@@ -31,7 +30,7 @@ pub fn plugin_main_2<F>(gen: F)
 where
     F: Fn(&GenRequest) -> Vec<GenResult>,
 {
-    let req = parse_from_reader::<CodeGeneratorRequest>(&mut stdin()).unwrap();
+    let req = CodeGeneratorRequest::parse_from_reader(&mut stdin()).unwrap();
     let result = gen(&GenRequest {
         file_descriptors: &req.get_proto_file(),
         files_to_generate: &req.get_file_to_generate(),

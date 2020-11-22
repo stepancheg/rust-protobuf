@@ -42,6 +42,8 @@ use std::path::PathBuf;
 pub use protoc::Error;
 pub use protoc::Result;
 
+use protobuf::descriptor::FileDescriptorSet;
+use protobuf::Message;
 pub use protobuf_codegen::Customize;
 use protoc::Protoc;
 
@@ -172,7 +174,7 @@ impl Codegen {
         drop(file);
         drop(temp_dir);
 
-        let fds: protobuf::descriptor::FileDescriptorSet = protobuf::parse_from_bytes(&fds)
+        let fds = FileDescriptorSet::parse_from_bytes(&fds)
             .map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
 
         let default_includes = vec![PathBuf::from(".")];

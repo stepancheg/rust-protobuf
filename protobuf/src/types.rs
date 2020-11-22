@@ -11,7 +11,6 @@ use bytes::Bytes;
 use crate::enums::ProtobufEnum;
 use crate::error::ProtobufResult;
 use crate::message::Message;
-use crate::parse_from_bytes;
 use crate::reflect::ProtobufValue;
 use crate::rt;
 use crate::stream::CodedInputStream;
@@ -661,7 +660,7 @@ impl<M: Message + Clone + ProtobufValue> ProtobufType for ProtobufTypeMessage<M>
             .iter()
             .rev()
             .next()
-            .map(|bytes| parse_from_bytes(bytes).expect("cannot parse message"))
+            .map(|bytes| M::parse_from_bytes(bytes).expect("cannot parse message"))
     }
 
     fn compute_size(value: &M) -> u32 {

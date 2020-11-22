@@ -257,12 +257,6 @@ pub fn message_down_cast<'a, M: Message + 'a>(m: &'a dyn Message) -> &'a M {
     m.as_any().downcast_ref::<M>().unwrap()
 }
 
-/// Parse message from stream.
-#[deprecated(since = "2.19", note = "Use Message::parse_from instead")]
-pub fn parse_from<M: Message>(is: &mut CodedInputStream) -> ProtobufResult<M> {
-    M::parse_from(is)
-}
-
 /// Parse message from reader.
 /// Parse stops on EOF or when error encountered.
 #[deprecated(since = "2.19", note = "Use Message::parse_from_reader instead")]
