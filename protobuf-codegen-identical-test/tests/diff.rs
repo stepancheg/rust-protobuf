@@ -219,10 +219,6 @@ fn normalize_field(field: &mut FieldDescriptorProto) {
                     parse_protobuf_float(field.get_default_value()).unwrap()
                 ));
             }
-            FieldDescriptorProto_Type::TYPE_STRING | FieldDescriptorProto_Type::TYPE_BYTES => {
-                // TODO: fix string default values
-                field.clear_default_value();
-            }
             _ => {}
         }
     }

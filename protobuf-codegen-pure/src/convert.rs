@@ -14,6 +14,7 @@ use protobuf_codegen::ProtobufRelativePath;
 
 use crate::model::FieldOrOneOf;
 use protobuf::text_format::lexer::StrLitDecodeError;
+use protobuf::text_format::quote_bytes_to;
 
 #[derive(Debug)]
 pub enum ConvertError {
@@ -418,7 +419,9 @@ impl<'a> Resolver<'a> {
                 }
                 protobuf::descriptor::FieldDescriptorProto_Type::TYPE_BYTES => {
                     if let &model::ProtobufConstant::String(ref s) = default {
-                        s.escaped.clone()
+                        let mut buf = String::new();
+                        quote_bytes_to(&s.decode_bytes()?, &mut buf);
+                        buf
                     } else {
                         return Err(ConvertError::DefaultValueIsNotStringLiteral);
                     }
