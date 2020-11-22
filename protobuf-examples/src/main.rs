@@ -1,9 +1,13 @@
 mod protos;
 
 use protobuf::Message;
-use protos::example::get_response::Status;
-use protos::example::GetRequest;
-use protos::example::GetResponse;
+
+// For demonstration we take `GetRequest` messages from a source generated
+// with pure-rust codegen, and `GetResponse` with `protoc`-based codegen.
+// This is not needed in practice, done here for demonstration purposes.
+use protos::generated_with_native::example::get_response::Status;
+use protos::generated_with_native::example::GetResponse;
+use protos::generated_with_pure::example::GetRequest;
 
 fn main() {
     // Encode example request
