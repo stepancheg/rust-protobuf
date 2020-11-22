@@ -15,6 +15,7 @@ use protobuf::descriptor::EnumDescriptorProto;
 use protobuf::descriptor::FieldDescriptorProto;
 use protobuf::descriptor::FileDescriptorProto;
 use protobuf::descriptor::FileDescriptorSet;
+use protobuf::descriptor::MethodDescriptorProto;
 use protobuf::descriptor::OneofDescriptorProto;
 use protobuf::descriptor::ServiceDescriptorProto;
 use protobuf::text_format::lexer::float::parse_protobuf_float;
@@ -210,9 +211,18 @@ fn normalize_descriptor(desc: &mut DescriptorProto) {
     }
 }
 
+fn normalize_method(method: &mut MethodDescriptorProto) {
+    // TODO: do not clear
+    method.clear_input_type();
+    method.clear_output_type();
+
+    method.options.clear();
+}
+
 fn normalize_service(service: &mut ServiceDescriptorProto) {
-    // TODO: do not clean
-    service.method.clear();
+    for m in &mut service.method {
+        normalize_method(m);
+    }
 
     service.options.mut_or_default();
 }

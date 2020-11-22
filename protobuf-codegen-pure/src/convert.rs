@@ -461,6 +461,23 @@ impl<'a> Resolver<'a> {
         self.custom_options(input, &ProtobufRelativePath::empty())
     }
 
+    fn service_method_options(
+        &self,
+        input: &[model::ProtobufOption],
+    ) -> ConvertResult<protobuf::descriptor::MethodOptions> {
+        self.custom_options(input, &ProtobufRelativePath::empty())
+    }
+
+    fn service_method(
+        &self,
+        input: &model::Method,
+    ) -> ConvertResult<protobuf::descriptor::MethodDescriptorProto> {
+        let mut output = protobuf::descriptor::MethodDescriptorProto::new();
+        output.set_name(input.name.clone());
+        output.options = Some(self.service_method_options(&input.options)?).into();
+        Ok(output)
+    }
+
     fn service(
         &self,
         input: &model::Service,
@@ -468,6 +485,12 @@ impl<'a> Resolver<'a> {
         let mut output = protobuf::descriptor::ServiceDescriptorProto::new();
         output.set_name(input.name.clone());
         output.options = Some(self.service_options(&input.options)?).into();
+
+        output.method = input
+            .methods
+            .iter()
+            .map(|m| self.service_method(m))
+            .collect::<Result<_, _>>()?;
 
         Ok(output)
     }
