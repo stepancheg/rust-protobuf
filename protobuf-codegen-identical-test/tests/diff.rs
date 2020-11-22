@@ -133,7 +133,7 @@ fn pure_descriptor_set(includes: &[PathBuf], inputs: &[PathBuf]) -> FileDescript
 }
 
 fn normalize_descriptor_set(fds: &mut FileDescriptorSet) {
-    for desc in fds.file.as_mut() {
+    for desc in &mut fds.file {
         normalize_file_descriptor(desc)
     }
 }
@@ -142,14 +142,14 @@ fn normalize_file_descriptor(desc: &mut FileDescriptorProto) {
     if !desc.has_syntax() {
         desc.set_syntax("proto2".into())
     }
-    for desc in desc.message_type.as_mut() {
+    for desc in &mut desc.message_type {
         normalize_descriptor(desc)
     }
-    for desc in desc.enum_type.as_mut() {
+    for desc in &mut desc.enum_type {
         normalize_enum_descriptor(desc)
     }
 
-    for desc in desc.extension.as_mut() {
+    for desc in &mut desc.extension {
         desc.mut_options();
     }
     desc.mut_options();
@@ -165,7 +165,7 @@ fn normalize_file_descriptor(desc: &mut FileDescriptorProto) {
 fn normalize_enum_descriptor(desc: &mut EnumDescriptorProto) {
     desc.mut_options();
 
-    for value in desc.value.as_mut() {
+    for value in &mut desc.value {
         value.mut_options();
     }
 }
@@ -175,29 +175,28 @@ fn normalize_oneof_descriptor(desc: &mut OneofDescriptorProto) {
 }
 
 fn normalize_descriptor(desc: &mut DescriptorProto) {
-    // TODO: implement IntoIterator for &mut RepeatedField
-    for desc in desc.nested_type.as_mut() {
+    for desc in &mut desc.nested_type {
         normalize_descriptor(desc);
     }
-    for desc in desc.enum_type.as_mut() {
+    for desc in &mut desc.enum_type {
         normalize_enum_descriptor(desc);
     }
-    for desc in desc.oneof_decl.as_mut() {
+    for desc in &mut desc.oneof_decl {
         normalize_oneof_descriptor(desc);
     }
 
     // TODO: don't clear options.
     desc.options.clear();
 
-    for field in desc.field.as_mut() {
+    for field in &mut desc.field {
         normalize_field(field);
     }
 
-    for ext in desc.extension.as_mut() {
+    for ext in &mut desc.extension {
         ext.mut_options();
     }
 
-    for ext in desc.extension_range.as_mut() {
+    for ext in &mut desc.extension_range {
         // If ext range end exceeds max field number,
         // the actual upper limit does not matter.
         // protoc is not consistent in behavior thus flush
