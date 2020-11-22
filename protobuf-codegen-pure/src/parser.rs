@@ -4,8 +4,9 @@ use std::num::ParseIntError;
 use std::str;
 
 use model::*;
+use protobuf::text_format::lexer::StrLit;
+use protobuf::text_format::lexer::StrLitDecodeError;
 use protobuf_codegen::float;
-use protobuf::text_format::lexer::{StrLitDecodeError, StrLit};
 
 const FIRST_LINE: u32 = 1;
 const FIRST_COL: u32 = 1;

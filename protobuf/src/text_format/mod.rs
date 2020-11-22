@@ -26,43 +26,20 @@ use std;
 use std::fmt;
 use std::fmt::Write;
 
+mod print;
+
 // Used by text format parser and by pure-rust codegen parsed
 // this it is public but hidden module.
 // https://github.com/rust-lang/rust/issues/44663
 #[doc(hidden)]
 pub mod lexer;
 
-fn quote_bytes_to(bytes: &[u8], buf: &mut String) {
-    for &c in bytes {
-        match c {
-            b'\n' => buf.push_str(r"\n"),
-            b'\r' => buf.push_str(r"\r"),
-            b'\t' => buf.push_str(r"\t"),
-            b'"' => buf.push_str("\\\""),
-            b'\\' => buf.push_str(r"\\"),
-            b'\x20'..=b'\x7e' => buf.push(c as char),
-            _ => {
-                buf.push('\\');
-                buf.push((b'0' + (c >> 6)) as char);
-                buf.push((b'0' + ((c >> 3) & 7)) as char);
-                buf.push((b'0' + (c & 7)) as char);
-            }
-        }
-    }
-}
-
-fn quote_escape_bytes_to(bytes: &[u8], buf: &mut String) {
-    buf.push('"');
-    quote_bytes_to(bytes, buf);
-    buf.push('"');
-}
-
+use self::print::print_str_to;
 #[doc(hidden)]
-pub fn quote_escape_bytes(bytes: &[u8]) -> String {
-    let mut r = String::new();
-    quote_escape_bytes_to(bytes, &mut r);
-    r
-}
+pub use self::print::quote_bytes_to;
+#[doc(hidden)]
+pub use self::print::quote_escape_bytes;
+use crate::text_format::print::quote_escape_bytes_to;
 
 #[doc(hidden)]
 pub fn unescape_string(string: &str) -> Vec<u8> {
@@ -131,11 +108,6 @@ pub fn unescape_string(string: &str) -> Vec<u8> {
             r.push(f as u8); // TODO: escape UTF-8
         }
     }
-}
-
-fn print_str_to(s: &str, buf: &mut String) {
-    // TODO: keep printable Unicode
-    quote_escape_bytes_to(s.as_bytes(), buf);
 }
 
 fn do_indent(buf: &mut String, pretty: bool, indent: usize) {
