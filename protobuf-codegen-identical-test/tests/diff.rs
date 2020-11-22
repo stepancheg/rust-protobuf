@@ -270,7 +270,7 @@ where
     let include_full = format!("{}/{}", root, include);
     let s_full = format!("{}/{}", root, sources_dir);
 
-    let inputs_glob = format!("{}/*.proto", s_full);
+    let inputs_glob = format!("{}/*.proto*", s_full);
     let inputs = to_paths(glob_simple(&inputs_glob));
     assert!(!inputs.is_empty(), "glob is empty: {}", inputs_glob);
     let includes = to_paths(vec![include_full.as_str(), "../proto"]);
