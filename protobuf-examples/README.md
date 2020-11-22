@@ -2,7 +2,8 @@
 
 Example rust protobuf project
 
-(This is an example for master branch; TODO a link to a proper branch)
+(This is an example for the master branch. For protobuf=v2.19 look at the
+[same directory in v2.19 branch](https://github.com/stepancheg/rust-protobuf/tree/v2.19/protobuf-examples).)
 
 ## Motivation
 
