@@ -33,7 +33,10 @@ pub trait Message: fmt::Debug + Clear + Any + Send + Sync {
     fn merge_from(&mut self, is: &mut CodedInputStream) -> ProtobufResult<()>;
 
     /// Parse message from stream.
-    fn parse_from(is: &mut CodedInputStream) -> ProtobufResult<Self> where Self: Sized {
+    fn parse_from(is: &mut CodedInputStream) -> ProtobufResult<Self>
+    where
+        Self: Sized,
+    {
         let mut r: Self = Message::new();
         r.merge_from(is)?;
         r.check_initialized()?;
@@ -273,7 +276,10 @@ pub fn parse_from_bytes<M: Message>(bytes: &[u8]) -> ProtobufResult<M> {
 /// Parse message from `Bytes` object.
 /// Resulting message may share references to the passed bytes object.
 #[cfg(feature = "bytes")]
-#[deprecated(since = "2.19", note = "Use Message::parse_from_carllerche_bytes instead")]
+#[deprecated(
+    since = "2.19",
+    note = "Use Message::parse_from_carllerche_bytes instead"
+)]
 pub fn parse_from_carllerche_bytes<M: Message>(bytes: &Bytes) -> ProtobufResult<M> {
     M::parse_from_carllerche_bytes(bytes)
 }
