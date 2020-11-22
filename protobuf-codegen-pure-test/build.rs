@@ -73,12 +73,12 @@ fn gen_in_dir(dir: &str, include_dir: &str) {
              input,
              customize,
          }| {
-            protobuf_codegen_pure::run(protobuf_codegen_pure::Args {
-                out_dir,
-                input,
-                includes: &[include_dir],
-                customize,
-            })
+            protobuf_codegen_pure::Codegen::new()
+                .out_dir(out_dir)
+                .inputs(input)
+                .include(include_dir)
+                .customize(customize)
+                .run()
         },
     );
 }
