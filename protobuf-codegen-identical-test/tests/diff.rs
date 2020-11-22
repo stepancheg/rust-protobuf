@@ -213,7 +213,8 @@ fn normalize_descriptor(desc: &mut DescriptorProto) {
 fn normalize_service(service: &mut ServiceDescriptorProto) {
     // TODO: do not clean
     service.method.clear();
-    service.options.clear();
+
+    service.options.mut_or_default();
 }
 
 fn normalize_field(field: &mut FieldDescriptorProto) {

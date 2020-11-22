@@ -454,12 +454,20 @@ impl<'a> Resolver<'a> {
         Ok(output)
     }
 
+    fn service_options(
+        &self,
+        input: &[model::ProtobufOption],
+    ) -> ConvertResult<protobuf::descriptor::ServiceOptions> {
+        self.custom_options(input, &ProtobufRelativePath::empty())
+    }
+
     fn service(
         &self,
         input: &model::Service,
     ) -> ConvertResult<protobuf::descriptor::ServiceDescriptorProto> {
         let mut output = protobuf::descriptor::ServiceDescriptorProto::new();
         output.set_name(input.name.clone());
+        output.options = Some(self.service_options(&input.options)?).into();
 
         Ok(output)
     }
