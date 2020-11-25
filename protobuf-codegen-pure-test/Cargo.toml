@@ -27,7 +27,7 @@ protobuf-test-common = { path = "../protobuf-test-common" }
 serde        = { version = "1.0", optional = true }
 serde_derive = { version = "1.0", optional = true }
 serde_json   = { version = "1.0", optional = true }
-bytes = { version = "0.5", optional = true }
+bytes = { version = "0.6", optional = true }
 
 [dependencies.protobuf]
 path = "../protobuf"

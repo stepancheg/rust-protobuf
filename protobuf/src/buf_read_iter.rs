@@ -6,6 +6,8 @@ use std::mem;
 use std::u64;
 
 #[cfg(feature = "bytes")]
+use bytes::buf::UninitSlice;
+#[cfg(feature = "bytes")]
 use bytes::BufMut;
 #[cfg(feature = "bytes")]
 use bytes::Bytes;
@@ -308,7 +310,7 @@ impl<'ignore> BufReadIter<'ignore> {
             } else {
                 let mut r = BytesMut::with_capacity(len);
                 unsafe {
-                    let buf = Self::slice_get_mut(&mut r.bytes_mut()[..len]);
+                    let buf = Self::uninit_slice_as_mut_slice(&mut r.bytes_mut()[..len]);
                     self.read_exact(buf)?;
                     r.advance_mut(len);
                 }
@@ -317,10 +319,10 @@ impl<'ignore> BufReadIter<'ignore> {
         }
     }
 
-    /// Copy-paste of `MaybeUninit::slice_get_mut`
-    #[allow(dead_code)] // only used when bytes feature is on
-    unsafe fn slice_get_mut<T>(slice: &mut [MaybeUninit<T>]) -> &mut [T] {
-        &mut *(slice as *mut [MaybeUninit<T>] as *mut [T])
+    #[cfg(feature = "bytes")]
+    unsafe fn uninit_slice_as_mut_slice(slice: &mut UninitSlice) -> &mut [u8] {
+        use std::slice;
+        slice::from_raw_parts_mut(slice.as_mut_ptr(), slice.len())
     }
 
     /// Returns 0 when EOF or limit reached.

@@ -25,7 +25,7 @@ tempfile     = "3.0"
 serde        = { version = "1.0", optional = true }
 serde_derive = { version = "1.0", optional = true }
 serde_json   = { version = "1.0", optional = true }
-bytes = { version = "0.5", optional = true }
+bytes = { version = "0.6", optional = true }
 # lazy_static 2.1 is not compatible with rust 1.23.0
 # and lazy_static is needed for some crate, I don't know which exactly
 lazy_static = "1.1.*"
