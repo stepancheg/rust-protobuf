@@ -86,7 +86,7 @@ fn self_check_job() -> Job {
         runs_on: LINUX.ghwf,
         steps: vec![
             checkout_sources(),
-            rust_install_toolchain(RustToolchain::Stable),
+            rust_install_toolchain(&RustToolchain::Stable),
             Step::run("The check", "cargo run -p ci-gen -- --check"),
         ],
         ..Default::default()
@@ -96,7 +96,7 @@ fn self_check_job() -> Job {
 fn job(channel: RustToolchain, os: Os, features: Features) -> Job {
     let mut steps = vec![];
     steps.push(checkout_sources());
-    steps.push(rust_install_toolchain(channel));
+    steps.push(rust_install_toolchain(&channel));
 
     steps.push(cache(
         "Cache protobuf",
@@ -191,6 +191,11 @@ fn jobs() -> Yaml {
         Features::Specific(&["with-bytes"]),
     ));
     r.push(job(RustToolchain::Nightly, LINUX, Features::All));
+    r.push(job(
+        RustToolchain::Version("1.44.1".to_owned()),
+        LINUX,
+        Features::All,
+    ));
 
     r.push(job(RustToolchain::Stable, WINDOWS, Features::Default));
 

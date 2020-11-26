@@ -6,11 +6,12 @@ pub fn checkout_sources() -> Step {
     Step::uses("Checkout sources", "actions/checkout@v2")
 }
 
-#[derive(Eq, PartialEq, Copy, Clone)]
+#[derive(Eq, PartialEq, Clone)]
 pub enum RustToolchain {
     Stable,
     Beta,
     Nightly,
+    Version(String),
 }
 
 impl fmt::Display for RustToolchain {
@@ -19,11 +20,12 @@ impl fmt::Display for RustToolchain {
             RustToolchain::Stable => write!(f, "stable"),
             RustToolchain::Beta => write!(f, "beta"),
             RustToolchain::Nightly => write!(f, "nightly"),
+            RustToolchain::Version(v) => write!(f, "{}", v),
         }
     }
 }
 
-pub fn rust_install_toolchain(channel: RustToolchain) -> Step {
+pub fn rust_install_toolchain(channel: &RustToolchain) -> Step {
     Step::uses_with(
         "Install toolchain",
         "actions-rs/toolchain@v1",

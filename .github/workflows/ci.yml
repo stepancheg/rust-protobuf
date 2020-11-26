@@ -226,6 +226,48 @@ jobs:
             - name: test protoc
               run: protoc/test.sh
               shell: bash
+    linux-1.44.1-all-features:
+        name: linux 1.44.1 (all features)
+        runs-on: ubuntu-latest
+        env:
+            PROTOBUF_VERSION: 3.6.1
+            RUST_BACKTRACE: 1
+        steps:
+            - name: Checkout sources
+              uses: actions/checkout@v2
+            - name: Install toolchain
+              uses: actions-rs/toolchain@v1
+              with:
+                  profile: minimal
+                  toolchain: 1.44.1
+                  override: true
+            - name: Cache protobuf
+              uses: actions/cache@v2
+              env:
+                  cache-name: pb
+              with:
+                  key: pb-linux
+                  path: ~/pb
+            - name: Install protobuf
+              run: ci/install-protobuf.sh
+              shell: bash
+            - name: Protoc check
+              run: protoc --version
+              shell: bash
+            - name: Compile interop
+              run: interop/cxx/compile.sh
+              shell: bash
+            - name: Test all
+              run: cargo test --all --all-targets --all-features
+              shell: bash
+            - name: cargo doc
+              uses: actions-rs/cargo@v1
+              with:
+                  command: doc
+                  args: --all-features
+            - name: test protoc
+              run: protoc/test.sh
+              shell: bash
     windows-stable-default-features:
         name: windows stable (default features)
         runs-on: windows-latest
