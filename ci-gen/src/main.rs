@@ -160,7 +160,12 @@ fn job(channel: RustToolchain, os: Os, features: Features) -> Job {
     if os == WINDOWS {
         env.push(("VCPKGRS_DYNAMIC".to_owned(), "1".to_owned()));
     };
-    let id = format!("{}-{}-{}", os.name, channel.to_string().replace(".", "-"), features.id());
+    let id = format!(
+        "{}-{}-{}",
+        os.name,
+        channel.to_string().replace(".", "-"),
+        features.id()
+    );
     let name = format!("{} {} ({})", os.name, channel, features.name());
     Job {
         id,
