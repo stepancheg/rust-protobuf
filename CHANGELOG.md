@@ -33,6 +33,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.19] - Unreleased
 
+## [2.19.0] - 2020-01-05
+
 - Add `UnknownFields::remove`
 - Fix several inconsistencies between `protoc` parser and pure rust parser
 - `protobuf::parse_from*` functions are deprecated, use `protobuf::Message::parse_from*` instead
