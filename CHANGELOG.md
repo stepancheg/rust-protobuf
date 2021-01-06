@@ -33,6 +33,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.20] - Unreleased
 
+- update `bytes` crate dependency version from 0.6 to 1.0
+
 ## [2.19.0] - 2020-01-05
 
 - Add `UnknownFields::remove`
