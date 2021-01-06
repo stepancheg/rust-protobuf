@@ -246,7 +246,7 @@ impl<'ignore> BufReadIter<'ignore> {
             } else {
                 let mut r = BytesMut::with_capacity(len);
                 unsafe {
-                    let buf = Self::uninit_slice_as_mut_slice(&mut r.bytes_mut()[..len]);
+                    let buf = Self::uninit_slice_as_mut_slice(&mut r.chunk_mut()[..len]);
                     self.read_exact(buf)?;
                     r.advance_mut(len);
                 }
