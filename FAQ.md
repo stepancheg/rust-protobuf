@@ -17,9 +17,9 @@ message.write_to_bytes()
 ```
 
 ## How to deserialize a message from a byte array?
-
+Use `protobuf::Message`:
 ```
-let my_message: MyMessage = protobuf::parse_from_bytes(bytes).unwrap()
+let my_message: MyMessage = Message::parse_from_bytes(bytes).unwrap()
 ```
 
 ## What is `cached_size` field?
