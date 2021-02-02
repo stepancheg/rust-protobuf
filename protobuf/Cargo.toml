@@ -22,7 +22,7 @@ default = []
 
 [dependencies]
 bytes = { version = "1.0", optional = true }
-serde        = { version = "1.0", optional = true }
+serde        = { version = "1.0", features = ["derive"], optional = true }
 serde_derive = { version = "1.0", optional = true }
 
 [package.metadata.docs.rs]
