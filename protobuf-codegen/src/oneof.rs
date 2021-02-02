@@ -181,7 +181,11 @@ impl<'a> OneofGen<'a> {
     pub fn write_enum(&self, w: &mut CodeWriter) {
         let derive = vec!["Clone", "PartialEq", "Debug"];
         w.derive(&derive);
-        serde::write_serde_attr(w, &self.customize, "derive(Serialize, Deserialize)");
+        serde::write_serde_attr(
+            w,
+            &self.customize,
+            "derive(::serde::Serialize, ::serde::Deserialize)",
+        );
         w.pub_enum(&self.type_name.to_code(&self.customize), |w| {
             for variant in self.variants_except_group() {
                 w.write_line(&format!(

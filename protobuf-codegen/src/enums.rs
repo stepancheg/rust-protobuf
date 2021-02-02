@@ -170,7 +170,11 @@ impl<'a> EnumGen<'a> {
             w.comment("Note: you cannot use pattern matching for enums with allow_alias option");
         }
         w.derive(&derive);
-        serde::write_serde_attr(w, &self.customize, "derive(Serialize, Deserialize)");
+        serde::write_serde_attr(
+            w,
+            &self.customize,
+            "derive(::serde::Serialize, ::serde::Deserialize)",
+        );
         let ref type_name = self.type_name;
         w.expr_block(&format!("pub enum {}", type_name), |w| {
             for value in self.values_all() {
