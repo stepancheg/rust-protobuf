@@ -22,11 +22,11 @@ jobs:
                   override: true
             - name: Cache protobuf
               uses: actions/cache@v2
-              env:
-                  cache-name: pb
               with:
                   key: pb-linux
                   path: ~/pb
+              env:
+                  cache-name: pb
             - name: Install protobuf
               run: ci/install-protobuf.sh
               shell: bash
@@ -69,11 +69,11 @@ jobs:
                   override: true
             - name: Cache protobuf
               uses: actions/cache@v2
-              env:
-                  cache-name: pb
               with:
                   key: pb-linux
                   path: ~/pb
+              env:
+                  cache-name: pb
             - name: Install protobuf
               run: ci/install-protobuf.sh
               shell: bash
@@ -113,11 +113,11 @@ jobs:
                   override: true
             - name: Cache protobuf
               uses: actions/cache@v2
-              env:
-                  cache-name: pb
               with:
                   key: pb-linux
                   path: ~/pb
+              env:
+                  cache-name: pb
             - name: Install protobuf
               run: ci/install-protobuf.sh
               shell: bash
@@ -157,11 +157,11 @@ jobs:
                   override: true
             - name: Cache protobuf
               uses: actions/cache@v2
-              env:
-                  cache-name: pb
               with:
                   key: pb-linux
                   path: ~/pb
+              env:
+                  cache-name: pb
             - name: Install protobuf
               run: ci/install-protobuf.sh
               shell: bash
@@ -201,11 +201,11 @@ jobs:
                   override: true
             - name: Cache protobuf
               uses: actions/cache@v2
-              env:
-                  cache-name: pb
               with:
                   key: pb-linux
                   path: ~/pb
+              env:
+                  cache-name: pb
             - name: Install protobuf
               run: ci/install-protobuf.sh
               shell: bash
@@ -243,11 +243,11 @@ jobs:
                   override: true
             - name: Cache protobuf
               uses: actions/cache@v2
-              env:
-                  cache-name: pb
               with:
                   key: pb-linux
                   path: ~/pb
+              env:
+                  cache-name: pb
             - name: Install protobuf
               run: ci/install-protobuf.sh
               shell: bash
@@ -286,11 +286,11 @@ jobs:
                   override: true
             - name: Cache protobuf
               uses: actions/cache@v2
-              env:
-                  cache-name: pb
               with:
                   key: pb-windows-1
                   path: ~/pb
+              env:
+                  cache-name: pb
             - name: Install protobuf
               run: ci/install-protobuf.sh
               shell: bash
@@ -300,6 +300,20 @@ jobs:
             - name: Test all
               run: cargo test --all --all-targets
               shell: bash
+    super-linter:
+        name: super-linter
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout sources
+              uses: actions/checkout@v2
+              with:
+                  fetch-depth: 0
+            - name: super-linter
+              uses: github/super-linter@v3
+              env:
+                  VALIDATE_ALL_CODEBASE: false
+                  DEFAULT_BRANCH: master
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     self-check:
         name: CI self-check
         runs-on: ubuntu-latest
