@@ -1,4 +1,5 @@
-use crate::descriptor::{DescriptorProto, FileDescriptorProto};
+use crate::descriptor::DescriptorProto;
+use crate::descriptor::FileDescriptorProto;
 use crate::descriptorx::find_message_by_rust_name;
 use crate::reflect::acc::FieldAccessor;
 use crate::reflect::find_message_or_enum::find_message_or_enum;

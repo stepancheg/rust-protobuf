@@ -49,13 +49,17 @@
 
 use std::borrow::Borrow;
 use std::cmp::Ordering;
-use std::collections::hash_map::{self, HashMap};
+use std::collections::hash_map::HashMap;
+use std::collections::hash_map::{self};
 use std::fmt;
-use std::hash::{BuildHasher, Hash, Hasher};
+use std::hash::BuildHasher;
+use std::hash::Hash;
+use std::hash::Hasher;
 use std::iter;
 use std::marker;
 use std::mem;
-use std::ops::{Index, IndexMut};
+use std::ops::Index;
+use std::ops::IndexMut;
 use std::ptr;
 
 struct KeyRef<K> {
