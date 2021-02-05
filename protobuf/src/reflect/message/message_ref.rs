@@ -1,6 +1,7 @@
 use crate::message_dyn::MessageDyn;
 use crate::reflect::dynamic::DynamicMessage;
-use crate::reflect::reflect_eq::{ReflectEq, ReflectEqMode};
+use crate::reflect::reflect_eq::ReflectEq;
+use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::MessageDescriptor;
 use crate::Message;
 use std::ops::Deref;

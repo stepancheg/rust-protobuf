@@ -8,7 +8,8 @@ use protobuf::reflect::RuntimeFieldType;
 use protobuf::reflect::RuntimeTypeBox;
 use protobuf::well_known_types::value;
 use protobuf::well_known_types::Value;
-use protobuf::{Message, MessageDyn};
+use protobuf::Message;
+use protobuf::MessageDyn;
 
 pub fn value_for_runtime_type(field_type: &RuntimeTypeBox) -> ReflectValueBox {
     match field_type {

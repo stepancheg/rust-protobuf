@@ -8,10 +8,12 @@
 #![deny(missing_docs)]
 #![deny(broken_intra_doc_links)]
 
-use std::ffi::{OsStr, OsString};
+use std::ffi::OsStr;
+use std::ffi::OsString;
 use std::fmt;
 use std::io;
-use std::path::{Path, PathBuf};
+use std::path::Path;
+use std::path::PathBuf;
 use std::process;
 
 #[macro_use]

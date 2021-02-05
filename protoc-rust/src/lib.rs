@@ -32,7 +32,8 @@ extern crate protoc;
 
 use std::fs;
 use std::io;
-use std::path::{Path, PathBuf};
+use std::path::Path;
+use std::path::PathBuf;
 
 pub use protoc::Error;
 pub use protoc::Result;

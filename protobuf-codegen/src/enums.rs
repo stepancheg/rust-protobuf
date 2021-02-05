@@ -8,9 +8,10 @@ use crate::inside::protobuf_crate_path;
 use crate::rust::EXPR_NONE;
 use crate::rust_name::RustIdent;
 use crate::rust_name::RustIdentWithPath;
+use crate::scope::EnumValueWithContext;
+use crate::scope::EnumWithScope;
 use crate::scope::RootScope;
 use crate::scope::WithScope;
-use crate::scope::{EnumValueWithContext, EnumWithScope};
 use crate::serde;
 use crate::FileIndex;
 

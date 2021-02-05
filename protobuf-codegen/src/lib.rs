@@ -8,7 +8,8 @@ use std::fmt::Write as FmtWrite;
 use std::fs::File;
 use std::io;
 use std::io::Write;
-use std::path::{Path, PathBuf};
+use std::path::Path;
+use std::path::PathBuf;
 
 use protobuf::descriptor::*;
 use protobuf::Message;
@@ -53,7 +54,8 @@ pub use amend_io_error_util::amend_io_error;
 use scope::FileScope;
 use scope::RootScope;
 
-use crate::file::{proto_path_to_fn_file_descriptor, proto_path_to_rust_mod};
+use crate::file::proto_path_to_fn_file_descriptor;
+use crate::file::proto_path_to_rust_mod;
 use inside::protobuf_crate_path;
 pub use protobuf_abs_path::ProtobufAbsolutePath;
 pub use protobuf_ident::ProtobufIdent;

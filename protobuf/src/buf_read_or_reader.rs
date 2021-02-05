@@ -1,7 +1,9 @@
 //! `BufRead` pointer or `BufReader` owned.
 
 use std::io;
-use std::io::{BufRead, BufReader, Read};
+use std::io::BufRead;
+use std::io::BufReader;
+use std::io::Read;
 
 /// Helper type to simplify `BufReadIter` implementation.
 pub(crate) enum BufReadOrReader<'a> {

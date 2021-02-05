@@ -3,7 +3,8 @@
 use std::marker;
 
 use crate::reflect::types::ProtobufType;
-use crate::reflect::{ProtobufValue, RuntimeTypeBox};
+use crate::reflect::ProtobufValue;
+use crate::reflect::RuntimeTypeBox;
 use crate::wire_format::WireType;
 
 /// Dynamic version of [`ProtobufType`](crate::reflect::types::ProtobufType).

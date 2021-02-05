@@ -1,8 +1,10 @@
 use std::env;
 use std::env::VarError;
 use std::fs::File;
-use std::io::{Read, Write};
-use std::path::{Path, PathBuf};
+use std::io::Read;
+use std::io::Write;
+use std::path::Path;
+use std::path::PathBuf;
 use std::process;
 
 // % rustc +stable --version

@@ -2,7 +2,11 @@ use protobuf_test_common::hex::decode_hex;
 use protobuf_test_common::*;
 
 use super::test_basic_pb::*;
-use protobuf::{descriptor, reflect, CodedInputStream, Message, ProtobufEnum};
+use protobuf::descriptor;
+use protobuf::reflect;
+use protobuf::CodedInputStream;
+use protobuf::Message;
+use protobuf::ProtobufEnum;
 
 #[test]
 fn test1() {

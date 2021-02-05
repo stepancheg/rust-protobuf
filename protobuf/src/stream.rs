@@ -1,6 +1,7 @@
 use std::io;
+use std::io::BufRead;
+use std::io::Read;
 use std::io::Write;
-use std::io::{BufRead, Read};
 use std::mem;
 
 #[cfg(feature = "bytes")]

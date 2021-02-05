@@ -14,8 +14,10 @@ use crate::reflect::message::generated::GeneratedMessageDescriptor;
 use crate::reflect::message::index::MessageIndex;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
+use crate::reflect::EnumDescriptor;
+use crate::reflect::FieldDescriptor;
 use crate::reflect::FileDescriptor;
-use crate::reflect::{EnumDescriptor, FieldDescriptor, OneofDescriptor};
+use crate::reflect::OneofDescriptor;
 
 pub(crate) mod dynamic;
 pub(crate) mod generated;

@@ -1,7 +1,8 @@
 use crate::cached_size::CachedSize;
 use crate::well_known_types::Timestamp;
 use crate::UnknownFields;
-use std::time::{Duration, SystemTime};
+use std::time::Duration;
+use std::time::SystemTime;
 
 impl Timestamp {
     /// Unix epoch value of timestamp.

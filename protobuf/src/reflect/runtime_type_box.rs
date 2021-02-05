@@ -1,8 +1,9 @@
 use crate::descriptor::field_descriptor_proto;
+use crate::reflect::EnumDescriptor;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::MessageRef;
+use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
-use crate::reflect::{EnumDescriptor, ReflectValueBox};
 use crate::text_format;
 use crate::text_format::lexer::float::parse_protobuf_float;
 use std::fmt;

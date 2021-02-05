@@ -1,5 +1,6 @@
 use crate::reflect::map::ReflectMap;
-use crate::reflect::map::{ReflectMapIter, ReflectMapIterTrait};
+use crate::reflect::map::ReflectMapIter;
+use crate::reflect::map::ReflectMapIterTrait;
 use crate::reflect::runtime_types::RuntimeTypeHashable;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;

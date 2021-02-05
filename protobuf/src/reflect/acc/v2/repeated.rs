@@ -1,4 +1,5 @@
-use std::{fmt, marker};
+use std::fmt;
+use std::marker;
 
 use crate::message::Message;
 
