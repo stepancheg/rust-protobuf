@@ -185,7 +185,9 @@ fn super_linter_job() -> Job {
         Step::uses("super-linter", "github/super-linter@v3")
             .env("VALIDATE_ALL_CODEBASE", "false")
             .env("DEFAULT_BRANCH", "master")
-            .env("GITHUB_TOKEN", "${{ secrets.GITHUB_TOKEN }}"),
+            .env("GITHUB_TOKEN", "${{ secrets.GITHUB_TOKEN }}")
+            // Too many false positives
+            .env("VALIDATE_JSCPD", "false"),
     );
     Job {
         id: "super-linter".to_owned(),
