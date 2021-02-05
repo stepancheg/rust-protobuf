@@ -1,10 +1,10 @@
+use crate::actions::cache;
 use crate::actions::cargo_doc;
 use crate::actions::cargo_test;
 use crate::actions::checkout_sources;
+use crate::actions::checkout_sources_depth;
 use crate::actions::rust_install_toolchain;
 use crate::actions::RustToolchain;
-use crate::actions::cache;
-use crate::actions::checkout_sources_depth;
 use crate::ghwf::Env;
 use crate::ghwf::Job;
 use crate::ghwf::Step;
@@ -180,7 +180,9 @@ fn super_linter_job() -> Job {
         Step::uses("super-linter", "github/super-linter@v3")
             .env("VALIDATE_ALL_CODEBASE", "false")
             .env("DEFAULT_BRANCH", "master")
-            .env("GITHUB_TOKEN", "${{ secrets.GITHUB_TOKEN }}"),
+            .env("GITHUB_TOKEN", "${{ secrets.GITHUB_TOKEN }}")
+            // Too many false positives
+            .env("VALIDATE_JSCPD", "false"),
     );
     Job {
         id: "super-linter".to_owned(),
