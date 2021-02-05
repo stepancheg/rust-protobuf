@@ -1,9 +1,10 @@
-use crate::actions::cache;
 use crate::actions::cargo_doc;
 use crate::actions::cargo_test;
 use crate::actions::checkout_sources;
 use crate::actions::rust_install_toolchain;
 use crate::actions::RustToolchain;
+use crate::actions::cache;
+use crate::actions::checkout_sources_depth;
 use crate::ghwf::Env;
 use crate::ghwf::Job;
 use crate::ghwf::Step;
@@ -172,6 +173,24 @@ fn job(channel: RustToolchain, os: Os, features: Features) -> Job {
     }
 }
 
+fn super_linter_job() -> Job {
+    let mut steps = Vec::new();
+    steps.push(checkout_sources_depth(Some(0)));
+    steps.push(
+        Step::uses("super-linter", "github/super-linter@v3")
+            .env("VALIDATE_ALL_CODEBASE", "false")
+            .env("DEFAULT_BRANCH", "master")
+            .env("GITHUB_TOKEN", "${{ secrets.GITHUB_TOKEN }}"),
+    );
+    Job {
+        id: "super-linter".to_owned(),
+        name: "super-linter".to_owned(),
+        runs_on: LINUX.ghwf,
+        steps,
+        ..Default::default()
+    }
+}
+
 fn jobs() -> Yaml {
     let mut r = Vec::new();
 
@@ -193,6 +212,8 @@ fn jobs() -> Yaml {
     r.push(job(RustToolchain::Nightly, LINUX, Features::All));
 
     r.push(job(RustToolchain::Stable, WINDOWS, Features::Default));
+
+    r.push(super_linter_job());
 
     r.push(self_check_job());
 

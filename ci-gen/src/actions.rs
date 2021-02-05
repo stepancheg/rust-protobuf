@@ -2,8 +2,19 @@ use crate::ghwf::Step;
 use crate::yaml::Yaml;
 use std::fmt;
 
+pub fn checkout_sources_depth(depth: Option<u32>) -> Step {
+    let mut step = Step::uses("Checkout sources", "actions/checkout@v2");
+    if let Some(depth) = depth {
+        step.with = Some(Yaml::Map(vec![(
+            "fetch-depth".to_owned(),
+            Yaml::string(depth.to_string()),
+        )]));
+    }
+    step
+}
+
 pub fn checkout_sources() -> Step {
-    Step::uses("Checkout sources", "actions/checkout@v2")
+    checkout_sources_depth(None)
 }
 
 #[derive(Eq, PartialEq, Copy, Clone)]
