@@ -1,4 +1,3 @@
-use crate::actions::cache;
 use crate::actions::cargo_check;
 use crate::actions::cargo_doc;
 use crate::actions::cargo_test;
@@ -101,17 +100,7 @@ fn job(channel: RustToolchain, os: Os, features: Features) -> Job {
     steps.push(checkout_sources());
     steps.push(rust_install_toolchain(&channel));
 
-    steps.push(cache(
-        "Cache protobuf",
-        &format!("pb-{}{}", os.name, if os == WINDOWS { "-1" } else { "" }),
-        "~/pb",
-    ));
-
-    if os == MACOS {
-        steps.push(Step::run("Install pkg-config", "brew install pkg-config"));
-    }
-
-    steps.extend(install_protobuf::install_protobuf());
+    steps.extend(install_protobuf::install_protobuf(os));
 
     if os != WINDOWS {
         steps.push(Step::run("Compile interop", "interop/cxx/compile.sh"));
@@ -197,16 +186,17 @@ fn super_linter_job() -> Job {
 }
 
 fn rustfmt_job() -> Job {
+    let os = LINUX;
     let mut steps = Vec::new();
     steps.push(checkout_sources());
     // force generate code
-    steps.extend(install_protobuf::install_protobuf());
+    steps.extend(install_protobuf::install_protobuf(os));
     steps.push(cargo_check("cargo check", ""));
     steps.push(Step::run("cargo fmt check", "cargo fmt -- --check"));
     Job {
         id: "rustfmt-check".to_owned(),
         name: "rustfmt check".to_owned(),
-        runs_on: LINUX.ghwf,
+        runs_on: os.ghwf,
         steps,
         ..Default::default()
     }
