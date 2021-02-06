@@ -768,7 +768,7 @@ impl<'a> CodedOutputStream<'a> {
     fn refresh_buffer(&mut self) -> ProtobufResult<()> {
         match self.target {
             OutputTarget::Write(ref mut write, _) => {
-                write.write_all(&self.buffer[0..self.position as usize])?;
+                write.write_all(&self.buffer[..self.position])?;
                 self.position = 0;
             }
             OutputTarget::Vec(ref mut vec) => unsafe {
