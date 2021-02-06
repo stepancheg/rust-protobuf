@@ -155,10 +155,7 @@ fn job(channel: RustToolchain, os: Os, features: Features) -> Job {
         steps.push(Step::run("test protoc", "protoc/test.sh"));
     }
 
-    let mut env = vec![
-        ("PROTOBUF_VERSION".to_owned(), "3.6.1".to_owned()),
-        ("RUST_BACKTRACE".to_owned(), "1".to_owned()),
-    ];
+    let mut env = vec![("RUST_BACKTRACE".to_owned(), "1".to_owned())];
     if os == WINDOWS {
         env.push(("VCPKGRS_DYNAMIC".to_owned(), "1".to_owned()));
     };

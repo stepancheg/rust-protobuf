@@ -9,7 +9,6 @@ jobs:
         name: linux stable (default features)
         runs-on: ubuntu-latest
         env:
-            PROTOBUF_VERSION: 3.6.1
             RUST_BACKTRACE: 1
         steps:
             - name: Checkout sources
@@ -30,6 +29,8 @@ jobs:
             - name: Install protobuf
               run: ci/install-protobuf.sh
               shell: bash
+              env:
+                  PROTOBUF_VERSION: 3.6.1
             - name: Protoc check
               run: protoc --version
               shell: bash
@@ -53,7 +54,6 @@ jobs:
         name: linux beta (default features)
         runs-on: ubuntu-latest
         env:
-            PROTOBUF_VERSION: 3.6.1
             RUST_BACKTRACE: 1
         steps:
             - name: Checkout sources
@@ -74,6 +74,8 @@ jobs:
             - name: Install protobuf
               run: ci/install-protobuf.sh
               shell: bash
+              env:
+                  PROTOBUF_VERSION: 3.6.1
             - name: Protoc check
               run: protoc --version
               shell: bash
@@ -97,7 +99,6 @@ jobs:
         name: linux stable (with-serde)
         runs-on: ubuntu-latest
         env:
-            PROTOBUF_VERSION: 3.6.1
             RUST_BACKTRACE: 1
         steps:
             - name: Checkout sources
@@ -118,6 +119,8 @@ jobs:
             - name: Install protobuf
               run: ci/install-protobuf.sh
               shell: bash
+              env:
+                  PROTOBUF_VERSION: 3.6.1
             - name: Protoc check
               run: protoc --version
               shell: bash
@@ -141,7 +144,6 @@ jobs:
         name: linux stable (with-bytes)
         runs-on: ubuntu-latest
         env:
-            PROTOBUF_VERSION: 3.6.1
             RUST_BACKTRACE: 1
         steps:
             - name: Checkout sources
@@ -162,6 +164,8 @@ jobs:
             - name: Install protobuf
               run: ci/install-protobuf.sh
               shell: bash
+              env:
+                  PROTOBUF_VERSION: 3.6.1
             - name: Protoc check
               run: protoc --version
               shell: bash
@@ -185,7 +189,6 @@ jobs:
         name: linux nightly (all features)
         runs-on: ubuntu-latest
         env:
-            PROTOBUF_VERSION: 3.6.1
             RUST_BACKTRACE: 1
         steps:
             - name: Checkout sources
@@ -206,6 +209,8 @@ jobs:
             - name: Install protobuf
               run: ci/install-protobuf.sh
               shell: bash
+              env:
+                  PROTOBUF_VERSION: 3.6.1
             - name: Protoc check
               run: protoc --version
               shell: bash
@@ -227,7 +232,6 @@ jobs:
         name: windows stable (default features)
         runs-on: windows-latest
         env:
-            PROTOBUF_VERSION: 3.6.1
             RUST_BACKTRACE: 1
             VCPKGRS_DYNAMIC: 1
         steps:
@@ -249,6 +253,8 @@ jobs:
             - name: Install protobuf
               run: ci/install-protobuf.sh
               shell: bash
+              env:
+                  PROTOBUF_VERSION: 3.6.1
             - name: Protoc check
               run: protoc --version
               shell: bash
@@ -279,6 +285,8 @@ jobs:
             - name: Install protobuf
               run: ci/install-protobuf.sh
               shell: bash
+              env:
+                  PROTOBUF_VERSION: 3.6.1
             - name: Protoc check
               run: protoc --version
               shell: bash
