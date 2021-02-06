@@ -22,7 +22,7 @@
 //! Generated file from `doctest_pb.proto`
 
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(serde, derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct MyMessage {
     // special fields
     #[cfg_attr(serde, serde(skip))]

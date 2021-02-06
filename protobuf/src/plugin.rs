@@ -23,7 +23,7 @@
 
 ///  The version number of protocol compiler.
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(serde, derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct Version {
     // message fields
     major: ::std::option::Option<i32>,
@@ -311,7 +311,7 @@ impl crate::reflect::ProtobufValue for Version {
 
 ///  An encoded CodeGeneratorRequest is written to the plugin's stdin.
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(serde, derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct CodeGeneratorRequest {
     // message fields
     ///  The .proto files that were explicitly listed on the command-line.  The
@@ -559,7 +559,7 @@ impl crate::reflect::ProtobufValue for CodeGeneratorRequest {
 
 ///  The plugin writes an encoded CodeGeneratorResponse to stdout.
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(serde, derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct CodeGeneratorResponse {
     // message fields
     ///  Error message.  If non-empty, code generation failed.  The plugin process
@@ -800,7 +800,7 @@ impl crate::reflect::ProtobufValue for CodeGeneratorResponse {
 pub mod code_generator_response {
     ///  Represents a single generated file.
     #[derive(PartialEq,Clone,Default)]
-    #[cfg_attr(serde, derive(Serialize, Deserialize))]
+    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
     pub struct File {
         // message fields
         ///  The file name, relative to the output directory.  The name must not
@@ -1129,7 +1129,7 @@ pub mod code_generator_response {
 
     ///  Sync with code_generator.h.
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-    #[cfg_attr(serde, derive(Serialize, Deserialize))]
+    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
     pub enum Feature {
         FEATURE_NONE = 0,
         FEATURE_PROTO3_OPTIONAL = 1,

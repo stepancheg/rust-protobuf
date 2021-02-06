@@ -22,7 +22,7 @@
 //! Generated file from `google/protobuf/empty.proto`
 
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(serde, derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct Empty {
     // special fields
     #[cfg_attr(serde, serde(skip))]

@@ -22,7 +22,7 @@
 //! Generated file from `google/protobuf/any.proto`
 
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(serde, derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct Any {
     // message fields
     ///  A URL/resource name that uniquely identifies the type of the serialized

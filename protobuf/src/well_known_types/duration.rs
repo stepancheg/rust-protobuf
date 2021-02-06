@@ -22,7 +22,7 @@
 //! Generated file from `google/protobuf/duration.proto`
 
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(serde, derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct Duration {
     // message fields
     ///  Signed seconds of the span of time. Must be from -315,576,000,000

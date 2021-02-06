@@ -22,7 +22,7 @@
 //! Generated file from `google/protobuf/field_mask.proto`
 
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(serde, derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct FieldMask {
     // message fields
     ///  The set of field mask paths.

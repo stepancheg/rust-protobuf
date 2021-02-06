@@ -24,7 +24,7 @@
 ///  `SourceContext` represents information about the source of a
 ///  protobuf element, like the file in which it is defined.
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(serde, derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct SourceContext {
     // message fields
     ///  The path-qualified name of the .proto file that contained the associated

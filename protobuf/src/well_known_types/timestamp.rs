@@ -22,7 +22,7 @@
 //! Generated file from `google/protobuf/timestamp.proto`
 
 #[derive(PartialEq,Clone,Default)]
-#[cfg_attr(serde, derive(Serialize, Deserialize))]
+#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct Timestamp {
     // message fields
     ///  Represents seconds of UTC time since Unix epoch
