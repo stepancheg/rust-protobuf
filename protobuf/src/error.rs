@@ -22,7 +22,9 @@ pub enum WireError {
     InvalidEnumValue(i32),
     OverRecursionLimit,
     TruncatedMessage,
-    Other,
+    // not really possible
+    LimitOverflow,
+    LimitIncrease,
 }
 
 impl fmt::Display for WireError {
@@ -37,7 +39,10 @@ impl fmt::Display for WireError {
             WireError::UnexpectedEof => write!(f, "unexpected EOF"),
             WireError::OverRecursionLimit => write!(f, "over recursion limit"),
             WireError::TruncatedMessage => write!(f, "truncated message"),
-            WireError::Other => write!(f, "other error"),
+            WireError::LimitOverflow => write!(f, "limit overflow"),
+            WireError::LimitIncrease => {
+                write!(f, "new limit must be not greater than current limit")
+            }
         }
     }
 }

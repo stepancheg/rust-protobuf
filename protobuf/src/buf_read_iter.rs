@@ -144,11 +144,11 @@ impl<'ignore> BufReadIter<'ignore> {
     pub fn push_limit(&mut self, limit: u64) -> ProtobufResult<u64> {
         let new_limit = match self.pos().checked_add(limit) {
             Some(new_limit) => new_limit,
-            None => return Err(ProtobufError::WireError(WireError::Other)),
+            None => return Err(ProtobufError::WireError(WireError::LimitOverflow)),
         };
 
         if new_limit > self.limit {
-            return Err(ProtobufError::WireError(WireError::Other));
+            return Err(ProtobufError::WireError(WireError::LimitIncrease));
         }
 
         let prev_limit = mem::replace(&mut self.limit, new_limit);
