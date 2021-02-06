@@ -2,7 +2,6 @@
 
 pub use protobuf_codegen::Customize;
 
-use std::fmt;
 use std::fs;
 use std::io::BufRead;
 use std::io::BufReader;
@@ -201,10 +200,9 @@ fn check_test_version(file_path: &Path) {
     );
 }
 
-pub fn gen_in_dir_impl<F, E>(dir: &str, gen: F)
+pub fn gen_in_dir_impl<F>(dir: &str, gen: F)
 where
-    F: for<'a> Fn(GenInDirArgs<'a>) -> Result<(), E>,
-    E: fmt::Debug,
+    F: for<'a> Fn(GenInDirArgs<'a>),
 {
     info!("generating protos in {}", dir);
 
@@ -233,8 +231,7 @@ where
         out_dir: dir,
         input: &protos.iter().map(|a| a.as_ref()).collect::<Vec<&str>>(),
         customize,
-    })
-    .expect("codegen failed");
+    });
 
     gen_mod_rs_in_dir(dir);
 }

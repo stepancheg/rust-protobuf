@@ -94,7 +94,7 @@ fn gen_in_dir(dir: &str, include_dir: &str) {
                 .inputs(input)
                 .includes(&[include_dir])
                 .customize(customize)
-                .run()
+                .run_from_script()
         },
     );
 }

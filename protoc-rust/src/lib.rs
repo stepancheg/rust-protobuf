@@ -34,6 +34,7 @@ use std::fs;
 use std::io;
 use std::path::Path;
 use std::path::PathBuf;
+use std::process;
 
 pub use protoc::Error;
 pub use protoc::Result;
@@ -195,6 +196,14 @@ impl Codegen {
             &self.out_dir,
             &self.customize,
         )
+    }
+
+    /// Similar to `run`, but prints the message to stderr and exits the process on error.
+    pub fn run_from_script(&self) {
+        if let Err(e) = self.run() {
+            eprintln!("codegen failed: {}", e);
+            process::exit(1);
+        }
     }
 }
 
