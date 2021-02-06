@@ -33,13 +33,15 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.21] - Unreleased
 
+## [2.20.1] - 2021-02-06
+
 - [Use fully qualified crate name in serde derives](https://github.com/stepancheg/rust-protobuf/pull/545)
 
-## [2.20.0] - 2020-01-06
+## [2.20.0] - 2021-01-06
 
 - update `bytes` crate dependency version from 0.6 to 1.0
 
-## [2.19.0] - 2020-01-05
+## [2.19.0] - 2021-01-05
 
 - Add `UnknownFields::remove`
 - Fix several inconsistencies between `protoc` parser and pure rust parser
