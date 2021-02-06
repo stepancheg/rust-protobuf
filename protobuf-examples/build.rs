@@ -28,22 +28,22 @@ fn main() {
     fs::create_dir(&generated_with_pure_dir).unwrap();
     fs::create_dir(&generated_with_native_dir).unwrap();
 
-    protobuf_codegen_pure::Codegen::new()
-        .customize(Customize {
-            gen_mod_rs: Some(true),
-            ..Default::default()
-        })
-        .out_dir(generated_with_pure_dir)
-        .input("src/protos/example.proto")
-        .include("src/protos")
-        .run_from_script();
-
     protoc_rust::Codegen::new()
         .customize(Customize {
             gen_mod_rs: Some(true),
             ..Default::default()
         })
         .out_dir(generated_with_native_dir)
+        .input("src/protos/example.proto")
+        .include("src/protos")
+        .run_from_script();
+
+    protobuf_codegen_pure::Codegen::new()
+        .customize(Customize {
+            gen_mod_rs: Some(true),
+            ..Default::default()
+        })
+        .out_dir(generated_with_pure_dir)
         .input("src/protos/example.proto")
         .include("src/protos")
         .run_from_script();
