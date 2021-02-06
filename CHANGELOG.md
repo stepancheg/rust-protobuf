@@ -36,6 +36,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - Slightly better prefix stripping algorithm in pure rust codegen: "." is now considered to be a prefix for "foo/bar.proto".
   (Probably Rust stdlib should do that out of the box)
 - Update bundled version of `protoc` to version 3.14.0
+- `protoc-bin-vendored` now includes `google/**.proto` files, so `import "google/protobuf/Timestamp.proto"`
+  should work with this crate without relying on external files
 
 ## [2.21.0] - 2021-02-06
 
