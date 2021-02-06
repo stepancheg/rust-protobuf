@@ -1,8 +1,7 @@
-extern crate protoc_rust;
-
 fn main() {
-    protoc_rust::Codegen::new()
+    protobuf_codegen_pure::Codegen::new()
         .out_dir(".")
+        .include(".")
         .input("perftest_data.proto")
         .run()
         .expect("protoc");

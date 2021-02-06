@@ -17,7 +17,7 @@ path = "../../protobuf"
 rand = "~0.5"
 
 [build-dependencies]
-protoc-rust = { path = "../../protoc-rust" }
+protobuf-codegen-pure = { path = "../../protobuf-codegen-pure" }
 
 [[bin]]
 
