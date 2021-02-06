@@ -19,6 +19,7 @@ for arch in linux-aarch_64 linux-ppcle_64 linux-x86_32 linux-x86_64 osx-x86_64 w
         unzip -p "${TMPFILE}.zip" bin/protoc >"bin/protoc-${arch}"
     fi
     if [[ $arch == "linux-x86_64" ]]; then
+        rm -rf include
         unzip "${TMPFILE}.zip" "include/*" -d .
     fi
     rm "${TMPFILE}.zip"
