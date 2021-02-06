@@ -33,6 +33,9 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.22] - Unreleased
 
+- Slightly better prefix stripping algorithm in pure rust codegen: "." is now considered to be a prefix for "foo/bar.proto".
+  (Probably Rust stdlib should do that out of the box)
+
 ## [2.21.0] - 2021-02-06
 
 - [Use fully qualified crate name in serde derives](https://github.com/stepancheg/rust-protobuf/pull/545)
