@@ -11,14 +11,14 @@ use crate::bytes::Bytes;
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;
 
+use crate::coded_input_stream::CodedInputStream;
+use crate::coded_output_stream::CodedOutputStream;
 use crate::enums::ProtobufEnum;
 use crate::error::ProtobufError;
 use crate::error::ProtobufResult;
 use crate::error::WireError;
 use crate::message::*;
 use crate::reflect::types::*;
-use crate::stream::CodedInputStream;
-use crate::stream::CodedOutputStream;
 use crate::wire_format;
 use crate::wire_format::WireType;
 use crate::wire_format::WireTypeFixed32;

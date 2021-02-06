@@ -1,6 +1,6 @@
+use crate::coded_output_stream::WithCodedOutputStream;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectEqMode;
-use crate::stream::WithCodedOutputStream;
 use crate::CodedInputStream;
 use crate::CodedOutputStream;
 use crate::Message;
@@ -244,14 +244,13 @@ impl PartialEq for Box<dyn MessageDyn> {
 #[cfg(test)]
 mod test {
     use crate::descriptor::FileDescriptorProto;
-    use crate::message::Message;
     use crate::MessageDyn;
 
     #[test]
     fn downcast_ref() {
-        let mut m = FileDescriptorProto::new();
-        let mut d = &m as &dyn MessageDyn;
-        let mut c: &FileDescriptorProto = d.downcast_ref().unwrap();
+        let m = FileDescriptorProto::new();
+        let d = &m as &dyn MessageDyn;
+        let c: &FileDescriptorProto = d.downcast_ref().unwrap();
         assert_eq!(
             c as *const FileDescriptorProto,
             &m as *const FileDescriptorProto
@@ -261,8 +260,8 @@ mod test {
     #[test]
     fn downcast_mut() {
         let mut m = FileDescriptorProto::new();
-        let mut d = &mut m as &mut dyn MessageDyn;
-        let mut c: &mut FileDescriptorProto = d.downcast_mut().unwrap();
+        let d = &mut m as &mut dyn MessageDyn;
+        let c: &mut FileDescriptorProto = d.downcast_mut().unwrap();
         assert_eq!(
             c as *const FileDescriptorProto,
             &m as *const FileDescriptorProto
@@ -271,8 +270,8 @@ mod test {
 
     #[test]
     fn downcast_box() {
-        let mut m = FileDescriptorProto::new();
-        let mut d: Box<dyn MessageDyn> = Box::new(m);
+        let m = FileDescriptorProto::new();
+        let d: Box<dyn MessageDyn> = Box::new(m);
         let mut _c: Box<FileDescriptorProto> = d.downcast_box().unwrap();
     }
 }

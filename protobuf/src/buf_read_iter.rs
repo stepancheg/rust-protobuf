@@ -15,10 +15,10 @@ use bytes::Bytes;
 use bytes::BytesMut;
 
 use crate::buf_read_or_reader::BufReadOrReader;
+use crate::coded_input_stream::READ_RAW_BYTES_MAX_ALLOC;
 use crate::error::ProtobufError;
 use crate::error::ProtobufResult;
 use crate::error::WireError;
-use crate::stream::READ_RAW_BYTES_MAX_ALLOC;
 
 // If an input stream is constructed with a `Read`, we create a
 // `BufReader` with an internal buffer of this size.
