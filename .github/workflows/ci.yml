@@ -282,6 +282,13 @@ jobs:
         steps:
             - name: Checkout sources
               uses: actions/checkout@v2
+            - name: Cache protobuf
+              uses: actions/cache@v2
+              with:
+                  key: pb-linux
+                  path: ~/pb
+              env:
+                  cache-name: pb
             - name: Install protobuf
               run: ci/install-protobuf.sh
               shell: bash
