@@ -788,7 +788,7 @@ impl<'a> CodedOutputStream<'a> {
 
     /// Flush to buffer to the underlying buffer.
     /// Note that `CodedOutputStream` does `flush` in the destructor,
-    /// however, if `flush` in desctructor fails, then destructor panics
+    /// however, if `flush` in destructor fails, then destructor panics
     /// and program terminates. So it's advisable to explicitly call flush
     /// before destructor.
     pub fn flush(&mut self) -> ProtobufResult<()> {
