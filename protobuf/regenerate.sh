@@ -39,8 +39,9 @@ esac
     --rust_out tmp-generated \
     --rust_opt 'serde_derive=true serde_derive_cfg=serde inside_protobuf=true' \
     -I../proto \
-    ../proto/google/protobuf/*.proto \
-    ../proto/google/protobuf/compiler/* \
+    -I../protoc-bin-vendored/include \
+    ../protoc-bin-vendored/include/google/protobuf/*.proto \
+    ../protoc-bin-vendored/include/google/protobuf/compiler/* \
     ../proto/rustproto.proto \
     ../proto/doctest_pb.proto \
 
