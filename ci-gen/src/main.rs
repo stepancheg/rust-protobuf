@@ -174,7 +174,9 @@ fn super_linter_job() -> Job {
             .env("DEFAULT_BRANCH", "master")
             .env("GITHUB_TOKEN", "${{ secrets.GITHUB_TOKEN }}")
             // Too many false positives
-            .env("VALIDATE_JSCPD", "false"),
+            .env("VALIDATE_JSCPD", "false")
+            // Too many dull reports like how we should pluralise variable names
+            .env("VALIDATE_PROTOBUF", "false"),
     );
     Job {
         id: "super-linter".to_owned(),
