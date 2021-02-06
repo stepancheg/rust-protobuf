@@ -2,7 +2,7 @@
 
 set -e
 
-cd $(dirname $0)
+cd "$(dirname "$0")"
 
 tag_name=$(curl -s https://api.github.com/repos/protocolbuffers/protobuf/releases/latest | grep tag_name | cut -d '"' -f 4)
 echo "$tag_name" >version.txt
