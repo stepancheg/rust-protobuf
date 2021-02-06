@@ -1,4 +1,5 @@
 use crate::actions::cache;
+use crate::actions::cargo_check;
 use crate::actions::cargo_doc;
 use crate::actions::cargo_test;
 use crate::actions::checkout_sources;
@@ -198,13 +199,25 @@ fn super_linter_job() -> Job {
     }
 }
 
+fn rustfmt_job() -> Job {
+    let mut steps = Vec::new();
+    steps.push(checkout_sources());
+    // force generate code
+    steps.push(cargo_check("cargo check", ""));
+    steps.push(Step::run("cargo fmt check", "cargo fmt -- --check"));
+    Job {
+        id: "rustfmt-check".to_owned(),
+        name: "rustfmt check".to_owned(),
+        runs_on: LINUX.ghwf,
+        steps,
+        ..Default::default()
+    }
+}
+
 fn jobs() -> Yaml {
     let mut r = Vec::new();
 
-    r.push(
-        job(RustToolchain::Stable, LINUX, Features::Default)
-            .step(Step::run("cargo fmt check", "cargo fmt -- --check")),
-    );
+    r.push(job(RustToolchain::Stable, LINUX, Features::Default));
     r.push(job(RustToolchain::Beta, LINUX, Features::Default));
     r.push(job(
         RustToolchain::Stable,
@@ -226,6 +239,8 @@ fn jobs() -> Yaml {
     r.push(job(RustToolchain::Stable, WINDOWS, Features::Default));
 
     r.push(super_linter_job());
+
+    r.push(rustfmt_job());
 
     r.push(self_check_job());
 
