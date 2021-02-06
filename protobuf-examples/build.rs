@@ -36,8 +36,7 @@ fn main() {
         .out_dir(generated_with_pure_dir)
         .input("src/protos/example.proto")
         .include("src/protos")
-        .run()
-        .expect("protoc");
+        .run_from_script();
 
     protoc_rust::Codegen::new()
         .customize(Customize {
@@ -47,6 +46,5 @@ fn main() {
         .out_dir(generated_with_native_dir)
         .input("src/protos/example.proto")
         .include("src/protos")
-        .run()
-        .expect("protoc");
+        .run_from_script();
 }
