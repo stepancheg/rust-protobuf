@@ -18,8 +18,8 @@ use std::io::Write;
 
 mod actions;
 mod ghwf;
-mod yaml;
 mod install_protobuf;
+mod yaml;
 
 #[derive(PartialEq, Eq, Copy, Clone)]
 struct Os {
