@@ -35,6 +35,7 @@ use std::io;
 use std::io::Read;
 use std::path::Path;
 use std::path::PathBuf;
+use std::path::StripPrefixError;
 
 mod linked_hash_map;
 mod model;
@@ -320,11 +321,20 @@ impl<'a> Run<'a> {
         }
     }
 
+    fn strip_prefix<'b>(path: &'b Path, prefix: &Path) -> Result<&'b Path, StripPrefixError> {
+        // special handling of `.` to allow successful `strip_prefix("foo.proto", ".")
+        if prefix == Path::new(".") {
+            Ok(path)
+        } else {
+            path.strip_prefix(prefix)
+        }
+    }
+
     fn add_fs_file(&mut self, fs_path: &Path) -> io::Result<String> {
         let relative_path = self
             .includes
             .iter()
-            .filter_map(|include_dir| fs_path.strip_prefix(include_dir).ok())
+            .filter_map(|include_dir| Self::strip_prefix(fs_path, include_dir).ok())
             .next();
 
         match relative_path {
