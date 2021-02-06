@@ -42,6 +42,12 @@ pub struct StrLit {
     pub escaped: String,
 }
 
+impl fmt::Display for StrLit {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "\"{}\"", &self.escaped)
+    }
+}
+
 impl StrLit {
     /// May fail if not valid UTF8
     pub fn decode_utf8(&self) -> StrLitDecodeResult<String> {

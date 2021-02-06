@@ -144,6 +144,15 @@ enum CodegenError {
     ConvertError(convert::ConvertError),
 }
 
+impl fmt::Display for CodegenError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            CodegenError::ParserErrorWithLocation(e) => write!(f, "{}", e),
+            CodegenError::ConvertError(e) => write!(f, "{}", e),
+        }
+    }
+}
+
 impl From<parser::ParserErrorWithLocation> for CodegenError {
     fn from(e: parser::ParserErrorWithLocation) -> Self {
         CodegenError::ParserErrorWithLocation(e)
@@ -164,15 +173,11 @@ struct WithFileError {
 
 impl fmt::Display for WithFileError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "WithFileError")
+        write!(f, "error in {}: {}", self.file, self.error)
     }
 }
 
-impl Error for WithFileError {
-    fn description(&self) -> &str {
-        "WithFileError"
-    }
-}
+impl Error for WithFileError {}
 
 struct Run<'a> {
     parsed_files: LinkedHashMap<PathBuf, FileDescriptorPair>,

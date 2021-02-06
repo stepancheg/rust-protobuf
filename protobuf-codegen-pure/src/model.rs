@@ -17,6 +17,7 @@ pub use crate::parser::ParserError;
 pub use crate::parser::ParserErrorWithLocation;
 use protobuf::reflect::ReflectValueBox;
 use protobuf::reflect::RuntimeTypeBox;
+use protobuf::text_format::lexer::float::format_protobuf_float;
 use protobuf_codegen::ProtobufIdent;
 use std::fmt;
 
@@ -353,6 +354,21 @@ pub enum ProtobufConstant {
     Ident(String),
     String(StrLit),
     Message(ProtobufConstantMessage),
+}
+
+impl fmt::Display for ProtobufConstant {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            ProtobufConstant::U64(v) => write!(f, "{}", v),
+            ProtobufConstant::I64(v) => write!(f, "{}", v),
+            ProtobufConstant::F64(v) => write!(f, "{}", format_protobuf_float(*v)),
+            ProtobufConstant::Bool(v) => write!(f, "{}", v),
+            ProtobufConstant::Ident(v) => write!(f, "{}", v),
+            ProtobufConstant::String(v) => write!(f, "{}", v),
+            // TODO: text format explicitly
+            ProtobufConstant::Message(v) => write!(f, "{:?}", v),
+        }
+    }
 }
 
 impl ProtobufConstantMessage {

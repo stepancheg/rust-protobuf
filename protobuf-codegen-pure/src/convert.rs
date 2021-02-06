@@ -3,6 +3,7 @@
 use std::iter;
 use std::path::Path;
 
+use crate::fmt;
 use crate::model;
 
 use protobuf;
@@ -41,6 +42,44 @@ pub enum ConvertError {
     ExpectingEnum(ProtobufAbsolutePath),
     UnknownEnumValue(String),
     UnknownFieldName(String),
+}
+
+impl fmt::Display for ConvertError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            ConvertError::UnsupportedOption(o) => write!(f, "unsupported option: {}", o),
+            ConvertError::ExtensionNotFound(e) => write!(f, "extension not found: {}", e),
+            // TODO: what are a, b?
+            ConvertError::WrongExtensionType(a, b) => {
+                write!(f, "wrong extension type: {} {}", a, b)
+            }
+            // TODO: what are a, b?
+            ConvertError::UnsupportedExtensionType(a, b, c) => {
+                write!(f, "unsupported extension type: {} {} {}", a, b, c)
+            }
+            ConvertError::StrLitDecodeError(s) => write!(f, "incorrect string literal: {}", s),
+            ConvertError::DefaultValueIsNotStringLiteral => {
+                write!(f, "default value is not a string literal")
+            }
+            // TODO: explain
+            ConvertError::WrongOptionType => write!(f, "wrong option type"),
+            ConvertError::InconvertibleValue(t, v) => {
+                write!(f, "cannot convert value {} to type {}", v, t)
+            }
+            ConvertError::ConstantsOfTypeMessageEnumGroupNotImplemented => {
+                write!(f, "constants of this type are not implemented")
+            }
+            ConvertError::NotFoundByAbsPath(p) => write!(f, "object is not found by path: {}", p),
+            // TODO: explain what are r and a
+            ConvertError::NotFoundByRelPath(r, a) => {
+                write!(f, "object is not found by path: {} {}", r, a)
+            }
+            ConvertError::ExpectingMessage(p) => write!(f, "expecting a message for name {}", p),
+            ConvertError::ExpectingEnum(p) => write!(f, "expecting an enum for name {}", p),
+            ConvertError::UnknownEnumValue(v) => write!(f, "unknown enum value: {}", v),
+            ConvertError::UnknownFieldName(n) => write!(f, "unknown field name: {}", n),
+        }
+    }
 }
 
 impl From<StrLitDecodeError> for ConvertError {

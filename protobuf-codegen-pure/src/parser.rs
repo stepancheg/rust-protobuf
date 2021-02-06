@@ -6,6 +6,7 @@ use protobuf::text_format::lexer::ParserLanguage;
 use protobuf::text_format::lexer::StrLitDecodeError;
 use protobuf::text_format::lexer::Token;
 
+use crate::fmt;
 use crate::model::*;
 use protobuf::text_format::lexer::int;
 use protobuf::text_format::lexer::Tokenizer;
@@ -30,6 +31,31 @@ pub enum ParserError {
     OneOfInGroup,
     OneOfInOneOf,
     OneOfInExtend,
+}
+
+impl fmt::Display for ParserError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            ParserError::TokenizerError(e) => write!(f, "{}", e),
+            // TODO
+            ParserError::IncorrectInput => write!(f, "incorrect input"),
+            ParserError::NotUtf8 => write!(f, "not UTF-8"),
+            ParserError::ExpectConstant => write!(f, "expecting a constant"),
+            ParserError::UnknownSyntax => write!(f, "unknown syntax"),
+            ParserError::IntegerOverflow => write!(f, "integer overflow"),
+            ParserError::LabelNotAllowed => write!(f, "label not allowed"),
+            ParserError::LabelRequired => write!(f, "label required"),
+            ParserError::GroupNameShouldStartWithUpperCase => {
+                write!(f, "group name should start with upper case")
+            }
+            ParserError::MapFieldNotAllowed => write!(f, "map field not allowed"),
+            ParserError::StrLitDecodeError(e) => write!(f, "string literal decode error: {}", e),
+            ParserError::LexerError(e) => write!(f, "lexer error: {}", e),
+            ParserError::OneOfInGroup => write!(f, "oneof in group"),
+            ParserError::OneOfInOneOf => write!(f, "oneof in oneof"),
+            ParserError::OneOfInExtend => write!(f, "oneof in extend"),
+        }
+    }
 }
 
 impl From<TokenizerError> for ParserError {
@@ -63,6 +89,12 @@ pub struct ParserErrorWithLocation {
     pub line: u32,
     /// 1-based
     pub col: u32,
+}
+
+impl fmt::Display for ParserErrorWithLocation {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "at {}:{}: {}", self.line, self.col, self.error)
+    }
 }
 
 pub type ParserResult<T> = Result<T, ParserError>;
