@@ -1,5 +1,5 @@
 [package]
-name = "rust-protobuf-example"
+name = "protobuf-examples"
 version = "0.0.0"
 authors = ["Jeff Garzik <jeff@bloq.com>"]
 edition = "2018"
