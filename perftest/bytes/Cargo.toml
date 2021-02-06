@@ -20,4 +20,4 @@ bytes = { version = "1.0", optional = true }
 path = "../../protobuf"
 
 [build-dependencies]
-protoc-rust = { path = "../../protoc-rust" }
+protobuf-codegen-pure = { path = "../../protobuf-codegen-pure" }
