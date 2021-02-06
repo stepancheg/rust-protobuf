@@ -367,7 +367,7 @@ pub fn parse_and_typecheck(
 }
 
 // TODO: these include don't work when publishing to crates
-const RUSTPROTO_PROTO: &str = include_str!("../../proto/rustproto.proto");
+const RUSTPROTO_PROTO: &str = include_str!("proto/rustproto.proto");
 const ANY_PROTO: &str = include_str!("proto/google/protobuf/any.proto");
 const API_PROTO: &str = include_str!("proto/google/protobuf/api.proto");
 const DESCRIPTOR_PROTO: &str = include_str!("proto/google/protobuf/descriptor.proto");
