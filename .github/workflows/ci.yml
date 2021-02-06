@@ -318,6 +318,12 @@ jobs:
         steps:
             - name: Checkout sources
               uses: actions/checkout@v2
+            - name: Install protobuf
+              run: ci/install-protobuf.sh
+              shell: bash
+            - name: Protoc check
+              run: protoc --version
+              shell: bash
             - name: cargo check
               uses: actions-rs/cargo@v1
               with:

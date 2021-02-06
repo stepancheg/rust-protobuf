@@ -19,6 +19,7 @@ use std::io::Write;
 mod actions;
 mod ghwf;
 mod yaml;
+mod install_protobuf;
 
 #[derive(PartialEq, Eq, Copy, Clone)]
 struct Os {
@@ -110,8 +111,7 @@ fn job(channel: RustToolchain, os: Os, features: Features) -> Job {
         steps.push(Step::run("Install pkg-config", "brew install pkg-config"));
     }
 
-    steps.push(Step::run("Install protobuf", "ci/install-protobuf.sh"));
-    steps.push(Step::run("Protoc check", "protoc --version"));
+    steps.extend(install_protobuf::install_protobuf());
 
     if os != WINDOWS {
         steps.push(Step::run("Compile interop", "interop/cxx/compile.sh"));
@@ -203,6 +203,7 @@ fn rustfmt_job() -> Job {
     let mut steps = Vec::new();
     steps.push(checkout_sources());
     // force generate code
+    steps.extend(install_protobuf::install_protobuf());
     steps.push(cargo_check("cargo check", ""));
     steps.push(Step::run("cargo fmt check", "cargo fmt -- --check"));
     Job {
