@@ -8,8 +8,6 @@ use crate::descriptor::EnumValueDescriptorProto;
 use crate::enums::ProtobufEnum;
 use crate::reflect::enums::dynamic::DynamicEnumDescriptor;
 use crate::reflect::enums::generated::GeneratedEnumDescriptor;
-#[cfg(not(rustc_nightly))]
-use crate::reflect::enums::generated::GetEnumDescriptor;
 use crate::reflect::file::FileDescriptorImpl;
 use crate::reflect::FileDescriptor;
 
