@@ -125,6 +125,7 @@ pub struct Job {
 }
 
 impl Job {
+    #[allow(dead_code)]
     pub fn step(mut self, step: Step) -> Self {
         self.steps.push(step);
         self

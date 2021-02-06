@@ -49,9 +49,6 @@ jobs:
             - name: test protoc
               run: protoc/test.sh
               shell: bash
-            - name: cargo fmt check
-              run: cargo fmt -- --check
-              shell: bash
     linux-beta-default-features:
         name: linux beta (default features)
         runs-on: ubuntu-latest
@@ -273,6 +270,19 @@ jobs:
                   DEFAULT_BRANCH: master
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   VALIDATE_JSCPD: false
+    rustfmt-check:
+        name: rustfmt check
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout sources
+              uses: actions/checkout@v2
+            - name: cargo check
+              uses: actions-rs/cargo@v1
+              with:
+                  command: check
+            - name: cargo fmt check
+              run: cargo fmt -- --check
+              shell: bash
     self-check:
         name: CI self-check
         runs-on: ubuntu-latest

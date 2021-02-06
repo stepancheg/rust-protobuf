@@ -63,6 +63,11 @@ pub fn cargo_build(name: &str, args: &str) -> Step {
     cargo(name, "build", args)
 }
 
+#[allow(dead_code)]
+pub fn cargo_check(name: &str, args: &str) -> Step {
+    cargo(name, "check", args)
+}
+
 pub fn cargo_doc(name: &str, args: &str) -> Step {
     cargo(name, "doc", args)
 }
