@@ -190,6 +190,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "protobuf-examples"
+version = "0.0.0"
+dependencies = [
+ "protobuf",
+ "protobuf-codegen-pure",
+ "protoc-rust",
+]
+
+[[package]]
 name = "protobuf-test"
 version = "0.0.0"
 dependencies = [
@@ -335,15 +344,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4a83fa3702a688b9359eccba92d153ac33fd2e8462f9e0e3fdf155239ea7792e"
 dependencies = [
  "winapi",
-]
-
-[[package]]
-name = "rust-protobuf-example"
-version = "0.0.0"
-dependencies = [
- "protobuf",
- "protobuf-codegen-pure",
- "protoc-rust",
 ]
 
 [[package]]
