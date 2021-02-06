@@ -136,7 +136,7 @@ dependencies = [
 
 [[package]]
 name = "protobuf"
-version = "2.20.0"
+version = "2.21.0-pre"
 dependencies = [
  "bytes",
  "serde",
@@ -145,7 +145,7 @@ dependencies = [
 
 [[package]]
 name = "protobuf-codegen"
-version = "2.20.0"
+version = "2.21.0-pre"
 dependencies = [
  "protobuf",
 ]
@@ -167,7 +167,7 @@ dependencies = [
 
 [[package]]
 name = "protobuf-codegen-pure"
-version = "2.20.0"
+version = "2.21.0-pre"
 dependencies = [
  "protobuf",
  "protobuf-codegen",
@@ -225,7 +225,7 @@ dependencies = [
 
 [[package]]
 name = "protoc"
-version = "2.20.0"
+version = "2.21.0-pre"
 dependencies = [
  "log",
  "which",
@@ -233,14 +233,14 @@ dependencies = [
 
 [[package]]
 name = "protoc-bin-vendored"
-version = "2.20.0"
+version = "2.21.0-pre"
 dependencies = [
  "protoc",
 ]
 
 [[package]]
 name = "protoc-rust"
-version = "2.20.0"
+version = "2.21.0-pre"
 dependencies = [
  "protobuf",
  "protobuf-codegen",
