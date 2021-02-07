@@ -191,73 +191,57 @@ impl<'a> CodedInputStream<'a> {
     /// Read varint
     #[inline(always)]
     pub fn read_raw_varint64(&mut self) -> ProtobufResult<u64> {
-        'slow: loop {
-            let ret;
-            let consume;
+        let ret;
+        let consume;
 
-            loop {
-                let rem = self.source.remaining_in_buf();
+        let rem = self.source.remaining_in_buf();
 
-                if rem.len() >= 1 {
-                    // most varints are in practice fit in 1 byte
-                    if rem[0] < 0x80 {
-                        ret = rem[0] as u64;
-                        consume = 1;
-                    } else {
-                        // handle case of two bytes too
-                        if rem.len() >= 2 && rem[1] < 0x80 {
-                            ret = (rem[0] & 0x7f) as u64 | (rem[1] as u64) << 7;
-                            consume = 2;
-                        } else if rem.len() >= 10 {
-                            // Read from array when buf at at least 10 bytes,
-                            // max len for varint.
-                            let mut r: u64 = 0;
-                            let mut i: usize = 0;
-                            {
-                                let rem = rem;
-                                loop {
-                                    if i == 10 {
-                                        return Err(ProtobufError::WireError(
-                                            WireError::IncorrectVarint,
-                                        ));
-                                    }
-
-                                    let b = if true {
-                                        // skip range check
-                                        unsafe { *rem.get_unchecked(i) }
-                                    } else {
-                                        rem[i]
-                                    };
-
-                                    if i == 9 && (b & 0x7f) > 1 {
-                                        return Err(ProtobufError::WireError(
-                                            WireError::IncorrectVarint,
-                                        ));
-                                    }
-                                    r = r | (((b & 0x7f) as u64) << (i * 7));
-                                    i += 1;
-                                    if b < 0x80 {
-                                        break;
-                                    }
-                                }
-                            }
-                            consume = i;
-                            ret = r;
-                        } else {
-                            break 'slow;
-                        }
-                    }
-                } else {
-                    break 'slow;
-                }
-                break;
-            }
-
-            self.source.consume(consume);
-            return Ok(ret);
+        if rem.len() < 1 {
+            return self.read_raw_varint64_slow();
         }
 
-        self.read_raw_varint64_slow()
+        if rem[0] < 0x80 {
+            // The most common case
+            ret = rem[0] as u64;
+            consume = 1;
+        } else if rem.len() >= 2 && rem[1] < 0x80 {
+            // Handle the case of two bytes too
+            ret = (rem[0] & 0x7f) as u64 | (rem[1] as u64) << 7;
+            consume = 2;
+        } else if rem.len() >= 10 {
+            // Read from array when buf at at least 10 bytes,
+            // max len for varint.
+            let mut r: u64 = 0;
+            let mut i: usize = 0;
+            loop {
+                if i == 10 {
+                    return Err(ProtobufError::WireError(WireError::IncorrectVarint));
+                }
+
+                let b = if true {
+                    // skip range check
+                    unsafe { *rem.get_unchecked(i) }
+                } else {
+                    rem[i]
+                };
+
+                if i == 9 && (b & 0x7f) > 1 {
+                    return Err(ProtobufError::WireError(WireError::IncorrectVarint));
+                }
+                r = r | (((b & 0x7f) as u64) << (i * 7));
+                i += 1;
+                if b < 0x80 {
+                    break;
+                }
+            }
+            consume = i;
+            ret = r;
+        } else {
+            return self.read_raw_varint64_slow();
+        }
+
+        self.source.consume(consume);
+        Ok(ret)
     }
 
     /// Read varint
