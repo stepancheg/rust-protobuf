@@ -1,5 +1,5 @@
 use crate::clear::Clear;
-use crate::coded_input_stream::wire_format;
+use crate::wire_format;
 use crate::zigzag::encode_zig_zag_32;
 use crate::zigzag::encode_zig_zag_64;
 use std::collections::hash_map;

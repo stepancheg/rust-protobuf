@@ -14,7 +14,6 @@ pub use crate::cached_size::CachedSize;
 #[cfg(feature = "bytes")]
 pub use crate::chars::Chars;
 pub use crate::clear::Clear;
-pub use crate::coded_input_stream::wire_format;
 pub use crate::coded_input_stream::CodedInputStream;
 pub use crate::coded_output_stream::CodedOutputStream;
 pub use crate::enums::ProtobufEnum;
@@ -48,6 +47,8 @@ pub use crate::unknown::UnknownValuesIter;
 pub mod descriptor;
 pub mod plugin;
 pub mod rustproto;
+
+pub mod wire_format;
 
 mod clear;
 mod coded_input_stream;
