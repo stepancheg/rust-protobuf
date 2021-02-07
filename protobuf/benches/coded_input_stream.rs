@@ -102,3 +102,34 @@ fn read_varint_1(b: &mut Bencher) {
         assert_eq!(1000, count);
     })
 }
+
+fn xorshift(mut x: u64) -> u64 {
+    x ^= x << 13;
+    x ^= x >> 7;
+    x ^= x << 17;
+    x
+}
+
+#[bench]
+fn read_varint_large(b: &mut Bencher) {
+    let mut v = Vec::new();
+    {
+        let mut v = protobuf::CodedOutputStream::vec(&mut v);
+        let mut rng = 1;
+        for _ in 0..1000 {
+            // one or two byte varints
+            v.write_raw_varint64(rng).unwrap();
+            rng = xorshift(rng);
+        }
+        v.flush().expect("flush");
+    }
+    b.iter(|| {
+        let mut is = CodedInputStream::from_bytes(test::black_box(&v));
+        let mut count = 0;
+        while !is.eof().expect("eof") {
+            test::black_box(is.read_raw_varint64().expect("read"));
+            count += 1;
+        }
+        assert_eq!(1000, count);
+    })
+}
