@@ -228,7 +228,7 @@ impl<'a> CodedInputStream<'a> {
                 if i == 9 && (b & 0x7f) > 1 {
                     return Err(ProtobufError::WireError(WireError::IncorrectVarint));
                 }
-                r = r | (((b & 0x7f) as u64) << (i * 7));
+                r = r | (((b & 0x7f) as u64) << (i as u64 * 7));
                 i += 1;
                 if b < 0x80 {
                     break;
