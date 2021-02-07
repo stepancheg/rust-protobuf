@@ -6,12 +6,12 @@ use std::io::Read;
 use std::path::Path;
 
 use protobuf::descriptor::*;
-use protobuf::parse_from_reader;
+use protobuf::Message;
 use protobuf_codegen::*;
 
 fn write_file(bin: &str) {
     let mut is = File::open(&Path::new(bin)).unwrap();
-    let fds = parse_from_reader::<FileDescriptorSet>(&mut is as &mut dyn Read).unwrap();
+    let fds = FileDescriptorSet::parse_from_reader(&mut is as &mut dyn Read).unwrap();
 
     let file_names: Vec<String> = fds
         .get_file()
