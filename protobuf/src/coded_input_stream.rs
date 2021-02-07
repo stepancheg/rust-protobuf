@@ -177,7 +177,9 @@ impl<'a> CodedInputStream<'a> {
                 return Err(ProtobufError::WireError(WireError::IncorrectVarint));
             }
             let b = self.read_raw_byte()?;
-            // TODO: may overflow if i == 9
+            if i == 9 && (b & 0x7f) > 1 {
+                return Err(ProtobufError::WireError(WireError::IncorrectVarint));
+            }
             r = r | (((b & 0x7f) as u64) << (i * 7));
             i += 1;
             if b < 0x80 {
@@ -227,7 +229,11 @@ impl<'a> CodedInputStream<'a> {
                                         rem[i]
                                     };
 
-                                    // TODO: may overflow if i == 9
+                                    if i == 9 && (b & 0x7f) > 1 {
+                                        return Err(ProtobufError::WireError(
+                                            WireError::IncorrectVarint,
+                                        ));
+                                    }
                                     r = r | (((b & 0x7f) as u64) << (i * 7));
                                     i += 1;
                                     if b < 0x80 {
@@ -719,6 +725,10 @@ mod test {
             0xffffffffffffffff,
             |reader| reader.read_raw_varint64(),
         );
+
+        test_read("ff ff ff ff ff ff ff ff ff 02", |is| {
+            assert!(is.read_raw_varint64().is_err());
+        });
 
         test_read_v("ff ff ff ff 0f", 0xffffffff, |reader| {
             reader.read_raw_varint32()
