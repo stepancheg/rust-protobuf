@@ -14,8 +14,8 @@ use bytes::Bytes;
 #[cfg(feature = "bytes")]
 use bytes::BytesMut;
 
+use crate::coded_input_stream::READ_RAW_BYTES_MAX_ALLOC;
 use crate::error::WireError;
-use crate::stream::READ_RAW_BYTES_MAX_ALLOC;
 use crate::ProtobufError;
 use crate::ProtobufResult;
 

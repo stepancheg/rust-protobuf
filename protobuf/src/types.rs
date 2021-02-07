@@ -8,13 +8,13 @@ use crate::chars::Chars;
 #[cfg(feature = "bytes")]
 use bytes::Bytes;
 
+use crate::coded_input_stream::CodedInputStream;
+use crate::coded_output_stream::CodedOutputStream;
 use crate::enums::ProtobufEnum;
 use crate::error::ProtobufResult;
 use crate::message::Message;
 use crate::reflect::ProtobufValue;
 use crate::rt;
-use crate::stream::CodedInputStream;
-use crate::stream::CodedOutputStream;
 use crate::unknown::UnknownValues;
 use crate::wire_format::WireType;
 use crate::zigzag::decode_zig_zag_32;

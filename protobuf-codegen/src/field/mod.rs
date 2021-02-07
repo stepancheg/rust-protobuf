@@ -63,7 +63,7 @@ impl FieldDescriptorProtoTypeExt for FieldDescriptorProto_Type {
 }
 
 fn field_type_wire_type(field_type: FieldDescriptorProto_Type) -> wire_format::WireType {
-    use protobuf::stream::wire_format::*;
+    use protobuf::wire_format::*;
     match field_type {
         FieldDescriptorProto_Type::TYPE_INT32 => WireTypeVarint,
         FieldDescriptorProto_Type::TYPE_INT64 => WireTypeVarint,

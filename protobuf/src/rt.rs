@@ -10,6 +10,14 @@ use crate::chars::Chars;
 #[cfg(feature = "bytes")]
 use bytes::Bytes;
 
+use crate::coded_input_stream::wire_format;
+use crate::coded_input_stream::wire_format::WireType;
+use crate::coded_input_stream::wire_format::WireTypeFixed32;
+use crate::coded_input_stream::wire_format::WireTypeFixed64;
+use crate::coded_input_stream::wire_format::WireTypeLengthDelimited;
+use crate::coded_input_stream::wire_format::WireTypeVarint;
+use crate::coded_input_stream::CodedInputStream;
+use crate::coded_output_stream::CodedOutputStream;
 use crate::enums::ProtobufEnum;
 use crate::error::ProtobufError;
 use crate::error::ProtobufResult;
@@ -18,14 +26,6 @@ use crate::message::*;
 use crate::repeated::RepeatedField;
 use crate::singular::SingularField;
 use crate::singular::SingularPtrField;
-use crate::stream::wire_format;
-use crate::stream::wire_format::WireType;
-use crate::stream::wire_format::WireTypeFixed32;
-use crate::stream::wire_format::WireTypeFixed64;
-use crate::stream::wire_format::WireTypeLengthDelimited;
-use crate::stream::wire_format::WireTypeVarint;
-use crate::stream::CodedInputStream;
-use crate::stream::CodedOutputStream;
 use crate::types::*;
 use crate::zigzag::*;
 

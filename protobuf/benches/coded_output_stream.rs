@@ -5,12 +5,11 @@
 extern crate protobuf;
 extern crate test;
 
-use protobuf::stream;
-
 use self::test::Bencher;
+use protobuf::CodedOutputStream;
 
 #[inline]
-fn buffer_write_byte(os: &mut stream::CodedOutputStream) {
+fn buffer_write_byte(os: &mut CodedOutputStream) {
     for i in 0..10 {
         os.write_raw_byte(test::black_box(i as u8)).unwrap();
     }
@@ -18,7 +17,7 @@ fn buffer_write_byte(os: &mut stream::CodedOutputStream) {
 }
 
 #[inline]
-fn buffer_write_bytes(os: &mut stream::CodedOutputStream) {
+fn buffer_write_bytes(os: &mut CodedOutputStream) {
     for _ in 0..10 {
         os.write_raw_bytes(test::black_box(b"1234567890")).unwrap();
     }
@@ -30,7 +29,7 @@ fn bench_buffer(b: &mut Bencher) {
     b.iter(|| {
         let mut v = Vec::new();
         {
-            let mut os = stream::CodedOutputStream::new(&mut v);
+            let mut os = CodedOutputStream::new(&mut v);
             buffer_write_byte(&mut os);
         }
         v
@@ -42,7 +41,7 @@ fn bench_buffer_bytes(b: &mut Bencher) {
     b.iter(|| {
         let mut v = Vec::new();
         {
-            let mut os = stream::CodedOutputStream::new(&mut v);
+            let mut os = CodedOutputStream::new(&mut v);
             buffer_write_bytes(&mut os);
         }
         v

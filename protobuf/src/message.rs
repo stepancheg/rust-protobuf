@@ -8,14 +8,14 @@ use std::io::Write;
 use bytes::Bytes;
 
 use crate::clear::Clear;
+use crate::coded_input_stream::CodedInputStream;
+use crate::coded_input_stream::WithCodedInputStream;
+use crate::coded_output_stream::with_coded_output_stream_to_bytes;
+use crate::coded_output_stream::CodedOutputStream;
+use crate::coded_output_stream::WithCodedOutputStream;
 use crate::error::ProtobufError;
 use crate::error::ProtobufResult;
 use crate::reflect::MessageDescriptor;
-use crate::stream::with_coded_output_stream_to_bytes;
-use crate::stream::CodedInputStream;
-use crate::stream::CodedOutputStream;
-use crate::stream::WithCodedInputStream;
-use crate::stream::WithCodedOutputStream;
 use crate::unknown::UnknownFields;
 
 /// Trait implemented for all generated structs for protobuf messages.
