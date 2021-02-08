@@ -56,7 +56,6 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - `protobuf::parse_from*` functions are deprecated, use `protobuf::Message::parse_from*` instead
 - impl `IntoIterator` for `&mut RepeatedField<T>` and for `RepeatedField<T>`
 - update `bytes` crate dependency version from 0.5 to 0.6
-- minimum supported rust version is 1.44.1
 
 ## [2.18.1] - 2020-11-22
 
