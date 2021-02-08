@@ -119,9 +119,9 @@ impl<'a> CodedInputStream<'a> {
     }
 
     /// Read bytes into given `buf`.
+    #[inline]
     pub fn read_exact(&mut self, buf: &mut [u8]) -> ProtobufResult<()> {
-        self.source.read_exact(buf)?;
-        Ok(())
+        self.source.read_exact(buf)
     }
 
     /// Read exact number of bytes as `Bytes` object.
