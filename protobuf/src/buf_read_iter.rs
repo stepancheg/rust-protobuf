@@ -283,14 +283,7 @@ impl<'ignore> BufReadIter<'ignore> {
         Ok(len)
     }
 
-    pub fn read_exact(&mut self, buf: &mut [u8]) -> ProtobufResult<()> {
-        if self.remaining_in_buf_len() >= buf.len() {
-            let buf_len = buf.len();
-            buf.copy_from_slice(&self.buf[self.pos_within_buf..self.pos_within_buf + buf_len]);
-            self.pos_within_buf += buf_len;
-            return Ok(());
-        }
-
+    fn read_exact_slow(&mut self, buf: &mut [u8]) -> ProtobufResult<()> {
         if self.bytes_until_limit() < buf.len() as u64 {
             return Err(ProtobufError::WireError(WireError::UnexpectedEof));
         }
@@ -316,6 +309,18 @@ impl<'ignore> BufReadIter<'ignore> {
         self.assertions();
 
         Ok(())
+    }
+
+    #[inline]
+    pub fn read_exact(&mut self, buf: &mut [u8]) -> ProtobufResult<()> {
+        if self.remaining_in_buf_len() >= buf.len() {
+            let buf_len = buf.len();
+            buf.copy_from_slice(&self.buf[self.pos_within_buf..self.pos_within_buf + buf_len]);
+            self.pos_within_buf += buf_len;
+            return Ok(());
+        }
+
+        self.read_exact_slow(buf)
     }
 
     /// Read raw bytes into the supplied vector.  The vector will be resized as needed and
