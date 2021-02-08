@@ -119,10 +119,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     /// Read bytes into given `buf`.
-    ///
-    /// Return `0` on EOF.
-    // TODO: overload with `Read::read`
-    pub fn read(&mut self, buf: &mut [u8]) -> ProtobufResult<()> {
+    pub fn read_exact(&mut self, buf: &mut [u8]) -> ProtobufResult<()> {
         self.source.read_exact(buf)?;
         Ok(())
     }
@@ -253,14 +250,14 @@ impl<'a> CodedInputStream<'a> {
     /// Read little-endian 32-bit integer
     pub fn read_raw_little_endian32(&mut self) -> ProtobufResult<u32> {
         let mut bytes = [0; 4];
-        self.read(&mut bytes)?;
+        self.read_exact(&mut bytes)?;
         Ok(u32::from_le_bytes(bytes))
     }
 
     /// Read little-endian 64-bit integer
     pub fn read_raw_little_endian64(&mut self) -> ProtobufResult<u64> {
         let mut bytes = [0; 8];
-        self.read(&mut bytes)?;
+        self.read_exact(&mut bytes)?;
         Ok(u64::from_le_bytes(bytes))
     }
 
