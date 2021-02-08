@@ -89,13 +89,12 @@ fn generate_interop() {
     copy_from_protobuf_test("src/interop/mod.rs");
     //copy_from_protobuf_test("src/interop/json.rs");
 
-    protobuf_codegen_pure::run(protobuf_codegen_pure::Args {
-        out_dir: "src/interop",
-        includes: &["../interop/cxx", "../proto"],
-        input: &["../interop/cxx/interop_pb.proto"],
-        ..Default::default()
-    })
-    .unwrap();
+    protobuf_codegen_pure::Codegen::new()
+        .includes(&["../interop/cxx", "../proto"])
+        .out_dir("src/interop")
+        .input("../interop/cxx/interop_pb.proto")
+        .run()
+        .unwrap();
 }
 
 fn generate_include_generated() {
