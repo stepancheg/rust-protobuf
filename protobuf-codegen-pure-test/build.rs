@@ -69,7 +69,6 @@ fn copy_tests(dir: &str) {
 fn gen_in_dir(dir: &str, include_dir: &str) {
     gen_in_dir_impl(
         dir,
-        true,
         |GenInDirArgs {
              out_dir,
              input,
@@ -146,6 +145,4 @@ fn main() {
 
     clean_old_files();
     generate_pb_rs();
-
-    println!("cargo:rustc-cfg=protoc3");
 }

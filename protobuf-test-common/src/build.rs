@@ -116,16 +116,13 @@ pub fn gen_mod_rs_in_dir(dir: &str) {
         if mod_name.contains("carllerche") {
             writeln!(mod_rs, r#"#[cfg(feature = "with-bytes")]"#).expect("write");
         }
-        if mod_name.contains("test_map_simple") {
-            writeln!(mod_rs, r#"#[cfg(protoc3)]"#).expect("write");
-        }
         writeln!(mod_rs, "mod {};", mod_name).expect("write");
     }
 
     mod_rs.flush().expect("flush");
 }
 
-pub fn gen_in_dir_impl<F, E>(dir: &str, protoc3: bool, gen: F)
+pub fn gen_in_dir_impl<F, E>(dir: &str, gen: F)
 where
     F: for<'a> Fn(GenInDirArgs<'a>) -> Result<(), E>,
     E: fmt::Debug,
@@ -135,11 +132,6 @@ where
     let mut protos = Vec::new();
     for suffix in &[".proto", ".proto3"] {
         protos.extend(glob_simple(&format!("{}/*{}", dir, suffix)));
-    }
-
-    if !protoc3 {
-        // Remove test_map_simple because map is not supported by protoc 2
-        protos.retain(|p| !p.contains("test_map_simple"));
     }
 
     assert!(!protos.is_empty());
