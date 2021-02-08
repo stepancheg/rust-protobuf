@@ -189,7 +189,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     /// Read varint
-    #[inline(always)]
+    #[inline]
     pub fn read_raw_varint64(&mut self) -> ProtobufResult<u64> {
         let ret;
         let consume;
