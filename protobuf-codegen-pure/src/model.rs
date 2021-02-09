@@ -435,44 +435,45 @@ impl fmt::Display for ProtobufOptionNameComponent {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct ProtobufOptionName {
-    pub components: Vec<ProtobufOptionNameComponent>,
-}
+pub struct ProtobufOptionNameExt(pub Vec<ProtobufOptionNameComponent>);
 
-impl ProtobufOptionName {
-    pub fn simple(name: &str) -> ProtobufOptionName {
-        assert!(!name.is_empty());
-        assert!(!name.contains("."));
-        assert!(!name.contains("("));
-        ProtobufOptionName {
-            components: vec![ProtobufOptionNameComponent::Direct(ProtobufIdent::from(
-                name,
-            ))],
-        }
-    }
-
-    pub fn get_simple(&self) -> Option<&ProtobufIdent> {
-        match &self.components[..] {
-            [ProtobufOptionNameComponent::Direct(n)] => Some(&n),
-            _ => None,
-        }
-    }
-
+impl ProtobufOptionNameExt {
     // TODO: get rid of it
     pub fn full_name(&self) -> String {
         format!("{}", self)
     }
 }
 
-impl fmt::Display for ProtobufOptionName {
+#[derive(Debug, Clone, PartialEq)]
+pub enum ProtobufOptionName {
+    Builtin(ProtobufIdent),
+    Ext(ProtobufOptionNameExt),
+}
+
+impl ProtobufOptionName {
+    pub fn simple(name: &str) -> ProtobufOptionName {
+        ProtobufOptionName::Builtin(ProtobufIdent::new(name))
+    }
+}
+
+impl fmt::Display for ProtobufOptionNameExt {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        for (index, comp) in self.components.iter().enumerate() {
+        for (index, comp) in self.0.iter().enumerate() {
             if index != 0 {
                 write!(f, ".")?;
             }
             write!(f, "{}", comp)?;
         }
         Ok(())
+    }
+}
+
+impl fmt::Display for ProtobufOptionName {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            ProtobufOptionName::Builtin(n) => write!(f, "{}", n),
+            ProtobufOptionName::Ext(n) => write!(f, "{}", n),
+        }
     }
 }
 

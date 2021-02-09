@@ -497,7 +497,12 @@ impl<'a> Parser<'a> {
         while self.tokenizer.next_symbol_if_eq('.')? {
             components.push(self.next_option_name_component()?);
         }
-        Ok(ProtobufOptionName { components })
+        if components.len() == 1 {
+            if let ProtobufOptionNameComponent::Direct(n) = &components[0] {
+                return Ok(ProtobufOptionName::Builtin(n.clone()));
+            }
+        }
+        Ok(ProtobufOptionName::Ext(ProtobufOptionNameExt(components)))
     }
 
     // option = "option" optionName  "=" constant ";"
