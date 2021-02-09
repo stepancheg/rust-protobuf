@@ -28,6 +28,8 @@ use protobuf::text_format::quote_bytes_to;
 #[derive(Debug)]
 pub enum ConvertError {
     UnsupportedOption(String),
+    // options, option
+    BuiltinOptionNotFound(String, String),
     ExtensionNotFound(String),
     WrongExtensionType(String, String),
     UnsupportedExtensionType(String, String, model::ProtobufConstant),
@@ -49,6 +51,11 @@ impl fmt::Display for ConvertError {
         match self {
             ConvertError::UnsupportedOption(o) => write!(f, "unsupported option: {}", o),
             ConvertError::ExtensionNotFound(e) => write!(f, "extension not found: {}", e),
+            ConvertError::BuiltinOptionNotFound(options, option) => write!(
+                f,
+                "builtin option {} not found for options {}",
+                option, options
+            ),
             // TODO: what are a, b?
             ConvertError::WrongExtensionType(a, b) => {
                 write!(f, "wrong extension type: {} {}", a, b)
@@ -534,6 +541,75 @@ impl<'a> Resolver<'a> {
         Ok(output)
     }
 
+    fn custom_option<M>(
+        &self,
+        path_in_file: &ProtobufRelativePath,
+        options: &mut M,
+        option: &model::ProtobufOption,
+    ) -> ConvertResult<()>
+    where
+        M: Message,
+    {
+        let extendee = M::descriptor_static().full_name().to_owned();
+        if let Some(simple) = option.name.get_simple() {
+            if simple.get() == "default" || simple.get() == "json_name" {
+                // some options are written to non-options message and handled outside
+                return Ok(());
+            }
+            match M::descriptor_static().get_field_by_name(simple.get()) {
+                Some(field) => {
+                    if field.is_repeated_or_map() {
+                        return Ok(());
+                    }
+
+                    field.set_singular_field(
+                        options,
+                        option.value.as_type(field.singular_runtime_type())?,
+                    );
+                    return Ok(());
+                }
+                None => {
+                    return Err(ConvertError::BuiltinOptionNotFound(
+                        M::descriptor_static().full_name().to_owned(),
+                        simple.get().to_owned(),
+                    ))
+                }
+            }
+        }
+
+        let extension = match self.find_extension(&option.name.full_name()) {
+            Ok(e) => e,
+            // TODO: return error
+            Err(_) => return Ok(()),
+        };
+        if extension.extendee != extendee {
+            return Err(ConvertError::WrongExtensionType(
+                format!("{}", option.name),
+                extendee,
+            ));
+        }
+
+        let value = match self.option_value_to_unknown_value_leg(
+            &option.value,
+            &extension.field.t.name,
+            &extension.field.t.typ,
+            &format!("{}", option.name),
+            path_in_file,
+        ) {
+            Ok(value) => value,
+            Err(ConvertError::ConstantsOfTypeMessageEnumGroupNotImplemented) => {
+                // TODO: return error
+                return Ok(());
+            }
+            Err(e) => return Err(e),
+        };
+
+        options
+            .mut_unknown_fields()
+            .add_value(extension.field.t.number as u32, value);
+        Ok(())
+    }
+
     fn custom_options<M>(
         &self,
         input: &[model::ProtobufOption],
@@ -543,58 +619,9 @@ impl<'a> Resolver<'a> {
         M: Message,
     {
         let mut options = M::new();
-        let extendee = M::descriptor_static().full_name().to_owned();
 
         for option in input {
-            match option.name.get_simple() {
-                Some(simple) => {
-                    if let Some(field) = M::descriptor_static().get_field_by_name(simple.get()) {
-                        if field.is_repeated_or_map() {
-                            continue;
-                        }
-
-                        field.set_singular_field(
-                            &mut options,
-                            option.value.as_type(field.singular_runtime_type())?,
-                        );
-                    }
-                    continue;
-                }
-                None => {
-                    // ?
-                }
-            }
-
-            let extension = match self.find_extension(&option.name.full_name()) {
-                Ok(e) => e,
-                // TODO: return error
-                Err(_) => continue,
-            };
-            if extension.extendee != extendee {
-                return Err(ConvertError::WrongExtensionType(
-                    format!("{}", option.name),
-                    extendee,
-                ));
-            }
-
-            let value = match self.option_value_to_unknown_value_leg(
-                &option.value,
-                &extension.field.t.name,
-                &extension.field.t.typ,
-                &format!("{}", option.name),
-                path_in_file,
-            ) {
-                Ok(value) => value,
-                Err(ConvertError::ConstantsOfTypeMessageEnumGroupNotImplemented) => {
-                    // TODO: return error
-                    continue;
-                }
-                Err(e) => return Err(e),
-            };
-
-            options
-                .mut_unknown_fields()
-                .add_value(extension.field.t.number as u32, value);
+            self.custom_option(path_in_file, &mut options, option)?;
         }
         Ok(options)
     }

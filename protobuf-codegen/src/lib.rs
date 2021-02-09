@@ -1,8 +1,5 @@
 #![deny(broken_intra_doc_links)]
 
-extern crate proc_macro;
-extern crate protobuf;
-
 use std::collections::hash_map::HashMap;
 use std::fmt::Write as FmtWrite;
 use std::fs::File;
@@ -30,6 +27,7 @@ mod oneof;
 mod protobuf_abs_path;
 mod protobuf_ident;
 mod protobuf_rel_path;
+mod protobuf_path;
 mod rust_name;
 mod rust_types_values;
 mod serde;
@@ -60,6 +58,7 @@ use inside::protobuf_crate_path;
 pub use protobuf_abs_path::ProtobufAbsolutePath;
 pub use protobuf_ident::ProtobufIdent;
 pub use protobuf_rel_path::ProtobufRelativePath;
+pub use protobuf_path::ProtobufPath;
 
 use crate::rust::EXPR_VEC_NEW;
 use crate::scope::WithScope;
