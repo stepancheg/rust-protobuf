@@ -330,10 +330,10 @@ impl<'a> Resolver<'a> {
 
     fn map_entry_field(
         &self,
+        scope: &ProtobufAbsolutePath,
         name: &str,
         number: i32,
         field_type: &model::FieldType,
-        path_in_file: &ProtobufRelativePath,
     ) -> ConvertResult<protobuf::descriptor::FieldDescriptorProto> {
         // should be consisent with DescriptorBuilder::ValidateMapEntry
 
@@ -342,7 +342,7 @@ impl<'a> Resolver<'a> {
         output.set_name(name.to_owned());
         output.set_number(number);
 
-        let t = self.field_type_leg(name, field_type, path_in_file)?;
+        let t = self.field_type(&scope, name, field_type)?;
         output.set_field_type(t.type_enum());
         if let Some(t_name) = t.type_name() {
             output.set_type_name(t_name.path.clone());
@@ -357,10 +357,10 @@ impl<'a> Resolver<'a> {
 
     fn map_entry_message(
         &self,
+        scope: &ProtobufAbsolutePath,
         field_name: &str,
         key: &model::FieldType,
         value: &model::FieldType,
-        path_in_file: &ProtobufRelativePath,
     ) -> ConvertResult<protobuf::descriptor::DescriptorProto> {
         let mut output = protobuf::descriptor::DescriptorProto::new();
 
@@ -368,26 +368,26 @@ impl<'a> Resolver<'a> {
         output.set_name(Resolver::map_entry_name_for_field_name(field_name).into_string());
         output
             .field
-            .push(self.map_entry_field("key", 1, key, path_in_file)?);
+            .push(self.map_entry_field(&scope, "key", 1, key)?);
         output
             .field
-            .push(self.map_entry_field("value", 2, value, path_in_file)?);
+            .push(self.map_entry_field(&scope, "value", 2, value)?);
 
         Ok(output)
     }
 
     fn group_message(
         &self,
+        scope: &ProtobufAbsolutePath,
         name: &str,
         fields: &[model::WithLoc<model::Field>],
-        path_in_file: &ProtobufRelativePath,
     ) -> ConvertResult<protobuf::descriptor::DescriptorProto> {
         let mut output = protobuf::descriptor::DescriptorProto::new();
 
         output.set_name(name.to_owned());
 
         for f in fields {
-            output.field.push(self.field(f, None, path_in_file)?);
+            output.field.push(self.field(scope, f, None)?);
         }
 
         Ok(output)
@@ -395,18 +395,19 @@ impl<'a> Resolver<'a> {
 
     fn message_options(
         &self,
+        scope: &ProtobufAbsolutePath,
         input: &[model::ProtobufOption],
-        path_in_file: &ProtobufRelativePath,
     ) -> ConvertResult<protobuf::descriptor::MessageOptions> {
-        self.custom_options(input, path_in_file)
+        self.custom_options(scope, input)
     }
 
     fn message(
         &self,
+        scope: &ProtobufAbsolutePath,
         input: &model::Message,
-        path_in_file: &ProtobufRelativePath,
     ) -> ConvertResult<protobuf::descriptor::DescriptorProto> {
-        let nested_path_in_file = path_in_file.append_ident(&ProtobufIdent::from(&input.name[..]));
+        let mut nested_scope = scope.clone();
+        nested_scope.push_simple(ProtobufIdent::from(&input.name[..]));
 
         let mut output = protobuf::descriptor::DescriptorProto::new();
         output.set_name(input.name.clone());
@@ -414,7 +415,7 @@ impl<'a> Resolver<'a> {
         let mut nested_messages = Vec::new();
 
         for m in &input.messages {
-            let message = self.message(&m.t, &nested_path_in_file)?;
+            let message = self.message(&nested_scope, &m.t)?;
             nested_messages.push(model::WithLoc {
                 t: message,
                 loc: m.loc,
@@ -424,8 +425,7 @@ impl<'a> Resolver<'a> {
         for f in input.regular_fields_including_in_oneofs() {
             match &f.t.typ {
                 model::FieldType::Map(t) => {
-                    let message =
-                        self.map_entry_message(&f.t.name, &t.0, &t.1, &nested_path_in_file)?;
+                    let message = self.map_entry_message(&nested_scope, &f.t.name, &t.0, &t.1)?;
                     nested_messages.push(model::WithLoc {
                         t: message,
                         loc: f.loc,
@@ -436,7 +436,7 @@ impl<'a> Resolver<'a> {
                     fields,
                     ..
                 }) => {
-                    let message = self.group_message(group_name, fields, &nested_path_in_file)?;
+                    let message = self.group_message(&nested_scope, group_name, fields)?;
                     nested_messages.push(model::WithLoc {
                         t: message,
                         loc: f.loc,
@@ -456,7 +456,7 @@ impl<'a> Resolver<'a> {
         output.enum_type = input
             .enums
             .iter()
-            .map(|e| self.enumeration(e, path_in_file))
+            .map(|e| self.enumeration(scope, e))
             .collect::<Result<_, _>>()?;
 
         {
@@ -465,18 +465,14 @@ impl<'a> Resolver<'a> {
             for fo in &input.fields {
                 match &fo.t {
                     model::FieldOrOneOf::Field(f) => {
-                        fields.push(self.field(f, None, &nested_path_in_file)?);
+                        fields.push(self.field(&nested_scope, f, None)?);
                     }
                     model::FieldOrOneOf::OneOf(o) => {
                         let oneof_index = output.oneof_decl.len();
                         for f in &o.fields {
-                            fields.push(self.field(
-                                f,
-                                Some(oneof_index as i32),
-                                &nested_path_in_file,
-                            )?);
+                            fields.push(self.field(&nested_scope, f, Some(oneof_index as i32))?);
                         }
-                        output.oneof_decl.push(self.oneof(o, path_in_file)?);
+                        output.oneof_decl.push(self.oneof(scope, o)?);
                     }
                 }
             }
@@ -484,7 +480,7 @@ impl<'a> Resolver<'a> {
             output.field = fields;
         }
 
-        output.options = Some(self.message_options(&input.options, path_in_file)?).into();
+        output.options = Some(self.message_options(scope, &input.options)?).into();
 
         for ext in &input.extension_ranges {
             let mut extension_range = protobuf::descriptor::descriptor_proto::ExtensionRange::new();
@@ -493,12 +489,8 @@ impl<'a> Resolver<'a> {
             output.extension_range.push(extension_range);
         }
         for ext in &input.extensions {
-            let mut extension = self.field(&ext.t.field, None, path_in_file)?;
-            extension.set_extendee(
-                self.resolve_message_or_enum_leg(&ext.t.extendee, path_in_file)?
-                    .0
-                    .path,
-            );
+            let mut extension = self.field(scope, &ext.t.field, None)?;
+            extension.set_extendee(self.resolve_message_or_enum(scope, &ext.t.extendee)?.0.path);
             output.extension.push(extension);
         }
 
@@ -517,14 +509,14 @@ impl<'a> Resolver<'a> {
         &self,
         input: &[model::ProtobufOption],
     ) -> ConvertResult<protobuf::descriptor::ServiceOptions> {
-        self.custom_options(input, &ProtobufRelativePath::empty())
+        self.custom_options(&self.current_file.package, input)
     }
 
     fn service_method_options(
         &self,
         input: &[model::ProtobufOption],
     ) -> ConvertResult<protobuf::descriptor::MethodOptions> {
-        self.custom_options(input, &ProtobufRelativePath::empty())
+        self.custom_options(&self.current_file.package, input)
     }
 
     fn service_method(
@@ -556,7 +548,7 @@ impl<'a> Resolver<'a> {
 
     fn custom_option_builtin<M>(
         &self,
-        _path_in_file: &ProtobufRelativePath,
+        _scope: &ProtobufAbsolutePath,
         options: &mut M,
         option: &ProtobufIdent,
         option_value: &ProtobufConstant,
@@ -596,7 +588,7 @@ impl<'a> Resolver<'a> {
 
     fn custom_option_ext_step<M>(
         &self,
-        path_in_file: &ProtobufRelativePath,
+        scope: &ProtobufAbsolutePath,
         options: &mut M,
         option_name: &ProtobufOptionNameComponent,
         option_name_rem: &[ProtobufOptionNameComponent],
@@ -616,12 +608,10 @@ impl<'a> Resolver<'a> {
                 return Ok(());
             }
             ProtobufOptionNameComponent::Ext(option_name) => {
-                let mut scope = self.current_file.package.clone();
-                scope.push_relative(&path_in_file);
                 let extendee =
                     ProtobufRelativePath::new(M::descriptor_static().full_name().to_owned())
                         .into_absolute();
-                let extension = match self.find_extension_by_path(&scope, option_name) {
+                let extension = match self.find_extension_by_path(scope, option_name) {
                     Ok(e) => e,
                     // TODO: return error
                     Err(_) => return Ok(()),
@@ -635,12 +625,12 @@ impl<'a> Resolver<'a> {
                     ));
                 }
 
-                let value = match self.option_value_to_unknown_value_leg(
+                let value = match self.option_value_to_unknown_value(
+                    scope,
                     option_value,
                     &extension.field.t.name,
                     &extension.field.t.typ,
                     &format!("{}", option_name),
-                    path_in_file,
                 ) {
                     Ok(value) => value,
                     Err(ConvertError::ConstantsOfTypeMessageEnumGroupNotImplemented) => {
@@ -660,7 +650,7 @@ impl<'a> Resolver<'a> {
 
     fn custom_option_ext<M>(
         &self,
-        path_in_file: &ProtobufRelativePath,
+        scope: &ProtobufAbsolutePath,
         options: &mut M,
         option_name: &ProtobufOptionNameExt,
         option_value: &ProtobufConstant,
@@ -669,7 +659,7 @@ impl<'a> Resolver<'a> {
         M: Message,
     {
         self.custom_option_ext_step(
-            path_in_file,
+            scope,
             options,
             &option_name.0[0],
             &option_name.0[1..],
@@ -679,7 +669,7 @@ impl<'a> Resolver<'a> {
 
     fn custom_option<M>(
         &self,
-        path_in_file: &ProtobufRelativePath,
+        scope: &ProtobufAbsolutePath,
         options: &mut M,
         option: &model::ProtobufOption,
     ) -> ConvertResult<()>
@@ -688,18 +678,16 @@ impl<'a> Resolver<'a> {
     {
         match &option.name {
             ProtobufOptionName::Builtin(simple) => {
-                self.custom_option_builtin(path_in_file, options, simple, &option.value)
+                self.custom_option_builtin(scope, options, simple, &option.value)
             }
-            ProtobufOptionName::Ext(e) => {
-                self.custom_option_ext(path_in_file, options, e, &option.value)
-            }
+            ProtobufOptionName::Ext(e) => self.custom_option_ext(scope, options, e, &option.value),
         }
     }
 
     fn custom_options<M>(
         &self,
+        scope: &ProtobufAbsolutePath,
         input: &[model::ProtobufOption],
-        path_in_file: &ProtobufRelativePath,
     ) -> ConvertResult<M>
     where
         M: Message,
@@ -707,24 +695,24 @@ impl<'a> Resolver<'a> {
         let mut options = M::new();
 
         for option in input {
-            self.custom_option(path_in_file, &mut options, option)?;
+            self.custom_option(scope, &mut options, option)?;
         }
         Ok(options)
     }
 
     fn field_options(
         &self,
+        scope: &ProtobufAbsolutePath,
         input: &[model::ProtobufOption],
-        path_in_file: &ProtobufRelativePath,
     ) -> ConvertResult<protobuf::descriptor::FieldOptions> {
-        self.custom_options(input, path_in_file)
+        self.custom_options(scope, input)
     }
 
     fn field(
         &self,
+        scope: &ProtobufAbsolutePath,
         input: &model::WithLoc<model::Field>,
         oneof_index: Option<i32>,
-        path_in_file: &ProtobufRelativePath,
     ) -> ConvertResult<protobuf::descriptor::FieldDescriptorProto> {
         let mut output = protobuf::descriptor::FieldDescriptorProto::new();
         output.set_name(input.t.name.clone());
@@ -735,7 +723,7 @@ impl<'a> Resolver<'a> {
             output.set_label(label(input.t.rule));
         }
 
-        let t = self.field_type_leg(&input.t.name, &input.t.typ, path_in_file)?;
+        let t = self.field_type(scope, &input.t.name, &input.t.typ)?;
         output.set_field_type(t.type_enum());
         if let Some(t_name) = t.type_name() {
             output.set_type_name(t_name.path.clone());
@@ -765,7 +753,7 @@ impl<'a> Resolver<'a> {
             output.set_default_value(default);
         }
 
-        output.options = Some(self.field_options(&input.t.options, path_in_file)?).into();
+        output.options = Some(self.field_options(scope, &input.t.options)?).into();
 
         if let Some(oneof_index) = oneof_index {
             output.set_oneof_index(oneof_index);
@@ -854,8 +842,8 @@ impl<'a> Resolver<'a> {
 
     fn resolve_message_or_enum(
         &self,
-        name: &ProtobufPath,
         scope: &ProtobufAbsolutePath,
+        name: &ProtobufPath,
     ) -> ConvertResult<(ProtobufAbsolutePath, MessageOrEnum)> {
         match name {
             ProtobufPath::Abs(name) => {
@@ -876,21 +864,11 @@ impl<'a> Resolver<'a> {
         }
     }
 
-    fn resolve_message_or_enum_leg(
-        &self,
-        name: &ProtobufPath,
-        path_in_file: &ProtobufRelativePath,
-    ) -> ConvertResult<(ProtobufAbsolutePath, MessageOrEnum)> {
-        let mut scope = self.current_file.package.clone();
-        scope.push_relative(path_in_file);
-        self.resolve_message_or_enum(name, &scope)
-    }
-
     fn field_type(
         &self,
+        scope: &ProtobufAbsolutePath,
         name: &str,
         input: &model::FieldType,
-        scope: &ProtobufAbsolutePath,
     ) -> ConvertResult<TypeResolved> {
         Ok(match *input {
             model::FieldType::Bool => TypeResolved::Bool,
@@ -909,7 +887,7 @@ impl<'a> Resolver<'a> {
             model::FieldType::String => TypeResolved::String,
             model::FieldType::Bytes => TypeResolved::Bytes,
             model::FieldType::MessageOrEnum(ref name) => {
-                let (name, me) = self.resolve_message_or_enum(&name, scope)?;
+                let (name, me) = self.resolve_message_or_enum(scope, &name)?;
                 match me {
                     MessageOrEnum::Message(..) => TypeResolved::Message(name),
                     MessageOrEnum::Enum(..) => TypeResolved::Enum(name),
@@ -929,17 +907,6 @@ impl<'a> Resolver<'a> {
                 TypeResolved::Group(type_name)
             }
         })
-    }
-
-    fn field_type_leg(
-        &self,
-        name: &str,
-        input: &model::FieldType,
-        path_in_file: &ProtobufRelativePath,
-    ) -> ConvertResult<TypeResolved> {
-        let mut scope = self.current_file.package.clone();
-        scope.push_relative(path_in_file);
-        self.field_type(name, input, &scope)
     }
 
     fn _runtime_type_for_field_type(&self, ft: &TypeResolved) -> ConvertResult<RuntimeTypeBox> {
@@ -965,64 +932,64 @@ impl<'a> Resolver<'a> {
 
     fn enum_value(
         &self,
+        scope: &ProtobufAbsolutePath,
         input: &model::EnumValue,
-        path_in_file: &ProtobufRelativePath,
     ) -> ConvertResult<protobuf::descriptor::EnumValueDescriptorProto> {
         let mut output = protobuf::descriptor::EnumValueDescriptorProto::new();
         output.set_name(input.name.clone());
         output.set_number(input.number);
-        output.options = Some(self.enum_value_options(&input.options, path_in_file)?).into();
+        output.options = Some(self.enum_value_options(scope, &input.options)?).into();
         Ok(output)
     }
 
     fn enum_options(
         &self,
+        scope: &ProtobufAbsolutePath,
         input: &[model::ProtobufOption],
-        path_in_file: &ProtobufRelativePath,
     ) -> ConvertResult<protobuf::descriptor::EnumOptions> {
-        self.custom_options(input, path_in_file)
+        self.custom_options(scope, input)
     }
 
     fn enum_value_options(
         &self,
+        scope: &ProtobufAbsolutePath,
         input: &[model::ProtobufOption],
-        path_in_file: &ProtobufRelativePath,
     ) -> ConvertResult<protobuf::descriptor::EnumValueOptions> {
-        self.custom_options(input, path_in_file)
+        self.custom_options(scope, input)
     }
 
     fn enumeration(
         &self,
+        scope: &ProtobufAbsolutePath,
         input: &model::Enumeration,
-        path_in_file: &ProtobufRelativePath,
     ) -> ConvertResult<protobuf::descriptor::EnumDescriptorProto> {
         let mut output = protobuf::descriptor::EnumDescriptorProto::new();
         output.set_name(input.name.clone());
         output.value = input
             .values
             .iter()
-            .map(|v| self.enum_value(&v, path_in_file))
+            .map(|v| self.enum_value(scope, &v))
             .collect::<Result<_, _>>()?;
-        output.options = Some(self.enum_options(&input.options, path_in_file)?).into();
+        output.options = Some(self.enum_options(scope, &input.options)?).into();
         Ok(output)
     }
 
     fn oneof_options(
         &self,
+        scope: &ProtobufAbsolutePath,
         input: &[model::ProtobufOption],
-        path_in_file: &ProtobufRelativePath,
     ) -> ConvertResult<protobuf::descriptor::OneofOptions> {
-        self.custom_options(input, path_in_file)
+        self.custom_options(scope, input)
     }
 
     fn oneof(
         &self,
+        scope: &ProtobufAbsolutePath,
         input: &model::OneOf,
-        path_in_file: &ProtobufRelativePath,
     ) -> ConvertResult<protobuf::descriptor::OneofDescriptorProto> {
         let mut output = protobuf::descriptor::OneofDescriptorProto::new();
         output.set_name(input.name.clone());
-        output.options = Some(self.oneof_options(&input.options, path_in_file)?).into();
+        output.options = Some(self.oneof_options(scope, &input.options)?).into();
         Ok(output)
     }
 
@@ -1053,29 +1020,15 @@ impl<'a> Resolver<'a> {
         Err(ConvertError::ExtensionNotFound(path.to_string()))
     }
 
-    fn option_value_to_unknown_value_leg(
-        &self,
-        value: &model::ProtobufConstant,
-        name: &str,
-        field_type: &model::FieldType,
-        option_name_for_diag: &str,
-        path_in_file: &ProtobufRelativePath,
-    ) -> ConvertResult<UnknownValue> {
-        let mut scope = self.current_file.package.clone();
-        scope.push_relative(path_in_file);
-
-        self.option_value_to_unknown_value(value, name, field_type, option_name_for_diag, &scope)
-    }
-
     fn option_value_to_unknown_value(
         &self,
+        scope: &ProtobufAbsolutePath,
         value: &model::ProtobufConstant,
         name: &str,
         field_type: &model::FieldType,
         option_name_for_diag: &str,
-        scope: &ProtobufAbsolutePath,
     ) -> ConvertResult<UnknownValue> {
-        let field_type = self.field_type(name, field_type, &scope)?;
+        let field_type = self.field_type(&scope, name, field_type)?;
 
         match value {
             &model::ProtobufConstant::Bool(b) => {
@@ -1170,11 +1123,11 @@ impl<'a> Resolver<'a> {
                             None => return Err(ConvertError::UnknownFieldName(n.clone())),
                         };
                         let u = self.option_value_to_unknown_value(
+                            ma,
                             v,
                             n,
                             &f.typ,
                             option_name_for_diag,
-                            ma,
                         )?;
                         unknown_fields.add_value(f.number as u32, u);
                     }
@@ -1203,10 +1156,10 @@ impl<'a> Resolver<'a> {
 
     fn file_options(
         &self,
+        scope: &ProtobufAbsolutePath,
         input: &[model::ProtobufOption],
-        path_in_file: &ProtobufRelativePath,
     ) -> ConvertResult<protobuf::descriptor::FileOptions> {
-        self.custom_options(input, path_in_file)
+        self.custom_options(scope, input)
     }
 
     fn extension(
@@ -1216,15 +1169,11 @@ impl<'a> Resolver<'a> {
         protobuf::descriptor::FieldDescriptorProto,
         Option<protobuf::descriptor::DescriptorProto>,
     )> {
-        let relative_path = ProtobufRelativePath::new("".to_owned());
-        let mut field = self.field(&input.field, None, &relative_path)?;
-        field.set_extendee(
-            self.resolve_message_or_enum_leg(&input.extendee, &relative_path)?
-                .0
-                .path,
-        );
+        let scope = &self.current_file.package;
+        let mut field = self.field(scope, &input.field, None)?;
+        field.set_extendee(self.resolve_message_or_enum(scope, &input.extendee)?.0.path);
         let group_messages = if let model::FieldType::Group(g) = &input.field.t.typ {
-            Some(self.group_message(&g.name, &g.fields, &ProtobufRelativePath::empty())?)
+            Some(self.group_message(scope, &g.name, &g.fields)?)
         } else {
             None
         };
@@ -1294,7 +1243,7 @@ pub(crate) fn file_descriptor(
     output.extension = extensions;
 
     for m in &input.messages {
-        let message = resolver.message(&m.t, &ProtobufRelativePath::empty())?;
+        let message = resolver.message(&resolver.current_file.package, &m.t)?;
         messages.push(model::WithLoc {
             t: message,
             loc: m.loc,
@@ -1319,7 +1268,7 @@ pub(crate) fn file_descriptor(
     output.enum_type = input
         .enums
         .iter()
-        .map(|e| resolver.enumeration(e, &ProtobufRelativePath::empty()))
+        .map(|e| resolver.enumeration(&resolver.current_file.package, e))
         .collect::<Result<_, _>>()?;
 
     output.service = services
@@ -1328,7 +1277,7 @@ pub(crate) fn file_descriptor(
         .collect();
 
     output.options =
-        Some(resolver.file_options(&input.options, &ProtobufRelativePath::empty())?).into();
+        Some(resolver.file_options(&resolver.current_file.package, &input.options)?).into();
 
     Ok(output)
 }
