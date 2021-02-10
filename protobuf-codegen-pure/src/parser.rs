@@ -11,7 +11,10 @@ use crate::model::*;
 use protobuf::text_format::lexer::int;
 use protobuf::text_format::lexer::Tokenizer;
 use protobuf::text_format::lexer::TokenizerError;
+use protobuf_codegen::ProtobufAbsolutePath;
 use protobuf_codegen::ProtobufIdent;
+use protobuf_codegen::ProtobufPath;
+use protobuf_codegen::ProtobufRelativePath;
 
 /// Basic information about parsing error.
 #[derive(Debug)]
@@ -275,7 +278,7 @@ impl<'a> Parser<'a> {
     // Protobuf grammar
 
     // fullIdent = ident { "." ident }
-    fn next_full_ident(&mut self) -> ParserResult<String> {
+    fn next_full_ident(&mut self) -> ParserResult<ProtobufPath> {
         let mut full_ident = String::new();
         // https://github.com/google/protobuf/issues/4563
         if self.tokenizer.next_symbol_if_eq('.')? {
@@ -286,7 +289,18 @@ impl<'a> Parser<'a> {
             full_ident.push('.');
             full_ident.push_str(&self.tokenizer.next_ident()?);
         }
-        Ok(full_ident)
+        Ok(ProtobufPath::new(full_ident))
+    }
+
+    // fullIdent = ident { "." ident }
+    fn next_full_ident_rel(&mut self) -> ParserResult<ProtobufRelativePath> {
+        let mut full_ident = String::new();
+        full_ident.push_str(&self.tokenizer.next_ident()?);
+        while self.tokenizer.next_symbol_if_eq('.')? {
+            full_ident.push('.');
+            full_ident.push_str(&self.tokenizer.next_ident()?);
+        }
+        Ok(ProtobufRelativePath::new(full_ident))
     }
 
     // emptyStatement = ";"
@@ -355,7 +369,7 @@ impl<'a> Parser<'a> {
                 let n = self.next_full_ident()?;
                 self.tokenizer.next_symbol_expect_eq(']')?;
                 let v = self.next_message_constant()?;
-                r.extensions.insert(n, v);
+                r.extensions.insert(format!("{}", n), v);
             } else {
                 let n = self.tokenizer.next_ident()?;
                 let v = if self.tokenizer.next_symbol_if_eq(':')? {
@@ -462,11 +476,11 @@ impl<'a> Parser<'a> {
     // Package
 
     // package = "package" fullIdent ";"
-    fn next_package_opt(&mut self) -> ParserResult<Option<String>> {
+    fn next_package_opt(&mut self) -> ParserResult<Option<ProtobufAbsolutePath>> {
         if self.tokenizer.next_ident_if_eq("package")? {
-            let package = self.next_full_ident()?;
+            let package = self.next_full_ident_rel()?;
             self.tokenizer.next_symbol_expect_eq(';')?;
-            Ok(Some(package))
+            Ok(Some(package.into_absolute()))
         } else {
             Ok(None)
         }
@@ -480,10 +494,9 @@ impl<'a> Parser<'a> {
 
     fn next_option_name_component(&mut self) -> ParserResult<ProtobufOptionNameComponent> {
         if self.tokenizer.next_symbol_if_eq('(')? {
-            let mut ext = String::new();
-            ext.push_str(&self.next_full_ident()?);
+            let comp = self.next_full_ident()?;
             self.tokenizer.next_symbol_expect_eq(')')?;
-            Ok(ProtobufOptionNameComponent::Ext(ext))
+            Ok(ProtobufOptionNameComponent::Ext(comp))
         } else {
             Ok(ProtobufOptionNameComponent::Direct(self.next_ident()?))
         }
@@ -645,7 +658,7 @@ impl<'a> Parser<'a> {
                 // https://git.io/JvxAP
                 name: name.to_ascii_lowercase(),
                 rule,
-                typ: FieldType::Group(Group { name: name, fields }),
+                typ: FieldType::Group(Group { name, fields }),
                 number,
                 options: Vec::new(),
             };
@@ -1164,7 +1177,7 @@ impl<'a> Parser<'a> {
         self.syntax = syntax;
 
         let mut imports = Vec::new();
-        let mut package = None;
+        let mut package = ProtobufAbsolutePath::root();
         let mut messages = Vec::new();
         let mut enums = Vec::new();
         let mut extensions = Vec::new();
@@ -1178,7 +1191,7 @@ impl<'a> Parser<'a> {
             }
 
             if let Some(next_package) = self.next_package_opt()? {
-                package = Some(next_package);
+                package = next_package;
                 continue;
             }
 
@@ -1349,31 +1362,6 @@ mod test {
             vec!["test_import_nested_imported_pb.proto"],
             desc.imports.into_iter().map(|i| i.path).collect::<Vec<_>>()
         );
-    }
-
-    #[test]
-    fn test_package() {
-        let msg = r#"
-        package foo.bar;
-
-    message ContainsImportedNested {
-        optional ContainerForNested.NestedMessage m = 1;
-        optional ContainerForNested.NestedEnum e = 2;
-    }
-    "#;
-        let desc = parse(msg, |p| p.next_proto());
-        assert_eq!(Some("foo.bar".to_string()), desc.package);
-    }
-
-    #[test]
-    fn test_no_package() {
-        let msg = r#"
-    message A {
-        optional int32 a = 1;
-    }
-    "#;
-        let desc = parse(msg, |p| p.next_proto());
-        assert_eq!(None, desc.package);
     }
 
     #[test]

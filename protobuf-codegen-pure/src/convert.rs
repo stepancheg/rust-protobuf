@@ -26,6 +26,8 @@ use protobuf::descriptor::field_descriptor_proto::Type;
 use protobuf::reflect::RuntimeTypeBox;
 use protobuf::text_format::lexer::StrLitDecodeError;
 use protobuf::text_format::quote_bytes_to;
+use protobuf_codegen::ProtobufPath;
+use std::ops::Deref;
 
 #[derive(Debug)]
 pub enum ConvertError {
@@ -167,9 +169,7 @@ enum LookupScope<'a> {
 impl<'a> LookupScope<'a> {
     fn current_path(&self) -> ProtobufAbsolutePath {
         match self {
-            LookupScope::File(f) => {
-                ProtobufAbsolutePath::from_package_path(f.package.as_ref().map(|s| s.as_ref()))
-            }
+            LookupScope::File(f) => f.package.clone(),
             LookupScope::Message(_, p) => p.clone(),
         }
     }
@@ -741,10 +741,10 @@ impl<'a> Resolver<'a> {
         iter::once(self.current_file).chain(self.deps).collect()
     }
 
-    fn package_files(&self, package: Option<&str>) -> Vec<&model::FileDescriptor> {
+    fn package_files(&self, package: &ProtobufAbsolutePath) -> Vec<&model::FileDescriptor> {
         self.all_files()
             .into_iter()
-            .filter(|f| f.package.as_deref() == package)
+            .filter(|f| &f.package == package)
             .collect()
     }
 
@@ -753,8 +753,7 @@ impl<'a> Resolver<'a> {
         absolute_path: &ProtobufAbsolutePath,
     ) -> ConvertResult<MessageOrEnum<'a>> {
         for file in self.all_files() {
-            let file_package = ProtobufAbsolutePath::from_package_path(file.package.as_deref());
-            if let Some(relative) = absolute_path.remove_prefix(&file_package) {
+            if let Some(relative) = absolute_path.remove_prefix(&file.package) {
                 if let Some((_, t)) = LookupScope::File(file).find_message_or_enum(&relative) {
                     return Ok(t);
                 }
@@ -816,9 +815,7 @@ impl<'a> Resolver<'a> {
         name: &str,
         path_in_file: &ProtobufRelativePath,
     ) -> ConvertResult<(ProtobufAbsolutePath, MessageOrEnum)> {
-        let mut scope = ProtobufAbsolutePath::from_package_path(
-            self.current_file.package.as_ref().map(|s| s.as_str()),
-        );
+        let mut scope = self.current_file.package.clone();
         scope.push_relative(path_in_file);
         self.resolve_message_or_enum(name, &scope)
     }
@@ -874,8 +871,7 @@ impl<'a> Resolver<'a> {
         input: &model::FieldType,
         path_in_file: &ProtobufRelativePath,
     ) -> ConvertResult<TypeResolved> {
-        let mut scope =
-            ProtobufAbsolutePath::from_package_path(self.current_file.package.as_deref());
+        let mut scope = self.current_file.package.clone();
         scope.push_relative(path_in_file);
         self.field_type(name, input, &scope)
     }
@@ -966,11 +962,17 @@ impl<'a> Resolver<'a> {
 
     fn find_extension_by_path(&self, path: &str) -> ConvertResult<&model::Extension> {
         let (package, name) = match path.rfind('.') {
-            Some(dot) => (Some(&path[..dot]), &path[dot + 1..]),
-            None => (self.current_file.package.as_deref(), path),
+            Some(dot) => {
+                // TODO: resolve against proper package
+                (
+                    ProtobufPath::new(&path[..dot]).resolve(&ProtobufAbsolutePath::root()),
+                    &path[dot + 1..],
+                )
+            }
+            None => (self.current_file.package.clone(), path),
         };
 
-        for file in self.package_files(package) {
+        for file in self.package_files(&package) {
             for ext in &file.extensions {
                 if ext.t.field.t.name == name {
                     return Ok(&ext.t);
@@ -997,9 +999,7 @@ impl<'a> Resolver<'a> {
         option_name_for_diag: &str,
         path_in_file: &ProtobufRelativePath,
     ) -> ConvertResult<UnknownValue> {
-        let mut scope = ProtobufAbsolutePath::from_package_path(
-            self.current_file.package.as_ref().map(|s| s.as_ref()),
-        );
+        let mut scope = self.current_file.package.clone();
         scope.push_relative(path_in_file);
 
         self.option_value_to_unknown_value(value, name, field_type, option_name_for_diag, &scope)
@@ -1085,9 +1085,14 @@ impl<'a> Resolver<'a> {
             model::ProtobufConstant::Ident(ident) => match &field_type {
                 TypeResolved::Enum(e) => {
                     let e = self.find_enum_by_abs_name(e)?;
-                    let n = match e.values.iter().find(|v| v.name == *ident).map(|v| v.number) {
+                    let n = match e
+                        .values
+                        .iter()
+                        .find(|v| v.name == ident.deref())
+                        .map(|v| v.number)
+                    {
                         Some(n) => n,
-                        None => return Err(ConvertError::UnknownEnumValue(ident.clone())),
+                        None => return Err(ConvertError::UnknownEnumValue(ident.to_string())),
                     };
                     return Ok(UnknownValue::int32(n));
                 }
@@ -1200,8 +1205,8 @@ pub fn file_descriptor(
     output.set_name(fs_path_to_proto_path(name));
     output.set_syntax(syntax(input.syntax));
 
-    if let Some(package) = &input.package {
-        output.set_package(package.clone());
+    if input.package != ProtobufAbsolutePath::root() {
+        output.set_package(input.package.to_rel().to_string());
     }
 
     for import in &input.imports {

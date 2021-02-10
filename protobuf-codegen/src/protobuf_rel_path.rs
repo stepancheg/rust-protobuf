@@ -1,6 +1,7 @@
 use crate::ProtobufAbsolutePath;
 use crate::ProtobufIdent;
 use std::fmt;
+use std::ops::Deref;
 
 impl From<String> for ProtobufRelativePath {
     fn from(s: String) -> ProtobufRelativePath {
@@ -25,7 +26,8 @@ impl ProtobufRelativePath {
         ProtobufRelativePath::new(String::new())
     }
 
-    pub fn new(path: String) -> ProtobufRelativePath {
+    pub fn new<S: Into<String>>(path: S) -> ProtobufRelativePath {
+        let path = path.into();
         assert!(!path.starts_with("."));
 
         ProtobufRelativePath { path }
@@ -42,6 +44,10 @@ impl ProtobufRelativePath {
 
     pub fn is_empty(&self) -> bool {
         self.path.is_empty()
+    }
+
+    pub fn to_absolute(&self) -> ProtobufAbsolutePath {
+        self.clone().into_absolute()
     }
 
     pub fn into_absolute(self) -> ProtobufAbsolutePath {
@@ -126,6 +132,14 @@ impl ProtobufRelativePath {
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
 pub struct ProtobufRelativePath {
     pub path: String,
+}
+
+impl Deref for ProtobufRelativePath {
+    type Target = str;
+
+    fn deref(&self) -> &Self::Target {
+        &self.path
+    }
 }
 
 impl From<ProtobufIdent> for ProtobufRelativePath {

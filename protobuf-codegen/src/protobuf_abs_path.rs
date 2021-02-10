@@ -1,10 +1,25 @@
 use crate::protobuf_ident::ProtobufIdent;
 use crate::ProtobufRelativePath;
 use std::fmt;
+use std::ops::Deref;
 
 #[derive(Clone, Eq, PartialEq, Debug, Hash)]
 pub struct ProtobufAbsolutePath {
     pub path: String,
+}
+
+impl Default for ProtobufAbsolutePath {
+    fn default() -> ProtobufAbsolutePath {
+        ProtobufAbsolutePath::root()
+    }
+}
+
+impl Deref for ProtobufAbsolutePath {
+    type Target = str;
+
+    fn deref(&self) -> &str {
+        &self.path
+    }
 }
 
 impl ProtobufAbsolutePath {
@@ -17,8 +32,13 @@ impl ProtobufAbsolutePath {
         path.is_empty() || path.starts_with(".")
     }
 
-    pub fn new(path: String) -> ProtobufAbsolutePath {
-        assert!(ProtobufAbsolutePath::is_abs(&path), path);
+    pub fn new<S: Into<String>>(path: S) -> ProtobufAbsolutePath {
+        let path = path.into();
+        assert!(
+            ProtobufAbsolutePath::is_abs(&path),
+            "path is not absolute: `{}`",
+            path
+        );
         assert!(!path.ends_with("."), path);
         ProtobufAbsolutePath { path }
     }
@@ -100,6 +120,14 @@ impl ProtobufAbsolutePath {
         }
 
         r
+    }
+
+    pub fn to_rel(&self) -> ProtobufRelativePath {
+        if self == &Self::root() {
+            ProtobufRelativePath::empty()
+        } else {
+            ProtobufRelativePath::new(&self.path[1..])
+        }
     }
 }
 

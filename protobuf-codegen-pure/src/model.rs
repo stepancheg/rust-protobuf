@@ -18,7 +18,9 @@ pub use crate::parser::ParserErrorWithLocation;
 use protobuf::reflect::ReflectValueBox;
 use protobuf::reflect::RuntimeTypeBox;
 use protobuf::text_format::lexer::float::format_protobuf_float;
+use protobuf_codegen::ProtobufAbsolutePath;
 use protobuf_codegen::ProtobufIdent;
+use protobuf_codegen::ProtobufPath;
 use std::fmt;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -345,13 +347,15 @@ pub struct ProtobufConstantMessage {
     pub extensions: LinkedHashMap<String, ProtobufConstantMessage>,
 }
 
+/// constant = fullIdent | ( [ "-" | "+" ] intLit ) | ( [ "-" | "+" ] floatLit ) |
+//                 strLit | boolLit
 #[derive(Debug, Clone, PartialEq)]
 pub enum ProtobufConstant {
     U64(u64),
     I64(i64),
     F64(f64), // TODO: eq
     Bool(bool),
-    Ident(String),
+    Ident(ProtobufPath),
     String(StrLit),
     Message(ProtobufConstantMessage),
 }
@@ -393,7 +397,7 @@ impl ProtobufConstant {
             ProtobufConstant::I64(i) => i.to_string(),
             ProtobufConstant::F64(f) => float::format_protobuf_float(f),
             ProtobufConstant::Bool(b) => b.to_string(),
-            ProtobufConstant::Ident(ref i) => i.clone(),
+            ProtobufConstant::Ident(ref i) => format!("{}", i),
             ProtobufConstant::String(ref s) => s.quoted(),
             ProtobufConstant::Message(ref s) => s.format(),
         }
@@ -403,7 +407,7 @@ impl ProtobufConstant {
     pub fn as_type(&self, ty: RuntimeTypeBox) -> ConvertResult<ReflectValueBox> {
         match (self, &ty) {
             (ProtobufConstant::Ident(ident), RuntimeTypeBox::Enum(e)) => {
-                if let Some(v) = e.get_value_by_name(ident) {
+                if let Some(v) = e.get_value_by_name(&ident.to_string()) {
                     return Ok(ReflectValueBox::Enum(e.clone(), v.value()));
                 }
             }
@@ -422,7 +426,7 @@ impl ProtobufConstant {
 #[derive(Debug, Clone, PartialEq)]
 pub enum ProtobufOptionNameComponent {
     Direct(ProtobufIdent),
-    Ext(String),
+    Ext(ProtobufPath),
 }
 
 impl fmt::Display for ProtobufOptionNameComponent {
@@ -510,7 +514,7 @@ pub struct FileDescriptor {
     /// Imports
     pub imports: Vec<Import>,
     /// Package
-    pub package: Option<String>,
+    pub package: ProtobufAbsolutePath,
     /// Protobuf Syntax
     pub syntax: Syntax,
     /// Top level messages
