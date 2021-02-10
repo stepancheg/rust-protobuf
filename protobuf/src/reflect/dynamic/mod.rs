@@ -6,7 +6,6 @@ use crate::reflect::dynamic::repeated::DynamicRepeated;
 use crate::reflect::map::ReflectMap;
 use crate::reflect::repeated::ReflectRepeated;
 use crate::reflect::value::value_ref::ReflectValueMut;
-use crate::reflect::FieldDescriptor;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectFieldRef;
 use crate::reflect::ReflectMapMut;
@@ -15,12 +14,16 @@ use crate::reflect::ReflectRepeatedMut;
 use crate::reflect::ReflectRepeatedRef;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::RuntimeFieldType;
+use crate::reflect::{FieldDescriptor, RuntimeTypeBox};
 use crate::Clear;
 use crate::CodedInputStream;
 use crate::CodedOutputStream;
 use crate::Message;
 use crate::ProtobufResult;
 use crate::UnknownFields;
+use std::convert::TryInto;
+
+use super::EnumValueDescriptor;
 
 pub(crate) mod map;
 pub(crate) mod optional;
@@ -180,6 +183,7 @@ impl Clear for DynamicMessage {
     }
 }
 
+// TODO: Dixeran impl this
 impl Message for DynamicMessage {
     fn descriptor_by_instance(&self) -> MessageDescriptor {
         self.descriptor.clone()
@@ -189,8 +193,46 @@ impl Message for DynamicMessage {
         unimplemented!()
     }
 
-    fn merge_from(&mut self, _is: &mut CodedInputStream) -> ProtobufResult<()> {
-        unimplemented!()
+    fn merge_from(&mut self, is: &mut CodedInputStream) -> ProtobufResult<()> {
+        let desc = self.descriptor.clone();
+
+        while !is.eof()? {
+            let (field, _) = is.read_tag_unpack()?;
+            let field_desc = desc
+                .get_field_by_number(field)
+                .expect("Invalid field number at decoding");
+            match field_desc.runtime_field_type() {
+                RuntimeFieldType::Singular(rtb) => {
+                    let val = match rtb {
+                        RuntimeTypeBox::I32 => ReflectValueBox::from(is.read_int32()?),
+                        RuntimeTypeBox::I64 => ReflectValueBox::from(is.read_int64()?),
+                        RuntimeTypeBox::U32 => ReflectValueBox::from(is.read_uint32()?),
+                        RuntimeTypeBox::U64 => ReflectValueBox::from(is.read_uint64()?),
+                        RuntimeTypeBox::F32 => ReflectValueBox::from(is.read_float()?),
+                        RuntimeTypeBox::F64 => ReflectValueBox::from(is.read_double()?),
+                        RuntimeTypeBox::Bool => ReflectValueBox::from(is.read_bool()?),
+                        RuntimeTypeBox::String => ReflectValueBox::from(is.read_string()?),
+                        RuntimeTypeBox::VecU8 => ReflectValueBox::from(is.read_bytes()?),
+                        RuntimeTypeBox::Enum(enum_desc) => {
+                            let enum_num = is.read_int32()?;
+                            ReflectValueBox::from(EnumValueDescriptor::new(
+                                enum_desc,
+                                enum_num.try_into().unwrap(), // FIXME: might unsatisfied
+                            ))
+                        }
+                        RuntimeTypeBox::Message(msg_desc) => {
+                            let mut msg_inst = msg_desc.new_instance();
+                            is.merge_message(msg_inst.as_mut()).expect("merge sub message failed");
+                            ReflectValueBox::from(msg_inst)
+                        }
+                    };
+                    self.set_field(&field_desc, val);
+                }
+                RuntimeFieldType::Repeated(_) => {}
+                RuntimeFieldType::Map(_, _) => {}
+            }
+        }
+        Ok(())
     }
 
     fn write_to_with_cached_sizes(&self, _os: &mut CodedOutputStream) -> ProtobufResult<()> {
