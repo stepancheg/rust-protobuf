@@ -820,34 +820,31 @@ impl<'a> Resolver<'a> {
 
     fn resolve_message_or_enum(
         &self,
-        name: &str,
+        name: &ProtobufPath,
         scope: &ProtobufAbsolutePath,
     ) -> ConvertResult<(ProtobufAbsolutePath, MessageOrEnum)> {
-        if ProtobufAbsolutePath::is_abs(name) && !name.is_empty() {
-            let abs_path = ProtobufAbsolutePath::new(name.to_owned());
-            return Ok((
-                abs_path.clone(),
-                self.find_message_or_enum_by_abs_name(&abs_path)?,
-            ));
-        } else {
-            let name = ProtobufRelativePath::from(name);
-
-            // find message or enum in current package
-            for p in scope.self_and_parents() {
-                let mut fq = p;
-                fq.push_relative(&name);
-                if let Ok(me) = self.find_message_or_enum_by_abs_name(&fq) {
-                    return Ok((fq, me));
-                }
+        match name {
+            ProtobufPath::Abs(name) => {
+                return Ok((name.clone(), self.find_message_or_enum_by_abs_name(&name)?));
             }
+            ProtobufPath::Rel(name) => {
+                // find message or enum in current package
+                for p in scope.self_and_parents() {
+                    let mut fq = p;
+                    fq.push_relative(&name);
+                    if let Ok(me) = self.find_message_or_enum_by_abs_name(&fq) {
+                        return Ok((fq, me));
+                    }
+                }
 
-            return Err(ConvertError::NotFoundByRelPath(name, scope.clone()));
+                return Err(ConvertError::NotFoundByRelPath(name.clone(), scope.clone()));
+            }
         }
     }
 
     fn resolve_message_or_enum_leg(
         &self,
-        name: &str,
+        name: &ProtobufPath,
         path_in_file: &ProtobufRelativePath,
     ) -> ConvertResult<(ProtobufAbsolutePath, MessageOrEnum)> {
         let mut scope = self.current_file.package.clone();
