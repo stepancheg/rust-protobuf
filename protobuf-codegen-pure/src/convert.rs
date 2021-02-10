@@ -825,7 +825,7 @@ impl<'a> Resolver<'a> {
     ) -> ConvertResult<(ProtobufAbsolutePath, MessageOrEnum)> {
         match name {
             ProtobufPath::Abs(name) => {
-                return Ok((name.clone(), self.find_message_or_enum_by_abs_name(&name)?));
+                Ok((name.clone(), self.find_message_or_enum_by_abs_name(&name)?))
             }
             ProtobufPath::Rel(name) => {
                 // find message or enum in current package
@@ -837,7 +837,7 @@ impl<'a> Resolver<'a> {
                     }
                 }
 
-                return Err(ConvertError::NotFoundByRelPath(name.clone(), scope.clone()));
+                Err(ConvertError::NotFoundByRelPath(name.clone(), scope.clone()))
             }
         }
     }
