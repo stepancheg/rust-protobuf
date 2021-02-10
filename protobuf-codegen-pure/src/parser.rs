@@ -316,17 +316,8 @@ impl<'a> Parser<'a> {
     // enumName = ident
     // messageType = [ "." ] { ident "." } messageName
     // enumType = [ "." ] { ident "." } enumName
-    fn next_message_or_enum_type(&mut self) -> ParserResult<String> {
-        let mut full_name = String::new();
-        if self.tokenizer.next_symbol_if_eq('.')? {
-            full_name.push('.');
-        }
-        full_name.push_str(&self.tokenizer.next_ident()?);
-        while self.tokenizer.next_symbol_if_eq('.')? {
-            full_name.push('.');
-            full_name.push_str(&self.tokenizer.next_ident()?);
-        }
-        Ok(full_name)
+    fn next_message_or_enum_type(&mut self) -> ParserResult<ProtobufPath> {
+        self.next_full_ident()
     }
 
     // groupName = capitalLetter { letter | decimalDigit | "_" }
@@ -1070,9 +1061,9 @@ impl<'a> Parser<'a> {
         if self.tokenizer.next_ident_if_eq("stream")? {
             let name = self.tokenizer.next_ident()?;
             self.tokenizer.next_symbol_expect_eq('(')?;
-            let input_type = self.tokenizer.next_ident()?;
+            let input_type = self.next_message_or_enum_type()?;
             self.tokenizer.next_symbol_expect_eq(',')?;
-            let output_type = self.tokenizer.next_ident()?;
+            let output_type = self.next_message_or_enum_type()?;
             self.tokenizer.next_symbol_expect_eq(')')?;
             let options = self.next_options_or_colon()?;
             Ok(Some(Method {
@@ -1524,31 +1515,5 @@ mod test {
 
         let err = FileDescriptor::parse(msg).err().expect("err");
         assert_eq!(4, err.line);
-    }
-
-    #[test]
-    fn test_extend() {
-        let proto = r#"
-            syntax = "proto2";
-
-            extend google.protobuf.FileOptions {
-                optional bool foo = 17001;
-                optional string bar = 17002;
-            }
-
-            extend google.protobuf.MessageOptions {
-                optional bool baz = 17003;
-            }
-        "#;
-
-        let fd = FileDescriptor::parse(proto).expect("fd");
-        assert_eq!(3, fd.extensions.len());
-        assert_eq!("google.protobuf.FileOptions", fd.extensions[0].t.extendee);
-        assert_eq!("google.protobuf.FileOptions", fd.extensions[1].t.extendee);
-        assert_eq!(
-            "google.protobuf.MessageOptions",
-            fd.extensions[2].t.extendee
-        );
-        assert_eq!(17003, fd.extensions[2].t.field.t.number);
     }
 }

@@ -159,7 +159,7 @@ pub enum FieldType {
     /// Protobut float
     Float,
     /// Protobuf message or enum (holds the name)
-    MessageOrEnum(String),
+    MessageOrEnum(ProtobufPath),
     /// Protobut map
     Map(Box<(FieldType, FieldType)>),
     /// Protobuf group (deprecated)
@@ -310,7 +310,7 @@ pub struct OneOf {
 #[derive(Debug, Clone)]
 pub struct Extension {
     /// Extend this type with field
-    pub extendee: String,
+    pub extendee: ProtobufPath,
     /// Extension field
     pub field: WithLoc<Field>,
 }
@@ -321,9 +321,9 @@ pub struct Method {
     /// Method name
     pub name: String,
     /// Input type
-    pub input_type: String,
+    pub input_type: ProtobufPath,
     /// Output type
-    pub output_type: String,
+    pub output_type: ProtobufPath,
     /// If this method is client streaming
     pub client_streaming: bool,
     /// If this method is server streaming

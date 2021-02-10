@@ -133,7 +133,7 @@ impl Codegen {
 }
 
 #[derive(Clone)]
-struct FileDescriptorPair {
+pub(crate) struct FileDescriptorPair {
     parsed: model::FileDescriptor,
     descriptor: protobuf::descriptor::FileDescriptorProto,
 }
@@ -247,7 +247,7 @@ impl<'a> Run<'a> {
         let mut this_file_deps = LinkedHashMap::new();
         self.get_all_deps_already_parsed(&parsed, &mut this_file_deps);
 
-        let this_file_deps: Vec<_> = this_file_deps.into_iter().map(|(_, v)| v.parsed).collect();
+        let this_file_deps: Vec<_> = this_file_deps.into_iter().map(|(_, v)| v).collect();
 
         let descriptor = convert::file_descriptor(protobuf_path, &parsed, &this_file_deps)
             .map_err(|e| {

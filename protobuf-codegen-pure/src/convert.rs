@@ -5,9 +5,11 @@ use std::path::Path;
 
 use crate::fmt;
 use crate::model;
+use crate::FileDescriptorPair;
 
 use protobuf;
 use protobuf::descriptor::field_descriptor_proto;
+use protobuf::descriptor::FileDescriptorProto;
 use protobuf::json::json_name;
 use protobuf::Message;
 use protobuf::UnknownFields;
@@ -37,7 +39,8 @@ pub enum ConvertError {
     // options, option
     BuiltinOptionPointsToNonSingularField(String, String),
     ExtensionNotFound(String),
-    WrongExtensionType(String, String),
+    // option name, extendee, expected extendee
+    WrongExtensionType(String, String, String),
     UnsupportedExtensionType(String, String, model::ProtobufConstant),
     StrLitDecodeError(StrLitDecodeError),
     DefaultValueIsNotStringLiteral,
@@ -67,9 +70,12 @@ impl fmt::Display for ConvertError {
                 "builtin option {} points to a non-singular field of {}",
                 option, options,
             ),
-            // TODO: what are a, b?
-            ConvertError::WrongExtensionType(a, b) => {
-                write!(f, "wrong extension type: {} {}", a, b)
+            ConvertError::WrongExtensionType(option_name, extendee, expected_extendee) => {
+                write!(
+                    f,
+                    "wrong extension type: option {} extendee {} expected extendee {}",
+                    option_name, extendee, expected_extendee
+                )
             }
             // TODO: what are a, b?
             ConvertError::UnsupportedExtensionType(a, b, c) => {
@@ -313,7 +319,7 @@ impl TypeResolved {
 
 struct Resolver<'a> {
     current_file: &'a model::FileDescriptor,
-    deps: &'a [model::FileDescriptor],
+    deps: &'a [FileDescriptorPair],
 }
 
 impl<'a> Resolver<'a> {
@@ -600,16 +606,19 @@ impl<'a> Resolver<'a> {
     where
         M: Message,
     {
-        let extendee = M::descriptor_static().full_name().to_owned();
+        let extendee = ProtobufRelativePath::new(M::descriptor_static().full_name().to_owned())
+            .into_absolute();
         let extension = match self.find_extension(&option_name.full_name()) {
             Ok(e) => e,
             // TODO: return error
             Err(_) => return Ok(()),
         };
-        if extension.extendee != extendee {
+        // TODO: completely wrong
+        if extension.extendee.resolve(&ProtobufAbsolutePath::root()) != extendee.clone() {
             return Err(ConvertError::WrongExtensionType(
                 format!("{}", option_name),
-                extendee,
+                format!("{}", extension.extendee),
+                format!("{}", extendee),
             ));
         }
 
@@ -738,7 +747,9 @@ impl<'a> Resolver<'a> {
     }
 
     fn all_files(&self) -> Vec<&'a model::FileDescriptor> {
-        iter::once(self.current_file).chain(self.deps).collect()
+        iter::once(self.current_file)
+            .chain(self.deps.iter().map(|p| &p.parsed))
+            .collect()
     }
 
     fn package_files(&self, package: &ProtobufAbsolutePath) -> Vec<&model::FileDescriptor> {
@@ -780,6 +791,30 @@ impl<'a> Resolver<'a> {
         match self.find_message_or_enum_by_abs_name(abs_path)? {
             MessageOrEnum::Enum(e) => Ok(e),
             MessageOrEnum::Message(..) => Err(ConvertError::ExpectingEnum(abs_path.clone())),
+        }
+    }
+
+    fn scope_resolved_candidates_rel(
+        scope: &ProtobufAbsolutePath,
+        rel: &ProtobufRelativePath,
+    ) -> Vec<ProtobufAbsolutePath> {
+        scope
+            .self_and_parents()
+            .into_iter()
+            .map(|mut a| {
+                a.push_relative(rel);
+                a
+            })
+            .collect()
+    }
+
+    fn scope_resolved_candidates(
+        scope: &ProtobufAbsolutePath,
+        path: &ProtobufPath,
+    ) -> Vec<ProtobufAbsolutePath> {
+        match path {
+            ProtobufPath::Abs(p) => vec![p.clone()],
+            ProtobufPath::Rel(p) => Self::scope_resolved_candidates_rel(scope, p),
         }
     }
 
@@ -1192,10 +1227,10 @@ fn label(input: model::Rule) -> protobuf::descriptor::field_descriptor_proto::La
     }
 }
 
-pub fn file_descriptor(
+pub(crate) fn file_descriptor(
     name: &Path,
     input: &model::FileDescriptor,
-    deps: &[model::FileDescriptor],
+    deps: &[FileDescriptorPair],
 ) -> ConvertResult<protobuf::descriptor::FileDescriptorProto> {
     let resolver = Resolver {
         current_file: &input,
@@ -1207,7 +1242,7 @@ pub fn file_descriptor(
     output.set_syntax(syntax(input.syntax));
 
     if input.package != ProtobufAbsolutePath::root() {
-        output.set_package(input.package.to_rel().to_string());
+        output.set_package(input.package.to_root_rel().to_string());
     }
 
     for import in &input.imports {

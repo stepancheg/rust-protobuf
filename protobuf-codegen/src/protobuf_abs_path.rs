@@ -122,7 +122,7 @@ impl ProtobufAbsolutePath {
         r
     }
 
-    pub fn to_rel(&self) -> ProtobufRelativePath {
+    pub fn to_root_rel(&self) -> ProtobufRelativePath {
         if self == &Self::root() {
             ProtobufRelativePath::empty()
         } else {
