@@ -43,6 +43,9 @@ jobs:
             - name: Test all
               run: cargo test --all --all-targets
               shell: bash
+            - name: Test all
+              run: cargo test
+              shell: bash
             - name: cargo doc
               uses: actions-rs/cargo@v1
               with:
@@ -87,6 +90,9 @@ jobs:
               shell: bash
             - name: Test all
               run: cargo test --all --all-targets
+              shell: bash
+            - name: Test all
+              run: cargo test
               shell: bash
             - name: cargo doc
               uses: actions-rs/cargo@v1
@@ -219,6 +225,9 @@ jobs:
               shell: bash
             - name: Test all
               run: cargo test --all --all-targets --all-features
+              shell: bash
+            - name: Test all
+              run: cargo test --all-features
               shell: bash
             - name: cargo doc
               uses: actions-rs/cargo@v1

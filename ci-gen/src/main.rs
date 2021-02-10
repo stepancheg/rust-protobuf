@@ -135,6 +135,12 @@ fn job(channel: RustToolchain, os: Os, features: Features) -> Job {
                 &format!("cargo test --all --all-targets{}", features.flag_suffix()),
             ));
             if os == LINUX {
+                // https://github.com/rust-lang/cargo/issues/6669
+                steps.push(Step::run(
+                    "Test all",
+                    &format!("cargo test{}", features.flag_suffix()),
+                ));
+
                 steps.push(cargo_doc("cargo doc", &features.flag()));
             }
         }
