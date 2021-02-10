@@ -167,10 +167,10 @@ impl dyn MessageDyn {
     /// Downcast `Box<dyn Message>` to specific message type.
     ///
     /// ```
-    /// # use protobuf::Message;
-    /// # fn foo<MyMessage: Message>(message: Box<dyn Message>) {
-    /// let m: Box<dyn Message> = message;
-    /// let m: Box<MyMessage> = Message::downcast_box(m).unwrap();
+    /// # use protobuf::{Message, MessageDyn};
+    /// # fn foo<MyMessage: Message>(message: Box<dyn MessageDyn>) {
+    /// let m: Box<dyn MessageDyn> = message;
+    /// let m: Box<MyMessage> = MessageDyn::downcast_box(m).unwrap();
     /// # }
     /// ```
     pub fn downcast_box<T: Any>(self: Box<dyn MessageDyn>) -> Result<Box<T>, Box<dyn MessageDyn>> {
@@ -187,10 +187,10 @@ impl dyn MessageDyn {
     /// Downcast `&dyn Message` to specific message type.
     ///
     /// ```
-    /// # use protobuf::Message;
-    /// # fn foo<MyMessage: Message>(message: &dyn Message) {
-    /// let m: &dyn Message = message;
-    /// let m: &MyMessage = Message::downcast_ref(m).unwrap();
+    /// # use protobuf::{Message, MessageDyn};
+    /// # fn foo<MyMessage: Message>(message: &dyn MessageDyn) {
+    /// let m: &dyn MessageDyn = message;
+    /// let m: &MyMessage = MessageDyn::downcast_ref(m).unwrap();
     /// # }
     /// ```
     pub fn downcast_ref<'a, M: Message + 'a>(&'a self) -> Option<&'a M> {
@@ -204,10 +204,10 @@ impl dyn MessageDyn {
     /// Downcast `&mut dyn Message` to specific message type.
     ///
     /// ```
-    /// # use protobuf::Message;
-    /// # fn foo<MyMessage: Message>(message: &mut dyn Message) {
-    /// let m: &mut dyn Message = message;
-    /// let m: &mut MyMessage = Message::downcast_mut(m).unwrap();
+    /// # use protobuf::{Message, MessageDyn};
+    /// # fn foo<MyMessage: Message>(message: &mut dyn MessageDyn) {
+    /// let m: &mut dyn MessageDyn = message;
+    /// let m: &mut MyMessage = MessageDyn::downcast_mut(m).unwrap();
     /// # }
     /// ```
     pub fn downcast_mut<'a, M: Message + 'a>(&'a mut self) -> Option<&'a mut M> {

@@ -45,7 +45,7 @@ impl Any {
     /// # use protobuf::ProtobufResult;
     /// use protobuf::well_known_types::Any;
     ///
-    /// # fn the_test(message: &dyn Message) -> ProtobufResult<()> {
+    /// # fn the_test(message: &dyn MessageDyn) -> ProtobufResult<()> {
     /// let message: &dyn MessageDyn = message;
     /// let any = Any::pack_dyn(message)?;
     /// assert!(any.is_dyn(&message.descriptor_dyn()));
