@@ -35,6 +35,8 @@ pub struct Customize {
     /// Used internally to generate protos bundled in protobuf crate
     /// like `descriptor.proto`
     pub inside_protobuf: Option<bool>,
+    /// Generate file descriptor set for dynamic message and reflect
+    pub file_descriptor_set_out: Option<bool>,
 
     // When adding more options please keep in sync with `parse_from_parameter` below.
     /// Make sure `Customize` is always used with `..Default::default()`
@@ -87,6 +89,9 @@ impl Customize {
         if let Some(v) = that.inside_protobuf {
             self.inside_protobuf = Some(v);
         }
+        if let Some(v) = that.file_descriptor_set_out {
+            self.file_descriptor_set_out = Some(v);
+        }
     }
 
     /// Update unset fields of self with fields from other customize
@@ -135,6 +140,8 @@ impl Customize {
                 r.gen_mod_rs = Some(parse_bool(v)?);
             } else if n == "inside_protobuf" {
                 r.inside_protobuf = Some(parse_bool(v)?);
+            } else if n == "file_descriptor_set_out" {
+                r.file_descriptor_set_out = Some(parse_bool(v)?)
             } else {
                 return Err(CustomizeParseParameterError::UnknownOptionName(
                     n.to_owned(),
@@ -157,6 +164,7 @@ pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customiz
     let lite_runtime = None;
     let gen_mod_rs = None;
     let inside_protobuf = None;
+    let file_descriptor_set_out = None;
     Customize {
         expose_oneof,
         expose_fields,
@@ -169,6 +177,7 @@ pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customiz
         lite_runtime,
         gen_mod_rs,
         inside_protobuf,
+        file_descriptor_set_out,
         _future_options: (),
     }
 }
@@ -186,6 +195,7 @@ pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
     let lite_runtime = None;
     let gen_mod_rs = None;
     let inside_protobuf = None;
+    let file_descriptor_set_out = None;
     Customize {
         expose_oneof,
         expose_fields,
@@ -198,6 +208,7 @@ pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
         lite_runtime,
         gen_mod_rs,
         inside_protobuf,
+        file_descriptor_set_out,
         _future_options: (),
     }
 }
@@ -214,6 +225,7 @@ pub fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
     let lite_runtime = rustproto::exts::lite_runtime_all.get(source);
     let gen_mod_rs = None;
     let inside_protobuf = None;
+    let file_descriptor_set_out = None;
     Customize {
         expose_oneof,
         expose_fields,
@@ -226,6 +238,7 @@ pub fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
         lite_runtime,
         inside_protobuf,
         gen_mod_rs,
+        file_descriptor_set_out,
         _future_options: (),
     }
 }

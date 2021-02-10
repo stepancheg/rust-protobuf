@@ -149,7 +149,12 @@ impl Codegen {
         protoc.check()?;
 
         let temp_dir = tempfile::Builder::new().prefix("protoc-rust").tempdir()?;
-        let temp_file = temp_dir.path().join("descriptor.pbbin");
+        let temp_path = if self.customize.file_descriptor_set_out.unwrap_or(false) {
+            &self.out_dir
+        } else {
+            temp_dir.path()
+        };
+        let temp_file = temp_path.join("descriptor.pbbin");
 
         protoc
             .descriptor_set_out_args()
