@@ -985,6 +985,7 @@ impl<'a> Resolver<'a> {
 
     fn find_extension(&self, option_name: &str) -> ConvertResult<&model::Extension> {
         if !option_name.starts_with('(') || !option_name.ends_with(')') {
+            // TODO
             return Err(ConvertError::UnsupportedOption(option_name.to_owned()));
         }
         let path = &option_name[1..option_name.len() - 1];
