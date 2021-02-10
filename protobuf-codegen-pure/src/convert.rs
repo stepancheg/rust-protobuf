@@ -9,7 +9,6 @@ use crate::FileDescriptorPair;
 
 use protobuf;
 use protobuf::descriptor::field_descriptor_proto;
-use protobuf::descriptor::FileDescriptorProto;
 use protobuf::json::json_name;
 use protobuf::Message;
 use protobuf::UnknownFields;
@@ -17,6 +16,7 @@ use protobuf::UnknownValue;
 
 use crate::model::ProtobufConstant;
 use crate::model::ProtobufOptionName;
+use crate::model::ProtobufOptionNameComponent;
 use crate::model::ProtobufOptionNameExt;
 use crate::path::fs_path_to_proto_path;
 use crate::protobuf_codegen::case_convert::camel_case;
@@ -33,7 +33,6 @@ use std::ops::Deref;
 
 #[derive(Debug)]
 pub enum ConvertError {
-    UnsupportedOption(String),
     // options, option
     BuiltinOptionNotFound(String, String),
     // options, option
@@ -58,7 +57,6 @@ pub enum ConvertError {
 impl fmt::Display for ConvertError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            ConvertError::UnsupportedOption(o) => write!(f, "unsupported option: {}", o),
             ConvertError::ExtensionNotFound(e) => write!(f, "extension not found: {}", e),
             ConvertError::BuiltinOptionNotFound(options, option) => write!(
                 f,
@@ -596,6 +594,70 @@ impl<'a> Resolver<'a> {
         }
     }
 
+    fn custom_option_ext_step<M>(
+        &self,
+        path_in_file: &ProtobufRelativePath,
+        options: &mut M,
+        option_name: &ProtobufOptionNameComponent,
+        option_name_rem: &[ProtobufOptionNameComponent],
+        option_value: &ProtobufConstant,
+    ) -> ConvertResult<()>
+    where
+        M: Message,
+    {
+        if !option_name_rem.is_empty() {
+            // TODO: implement
+            return Ok(());
+        }
+
+        match option_name {
+            ProtobufOptionNameComponent::Direct(_) => {
+                // TODO: implement
+                return Ok(());
+            }
+            ProtobufOptionNameComponent::Ext(option_name) => {
+                let mut scope = self.current_file.package.clone();
+                scope.push_relative(&path_in_file);
+                let extendee =
+                    ProtobufRelativePath::new(M::descriptor_static().full_name().to_owned())
+                        .into_absolute();
+                let extension = match self.find_extension_by_path(&scope, option_name) {
+                    Ok(e) => e,
+                    // TODO: return error
+                    Err(_) => return Ok(()),
+                };
+                // TODO: completely wrong
+                if extension.extendee.resolve(&ProtobufAbsolutePath::root()) != extendee.clone() {
+                    return Err(ConvertError::WrongExtensionType(
+                        format!("{}", option_name),
+                        format!("{}", extension.extendee),
+                        format!("{}", extendee),
+                    ));
+                }
+
+                let value = match self.option_value_to_unknown_value_leg(
+                    option_value,
+                    &extension.field.t.name,
+                    &extension.field.t.typ,
+                    &format!("{}", option_name),
+                    path_in_file,
+                ) {
+                    Ok(value) => value,
+                    Err(ConvertError::ConstantsOfTypeMessageEnumGroupNotImplemented) => {
+                        // TODO: return error
+                        return Ok(());
+                    }
+                    Err(e) => return Err(e),
+                };
+
+                options
+                    .mut_unknown_fields()
+                    .add_value(extension.field.t.number as u32, value);
+                Ok(())
+            }
+        }
+    }
+
     fn custom_option_ext<M>(
         &self,
         path_in_file: &ProtobufRelativePath,
@@ -606,41 +668,13 @@ impl<'a> Resolver<'a> {
     where
         M: Message,
     {
-        let extendee = ProtobufRelativePath::new(M::descriptor_static().full_name().to_owned())
-            .into_absolute();
-        let extension = match self.find_extension(&option_name.full_name()) {
-            Ok(e) => e,
-            // TODO: return error
-            Err(_) => return Ok(()),
-        };
-        // TODO: completely wrong
-        if extension.extendee.resolve(&ProtobufAbsolutePath::root()) != extendee.clone() {
-            return Err(ConvertError::WrongExtensionType(
-                format!("{}", option_name),
-                format!("{}", extension.extendee),
-                format!("{}", extendee),
-            ));
-        }
-
-        let value = match self.option_value_to_unknown_value_leg(
-            option_value,
-            &extension.field.t.name,
-            &extension.field.t.typ,
-            &format!("{}", option_name),
+        self.custom_option_ext_step(
             path_in_file,
-        ) {
-            Ok(value) => value,
-            Err(ConvertError::ConstantsOfTypeMessageEnumGroupNotImplemented) => {
-                // TODO: return error
-                return Ok(());
-            }
-            Err(e) => return Err(e),
-        };
-
-        options
-            .mut_unknown_fields()
-            .add_value(extension.field.t.number as u32, value);
-        Ok(())
+            options,
+            &option_name.0[0],
+            &option_name.0[1..],
+            option_value,
+        )
     }
 
     fn custom_option<M>(
@@ -992,36 +1026,31 @@ impl<'a> Resolver<'a> {
         Ok(output)
     }
 
-    fn find_extension_by_path(&self, path: &str) -> ConvertResult<&model::Extension> {
-        let (package, name) = match path.rfind('.') {
-            Some(dot) => {
-                // TODO: resolve against proper package
-                (
-                    ProtobufPath::new(&path[..dot]).resolve(&ProtobufAbsolutePath::root()),
-                    &path[dot + 1..],
-                )
-            }
-            None => (self.current_file.package.clone(), path),
-        };
-
-        for file in self.package_files(&package) {
+    fn find_extension_by_abs_path(&self, path: &ProtobufAbsolutePath) -> Option<&model::Extension> {
+        let mut path = path.clone();
+        let extension = path.pop().unwrap();
+        for file in self.package_files(&path) {
             for ext in &file.extensions {
-                if ext.t.field.t.name == name {
-                    return Ok(&ext.t);
+                if ext.t.field.t.name == extension.get() {
+                    return Some(&ext.t);
                 }
             }
         }
-
-        Err(ConvertError::ExtensionNotFound(path.to_owned()))
+        None
     }
 
-    fn find_extension(&self, option_name: &str) -> ConvertResult<&model::Extension> {
-        if !option_name.starts_with('(') || !option_name.ends_with(')') {
-            // TODO
-            return Err(ConvertError::UnsupportedOption(option_name.to_owned()));
+    fn find_extension_by_path(
+        &self,
+        scope: &ProtobufAbsolutePath,
+        path: &ProtobufPath,
+    ) -> ConvertResult<&model::Extension> {
+        for candidate in Self::scope_resolved_candidates(scope, path) {
+            if let Some(e) = self.find_extension_by_abs_path(&candidate) {
+                return Ok(e);
+            }
         }
-        let path = &option_name[1..option_name.len() - 1];
-        self.find_extension_by_path(path)
+
+        Err(ConvertError::ExtensionNotFound(path.to_string()))
     }
 
     fn option_value_to_unknown_value_leg(

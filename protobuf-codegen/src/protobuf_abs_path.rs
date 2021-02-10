@@ -107,6 +107,18 @@ impl ProtobufAbsolutePath {
         }
     }
 
+    /// Pop the last name component
+    pub fn pop(&mut self) -> Option<ProtobufIdent> {
+        match self.path.rfind('.') {
+            Some(dot) => {
+                let ident = ProtobufIdent::new(&self.path[dot + 1..]);
+                self.path.truncate(dot);
+                Some(ident)
+            }
+            None => None,
+        }
+    }
+
     pub fn self_and_parents(&self) -> Vec<ProtobufAbsolutePath> {
         let mut tmp = self.clone();
 

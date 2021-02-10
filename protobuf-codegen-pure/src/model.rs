@@ -441,13 +441,6 @@ impl fmt::Display for ProtobufOptionNameComponent {
 #[derive(Debug, Clone, PartialEq)]
 pub struct ProtobufOptionNameExt(pub Vec<ProtobufOptionNameComponent>);
 
-impl ProtobufOptionNameExt {
-    // TODO: get rid of it
-    pub fn full_name(&self) -> String {
-        format!("{}", self)
-    }
-}
-
 #[derive(Debug, Clone, PartialEq)]
 pub enum ProtobufOptionName {
     Builtin(ProtobufIdent),
