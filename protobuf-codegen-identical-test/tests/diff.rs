@@ -218,7 +218,7 @@ fn normalize_method(method: &mut MethodDescriptorProto) {
     method.clear_input_type();
     method.clear_output_type();
 
-    method.options.clear();
+    method.options.mut_or_default();
 }
 
 fn normalize_service(service: &mut ServiceDescriptorProto) {
