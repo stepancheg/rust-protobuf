@@ -194,6 +194,9 @@ fn normalize_descriptor(desc: &mut DescriptorProto) {
     // group are not supported
     desc.options.mut_or_default().unknown_fields.remove(7636463);
 
+    // TODO: don't clear options.
+    desc.options.clear();
+
     for field in &mut desc.field {
         normalize_field(field);
     }
@@ -214,10 +217,6 @@ fn normalize_descriptor(desc: &mut DescriptorProto) {
 }
 
 fn normalize_method(method: &mut MethodDescriptorProto) {
-    // TODO: do not clear
-    method.clear_input_type();
-    method.clear_output_type();
-
     method.options.mut_or_default();
 }
 

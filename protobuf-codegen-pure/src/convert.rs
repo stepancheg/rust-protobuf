@@ -633,9 +633,20 @@ impl<'a> Resolver<'a> {
         &self,
         input: &model::Method,
     ) -> ConvertResult<protobuf::descriptor::MethodDescriptorProto> {
+        let scope = &self.current_file.package;
         let mut output = protobuf::descriptor::MethodDescriptorProto::new();
         output.set_name(input.name.clone());
         output.options = Some(self.service_method_options(&input.options)?).into();
+        output.set_input_type(
+            self.resolve_message_or_enum(scope, &input.input_type)?
+                .full_name
+                .to_string(),
+        );
+        output.set_output_type(
+            self.resolve_message_or_enum(scope, &input.output_type)?
+                .full_name
+                .to_string(),
+        );
         Ok(output)
     }
 
