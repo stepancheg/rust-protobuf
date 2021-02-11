@@ -1,7 +1,7 @@
 use std::fmt;
 
 /// Identifier in `.proto` file
-#[derive(Eq, PartialEq, Debug, Clone)]
+#[derive(Eq, PartialEq, Debug, Clone, Hash)]
 pub struct ProtobufIdent(String);
 
 impl From<&'_ str> for ProtobufIdent {

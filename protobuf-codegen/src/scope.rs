@@ -57,7 +57,7 @@ impl<'a> RootScope<'a> {
         &'a self,
         fqn: &ProtobufAbsolutePath,
     ) -> MessageOrEnumWithScope<'a> {
-        assert!(!fqn.is_empty());
+        assert!(!fqn.is_root());
         self.packages()
             .into_iter()
             .flat_map(|p| p.find_message_or_enum_abs(fqn))

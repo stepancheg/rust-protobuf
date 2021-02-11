@@ -78,7 +78,7 @@ impl<'a> MessageGen<'a> {
         info: Option<&'a SourceCodeInfo>,
     ) -> MessageGen<'a> {
         let message_descriptor = file_descriptor
-            .message_by_package_relative_name(message.protobuf_name_to_package().get())
+            .message_by_package_relative_name(&format!("{}", message.protobuf_name_to_package()))
             .unwrap();
 
         let mut customize = customize.clone();

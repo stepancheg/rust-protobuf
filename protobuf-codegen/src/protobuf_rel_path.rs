@@ -1,7 +1,6 @@
 use crate::ProtobufAbsolutePath;
 use crate::ProtobufIdent;
 use std::fmt;
-use std::ops::Deref;
 
 impl From<String> for ProtobufRelativePath {
     fn from(s: String) -> ProtobufRelativePath {
@@ -23,23 +22,23 @@ impl From<&'_ str> for ProtobufRelativePath {
 
 impl ProtobufRelativePath {
     pub fn empty() -> ProtobufRelativePath {
-        ProtobufRelativePath::new(String::new())
+        ProtobufRelativePath { path: Vec::new() }
     }
 
     pub fn new<S: Into<String>>(path: S) -> ProtobufRelativePath {
         let path = path.into();
         assert!(!path.starts_with("."));
-
-        ProtobufRelativePath { path }
+        if path.is_empty() {
+            ProtobufRelativePath::empty()
+        } else {
+            let path = path.split('.').map(ProtobufIdent::new).collect();
+            ProtobufRelativePath { path }
+        }
     }
 
     pub fn from_components<I: IntoIterator<Item = ProtobufIdent>>(i: I) -> ProtobufRelativePath {
         let v: Vec<String> = i.into_iter().map(|c| c.get().to_owned()).collect();
         ProtobufRelativePath::from(v.join("."))
-    }
-
-    pub fn get(&self) -> &str {
-        &self.path
     }
 
     pub fn is_empty(&self) -> bool {
@@ -58,29 +57,13 @@ impl ProtobufRelativePath {
         }
     }
 
-    fn _last_part(&self) -> Option<&str> {
-        match self.path.rfind('.') {
-            Some(pos) => Some(&self.path[pos + 1..]),
-            None => {
-                if self.path.is_empty() {
-                    None
-                } else {
-                    Some(&self.path)
-                }
-            }
-        }
-    }
-
     fn parent(&self) -> Option<ProtobufRelativePath> {
-        match self.path.rfind('.') {
-            Some(pos) => Some(ProtobufRelativePath::new(self.path[..pos].to_owned())),
-            None => {
-                if self.path.is_empty() {
-                    None
-                } else {
-                    Some(ProtobufRelativePath::empty())
-                }
-            }
+        if self.path.is_empty() {
+            None
+        } else {
+            Some(ProtobufRelativePath {
+                path: self.path[..self.path.len() - 1].to_vec(),
+            })
         }
     }
 
@@ -100,11 +83,9 @@ impl ProtobufRelativePath {
     }
 
     pub fn append(&self, simple: &ProtobufRelativePath) -> ProtobufRelativePath {
-        if self.path.is_empty() {
-            ProtobufRelativePath::from(simple.get())
-        } else {
-            ProtobufRelativePath::new(format!("{}.{}", self.path, simple))
-        }
+        let mut path = self.clone();
+        path.path.extend(simple.path.iter().cloned());
+        path
     }
 
     pub fn append_ident(&self, simple: &ProtobufIdent) -> ProtobufRelativePath {
@@ -115,31 +96,23 @@ impl ProtobufRelativePath {
         if self.is_empty() {
             None
         } else {
-            Some(match self.path.find('.') {
-                Some(dot) => (
-                    ProtobufIdent::from(&self.path[..dot]),
-                    ProtobufRelativePath::new(self.path[dot + 1..].to_owned()),
-                ),
-                None => (
-                    ProtobufIdent::from(self.path.clone()),
-                    ProtobufRelativePath::empty(),
-                ),
-            })
+            Some((
+                self.path[0].clone(),
+                ProtobufRelativePath {
+                    path: self.path[1..].to_vec(),
+                },
+            ))
         }
+    }
+
+    pub fn components(&self) -> impl Iterator<Item = &ProtobufIdent> {
+        self.path.iter()
     }
 }
 
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
 pub struct ProtobufRelativePath {
-    pub path: String,
-}
-
-impl Deref for ProtobufRelativePath {
-    type Target = str;
-
-    fn deref(&self) -> &Self::Target {
-        &self.path
-    }
+    path: Vec<ProtobufIdent>,
 }
 
 impl From<ProtobufIdent> for ProtobufRelativePath {
@@ -150,7 +123,13 @@ impl From<ProtobufIdent> for ProtobufRelativePath {
 
 impl fmt::Display for ProtobufRelativePath {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Display::fmt(&self.path, f)
+        for (i, c) in self.path.iter().enumerate() {
+            if i != 0 {
+                write!(f, ".")?;
+            }
+            write!(f, "{}", c)?;
+        }
+        Ok(())
     }
 }
 
@@ -172,23 +151,6 @@ mod test {
         assert_eq!(
             Some(ProtobufRelativePath::new("abc.def".to_owned())),
             ProtobufRelativePath::new("abc.def.gh".to_owned()).parent()
-        );
-    }
-
-    #[test]
-    fn last_part() {
-        assert_eq!(None, ProtobufRelativePath::empty()._last_part());
-        assert_eq!(
-            Some("aaa"),
-            ProtobufRelativePath::new("aaa".to_owned())._last_part()
-        );
-        assert_eq!(
-            Some("def"),
-            ProtobufRelativePath::new("abc.def".to_owned())._last_part()
-        );
-        assert_eq!(
-            Some("gh"),
-            ProtobufRelativePath::new("abc.def.gh".to_owned())._last_part()
         );
     }
 

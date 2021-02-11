@@ -68,7 +68,7 @@ static NAMES: &'static [&'static str] = &[
 ];
 
 fn is_well_known_type(name: &ProtobufRelativePath) -> bool {
-    NAMES.iter().any(|&n| n == name.path)
+    NAMES.iter().any(|&n| n == format!("{}", name))
 }
 
 pub fn is_well_known_type_full(name: &ProtobufAbsolutePath) -> Option<ProtobufRelativePath> {

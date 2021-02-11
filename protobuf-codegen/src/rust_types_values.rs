@@ -552,7 +552,7 @@ pub(crate) fn type_name_to_rust_relative(
     current: &FileAndMod,
     root_scope: &RootScope,
 ) -> RustIdentWithPath {
-    assert!(!type_name.is_empty());
+    assert!(!type_name.is_root());
     let message_or_enum = root_scope.find_message_or_enum(type_name);
     message_or_enum_to_rust_relative(&message_or_enum, current)
 }

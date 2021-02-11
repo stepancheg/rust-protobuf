@@ -43,7 +43,12 @@ impl ProtobufAbsolutePath {
         ProtobufAbsolutePath { path }
     }
 
-    pub fn is_empty(&self) -> bool {
+    pub fn concat(mut a: ProtobufAbsolutePath, b: ProtobufRelativePath) -> ProtobufAbsolutePath {
+        a.push_relative(&b.into());
+        a
+    }
+
+    pub fn is_root(&self) -> bool {
         self.path.is_empty()
     }
 
@@ -70,7 +75,7 @@ impl ProtobufAbsolutePath {
     pub fn push_relative(&mut self, relative: &ProtobufRelativePath) {
         if !relative.is_empty() {
             self.path.push('.');
-            self.path.push_str(&relative.path);
+            self.path.push_str(&format!("{}", relative));
         }
     }
 
@@ -87,7 +92,7 @@ impl ProtobufAbsolutePath {
         None
     }
 
-    fn parent(&self) -> Option<ProtobufAbsolutePath> {
+    pub fn parent(&self) -> Option<ProtobufAbsolutePath> {
         match self.path.rfind('.') {
             Some(pos) => Some(ProtobufAbsolutePath::new(self.path[..pos].to_owned())),
             None => {
@@ -133,6 +138,10 @@ impl ProtobufAbsolutePath {
         } else {
             ProtobufRelativePath::new(&self.path[1..])
         }
+    }
+
+    pub fn starts_with(&self, that: &ProtobufAbsolutePath) -> bool {
+        self.remove_prefix(that).is_some()
     }
 }
 

@@ -9,6 +9,7 @@ use crate::FileDescriptorPair;
 
 use protobuf;
 use protobuf::descriptor::field_descriptor_proto;
+use protobuf::descriptor::DescriptorProto;
 use protobuf::descriptor::FieldDescriptorProto;
 use protobuf::json::json_name;
 use protobuf::Message;
@@ -30,7 +31,6 @@ use protobuf::reflect::RuntimeTypeBox;
 use protobuf::text_format::lexer::StrLitDecodeError;
 use protobuf::text_format::quote_bytes_to;
 use protobuf_codegen::ProtobufPath;
-use std::ops::Deref;
 
 #[derive(Debug)]
 pub enum ConvertError {
@@ -39,6 +39,7 @@ pub enum ConvertError {
     // options, option
     BuiltinOptionPointsToNonSingularField(String, String),
     ExtensionNotFound(String),
+    ExtensionIsNotMessage(String),
     // option name, extendee, expected extendee
     WrongExtensionType(String, String, String),
     UnsupportedExtensionType(String, String, model::ProtobufConstant),
@@ -101,6 +102,9 @@ impl fmt::Display for ConvertError {
             ConvertError::ExpectingEnum(p) => write!(f, "expecting an enum for name {}", p),
             ConvertError::UnknownEnumValue(v) => write!(f, "unknown enum value: {}", v),
             ConvertError::UnknownFieldName(n) => write!(f, "unknown field name: {}", n),
+            ConvertError::ExtensionIsNotMessage(e) => {
+                write!(f, "extension is not a message: {}", e)
+            }
         }
     }
 }
@@ -166,6 +170,12 @@ impl MessageOrEnum<'_> {
     }
 }
 
+pub struct WithFullName<T> {
+    full_name: ProtobufAbsolutePath,
+    t: T,
+}
+
+#[derive(Clone)]
 enum LookupScope<'a> {
     File(&'a model::FileDescriptor),
     Message(&'a model::Message, ProtobufAbsolutePath),
@@ -229,10 +239,21 @@ impl<'a> LookupScope<'a> {
             .next()
     }
 
+    fn down(&self, name: &ProtobufIdent) -> Option<LookupScope<'a>> {
+        match self.find_member(name)? {
+            MessageOrEnum::Enum(_) => return None,
+            MessageOrEnum::Message(m) => {
+                let mut path = self.current_path();
+                path.push_simple(name.clone());
+                Some(LookupScope::Message(m, path))
+            }
+        }
+    }
+
     fn find_message_or_enum(
         &self,
         path: &ProtobufRelativePath,
-    ) -> Option<(ProtobufAbsolutePath, MessageOrEnum<'a>)> {
+    ) -> Option<WithFullName<MessageOrEnum<'a>>> {
         let current_path = self.current_path();
         let (first, rem) = match path.split_first_rem() {
             Some(x) => x,
@@ -244,7 +265,10 @@ impl<'a> LookupScope<'a> {
                 Some(message_or_enum) => {
                     let mut result_path = current_path.clone();
                     result_path.push_simple(first);
-                    Some((result_path, message_or_enum))
+                    Some(WithFullName {
+                        full_name: result_path,
+                        t: message_or_enum,
+                    })
                 }
                 None => None,
             }
@@ -259,6 +283,55 @@ impl<'a> LookupScope<'a> {
                 None => None,
             }
         }
+    }
+
+    fn extensions(&self) -> Vec<&'a model::Extension> {
+        match self {
+            LookupScope::File(f) => f.extensions.iter().map(|e| &e.t).collect(),
+            LookupScope::Message(m, _) => m.extensions.iter().map(|e| &e.t).collect(),
+        }
+    }
+}
+
+#[derive(Clone)]
+struct LookupScopeUnion<'a> {
+    path: ProtobufAbsolutePath,
+    scopes: Vec<LookupScope<'a>>,
+    partial_scopes: Vec<&'a model::FileDescriptor>,
+}
+
+impl<'a> LookupScopeUnion<'a> {
+    fn down(&self, name: &ProtobufIdent) -> LookupScopeUnion<'a> {
+        let mut path: ProtobufAbsolutePath = self.path.clone();
+        path.push_simple(name.clone());
+
+        let mut scopes: Vec<_> = self.scopes.iter().flat_map(|f| f.down(name)).collect();
+        let mut partial_scopes = Vec::new();
+
+        for &partial_scope in &self.partial_scopes {
+            if partial_scope.package == path {
+                scopes.push(LookupScope::File(partial_scope));
+            } else if partial_scope.package.starts_with(&path) {
+                partial_scopes.push(partial_scope);
+            }
+        }
+        LookupScopeUnion {
+            path,
+            scopes,
+            partial_scopes,
+        }
+    }
+
+    fn lookup(&self, path: &ProtobufRelativePath) -> LookupScopeUnion<'a> {
+        let mut scope = self.clone();
+        for c in path.components() {
+            scope = scope.down(c);
+        }
+        scope
+    }
+
+    fn extensions(&self) -> Vec<&'a model::Extension> {
+        self.scopes.iter().flat_map(|s| s.extensions()).collect()
     }
 }
 
@@ -523,7 +596,11 @@ impl<'a> Resolver<'a> {
         }
         for ext in &input.extensions {
             let mut extension = self.field(scope, &ext.t.field, None)?;
-            extension.set_extendee(self.resolve_message_or_enum(scope, &ext.t.extendee)?.0.path);
+            extension.set_extendee(
+                self.resolve_message_or_enum(scope, &ext.t.extendee)?
+                    .full_name
+                    .path,
+            );
             output.extension.push(extension);
         }
 
@@ -619,59 +696,92 @@ impl<'a> Resolver<'a> {
         }
     }
 
-    fn custom_option_ext_step_direct<M>(
-        &self,
-        _scope: &ProtobufAbsolutePath,
-        _options: &mut M,
-        _option_name: &ProtobufIdent,
-        option_name_rem: &[ProtobufOptionNameComponent],
-        _option_value: &ProtobufConstant,
-    ) -> ConvertResult<()>
-    where
-        M: Message,
-    {
-        if !option_name_rem.is_empty() {
-            // TODO: implement
-            return Ok(());
-        }
-
-        // TODO: implement
-        return Ok(());
-    }
-
-    fn custom_option_ext_step_ext<M>(
+    fn ext_resolve_field_ext(
         &self,
         scope: &ProtobufAbsolutePath,
-        options: &mut M,
-        option_name: &ProtobufPath,
-        option_name_rem: &[ProtobufOptionNameComponent],
-        option_value: &ProtobufConstant,
-    ) -> ConvertResult<()>
-    where
-        M: Message,
-    {
-        if !option_name_rem.is_empty() {
-            // TODO: implement
-            return Ok(());
-        }
-
-        let expected_extendee =
-            ProtobufRelativePath::new(M::descriptor_static().full_name().to_owned())
-                .into_absolute();
-        let (extension, field) = match self.find_extension_by_path(scope, option_name) {
-            Ok(e) => e,
-            // TODO: return error
-            Err(_) => return Ok(()),
-        };
-        if ProtobufAbsolutePath::new(field.get_extendee()) != expected_extendee.clone() {
+        message: &WithFullName<&DescriptorProto>,
+        field_name: &ProtobufPath,
+    ) -> ConvertResult<FieldDescriptorProto> {
+        let expected_extendee = &message.full_name;
+        let (_extension, field) = self.find_extension_by_path(scope, field_name)?;
+        if &ProtobufAbsolutePath::new(field.get_extendee()) != expected_extendee {
             return Err(ConvertError::WrongExtensionType(
-                format!("{}", option_name),
-                format!("{}", extension.extendee),
+                format!("{}", field_name),
+                format!("{}", field.get_extendee()),
                 format!("{}", expected_extendee),
             ));
         }
 
+        Ok(field)
+    }
+
+    fn ext_resolve_field(
+        &self,
+        scope: &ProtobufAbsolutePath,
+        message: &WithFullName<&DescriptorProto>,
+        field: &ProtobufOptionNameComponent,
+    ) -> ConvertResult<FieldDescriptorProto> {
+        match field {
+            ProtobufOptionNameComponent::Direct(field) => {
+                match message.t.field.iter().find(|f| f.get_name() == field.get()) {
+                    Some(field) => Ok(field.clone()),
+                    None => Err(ConvertError::UnknownFieldName(field.to_string())),
+                }
+            }
+            ProtobufOptionNameComponent::Ext(field) => {
+                self.ext_resolve_field_ext(scope, message, field)
+            }
+        }
+    }
+
+    fn custom_option_ext_step(
+        &self,
+        scope: &ProtobufAbsolutePath,
+        options_type: &WithFullName<&DescriptorProto>,
+        options: &mut UnknownFields,
+        option_name: &ProtobufOptionNameComponent,
+        option_name_rem: &[ProtobufOptionNameComponent],
+        option_value: &ProtobufConstant,
+    ) -> ConvertResult<()> {
+        let field = self.ext_resolve_field(scope, options_type, option_name)?;
+
         let field_type = TypeResolved::from_field(&field);
+
+        if !option_name_rem.is_empty() {
+            match field_type {
+                TypeResolved::Message(message_name) => {
+                    let m = self.find_message_by_abs_name(&message_name)?;
+                    let message_proto = self.message(&message_name.parent().unwrap(), m.t)?;
+                    let mut unknown_fields = UnknownFields::new();
+                    self.custom_option_ext_step(
+                        scope,
+                        &WithFullName {
+                            full_name: message_name.clone(),
+                            t: &message_proto,
+                        },
+                        &mut unknown_fields,
+                        &option_name_rem[0],
+                        &option_name_rem[1..],
+                        option_value,
+                    )?;
+                    options.add_length_delimited(
+                        field.get_number() as u32,
+                        unknown_fields.write_to_bytes(),
+                    );
+                    return Ok(());
+                }
+                TypeResolved::Group(..) => {
+                    // TODO: implement
+                    return Ok(());
+                }
+                _ => {
+                    return Err(ConvertError::ExtensionIsNotMessage(format!(
+                        "{}",
+                        option_name
+                    )))
+                }
+            }
+        }
 
         let value = match self.option_value_to_unknown_value(
             &field_type,
@@ -686,39 +796,8 @@ impl<'a> Resolver<'a> {
             Err(e) => return Err(e),
         };
 
-        options
-            .mut_unknown_fields()
-            .add_value(extension.field.t.number as u32, value);
+        options.add_value(field.get_number() as u32, value);
         Ok(())
-    }
-
-    fn custom_option_ext_step<M>(
-        &self,
-        scope: &ProtobufAbsolutePath,
-        options: &mut M,
-        option_name: &ProtobufOptionNameComponent,
-        option_name_rem: &[ProtobufOptionNameComponent],
-        option_value: &ProtobufConstant,
-    ) -> ConvertResult<()>
-    where
-        M: Message,
-    {
-        match option_name {
-            ProtobufOptionNameComponent::Direct(option_name) => self.custom_option_ext_step_direct(
-                scope,
-                options,
-                option_name,
-                option_name_rem,
-                option_value,
-            ),
-            ProtobufOptionNameComponent::Ext(option_name) => self.custom_option_ext_step_ext(
-                scope,
-                options,
-                option_name,
-                option_name_rem,
-                option_value,
-            ),
-        }
     }
 
     fn custom_option_ext<M>(
@@ -733,7 +812,13 @@ impl<'a> Resolver<'a> {
     {
         self.custom_option_ext_step(
             scope,
-            options,
+            &WithFullName {
+                full_name: ProtobufAbsolutePath::from_path_without_dot(
+                    M::descriptor_static().full_name(),
+                ),
+                t: M::descriptor_static().get_proto(),
+            },
+            options.mut_unknown_fields(),
             &option_name.0[0],
             &option_name.0[1..],
             option_value,
@@ -847,21 +932,47 @@ impl<'a> Resolver<'a> {
             .collect()
     }
 
-    fn package_files(&self, package: &ProtobufAbsolutePath) -> Vec<&model::FileDescriptor> {
+    fn _package_files(&self, package: &ProtobufAbsolutePath) -> Vec<&model::FileDescriptor> {
         self.all_files()
             .into_iter()
             .filter(|f| &f.package == package)
             .collect()
     }
 
+    fn _package_files_for_prefix(
+        &self,
+        path: &ProtobufAbsolutePath,
+    ) -> Vec<(&model::FileDescriptor, ProtobufRelativePath)> {
+        self.all_files()
+            .into_iter()
+            .flat_map(|f| f.package.remove_prefix(path).map(|rel| (f, rel)))
+            .collect()
+    }
+
+    fn root_scope(&self) -> LookupScopeUnion {
+        let (scopes, partial_scopes) = self
+            .all_files()
+            .into_iter()
+            .partition::<Vec<_>, _>(|f| f.package.is_root());
+        LookupScopeUnion {
+            path: ProtobufAbsolutePath::root(),
+            scopes: scopes.into_iter().map(LookupScope::File).collect(),
+            partial_scopes,
+        }
+    }
+
+    fn lookup(&self, path: &ProtobufAbsolutePath) -> LookupScopeUnion {
+        self.root_scope().lookup(&path.to_root_rel())
+    }
+
     fn find_message_or_enum_by_abs_name(
         &self,
         absolute_path: &ProtobufAbsolutePath,
-    ) -> ConvertResult<MessageOrEnum<'a>> {
+    ) -> ConvertResult<WithFullName<MessageOrEnum<'a>>> {
         for file in self.all_files() {
             if let Some(relative) = absolute_path.remove_prefix(&file.package) {
-                if let Some((_, t)) = LookupScope::File(file).find_message_or_enum(&relative) {
-                    return Ok(t);
+                if let Some(w) = LookupScope::File(file).find_message_or_enum(&relative) {
+                    return Ok(w);
                 }
             }
         }
@@ -872,9 +983,13 @@ impl<'a> Resolver<'a> {
     fn find_message_by_abs_name(
         &self,
         abs_path: &ProtobufAbsolutePath,
-    ) -> ConvertResult<&'a model::Message> {
-        match self.find_message_or_enum_by_abs_name(abs_path)? {
-            MessageOrEnum::Message(m) => Ok(m),
+    ) -> ConvertResult<WithFullName<&'a model::Message>> {
+        let with_full_name = self.find_message_or_enum_by_abs_name(abs_path)?;
+        match with_full_name.t {
+            MessageOrEnum::Message(m) => Ok(WithFullName {
+                t: m,
+                full_name: with_full_name.full_name,
+            }),
             MessageOrEnum::Enum(..) => Err(ConvertError::ExpectingMessage(abs_path.clone())),
         }
     }
@@ -883,7 +998,7 @@ impl<'a> Resolver<'a> {
         &self,
         abs_path: &ProtobufAbsolutePath,
     ) -> ConvertResult<&'a model::Enumeration> {
-        match self.find_message_or_enum_by_abs_name(abs_path)? {
+        match self.find_message_or_enum_by_abs_name(abs_path)?.t {
             MessageOrEnum::Enum(e) => Ok(e),
             MessageOrEnum::Message(..) => Err(ConvertError::ExpectingEnum(abs_path.clone())),
         }
@@ -917,18 +1032,16 @@ impl<'a> Resolver<'a> {
         &self,
         scope: &ProtobufAbsolutePath,
         name: &ProtobufPath,
-    ) -> ConvertResult<(ProtobufAbsolutePath, MessageOrEnum)> {
+    ) -> ConvertResult<WithFullName<MessageOrEnum>> {
         match name {
-            ProtobufPath::Abs(name) => {
-                Ok((name.clone(), self.find_message_or_enum_by_abs_name(&name)?))
-            }
+            ProtobufPath::Abs(name) => Ok(self.find_message_or_enum_by_abs_name(&name)?),
             ProtobufPath::Rel(name) => {
                 // find message or enum in current package
                 for p in scope.self_and_parents() {
                     let mut fq = p;
                     fq.push_relative(&name);
                     if let Ok(me) = self.find_message_or_enum_by_abs_name(&fq) {
-                        return Ok((fq, me));
+                        return Ok(me);
                     }
                 }
 
@@ -960,10 +1073,10 @@ impl<'a> Resolver<'a> {
             model::FieldType::String => TypeResolved::String,
             model::FieldType::Bytes => TypeResolved::Bytes,
             model::FieldType::MessageOrEnum(ref name) => {
-                let (name, me) = self.resolve_message_or_enum(scope, &name)?;
-                match me {
-                    MessageOrEnum::Message(..) => TypeResolved::Message(name),
-                    MessageOrEnum::Enum(..) => TypeResolved::Enum(name),
+                let t = self.resolve_message_or_enum(scope, &name)?;
+                match t.t {
+                    MessageOrEnum::Message(..) => TypeResolved::Message(t.full_name),
+                    MessageOrEnum::Enum(..) => TypeResolved::Enum(t.full_name),
                 }
             }
             model::FieldType::Map(..) => {
@@ -1072,14 +1185,16 @@ impl<'a> Resolver<'a> {
     ) -> ConvertResult<Option<(&model::Extension, FieldDescriptorProto)>> {
         let mut path = path.clone();
         let extension = path.pop().unwrap();
-        for file in self.package_files(&path) {
-            for ext in &file.extensions {
-                if ext.t.field.t.name == extension.get() {
-                    let (resolved_ext, _) = self.extension(&path, &ext.t)?;
-                    return Ok(Some((&ext.t, resolved_ext)));
-                }
+
+        let scope = self.lookup(&path);
+
+        for ext in scope.extensions() {
+            if ext.field.t.name == extension.get() {
+                let (resolved_ext, _) = self.extension(&path, &ext)?;
+                return Ok(Some((&ext, resolved_ext)));
             }
         }
+
         Ok(None)
     }
 
@@ -1176,7 +1291,7 @@ impl<'a> Resolver<'a> {
                     let n = match e
                         .values
                         .iter()
-                        .find(|v| v.name == ident.deref())
+                        .find(|v| v.name == format!("{}", ident))
                         .map(|v| v.number)
                     {
                         Some(n) => n,
@@ -1188,7 +1303,7 @@ impl<'a> Resolver<'a> {
             },
             model::ProtobufConstant::Message(mo) => match &field_type {
                 TypeResolved::Message(ma) => {
-                    let m = self.find_message_by_abs_name(ma)?;
+                    let m = self.find_message_by_abs_name(ma)?.t;
                     let mut unknown_fields = UnknownFields::new();
                     for (n, v) in &mo.fields {
                         let f = match m.field_by_name(n.as_str()) {
@@ -1256,7 +1371,11 @@ impl<'a> Resolver<'a> {
         Option<protobuf::descriptor::DescriptorProto>,
     )> {
         let mut field = self.field(scope, &input.field, None)?;
-        field.set_extendee(self.resolve_message_or_enum(scope, &input.extendee)?.0.path);
+        field.set_extendee(
+            self.resolve_message_or_enum(scope, &input.extendee)?
+                .full_name
+                .to_string(),
+        );
         let group_messages = if let model::FieldType::Group(g) = &input.field.t.typ {
             Some(self.group_message(scope, &g.name, &g.fields)?)
         } else {

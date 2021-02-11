@@ -1,7 +1,6 @@
 use crate::ProtobufAbsolutePath;
 use crate::ProtobufRelativePath;
 use std::fmt;
-use std::ops::Deref;
 
 /// Protobuf identifier can be absolute or relative.
 #[derive(Debug, Eq, PartialEq, Clone)]
@@ -28,17 +27,6 @@ impl ProtobufPath {
                 package.push_relative(p);
                 package
             }
-        }
-    }
-}
-
-impl Deref for ProtobufPath {
-    type Target = str;
-
-    fn deref(&self) -> &str {
-        match self {
-            ProtobufPath::Abs(p) => &*p,
-            ProtobufPath::Rel(p) => &*p,
         }
     }
 }
