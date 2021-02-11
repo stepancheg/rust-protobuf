@@ -619,11 +619,31 @@ impl<'a> Resolver<'a> {
         }
     }
 
-    fn custom_option_ext_step<M>(
+    fn custom_option_ext_step_direct<M>(
+        &self,
+        _scope: &ProtobufAbsolutePath,
+        _options: &mut M,
+        _option_name: &ProtobufIdent,
+        option_name_rem: &[ProtobufOptionNameComponent],
+        _option_value: &ProtobufConstant,
+    ) -> ConvertResult<()>
+    where
+        M: Message,
+    {
+        if !option_name_rem.is_empty() {
+            // TODO: implement
+            return Ok(());
+        }
+
+        // TODO: implement
+        return Ok(());
+    }
+
+    fn custom_option_ext_step_ext<M>(
         &self,
         scope: &ProtobufAbsolutePath,
         options: &mut M,
-        option_name: &ProtobufOptionNameComponent,
+        option_name: &ProtobufPath,
         option_name_rem: &[ProtobufOptionNameComponent],
         option_value: &ProtobufConstant,
     ) -> ConvertResult<()>
@@ -635,48 +655,69 @@ impl<'a> Resolver<'a> {
             return Ok(());
         }
 
-        match option_name {
-            ProtobufOptionNameComponent::Direct(_) => {
-                // TODO: implement
+        let expected_extendee =
+            ProtobufRelativePath::new(M::descriptor_static().full_name().to_owned())
+                .into_absolute();
+        let (extension, field) = match self.find_extension_by_path(scope, option_name) {
+            Ok(e) => e,
+            // TODO: return error
+            Err(_) => return Ok(()),
+        };
+        if ProtobufAbsolutePath::new(field.get_extendee()) != expected_extendee.clone() {
+            return Err(ConvertError::WrongExtensionType(
+                format!("{}", option_name),
+                format!("{}", extension.extendee),
+                format!("{}", expected_extendee),
+            ));
+        }
+
+        let field_type = TypeResolved::from_field(&field);
+
+        let value = match self.option_value_to_unknown_value(
+            &field_type,
+            option_value,
+            &format!("{}", option_name),
+        ) {
+            Ok(value) => value,
+            Err(ConvertError::ConstantsOfTypeMessageEnumGroupNotImplemented) => {
+                // TODO: return error
                 return Ok(());
             }
-            ProtobufOptionNameComponent::Ext(option_name) => {
-                let expected_extendee =
-                    ProtobufRelativePath::new(M::descriptor_static().full_name().to_owned())
-                        .into_absolute();
-                let (extension, field) = match self.find_extension_by_path(scope, option_name) {
-                    Ok(e) => e,
-                    // TODO: return error
-                    Err(_) => return Ok(()),
-                };
-                if ProtobufAbsolutePath::new(field.get_extendee()) != expected_extendee.clone() {
-                    return Err(ConvertError::WrongExtensionType(
-                        format!("{}", option_name),
-                        format!("{}", extension.extendee),
-                        format!("{}", expected_extendee),
-                    ));
-                }
+            Err(e) => return Err(e),
+        };
 
-                let field_type = TypeResolved::from_field(&field);
+        options
+            .mut_unknown_fields()
+            .add_value(extension.field.t.number as u32, value);
+        Ok(())
+    }
 
-                let value = match self.option_value_to_unknown_value(
-                    &field_type,
-                    option_value,
-                    &format!("{}", option_name),
-                ) {
-                    Ok(value) => value,
-                    Err(ConvertError::ConstantsOfTypeMessageEnumGroupNotImplemented) => {
-                        // TODO: return error
-                        return Ok(());
-                    }
-                    Err(e) => return Err(e),
-                };
-
-                options
-                    .mut_unknown_fields()
-                    .add_value(extension.field.t.number as u32, value);
-                Ok(())
-            }
+    fn custom_option_ext_step<M>(
+        &self,
+        scope: &ProtobufAbsolutePath,
+        options: &mut M,
+        option_name: &ProtobufOptionNameComponent,
+        option_name_rem: &[ProtobufOptionNameComponent],
+        option_value: &ProtobufConstant,
+    ) -> ConvertResult<()>
+    where
+        M: Message,
+    {
+        match option_name {
+            ProtobufOptionNameComponent::Direct(option_name) => self.custom_option_ext_step_direct(
+                scope,
+                options,
+                option_name,
+                option_name_rem,
+                option_value,
+            ),
+            ProtobufOptionNameComponent::Ext(option_name) => self.custom_option_ext_step_ext(
+                scope,
+                options,
+                option_name,
+                option_name_rem,
+                option_value,
+            ),
         }
     }
 
