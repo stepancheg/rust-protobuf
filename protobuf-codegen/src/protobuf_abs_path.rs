@@ -47,13 +47,6 @@ impl ProtobufAbsolutePath {
         self.path.is_empty()
     }
 
-    pub fn from_package_path(path: Option<&str>) -> ProtobufAbsolutePath {
-        match path {
-            None => ProtobufAbsolutePath::root(),
-            Some(path) => ProtobufAbsolutePath::from_path_without_dot(path),
-        }
-    }
-
     pub fn from_path_without_dot(path: &str) -> ProtobufAbsolutePath {
         assert!(!path.is_empty());
         assert!(!path.starts_with("."));

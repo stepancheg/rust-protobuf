@@ -9,6 +9,7 @@ use crate::FileDescriptorPair;
 
 use protobuf;
 use protobuf::descriptor::field_descriptor_proto;
+use protobuf::descriptor::FieldDescriptorProto;
 use protobuf::json::json_name;
 use protobuf::Message;
 use protobuf::UnknownFields;
@@ -608,20 +609,19 @@ impl<'a> Resolver<'a> {
                 return Ok(());
             }
             ProtobufOptionNameComponent::Ext(option_name) => {
-                let extendee =
+                let expected_extendee =
                     ProtobufRelativePath::new(M::descriptor_static().full_name().to_owned())
                         .into_absolute();
-                let extension = match self.find_extension_by_path(scope, option_name) {
+                let (extension, field) = match self.find_extension_by_path(scope, option_name) {
                     Ok(e) => e,
                     // TODO: return error
                     Err(_) => return Ok(()),
                 };
-                // TODO: completely wrong
-                if extension.extendee.resolve(&ProtobufAbsolutePath::root()) != extendee.clone() {
+                if ProtobufAbsolutePath::new(field.get_extendee()) != expected_extendee.clone() {
                     return Err(ConvertError::WrongExtensionType(
                         format!("{}", option_name),
                         format!("{}", extension.extendee),
-                        format!("{}", extendee),
+                        format!("{}", expected_extendee),
                     ));
                 }
 
@@ -993,26 +993,30 @@ impl<'a> Resolver<'a> {
         Ok(output)
     }
 
-    fn find_extension_by_abs_path(&self, path: &ProtobufAbsolutePath) -> Option<&model::Extension> {
+    fn find_extension_by_abs_path(
+        &self,
+        path: &ProtobufAbsolutePath,
+    ) -> ConvertResult<Option<(&model::Extension, FieldDescriptorProto)>> {
         let mut path = path.clone();
         let extension = path.pop().unwrap();
         for file in self.package_files(&path) {
             for ext in &file.extensions {
                 if ext.t.field.t.name == extension.get() {
-                    return Some(&ext.t);
+                    let (resolved_ext, _) = self.extension(&path, &ext.t)?;
+                    return Ok(Some((&ext.t, resolved_ext)));
                 }
             }
         }
-        None
+        Ok(None)
     }
 
     fn find_extension_by_path(
         &self,
         scope: &ProtobufAbsolutePath,
         path: &ProtobufPath,
-    ) -> ConvertResult<&model::Extension> {
+    ) -> ConvertResult<(&model::Extension, FieldDescriptorProto)> {
         for candidate in Self::scope_resolved_candidates(scope, path) {
-            if let Some(e) = self.find_extension_by_abs_path(&candidate) {
+            if let Some(e) = self.find_extension_by_abs_path(&candidate)? {
                 return Ok(e);
             }
         }
@@ -1164,12 +1168,12 @@ impl<'a> Resolver<'a> {
 
     fn extension(
         &self,
+        scope: &ProtobufAbsolutePath,
         input: &model::Extension,
     ) -> ConvertResult<(
         protobuf::descriptor::FieldDescriptorProto,
         Option<protobuf::descriptor::DescriptorProto>,
     )> {
-        let scope = &self.current_file.package;
         let mut field = self.field(scope, &input.field, None)?;
         field.set_extendee(self.resolve_message_or_enum(scope, &input.extendee)?.0.path);
         let group_messages = if let model::FieldType::Group(g) = &input.field.t.typ {
@@ -1236,7 +1240,7 @@ pub(crate) fn file_descriptor(
 
     let mut extensions = Vec::new();
     for e in &input.extensions {
-        let (ext, group_messages) = resolver.extension(&e.t)?;
+        let (ext, group_messages) = resolver.extension(&resolver.current_file.package, &e.t)?;
         extensions.push(ext);
         messages.extend(group_messages.map(model::WithLoc::with_loc(e.loc)));
     }
