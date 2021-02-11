@@ -312,7 +312,8 @@ impl UnknownFields {
     pub fn write_to_bytes(&self) -> Vec<u8> {
         let mut r = Vec::with_capacity(rt::unknown_fields_size(self) as usize);
         let mut stream = CodedOutputStream::vec(&mut r);
-        stream.write_unknown_fields(self).unwrap();
+        // TODO: figure out how to make output stable
+        stream.write_unknown_fields_sorted(self).unwrap();
         stream.flush().unwrap();
         drop(stream);
         r

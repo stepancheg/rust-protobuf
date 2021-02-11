@@ -489,6 +489,21 @@ impl<'a> CodedOutputStream<'a> {
         Ok(())
     }
 
+    /// Write unknown fields sorting them by name
+    pub(crate) fn write_unknown_fields_sorted(
+        &mut self,
+        fields: &UnknownFields,
+    ) -> ProtobufResult<()> {
+        let mut fields: Vec<_> = fields.iter().collect();
+        fields.sort_by_key(|(n, _)| *n);
+        for (number, values) in fields {
+            for value in values {
+                self.write_unknown(number, value)?;
+            }
+        }
+        Ok(())
+    }
+
     /// Write bytes
     pub fn write_bytes_no_tag(&mut self, bytes: &[u8]) -> ProtobufResult<()> {
         self.write_raw_varint32(bytes.len() as u32)?;
