@@ -285,6 +285,38 @@ enum TypeResolved {
 }
 
 impl TypeResolved {
+    fn from_field(field: &FieldDescriptorProto) -> TypeResolved {
+        match field.get_field_type() {
+            Type::TYPE_DOUBLE => TypeResolved::Double,
+            Type::TYPE_FLOAT => TypeResolved::Float,
+            Type::TYPE_INT64 => TypeResolved::Int64,
+            Type::TYPE_UINT64 => TypeResolved::Uint64,
+            Type::TYPE_INT32 => TypeResolved::Int32,
+            Type::TYPE_FIXED64 => TypeResolved::Fixed64,
+            Type::TYPE_FIXED32 => TypeResolved::Fixed32,
+            Type::TYPE_UINT32 => TypeResolved::Uint32,
+            Type::TYPE_SFIXED32 => TypeResolved::Sfixed32,
+            Type::TYPE_SFIXED64 => TypeResolved::Sfixed64,
+            Type::TYPE_SINT32 => TypeResolved::Sint32,
+            Type::TYPE_SINT64 => TypeResolved::Sint64,
+            Type::TYPE_BOOL => TypeResolved::Bool,
+            Type::TYPE_STRING => TypeResolved::String,
+            Type::TYPE_BYTES => TypeResolved::Bytes,
+            Type::TYPE_GROUP => {
+                assert!(!field.get_type_name().is_empty());
+                TypeResolved::Group(ProtobufAbsolutePath::new(field.get_type_name()))
+            }
+            Type::TYPE_ENUM => {
+                assert!(!field.get_type_name().is_empty());
+                TypeResolved::Enum(ProtobufAbsolutePath::new(field.get_type_name()))
+            }
+            Type::TYPE_MESSAGE => {
+                assert!(!field.get_type_name().is_empty());
+                TypeResolved::Message(ProtobufAbsolutePath::new(field.get_type_name()))
+            }
+        }
+    }
+
     fn type_enum(&self) -> Type {
         match self {
             TypeResolved::Bool => Type::TYPE_BOOL,
@@ -625,11 +657,11 @@ impl<'a> Resolver<'a> {
                     ));
                 }
 
+                let field_type = TypeResolved::from_field(&field);
+
                 let value = match self.option_value_to_unknown_value(
-                    scope,
+                    &field_type,
                     option_value,
-                    &extension.field.t.name,
-                    &extension.field.t.typ,
                     &format!("{}", option_name),
                 ) {
                     Ok(value) => value,
@@ -1026,17 +1058,13 @@ impl<'a> Resolver<'a> {
 
     fn option_value_to_unknown_value(
         &self,
-        scope: &ProtobufAbsolutePath,
+        field_type: &TypeResolved,
         value: &model::ProtobufConstant,
-        name: &str,
-        field_type: &model::FieldType,
         option_name_for_diag: &str,
     ) -> ConvertResult<UnknownValue> {
-        let field_type = self.field_type(&scope, name, field_type)?;
-
         match value {
             &model::ProtobufConstant::Bool(b) => {
-                if field_type != TypeResolved::Bool {
+                if field_type != &TypeResolved::Bool {
                     {}
                 } else {
                     return Ok(UnknownValue::Varint(if b { 1 } else { 0 }));
@@ -1126,7 +1154,7 @@ impl<'a> Resolver<'a> {
                             Some(f) => f,
                             None => return Err(ConvertError::UnknownFieldName(n.clone())),
                         };
-                        let u = self.option_value_to_unknown_value(
+                        let u = self.option_value_field_to_unknown_value(
                             ma,
                             v,
                             n,
@@ -1156,6 +1184,18 @@ impl<'a> Resolver<'a> {
                 value.clone(),
             ),
         })
+    }
+
+    fn option_value_field_to_unknown_value(
+        &self,
+        scope: &ProtobufAbsolutePath,
+        value: &model::ProtobufConstant,
+        name: &str,
+        field_type: &model::FieldType,
+        option_name_for_diag: &str,
+    ) -> ConvertResult<UnknownValue> {
+        let field_type = self.field_type(&scope, name, field_type)?;
+        self.option_value_to_unknown_value(&field_type, value, option_name_for_diag)
     }
 
     fn file_options(
