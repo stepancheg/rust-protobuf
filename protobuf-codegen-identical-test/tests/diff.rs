@@ -189,8 +189,10 @@ fn normalize_descriptor(desc: &mut DescriptorProto) {
         normalize_oneof_descriptor(desc);
     }
 
-    // TODO: don't clear options.
-    desc.options.clear();
+    desc.options.mut_or_default();
+
+    // group are not supported
+    desc.options.mut_or_default().unknown_fields.remove(7636463);
 
     for field in &mut desc.field {
         normalize_field(field);
