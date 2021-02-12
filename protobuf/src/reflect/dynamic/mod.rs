@@ -293,7 +293,6 @@ impl Message for DynamicMessage {
                     self.set_field(&field_desc, val);
                 }
                 RuntimeFieldType::Repeated(rtb) => {
-                    println!("merging repeated {:?}", rtb);
                     let mut repeated_mut = self.mut_repeated(&field_desc);
 
                     match rtb {
