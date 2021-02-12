@@ -15,15 +15,17 @@ use crate::reflect::ReflectRepeatedRef;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::RuntimeFieldType;
 use crate::reflect::{FieldDescriptor, RuntimeTypeBox};
+use crate::rt::unexpected_wire_type;
+use crate::wire_format::WireType;
 use crate::Clear;
 use crate::CodedInputStream;
 use crate::CodedOutputStream;
 use crate::Message;
 use crate::ProtobufResult;
 use crate::UnknownFields;
-use std::convert::TryInto;
 
 use super::EnumValueDescriptor;
+use std::convert::TryInto;
 
 pub(crate) mod map;
 pub(crate) mod optional;
@@ -62,11 +64,59 @@ impl DynamicFieldValue {
             RuntimeFieldType::Map(k, v) => DynamicFieldValue::Map(DynamicMap::new(k, v)),
         }
     }
+
+    /// set default value for singular fields
+    fn set_default_for_merge(&mut self, field: &FieldDescriptor) {
+        match field.runtime_field_type() {
+            RuntimeFieldType::Singular(rtb) => {
+                assert!(matches!(self, DynamicFieldValue::Singular(..)));
+                if let DynamicFieldValue::Singular(s) = self {
+                    match rtb {
+                        RuntimeTypeBox::I32 => {
+                            s.set(ReflectValueBox::from(0 as i32));
+                        }
+                        RuntimeTypeBox::I64 => {
+                            s.set(ReflectValueBox::from(0 as i64));
+                        }
+                        RuntimeTypeBox::U32 => {
+                            s.set(ReflectValueBox::from(0 as u32));
+                        }
+                        RuntimeTypeBox::U64 => {
+                            s.set(ReflectValueBox::from(0 as u64));
+                        }
+                        RuntimeTypeBox::F32 => {
+                            s.set(ReflectValueBox::from(0 as f32));
+                        }
+                        RuntimeTypeBox::F64 => {
+                            s.set(ReflectValueBox::from(0 as f64));
+                        }
+                        RuntimeTypeBox::Bool => {
+                            s.set(ReflectValueBox::from(false));
+                        }
+                        RuntimeTypeBox::String => {
+                            s.set(ReflectValueBox::from("".to_string()));
+                        }
+                        RuntimeTypeBox::VecU8 => {
+                            s.set(ReflectValueBox::from(Vec::default()));
+                        }
+                        RuntimeTypeBox::Enum(enum_desc) => {
+                            s.set(ReflectValueBox::from(EnumValueDescriptor::new(
+                                enum_desc, 0,
+                            )));
+                        }
+                        _ => {}
+                    }
+                }
+            }
+            _ => {}
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
 pub(crate) struct DynamicMessage {
     pub(crate) descriptor: MessageDescriptor,
+    /// fields value
     fields: Box<[DynamicFieldValue]>,
     unknown_fields: UnknownFields,
     cached_size: CachedSize,
@@ -108,6 +158,17 @@ impl DynamicMessage {
         }
 
         self.fields[field.index].clear();
+    }
+
+    /// set all fields to default value
+    pub fn set_fields_default(&mut self) {
+        self.init_fields();
+        if !self.fields.is_empty() {
+            let fields_desc: Vec<FieldDescriptor> = self.descriptor.fields().collect();
+            for field_desc in fields_desc {
+                self.fields[field_desc.index].set_default_for_merge(&field_desc);
+            }
+        }
     }
 
     fn clear_oneof_group_fields_except(&mut self, field: &FieldDescriptor) {
@@ -194,10 +255,10 @@ impl Message for DynamicMessage {
     }
 
     fn merge_from(&mut self, is: &mut CodedInputStream) -> ProtobufResult<()> {
+        self.set_fields_default();
         let desc = self.descriptor.clone();
-
         while !is.eof()? {
-            let (field, _) = is.read_tag_unpack()?;
+            let (field, wire_type) = is.read_tag_unpack()?;
             let field_desc = desc
                 .get_field_by_number(field)
                 .expect("Invalid field number at decoding");
@@ -217,18 +278,139 @@ impl Message for DynamicMessage {
                             let enum_num = is.read_int32()?;
                             ReflectValueBox::from(EnumValueDescriptor::new(
                                 enum_desc,
-                                enum_num.try_into().unwrap(), // FIXME: might unsatisfied
+                                enum_num as usize, // FIXME: might unsatisfied
                             ))
                         }
                         RuntimeTypeBox::Message(msg_desc) => {
                             let mut msg_inst = msg_desc.new_instance();
-                            is.merge_message(msg_inst.as_mut()).expect("merge sub message failed");
+                            is.incr_recursion()?;
+                            is.merge_message(msg_inst.as_mut())
+                                .expect("merge sub message failed");
+                            is.decr_recursion();
                             ReflectValueBox::from(msg_inst)
                         }
                     };
                     self.set_field(&field_desc, val);
                 }
-                RuntimeFieldType::Repeated(_) => {}
+                RuntimeFieldType::Repeated(rtb) => {
+                    println!("merging repeated {:?}", rtb);
+                    let mut repeated_mut = self.mut_repeated(&field_desc);
+
+                    match rtb {
+                        RuntimeTypeBox::I32 => match wire_type {
+                            WireType::WireTypeVarint => {
+                                repeated_mut.push(ReflectValueBox::from(is.read_int32()?));
+                            }
+                            WireType::WireTypeLengthDelimited => {
+                                let mut res_vec: Vec<i32> = Vec::default();
+                                is.read_repeated_packed_int32_into(&mut res_vec)?;
+                                for i in res_vec {
+                                    repeated_mut.push(ReflectValueBox::from(i));
+                                }
+                            }
+                            _ => return Err(unexpected_wire_type(wire_type)),
+                        },
+                        RuntimeTypeBox::I64 => match wire_type {
+                            WireType::WireTypeVarint => {
+                                repeated_mut.push(ReflectValueBox::from(is.read_int64()?));
+                            }
+                            WireType::WireTypeLengthDelimited => {
+                                let mut res_vec: Vec<i64> = Vec::default();
+                                is.read_repeated_packed_int64_into(&mut res_vec)?;
+                                for i in res_vec {
+                                    repeated_mut.push(ReflectValueBox::from(i));
+                                }
+                            }
+                            _ => return Err(unexpected_wire_type(wire_type)),
+                        },
+                        RuntimeTypeBox::U32 => match wire_type {
+                            WireType::WireTypeVarint => {
+                                repeated_mut.push(ReflectValueBox::from(is.read_uint32()?));
+                            }
+                            WireType::WireTypeLengthDelimited => {
+                                let mut res_vec: Vec<u32> = Vec::default();
+                                is.read_repeated_packed_uint32_into(&mut res_vec)?;
+                                for i in res_vec {
+                                    repeated_mut.push(ReflectValueBox::from(i));
+                                }
+                            }
+                            _ => return Err(unexpected_wire_type(wire_type)),
+                        },
+                        RuntimeTypeBox::U64 => match wire_type {
+                            WireType::WireTypeVarint => {
+                                repeated_mut.push(ReflectValueBox::from(is.read_uint64()?));
+                            }
+                            WireType::WireTypeLengthDelimited => {
+                                let mut res_vec: Vec<u64> = Vec::default();
+                                is.read_repeated_packed_uint64_into(&mut res_vec)?;
+                                for i in res_vec {
+                                    repeated_mut.push(ReflectValueBox::from(i));
+                                }
+                            }
+                            _ => return Err(unexpected_wire_type(wire_type)),
+                        },
+                        RuntimeTypeBox::F32 => match wire_type {
+                            WireType::WireTypeVarint => {
+                                repeated_mut.push(ReflectValueBox::from(is.read_float()?));
+                            }
+                            WireType::WireTypeLengthDelimited => {
+                                let mut res_vec: Vec<f32> = Vec::default();
+                                is.read_repeated_packed_float_into(&mut res_vec)?;
+                                for i in res_vec {
+                                    repeated_mut.push(ReflectValueBox::from(i));
+                                }
+                            }
+                            _ => return Err(unexpected_wire_type(wire_type)),
+                        },
+                        RuntimeTypeBox::F64 => match wire_type {
+                            WireType::WireTypeVarint => {
+                                repeated_mut.push(ReflectValueBox::from(is.read_double()?));
+                            }
+                            WireType::WireTypeLengthDelimited => {
+                                let mut res_vec: Vec<f64> = Vec::default();
+                                is.read_repeated_packed_double_into(&mut res_vec)?;
+                                for i in res_vec {
+                                    repeated_mut.push(ReflectValueBox::from(i));
+                                }
+                            }
+                            _ => return Err(unexpected_wire_type(wire_type)),
+                        },
+                        RuntimeTypeBox::Bool => match wire_type {
+                            WireType::WireTypeVarint => {
+                                repeated_mut.push(ReflectValueBox::from(is.read_bool()?));
+                            }
+                            WireType::WireTypeLengthDelimited => {
+                                let mut res_vec: Vec<bool> = Vec::default();
+                                is.read_repeated_packed_bool_into(&mut res_vec)?;
+                                for i in res_vec {
+                                    repeated_mut.push(ReflectValueBox::from(i));
+                                }
+                            }
+                            _ => return Err(unexpected_wire_type(wire_type)),
+                        },
+                        RuntimeTypeBox::String => {
+                            repeated_mut.push(ReflectValueBox::from(is.read_string()?));
+                        }
+                        RuntimeTypeBox::VecU8 => {
+                            repeated_mut.push(ReflectValueBox::from(is.read_bytes()?));
+                        }
+                        RuntimeTypeBox::Enum(enum_desc) => {
+                            let enum_num = is.read_int32()?;
+                            let enum_val = ReflectValueBox::from(EnumValueDescriptor::new(
+                                enum_desc,
+                                enum_num.try_into().unwrap(), // FIXME: might unsatisfied
+                            ));
+                            repeated_mut.push(enum_val);
+                        }
+                        RuntimeTypeBox::Message(msg_desc) => {
+                            let mut msg_inst = msg_desc.new_instance();
+                            is.merge_message(msg_inst.as_mut())
+                                .expect("merge sub message failed");
+                            let msg_val = ReflectValueBox::from(msg_inst);
+                            repeated_mut.push(msg_val);
+                        }
+                    }
+                }
                 RuntimeFieldType::Map(_, _) => {}
             }
         }
