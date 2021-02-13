@@ -125,6 +125,11 @@ impl FieldDescriptor {
         &self.message_descriptor.get_index().fields[self.index]
     }
 
+    /// Get field_number defined in proto
+    pub(crate) fn get_proto_num(&self) -> u32 {
+        self.get_proto().get_number() as u32
+    }
+
     /// JSON field name.
     ///
     /// Can be different from `.proto` field name.

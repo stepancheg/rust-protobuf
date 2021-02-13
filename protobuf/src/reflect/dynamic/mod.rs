@@ -16,8 +16,7 @@ use crate::reflect::RuntimeFieldType;
 use crate::reflect::{FieldDescriptor, RuntimeTypeBox};
 use crate::reflect::{MessageDescriptor, ReflectValueRef};
 use crate::rt::{
-    bytes_size, compute_raw_varint32_size, enum_or_unknown_size, string_size, unexpected_wire_type,
-    value_size,
+    bytes_size, compute_raw_varint32_size, string_size, unexpected_wire_type, value_size,
 };
 use crate::wire_format::WireType;
 use crate::Clear;
@@ -163,6 +162,28 @@ impl DynamicMessage {
         self.fields[field.index].clear();
     }
 
+    fn check_singular_initialized(&self, rtb: &RuntimeTypeBox, f: &FieldDescriptor) -> bool {
+        if let RuntimeTypeBox::Message(_) = rtb {
+            if let Some(msg) = f.get_singular(self) {
+                return msg.to_message().unwrap().is_initialized_dyn();
+            }
+        }
+        return true;
+    }
+
+    fn check_repeated_initialized(&self, rtb: &RuntimeTypeBox, f: &FieldDescriptor) -> bool {
+        if let RuntimeTypeBox::Message(_) = rtb {
+            let msg_list = f.get_repeated(self);
+            for i in 0..msg_list.len() {
+                let msg = msg_list.get(i).to_message().unwrap();
+                if !msg.is_initialized_dyn() {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     /// set all fields to default value
     pub fn set_fields_default(&mut self) {
         self.init_fields();
@@ -253,7 +274,26 @@ impl Message for DynamicMessage {
     }
 
     fn is_initialized(&self) -> bool {
-        unimplemented!()
+        let fields: Vec<FieldDescriptor> = self.descriptor.fields().collect();
+        for f in &fields {
+            match f.runtime_field_type() {
+                RuntimeFieldType::Singular(rtb) => {
+                    if !self.check_singular_initialized(&rtb, &f) {
+                        return false;
+                    }
+                }
+                RuntimeFieldType::Repeated(rtb) => {
+                    if !self.check_repeated_initialized(&rtb, &f) {
+                        return false;
+                    }
+                }
+                RuntimeFieldType::Map(_, _) => {
+                    unimplemented!()
+                }
+            }
+        }
+
+        true
     }
 
     fn merge_from(&mut self, is: &mut CodedInputStream) -> ProtobufResult<()> {
@@ -421,11 +461,14 @@ impl Message for DynamicMessage {
     fn write_to_with_cached_sizes(&self, os: &mut CodedOutputStream) -> ProtobufResult<()> {
         let fields: Vec<FieldDescriptor> = self.descriptor.fields().collect();
         for field_desc in &fields {
-            let field_number = field_desc.index as u32;
+            let field_number = field_desc.get_proto_num() as u32;
             match field_desc.runtime_field_type() {
                 RuntimeFieldType::Singular(rtb) => {
                     if let Some(v) = field_desc.get_singular(self) {
-                        singular_write_to(&rtb, field_number, &v, os)?;
+                        if v._is_non_zero() {
+                            // ignore default value
+                            singular_write_to(&rtb, field_number, &v, os)?;
+                        }
                     }
                 }
                 RuntimeFieldType::Repeated(rtb) => {
@@ -448,11 +491,14 @@ impl Message for DynamicMessage {
         let mut m_size = 0;
         let fields: Vec<FieldDescriptor> = self.descriptor.fields().collect();
         for field_desc in &fields {
-            let field_number = field_desc.index as u32;
+            let field_number = field_desc.get_proto_num();
             match field_desc.runtime_field_type() {
                 RuntimeFieldType::Singular(rtb) => {
                     if let Some(v) = field_desc.get_singular(self) {
-                        m_size += compute_singular_size(&rtb, field_number, &v);
+                        if v._is_non_zero() {
+                            // ignore default value
+                            m_size += compute_singular_size(&rtb, field_number, &v);
+                        }
                     }
                 }
                 RuntimeFieldType::Repeated(rtb) => {
@@ -507,9 +553,6 @@ fn singular_write_to(
     v: &ReflectValueRef,
     os: &mut CodedOutputStream,
 ) -> ProtobufResult<()> {
-    if !v._is_non_zero() {
-        return Ok(()); // ignore default value
-    }
     match rtb {
         RuntimeTypeBox::I32 => {
             let typed_v = v.to_i32().unwrap();
@@ -561,9 +604,6 @@ fn singular_write_to(
 
 /// Compute singular field size
 fn compute_singular_size(rtb: &RuntimeTypeBox, field_number: u32, v: &ReflectValueRef) -> u32 {
-    if !v._is_non_zero() {
-        return 0; // ignore default value
-    }
     match rtb {
         RuntimeTypeBox::I32 => {
             let typed_v = v.to_i32().unwrap();
