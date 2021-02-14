@@ -15,9 +15,9 @@ use crate::error::ProtobufResult;
 use crate::error::WireError;
 use crate::message::Message;
 use crate::unknown::UnknownValue;
-use crate::{wire_format, MessageDyn};
 use crate::zigzag::decode_zig_zag_32;
 use crate::zigzag::decode_zig_zag_64;
+use crate::{wire_format, MessageDyn};
 
 use crate::enums::ProtobufEnumOrUnknown;
 use crate::reflect::types::ProtobufType;

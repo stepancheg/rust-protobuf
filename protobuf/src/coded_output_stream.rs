@@ -1,6 +1,5 @@
 use crate::misc::remaining_capacity_as_slice_mut;
 use crate::misc::remove_lifetime_mut;
-use crate::{varint, MessageDyn};
 use crate::wire_format;
 use crate::zigzag::encode_zig_zag_32;
 use crate::zigzag::encode_zig_zag_64;
@@ -10,6 +9,7 @@ use crate::ProtobufEnumOrUnknown;
 use crate::ProtobufResult;
 use crate::UnknownFields;
 use crate::UnknownValueRef;
+use crate::{varint, MessageDyn};
 use std::io;
 use std::io::Write;
 
@@ -505,12 +505,12 @@ impl<'a> CodedOutputStream<'a> {
     pub fn write_message_no_tag<M: Message>(&mut self, msg: &M) -> ProtobufResult<()> {
         msg.write_length_delimited_to(self)
     }
-    
+
     /// Write dynamic message
-    pub fn write_message_no_tag_dyn(&mut self, msg: &dyn MessageDyn) -> ProtobufResult<()>{
+    pub fn write_message_no_tag_dyn(&mut self, msg: &dyn MessageDyn) -> ProtobufResult<()> {
         let size = msg.compute_size_dyn();
         self.write_raw_varint32(size)?;
-        msg.write_to_dyn(self)?;        
+        msg.write_to_dyn(self)?;
         Ok(())
     }
 
@@ -534,9 +534,13 @@ impl<'a> CodedOutputStream<'a> {
         self.write_message_no_tag(msg)?;
         Ok(())
     }
-    
+
     /// Write dynamic `message` field
-    pub fn write_message_dyn(&mut self, field_number: u32, msg: &dyn MessageDyn) -> ProtobufResult<()> {
+    pub fn write_message_dyn(
+        &mut self,
+        field_number: u32,
+        msg: &dyn MessageDyn,
+    ) -> ProtobufResult<()> {
         self.write_tag(field_number, wire_format::WireTypeLengthDelimited)?;
         self.write_message_no_tag_dyn(msg)?;
         Ok(())

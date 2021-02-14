@@ -150,7 +150,7 @@ impl<'a> ReflectValueRef<'a> {
     pub fn to_enum_value(&self) -> Option<i32> {
         match *self {
             ReflectValueRef::Enum(_, v) => Some(v),
-            _ => None
+            _ => None,
         }
     }
 
