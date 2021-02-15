@@ -16,7 +16,7 @@ use crate::reflect::RuntimeFieldType;
 use crate::reflect::{FieldDescriptor, RuntimeTypeBox};
 use crate::reflect::{MessageDescriptor, ReflectValueRef};
 use crate::rt::{
-    bytes_size, compute_raw_varint32_size, string_size, unexpected_wire_type, value_size,
+    bytes_size, compute_raw_varint32_size, string_size, tag_size, unexpected_wire_type, value_size,
 };
 use crate::wire_format::WireType;
 use crate::Clear;
@@ -188,8 +188,7 @@ impl DynamicMessage {
     pub fn set_fields_default(&mut self) {
         self.init_fields();
         if !self.fields.is_empty() {
-            let fields_desc: Vec<FieldDescriptor> = self.descriptor.fields().collect();
-            for field_desc in fields_desc {
+            for field_desc in self.descriptor.fields() {
                 self.fields[field_desc.index].set_default_for_merge(&field_desc);
             }
         }
@@ -274,8 +273,7 @@ impl Message for DynamicMessage {
     }
 
     fn is_initialized(&self) -> bool {
-        let fields: Vec<FieldDescriptor> = self.descriptor.fields().collect();
-        for f in &fields {
+        for f in self.descriptor.fields() {
             match f.runtime_field_type() {
                 RuntimeFieldType::Singular(rtb) => {
                     if !self.check_singular_initialized(&rtb, &f) {
@@ -459,8 +457,7 @@ impl Message for DynamicMessage {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut CodedOutputStream) -> ProtobufResult<()> {
-        let fields: Vec<FieldDescriptor> = self.descriptor.fields().collect();
-        for field_desc in &fields {
+        for field_desc in self.descriptor.fields() {
             let field_number = field_desc.get_proto_num() as u32;
             match field_desc.runtime_field_type() {
                 RuntimeFieldType::Singular(rtb) => {
@@ -489,8 +486,7 @@ impl Message for DynamicMessage {
 
     fn compute_size(&self) -> u32 {
         let mut m_size = 0;
-        let fields: Vec<FieldDescriptor> = self.descriptor.fields().collect();
-        for field_desc in &fields {
+        for field_desc in self.descriptor.fields() {
             let field_number = field_desc.get_proto_num();
             match field_desc.runtime_field_type() {
                 RuntimeFieldType::Singular(rtb) => {
