@@ -639,7 +639,7 @@ fn compute_singular_size(rtb: &RuntimeTypeBox, field_number: u32, v: &ReflectVal
         RuntimeTypeBox::Message(_) => {
             let msg_v = v.to_message().unwrap();
             let len = msg_v.compute_size_dyn();
-            1 + compute_raw_varint32_size(len) + len
+            tag_size(field_number) + compute_raw_varint32_size(len) + len
         }
     }
 }
