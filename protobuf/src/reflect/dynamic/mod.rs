@@ -462,7 +462,7 @@ impl Message for DynamicMessage {
             match field_desc.runtime_field_type() {
                 RuntimeFieldType::Singular(rtb) => {
                     if let Some(v) = field_desc.get_singular(self) {
-                        if v._is_non_zero() {
+                        if v.is_non_zero() {
                             // ignore default value
                             singular_write_to(&rtb, field_number, &v, os)?;
                         }
@@ -491,7 +491,7 @@ impl Message for DynamicMessage {
             match field_desc.runtime_field_type() {
                 RuntimeFieldType::Singular(rtb) => {
                     if let Some(v) = field_desc.get_singular(self) {
-                        if v._is_non_zero() {
+                        if v.is_non_zero() {
                             // ignore default value
                             m_size += compute_singular_size(&rtb, field_number, &v);
                         }
