@@ -324,7 +324,7 @@ impl Message for DynamicMessage {
                         RuntimeTypeBox::Message(msg_desc) => {
                             let mut msg_inst = msg_desc.new_instance();
                             is.incr_recursion()?;
-                            is.merge_message(DynamicMessage::downcast_mut(msg_inst.as_mut()))?;
+                            is.merge_message_dyn(msg_inst.as_mut())?;
                             is.decr_recursion();
                             ReflectValueBox::from(msg_inst)
                         }
@@ -442,7 +442,7 @@ impl Message for DynamicMessage {
                         }
                         RuntimeTypeBox::Message(msg_desc) => {
                             let mut msg_inst = msg_desc.new_instance();
-                            is.merge_message(DynamicMessage::downcast_mut(msg_inst.as_mut()))?;
+                            is.merge_message_dyn(msg_inst.as_mut())?;
                             let msg_val = ReflectValueBox::from(msg_inst);
                             repeated_mut.push(msg_val);
                         }
