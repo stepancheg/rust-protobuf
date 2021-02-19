@@ -17,6 +17,7 @@ use crate::reflect::{FieldDescriptor, RuntimeTypeBox};
 use crate::reflect::{MessageDescriptor, ReflectValueRef};
 use crate::rt::{
     bytes_size, compute_raw_varint32_size, string_size, tag_size, unexpected_wire_type, value_size,
+    value_varint_zigzag_size,
 };
 use crate::wire_format::WireType;
 use crate::Clear;
@@ -27,6 +28,7 @@ use crate::ProtobufResult;
 use crate::UnknownFields;
 
 use super::EnumValueDescriptor;
+use crate::descriptor::field_descriptor_proto::Type;
 use std::convert::TryInto;
 
 pub(crate) mod map;
@@ -462,7 +464,13 @@ impl Message for DynamicMessage {
                     if let Some(v) = field_desc.get_singular(self) {
                         if v.is_non_zero() {
                             // ignore default value
-                            singular_write_to(&rtb, field_number, &v, os)?;
+                            singular_write_to(
+                                &rtb,
+                                &field_desc.get_proto().get_field_type(),
+                                field_number,
+                                &v,
+                                os,
+                            )?;
                         }
                     }
                 }
@@ -470,7 +478,13 @@ impl Message for DynamicMessage {
                     let repeated = field_desc.get_repeated(self);
                     for i in 0..repeated.len() {
                         let v = repeated.get(i);
-                        singular_write_to(&rtb, field_number, &v, os)?;
+                        singular_write_to(
+                            &rtb,
+                            &field_desc.get_proto().get_field_type(),
+                            field_number,
+                            &v,
+                            os,
+                        )?;
                     }
                 }
                 RuntimeFieldType::Map(_, _) => {
@@ -491,7 +505,12 @@ impl Message for DynamicMessage {
                     if let Some(v) = field_desc.get_singular(self) {
                         if v.is_non_zero() {
                             // ignore default value
-                            m_size += compute_singular_size(&rtb, field_number, &v);
+                            m_size += compute_singular_size(
+                                &rtb,
+                                &field_desc.get_proto().get_field_type(),
+                                field_number,
+                                &v,
+                            );
                         }
                     }
                 }
@@ -500,7 +519,12 @@ impl Message for DynamicMessage {
                     if !repeated.is_empty() {
                         for i in 0..repeated.len() {
                             let v = repeated.get(i);
-                            m_size += compute_singular_size(&rtb, field_number, &v);
+                            m_size += compute_singular_size(
+                                &rtb,
+                                &field_desc.get_proto().get_field_type(),
+                                field_number,
+                                &v,
+                            );
                         }
                     }
                 }
@@ -543,101 +567,154 @@ impl Message for DynamicMessage {
 /// Write singular field to output stream
 fn singular_write_to(
     rtb: &RuntimeTypeBox,
+    proto_type: &Type,
     field_number: u32,
     v: &ReflectValueRef,
     os: &mut CodedOutputStream,
 ) -> ProtobufResult<()> {
-    match rtb {
-        RuntimeTypeBox::I32 => {
-            let typed_v = v.to_i32().unwrap();
-            os.write_int32(field_number, typed_v)?;
+    match proto_type {
+        Type::TYPE_ENUM => {
+            assert!(matches!(rtb, RuntimeTypeBox::Enum(..)));
+            if let RuntimeTypeBox::Enum(_) = rtb {
+                let enum_v = v.to_enum_value().unwrap();
+                os.write_enum(field_number, enum_v)?;
+            } else {
+                panic!("Protobuf type and Runtime type mismatch");
+            }
         }
-        RuntimeTypeBox::I64 => {
-            let typed_v = v.to_i64().unwrap();
-            os.write_int64(field_number, typed_v)?;
+        Type::TYPE_MESSAGE => {
+            assert!(matches!(rtb, RuntimeTypeBox::Message(..)));
+            if let RuntimeTypeBox::Message(_) = rtb {
+                let msg_v = v.to_message().unwrap();
+                os.write_message_dyn(field_number, &*msg_v)?;
+            } else {
+                panic!("Protobuf type and Runtime type mismatch");
+            }
         }
-        RuntimeTypeBox::U32 => {
-            let typed_v = v.to_u32().unwrap();
-            os.write_uint32(field_number, typed_v)?;
+        Type::TYPE_GROUP => {
+            unimplemented!()
         }
-        RuntimeTypeBox::U64 => {
-            let typed_v = v.to_u64().unwrap();
-            os.write_uint64(field_number, typed_v)?;
+        Type::TYPE_UINT32 => {
+            os.write_uint32(field_number, v.to_u32().unwrap())?;
         }
-        RuntimeTypeBox::F32 => {
-            let typed_v = v.to_f32().unwrap();
-            os.write_float(field_number, typed_v)?;
+        Type::TYPE_UINT64 => {
+            os.write_uint64(field_number, v.to_u64().unwrap())?;
         }
-        RuntimeTypeBox::F64 => {
-            let typed_v = v.to_f64().unwrap();
-            os.write_double(field_number, typed_v)?;
+        Type::TYPE_INT32 => {
+            os.write_int32(field_number, v.to_i32().unwrap())?;
         }
-        RuntimeTypeBox::Bool => {
-            let typed_v = v.to_bool().unwrap();
-            os.write_bool(field_number, typed_v)?;
+        Type::TYPE_INT64 => {
+            os.write_int64(field_number, v.to_i64().unwrap())?;
         }
-        RuntimeTypeBox::String => {
-            let typed_v = v.to_str().unwrap();
-            os.write_string(field_number, typed_v)?;
+        Type::TYPE_SINT32 => {
+            os.write_sint32(field_number, v.to_i32().unwrap())?;
         }
-        RuntimeTypeBox::VecU8 => {
-            let typed_v = v.to_bytes().unwrap();
-            os.write_bytes(field_number, typed_v)?;
+        Type::TYPE_SINT64 => {
+            os.write_sint64(field_number, v.to_i64().unwrap())?;
         }
-        RuntimeTypeBox::Enum(_) => {
-            let enum_v = v.to_enum_value().unwrap();
-            os.write_enum(field_number, enum_v)?;
+        Type::TYPE_FIXED32 => {
+            os.write_fixed32(field_number, v.to_u32().unwrap())?;
         }
-        RuntimeTypeBox::Message(_) => {
-            let msg_v = v.to_message().unwrap();
-            os.write_message_dyn(field_number, &*msg_v)?;
+        Type::TYPE_FIXED64 => {
+            os.write_fixed64(field_number, v.to_u64().unwrap())?;
         }
-    }
+        Type::TYPE_SFIXED64 => {
+            os.write_sfixed64(field_number, v.to_i64().unwrap())?;
+        }
+        Type::TYPE_SFIXED32 => {
+            os.write_sfixed32(field_number, v.to_i32().unwrap())?;
+        }
+        Type::TYPE_BOOL => {
+            os.write_bool(field_number, v.to_bool().unwrap())?;
+        }
+        Type::TYPE_STRING => {
+            os.write_string(field_number, v.to_str().unwrap())?;
+        }
+        Type::TYPE_BYTES => {
+            os.write_bytes(field_number, v.to_bytes().unwrap())?;
+        }
+        Type::TYPE_FLOAT => {
+            os.write_float(field_number, v.to_f32().unwrap())?;
+        }
+        Type::TYPE_DOUBLE => {
+            os.write_double(field_number, v.to_f64().unwrap())?;
+        }
+    };
     Ok(())
 }
 
 /// Compute singular field size
-fn compute_singular_size(rtb: &RuntimeTypeBox, field_number: u32, v: &ReflectValueRef) -> u32 {
-    match rtb {
-        RuntimeTypeBox::I32 => {
-            let typed_v = v.to_i32().unwrap();
-            value_size(field_number, typed_v, WireType::WireTypeVarint)
+fn compute_singular_size(
+    rtb: &RuntimeTypeBox,
+    proto_type: &Type,
+    field_number: u32,
+    v: &ReflectValueRef,
+) -> u32 {
+    match proto_type {
+        Type::TYPE_ENUM => {
+            assert!(matches!(rtb, RuntimeTypeBox::Enum(..)));
+            if let RuntimeTypeBox::Enum(_) = rtb {
+                let enum_v = v.to_enum_value().unwrap();
+                // we don't have a ProtobufEnum here, so just use the raw value
+                value_size(field_number, enum_v, WireType::WireTypeVarint)
+            } else {
+                panic!("Protobuf type and Runtime type mismatch");
+            }
         }
-        RuntimeTypeBox::I64 => {
-            let typed_v = v.to_i64().unwrap();
-            value_size(field_number, typed_v, WireType::WireTypeVarint)
+        Type::TYPE_MESSAGE => {
+            assert!(matches!(rtb, RuntimeTypeBox::Message(..)));
+            if let RuntimeTypeBox::Message(_) = rtb {
+                let msg_v = v.to_message().unwrap();
+                let len = msg_v.compute_size_dyn();
+                tag_size(field_number) + compute_raw_varint32_size(len) + len
+            } else {
+                panic!("Protobuf type and Runtime type mismatch");
+            }
         }
-        RuntimeTypeBox::U32 => {
+        Type::TYPE_GROUP => {
+            unimplemented!()
+        }
+        Type::TYPE_UINT32 => {
             let typed_v = v.to_u32().unwrap();
             value_size(field_number, typed_v, WireType::WireTypeVarint)
         }
-        RuntimeTypeBox::U64 => {
+        Type::TYPE_UINT64 => {
             let typed_v = v.to_u64().unwrap();
             value_size(field_number, typed_v, WireType::WireTypeVarint)
         }
-        RuntimeTypeBox::F32 => 6,
-        RuntimeTypeBox::F64 => 10,
-        RuntimeTypeBox::Bool => {
+        Type::TYPE_INT32 => {
+            let typed_v = v.to_i32().unwrap();
+            value_size(field_number, typed_v, WireType::WireTypeVarint)
+        }
+        Type::TYPE_INT64 => {
+            let typed_v = v.to_i64().unwrap();
+            value_size(field_number, typed_v, WireType::WireTypeVarint)
+        }
+        Type::TYPE_SINT32 => {
+            let typed_v = v.to_i32().unwrap();
+            value_varint_zigzag_size(field_number, typed_v)
+        }
+        Type::TYPE_SINT64 => {
+            let typed_v = v.to_i64().unwrap();
+            value_varint_zigzag_size(field_number, typed_v)
+        }
+        Type::TYPE_FIXED32 => 6,
+        Type::TYPE_FIXED64 => 10,
+        Type::TYPE_SFIXED32 => 6,
+        Type::TYPE_SFIXED64 => 10,
+        Type::TYPE_BOOL => {
             let typed_v = v.to_bool().unwrap();
             value_size(field_number, typed_v, WireType::WireTypeVarint)
         }
-        RuntimeTypeBox::String => {
+        Type::TYPE_STRING => {
             let typed_v = v.to_str().unwrap();
             string_size(field_number, typed_v)
         }
-        RuntimeTypeBox::VecU8 => {
+        Type::TYPE_BYTES => {
             let typed_v = v.to_bytes().unwrap();
             bytes_size(field_number, typed_v)
         }
-        RuntimeTypeBox::Enum(_) => {
-            let enum_v = v.to_enum_value().unwrap();
-            // we don't have a ProtobufEnum here, so just use the raw value
-            value_size(field_number, enum_v, WireType::WireTypeVarint)
-        }
-        RuntimeTypeBox::Message(_) => {
-            let msg_v = v.to_message().unwrap();
-            let len = msg_v.compute_size_dyn();
-            tag_size(field_number) + compute_raw_varint32_size(len) + len
-        }
+        Type::TYPE_FLOAT => 6,
+        Type::TYPE_DOUBLE => 10,
     }
 }
