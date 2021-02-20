@@ -304,40 +304,86 @@ impl Message for DynamicMessage {
             let field_desc = desc
                 .get_field_by_number(field)
                 .expect("Invalid field number at decoding");
+            let field_desc_proto = field_desc.get_proto();
             match field_desc.runtime_field_type() {
                 RuntimeFieldType::Singular(rtb) => {
-                    let val = match rtb {
-                        RuntimeTypeBox::I32 => ReflectValueBox::from(is.read_int32()?),
-                        RuntimeTypeBox::I64 => ReflectValueBox::from(is.read_int64()?),
-                        RuntimeTypeBox::U32 => ReflectValueBox::from(is.read_uint32()?),
-                        RuntimeTypeBox::U64 => ReflectValueBox::from(is.read_uint64()?),
-                        RuntimeTypeBox::F32 => ReflectValueBox::from(is.read_float()?),
-                        RuntimeTypeBox::F64 => ReflectValueBox::from(is.read_double()?),
-                        RuntimeTypeBox::Bool => ReflectValueBox::from(is.read_bool()?),
-                        RuntimeTypeBox::String => ReflectValueBox::from(is.read_string()?),
-                        RuntimeTypeBox::VecU8 => ReflectValueBox::from(is.read_bytes()?),
-                        RuntimeTypeBox::Enum(enum_desc) => {
-                            let enum_num = is.read_int32()?;
-                            ReflectValueBox::from(EnumValueDescriptor::new(
-                                enum_desc,
-                                enum_num as usize, // FIXME: might unsatisfied
-                            ))
+                    let val = match field_desc_proto.get_field_type() {
+                        Type::TYPE_DOUBLE => ReflectValueBox::from(is.read_double()?),
+                        Type::TYPE_FLOAT => ReflectValueBox::from(is.read_float()?),
+                        Type::TYPE_INT64 => ReflectValueBox::from(is.read_int64()?),
+                        Type::TYPE_UINT64 => ReflectValueBox::from(is.read_uint64()?),
+                        Type::TYPE_INT32 => ReflectValueBox::from(is.read_int32()?),
+                        Type::TYPE_FIXED64 => ReflectValueBox::from(is.read_fixed64()?),
+                        Type::TYPE_FIXED32 => ReflectValueBox::from(is.read_fixed32()?),
+                        Type::TYPE_BOOL => ReflectValueBox::from(is.read_bool()?),
+                        Type::TYPE_STRING => ReflectValueBox::from(is.read_string()?),
+                        Type::TYPE_GROUP => {
+                            unimplemented!()
                         }
-                        RuntimeTypeBox::Message(msg_desc) => {
-                            let mut msg_inst = msg_desc.new_instance();
-                            is.incr_recursion()?;
-                            is.merge_message_dyn(msg_inst.as_mut())?;
-                            is.decr_recursion();
-                            ReflectValueBox::from(msg_inst)
+                        Type::TYPE_MESSAGE => {
+                            assert!(matches!(rtb, RuntimeTypeBox::Message(..)));
+                            if let RuntimeTypeBox::Message(msg_desc) = rtb {
+                                let mut msg_inst = msg_desc.new_instance();
+                                is.incr_recursion()?;
+                                is.merge_message_dyn(msg_inst.as_mut())?;
+                                is.decr_recursion();
+                                ReflectValueBox::from(msg_inst)
+                            } else {
+                                panic!("Protobuf type and Runtime type mismatch");
+                            }
                         }
+                        Type::TYPE_BYTES => ReflectValueBox::from(is.read_bytes()?),
+                        Type::TYPE_UINT32 => ReflectValueBox::from(is.read_uint32()?),
+                        Type::TYPE_ENUM => {
+                            assert!(matches!(rtb, RuntimeTypeBox::Enum(..)));
+                            if let RuntimeTypeBox::Enum(enum_desc) = rtb {
+                                let enum_num = is.read_int32()?;
+                                ReflectValueBox::from(EnumValueDescriptor::new(
+                                    enum_desc,
+                                    enum_num as usize, // FIXME: might unsatisfied
+                                ))
+                            } else {
+                                panic!("Protobuf type and Runtime type mismatch");
+                            }
+                        }
+                        Type::TYPE_SFIXED32 => ReflectValueBox::from(is.read_sfixed32()?),
+                        Type::TYPE_SFIXED64 => ReflectValueBox::from(is.read_sfixed64()?),
+                        Type::TYPE_SINT32 => ReflectValueBox::from(is.read_sint32()?),
+                        Type::TYPE_SINT64 => ReflectValueBox::from(is.read_sint64()?),
                     };
                     self.set_field(&field_desc, val);
                 }
                 RuntimeFieldType::Repeated(rtb) => {
                     let mut repeated_mut = self.mut_repeated(&field_desc);
 
-                    match rtb {
-                        RuntimeTypeBox::I32 => match wire_type {
+                    match field_desc_proto.get_field_type() {
+                        Type::TYPE_FLOAT => match wire_type {
+                            WireType::WireTypeFixed32 => {
+                                repeated_mut.push(ReflectValueBox::from(is.read_float()?));
+                            }
+                            WireType::WireTypeLengthDelimited => {
+                                let mut res_vec: Vec<f32> = Vec::default();
+                                is.read_repeated_packed_float_into(&mut res_vec)?;
+                                for i in res_vec {
+                                    repeated_mut.push(ReflectValueBox::from(i));
+                                }
+                            }
+                            _ => return Err(unexpected_wire_type(wire_type)),
+                        },
+                        Type::TYPE_DOUBLE => match wire_type {
+                            WireType::WireTypeFixed64 => {
+                                repeated_mut.push(ReflectValueBox::from(is.read_double()?));
+                            }
+                            WireType::WireTypeLengthDelimited => {
+                                let mut res_vec: Vec<f64> = Vec::default();
+                                is.read_repeated_packed_double_into(&mut res_vec)?;
+                                for i in res_vec {
+                                    repeated_mut.push(ReflectValueBox::from(i));
+                                }
+                            }
+                            _ => return Err(unexpected_wire_type(wire_type)),
+                        },
+                        Type::TYPE_INT32 => match wire_type {
                             WireType::WireTypeVarint => {
                                 repeated_mut.push(ReflectValueBox::from(is.read_int32()?));
                             }
@@ -350,7 +396,7 @@ impl Message for DynamicMessage {
                             }
                             _ => return Err(unexpected_wire_type(wire_type)),
                         },
-                        RuntimeTypeBox::I64 => match wire_type {
+                        Type::TYPE_INT64 => match wire_type {
                             WireType::WireTypeVarint => {
                                 repeated_mut.push(ReflectValueBox::from(is.read_int64()?));
                             }
@@ -363,7 +409,7 @@ impl Message for DynamicMessage {
                             }
                             _ => return Err(unexpected_wire_type(wire_type)),
                         },
-                        RuntimeTypeBox::U32 => match wire_type {
+                        Type::TYPE_UINT32 => match wire_type {
                             WireType::WireTypeVarint => {
                                 repeated_mut.push(ReflectValueBox::from(is.read_uint32()?));
                             }
@@ -376,7 +422,7 @@ impl Message for DynamicMessage {
                             }
                             _ => return Err(unexpected_wire_type(wire_type)),
                         },
-                        RuntimeTypeBox::U64 => match wire_type {
+                        Type::TYPE_UINT64 => match wire_type {
                             WireType::WireTypeVarint => {
                                 repeated_mut.push(ReflectValueBox::from(is.read_uint64()?));
                             }
@@ -389,33 +435,33 @@ impl Message for DynamicMessage {
                             }
                             _ => return Err(unexpected_wire_type(wire_type)),
                         },
-                        RuntimeTypeBox::F32 => match wire_type {
-                            WireType::WireTypeVarint => {
-                                repeated_mut.push(ReflectValueBox::from(is.read_float()?));
+                        Type::TYPE_FIXED32 => match wire_type {
+                            WireType::WireTypeFixed32 => {
+                                repeated_mut.push(ReflectValueBox::from(is.read_fixed32()?));
                             }
                             WireType::WireTypeLengthDelimited => {
-                                let mut res_vec: Vec<f32> = Vec::default();
-                                is.read_repeated_packed_float_into(&mut res_vec)?;
+                                let mut res_vec: Vec<u32> = Vec::default();
+                                is.read_repeated_packed_fixed32_into(&mut res_vec)?;
                                 for i in res_vec {
                                     repeated_mut.push(ReflectValueBox::from(i));
                                 }
                             }
                             _ => return Err(unexpected_wire_type(wire_type)),
                         },
-                        RuntimeTypeBox::F64 => match wire_type {
-                            WireType::WireTypeVarint => {
-                                repeated_mut.push(ReflectValueBox::from(is.read_double()?));
+                        Type::TYPE_FIXED64 => match wire_type {
+                            WireType::WireTypeFixed64 => {
+                                repeated_mut.push(ReflectValueBox::from(is.read_fixed64()?));
                             }
                             WireType::WireTypeLengthDelimited => {
-                                let mut res_vec: Vec<f64> = Vec::default();
-                                is.read_repeated_packed_double_into(&mut res_vec)?;
+                                let mut res_vec: Vec<u64> = Vec::default();
+                                is.read_repeated_packed_fixed64_into(&mut res_vec)?;
                                 for i in res_vec {
                                     repeated_mut.push(ReflectValueBox::from(i));
                                 }
                             }
                             _ => return Err(unexpected_wire_type(wire_type)),
                         },
-                        RuntimeTypeBox::Bool => match wire_type {
+                        Type::TYPE_BOOL => match wire_type {
                             WireType::WireTypeVarint => {
                                 repeated_mut.push(ReflectValueBox::from(is.read_bool()?));
                             }
@@ -428,25 +474,90 @@ impl Message for DynamicMessage {
                             }
                             _ => return Err(unexpected_wire_type(wire_type)),
                         },
-                        RuntimeTypeBox::String => {
+                        Type::TYPE_STRING => {
                             repeated_mut.push(ReflectValueBox::from(is.read_string()?));
                         }
-                        RuntimeTypeBox::VecU8 => {
+                        Type::TYPE_GROUP => {
+                            unimplemented!();
+                        }
+                        Type::TYPE_SFIXED32 => match wire_type {
+                            WireType::WireTypeFixed32 => {
+                                repeated_mut.push(ReflectValueBox::from(is.read_sfixed32()?));
+                            }
+                            WireType::WireTypeLengthDelimited => {
+                                let mut res_vec: Vec<i32> = Vec::default();
+                                is.read_repeated_packed_sfixed32_into(&mut res_vec)?;
+                                for i in res_vec {
+                                    repeated_mut.push(ReflectValueBox::from(i));
+                                }
+                            }
+                            _ => return Err(unexpected_wire_type(wire_type)),
+                        },
+                        Type::TYPE_SFIXED64 => match wire_type {
+                            WireType::WireTypeFixed64 => {
+                                repeated_mut.push(ReflectValueBox::from(is.read_sfixed64()?));
+                            }
+                            WireType::WireTypeLengthDelimited => {
+                                let mut res_vec: Vec<i64> = Vec::default();
+                                is.read_repeated_packed_sfixed64_into(&mut res_vec)?;
+                                for i in res_vec {
+                                    repeated_mut.push(ReflectValueBox::from(i));
+                                }
+                            }
+                            _ => return Err(unexpected_wire_type(wire_type)),
+                        },
+                        Type::TYPE_SINT32 => match wire_type {
+                            WireType::WireTypeVarint => {
+                                repeated_mut.push(ReflectValueBox::from(is.read_sint32()?));
+                            }
+                            WireType::WireTypeLengthDelimited => {
+                                let mut res_vec: Vec<i32> = Vec::default();
+                                is.read_repeated_packed_sint32_into(&mut res_vec)?;
+                                for i in res_vec {
+                                    repeated_mut.push(ReflectValueBox::from(i));
+                                }
+                            }
+                            _ => return Err(unexpected_wire_type(wire_type)),
+                        },
+                        Type::TYPE_SINT64 => match wire_type {
+                            WireType::WireTypeVarint => {
+                                repeated_mut.push(ReflectValueBox::from(is.read_sint64()?));
+                            }
+                            WireType::WireTypeLengthDelimited => {
+                                let mut res_vec: Vec<i64> = Vec::default();
+                                is.read_repeated_packed_sint64_into(&mut res_vec)?;
+                                for i in res_vec {
+                                    repeated_mut.push(ReflectValueBox::from(i));
+                                }
+                            }
+                            _ => return Err(unexpected_wire_type(wire_type)),
+                        },
+                        Type::TYPE_BYTES => {
                             repeated_mut.push(ReflectValueBox::from(is.read_bytes()?));
                         }
-                        RuntimeTypeBox::Enum(enum_desc) => {
-                            let enum_num = is.read_int32()?;
-                            let enum_val = ReflectValueBox::from(EnumValueDescriptor::new(
-                                enum_desc,
-                                enum_num.try_into().unwrap(), // FIXME: might unsatisfied
-                            ));
-                            repeated_mut.push(enum_val);
+                        Type::TYPE_ENUM => {
+                            assert!(matches!(rtb, RuntimeTypeBox::Enum(..)));
+                            if let RuntimeTypeBox::Enum(enum_desc) = rtb {
+                                let enum_num = is.read_int32()?;
+                                let enum_val = ReflectValueBox::from(EnumValueDescriptor::new(
+                                    enum_desc,
+                                    enum_num.try_into().unwrap(),
+                                ));
+                                repeated_mut.push(enum_val);
+                            } else {
+                                panic!("Protobuf type and Runtime type mismatch");
+                            }
                         }
-                        RuntimeTypeBox::Message(msg_desc) => {
-                            let mut msg_inst = msg_desc.new_instance();
-                            is.merge_message_dyn(msg_inst.as_mut())?;
-                            let msg_val = ReflectValueBox::from(msg_inst);
-                            repeated_mut.push(msg_val);
+                        Type::TYPE_MESSAGE => {
+                            assert!(matches!(rtb, RuntimeTypeBox::Message(..)));
+                            if let RuntimeTypeBox::Message(msg_desc) = rtb {
+                                let mut msg_inst = msg_desc.new_instance();
+                                is.merge_message_dyn(msg_inst.as_mut())?;
+                                let msg_val = ReflectValueBox::from(msg_inst);
+                                repeated_mut.push(msg_val);
+                            } else {
+                                panic!("Protobuf type and Runtime type mismatch");
+                            }
                         }
                     }
                 }
