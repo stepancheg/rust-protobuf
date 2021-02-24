@@ -189,6 +189,10 @@ impl DynamicMessage {
     /// set all fields to default value
     pub fn set_fields_default(&mut self) {
         self.init_fields();
+        let syntax = self.descriptor.file_descriptor_proto().get_syntax();
+        if syntax != "proto3" {
+            return; // for proto2, default value is unset
+        }
         if !self.fields.is_empty() {
             for field_desc in self.descriptor.fields() {
                 self.fields[field_desc.index].set_default_for_merge(&field_desc);
