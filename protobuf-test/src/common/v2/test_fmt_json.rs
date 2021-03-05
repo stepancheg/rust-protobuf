@@ -302,6 +302,29 @@ fn test_always_output_default_values() {
 }
 
 #[test]
+fn test_always_output_default_values_for_repeated_fields() {
+    let m = TestIncludeDefaultValuesWithRepeatedField::new();
+    let json = json::print_to_string_with_options(
+        &m,
+        &json::PrintOptions {
+            always_output_default_values: false,
+            ..Default::default()
+        },
+    )
+    .unwrap();
+    assert_eq!("{}", json);
+    let json = json::print_to_string_with_options(
+        &m,
+        &json::PrintOptions {
+            always_output_default_values: true,
+            ..Default::default()
+        },
+    )
+    .unwrap();
+    assert_eq!("{\"rrr\": []}", json);
+}
+
+#[test]
 fn test_ignore_unknown_fields() {
     let mut expected = TestTypes::new();
     expected.set_bool_singular(true);
