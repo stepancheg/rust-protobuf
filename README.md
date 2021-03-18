@@ -64,7 +64,7 @@ if you need help with rust-protobuf.
 
 ## Copy-on-write
 
-Rust-protobuf can be used with [bytes crate](https://github.com/carllerche/bytes).
+Rust-protobuf can be used with [bytes crate](https://github.com/tokio-rs/bytes).
 
 To enable `Bytes` you need to:
 
