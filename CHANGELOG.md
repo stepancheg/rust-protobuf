@@ -33,6 +33,10 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.22] - Unreleased
 
+## [2.22.1] - 2021-03-18
+
+- Work around [some breaking changes in Rust nightly](https://github.com/stepancheg/rust-protobuf/issues/551)
+
 ## [2.22.0] - 2021-02-06
 
 - Slightly better prefix stripping algorithm in pure rust codegen: "." is now considered to be a prefix for "foo/bar.proto".
