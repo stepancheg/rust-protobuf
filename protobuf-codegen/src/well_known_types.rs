@@ -119,6 +119,8 @@ pub(crate) fn gen_well_known_types_mod(
 
         w.write_line("");
         w.write_line("#![allow(unused_attributes)]");
+        // TODO: figure out how to fix rustfmt properly
+        w.write_line("#[allow(soft_unstable)]");
         w.write_line("#![rustfmt::skip]");
 
         w.write_line("");

@@ -7,6 +7,7 @@
 #![allow(clippy::all)]
 
 #![allow(unused_attributes)]
+#[allow(soft_unstable)]
 #![rustfmt::skip]
 
 #![allow(box_pointers)]

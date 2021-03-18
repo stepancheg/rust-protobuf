@@ -62,6 +62,8 @@ impl<'a> CodeWriter<'a> {
         self.write_line("#![allow(clippy::all)]");
         self.write_line("");
         self.write_line("#![allow(unused_attributes)]");
+        // TODO: figure out how to fix rustfmt properly
+        self.write_line("#[allow(soft_unstable)]");
         self.write_line("#![rustfmt::skip]");
         self.write_line("");
         self.write_line("#![allow(box_pointers)]");
