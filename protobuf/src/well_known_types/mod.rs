@@ -5,7 +5,6 @@
 //! [This document](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf) describes these types.
 
 #![allow(unused_attributes)]
-#[allow(soft_unstable)]
 #![rustfmt::skip]
 
 mod any;
