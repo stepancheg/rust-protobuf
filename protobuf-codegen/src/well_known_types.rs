@@ -119,7 +119,7 @@ pub(crate) fn gen_well_known_types_mod(
 
         w.write_line("");
         w.write_line("#![allow(unused_attributes)]");
-        w.write_line("#![rustfmt::skip]");
+        w.write_line("#![cfg_attr(rustfmt, rustfmt::skip)]");
 
         w.write_line("");
         for m in WELL_KNOWN_TYPES_PROTO_FILE_NAMES {

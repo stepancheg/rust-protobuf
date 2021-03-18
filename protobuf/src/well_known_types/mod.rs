@@ -5,7 +5,7 @@
 //! [This document](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf) describes these types.
 
 #![allow(unused_attributes)]
-#![rustfmt::skip]
+#![cfg_attr(rustfmt, rustfmt::skip)]
 
 mod any;
 mod api;
