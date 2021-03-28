@@ -61,6 +61,10 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - impl `IntoIterator` for `&mut RepeatedField<T>` and for `RepeatedField<T>`
 - update `bytes` crate dependency version from 0.5 to 0.6
 
+## [2.18.2] - 2021-03-28
+
+- Backport `rust::skip` workaround from 2.22.1
+
 ## [2.18.1] - 2020-11-22
 
 - [map field referencing nested messages](https://github.com/stepancheg/rust-protobuf/issues/531)
