@@ -39,7 +39,7 @@ impl ProtobufAbsolutePath {
             "path is not absolute: `{}`",
             path
         );
-        assert!(!path.ends_with("."), path);
+        assert!(!path.ends_with("."), "{}", path);
         ProtobufAbsolutePath { path }
     }
 
