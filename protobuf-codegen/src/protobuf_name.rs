@@ -245,8 +245,8 @@ impl ProtobufAbsolutePath {
 
     /// From string.
     pub fn new(path: String) -> ProtobufAbsolutePath {
-        assert!(path.is_empty() || path.starts_with("."), path);
-        assert!(!path.ends_with("."), path);
+        assert!(path.is_empty() || path.starts_with("."), "{}", path);
+        assert!(!path.ends_with("."), "{}", path);
         ProtobufAbsolutePath { path }
     }
 
