@@ -176,7 +176,9 @@ fn super_linter_job() -> Job {
             // Too many false positives
             .env("VALIDATE_JSCPD", "false")
             // Too many dull reports like how we should pluralise variable names
-            .env("VALIDATE_PROTOBUF", "false"),
+            .env("VALIDATE_PROTOBUF", "false")
+            // Clippy reports too many false positives
+            .env("VALIDATE_RUST_CLIPPY", "false"),
     );
     Job {
         id: "super-linter".to_owned(),

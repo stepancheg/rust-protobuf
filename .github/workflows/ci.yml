@@ -320,6 +320,7 @@ jobs:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   VALIDATE_JSCPD: false
                   VALIDATE_PROTOBUF: false
+                  VALIDATE_RUST_CLIPPY: false
     rustfmt-check:
         name: rustfmt check
         runs-on: ubuntu-latest
