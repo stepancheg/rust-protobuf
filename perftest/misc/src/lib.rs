@@ -1,3 +1,5 @@
+// Feature name changed
+#![cfg_attr(rustc_nightly, feature(bench_black_box))]
 #![cfg_attr(rustc_nightly, feature(test))]
 
 #[cfg(not(rustc_nightly))]
