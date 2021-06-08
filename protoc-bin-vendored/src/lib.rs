@@ -40,6 +40,7 @@ pub fn protoc_bin_path() -> Result<PathBuf, Error> {
         ("linux", "aarch64") => "protoc-linux-aarch_64",
         ("linux", "powerpc64") => "protoc-linux-ppcle_64",
         ("macos", "x86_64") => "protoc-osx-x86_64",
+        ("macos", "aarch64") => "protoc-osx-x86_64",
         ("windows", _) => "protoc-win32.exe",
         (os, arch) => return Err(Error { os, arch }),
     };
