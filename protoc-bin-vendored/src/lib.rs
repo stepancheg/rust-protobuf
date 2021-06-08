@@ -40,6 +40,12 @@ pub fn protoc_bin_path() -> Result<PathBuf, Error> {
         ("linux", "aarch64") => "protoc-linux-aarch_64",
         ("linux", "powerpc64") => "protoc-linux-ppcle_64",
         ("macos", "x86_64") => "protoc-osx-x86_64",
+        // Stopgap support for Apple M1.
+        // Since M1 macs can run the x86_64 binary using Rosetta emulation,
+        // this updates protoc_bin_path to reuse the protoc-osx-x86_64 binary for macos aarch64.
+        // Once Google provides precompiled binaries for Apple ARM,
+        // this should be updated to use that instead.
+        ("macos", "aarch64") => "protoc-osx-x86_64",
         ("windows", _) => "protoc-win32.exe",
         (os, arch) => return Err(Error { os, arch }),
     };
