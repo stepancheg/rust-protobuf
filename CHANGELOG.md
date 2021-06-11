@@ -31,7 +31,13 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - `generate_getter` option to disable generation of getters functions.
 - [Flush `CodedOutputStream` on `drop`](https://github.com/stepancheg/rust-protobuf/commit/0e9cc5964c2731a771725bcf70125d3eb1c273b3)
 
-## [2.23] - Unreleased
+## [2.25] - Unreleased
+
+## [2.24.0] - 2021-06-11
+
+- [Stopgap support for Apple M1 for protoc-bin-vendored](https://github.com/stepancheg/rust-protobuf/pull/556)
+
+## [2.23.0] - 2021-04-24
 
 - Update bundled `protoc` version to 3.15.8
 
