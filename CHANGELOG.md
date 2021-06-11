@@ -33,9 +33,13 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.25] - Unreleased
 
-## [2.24.0] - 2021-06-11
+## [2.24.1] - 2021-06-11
 
 - [Stopgap support for Apple M1 for protoc-bin-vendored](https://github.com/stepancheg/rust-protobuf/pull/556)
+
+## [2.24.0] - 2021-06-11
+
+- Accidentally published version roughtly equivalent to 2.23.0
 
 ## [2.23.0] - 2021-04-24
 
