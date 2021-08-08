@@ -266,7 +266,7 @@ impl<'ignore> BufReadIter<'ignore> {
         let rem = self.fill_buf()?;
 
         let len = cmp::min(rem.len(), buf.len());
-        &mut buf[..len].copy_from_slice(&rem[..len]);
+        buf[..len].copy_from_slice(&rem[..len]);
         self.pos_within_buf += len;
         Ok(len)
     }
