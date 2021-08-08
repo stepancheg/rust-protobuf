@@ -396,6 +396,18 @@ impl<T: PartialEq> PartialEq for RepeatedField<T> {
 
 impl<T: Eq> Eq for RepeatedField<T> {}
 
+impl<T: PartialEq> PartialEq<[T]> for RepeatedField<T> {
+    fn eq(&self, other: &[T]) -> bool {
+        self.as_slice() == other
+    }
+}
+
+impl<T: PartialEq> PartialEq<RepeatedField<T>> for [T] {
+    fn eq(&self, other: &RepeatedField<T>) -> bool {
+        self == other.as_slice()
+    }
+}
+
 impl<T: PartialEq> RepeatedField<T> {
     /// True iff this container contains given element.
     #[inline]
@@ -455,6 +467,22 @@ impl<T> IndexMut<usize> for RepeatedField<T> {
     }
 }
 
+impl<T> Extend<T> for RepeatedField<T> {
+    fn extend<I: IntoIterator<Item = T>>(&mut self, iter: I) {
+        self.vec.truncate(self.len);
+        self.vec.extend(iter);
+        self.len = self.vec.len();
+    }
+}
+
+impl<'a, T: Copy + 'a> Extend<&'a T> for RepeatedField<T> {
+    fn extend<I: IntoIterator<Item = &'a T>>(&mut self, iter: I) {
+        self.vec.truncate(self.len);
+        self.vec.extend(iter);
+        self.len = self.vec.len();
+    }
+}
+
 impl<T: fmt::Debug> fmt::Debug for RepeatedField<T> {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -507,5 +535,29 @@ mod test {
         v.push("bb".to_string());
         v.clear();
         assert_eq!("".to_string(), *v.push_default());
+    }
+
+    #[test]
+    fn extend_values() {
+        let mut r = RepeatedField::new();
+        r.push(10);
+        r.push(20);
+        r.clear();
+        // self-check
+        assert_eq!(2, r.vec.len());
+        r.extend(vec![30, 40]);
+        assert_eq!(&[30, 40][..], &r);
+    }
+
+    #[test]
+    fn extend_copy() {
+        let mut r = RepeatedField::new();
+        r.push(10);
+        r.push(20);
+        r.clear();
+        // self-check
+        assert_eq!(2, r.vec.len());
+        r.extend(&[30, 40]);
+        assert_eq!(&[30, 40][..], &r);
     }
 }
