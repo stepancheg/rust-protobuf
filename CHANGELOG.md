@@ -33,6 +33,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.25] - Unreleased
 
+## [2.25.0] - Unreleased
+
 - [Implement `Extend` and more `PartialEq` for `RepeatedField`](https://github.com/stepancheg/rust-protobuf/issues/561)
 - [Make code generation deterministic](https://github.com/stepancheg/rust-protobuf/issues/562)
 
