@@ -33,6 +33,10 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.25] - Unreleased
 
+## [2.24.2] - 2021-08-08
+
+- [Fix reflective enum access](https://github.com/stepancheg/rust-protobuf/issues/564)
+
 ## [2.24.1] - 2021-06-11
 
 - [Stopgap support for Apple M1 for protoc-bin-vendored](https://github.com/stepancheg/rust-protobuf/pull/556)
