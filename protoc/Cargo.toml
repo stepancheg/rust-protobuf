@@ -1,6 +1,6 @@
 [package]
 name = "protoc"
-version = "2.24.1"
+version = "2.24.2"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 license = "MIT"
 homepage = "https://github.com/stepancheg/rust-protobuf/tree/master/protoc/"
