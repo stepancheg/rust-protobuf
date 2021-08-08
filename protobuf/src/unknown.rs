@@ -398,7 +398,7 @@ mod test {
     fn unknown_fields_iteration_order_deterministic() {
         let mut u_1 = UnknownFields::new();
         let mut u_2 = UnknownFields::new();
-        for u in [&mut u_1, &mut u_2] {
+        for u in &mut [&mut u_1, &mut u_2] {
             u.add_fixed32(10, 20);
             u.add_varint(30, 40);
             u.add_fixed64(50, 60);
