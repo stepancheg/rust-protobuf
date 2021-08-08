@@ -1,0 +1,16 @@
+syntax = "proto2";
+
+import "rustproto.proto";
+option (rustproto.generate_accessors_all) = true;
+
+message Issue564 {
+  enum TestEnum {
+    TEST_ENUM_VALUE_A = 0;
+    TEST_ENUM_VALUE_B = 1;
+  }
+
+  message TestMessage {}
+
+  optional TestEnum ee = 1;
+  optional TestMessage mm = 2;
+}
