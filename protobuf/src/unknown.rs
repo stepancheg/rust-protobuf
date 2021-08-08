@@ -2,6 +2,7 @@ use std::collections::hash_map;
 use std::collections::hash_map::DefaultHasher;
 use std::collections::HashMap;
 use std::default::Default;
+use std::hash::BuildHasherDefault;
 use std::hash::Hash;
 use std::hash::Hasher;
 use std::slice;
@@ -213,9 +214,18 @@ impl<'o> Iterator for UnknownValuesIter<'o> {
 #[derive(Clone, PartialEq, Eq, Debug, Default)]
 pub struct UnknownFields {
     /// The map.
-    // option is needed, because HashMap constructor performs allocation,
-    // and very expensive
-    fields: Option<Box<HashMap<u32, UnknownValues>>>,
+    //
+    // `Option` is needed, because HashMap constructor performs allocation,
+    // and very expensive.
+    //
+    // We use "default hasher" to make iteration order deterministic.
+    // Which is used to make codegen output deterministic in presence of unknown fields
+    // (e. g. file options are represented as unknown fields).
+    // Using default hasher is suboptimal, because it makes unknown fields less safe.
+    // Note, Google Protobuf C++ simply uses linear map (which can exploitable the same way),
+    // and Google Protobuf Java uses tree map to store unknown fields
+    // (which is more expensive than hashmap).
+    fields: Option<Box<HashMap<u32, UnknownValues, BuildHasherDefault<DefaultHasher>>>>,
 }
 
 /// Very simple hash implementation of `Hash` for `UnknownFields`.
@@ -382,5 +392,24 @@ mod test {
         }
 
         assert_eq!(hash(&unknown_fields_1), hash(&unknown_fields_2));
+    }
+
+    #[test]
+    fn unknown_fields_iteration_order_deterministic() {
+        let mut u_1 = UnknownFields::new();
+        let mut u_2 = UnknownFields::new();
+        for u in [&mut u_1, &mut u_2] {
+            u.add_fixed32(10, 20);
+            u.add_varint(30, 40);
+            u.add_fixed64(50, 60);
+            u.add_length_delimited(70, Vec::new());
+            u.add_varint(80, 90);
+            u.add_fixed32(11, 22);
+            u.add_fixed64(33, 44);
+        }
+
+        let items_1: Vec<_> = u_1.iter().collect();
+        let items_2: Vec<_> = u_2.iter().collect();
+        assert_eq!(items_1, items_2);
     }
 }
