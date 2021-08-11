@@ -605,7 +605,7 @@ impl<'a> Lexer<'a> {
             if let Some(c) = self.next_char_if_in("+-") {
                 s.push(c);
             }
-            s.push(self.next_char_expect(is_digit_1_9, LexerError::IncorrectJsonNumber)?);
+            s.push(self.next_char_expect(is_digit, LexerError::IncorrectJsonNumber)?);
             while let Some(c) = self.next_char_if(is_digit) {
                 s.push(c);
             }
