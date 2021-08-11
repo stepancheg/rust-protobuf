@@ -605,7 +605,7 @@ impl<'a> Lexer<'a> {
             if let Some(c) = self.next_char_if_in("+-") {
                 s.push(c);
             }
-            s.push(self.next_char_expect(is_digit_1_9, LexerError::IncorrectJsonNumber)?);
+            s.push(self.next_char_expect(is_digit, LexerError::IncorrectJsonNumber)?);
             while let Some(c) = self.next_char_if(is_digit) {
                 s.push(c);
             }
@@ -715,5 +715,12 @@ mod test {
         let msg = r#"12.3"#;
         let mess = lex(msg, |p| p.next_token_inner());
         assert_eq!(Token::FloatLit(12.3), mess);
+    }
+
+    #[test]
+    fn test_lexer_float_lit_leading_zeros_in_exp() {
+        let msg = r#"1e00009"#;
+        let mess = lex(msg, |p| p.next_token_inner());
+        assert_eq!(Token::FloatLit(1_000_000_000.0), mess);
     }
 }
