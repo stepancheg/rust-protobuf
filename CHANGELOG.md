@@ -33,7 +33,11 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.25] - Unreleased
 
-## [2.25.0] - Unreleased
+## [2.25.1] - 2021-08-21
+
+- [Allow leading zeros in float literals exponent](https://github.com/stepancheg/rust-protobuf/pull/565)
+
+## [2.25.0] - 2021-08-08
 
 - [Implement `Extend` and more `PartialEq` for `RepeatedField`](https://github.com/stepancheg/rust-protobuf/issues/561)
 - [Make code generation deterministic](https://github.com/stepancheg/rust-protobuf/issues/562)
