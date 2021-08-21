@@ -1,6 +1,6 @@
 [package]
 name = "protobuf-codegen"
-version = "2.25.0"
+version = "2.25.1"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 license = "MIT"
 homepage = "https://github.com/stepancheg/rust-protobuf/"
@@ -17,7 +17,7 @@ See `protoc-rust` and `protobuf-codegen-pure` crates.
 bench = false
 
 [dependencies]
-protobuf = { path = "../protobuf", version = "=2.25.0" }
+protobuf = { path = "../protobuf", version = "=2.25.1" }
 
 [[bin]]
 
