@@ -5,6 +5,7 @@ use super::test_basic_pb::*;
 use protobuf::descriptor;
 use protobuf::reflect;
 use protobuf::CodedInputStream;
+use protobuf::CodedOutputStream;
 use protobuf::Message;
 use protobuf::ProtobufEnum;
 
@@ -301,4 +302,15 @@ fn test_parse_length_delimited_from_network_smoke() {
     let test1: Test1 = is.read_message().expect("read_message");
     assert_eq!(10, test1.get_a());
     is.check_eof().expect("check_eof");
+}
+
+/// Test if providing a smaller buffer, protobuf can detect and report error.
+#[test]
+fn test_serialize_too_large_message() {
+    let mut test1 = Test1::new();
+    test1.set_a(150);
+    let len = test1.compute_size();
+    let mut bytes = vec![0; len as usize - 1];
+    let mut s = CodedOutputStream::bytes(&mut bytes);
+    test1.write_to_with_cached_sizes(&mut s).unwrap_err();
 }

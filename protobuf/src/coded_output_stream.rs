@@ -7,6 +7,7 @@ use crate::zigzag::encode_zig_zag_64;
 use crate::Message;
 use crate::ProtobufEnum;
 use crate::ProtobufEnumOrUnknown;
+use crate::ProtobufError;
 use crate::ProtobufResult;
 use crate::UnknownFields;
 use crate::UnknownValueRef;
@@ -134,7 +135,10 @@ impl<'a> CodedOutputStream<'a> {
                 self.position = 0;
             },
             OutputTarget::Bytes => {
-                panic!("refresh_buffer must not be called on CodedOutputStream created from slice");
+                return Err(ProtobufError::IoError(io::Error::new(
+                    io::ErrorKind::Other,
+                    "given slice is too small to serialize the message",
+                )));
             }
         }
         Ok(())
