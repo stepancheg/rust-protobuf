@@ -295,3 +295,14 @@ fn test_parse_length_delimited_from_network_smoke() {
     let test1: Test1 = parse_length_delimited_from_reader(&mut tcp_stream).expect("parse...");
     assert_eq!(10, test1.get_a());
 }
+
+/// Test if providing a smaller buffer, protobuf can detect and report error.
+#[test]
+fn test_serialize_too_large_message() {
+    let mut test1 = Test1::new();
+    test1.set_a(150);
+    let len = test1.compute_size();
+    let mut bytes = vec![0; len as usize - 1];
+    let mut s = CodedOutputStream::bytes(&mut bytes);
+    test1.write_to_with_cached_sizes(&mut s).unwrap_err();
+}
