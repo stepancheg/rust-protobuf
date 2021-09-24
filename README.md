@@ -163,6 +163,14 @@ import "rustproto.proto";
 option (rustproto.serde_derive_all) = true;
 ```
 
+2. Make sure to enable the `with-serde` feature in your Cargo.toml
+
+```toml
+[features]
+default = ["with-serde"]
+with-serde = ["protobuf/with-serde"]
+```
+
 You may now `Serialize` and `Deserialize` messages:
 
 ```rust
