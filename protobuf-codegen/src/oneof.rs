@@ -78,12 +78,12 @@ impl<'a> OneofField<'a> {
 
 #[derive(Clone)]
 pub(crate) struct OneofVariantGen<'a> {
-    oneof: &'a OneofGen<'a>,
-    variant: OneofVariantWithContext<'a>,
+    _oneof: &'a OneofGen<'a>,
+    _variant: OneofVariantWithContext<'a>,
     oneof_field: OneofField<'a>,
     pub field: FieldGen<'a>,
     path: String,
-    customize: Customize,
+    _customize: Customize,
 }
 
 impl<'a> OneofVariantGen<'a> {
@@ -95,8 +95,8 @@ impl<'a> OneofVariantGen<'a> {
         customize: Customize,
     ) -> OneofVariantGen<'a> {
         OneofVariantGen {
-            oneof,
-            variant: variant.clone(),
+            _oneof: oneof,
+            _variant: variant.clone(),
             field: field.clone(),
             path: format!(
                 "{}::{}",
@@ -109,7 +109,7 @@ impl<'a> OneofVariantGen<'a> {
                 field.oneof().elem.clone(),
                 oneof.message.root_scope,
             ),
-            customize,
+            _customize: customize,
         }
     }
 
@@ -128,7 +128,6 @@ pub(crate) struct OneofGen<'a> {
     message: &'a MessageGen<'a>,
     pub oneof: OneofWithContext<'a>,
     type_name: RustType,
-    lite_runtime: bool,
     customize: Customize,
 }
 
@@ -143,7 +142,6 @@ impl<'a> OneofGen<'a> {
             message,
             oneof,
             type_name: RustType::Oneof(rust_name.to_string()),
-            lite_runtime: message.lite_runtime,
             customize: customize.clone(),
         }
     }

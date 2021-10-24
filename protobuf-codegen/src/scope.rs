@@ -395,7 +395,7 @@ impl<'a> EnumWithScope<'a> {
             .get_value()
             .iter()
             .map(|v| EnumValueWithContext {
-                en: self.clone(),
+                _en: self.clone(),
                 proto: v,
             })
             .collect()
@@ -412,7 +412,7 @@ impl<'a> EnumWithScope<'a> {
 
 #[derive(Clone, Debug)]
 pub(crate) struct EnumValueWithContext<'a> {
-    pub en: EnumWithScope<'a>,
+    _en: EnumWithScope<'a>,
     pub proto: &'a EnumValueDescriptorProto,
 }
 
