@@ -33,6 +33,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.25] - Unreleased
 
+- [don't panic on short buffer](https://github.com/stepancheg/rust-protobuf/pull/571)
+
 ## [2.25.1] - 2021-08-21
 
 - [Allow leading zeros in float literals exponent](https://github.com/stepancheg/rust-protobuf/pull/565)
