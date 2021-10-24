@@ -14,7 +14,7 @@ pub(crate) struct DynamicEnumDescriptor {
     file_descriptor_proto: Arc<FileDescriptorProto>,
     path: MessagePath,
     enum_index: usize,
-    pub values: Vec<DynamicEnumValueDescriptor>,
+    pub(crate) _values: Vec<DynamicEnumValueDescriptor>,
 
     pub(crate) indices: EnumIndex<String>,
 }
@@ -50,7 +50,7 @@ impl DynamicEnumDescriptor {
             file_descriptor_proto: proto,
             path: path.clone(),
             enum_index,
-            values,
+            _values: values,
             indices,
         }
     }

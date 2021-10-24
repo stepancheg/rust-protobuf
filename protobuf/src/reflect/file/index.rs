@@ -9,17 +9,17 @@ pub(crate) struct FileIndexMessageEntry {
     pub path: MessagePath,
     pub name_to_package: String,
     pub full_name: String,
-    pub parent: Option<usize>,
+    pub _parent: Option<usize>,
     pub nested_messages: Vec<usize>,
-    pub nested_enums: Vec<usize>,
+    pub _nested_enums: Vec<usize>,
     pub map_entry: bool,
     pub first_enum_index: usize,
 }
 
 #[derive(Debug)]
 pub(crate) struct FileIndexEnumEntry {
-    pub message_path: MessagePath,
-    pub enum_index: usize,
+    pub _message_path: MessagePath,
+    pub _enum_index: usize,
     pub name_to_package: String,
 }
 
@@ -45,8 +45,8 @@ impl FileIndex {
         // Top-level enums start with zero
         for (_, e) in file.enum_type.iter().enumerate() {
             index.enums.push(FileIndexEnumEntry {
-                message_path: MessagePath(Vec::new()),
-                enum_index: index.enums.len(),
+                _message_path: MessagePath(Vec::new()),
+                _enum_index: index.enums.len(),
                 name_to_package: e.get_name().to_owned(),
             });
         }
@@ -78,17 +78,17 @@ impl FileIndex {
             path: path.clone(),
             name_to_package: String::new(),
             full_name: String::new(),
-            parent,
+            _parent: parent,
             nested_messages: Vec::with_capacity(message.nested_type.len()),
-            nested_enums: Vec::with_capacity(message.enum_type.len()), // TODO
+            _nested_enums: Vec::with_capacity(message.enum_type.len()), // TODO
             map_entry: message.options.get_or_default().get_map_entry(),
             first_enum_index: self.enums.len(),
         });
 
         for (_, e) in message.enum_type.iter().enumerate() {
             self.enums.push(FileIndexEnumEntry {
-                message_path: path.clone(),
-                enum_index: self.enums.len(),
+                _message_path: path.clone(),
+                _enum_index: self.enums.len(),
                 name_to_package: concat_paths(&name_to_package, e.get_name()),
             });
         }

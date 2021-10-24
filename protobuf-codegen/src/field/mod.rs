@@ -285,7 +285,7 @@ impl<'a> RepeatedField<'a> {
 
 #[derive(Clone)]
 pub struct MapField<'a> {
-    message: MessageWithScope<'a>,
+    _message: MessageWithScope<'a>,
     key: FieldElem<'a>,
     value: FieldElem<'a>,
 }
@@ -552,7 +552,7 @@ fn field_elem<'a>(
 
 #[derive(Clone)]
 pub(crate) struct FieldGen<'a> {
-    root_scope: &'a RootScope<'a>,
+    _root_scope: &'a RootScope<'a>,
     syntax: Syntax,
     pub proto_field: FieldWithContext<'a>,
     // field name in generated code
@@ -620,7 +620,7 @@ impl<'a> FieldGen<'a> {
                     map_entry: Some(key_value),
                     ..
                 }) => FieldKind::Map(MapField {
-                    message: message.clone(),
+                    _message: message.clone(),
                     key: key_value.0.clone(),
                     value: key_value.1.clone(),
                 }),
@@ -660,7 +660,7 @@ impl<'a> FieldGen<'a> {
         };
 
         FieldGen {
-            root_scope,
+            _root_scope: root_scope,
             syntax: field.message.get_scope().file_scope.syntax(),
             rust_name: rust_field_name_for_protobuf_field_name(&field.field.get_name()),
             proto_type: field.field.get_proto().get_field_type(),

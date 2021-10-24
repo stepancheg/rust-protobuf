@@ -13,7 +13,7 @@ pub(crate) enum GeneratedFieldAccessor {
 /// Should not be used directly.
 #[derive(Debug)]
 pub struct FieldAccessor {
-    pub(crate) name: &'static str,
+    pub(crate) _name: &'static str,
     pub(crate) accessor: GeneratedFieldAccessor,
 }
 
@@ -36,7 +36,7 @@ impl GeneratedFieldAccessor {
 impl FieldAccessor {
     pub(crate) fn new_v2(name: &'static str, accessor: AccessorV2) -> FieldAccessor {
         FieldAccessor {
-            name,
+            _name: name,
             accessor: GeneratedFieldAccessor::V2(accessor),
         }
     }
