@@ -30,6 +30,7 @@ mod convert;
 
 use std::error::Error;
 use std::fmt;
+use std::fmt::Formatter;
 use std::fs;
 use std::io;
 use std::io::Read;
@@ -160,6 +161,15 @@ struct FileDescriptorPair {
 enum CodegenError {
     ParserErrorWithLocation(parser::ParserErrorWithLocation),
     ConvertError(convert::ConvertError),
+}
+
+impl fmt::Display for CodegenError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        match self {
+            CodegenError::ParserErrorWithLocation(_) => write!(f, "Parse error"),
+            CodegenError::ConvertError(_) => write!(f, "Could not typecheck parsed file"),
+        }
+    }
 }
 
 impl From<parser::ParserErrorWithLocation> for CodegenError {
