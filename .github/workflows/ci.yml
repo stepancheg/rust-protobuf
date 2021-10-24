@@ -228,8 +228,8 @@ jobs:
             - name: test protoc
               run: protoc/test.sh
               shell: bash
-    linux-1-44-1-all-features:
-        name: linux 1.44.1 (all features)
+    linux-1-52-1-all-features:
+        name: linux 1.52.1 (all features)
         runs-on: ubuntu-latest
         env:
             RUST_BACKTRACE: 1
@@ -240,7 +240,7 @@ jobs:
               uses: actions-rs/toolchain@v1
               with:
                   profile: minimal
-                  toolchain: 1.44.1
+                  toolchain: 1.52.1
                   override: true
             - name: Cache protobuf
               uses: actions/cache@v2
