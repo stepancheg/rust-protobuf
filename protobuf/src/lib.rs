@@ -1,7 +1,7 @@
 //! Library to read and write protocol buffers data.
 
 #![deny(missing_docs)]
-#![deny(broken_intra_doc_links)]
+#![deny(rustdoc::broken_intra_doc_links)]
 
 #[cfg(feature = "bytes")]
 extern crate bytes;

@@ -12,7 +12,7 @@
 //! * `protoc-rust` crate (codegen which depends on `protoc` binary for parsing)
 //! * `protobuf-codegen-pure` crate
 
-#![deny(broken_intra_doc_links)]
+#![deny(rustdoc::broken_intra_doc_links)]
 #![deny(missing_docs)]
 
 extern crate protobuf;

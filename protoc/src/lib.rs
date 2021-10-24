@@ -1,7 +1,7 @@
 //! API to invoke `protoc` command. `protoc` command must be in `$PATH`.
 
 #![deny(missing_docs)]
-#![deny(broken_intra_doc_links)]
+#![deny(rustdoc::broken_intra_doc_links)]
 
 use std::ffi::OsStr;
 use std::ffi::OsString;
