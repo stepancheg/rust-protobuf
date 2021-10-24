@@ -33,6 +33,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.26] - Unreleased
 
+- Min supported Rust version is 1.52.1.
+
 ## [2.25.2] - 2021-10-24
 
 - [don't panic on short buffer](https://github.com/stepancheg/rust-protobuf/pull/571)
