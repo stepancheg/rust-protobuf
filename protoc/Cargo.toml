@@ -1,6 +1,6 @@
 [package]
 name = "protoc"
-version = "3.0.0-pre"
+version = "3.0.0-alpha.1"
 edition = "2018"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 license = "MIT"

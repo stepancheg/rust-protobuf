@@ -1,6 +1,6 @@
 [package]
 name = "protobuf-codegen-pure"
-version = "3.0.0-pre"
+version = "3.0.0-alpha.1"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 edition = "2018"
 license = "MIT"
@@ -17,8 +17,8 @@ doctest = false
 bench = false
 
 [dependencies]
-protobuf = { path = "../protobuf", version = "=3.0.0-pre" }
-protobuf-codegen = { path = "../protobuf-codegen", version = "=3.0.0-pre" }
+protobuf = { path = "../protobuf", version = "=3.0.0-alpha.1" }
+protobuf-codegen = { path = "../protobuf-codegen", version = "=3.0.0-alpha.1" }
 
 [[bin]]
 
