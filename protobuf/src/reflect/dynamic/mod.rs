@@ -166,11 +166,11 @@ impl DynamicMessage {
     }
 
     pub fn downcast_ref(message: &dyn MessageDyn) -> &DynamicMessage {
-        MessageDyn::downcast_ref(message).unwrap()
+        <dyn MessageDyn>::downcast_ref(message).unwrap()
     }
 
     pub fn downcast_mut(message: &mut dyn MessageDyn) -> &mut DynamicMessage {
-        MessageDyn::downcast_mut(message).unwrap()
+        <dyn MessageDyn>::downcast_mut(message).unwrap()
     }
 }
 

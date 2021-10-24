@@ -176,7 +176,7 @@ impl MessageDescriptor {
         match self.get_impl() {
             MessageDescriptorImplRef::Generated(g) => g.non_map().factory.clone(message),
             MessageDescriptorImplRef::Dynamic(..) => {
-                let message: &DynamicMessage = MessageDyn::downcast_ref(message).unwrap();
+                let message: &DynamicMessage = <dyn MessageDyn>::downcast_ref(message).unwrap();
                 Box::new(message.clone())
             }
         }

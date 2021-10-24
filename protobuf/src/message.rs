@@ -235,6 +235,6 @@ pub trait Message: fmt::Debug + Clear + Send + Sync + Sized + 'static {
     ///
     /// [`dyn Message::reflect_eq_dyn()`], `dyn` version of this function.
     fn reflect_eq(&self, other: &Self, mode: &ReflectEqMode) -> bool {
-        MessageDyn::reflect_eq_dyn(self, other, mode)
+        <dyn MessageDyn>::reflect_eq_dyn(self, other, mode)
     }
 }
