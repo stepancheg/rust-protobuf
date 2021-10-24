@@ -5,7 +5,7 @@
 //! See readme on the [project github page](https://github.com/stepancheg/rust-protobuf).
 
 #![deny(missing_docs)]
-#![deny(broken_intra_doc_links)]
+#![deny(rustdoc::broken_intra_doc_links)]
 
 #[cfg(feature = "bytes")]
 extern crate bytes;

@@ -1,4 +1,4 @@
-#![deny(broken_intra_doc_links)]
+#![deny(rustdoc::broken_intra_doc_links)]
 
 use std::collections::hash_map::HashMap;
 use std::fmt::Write as FmtWrite;
