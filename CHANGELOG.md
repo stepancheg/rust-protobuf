@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## 3.0.0-alpha.1
+
 ### Backward compatibility
 
 Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
