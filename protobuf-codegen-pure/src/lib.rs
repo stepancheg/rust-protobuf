@@ -312,7 +312,7 @@ impl<'a> Run<'a> {
 
     fn strip_prefix<'b>(path: &'b Path, prefix: &Path) -> Result<&'b Path, StripPrefixError> {
         // special handling of `.` to allow successful `strip_prefix("foo.proto", ".")
-        if prefix == Path::new(".") {
+        if prefix == Path::new(".") && path.is_relative() {
             Ok(path)
         } else {
             path.strip_prefix(prefix)
