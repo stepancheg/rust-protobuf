@@ -1,9 +1,9 @@
 use crate::customize::Customize;
 use crate::field::rust_field_name_for_protobuf_field_name;
-use crate::file::proto_path_to_rust_mod;
 use crate::file_and_mod::FileAndMod;
 use crate::map::map_entry;
 use crate::message::message_name_to_nested_mod_name;
+use crate::paths::proto_path_to_rust_mod;
 use crate::protobuf_abs_path::ProtobufAbsolutePath;
 use crate::protobuf_ident::ProtobufIdent;
 use crate::protobuf_rel_path::ProtobufRelativePath;

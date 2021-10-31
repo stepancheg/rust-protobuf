@@ -18,12 +18,12 @@ mod customize;
 mod enums;
 mod extensions;
 mod field;
-mod file;
 pub(crate) mod file_and_mod;
 mod inside;
 mod map;
 mod message;
 mod oneof;
+mod paths;
 mod protobuf_abs_path;
 mod protobuf_ident;
 mod protobuf_path;
@@ -52,8 +52,8 @@ pub use amend_io_error_util::amend_io_error;
 use scope::FileScope;
 use scope::RootScope;
 
-use crate::file::proto_path_to_fn_file_descriptor;
-use crate::file::proto_path_to_rust_mod;
+use crate::paths::proto_path_to_fn_file_descriptor;
+use crate::paths::proto_path_to_rust_mod;
 use inside::protobuf_crate_path;
 pub use protobuf_abs_path::ProtobufAbsolutePath;
 pub use protobuf_ident::ProtobufIdent;
@@ -64,7 +64,7 @@ use crate::rust::EXPR_VEC_NEW;
 use crate::scope::WithScope;
 use crate::well_known_types::gen_well_known_types_mod;
 #[doc(hidden)]
-pub use file::proto_name_to_rs;
+pub use paths::proto_name_to_rs;
 use protobuf::reflect::FileDescriptor;
 
 fn escape_byte(s: &mut String, b: u8) {
