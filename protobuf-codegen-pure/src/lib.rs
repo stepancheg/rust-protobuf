@@ -42,8 +42,11 @@ mod model;
 mod parse_dependencies;
 mod parser;
 mod path;
+mod rel_path;
 
 use crate::parser::ParserErrorWithLocation;
+use crate::rel_path::RelPath;
+use crate::rel_path::RelPathBuf;
 use linked_hash_map::LinkedHashMap;
 use protobuf::descriptor::FileDescriptorProto;
 use protobuf_codegen::amend_io_error;
@@ -316,7 +319,7 @@ impl<'a> Run<'a> {
         }
     }
 
-    fn add_fs_file(&mut self, fs_path: &Path) -> io::Result<PathBuf> {
+    fn add_fs_file(&mut self, fs_path: &Path) -> io::Result<RelPathBuf> {
         let relative_path = self
             .includes
             .iter()
@@ -325,7 +328,7 @@ impl<'a> Run<'a> {
 
         match relative_path {
             Some(relative_path) => {
-                assert!(relative_path.is_relative());
+                let relative_path = RelPath::new(relative_path);
                 self.add_file(relative_path, fs_path)?;
                 Ok(relative_path.to_owned())
             }
@@ -359,7 +362,7 @@ pub fn parse_and_typecheck(
     let mut relative_paths = Vec::new();
 
     for input in input {
-        relative_paths.push(run.add_fs_file(input)?);
+        relative_paths.push(run.add_fs_file(input)?.into_path_buf());
     }
 
     let file_descriptors: Vec<_> = run
