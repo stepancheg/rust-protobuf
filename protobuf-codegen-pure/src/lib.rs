@@ -343,9 +343,12 @@ impl<'a> Run<'a> {
     }
 }
 
+/// Result of parsing `.proto` files.
 #[doc(hidden)]
 pub struct ParsedAndTypechecked {
+    /// One entry for each input `.proto` file.
     pub relative_paths: Vec<PathBuf>,
+    /// All parsed `.proto` files including dependencies of input files.
     pub file_descriptors: Vec<protobuf::descriptor::FileDescriptorProto>,
 }
 
