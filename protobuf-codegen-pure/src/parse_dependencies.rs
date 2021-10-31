@@ -1,7 +1,8 @@
+use protobuf::descriptor::FileDescriptorProto;
+
 use crate::convert::populate_dependencies;
 use crate::model;
 use crate::parser::ParserErrorWithLocation;
-use protobuf::descriptor::FileDescriptorProto;
 
 pub(crate) fn parse_dependencies(
     content: &str,

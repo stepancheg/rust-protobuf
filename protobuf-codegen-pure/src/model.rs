@@ -3,25 +3,25 @@
 //! This crate can be seen as a rust transcription of the
 //! [descriptor.proto](https://github.com/google/protobuf/blob/master/src/google/protobuf/descriptor.proto) file
 
+use std::fmt;
+use std::fmt::Write;
+
+use protobuf::reflect::ReflectValueBox;
+use protobuf::reflect::RuntimeTypeBox;
 use protobuf::text_format::lexer::float;
+use protobuf::text_format::lexer::float::format_protobuf_float;
 use protobuf::text_format::lexer::Loc;
 use protobuf::text_format::lexer::StrLit;
-
-use crate::parser::Parser;
-use std::fmt::Write;
+use protobuf_codegen::ProtobufAbsolutePath;
+use protobuf_codegen::ProtobufIdent;
+use protobuf_codegen::ProtobufPath;
 
 use crate::convert::ConvertError;
 use crate::convert::ConvertResult;
 use crate::linked_hash_map::LinkedHashMap;
+use crate::parser::Parser;
 pub use crate::parser::ParserError;
 pub use crate::parser::ParserErrorWithLocation;
-use protobuf::reflect::ReflectValueBox;
-use protobuf::reflect::RuntimeTypeBox;
-use protobuf::text_format::lexer::float::format_protobuf_float;
-use protobuf_codegen::ProtobufAbsolutePath;
-use protobuf_codegen::ProtobufIdent;
-use protobuf_codegen::ProtobufPath;
-use std::fmt;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct WithLoc<T> {

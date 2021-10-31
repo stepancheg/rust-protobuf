@@ -1,7 +1,7 @@
-use super::test_enum_unknown_values_preserved_pb::*;
-
 use protobuf::Message;
 use protobuf_test_common::*;
+
+use super::test_enum_unknown_values_preserved_pb::*;
 
 #[test]
 fn unknown_values_preserved() {

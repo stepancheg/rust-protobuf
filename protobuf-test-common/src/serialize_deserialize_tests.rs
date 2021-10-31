@@ -1,7 +1,7 @@
+use protobuf::*;
+
 use crate::hex::decode_hex;
 use crate::hex::encode_hex;
-
-use protobuf::*;
 
 pub fn test_serialize_deserialize_length_delimited<M: Message + PartialEq>(msg: &M) {
     let serialized_bytes = msg.write_length_delimited_to_bytes().unwrap();

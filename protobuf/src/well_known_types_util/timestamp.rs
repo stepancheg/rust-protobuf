@@ -1,8 +1,9 @@
+use std::time::Duration;
+use std::time::SystemTime;
+
 use crate::cached_size::CachedSize;
 use crate::well_known_types::Timestamp;
 use crate::UnknownFields;
-use std::time::Duration;
-use std::time::SystemTime;
 
 impl Timestamp {
     /// Unix epoch value of timestamp.
@@ -70,9 +71,10 @@ impl Into<SystemTime> for Timestamp {
 
 #[cfg(test)]
 mod test {
-    use crate::well_known_types::Timestamp;
     use std::time::Duration;
     use std::time::SystemTime;
+
+    use crate::well_known_types::Timestamp;
 
     #[test]
     fn to_from_system_time() {

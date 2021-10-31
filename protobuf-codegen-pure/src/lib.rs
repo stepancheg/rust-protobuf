@@ -44,13 +44,14 @@ mod parser;
 mod path;
 mod rel_path;
 
-use crate::parser::ParserErrorWithLocation;
-use crate::rel_path::RelPath;
-use crate::rel_path::RelPathBuf;
 use linked_hash_map::LinkedHashMap;
 use protobuf::descriptor::FileDescriptorProto;
 use protobuf_codegen::amend_io_error;
 pub use protobuf_codegen::Customize;
+
+use crate::parser::ParserErrorWithLocation;
+use crate::rel_path::RelPath;
+use crate::rel_path::RelPathBuf;
 
 #[cfg(test)]
 mod test_against_protobuf_protos;

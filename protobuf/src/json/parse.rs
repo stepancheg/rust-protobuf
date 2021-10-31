@@ -1,15 +1,17 @@
-use std::num::ParseFloatError;
-use std::num::ParseIntError;
-
 use std::f32;
 use std::f64;
 use std::fmt;
+use std::num::ParseFloatError;
+use std::num::ParseIntError;
 
 use super::base64;
-
+use super::float;
+use super::rfc_3339;
 use crate::enums::ProtobufEnum;
 use crate::json::base64::FromBase64Error;
+use crate::json::well_known_wrapper::WellKnownWrapper;
 use crate::message::Message;
+use crate::message_dyn::MessageDyn;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::EnumValueDescriptor;
 use crate::reflect::FieldDescriptor;
@@ -17,6 +19,7 @@ use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::RuntimeFieldType;
 use crate::reflect::RuntimeTypeBox;
+use crate::text_format::lexer::JsonNumberLit;
 use crate::text_format::lexer::Lexer;
 use crate::text_format::lexer::LexerError;
 use crate::text_format::lexer::Loc;
@@ -24,13 +27,6 @@ use crate::text_format::lexer::ParserLanguage;
 use crate::text_format::lexer::Token;
 use crate::text_format::lexer::Tokenizer;
 use crate::text_format::lexer::TokenizerError;
-
-use super::float;
-use super::rfc_3339;
-use crate::text_format::lexer::JsonNumberLit;
-
-use crate::json::well_known_wrapper::WellKnownWrapper;
-use crate::message_dyn::MessageDyn;
 use crate::well_known_types::value;
 use crate::well_known_types::Any;
 use crate::well_known_types::BoolValue;

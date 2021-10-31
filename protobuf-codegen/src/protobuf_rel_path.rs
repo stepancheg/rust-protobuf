@@ -1,6 +1,7 @@
+use std::fmt;
+
 use crate::ProtobufAbsolutePath;
 use crate::ProtobufIdent;
-use std::fmt;
 
 impl From<String> for ProtobufRelativePath {
     fn from(s: String) -> ProtobufRelativePath {

@@ -1,3 +1,7 @@
+use std::hash::Hash;
+use std::hash::Hasher;
+use std::mem;
+
 use crate::reflect::value::value_box::ReflectValueBox;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::EnumValueDescriptor;
@@ -8,9 +12,6 @@ use crate::reflect::ReflectEq;
 use crate::reflect::ReflectEqMode;
 use crate::reflect::RuntimeTypeBox;
 use crate::MessageDyn;
-use std::hash::Hash;
-use std::hash::Hasher;
-use std::mem;
 
 /// A reference to a value
 #[derive(Debug, Clone)]

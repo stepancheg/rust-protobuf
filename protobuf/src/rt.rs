@@ -8,17 +8,20 @@ use std::hash::Hash;
 
 #[cfg(feature = "bytes")]
 use crate::bytes::Bytes;
+pub use crate::cached_size::CachedSize;
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;
-
 use crate::coded_input_stream::CodedInputStream;
 use crate::coded_output_stream::CodedOutputStream;
 use crate::enums::ProtobufEnum;
 use crate::error::ProtobufError;
 use crate::error::ProtobufResult;
 use crate::error::WireError;
+pub use crate::lazy_v2::LazyV2;
 use crate::message::*;
 use crate::reflect::types::*;
+use crate::reflect::ProtobufValue;
+use crate::unknown::UnknownFields;
 use crate::wire_format;
 use crate::wire_format::WireType;
 use crate::wire_format::WireTypeFixed32;
@@ -28,12 +31,6 @@ use crate::wire_format::WireTypeVarint;
 use crate::zigzag::*;
 use crate::MessageField;
 use crate::ProtobufEnumOrUnknown;
-
-use crate::unknown::UnknownFields;
-
-pub use crate::cached_size::CachedSize;
-pub use crate::lazy_v2::LazyV2;
-use crate::reflect::ProtobufValue;
 
 /// Given `u64` value compute varint encoded length.
 pub fn compute_raw_varint64_size(value: u64) -> u32 {

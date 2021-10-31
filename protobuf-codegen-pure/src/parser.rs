@@ -1,20 +1,20 @@
 use std::str;
 
+use protobuf::text_format::lexer::int;
 use protobuf::text_format::lexer::LexerError;
 use protobuf::text_format::lexer::NumLit;
 use protobuf::text_format::lexer::ParserLanguage;
 use protobuf::text_format::lexer::StrLitDecodeError;
 use protobuf::text_format::lexer::Token;
-
-use crate::fmt;
-use crate::model::*;
-use protobuf::text_format::lexer::int;
 use protobuf::text_format::lexer::Tokenizer;
 use protobuf::text_format::lexer::TokenizerError;
 use protobuf_codegen::ProtobufAbsolutePath;
 use protobuf_codegen::ProtobufIdent;
 use protobuf_codegen::ProtobufPath;
 use protobuf_codegen::ProtobufRelativePath;
+
+use crate::fmt;
+use crate::model::*;
 
 /// Basic information about parsing error.
 #[derive(Debug)]

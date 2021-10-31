@@ -9,13 +9,13 @@ use std::marker;
 use crate::bytes::Bytes;
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;
-
 use crate::coded_input_stream::CodedInputStream;
 use crate::coded_output_stream::CodedOutputStream;
 use crate::enums::ProtobufEnum;
 use crate::enums::ProtobufEnumOrUnknown;
 use crate::error::ProtobufResult;
 use crate::message::Message;
+pub use crate::reflect::type_dynamic::ProtobufTypeDynamic;
 use crate::reflect::type_dynamic::ProtobufTypeDynamicImpl;
 use crate::reflect::ProtobufValue;
 use crate::rt;
@@ -23,8 +23,6 @@ use crate::unknown::UnknownValues;
 use crate::wire_format::WireType;
 use crate::zigzag::decode_zig_zag_32;
 use crate::zigzag::decode_zig_zag_64;
-
-pub use crate::reflect::type_dynamic::ProtobufTypeDynamic;
 
 /// Encapsulate type-specific serialization and conversion logic
 pub trait ProtobufType: Send + Sync + Clone + 'static {

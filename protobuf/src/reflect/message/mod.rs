@@ -1,10 +1,8 @@
 use std::fmt;
 
-use crate::message::Message;
-
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
-
+use crate::message::Message;
 use crate::message_dyn::MessageDyn;
 use crate::reflect::dynamic::DynamicMessage;
 use crate::reflect::file::index::FileIndexMessageEntry;

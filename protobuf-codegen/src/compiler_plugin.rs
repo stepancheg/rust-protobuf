@@ -1,10 +1,11 @@
-use protobuf::descriptor::FileDescriptorProto;
-use protobuf::plugin::*;
-use protobuf::Message;
 use std::io::stdin;
 use std::io::stdout;
 use std::path::PathBuf;
 use std::str;
+
+use protobuf::descriptor::FileDescriptorProto;
+use protobuf::plugin::*;
+use protobuf::Message;
 
 pub struct GenRequest<'a> {
     pub file_descriptors: &'a [FileDescriptorProto],

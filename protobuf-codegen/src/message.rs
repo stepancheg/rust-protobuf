@@ -1,4 +1,8 @@
+use std::fmt;
+
 use protobuf::descriptor::*;
+use protobuf::reflect::FileDescriptor;
+use protobuf::reflect::MessageDescriptor;
 
 use super::code_writer::*;
 use super::customize::customize_from_rustproto_for_message;
@@ -21,9 +25,6 @@ use crate::scope::RootScope;
 use crate::scope::WithScope;
 use crate::serde;
 use crate::FileIndex;
-use protobuf::reflect::FileDescriptor;
-use protobuf::reflect::MessageDescriptor;
-use std::fmt;
 
 /// Protobuf message Rust type name
 #[derive(Debug, Clone, PartialEq, Eq)]

@@ -1,8 +1,9 @@
 extern crate protobuf;
 
-use protobuf::Message;
 use std::io::BufReader;
 use std::str;
+
+use protobuf::Message;
 
 pub mod all_types_pb;
 

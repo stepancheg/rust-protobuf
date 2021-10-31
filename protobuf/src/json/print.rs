@@ -1,16 +1,22 @@
-use crate::json::base64;
-use crate::json::float;
-use crate::reflect::EnumDescriptor;
-use crate::reflect::MessageRef;
-use crate::reflect::ReflectFieldRef;
-use crate::reflect::ReflectMapRef;
-use crate::reflect::ReflectRepeatedRef;
-use crate::reflect::ReflectValueRef;
 use std::f32;
 use std::f64;
 use std::fmt;
 use std::fmt::Write as fmt_Write;
 
+use crate::json::base64;
+use crate::json::float;
+use crate::json::rfc_3339::TmUtc;
+use crate::json::well_known_wrapper::WellKnownWrapper;
+use crate::message_dyn::MessageDyn;
+use crate::reflect::EnumDescriptor;
+use crate::reflect::EnumValueDescriptor;
+use crate::reflect::MessageRef;
+use crate::reflect::ReflectFieldRef;
+use crate::reflect::ReflectMapRef;
+use crate::reflect::ReflectRepeatedRef;
+use crate::reflect::ReflectValueRef;
+use crate::reflect::RuntimeFieldType;
+use crate::reflect::RuntimeTypeBox;
 use crate::well_known_types::value;
 use crate::well_known_types::Any;
 use crate::well_known_types::BoolValue;
@@ -29,14 +35,6 @@ use crate::well_known_types::Timestamp;
 use crate::well_known_types::UInt32Value;
 use crate::well_known_types::UInt64Value;
 use crate::well_known_types::Value;
-
-use crate::json::well_known_wrapper::WellKnownWrapper;
-
-use crate::json::rfc_3339::TmUtc;
-use crate::message_dyn::MessageDyn;
-use crate::reflect::EnumValueDescriptor;
-use crate::reflect::RuntimeFieldType;
-use crate::reflect::RuntimeTypeBox;
 
 #[derive(Debug)]
 enum PrintErrorInner {

@@ -1,5 +1,6 @@
-use super::test_ident_pb::*;
 use protobuf::Message;
+
+use super::test_ident_pb::*;
 
 #[test]
 fn test() {

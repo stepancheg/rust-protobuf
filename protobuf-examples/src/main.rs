@@ -1,7 +1,6 @@
 mod protos;
 
 use protobuf::Message;
-
 // For demonstration we take `GetRequest` messages from a source generated
 // with pure-rust codegen, and `GetResponse` with `protoc`-based codegen.
 // This is not needed in practice, done here for demonstration purposes.

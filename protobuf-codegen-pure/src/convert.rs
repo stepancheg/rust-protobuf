@@ -3,19 +3,23 @@
 use std::iter;
 use std::path::Path;
 
-use crate::fmt;
-use crate::model;
-use crate::FileDescriptorPair;
-
 use protobuf;
+use protobuf::descriptor::descriptor_proto::ReservedRange;
 use protobuf::descriptor::field_descriptor_proto;
+use protobuf::descriptor::field_descriptor_proto::Type;
 use protobuf::descriptor::DescriptorProto;
 use protobuf::descriptor::FieldDescriptorProto;
 use protobuf::json::json_name;
+use protobuf::reflect::RuntimeTypeBox;
+use protobuf::text_format::lexer::StrLitDecodeError;
+use protobuf::text_format::quote_bytes_to;
 use protobuf::Message;
 use protobuf::UnknownFields;
 use protobuf::UnknownValue;
+use protobuf_codegen::ProtobufPath;
 
+use crate::fmt;
+use crate::model;
 use crate::model::ProtobufConstant;
 use crate::model::ProtobufOptionName;
 use crate::model::ProtobufOptionNameComponent;
@@ -25,12 +29,7 @@ use crate::protobuf_codegen::case_convert::camel_case;
 use crate::protobuf_codegen::ProtobufAbsolutePath;
 use crate::protobuf_codegen::ProtobufIdent;
 use crate::protobuf_codegen::ProtobufRelativePath;
-use protobuf::descriptor::descriptor_proto::ReservedRange;
-use protobuf::descriptor::field_descriptor_proto::Type;
-use protobuf::reflect::RuntimeTypeBox;
-use protobuf::text_format::lexer::StrLitDecodeError;
-use protobuf::text_format::quote_bytes_to;
-use protobuf_codegen::ProtobufPath;
+use crate::FileDescriptorPair;
 
 #[derive(Debug)]
 pub enum ConvertError {

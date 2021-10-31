@@ -1,6 +1,6 @@
-use super::test_repeated_packed_pb::*;
-
 use protobuf_test_common::*;
+
+use super::test_repeated_packed_pb::*;
 
 // varint field number = 4
 // unpacked tag = 20

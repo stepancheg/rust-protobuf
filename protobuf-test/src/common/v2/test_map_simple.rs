@@ -1,8 +1,7 @@
 use protobuf::text_format::print_to_string;
+use protobuf_test_common::*;
 
 use super::test_map_simple_pb::*;
-
-use protobuf_test_common::*;
 
 #[test]
 fn test_map() {

@@ -1,8 +1,9 @@
+use std::collections::HashMap;
+
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::message::path::MessagePath;
 use crate::reflect::name::concat_paths;
-use std::collections::HashMap;
 
 #[derive(Debug)]
 pub(crate) struct FileIndexMessageEntry {

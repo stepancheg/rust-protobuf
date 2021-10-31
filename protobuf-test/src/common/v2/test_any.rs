@@ -1,7 +1,8 @@
-use super::test_any_pb::MessageOne;
-use super::test_any_pb::MessageTwo;
 use protobuf::well_known_types::Any;
 use protobuf::Message;
+
+use super::test_any_pb::MessageOne;
+use super::test_any_pb::MessageTwo;
 
 #[test]
 fn test_static() {

@@ -1,9 +1,10 @@
-use protobuf::CodedInputStream;
-use protobuf::CodedOutputStream;
-use protobuf_perftest_misc::black_box;
 use std::env;
 use std::process;
 use std::time::Instant;
+
+use protobuf::CodedInputStream;
+use protobuf::CodedOutputStream;
+use protobuf_perftest_misc::black_box;
 
 fn main() {
     let args: Vec<String> = env::args().skip(1).collect();

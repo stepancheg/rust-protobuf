@@ -1,8 +1,8 @@
 use std::collections::HashMap;
+use std::fmt;
 use std::hash::Hash;
 
 use crate::message::Message;
-
 use crate::message_dyn::MessageDyn;
 use crate::reflect::acc::v2::AccessorV2;
 use crate::reflect::acc::FieldAccessor;
@@ -11,7 +11,6 @@ use crate::reflect::map::ReflectMapRef;
 use crate::reflect::runtime_types::RuntimeTypeHashable;
 use crate::reflect::ProtobufValue;
 use crate::reflect::RuntimeTypeBox;
-use std::fmt;
 
 pub(crate) trait MapFieldAccessor: Send + Sync + 'static {
     fn get_reflect<'a>(&self, m: &'a dyn MessageDyn) -> ReflectMapRef<'a>;

@@ -3,23 +3,17 @@ use std::io::BufRead;
 use std::io::Read;
 use std::mem;
 
+use crate::buf_read_iter::BufReadIter;
 #[cfg(feature = "bytes")]
 use crate::bytes::Bytes;
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;
-
-use crate::buf_read_iter::BufReadIter;
 use crate::enums::ProtobufEnum;
+use crate::enums::ProtobufEnumOrUnknown;
 use crate::error::ProtobufError;
 use crate::error::ProtobufResult;
 use crate::error::WireError;
 use crate::message::Message;
-use crate::unknown::UnknownValue;
-use crate::wire_format;
-use crate::zigzag::decode_zig_zag_32;
-use crate::zigzag::decode_zig_zag_64;
-
-use crate::enums::ProtobufEnumOrUnknown;
 use crate::reflect::types::ProtobufType;
 use crate::reflect::types::ProtobufTypeBool;
 use crate::reflect::types::ProtobufTypeDouble;
@@ -37,6 +31,10 @@ use crate::reflect::types::ProtobufTypeSint64;
 use crate::reflect::types::ProtobufTypeUint32;
 use crate::reflect::types::ProtobufTypeUint64;
 use crate::reflect::ProtobufValue;
+use crate::unknown::UnknownValue;
+use crate::wire_format;
+use crate::zigzag::decode_zig_zag_32;
+use crate::zigzag::decode_zig_zag_64;
 
 // Default recursion level limit. 100 is the default value of C++'s implementation.
 const DEFAULT_RECURSION_LIMIT: u32 = 100;
@@ -646,12 +644,11 @@ mod test {
     use std::io::BufRead;
     use std::io::Read;
 
+    use super::CodedInputStream;
+    use super::READ_RAW_BYTES_MAX_ALLOC;
     use crate::error::ProtobufError;
     use crate::error::ProtobufResult;
     use crate::hex::decode_hex;
-
-    use super::CodedInputStream;
-    use super::READ_RAW_BYTES_MAX_ALLOC;
 
     fn test_read_partial<F>(hex: &str, mut callback: F)
     where

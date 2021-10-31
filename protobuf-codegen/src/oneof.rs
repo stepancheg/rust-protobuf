@@ -1,5 +1,9 @@
 //! Oneof-related codegen functions.
 
+use std::collections::HashSet;
+
+use protobuf::descriptor::field_descriptor_proto;
+
 use crate::code_writer::CodeWriter;
 use crate::customize::Customize;
 use crate::field::FieldElem;
@@ -19,8 +23,6 @@ use crate::scope::RootScope;
 use crate::scope::WithScope;
 use crate::serde;
 use crate::ProtobufAbsolutePath;
-use protobuf::descriptor::field_descriptor_proto;
-use std::collections::HashSet;
 
 // oneof one { ... }
 #[derive(Clone)]

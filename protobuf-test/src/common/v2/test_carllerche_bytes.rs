@@ -1,9 +1,8 @@
 use bytes::Bytes;
 use protobuf::Chars;
+use protobuf_test_common::*;
 
 use super::test_carllerche_bytes_pb::*;
-
-use protobuf_test_common::*;
 
 #[test]
 fn test() {

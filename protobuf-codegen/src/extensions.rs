@@ -1,3 +1,6 @@
+use protobuf::descriptor::*;
+use protobuf::reflect::FileDescriptor;
+
 use super::code_writer::CodeWriter;
 use super::rust_types_values::*;
 use crate::customize::Customize;
@@ -9,8 +12,6 @@ use crate::protobuf_abs_path::ProtobufAbsolutePath;
 use crate::rust_name::RustIdentWithPath;
 use crate::rust_name::RustRelativePath;
 use crate::scope::RootScope;
-use protobuf::descriptor::*;
-use protobuf::reflect::FileDescriptor;
 
 struct ExtGen<'a> {
     file: &'a FileDescriptor,

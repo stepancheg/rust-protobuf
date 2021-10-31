@@ -482,8 +482,9 @@ impl fmt::Display for TmUtc {
 
 #[cfg(test)]
 mod test {
-    use super::*;
     use std::i64;
+
+    use super::*;
 
     #[test]
     fn test_fmt() {

@@ -1,6 +1,7 @@
-use crate::descriptor::EnumDescriptorProto;
 use std::collections::HashMap;
 use std::hash::Hash;
+
+use crate::descriptor::EnumDescriptorProto;
 
 #[derive(Debug)]
 pub(crate) struct EnumIndex<S: Hash + Eq> {

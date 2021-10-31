@@ -3,14 +3,13 @@ extern crate rand;
 
 use std::fs::File;
 use std::path::Path;
-
-use rand::Rng;
-use rand::SeedableRng;
-use rand::StdRng;
+use std::time::Instant;
 
 use perftest_data::PerftestData;
 use protobuf::Message;
-use std::time::Instant;
+use rand::Rng;
+use rand::SeedableRng;
+use rand::StdRng;
 
 mod perftest_data;
 

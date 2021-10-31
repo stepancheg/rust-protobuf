@@ -11,8 +11,9 @@ pub(crate) fn fs_path_to_proto_path(path: &Path) -> String {
 
 #[cfg(test)]
 mod test {
-    use crate::path::fs_path_to_proto_path;
     use std::path::Path;
+
+    use crate::path::fs_path_to_proto_path;
 
     #[test]
     fn test_fs_path_to_proto_path() {

@@ -1,24 +1,23 @@
 //! Implementations of `RuntimeType` for all types.
 
+use std::collections::HashMap;
 use std::fmt;
 use std::marker;
 
 #[cfg(feature = "bytes")]
 use bytes::Bytes;
 
+#[cfg(feature = "bytes")]
+use crate::chars::Chars;
+use crate::enums::ProtobufEnum;
+use crate::enums::ProtobufEnumOrUnknown;
+use crate::message::Message;
 use crate::reflect::runtime_type_box::RuntimeTypeBox;
 use crate::reflect::value::value_ref::ReflectValueMut;
 use crate::reflect::MessageRef;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
-
-#[cfg(feature = "bytes")]
-use crate::chars::Chars;
-use crate::enums::ProtobufEnum;
-use crate::enums::ProtobufEnumOrUnknown;
-use crate::message::Message;
-use std::collections::HashMap;
 
 /// `RuntimeType` is not implemented by all protobuf types directly
 /// because it's not possible to implement `RuntimeType` for all `Message`

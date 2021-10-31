@@ -35,12 +35,13 @@ impl<T: Sync> LazyV2<T> {
 
 #[cfg(test)]
 mod test {
-    use super::LazyV2;
     use std::sync::atomic::AtomicIsize;
     use std::sync::atomic::Ordering;
     use std::sync::Arc;
     use std::sync::Barrier;
     use std::thread;
+
+    use super::LazyV2;
 
     #[test]
     fn many_threads_calling_get() {

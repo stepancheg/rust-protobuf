@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::enums::generated::GeneratedEnumDescriptor;
 use crate::reflect::file::building::FileDescriptorBuilding;
@@ -7,7 +9,6 @@ use crate::reflect::message::generated::GeneratedMessageDescriptor;
 use crate::reflect::FileDescriptor;
 use crate::reflect::GeneratedEnumDescriptorData;
 use crate::reflect::GeneratedMessageDescriptorData;
-use std::collections::HashMap;
 
 /// Reflection for objects defined in `.proto` file (messages, enums, etc).
 #[doc(hidden)]

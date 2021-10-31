@@ -1,9 +1,10 @@
+use std::sync::Arc;
+
 use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::enums::index::EnumIndex;
 use crate::reflect::message::path::MessagePath;
 use crate::reflect::name::append_path;
-use std::sync::Arc;
 
 #[derive(Debug)]
 pub(crate) struct DynamicEnumValueDescriptor {}

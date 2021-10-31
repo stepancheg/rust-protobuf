@@ -1,3 +1,7 @@
+use std::collections::hash_map;
+use std::collections::HashMap;
+use std::hash::Hash;
+
 use crate::reflect::map::ReflectMap;
 use crate::reflect::map::ReflectMapIter;
 use crate::reflect::map::ReflectMapIterTrait;
@@ -6,9 +10,6 @@ use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::reflect::RuntimeTypeBox;
-use std::collections::hash_map;
-use std::collections::HashMap;
-use std::hash::Hash;
 
 impl<K, V> ReflectMap for HashMap<K, V>
 where

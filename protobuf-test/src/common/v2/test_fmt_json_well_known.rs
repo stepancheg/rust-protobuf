@@ -1,5 +1,4 @@
 use protobuf::well_known_types::*;
-
 use protobuf_test_common::*;
 
 use super::test_fmt_json_well_known_pb::*;

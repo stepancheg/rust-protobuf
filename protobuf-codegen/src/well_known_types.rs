@@ -1,3 +1,5 @@
+use protobuf::reflect::FileDescriptor;
+
 use crate::code_writer::CodeWriter;
 use crate::compiler_plugin;
 use crate::paths::proto_path_to_rust_mod;
@@ -5,7 +7,6 @@ use crate::protobuf_abs_path::ProtobufAbsolutePath;
 use crate::protobuf_rel_path::ProtobufRelativePath;
 use crate::scope::FileScope;
 use crate::scope::WithScope;
-use protobuf::reflect::FileDescriptor;
 
 pub(crate) static WELL_KNOWN_TYPES_PROTO_FILE_NAMES: &[&str] = &[
     "any.proto",

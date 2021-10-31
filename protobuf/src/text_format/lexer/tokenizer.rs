@@ -1,3 +1,5 @@
+use std::fmt;
+
 use crate::text_format::lexer::Lexer;
 use crate::text_format::lexer::LexerError;
 use crate::text_format::lexer::Loc;
@@ -6,7 +8,6 @@ use crate::text_format::lexer::StrLit;
 use crate::text_format::lexer::StrLitDecodeError;
 use crate::text_format::lexer::Token;
 use crate::text_format::lexer::TokenWithLocation;
-use std::fmt;
 
 #[derive(Debug)]
 pub enum TokenizerError {

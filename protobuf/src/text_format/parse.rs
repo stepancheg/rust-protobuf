@@ -2,7 +2,6 @@ use std::fmt;
 use std::str;
 
 use crate::message::Message;
-
 use crate::message_dyn::MessageDyn;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::EnumValueDescriptor;

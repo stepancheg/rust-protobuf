@@ -1,5 +1,9 @@
 //! Generated messages reflection support.
 
+use std::collections::HashMap;
+use std::fmt;
+use std::marker;
+
 use crate::descriptor::FileDescriptorProto;
 use crate::message::Message;
 use crate::message_dyn::MessageDyn;
@@ -9,9 +13,6 @@ use crate::reflect::file::index::FileIndex;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
 use crate::reflect::message::index::MessageIndex;
-use std::collections::HashMap;
-use std::fmt;
-use std::marker;
 
 /// Sized to dynamic reflection operations.
 pub(crate) trait MessageFactory: Send + Sync + 'static {

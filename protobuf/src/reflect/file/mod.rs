@@ -1,3 +1,9 @@
+use std::collections::HashMap;
+use std::collections::HashSet;
+use std::hash::Hash;
+use std::hash::Hasher;
+use std::sync::Arc;
+
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::file::dynamic::DynamicFileDescriptor;
@@ -8,11 +14,6 @@ use crate::reflect::name::protobuf_name_starts_with_package;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::GeneratedFileDescriptor;
 use crate::reflect::MessageDescriptor;
-use std::collections::HashMap;
-use std::collections::HashSet;
-use std::hash::Hash;
-use std::hash::Hasher;
-use std::sync::Arc;
 
 pub(crate) mod building;
 pub(crate) mod dynamic;

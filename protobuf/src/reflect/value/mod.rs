@@ -5,7 +5,6 @@ use std::fmt;
 use crate::bytes::Bytes;
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;
-
 use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::runtime_types::RuntimeTypeBool;
 #[cfg(feature = "bytes")]

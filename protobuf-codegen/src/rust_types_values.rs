@@ -1,5 +1,7 @@
 use std::cmp;
 
+use protobuf::descriptor::*;
+
 use crate::customize::Customize;
 use crate::file_and_mod::FileAndMod;
 use crate::inside::protobuf_crate_path;
@@ -14,7 +16,6 @@ use crate::scope::RootScope;
 use crate::scope::WithScope;
 use crate::strx::capitalize;
 use crate::well_known_types::is_well_known_type_full;
-use protobuf::descriptor::*;
 
 // Represent subset of rust types used in generated code
 #[derive(Debug, Clone, PartialEq, Eq)]

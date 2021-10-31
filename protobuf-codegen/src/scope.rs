@@ -1,3 +1,11 @@
+use protobuf::descriptor::FileDescriptorProto;
+use protobuf::reflect::EnumDescriptor;
+use protobuf::reflect::EnumValueDescriptor;
+use protobuf::reflect::FieldDescriptor;
+use protobuf::reflect::FileDescriptor;
+use protobuf::reflect::MessageDescriptor;
+use protobuf::reflect::OneofDescriptor;
+
 use crate::customize::Customize;
 use crate::field::rust_field_name_for_protobuf_field_name;
 use crate::file_and_mod::FileAndMod;
@@ -14,13 +22,6 @@ use crate::rust_name::RustIdentWithPath;
 use crate::rust_name::RustRelativePath;
 use crate::strx::capitalize;
 use crate::syntax::Syntax;
-use protobuf::descriptor::FileDescriptorProto;
-use protobuf::reflect::EnumDescriptor;
-use protobuf::reflect::EnumValueDescriptor;
-use protobuf::reflect::FieldDescriptor;
-use protobuf::reflect::FileDescriptor;
-use protobuf::reflect::MessageDescriptor;
-use protobuf::reflect::OneofDescriptor;
 
 pub(crate) struct RootScope<'a> {
     pub file_descriptors: &'a [FileDescriptor],

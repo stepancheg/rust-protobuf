@@ -13,7 +13,6 @@ extern crate perftest_bytes;
 use std::fmt::Write;
 
 use bytes::Bytes;
-
 use perftest_bytes::messages;
 use protobuf::Message;
 

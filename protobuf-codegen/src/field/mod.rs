@@ -1,12 +1,10 @@
-use crate::protobuf_abs_path::ProtobufAbsolutePath;
-use crate::rust;
 use protobuf::descriptor::*;
+use protobuf::reflect::ReflectValueRef;
 use protobuf::rt;
 use protobuf::wire_format;
+use protobuf::wire_format::WireType;
 
 use crate::code_writer::CodeWriter;
-use crate::rust_types_values::*;
-
 use crate::code_writer::Visibility;
 use crate::customize::customize_from_rustproto_for_field;
 use crate::customize::Customize;
@@ -15,11 +13,14 @@ use crate::inside::protobuf_crate_path;
 use crate::map::map_entry;
 use crate::message::RustTypeMessage;
 use crate::oneof::OneofField;
+use crate::protobuf_abs_path::ProtobufAbsolutePath;
+use crate::rust;
 use crate::rust::EXPR_NONE;
 use crate::rust::EXPR_VEC_NEW;
 use crate::rust_name::RustIdent;
 use crate::rust_name::RustIdentWithPath;
 use crate::rust_name::RustRelativePath;
+use crate::rust_types_values::*;
 use crate::scope::EnumValueWithContext;
 use crate::scope::FieldWithContext;
 use crate::scope::MessageOrEnumWithScope;
@@ -28,8 +29,6 @@ use crate::scope::RootScope;
 use crate::scope::WithScope;
 use crate::serde;
 use crate::syntax::Syntax;
-use protobuf::reflect::ReflectValueRef;
-use protobuf::wire_format::WireType;
 
 mod accessor;
 

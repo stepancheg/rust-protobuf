@@ -420,8 +420,9 @@ impl<'ignore> BufReadIter<'ignore> {
 
 #[cfg(all(test, feature = "bytes"))]
 mod test_bytes {
-    use super::*;
     use std::io::Write;
+
+    use super::*;
 
     fn make_long_string(len: usize) -> Vec<u8> {
         let mut s = Vec::new();
@@ -454,10 +455,11 @@ mod test_bytes {
 
 #[cfg(test)]
 mod test {
-    use super::*;
     use std::io;
     use std::io::BufRead;
     use std::io::Read;
+
+    use super::*;
 
     #[test]
     fn eof_at_limit() {

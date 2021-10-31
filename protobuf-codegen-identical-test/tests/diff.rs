@@ -1,4 +1,3 @@
-use regex::Regex;
 use std::collections::HashSet;
 use std::fmt;
 use std::fmt::Write as _;
@@ -6,8 +5,9 @@ use std::fs;
 use std::path::Path;
 use std::path::PathBuf;
 use std::path::MAIN_SEPARATOR;
+use std::process::Command;
+use std::process::Stdio;
 use std::str;
-use tempfile::NamedTempFile;
 
 use protobuf::descriptor::field_descriptor_proto;
 use protobuf::descriptor::DescriptorProto;
@@ -22,8 +22,8 @@ use protobuf::text_format::lexer::float::parse_protobuf_float;
 use protobuf::Message;
 use protobuf_test_common::build::copy_tests_v2_v3;
 use protobuf_test_common::build::glob_simple;
-use std::process::Command;
-use std::process::Stdio;
+use regex::Regex;
+use tempfile::NamedTempFile;
 
 fn to_paths(iter: impl IntoIterator<Item = impl Into<String>>) -> Vec<PathBuf> {
     iter.into_iter()

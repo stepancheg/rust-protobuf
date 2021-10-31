@@ -1,3 +1,5 @@
+use std::fmt;
+
 use crate::descriptor::field_descriptor_proto;
 use crate::descriptor::FieldDescriptorProto;
 use crate::message_dyn::MessageDyn;
@@ -23,7 +25,6 @@ use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::reflect::RuntimeTypeBox;
-use std::fmt;
 
 pub(crate) mod dynamic;
 pub(crate) mod index;

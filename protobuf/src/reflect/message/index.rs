@@ -1,7 +1,8 @@
+use std::collections::HashMap;
+
 use crate::descriptor::DescriptorProto;
 use crate::reflect::field::index::FieldIndex;
 use crate::reflect::file::building::FileDescriptorBuilding;
-use std::collections::HashMap;
 
 #[derive(Debug)]
 pub(crate) struct MessageIndex {

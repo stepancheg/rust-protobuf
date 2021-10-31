@@ -1,5 +1,6 @@
 #![cfg(feature = "bytes")]
 
+use std::borrow::Borrow;
 use std::fmt;
 use std::ops::Deref;
 use std::str;
@@ -7,7 +8,6 @@ use std::str;
 use bytes::Bytes;
 
 use crate::clear::Clear;
-use std::borrow::Borrow;
 
 /// Thin wrapper around `Bytes` which guarantees that bytes are valid UTF-8 string.
 /// Should be API-compatible to `String`.

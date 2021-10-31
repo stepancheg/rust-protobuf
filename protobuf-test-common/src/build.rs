@@ -1,7 +1,7 @@
 //! Common code of `build.rs` of two tests
 
-pub use protobuf_codegen::Customize;
-
+use std::env;
+use std::env::VarError;
 use std::fs;
 use std::io::BufRead;
 use std::io::BufReader;
@@ -10,8 +10,7 @@ use std::io::Write;
 use std::path::Path;
 
 use glob;
-use std::env;
-use std::env::VarError;
+pub use protobuf_codegen::Customize;
 
 pub fn glob_simple(pattern: &str) -> Vec<String> {
     let mut r: Vec<_> = glob::glob(pattern)

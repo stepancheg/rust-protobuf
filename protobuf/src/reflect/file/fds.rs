@@ -1,7 +1,8 @@
-use crate::descriptor::FileDescriptorProto;
-use crate::reflect::FileDescriptor;
 use std::collections::HashMap;
 use std::collections::HashSet;
+
+use crate::descriptor::FileDescriptorProto;
+use crate::reflect::FileDescriptor;
 
 pub(crate) struct FdsBuilder {
     names: Vec<String>,

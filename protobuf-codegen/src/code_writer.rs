@@ -1,8 +1,9 @@
 // TODO: used by grpc-rust, should move it into separate crate.
 #![doc(hidden)]
 
-use crate::rust_name::RustRelativePath;
 use std::io::Write;
+
+use crate::rust_name::RustRelativePath;
 
 /// Field visibility.
 pub(crate) enum Visibility {

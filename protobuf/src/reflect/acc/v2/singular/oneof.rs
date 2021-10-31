@@ -1,3 +1,5 @@
+use std::marker;
+
 use crate::reflect::acc::v2::singular::GetOptionImplHasGetCopy;
 use crate::reflect::acc::v2::singular::GetOptionImplHasGetRef;
 use crate::reflect::acc::v2::singular::GetOptionImplHasGetRefDeref;
@@ -14,7 +16,6 @@ use crate::reflect::acc::FieldAccessor;
 use crate::reflect::runtime_types::RuntimeTypeWithDeref;
 use crate::reflect::ProtobufValue;
 use crate::Message;
-use std::marker;
 
 /// Make accessor for `oneof` `message` field
 pub fn make_oneof_message_has_get_mut_set_accessor<M, F>(

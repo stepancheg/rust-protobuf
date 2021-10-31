@@ -1,5 +1,6 @@
-use super::test_reflect_default_pb::*;
 use protobuf::Message;
+
+use super::test_reflect_default_pb::*;
 
 #[test]
 fn test_regular() {

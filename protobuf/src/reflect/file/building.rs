@@ -1,3 +1,5 @@
+use std::iter;
+
 use crate::descriptor::field_descriptor_proto;
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::EnumDescriptorProto;
@@ -11,7 +13,6 @@ use crate::reflect::find_message_or_enum::MessageOrEnum;
 use crate::reflect::name::protobuf_name_starts_with_package;
 use crate::reflect::runtime_type_box::RuntimeTypeBox;
 use crate::reflect::FileDescriptor;
-use std::iter;
 
 pub(crate) struct FileDescriptorBuilding<'a> {
     pub current_file_descriptor: &'a FileDescriptorProto,

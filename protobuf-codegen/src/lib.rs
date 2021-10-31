@@ -43,29 +43,28 @@ pub use customize::Customize;
 
 pub mod code_writer;
 
-use self::code_writer::CodeWriter;
-use self::enums::*;
-use self::extensions::*;
-use self::message::*;
 #[doc(hidden)]
 pub use amend_io_error_util::amend_io_error;
-use scope::FileScope;
-use scope::RootScope;
-
-use crate::paths::proto_path_to_fn_file_descriptor;
-use crate::paths::proto_path_to_rust_mod;
 use inside::protobuf_crate_path;
+#[doc(hidden)]
+pub use paths::proto_name_to_rs;
+use protobuf::reflect::FileDescriptor;
 pub use protobuf_abs_path::ProtobufAbsolutePath;
 pub use protobuf_ident::ProtobufIdent;
 pub use protobuf_path::ProtobufPath;
 pub use protobuf_rel_path::ProtobufRelativePath;
+use scope::FileScope;
+use scope::RootScope;
 
+use self::code_writer::CodeWriter;
+use self::enums::*;
+use self::extensions::*;
+use self::message::*;
+use crate::paths::proto_path_to_fn_file_descriptor;
+use crate::paths::proto_path_to_rust_mod;
 use crate::rust::EXPR_VEC_NEW;
 use crate::scope::WithScope;
 use crate::well_known_types::gen_well_known_types_mod;
-#[doc(hidden)]
-pub use paths::proto_name_to_rs;
-use protobuf::reflect::FileDescriptor;
 
 fn escape_byte(s: &mut String, b: u8) {
     if b == b'\n' {

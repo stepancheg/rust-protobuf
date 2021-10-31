@@ -1,6 +1,7 @@
-use protoc_bin_vendored::protoc_bin_path;
 use std::env;
 use std::process;
+
+use protoc_bin_vendored::protoc_bin_path;
 
 fn main() {
     let protoc_bin_path = match protoc_bin_path() {

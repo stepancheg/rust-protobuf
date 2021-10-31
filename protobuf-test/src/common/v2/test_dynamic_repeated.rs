@@ -1,6 +1,7 @@
-use super::test_dynamic_repeated_pb;
 use protobuf::reflect::FileDescriptor;
 use protobuf::reflect::ReflectValueBox;
+
+use super::test_dynamic_repeated_pb;
 
 fn dynamic_file_descriptor() -> FileDescriptor {
     FileDescriptor::new_dynamic(

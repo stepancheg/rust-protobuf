@@ -2,7 +2,6 @@ use std::fmt;
 use std::marker;
 
 use crate::message::Message;
-
 use crate::message_dyn::MessageDyn;
 use crate::reflect::acc::v2::AccessorV2;
 use crate::reflect::acc::FieldAccessor;

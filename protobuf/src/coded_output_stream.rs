@@ -1,3 +1,6 @@
+use std::io;
+use std::io::Write;
+
 use crate::misc::remaining_capacity_as_slice_mut;
 use crate::misc::remove_lifetime_mut;
 use crate::varint;
@@ -11,8 +14,6 @@ use crate::ProtobufError;
 use crate::ProtobufResult;
 use crate::UnknownFields;
 use crate::UnknownValueRef;
-use std::io;
-use std::io::Write;
 
 // Equal to the default buffer size of `BufWriter`, so when
 // `CodedOutputStream` wraps `BufWriter`, it often skips double buffering.
@@ -567,10 +568,11 @@ impl<'a> Drop for CodedOutputStream<'a> {
 
 #[cfg(test)]
 mod test {
+    use std::iter;
+
     use super::*;
     use crate::hex::decode_hex;
     use crate::hex::encode_hex;
-    use std::iter;
 
     fn test_write<F>(expected: &str, mut gen: F)
     where

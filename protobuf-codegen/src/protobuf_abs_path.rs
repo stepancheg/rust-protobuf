@@ -1,7 +1,8 @@
-use crate::protobuf_ident::ProtobufIdent;
-use crate::ProtobufRelativePath;
 use std::fmt;
 use std::ops::Deref;
+
+use crate::protobuf_ident::ProtobufIdent;
+use crate::ProtobufRelativePath;
 
 /// Protobuf absolute name (e. g. `.foo.Bar`).
 #[derive(Clone, Eq, PartialEq, Debug, Hash)]

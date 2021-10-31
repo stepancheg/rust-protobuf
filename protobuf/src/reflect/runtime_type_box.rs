@@ -1,3 +1,5 @@
+use std::fmt;
+
 use crate::descriptor::field_descriptor_proto;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::MessageDescriptor;
@@ -6,7 +8,6 @@ use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::text_format;
 use crate::text_format::lexer::float::parse_protobuf_float;
-use std::fmt;
 
 /// Runtime representation of elementary protobuf type.
 #[derive(Debug, Clone, Eq, PartialEq)]

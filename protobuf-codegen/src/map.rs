@@ -1,6 +1,7 @@
+use protobuf::descriptor::field_descriptor_proto;
+
 use crate::scope::FieldWithContext;
 use crate::scope::MessageWithScope;
-use protobuf::descriptor::field_descriptor_proto;
 
 /// Pair of (key, value) if this message is map entry
 pub(crate) fn map_entry<'a>(

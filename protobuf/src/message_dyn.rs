@@ -1,3 +1,8 @@
+use std::any::Any;
+use std::any::TypeId;
+use std::fmt;
+use std::io::Write;
+
 use crate::coded_output_stream::WithCodedOutputStream;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectEqMode;
@@ -7,10 +12,6 @@ use crate::Message;
 use crate::ProtobufError;
 use crate::ProtobufResult;
 use crate::UnknownFields;
-use std::any::Any;
-use std::any::TypeId;
-use std::fmt;
-use std::io::Write;
 
 /// Dynamic-dispatch version of [`Message`].
 pub trait MessageDyn: Any + fmt::Debug + Send + Sync + 'static {

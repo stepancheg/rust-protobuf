@@ -1,9 +1,9 @@
-#[cfg(feature = "with-serde")]
-use serde;
-
 use std::default::Default;
 use std::hash::Hash;
 use std::option;
+
+#[cfg(feature = "with-serde")]
+use serde;
 
 use crate::Message;
 

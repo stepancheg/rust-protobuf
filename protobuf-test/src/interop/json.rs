@@ -2,13 +2,12 @@ use std::io::Read;
 use std::io::Write;
 use std::process;
 
-use super::interop_pb::*;
-
 use protobuf::json;
-use protobuf::Message;
-
 use protobuf::reflect::ReflectEqMode;
+use protobuf::Message;
 use protobuf_test_common::*;
+
+use super::interop_pb::*;
 
 fn test_parse_message(m: &InteropMessageList) {
     let m_bytes = m.write_to_bytes().expect("write_to_bytes");

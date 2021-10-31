@@ -1,5 +1,9 @@
 //! Generated code support for enum descriptors.
 
+use std::any::TypeId;
+use std::fmt;
+use std::marker;
+
 use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::enums::index::EnumIndex;
@@ -8,9 +12,6 @@ use crate::reflect::find_message_or_enum::MessageOrEnum;
 use crate::reflect::name::compute_full_name;
 use crate::ProtobufEnum;
 use crate::ProtobufEnumOrUnknown;
-use std::any::TypeId;
-use std::fmt;
-use std::marker;
 
 pub(crate) trait GetEnumDescriptor: Send + Sync + 'static {
     #[cfg(not(rustc_nightly))]

@@ -1,6 +1,7 @@
+use std::fmt;
+
 use crate::ProtobufAbsolutePath;
 use crate::ProtobufRelativePath;
-use std::fmt;
 
 /// Protobuf identifier can be absolute or relative.
 #[derive(Debug, Eq, PartialEq, Clone)]

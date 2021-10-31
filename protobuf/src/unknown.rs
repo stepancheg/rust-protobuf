@@ -8,7 +8,6 @@ use std::hash::Hasher;
 use std::slice;
 
 use crate::clear::Clear;
-
 use crate::reflect::ReflectValueRef;
 use crate::rt;
 use crate::wire_format;
@@ -365,10 +364,11 @@ impl<'s> Iterator for UnknownFieldsIter<'s> {
 
 #[cfg(test)]
 mod test {
-    use super::UnknownFields;
     use std::collections::hash_map::DefaultHasher;
     use std::hash::Hash;
     use std::hash::Hasher;
+
+    use super::UnknownFields;
 
     #[test]
     fn unknown_fields_hash() {

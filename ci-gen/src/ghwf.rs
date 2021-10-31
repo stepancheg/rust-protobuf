@@ -1,5 +1,6 @@
-use crate::yaml::Yaml;
 use std::fmt;
+
+use crate::yaml::Yaml;
 
 #[allow(dead_code)]
 #[derive(Copy, Clone, Eq, PartialEq)]

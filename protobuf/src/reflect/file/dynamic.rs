@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::enums::dynamic::DynamicEnumDescriptor;
@@ -7,7 +9,6 @@ use crate::reflect::file::index::FileIndex;
 use crate::reflect::message::dynamic::DynamicMessageDescriptor;
 use crate::reflect::message::path::MessagePath;
 use crate::reflect::FileDescriptor;
-use std::sync::Arc;
 
 #[derive(Debug)]
 pub(crate) struct DynamicFileDescriptor {

@@ -30,20 +30,19 @@ extern crate protobuf;
 extern crate protobuf_codegen;
 extern crate protoc;
 
+use std::ffi::OsString;
 use std::fs;
 use std::io;
 use std::path::Path;
 use std::path::PathBuf;
 use std::process;
 
-pub use protoc::Error;
-pub use protoc::Result;
-
 use protobuf::descriptor::FileDescriptorSet;
 use protobuf::Message;
 pub use protobuf_codegen::Customize;
+pub use protoc::Error;
 use protoc::Protoc;
-use std::ffi::OsString;
+pub use protoc::Result;
 
 /// `Protoc --rust_out...` args
 #[derive(Debug, Default)]
