@@ -3,6 +3,7 @@ use crate::ProtobufRelativePath;
 use std::fmt;
 use std::ops::Deref;
 
+/// Protobuf absolute name (e. g. `.foo.Bar`).
 #[derive(Clone, Eq, PartialEq, Debug, Hash)]
 pub struct ProtobufAbsolutePath {
     pub path: String,
