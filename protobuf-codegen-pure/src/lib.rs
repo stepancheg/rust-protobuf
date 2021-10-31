@@ -310,12 +310,12 @@ impl<'a> Run<'a> {
         }
     }
 
-    fn strip_prefix<'b>(path: &'b Path, prefix: &Path) -> Result<&'b Path, StripPrefixError> {
+    fn strip_prefix<'b>(path: &'b Path, prefix: &Path) -> Result<&'b RelPath, StripPrefixError> {
         // special handling of `.` to allow successful `strip_prefix("foo.proto", ".")
         if prefix == Path::new(".") && path.is_relative() {
-            Ok(path)
+            Ok(RelPath::new(path))
         } else {
-            path.strip_prefix(prefix)
+            path.strip_prefix(prefix).map(RelPath::new)
         }
     }
 
@@ -328,7 +328,6 @@ impl<'a> Run<'a> {
 
         match relative_path {
             Some(relative_path) => {
-                let relative_path = RelPath::new(relative_path);
                 self.add_file(relative_path, fs_path)?;
                 Ok(relative_path.to_owned())
             }
