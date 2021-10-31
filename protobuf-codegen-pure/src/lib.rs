@@ -39,10 +39,13 @@ use std::process;
 
 mod linked_hash_map;
 mod model;
+mod parse_dependencies;
 mod parser;
 mod path;
 
+use crate::parser::ParserErrorWithLocation;
 use linked_hash_map::LinkedHashMap;
+use protobuf::descriptor::FileDescriptorProto;
 use protobuf_codegen::amend_io_error;
 pub use protobuf_codegen::Customize;
 
@@ -369,6 +372,14 @@ pub fn parse_and_typecheck(
         relative_paths,
         file_descriptors,
     })
+}
+
+/// Parse imports from a `.proto` file.
+///
+/// The result is [`FileDescriptorProto`] object with only `*dependency` fields filled.
+#[doc(hidden)]
+pub fn parse_dependencies(content: &str) -> Result<FileDescriptorProto, ParserErrorWithLocation> {
+    parse_dependencies::parse_dependencies(content)
 }
 
 // TODO: these include don't work when publishing to crates

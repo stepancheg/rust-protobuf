@@ -1417,6 +1417,22 @@ fn label(input: model::Rule) -> protobuf::descriptor::field_descriptor_proto::La
     }
 }
 
+pub(crate) fn populate_dependencies(
+    input: &model::FileDescriptor,
+    output: &mut protobuf::descriptor::FileDescriptorProto,
+) {
+    for import in &input.imports {
+        if import.vis == model::ImportVis::Public {
+            output
+                .public_dependency
+                .push(output.dependency.len() as i32);
+        } else if import.vis == model::ImportVis::Weak {
+            output.weak_dependency.push(output.dependency.len() as i32);
+        }
+        output.dependency.push(import.path.clone());
+    }
+}
+
 pub(crate) fn file_descriptor(
     name: &Path,
     input: &model::FileDescriptor,
@@ -1435,16 +1451,7 @@ pub(crate) fn file_descriptor(
         output.set_package(input.package.to_root_rel().to_string());
     }
 
-    for import in &input.imports {
-        if import.vis == model::ImportVis::Public {
-            output
-                .public_dependency
-                .push(output.dependency.len() as i32);
-        } else if import.vis == model::ImportVis::Weak {
-            output.weak_dependency.push(output.dependency.len() as i32);
-        }
-        output.dependency.push(import.path.clone());
-    }
+    populate_dependencies(&input, &mut output);
 
     let mut messages = Vec::new();
     let mut services = Vec::new();
