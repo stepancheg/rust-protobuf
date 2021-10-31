@@ -1,8 +1,9 @@
+use std::fmt;
+use std::string::FromUtf8Error;
+
 use super::lexer_impl::Lexer;
 use super::lexer_impl::LexerError;
 use crate::text_format::lexer::ParserLanguage;
-use std::fmt;
-use std::string::FromUtf8Error;
 
 #[derive(Debug)]
 pub enum StrLitDecodeError {

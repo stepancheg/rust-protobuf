@@ -9,11 +9,11 @@ use std::mem;
 use std::slice;
 
 #[cfg(feature = "bytes")]
-use crate::chars::Chars;
-#[cfg(feature = "bytes")]
 use bytes::Bytes;
 
 use crate::buf_read_iter::BufReadIter;
+#[cfg(feature = "bytes")]
+use crate::chars::Chars;
 use crate::enums::ProtobufEnum;
 use crate::error::ProtobufError;
 use crate::error::ProtobufResult;
@@ -795,12 +795,11 @@ mod test {
     use std::io::BufRead;
     use std::io::Read;
 
+    use super::CodedInputStream;
+    use super::READ_RAW_BYTES_MAX_ALLOC;
     use crate::error::ProtobufError;
     use crate::error::ProtobufResult;
     use crate::hex::decode_hex;
-
-    use super::CodedInputStream;
-    use super::READ_RAW_BYTES_MAX_ALLOC;
 
     fn test_read_partial<F>(hex: &str, mut callback: F)
     where

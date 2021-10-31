@@ -1,8 +1,8 @@
 use std::default::Default;
 
-use super::test_text_format_pb::*;
-
 use protobuf::text_format::print_to_string;
+
+use super::test_text_format_pb::*;
 
 fn t<F: FnMut(&mut TestTypes)>(expected: &str, mut setter: F) {
     let mut m = TestTypes::new();

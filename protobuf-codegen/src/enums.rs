@@ -1,17 +1,17 @@
 use std::collections::HashSet;
 
-use protobuf::descriptor::*;
-
-use super::code_writer::*;
-use super::customize::Customize;
 use file_descriptor::file_descriptor_proto_expr;
 use inside::protobuf_crate_path;
+use protobuf::descriptor::*;
 use protobuf_name::ProtobufAbsolutePath;
 use rust_types_values::type_name_to_rust_relative;
 use scope::EnumWithScope;
 use scope::RootScope;
 use scope::WithScope;
 use serde;
+
+use super::code_writer::*;
+use super::customize::Customize;
 
 #[derive(Clone)]
 pub struct EnumValueGen {

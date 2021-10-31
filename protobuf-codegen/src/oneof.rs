@@ -1,5 +1,7 @@
 //! Oneof-related codegen functions.
 
+use std::collections::HashSet;
+
 use code_writer::CodeWriter;
 use field::FieldElem;
 use field::FieldGen;
@@ -14,7 +16,6 @@ use scope::OneofWithContext;
 use scope::RootScope;
 use scope::WithScope;
 use serde;
-use std::collections::HashSet;
 use Customize;
 
 // oneof one { ... }

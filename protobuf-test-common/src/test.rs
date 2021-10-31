@@ -1,6 +1,5 @@
 use hex::decode_hex;
 use hex::encode_hex;
-
 use protobuf::*;
 
 #[allow(deprecated)] // `parse_length_delimited_from_bytes`

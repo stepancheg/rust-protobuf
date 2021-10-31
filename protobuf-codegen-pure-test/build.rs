@@ -6,11 +6,10 @@ extern crate protobuf_codegen_pure;
 
 extern crate protobuf_test_common;
 
-use std::io::Read;
-use std::io::Write;
-
 use std::env;
 use std::fs;
+use std::io::Read;
+use std::io::Write;
 use std::path::Path;
 
 use protobuf_test_common::build::*;

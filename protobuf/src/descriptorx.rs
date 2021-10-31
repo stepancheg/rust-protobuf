@@ -8,7 +8,6 @@ use crate::descriptor::FieldDescriptorProto;
 /// utilities to work with descriptor
 use crate::descriptor::FileDescriptorProto;
 use crate::descriptor::OneofDescriptorProto;
-
 use crate::rust;
 use crate::strx;
 

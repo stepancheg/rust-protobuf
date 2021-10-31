@@ -1,5 +1,4 @@
 use protobuf::*;
-
 use protobuf_test_common::hex::decode_hex;
 use protobuf_test_common::*;
 

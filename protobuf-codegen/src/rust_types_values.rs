@@ -1,6 +1,5 @@
 use std::cmp;
 
-use super::well_known_types::is_well_known_type_full;
 use inside::protobuf_crate_path;
 use message::RustTypeMessage;
 use protobuf::descriptor::*;
@@ -10,6 +9,8 @@ use scope::RootScope;
 use scope::WithScope;
 use strx::capitalize;
 use Customize;
+
+use super::well_known_types::is_well_known_type_full;
 
 // Represent subset of rust types used in generated code
 #[derive(Debug, Clone, PartialEq, Eq)]

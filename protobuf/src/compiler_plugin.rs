@@ -1,12 +1,13 @@
 // TODO: move into separate crate
 #![doc(hidden)]
 
-use crate::descriptor::FileDescriptorProto;
-use crate::plugin::*;
-use crate::Message;
 use std::io::stdin;
 use std::io::stdout;
 use std::str;
+
+use crate::descriptor::FileDescriptorProto;
+use crate::plugin::*;
+use crate::Message;
 
 pub struct GenRequest<'a> {
     pub file_descriptors: &'a [FileDescriptorProto],

@@ -3,18 +3,16 @@
 use std::iter;
 
 use model;
-
 use protobuf;
 use protobuf::json::json_name;
+use protobuf::text_format::lexer::StrLitDecodeError;
+use protobuf::text_format::quote_bytes_to;
 use protobuf::Message;
-
 use protobuf_codegen::ProtobufAbsolutePath;
 use protobuf_codegen::ProtobufIdent;
 use protobuf_codegen::ProtobufRelativePath;
 
 use crate::model::FieldOrOneOf;
-use protobuf::text_format::lexer::StrLitDecodeError;
-use protobuf::text_format::quote_bytes_to;
 
 #[derive(Debug)]
 pub enum ConvertError {

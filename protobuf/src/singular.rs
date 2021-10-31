@@ -1,12 +1,12 @@
-#[cfg(feature = "with-serde")]
-use serde;
-
 use std::default::Default;
 use std::fmt;
 use std::hash::Hash;
 use std::hash::Hasher;
 use std::mem;
 use std::option;
+
+#[cfg(feature = "with-serde")]
+use serde;
 
 use crate::clear::Clear;
 

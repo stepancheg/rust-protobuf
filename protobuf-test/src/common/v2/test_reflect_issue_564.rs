@@ -1,7 +1,7 @@
-use super::test_reflect_issue_564_pb::*;
-
 use protobuf::descriptor::FieldDescriptorProto_Type;
 use protobuf::Message;
+
+use super::test_reflect_issue_564_pb::*;
 
 fn visit_fields(mes: &dyn Message) {
     let mut seen_enum = false;

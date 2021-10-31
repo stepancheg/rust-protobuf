@@ -1,6 +1,3 @@
-#[cfg(feature = "with-serde")]
-use serde;
-
 use std::borrow::Borrow;
 use std::cmp::Ordering;
 use std::default::Default;
@@ -15,6 +12,9 @@ use std::ops::Index;
 use std::ops::IndexMut;
 use std::slice;
 use std::vec;
+
+#[cfg(feature = "with-serde")]
+use serde;
 
 use crate::clear::Clear;
 

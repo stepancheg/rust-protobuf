@@ -1,11 +1,12 @@
-use super::code_writer::CodeWriter;
-use super::rust_types_values::*;
 use field::rust_field_name_for_protobuf_field_name;
 use inside::protobuf_crate_path;
 use protobuf::descriptor::*;
 use protobuf_name::ProtobufAbsolutePath;
 use scope::RootScope;
 use Customize;
+
+use super::code_writer::CodeWriter;
+use super::rust_types_values::*;
 
 struct ExtGen<'a> {
     file: &'a FileDescriptorProto,

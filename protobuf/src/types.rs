@@ -4,10 +4,10 @@ use std::marker;
 use std::mem;
 
 #[cfg(feature = "bytes")]
-use crate::chars::Chars;
-#[cfg(feature = "bytes")]
 use bytes::Bytes;
 
+#[cfg(feature = "bytes")]
+use crate::chars::Chars;
 use crate::coded_input_stream::CodedInputStream;
 use crate::coded_output_stream::CodedOutputStream;
 use crate::enums::ProtobufEnum;

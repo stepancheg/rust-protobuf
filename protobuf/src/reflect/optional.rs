@@ -1,7 +1,6 @@
 use std::mem;
 
 use super::value::ProtobufValue;
-
 use crate::singular::*;
 
 pub trait ReflectOptional: 'static {

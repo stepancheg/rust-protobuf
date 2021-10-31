@@ -5,8 +5,9 @@
 extern crate protobuf;
 extern crate test;
 
-use self::test::Bencher;
 use protobuf::CodedOutputStream;
+
+use self::test::Bencher;
 
 #[inline]
 fn buffer_write_byte(os: &mut CodedOutputStream) {

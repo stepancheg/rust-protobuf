@@ -57,22 +57,21 @@ pub use customize::Customize;
 
 pub mod code_writer;
 
-use self::code_writer::CodeWriter;
-use self::enums::*;
-use self::extensions::*;
-use self::message::*;
 use inside::protobuf_crate_path;
-use scope::FileScope;
-use scope::RootScope;
-
-use crate::file::proto_path_to_rust_mod;
-
 #[doc(hidden)]
 pub use protobuf_name::ProtobufAbsolutePath;
 #[doc(hidden)]
 pub use protobuf_name::ProtobufIdent;
 #[doc(hidden)]
 pub use protobuf_name::ProtobufRelativePath;
+use scope::FileScope;
+use scope::RootScope;
+
+use self::code_writer::CodeWriter;
+use self::enums::*;
+use self::extensions::*;
+use self::message::*;
+use crate::file::proto_path_to_rust_mod;
 
 fn escape_byte(s: &mut String, b: u8) {
     if b == b'\n' {

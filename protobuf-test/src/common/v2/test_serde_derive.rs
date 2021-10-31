@@ -1,10 +1,10 @@
 #![cfg(feature = "with-serde")]
 
+use std::collections::HashMap;
+
 use serde_json;
 
 use super::test_serde_derive_pb::*;
-
-use std::collections::HashMap;
 
 #[test]
 fn test_enum() {

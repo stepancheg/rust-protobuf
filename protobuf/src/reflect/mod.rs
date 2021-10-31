@@ -23,8 +23,6 @@ pub mod rt;
 
 pub use self::enums::EnumDescriptor;
 pub use self::enums::EnumValueDescriptor;
-
-pub use self::message::MessageDescriptor;
-
 pub use self::field::FieldDescriptor;
 pub use self::field::ReflectFieldRef;
+pub use self::message::MessageDescriptor;

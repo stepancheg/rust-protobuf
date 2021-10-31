@@ -1,6 +1,6 @@
-use super::test_reflect_pb::M;
-
 use protobuf::Message;
+
+use super::test_reflect_pb::M;
 
 #[test]
 fn test_get_sub_message_via_reflection() {

@@ -1,3 +1,8 @@
+use std::env;
+use std::fs::File;
+use std::io::Read;
+use std::io::Write;
+
 use crate::actions::cargo_check;
 use crate::actions::cargo_doc;
 use crate::actions::cargo_test;
@@ -10,10 +15,6 @@ use crate::ghwf::Job;
 use crate::ghwf::Step;
 use crate::yaml::Yaml;
 use crate::yaml::YamlWriter;
-use std::env;
-use std::fs::File;
-use std::io::Read;
-use std::io::Write;
 
 mod actions;
 mod ghwf;

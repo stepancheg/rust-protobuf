@@ -56,12 +56,13 @@ pub const ONCE_INIT: sync::Once = sync::Once::new();
 
 #[cfg(test)]
 mod test {
-    use super::Lazy;
     use std::sync::atomic::AtomicIsize;
     use std::sync::atomic::Ordering;
     use std::sync::Arc;
     use std::sync::Barrier;
     use std::thread;
+
+    use super::Lazy;
 
     #[test]
     fn many_threads_calling_get() {

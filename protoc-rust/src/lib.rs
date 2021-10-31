@@ -31,21 +31,19 @@ extern crate protobuf_codegen;
 extern crate protoc;
 
 mod slashes;
-use slashes::Slashes;
-
 use std::fs;
 use std::io;
 use std::io::Read;
 use std::path::Path;
 use std::path::PathBuf;
 
-pub use protoc::Error;
-pub use protoc::Result;
-
 use protobuf::descriptor::FileDescriptorSet;
 use protobuf::Message;
 pub use protobuf_codegen::Customize;
+pub use protoc::Error;
 use protoc::Protoc;
+pub use protoc::Result;
+use slashes::Slashes;
 
 /// `Protoc --rust_out...` args
 #[derive(Debug, Default)]

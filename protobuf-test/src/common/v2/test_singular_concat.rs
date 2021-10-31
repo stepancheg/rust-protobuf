@@ -1,8 +1,8 @@
 //! Test when two messages are concatenated, singular fields are taken from the last one.
 
-use super::test_singular_concat_pb::*;
-
 use protobuf_test_common::*;
+
+use super::test_singular_concat_pb::*;
 
 #[test]
 fn test_concat_bytes() {

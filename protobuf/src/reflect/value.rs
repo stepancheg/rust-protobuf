@@ -1,11 +1,11 @@
 use std::any::Any;
 
 #[cfg(feature = "bytes")]
-use crate::chars::Chars;
-#[cfg(feature = "bytes")]
 use bytes::Bytes;
 
 use super::*;
+#[cfg(feature = "bytes")]
+use crate::chars::Chars;
 
 /// Type implemented by all protobuf elementary types
 /// (ints, floats, bool, string, bytes, enums, messages).
