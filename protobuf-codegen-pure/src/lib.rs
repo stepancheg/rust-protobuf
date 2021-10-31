@@ -350,7 +350,7 @@ pub fn parse_and_typecheck(
 ) -> io::Result<ParsedAndTypechecked> {
     let mut run = Run {
         parsed_files: LinkedHashMap::new(),
-        includes: includes,
+        includes,
     };
 
     let mut relative_paths = Vec::new();
