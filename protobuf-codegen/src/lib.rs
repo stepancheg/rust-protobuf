@@ -32,7 +32,6 @@ use std::collections::hash_map::HashMap;
 use std::fmt::Write as FmtWrite;
 use std::fs;
 use std::io;
-use std::io::Write;
 use std::path::Path;
 
 use customize::customize_from_rustproto_for_file;

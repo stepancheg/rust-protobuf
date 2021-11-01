@@ -275,35 +275,6 @@ impl<'a> Run<'a> {
             .into()),
         }
     }
-
-    fn strip_prefix<'b>(path: &'b Path, prefix: &Path) -> anyhow::Result<ProtoPathBuf> {
-        // special handling of `.` to allow successful `strip_prefix("foo.proto", ".")
-        if prefix == Path::new(".") && path.is_relative() {
-            ProtoPathBuf::from_path(path)
-        } else {
-            ProtoPathBuf::from_path(path.strip_prefix(prefix)?)
-        }
-    }
-
-    fn add_fs_file(&mut self, fs_path: &Path) -> anyhow::Result<ProtoPathBuf> {
-        let relative_path = self
-            .includes
-            .iter()
-            .filter_map(|include_dir| Self::strip_prefix(fs_path, include_dir).ok())
-            .next();
-
-        match relative_path {
-            Some(relative_path) => {
-                self.add_file(&relative_path, fs_path)?;
-                Ok(relative_path)
-            }
-            None => Err(Error::FileMustResideInImportPath(
-                fs_path.display().to_string(),
-                format!("{:?}", self.includes),
-            )
-            .into()),
-        }
-    }
 }
 
 /// Result of parsing `.proto` files.
@@ -313,6 +284,24 @@ pub struct ParsedAndTypechecked {
     pub relative_paths: Vec<ProtoPathBuf>,
     /// All parsed `.proto` files including dependencies of input files.
     pub file_descriptors: Vec<protobuf::descriptor::FileDescriptorProto>,
+}
+
+fn path_to_proto_path(path: &Path, includes: &[PathBuf]) -> anyhow::Result<ProtoPathBuf> {
+    for include in includes {
+        if include == Path::new(".") && path.is_relative() {
+            // Special handling of `.` to allow using `.` as an include path
+            // and `foo.proto` as input.
+            return ProtoPathBuf::from_path(path);
+        }
+        match path.strip_prefix(include) {
+            Ok(stripped) => return ProtoPathBuf::from_path(stripped),
+            Err(_) => continue,
+        }
+    }
+    Err(
+        Error::FileMustResideInImportPath(path.display().to_string(), format!("{:?}", includes))
+            .into(),
+    )
 }
 
 #[doc(hidden)]
@@ -325,10 +314,13 @@ pub fn parse_and_typecheck(
         includes,
     };
 
-    let mut relative_paths = Vec::new();
+    let relative_paths = input
+        .iter()
+        .map(|input| path_to_proto_path(input, includes))
+        .collect::<anyhow::Result<Vec<_>>>()?;
 
-    for input in input {
-        relative_paths.push(run.add_fs_file(input)?);
+    for input in &relative_paths {
+        run.add_imported_file(&input)?;
     }
 
     let file_descriptors: Vec<_> = run
