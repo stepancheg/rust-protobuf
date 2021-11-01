@@ -1,15 +1,15 @@
 use protobuf::descriptor::field_descriptor_proto;
 
-use crate::field::FieldElem;
-use crate::field::FieldGen;
-use crate::field::FieldKind;
-use crate::field::MapField;
-use crate::field::OptionKind;
-use crate::field::RepeatedField;
-use crate::field::RepeatedFieldKind;
-use crate::field::SingularField;
-use crate::field::SingularFieldFlag;
 use crate::gen::code_writer::CodeWriter;
+use crate::gen::field::FieldElem;
+use crate::gen::field::FieldGen;
+use crate::gen::field::FieldKind;
+use crate::gen::field::MapField;
+use crate::gen::field::OptionKind;
+use crate::gen::field::RepeatedField;
+use crate::gen::field::RepeatedFieldKind;
+use crate::gen::field::SingularField;
+use crate::gen::field::SingularFieldFlag;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::oneof::OneofField;
 use crate::gen::rust_types_values::RustType;

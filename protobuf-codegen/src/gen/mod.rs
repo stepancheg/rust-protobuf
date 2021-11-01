@@ -1,6 +1,7 @@
 pub mod code_writer;
 pub mod enums;
 pub mod extensions;
+mod field;
 pub(crate) mod file_and_mod;
 pub mod inside;
 pub mod message;

@@ -6,9 +6,9 @@ use protobuf::descriptor::field_descriptor_proto;
 use protobuf_parse::ProtobufAbsolutePath;
 
 use crate::customize::Customize;
-use crate::field::FieldElem;
-use crate::field::FieldGen;
 use crate::gen::code_writer::CodeWriter;
+use crate::gen::field::FieldElem;
+use crate::gen::field::FieldGen;
 use crate::gen::file_and_mod::FileAndMod;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::message::MessageGen;

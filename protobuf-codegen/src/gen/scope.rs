@@ -10,7 +10,7 @@ use protobuf_parse::ProtobufIdent;
 use protobuf_parse::ProtobufRelativePath;
 
 use crate::customize::Customize;
-use crate::field::rust_field_name_for_protobuf_field_name;
+use crate::gen::field::rust_field_name_for_protobuf_field_name;
 use crate::gen::file_and_mod::FileAndMod;
 use crate::gen::message::message_name_to_nested_mod_name;
 use crate::gen::paths::proto_path_to_rust_mod;

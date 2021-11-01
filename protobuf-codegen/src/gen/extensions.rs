@@ -3,8 +3,8 @@ use protobuf::reflect::FileDescriptor;
 use protobuf_parse::ProtobufAbsolutePath;
 
 use crate::customize::Customize;
-use crate::field::rust_field_name_for_protobuf_field_name;
 use crate::gen::code_writer::CodeWriter;
+use crate::gen::field::rust_field_name_for_protobuf_field_name;
 use crate::gen::file_and_mod::FileAndMod;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::message::RustTypeMessage;

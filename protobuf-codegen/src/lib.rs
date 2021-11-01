@@ -2,7 +2,6 @@
 
 mod compiler_plugin;
 mod customize;
-mod field;
 mod gen;
 mod map;
 pub mod protoc_gen_rust;

@@ -6,9 +6,10 @@ use protobuf::reflect::MessageDescriptor;
 use protobuf_parse::snake_case;
 
 use crate::customize::customize_from_rustproto_for_message;
-use crate::field::*;
 use crate::gen::code_writer::*;
 use crate::gen::enums::*;
+use crate::gen::field::FieldGen;
+use crate::gen::field::FieldKind;
 use crate::gen::file_and_mod::FileAndMod;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::oneof::OneofGen;
