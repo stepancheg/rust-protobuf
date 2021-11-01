@@ -6,7 +6,6 @@ mod gen;
 mod map;
 pub mod protoc_gen_rust;
 
-use std::collections::hash_map::HashMap;
 use std::fs;
 use std::io;
 use std::path::Path;
@@ -14,39 +13,10 @@ use std::path::Path;
 pub use customize::Customize;
 #[doc(hidden)]
 pub use gen::paths::proto_name_to_rs;
-use gen::scope::FileScope;
-use gen::scope::WithScope;
 use protobuf::descriptor::*;
 use protobuf_parse::ProtoPathBuf;
-use protobuf_parse::ProtobufRelativePath;
 
 use crate::gen::all::gen_all;
-
-pub(crate) struct FileIndex {
-    messsage_to_index: HashMap<ProtobufRelativePath, u32>,
-    enum_to_index: HashMap<ProtobufRelativePath, u32>,
-}
-
-impl FileIndex {
-    fn index(file_scope: &FileScope) -> FileIndex {
-        FileIndex {
-            messsage_to_index: file_scope
-                .find_messages()
-                .into_iter()
-                .map(|m| m.protobuf_name_to_package())
-                .enumerate()
-                .map(|(i, n)| (n, i as u32))
-                .collect(),
-            enum_to_index: file_scope
-                .find_enums()
-                .into_iter()
-                .map(|m| m.protobuf_name_to_package())
-                .enumerate()
-                .map(|(i, n)| (n, i as u32))
-                .collect(),
-        }
-    }
-}
 
 struct GenFileResult {
     compiler_plugin_result: compiler_plugin::GenResult,

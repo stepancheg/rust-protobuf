@@ -3,6 +3,7 @@ use std::collections::HashSet;
 use protobuf::descriptor::*;
 
 use crate::gen::code_writer::*;
+use crate::gen::file_index::FileIndex;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::rust::EXPR_NONE;
 use crate::gen::rust_name::RustIdent;
@@ -13,7 +14,6 @@ use crate::gen::scope::RootScope;
 use crate::gen::scope::WithScope;
 use crate::gen::serde;
 use crate::Customize;
-use crate::FileIndex;
 
 #[derive(Clone)]
 pub(crate) struct EnumValueGen<'a> {

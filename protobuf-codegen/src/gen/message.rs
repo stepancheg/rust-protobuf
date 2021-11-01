@@ -11,6 +11,7 @@ use crate::gen::enums::*;
 use crate::gen::field::FieldGen;
 use crate::gen::field::FieldKind;
 use crate::gen::file_and_mod::FileAndMod;
+use crate::gen::file_index::FileIndex;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::oneof::OneofGen;
 use crate::gen::oneof::OneofVariantGen;
@@ -25,7 +26,6 @@ use crate::gen::scope::RootScope;
 use crate::gen::scope::WithScope;
 use crate::gen::serde;
 use crate::Customize;
-use crate::FileIndex;
 
 /// Protobuf message Rust type name
 #[derive(Debug, Clone, PartialEq, Eq)]

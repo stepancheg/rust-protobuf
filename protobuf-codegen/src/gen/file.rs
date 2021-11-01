@@ -11,6 +11,7 @@ use crate::gen::code_writer::CodeWriter;
 use crate::gen::enums::EnumGen;
 use crate::gen::extensions::write_extensions;
 use crate::gen::file_descriptor::write_file_descriptor_data;
+use crate::gen::file_index::FileIndex;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::message::MessageGen;
 use crate::gen::paths::proto_path_to_rust_mod;
@@ -18,7 +19,6 @@ use crate::gen::scope::FileScope;
 use crate::gen::scope::RootScope;
 use crate::proto_name_to_rs;
 use crate::Customize;
-use crate::FileIndex;
 use crate::GenFileResult;
 
 pub(crate) fn gen_file(
