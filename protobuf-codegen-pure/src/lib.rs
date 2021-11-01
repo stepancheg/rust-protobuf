@@ -239,11 +239,11 @@ impl<'a> Run<'a> {
     }
 
     fn add_imported_file(&mut self, protobuf_path: &ProtoPath) -> anyhow::Result<()> {
-        for include_dir in self.includes {
-            if let Some(_) = self.parsed_files.get(protobuf_path) {
-                return Ok(());
-            }
+        if let Some(_) = self.parsed_files.get(protobuf_path) {
+            return Ok(());
+        }
 
+        for include_dir in self.includes {
             let fs_path = include_dir.join(protobuf_path.to_path());
             if fs_path.exists() {
                 return self.add_file(protobuf_path, &fs_path);
