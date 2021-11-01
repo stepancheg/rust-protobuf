@@ -46,6 +46,7 @@ use linked_hash_map::LinkedHashMap;
 use protobuf::descriptor::FileDescriptorProto;
 use protobuf_codegen::amend_io_error;
 pub use protobuf_codegen::Customize;
+use protobuf_codegen::ProtoPathBuf;
 
 use crate::parser::ParserErrorWithLocation;
 use crate::rel_path::RelPath;
@@ -306,7 +307,7 @@ impl<'a> Run<'a> {
 #[doc(hidden)]
 pub struct ParsedAndTypechecked {
     /// One entry for each input `.proto` file.
-    pub relative_paths: Vec<PathBuf>,
+    pub relative_paths: Vec<ProtoPathBuf>,
     /// All parsed `.proto` files including dependencies of input files.
     pub file_descriptors: Vec<protobuf::descriptor::FileDescriptorProto>,
 }
@@ -324,7 +325,7 @@ pub fn parse_and_typecheck(
     let mut relative_paths = Vec::new();
 
     for input in input {
-        relative_paths.push(run.add_fs_file(input)?.into_path_buf());
+        relative_paths.push(ProtoPathBuf::from_path(&run.add_fs_file(input)?)?);
     }
 
     let file_descriptors: Vec<_> = run

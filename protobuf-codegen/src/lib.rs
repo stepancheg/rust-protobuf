@@ -1,16 +1,5 @@
 #![deny(rustdoc::broken_intra_doc_links)]
 
-use std::collections::hash_map::HashMap;
-use std::fmt::Write as FmtWrite;
-use std::fs::File;
-use std::io;
-use std::io::Write;
-use std::path::Path;
-use std::path::PathBuf;
-
-use protobuf::descriptor::*;
-use protobuf::Message;
-
 mod amend_io_error_util;
 pub mod case_convert;
 mod compiler_plugin;
@@ -24,31 +13,41 @@ mod map;
 mod message;
 mod oneof;
 mod paths;
+mod proto_path;
 mod protobuf_abs_path;
 mod protobuf_ident;
 mod protobuf_path;
 mod protobuf_rel_path;
+pub(crate) mod rust;
 mod rust_name;
 mod rust_types_values;
-mod serde;
-mod well_known_types;
-
-pub(crate) mod rust;
 pub(crate) mod scope;
+mod serde;
 pub(crate) mod strx;
 pub(crate) mod syntax;
-
-use customize::customize_from_rustproto_for_file;
-pub use customize::Customize;
+mod well_known_types;
 
 pub mod code_writer;
 
+use std::collections::hash_map::HashMap;
+use std::fmt::Write as FmtWrite;
+use std::fs::File;
+use std::io;
+use std::io::Write;
+use std::path::Path;
+
 #[doc(hidden)]
 pub use amend_io_error_util::amend_io_error;
+use customize::customize_from_rustproto_for_file;
+pub use customize::Customize;
 use inside::protobuf_crate_path;
 #[doc(hidden)]
 pub use paths::proto_name_to_rs;
+pub use proto_path::ProtoPath;
+pub use proto_path::ProtoPathBuf;
+use protobuf::descriptor::*;
 use protobuf::reflect::FileDescriptor;
+use protobuf::Message;
 pub use protobuf_abs_path::ProtobufAbsolutePath;
 pub use protobuf_ident::ProtobufIdent;
 pub use protobuf_path::ProtobufPath;
@@ -250,7 +249,7 @@ struct GenFileResult {
 
 fn gen_file(
     file_descriptor: &FileDescriptor,
-    _files_map: &HashMap<&Path, &FileDescriptor>,
+    _files_map: &HashMap<&ProtoPath, &FileDescriptor>,
     root_scope: &RootScope,
     customize: &Customize,
     parser: &str,
@@ -384,15 +383,12 @@ fn gen_mod_rs(mods: &[String]) -> compiler_plugin::GenResult {
     }
 }
 
-// This function is also used externally by cargo plugin
-// https://github.com/plietar/rust-protobuf-build
-// So be careful changing its signature.
 pub fn gen(
     file_descriptors: &[FileDescriptorProto],
     parser: &str,
-    files_to_generate: &[PathBuf],
+    files_to_generate: &[ProtoPathBuf],
     customize: &Customize,
-) -> Vec<compiler_plugin::GenResult> {
+) -> anyhow::Result<Vec<compiler_plugin::GenResult>> {
     let file_descriptors = FileDescriptor::new_dynamic_fds(file_descriptors.to_vec());
 
     let root_scope = RootScope {
@@ -400,10 +396,10 @@ pub fn gen(
     };
 
     let mut results: Vec<compiler_plugin::GenResult> = Vec::new();
-    let files_map: HashMap<&Path, &FileDescriptor> = file_descriptors
+    let files_map: HashMap<&ProtoPath, &FileDescriptor> = file_descriptors
         .iter()
-        .map(|f| (Path::new(f.proto().get_name()), f))
-        .collect();
+        .map(|f| Ok((ProtoPath::new(f.proto().get_name())?, f)))
+        .collect::<Result<_, anyhow::Error>>()?;
 
     let mut mods = Vec::new();
 
@@ -426,7 +422,7 @@ pub fn gen(
         results.push(gen_mod_rs(&mods));
     }
 
-    results
+    Ok(results)
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -440,7 +436,7 @@ enum Error {
 pub fn gen_and_write(
     file_descriptors: &[FileDescriptorProto],
     parser: &str,
-    files_to_generate: &[PathBuf],
+    files_to_generate: &[ProtoPathBuf],
     out_dir: &Path,
     customize: &Customize,
 ) -> anyhow::Result<()> {
@@ -457,7 +453,7 @@ pub fn gen_and_write(
         }
     }
 
-    let results = gen(file_descriptors, parser, files_to_generate, customize);
+    let results = gen(file_descriptors, parser, files_to_generate, customize)?;
 
     for r in &results {
         let mut file_path = out_dir.to_owned();
@@ -484,5 +480,6 @@ pub fn protoc_gen_rust_main() {
             r.files_to_generate,
             &customize,
         )
-    });
+    })
+    .expect("plugin failed");
 }

@@ -40,6 +40,7 @@ use std::process;
 use protobuf::descriptor::FileDescriptorSet;
 use protobuf::Message;
 pub use protobuf_codegen::Customize;
+use protobuf_codegen::ProtoPathBuf;
 use protoc::Protoc;
 
 #[derive(Debug, thiserror::Error)]
@@ -181,7 +182,7 @@ impl Codegen {
         'outer: for file in &self.inputs {
             for include in includes {
                 if let Some(truncated) = remove_path_prefix(file, include) {
-                    files_to_generate.push(truncated.to_owned());
+                    files_to_generate.push(ProtoPathBuf::from_path(&truncated)?);
                     continue 'outer;
                 }
             }

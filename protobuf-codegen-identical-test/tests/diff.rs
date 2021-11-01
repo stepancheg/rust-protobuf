@@ -122,7 +122,7 @@ fn pure_descriptor_set(includes: &[PathBuf], inputs: &[PathBuf]) -> FileDescript
     let relative_paths: HashSet<_> = codegen
         .relative_paths
         .iter()
-        .map(|path| path.to_string_lossy())
+        .map(|path| path.to_string())
         .collect();
     codegen
         .file_descriptors

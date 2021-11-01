@@ -4,7 +4,7 @@ use crate::ProtobufAbsolutePath;
 use crate::ProtobufRelativePath;
 
 /// Protobuf identifier can be absolute or relative.
-#[derive(Debug, Eq, PartialEq, Clone)]
+#[derive(Debug, Eq, PartialEq, Clone, Hash)]
 pub enum ProtobufPath {
     Abs(ProtobufAbsolutePath),
     Rel(ProtobufRelativePath),

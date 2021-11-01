@@ -40,10 +40,6 @@ impl RelPathBuf {
         );
         RelPathBuf { path }
     }
-
-    pub(crate) fn into_path_buf(self) -> PathBuf {
-        self.path
-    }
 }
 
 impl Deref for RelPath {

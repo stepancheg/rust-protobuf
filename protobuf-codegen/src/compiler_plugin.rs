@@ -1,15 +1,16 @@
 use std::io::stdin;
 use std::io::stdout;
-use std::path::PathBuf;
 use std::str;
 
 use protobuf::descriptor::FileDescriptorProto;
 use protobuf::plugin::*;
 use protobuf::Message;
 
+use crate::ProtoPathBuf;
+
 pub struct GenRequest<'a> {
     pub file_descriptors: &'a [FileDescriptorProto],
-    pub files_to_generate: &'a [PathBuf],
+    pub files_to_generate: &'a [ProtoPathBuf],
     pub parameter: &'a str,
 }
 
@@ -18,9 +19,9 @@ pub struct GenResult {
     pub content: Vec<u8>,
 }
 
-pub fn plugin_main<F>(gen: F)
+pub fn plugin_main<F>(gen: F) -> anyhow::Result<()>
 where
-    F: Fn(&GenRequest) -> Vec<GenResult>,
+    F: Fn(&GenRequest) -> anyhow::Result<Vec<GenResult>>,
 {
     let req = CodeGeneratorRequest::parse_from_reader(&mut stdin()).unwrap();
     let result = gen(&GenRequest {
@@ -28,10 +29,10 @@ where
         files_to_generate: &req
             .file_to_generate
             .iter()
-            .map(PathBuf::from)
-            .collect::<Vec<_>>(),
+            .map(|n| ProtoPathBuf::new(n.to_owned()))
+            .collect::<anyhow::Result<Vec<_>>>()?,
         parameter: req.get_parameter(),
-    });
+    })?;
     let mut resp = CodeGeneratorResponse::new();
     resp.file = result
         .iter()
@@ -43,4 +44,5 @@ where
         })
         .collect();
     resp.write_to_writer(&mut stdout()).unwrap();
+    Ok(())
 }
