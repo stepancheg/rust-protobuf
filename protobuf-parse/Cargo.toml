@@ -17,8 +17,10 @@ Files are parsed into a `protobuf::descriptor::FileDescriptorSet` object using e
 [dependencies]
 thiserror = "1.0.30"
 anyhow    = "1.0.44"
+tempfile  = "3.2.0"
 
 protobuf = { path = "../protobuf", version = "3.0.0-alpha.1" }
+protoc   = { path = "../protoc", version = "3.0.0-alpha.1" }
 
 [lib]
 # TODO: figure out what to do with bundled linked_hash_map
@@ -29,3 +31,6 @@ doctest = false
 name = "parse-and-typecheck"
 path = "src/bin/parse-and-typecheck.rs"
 test = false
+
+[package.metadata.docs.rs]
+all-features = true

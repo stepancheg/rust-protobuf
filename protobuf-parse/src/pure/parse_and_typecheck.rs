@@ -8,6 +8,7 @@ use std::str;
 use protobuf::descriptor::FileDescriptorProto;
 
 use crate::linked_hash_map::LinkedHashMap;
+use crate::parse_and_typecheck::ParsedAndTypechecked;
 use crate::proto;
 use crate::proto_path::ProtoPath;
 use crate::proto_path::ProtoPathBuf;
@@ -163,16 +164,10 @@ where
     }
 }
 
-/// Result of parsing `.proto` files.
-#[doc(hidden)]
-pub struct ParsedAndTypechecked {
-    /// One entry for each input `.proto` file.
-    pub relative_paths: Vec<ProtoPathBuf>,
-    /// All parsed `.proto` files including dependencies of input files.
-    pub file_descriptors: Vec<protobuf::descriptor::FileDescriptorProto>,
-}
-
-fn path_to_proto_path(path: &Path, includes: &[PathBuf]) -> anyhow::Result<ProtoPathBuf> {
+pub(crate) fn path_to_proto_path(
+    path: &Path,
+    includes: &[PathBuf],
+) -> anyhow::Result<ProtoPathBuf> {
     for include in includes {
         if include == Path::new(".") && path.is_relative() {
             // Special handling of `.` to allow using `.` as an include path
@@ -240,7 +235,7 @@ fn fs_resolver(includes: &[PathBuf]) -> impl ProtoPathResolver {
     }
 }
 
-#[doc(hidden)]
+/// Parse `.proto` files using pure Rust implementation.
 pub fn parse_and_typecheck(
     includes: &[PathBuf],
     input: &[PathBuf],
