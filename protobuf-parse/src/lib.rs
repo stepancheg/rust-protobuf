@@ -9,6 +9,7 @@ mod protobuf_ident;
 mod protobuf_path;
 mod protobuf_rel_path;
 pub mod pure;
+pub mod protoc;
 mod rel_path;
 mod test_against_protobuf_protos;
 
