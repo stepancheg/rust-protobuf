@@ -2,6 +2,7 @@ pub(crate) mod code_writer;
 pub(crate) mod enums;
 pub(crate) mod extensions;
 pub(crate) mod field;
+pub(crate) mod file;
 pub(crate) mod file_and_mod;
 pub(crate) mod file_descriptor;
 pub(crate) mod inside;
