@@ -19,7 +19,11 @@ use crate::gen::scope::FileScope;
 use crate::gen::scope::RootScope;
 use crate::proto_name_to_rs;
 use crate::Customize;
-use crate::GenFileResult;
+
+pub(crate) struct GenFileResult {
+    pub(crate) compiler_plugin_result: compiler_plugin::GenResult,
+    pub(crate) mod_name: String,
+}
 
 pub(crate) fn gen_file(
     file_descriptor: &FileDescriptor,
