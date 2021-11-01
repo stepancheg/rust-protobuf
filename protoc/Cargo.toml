@@ -15,8 +15,10 @@ doctest = true
 bench = false
 
 [dependencies]
-log = "0.*"
-which = "4.0"
+log       = "0.*"
+which     = "4.0"
+anyhow    = "1.0.44"
+thiserror = "1.0.30"
 
 [package.metadata.docs.rs]
 all-features = true

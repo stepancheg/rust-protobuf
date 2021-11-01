@@ -429,27 +429,31 @@ pub fn gen(
     results
 }
 
+#[derive(Debug, thiserror::Error)]
+enum Error {
+    #[error("output path `{0}` is not a directory")]
+    OutputIsNotDirectory(String),
+    #[error("output path `{0}` does not exist or not accessible")]
+    OutputDoesNotExistOrNotAccssible(String, #[source] io::Error),
+}
+
 pub fn gen_and_write(
     file_descriptors: &[FileDescriptorProto],
     parser: &str,
     files_to_generate: &[PathBuf],
     out_dir: &Path,
     customize: &Customize,
-) -> io::Result<()> {
+) -> anyhow::Result<()> {
     match out_dir.metadata() {
         Ok(m) => {
             if !m.is_dir() {
-                return Err(io::Error::new(
-                    io::ErrorKind::Other,
-                    format!("{} is not a directory", out_dir.display()),
-                ));
+                return Err(Error::OutputIsNotDirectory(out_dir.display().to_string()).into());
             }
         }
         Err(e) => {
-            return Err(amend_io_error(
-                e,
-                format!("{} does not exist or not accessible", out_dir.display()),
-            ));
+            return Err(
+                Error::OutputDoesNotExistOrNotAccssible(out_dir.display().to_string(), e).into(),
+            );
         }
     }
 

@@ -40,9 +40,13 @@ use std::process;
 use protobuf::descriptor::FileDescriptorSet;
 use protobuf::Message;
 pub use protobuf_codegen::Customize;
-pub use protoc::Error;
 use protoc::Protoc;
-pub use protoc::Result;
+
+#[derive(Debug, thiserror::Error)]
+enum Error {
+    #[error("file `{0}` is not found in includes {}")]
+    NotFound(String, String),
+}
 
 /// `Protoc --rust_out...` args
 #[derive(Debug, Default)]
@@ -140,7 +144,7 @@ impl Codegen {
     }
 
     /// Like `protoc --rust_out=...` but without requiring `protoc-gen-rust` command in `$PATH`.
-    pub fn run(&self) -> Result<()> {
+    pub fn run(&self) -> anyhow::Result<()> {
         let protoc = match self.protoc.clone() {
             Some(protoc) => protoc,
             None => Protoc::from_env_path(),
@@ -182,10 +186,9 @@ impl Codegen {
                 }
             }
 
-            return Err(Error::new(
-                io::ErrorKind::Other,
-                format!("file {:?} is not found in includes {:?}", file, includes),
-            ));
+            return Err(
+                Error::NotFound(file.display().to_string(), format!("{:?}", includes)).into(),
+            );
         }
 
         protobuf_codegen::gen_and_write(

@@ -18,6 +18,9 @@ See `protoc-rust` and `protobuf-codegen-pure` crates.
 bench = false
 
 [dependencies]
+thiserror = "1.0.30"
+anyhow    = "1.0.44"
+
 protobuf = { path = "../protobuf", version = "=3.0.0-alpha.1" }
 
 [[bin]]

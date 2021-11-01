@@ -28,10 +28,8 @@ extern crate protobuf_codegen;
 
 mod convert;
 
-use std::error::Error;
 use std::fmt;
 use std::fs;
-use std::io;
 use std::path::Path;
 use std::path::PathBuf;
 use std::path::StripPrefixError;
@@ -118,7 +116,7 @@ impl Codegen {
 
     /// Like `protoc --rust_out=...` but without requiring `protoc` or `protoc-gen-rust`
     /// commands in `$PATH`.
-    pub fn run(&self) -> io::Result<()> {
+    pub fn run(&self) -> anyhow::Result<()> {
         let p = parse_and_typecheck(&self.includes, &self.inputs)?;
 
         protobuf_codegen::gen_and_write(
@@ -145,46 +143,21 @@ pub(crate) struct FileDescriptorPair {
     descriptor: protobuf::descriptor::FileDescriptorProto,
 }
 
-#[derive(Debug)]
-enum CodegenError {
-    ParserErrorWithLocation(parser::ParserErrorWithLocation),
-    ConvertError(convert::ConvertError),
-}
-
-impl fmt::Display for CodegenError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            CodegenError::ParserErrorWithLocation(e) => write!(f, "{}", e),
-            CodegenError::ConvertError(e) => write!(f, "{}", e),
-        }
-    }
-}
-
-impl From<parser::ParserErrorWithLocation> for CodegenError {
-    fn from(e: parser::ParserErrorWithLocation) -> Self {
-        CodegenError::ParserErrorWithLocation(e)
-    }
-}
-
-impl From<convert::ConvertError> for CodegenError {
-    fn from(e: convert::ConvertError) -> Self {
-        CodegenError::ConvertError(e)
-    }
-}
-
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
+#[error("error in `{file}`: {error}")]
 struct WithFileError {
     file: String,
-    error: CodegenError,
+    #[source]
+    error: anyhow::Error,
 }
 
-impl fmt::Display for WithFileError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "error in {}: {}", self.file, self.error)
-    }
+#[derive(Debug, thiserror::Error)]
+enum Error {
+    #[error("protobuf path `{0}` is not found in import path {1}")]
+    FileNotFoundInImportPath(String, String),
+    #[error("file `{0}` must reside in include path {1}")]
+    FileMustResideInImportPath(String, String),
 }
-
-impl Error for WithFileError {}
 
 struct Run<'a> {
     parsed_files: LinkedHashMap<PathBuf, FileDescriptorPair>,
@@ -220,7 +193,7 @@ impl<'a> Run<'a> {
         }
     }
 
-    fn add_file(&mut self, protobuf_path: &Path, fs_path: &Path) -> io::Result<()> {
+    fn add_file(&mut self, protobuf_path: &Path, fs_path: &Path) -> anyhow::Result<()> {
         if let Some(_) = self.parsed_files.get(protobuf_path) {
             return Ok(());
         }
@@ -236,15 +209,10 @@ impl<'a> Run<'a> {
         protobuf_path: &Path,
         fs_path: &Path,
         content: &str,
-    ) -> io::Result<()> {
-        let parsed = model::FileDescriptor::parse(content).map_err(|e| {
-            io::Error::new(
-                io::ErrorKind::Other,
-                WithFileError {
-                    file: format!("{}", fs_path.display()),
-                    error: e.into(),
-                },
-            )
+    ) -> anyhow::Result<()> {
+        let parsed = model::FileDescriptor::parse(content).map_err(|e| WithFileError {
+            file: format!("{}", fs_path.display()),
+            error: e.into(),
         })?;
 
         for import in &parsed.imports {
@@ -257,14 +225,9 @@ impl<'a> Run<'a> {
         let this_file_deps: Vec<_> = this_file_deps.into_iter().map(|(_, v)| v).collect();
 
         let descriptor = convert::file_descriptor(protobuf_path, &parsed, &this_file_deps)
-            .map_err(|e| {
-                io::Error::new(
-                    io::ErrorKind::Other,
-                    WithFileError {
-                        file: format!("{}", fs_path.display()),
-                        error: e.into(),
-                    },
-                )
+            .map_err(|e| WithFileError {
+                file: format!("{}", fs_path.display()),
+                error: e.into(),
             })?;
 
         self.parsed_files.insert(
@@ -275,7 +238,7 @@ impl<'a> Run<'a> {
         Ok(())
     }
 
-    fn add_imported_file(&mut self, protobuf_path: &Path) -> io::Result<()> {
+    fn add_imported_file(&mut self, protobuf_path: &Path) -> anyhow::Result<()> {
         for include_dir in self.includes {
             let fs_path = include_dir.join(protobuf_path);
             if fs_path.exists() {
@@ -301,13 +264,11 @@ impl<'a> Run<'a> {
 
         match embedded {
             Some(content) => self.add_file_content(protobuf_path, protobuf_path, content),
-            None => Err(io::Error::new(
-                io::ErrorKind::Other,
-                format!(
-                    "protobuf path {:?} is not found in import path {:?}",
-                    protobuf_path, self.includes
-                ),
-            )),
+            None => Err(Error::FileNotFoundInImportPath(
+                protobuf_path.display().to_string(),
+                format!("{:?}", self.includes),
+            )
+            .into()),
         }
     }
 
@@ -320,7 +281,7 @@ impl<'a> Run<'a> {
         }
     }
 
-    fn add_fs_file(&mut self, fs_path: &Path) -> io::Result<RelPathBuf> {
+    fn add_fs_file(&mut self, fs_path: &Path) -> anyhow::Result<RelPathBuf> {
         let relative_path = self
             .includes
             .iter()
@@ -332,13 +293,11 @@ impl<'a> Run<'a> {
                 self.add_file(relative_path, fs_path)?;
                 Ok(relative_path.to_owned())
             }
-            None => Err(io::Error::new(
-                io::ErrorKind::Other,
-                format!(
-                    "file {:?} must reside in include path {:?}",
-                    fs_path, self.includes
-                ),
-            )),
+            None => Err(Error::FileMustResideInImportPath(
+                fs_path.display().to_string(),
+                format!("{:?}", self.includes),
+            )
+            .into()),
         }
     }
 }
@@ -356,7 +315,7 @@ pub struct ParsedAndTypechecked {
 pub fn parse_and_typecheck(
     includes: &[PathBuf],
     input: &[PathBuf],
-) -> io::Result<ParsedAndTypechecked> {
+) -> anyhow::Result<ParsedAndTypechecked> {
     let mut run = Run {
         parsed_files: LinkedHashMap::new(),
         includes,

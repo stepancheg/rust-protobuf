@@ -20,13 +20,30 @@ use std::process;
 extern crate log;
 extern crate which;
 
-/// Alias for io::Error
-pub type Error = io::Error;
-/// Alias for io::Result
-pub type Result<T> = io::Result<T>;
-
-fn err_other(s: impl AsRef<str>) -> Error {
-    Error::new(io::ErrorKind::Other, s.as_ref().to_owned())
+#[derive(Debug, thiserror::Error)]
+enum Error {
+    #[error("protoc command exited with non-zero code")]
+    ProtocNonZero,
+    #[error("protoc command `{0}` exited with non-zero code")]
+    ProtocNamedNonZero(String),
+    #[error("input is empty")]
+    InputIsEmpty,
+    #[error("output is empty")]
+    OutputIsEmpty,
+    #[error("output does not start with prefix")]
+    OutputDoesNotStartWithPrefix,
+    #[error("out_dir is empty")]
+    OutDirIsEmpty,
+    #[error("lang is empty")]
+    LangIsEmpty,
+    #[error("version is empty")]
+    VersionIsEmpty,
+    #[error("version does not start with digit")]
+    VersionDoesNotStartWithDigit,
+    #[error("failed to spawn command `{0}`")]
+    FailedToSpawnCommand(String, #[source] io::Error),
+    #[error("protoc output is not UTF-8")]
+    ProtocOutputIsNotUtf8,
 }
 
 /// `protoc --lang_out=... ...` command builder and spawner.
@@ -111,7 +128,7 @@ impl ProtocLangOut {
     }
 
     /// Execute `protoc` with given args
-    pub fn run(&self) -> Result<()> {
+    pub fn run(&self) -> anyhow::Result<()> {
         let protoc = match &self.protoc {
             Some(protoc) => protoc.clone(),
             None => {
@@ -123,17 +140,11 @@ impl ProtocLangOut {
         };
 
         if self.inputs.is_empty() {
-            return Err(err_other("input is empty"));
+            return Err(Error::InputIsEmpty.into());
         }
 
-        let out_dir = self
-            .out_dir
-            .as_ref()
-            .ok_or_else(|| err_other("out_dir is empty"))?;
-        let lang = self
-            .lang
-            .as_ref()
-            .ok_or_else(|| err_other("lang is empty"))?;
+        let out_dir = self.out_dir.as_ref().ok_or_else(|| Error::OutDirIsEmpty)?;
+        let lang = self.lang.as_ref().ok_or_else(|| Error::LangIsEmpty)?;
 
         // --{lang}_out={out_dir}
         let mut lang_out_flag = OsString::from("--");
@@ -236,12 +247,12 @@ impl DescriptorSetOutArgs {
     }
 
     /// Execute `protoc --descriptor_set_out=`
-    pub fn write_descriptor_set(&self) -> Result<()> {
+    pub fn write_descriptor_set(&self) -> anyhow::Result<()> {
         if self.inputs.is_empty() {
-            return Err(err_other("input is empty"));
+            return Err(Error::InputIsEmpty.into());
         }
 
-        let out = self.out.as_ref().ok_or_else(|| err_other("out is empty"))?;
+        let out = self.out.as_ref().ok_or_else(|| Error::OutputIsEmpty)?;
 
         // -I{include}
         let include_flags = self.includes.iter().map(|include| {
@@ -311,19 +322,20 @@ impl Protoc {
     }
 
     /// Check `protoc` command found and valid
-    pub fn check(&self) -> Result<()> {
-        self.version().map(|_| ())
+    pub fn check(&self) -> anyhow::Result<()> {
+        self.version()?;
+        Ok(())
     }
 
-    fn spawn(&self, cmd: &mut process::Command) -> io::Result<process::Child> {
+    fn spawn(&self, cmd: &mut process::Command) -> anyhow::Result<process::Child> {
         info!("spawning command {:?}", cmd);
 
         cmd.spawn()
-            .map_err(|e| Error::new(e.kind(), format!("failed to spawn `{:?}`: {}", cmd, e)))
+            .map_err(|e| Error::FailedToSpawnCommand(format!("{:?}", cmd), e).into())
     }
 
     /// Obtain `protoc` version
-    pub fn version(&self) -> Result<Version> {
+    pub fn version(&self) -> anyhow::Result<Version> {
         let child = self.spawn(
             process::Command::new(&self.exec)
                 .stdin(process::Stdio::null())
@@ -334,25 +346,24 @@ impl Protoc {
 
         let output = child.wait_with_output()?;
         if !output.status.success() {
-            return Err(err_other("protoc failed with error"));
+            return Err(Error::ProtocNonZero.into());
         }
-        let output =
-            String::from_utf8(output.stdout).map_err(|e| Error::new(io::ErrorKind::Other, e))?;
+        let output = String::from_utf8(output.stdout).map_err(|_| Error::ProtocOutputIsNotUtf8)?;
         let output = match output.lines().next() {
-            None => return Err(err_other("output is empty")),
+            None => return Err(Error::OutputIsEmpty.into()),
             Some(line) => line,
         };
         let prefix = "libprotoc ";
         if !output.starts_with(prefix) {
-            return Err(err_other("output does not start with prefix"));
+            return Err(Error::OutputDoesNotStartWithPrefix.into());
         }
         let output = &output[prefix.len()..];
         if output.is_empty() {
-            return Err(err_other("version is empty"));
+            return Err(Error::VersionIsEmpty.into());
         }
         let first = output.chars().next().unwrap();
         if !first.is_digit(10) {
-            return Err(err_other("version does not start with digit"));
+            return Err(Error::VersionDoesNotStartWithDigit.into());
         }
         Ok(Version {
             version: output.to_owned(),
@@ -360,7 +371,7 @@ impl Protoc {
     }
 
     /// Execute `protoc` command with given args, check it completed correctly.
-    fn run_with_args(&self, args: Vec<OsString>) -> Result<()> {
+    fn run_with_args(&self, args: Vec<OsString>) -> anyhow::Result<()> {
         let mut cmd = process::Command::new(&self.exec);
         cmd.stdin(process::Stdio::null());
         cmd.args(args);
@@ -368,10 +379,7 @@ impl Protoc {
         let mut child = self.spawn(&mut cmd)?;
 
         if !child.wait()?.success() {
-            return Err(err_other(format!(
-                "protoc ({:?}) exited with non-zero exit code",
-                cmd
-            )));
+            return Err(Error::ProtocNamedNonZero(format!("{:?}", cmd)).into());
         }
 
         Ok(())

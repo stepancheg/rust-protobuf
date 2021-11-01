@@ -85,19 +85,14 @@ impl From<int::Overflow> for ParserError {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
+#[error("at {line}:{col}: {error}")]
 pub struct ParserErrorWithLocation {
     pub error: ParserError,
     /// 1-based
     pub line: u32,
     /// 1-based
     pub col: u32,
-}
-
-impl fmt::Display for ParserErrorWithLocation {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "at {}:{}: {}", self.line, self.col, self.error)
-    }
 }
 
 pub type ParserResult<T> = Result<T, ParserError>;

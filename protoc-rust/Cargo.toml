@@ -15,10 +15,13 @@ doctest = false
 bench = false
 
 [dependencies]
+tempfile  = "3"
+anyhow    = "1.0.44"
+thiserror = "1.0.30"
+
 protoc = { path = "../protoc", version = "=3.0.0-alpha.1" }
 protobuf = { path = "../protobuf", version = "=3.0.0-alpha.1" }
 protobuf-codegen = { path = "../protobuf-codegen", version = "=3.0.0-alpha.1" }
-tempfile = "3"
 
 [package.metadata.docs.rs]
 all-features = true

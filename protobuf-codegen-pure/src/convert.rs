@@ -18,7 +18,6 @@ use protobuf::UnknownFields;
 use protobuf::UnknownValue;
 use protobuf_codegen::ProtobufPath;
 
-use crate::fmt;
 use crate::model;
 use crate::model::ProtobufConstant;
 use crate::model::ProtobufOptionName;
@@ -31,81 +30,45 @@ use crate::protobuf_codegen::ProtobufIdent;
 use crate::protobuf_codegen::ProtobufRelativePath;
 use crate::FileDescriptorPair;
 
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum ConvertError {
-    // options, option
+    #[error("builtin option {0} not found for options {1}")]
     BuiltinOptionNotFound(String, String),
-    // options, option
+    #[error("builtin option {0} points to a non-singular field of {1}")]
     BuiltinOptionPointsToNonSingularField(String, String),
+    #[error("extension not found: {0}")]
     ExtensionNotFound(String),
+    #[error("extension is not a message: {0}")]
     ExtensionIsNotMessage(String),
-    // option name, extendee, expected extendee
+    // TODO: what are a, b?
+    #[error("wrong extension type: option {0} extendee {1} expected extendee {2}")]
     WrongExtensionType(String, String, String),
+    #[error("unsupported extension type: {0} {1} {2}")]
     UnsupportedExtensionType(String, String, model::ProtobufConstant),
-    StrLitDecodeError(StrLitDecodeError),
+    #[error("incorrect string literal: {0}")]
+    StrLitDecodeError(#[source] StrLitDecodeError),
+    #[error("default value is not a string literal")]
     DefaultValueIsNotStringLiteral,
+    // TODO: explain
+    #[error("wrong option type")]
     WrongOptionType,
+    #[error("cannot convert value {1} to type {0}")]
     InconvertibleValue(RuntimeTypeBox, model::ProtobufConstant),
+    #[error("constants of this type are not implemented")]
     ConstantsOfTypeMessageEnumGroupNotImplemented,
+    #[error("object is not found by path: {0}")]
     NotFoundByAbsPath(ProtobufAbsolutePath),
+    // TODO: explain what are the arguments
+    #[error("object is not found by path: {0} {1}")]
     NotFoundByRelPath(ProtobufRelativePath, ProtobufAbsolutePath),
+    #[error("expecting a message for name {0}")]
     ExpectingMessage(ProtobufAbsolutePath),
+    #[error("expecting an enum for name {0}")]
     ExpectingEnum(ProtobufAbsolutePath),
+    #[error("unknown enum value: {0}")]
     UnknownEnumValue(String),
+    #[error("unknown field name: {0}")]
     UnknownFieldName(String),
-}
-
-impl fmt::Display for ConvertError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            ConvertError::ExtensionNotFound(e) => write!(f, "extension not found: {}", e),
-            ConvertError::BuiltinOptionNotFound(options, option) => write!(
-                f,
-                "builtin option {} not found for options {}",
-                option, options
-            ),
-            ConvertError::BuiltinOptionPointsToNonSingularField(options, option) => write!(
-                f,
-                "builtin option {} points to a non-singular field of {}",
-                option, options,
-            ),
-            ConvertError::WrongExtensionType(option_name, extendee, expected_extendee) => {
-                write!(
-                    f,
-                    "wrong extension type: option {} extendee {} expected extendee {}",
-                    option_name, extendee, expected_extendee
-                )
-            }
-            // TODO: what are a, b?
-            ConvertError::UnsupportedExtensionType(a, b, c) => {
-                write!(f, "unsupported extension type: {} {} {}", a, b, c)
-            }
-            ConvertError::StrLitDecodeError(s) => write!(f, "incorrect string literal: {}", s),
-            ConvertError::DefaultValueIsNotStringLiteral => {
-                write!(f, "default value is not a string literal")
-            }
-            // TODO: explain
-            ConvertError::WrongOptionType => write!(f, "wrong option type"),
-            ConvertError::InconvertibleValue(t, v) => {
-                write!(f, "cannot convert value {} to type {}", v, t)
-            }
-            ConvertError::ConstantsOfTypeMessageEnumGroupNotImplemented => {
-                write!(f, "constants of this type are not implemented")
-            }
-            ConvertError::NotFoundByAbsPath(p) => write!(f, "object is not found by path: {}", p),
-            // TODO: explain what are r and a
-            ConvertError::NotFoundByRelPath(r, a) => {
-                write!(f, "object is not found by path: {} {}", r, a)
-            }
-            ConvertError::ExpectingMessage(p) => write!(f, "expecting a message for name {}", p),
-            ConvertError::ExpectingEnum(p) => write!(f, "expecting an enum for name {}", p),
-            ConvertError::UnknownEnumValue(v) => write!(f, "unknown enum value: {}", v),
-            ConvertError::UnknownFieldName(n) => write!(f, "unknown field name: {}", n),
-            ConvertError::ExtensionIsNotMessage(e) => {
-                write!(f, "extension is not a message: {}", e)
-            }
-        }
-    }
 }
 
 impl From<StrLitDecodeError> for ConvertError {
