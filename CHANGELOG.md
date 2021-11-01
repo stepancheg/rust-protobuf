@@ -5,6 +5,9 @@
 Alpha versions of branch 3 are published. They are not guaranteed to have backwards compatibility.
 Stable versions are 2.xx still supported.
 
+- Remove `protobuf-codegen-pure` and `protoc-rust` crates. Now all codegen
+  (pure or with `protoc` is done using `protobuf-codegen` crate).
+
 ## [3.0.0-alpha.2] - 2021-11-01
 
 - Use `always_output_default_values` option
