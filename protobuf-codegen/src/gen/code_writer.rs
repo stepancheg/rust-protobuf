@@ -50,7 +50,7 @@ impl<'a> CodeWriter<'a> {
 
     fn write_generated_common(&mut self) {
         // https://secure.phabricator.com/T784
-        self.write_line("// @generated");
+        self.write_line(&format!("// {}generated", "@"));
 
         self.write_line("");
         self.comment("https://github.com/rust-lang/rust-clippy/issues/702");
