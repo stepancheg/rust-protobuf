@@ -15,17 +15,12 @@ pub use customize::Customize;
 #[doc(hidden)]
 pub use gen::paths::proto_name_to_rs;
 use gen::scope::FileScope;
-use gen::scope::RootScope;
 use gen::scope::WithScope;
-use gen::well_known_types::gen_well_known_types_mod;
 use protobuf::descriptor::*;
-use protobuf::reflect::FileDescriptor;
-use protobuf_parse::ProtoPath;
 use protobuf_parse::ProtoPathBuf;
 use protobuf_parse::ProtobufRelativePath;
 
-use crate::gen::file::gen_file;
-use crate::gen::mod_rs::gen_mod_rs;
+use crate::gen::all::gen_all;
 
 pub(crate) struct FileIndex {
     messsage_to_index: HashMap<ProtobufRelativePath, u32>,
@@ -58,48 +53,6 @@ struct GenFileResult {
     mod_name: String,
 }
 
-pub fn gen(
-    file_descriptors: &[FileDescriptorProto],
-    parser: &str,
-    files_to_generate: &[ProtoPathBuf],
-    customize: &Customize,
-) -> anyhow::Result<Vec<compiler_plugin::GenResult>> {
-    let file_descriptors = FileDescriptor::new_dynamic_fds(file_descriptors.to_vec());
-
-    let root_scope = RootScope {
-        file_descriptors: &file_descriptors,
-    };
-
-    let mut results: Vec<compiler_plugin::GenResult> = Vec::new();
-    let files_map: HashMap<&ProtoPath, &FileDescriptor> = file_descriptors
-        .iter()
-        .map(|f| Ok((ProtoPath::new(f.proto().get_name())?, f)))
-        .collect::<Result<_, anyhow::Error>>()?;
-
-    let mut mods = Vec::new();
-
-    for file_name in files_to_generate {
-        let file = files_map.get(file_name.as_path()).expect(&format!(
-            "file not found in file descriptors: {:?}, files: {:?}",
-            file_name,
-            files_map.keys()
-        ));
-        let gen_file_result = gen_file(file, &files_map, &root_scope, customize, parser);
-        results.push(gen_file_result.compiler_plugin_result);
-        mods.push(gen_file_result.mod_name);
-    }
-
-    if customize.inside_protobuf.unwrap_or(false) {
-        results.push(gen_well_known_types_mod(&file_descriptors));
-    }
-
-    if customize.gen_mod_rs.unwrap_or(false) {
-        results.push(gen_mod_rs(&mods));
-    }
-
-    Ok(results)
-}
-
 #[derive(Debug, thiserror::Error)]
 enum Error {
     #[error("output path `{0}` is not a directory")]
@@ -130,7 +83,7 @@ pub fn gen_and_write(
         }
     }
 
-    let results = gen(file_descriptors, parser, files_to_generate, customize)?;
+    let results = gen_all(file_descriptors, parser, files_to_generate, customize)?;
 
     for r in &results {
         let mut file_path = out_dir.to_owned();

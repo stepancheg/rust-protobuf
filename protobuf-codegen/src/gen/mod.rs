@@ -1,3 +1,4 @@
+pub(crate) mod all;
 pub(crate) mod code_writer;
 pub(crate) mod enums;
 pub(crate) mod extensions;
