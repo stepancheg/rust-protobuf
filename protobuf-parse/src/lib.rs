@@ -1,3 +1,8 @@
+//! Parse `.proto` files.
+//!
+//! Files can be parsed using pure Rust parser (mod `pure`)
+//! or using the `protoc` command (mod `protoc`).
+
 mod case_convert;
 mod linked_hash_map;
 mod parse_and_typecheck;

@@ -1,7 +1,6 @@
-#![doc(hidden)]
-
 // copy-paste from Google Protobuf
 // must be kept in sync with Google for JSON interop
+#[doc(hidden)]
 pub fn camel_case(input: &str) -> String {
     let mut capitalize_next = true;
     let mut result = String::new();
@@ -21,6 +20,7 @@ pub fn camel_case(input: &str) -> String {
     result
 }
 
+#[doc(hidden)]
 pub fn snake_case(input: &str) -> String {
     let mut result = String::new();
 

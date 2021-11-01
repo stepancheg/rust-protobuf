@@ -113,6 +113,7 @@ impl ProtobufRelativePath {
     }
 }
 
+#[doc(hidden)]
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
 pub struct ProtobufRelativePath {
     path: Vec<ProtobufIdent>,

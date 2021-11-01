@@ -8,6 +8,7 @@ use crate::protobuf_rel_path::ProtobufRelativePath;
 
 /// Protobuf absolute name (e. g. `.foo.Bar`).
 #[derive(Clone, Eq, PartialEq, Debug, Hash)]
+#[doc(hidden)]
 pub struct ProtobufAbsolutePath {
     pub path: String,
 }

@@ -4,6 +4,7 @@ use std::fmt;
 
 /// Identifier in `.proto` file
 #[derive(Eq, PartialEq, Debug, Clone, Hash)]
+#[doc(hidden)]
 pub struct ProtobufIdent(String);
 
 impl From<&'_ str> for ProtobufIdent {
