@@ -5,24 +5,24 @@ use std::collections::HashSet;
 use protobuf::descriptor::field_descriptor_proto;
 use protobuf_parse::ProtobufAbsolutePath;
 
-use crate::code_writer::CodeWriter;
 use crate::customize::Customize;
 use crate::field::FieldElem;
 use crate::field::FieldGen;
-use crate::file_and_mod::FileAndMod;
-use crate::inside::protobuf_crate_path;
-use crate::message::MessageGen;
-use crate::rust_name::RustIdent;
-use crate::rust_name::RustIdentWithPath;
-use crate::rust_name::RustPath;
-use crate::rust_types_values::make_path;
-use crate::rust_types_values::RustType;
-use crate::scope::FieldWithContext;
-use crate::scope::OneofVariantWithContext;
-use crate::scope::OneofWithContext;
-use crate::scope::RootScope;
-use crate::scope::WithScope;
-use crate::serde;
+use crate::gen::code_writer::CodeWriter;
+use crate::gen::file_and_mod::FileAndMod;
+use crate::gen::inside::protobuf_crate_path;
+use crate::gen::message::MessageGen;
+use crate::gen::rust_name::RustIdent;
+use crate::gen::rust_name::RustIdentWithPath;
+use crate::gen::rust_name::RustPath;
+use crate::gen::rust_types_values::make_path;
+use crate::gen::rust_types_values::RustType;
+use crate::gen::scope::FieldWithContext;
+use crate::gen::scope::OneofVariantWithContext;
+use crate::gen::scope::OneofWithContext;
+use crate::gen::scope::RootScope;
+use crate::gen::scope::WithScope;
+use crate::gen::serde;
 
 // oneof one { ... }
 #[derive(Clone)]

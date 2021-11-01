@@ -2,26 +2,10 @@
 
 mod compiler_plugin;
 mod customize;
-mod enums;
-mod extensions;
 mod field;
-pub(crate) mod file_and_mod;
-mod inside;
+mod gen;
 mod map;
-mod message;
-mod oneof;
-mod paths;
 pub mod protoc_gen_rust;
-pub(crate) mod rust;
-mod rust_name;
-mod rust_types_values;
-pub(crate) mod scope;
-mod serde;
-pub(crate) mod strx;
-pub(crate) mod syntax;
-mod well_known_types;
-
-pub mod code_writer;
 
 use std::collections::hash_map::HashMap;
 use std::fmt::Write as FmtWrite;
@@ -31,27 +15,26 @@ use std::path::Path;
 
 use customize::customize_from_rustproto_for_file;
 pub use customize::Customize;
-use inside::protobuf_crate_path;
+use gen::code_writer::CodeWriter;
+use gen::enums::*;
+use gen::extensions::*;
+use gen::inside::protobuf_crate_path;
+use gen::message::*;
 #[doc(hidden)]
-pub use paths::proto_name_to_rs;
+pub use gen::paths::proto_name_to_rs;
+use gen::paths::proto_path_to_fn_file_descriptor;
+use gen::paths::proto_path_to_rust_mod;
+use gen::rust::EXPR_VEC_NEW;
+use gen::scope::FileScope;
+use gen::scope::RootScope;
+use gen::scope::WithScope;
+use gen::well_known_types::gen_well_known_types_mod;
 use protobuf::descriptor::*;
 use protobuf::reflect::FileDescriptor;
 use protobuf::Message;
 use protobuf_parse::ProtoPath;
 use protobuf_parse::ProtoPathBuf;
 use protobuf_parse::ProtobufRelativePath;
-use scope::FileScope;
-use scope::RootScope;
-
-use self::code_writer::CodeWriter;
-use self::enums::*;
-use self::extensions::*;
-use self::message::*;
-use crate::paths::proto_path_to_fn_file_descriptor;
-use crate::paths::proto_path_to_rust_mod;
-use crate::rust::EXPR_VEC_NEW;
-use crate::scope::WithScope;
-use crate::well_known_types::gen_well_known_types_mod;
 
 fn escape_byte(s: &mut String, b: u8) {
     if b == b'\n' {

@@ -1,6 +1,5 @@
 use protobuf::descriptor::field_descriptor_proto;
 
-use crate::code_writer::CodeWriter;
 use crate::field::FieldElem;
 use crate::field::FieldGen;
 use crate::field::FieldKind;
@@ -10,10 +9,11 @@ use crate::field::RepeatedField;
 use crate::field::RepeatedFieldKind;
 use crate::field::SingularField;
 use crate::field::SingularFieldFlag;
-use crate::inside::protobuf_crate_path;
-use crate::oneof::OneofField;
-use crate::rust_types_values::RustType;
-use crate::scope::WithScope;
+use crate::gen::code_writer::CodeWriter;
+use crate::gen::inside::protobuf_crate_path;
+use crate::gen::oneof::OneofField;
+use crate::gen::rust_types_values::RustType;
+use crate::gen::scope::WithScope;
 
 struct AccessorFn {
     name: String,

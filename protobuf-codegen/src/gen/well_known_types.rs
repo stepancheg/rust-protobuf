@@ -2,11 +2,11 @@ use protobuf::reflect::FileDescriptor;
 use protobuf_parse::ProtobufAbsolutePath;
 use protobuf_parse::ProtobufRelativePath;
 
-use crate::code_writer::CodeWriter;
 use crate::compiler_plugin;
-use crate::paths::proto_path_to_rust_mod;
-use crate::scope::FileScope;
-use crate::scope::WithScope;
+use crate::gen::code_writer::CodeWriter;
+use crate::gen::paths::proto_path_to_rust_mod;
+use crate::gen::scope::FileScope;
+use crate::gen::scope::WithScope;
 
 pub(crate) static WELL_KNOWN_TYPES_PROTO_FILE_NAMES: &[&str] = &[
     "any.proto",

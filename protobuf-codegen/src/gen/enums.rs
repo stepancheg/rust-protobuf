@@ -2,17 +2,17 @@ use std::collections::HashSet;
 
 use protobuf::descriptor::*;
 
-use super::code_writer::*;
-use super::customize::Customize;
-use crate::inside::protobuf_crate_path;
-use crate::rust::EXPR_NONE;
-use crate::rust_name::RustIdent;
-use crate::rust_name::RustIdentWithPath;
-use crate::scope::EnumValueWithContext;
-use crate::scope::EnumWithScope;
-use crate::scope::RootScope;
-use crate::scope::WithScope;
-use crate::serde;
+use crate::gen::code_writer::*;
+use crate::gen::inside::protobuf_crate_path;
+use crate::gen::rust::EXPR_NONE;
+use crate::gen::rust_name::RustIdent;
+use crate::gen::rust_name::RustIdentWithPath;
+use crate::gen::scope::EnumValueWithContext;
+use crate::gen::scope::EnumWithScope;
+use crate::gen::scope::RootScope;
+use crate::gen::scope::WithScope;
+use crate::gen::serde;
+use crate::Customize;
 use crate::FileIndex;
 
 #[derive(Clone)]

@@ -4,18 +4,18 @@ use protobuf::descriptor::*;
 use protobuf_parse::ProtobufAbsolutePath;
 
 use crate::customize::Customize;
-use crate::file_and_mod::FileAndMod;
-use crate::inside::protobuf_crate_path;
-use crate::message::RustTypeMessage;
-use crate::rust::EXPR_NONE;
-use crate::rust::EXPR_VEC_NEW;
-use crate::rust_name::RustIdent;
-use crate::rust_name::RustIdentWithPath;
-use crate::rust_name::RustPath;
-use crate::scope::RootScope;
-use crate::scope::WithScope;
-use crate::strx::capitalize;
-use crate::well_known_types::is_well_known_type_full;
+use crate::gen::file_and_mod::FileAndMod;
+use crate::gen::inside::protobuf_crate_path;
+use crate::gen::message::RustTypeMessage;
+use crate::gen::rust::EXPR_NONE;
+use crate::gen::rust::EXPR_VEC_NEW;
+use crate::gen::rust_name::RustIdent;
+use crate::gen::rust_name::RustIdentWithPath;
+use crate::gen::rust_name::RustPath;
+use crate::gen::scope::RootScope;
+use crate::gen::scope::WithScope;
+use crate::gen::strx::capitalize;
+use crate::gen::well_known_types::is_well_known_type_full;
 
 // Represent subset of rust types used in generated code
 #[derive(Debug, Clone, PartialEq, Eq)]

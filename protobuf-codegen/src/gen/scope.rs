@@ -11,17 +11,17 @@ use protobuf_parse::ProtobufRelativePath;
 
 use crate::customize::Customize;
 use crate::field::rust_field_name_for_protobuf_field_name;
-use crate::file_and_mod::FileAndMod;
+use crate::gen::file_and_mod::FileAndMod;
+use crate::gen::message::message_name_to_nested_mod_name;
+use crate::gen::paths::proto_path_to_rust_mod;
+use crate::gen::rust;
+use crate::gen::rust::is_rust_keyword;
+use crate::gen::rust_name::RustIdent;
+use crate::gen::rust_name::RustIdentWithPath;
+use crate::gen::rust_name::RustRelativePath;
+use crate::gen::strx::capitalize;
+use crate::gen::syntax::Syntax;
 use crate::map::map_entry;
-use crate::message::message_name_to_nested_mod_name;
-use crate::paths::proto_path_to_rust_mod;
-use crate::rust;
-use crate::rust::is_rust_keyword;
-use crate::rust_name::RustIdent;
-use crate::rust_name::RustIdentWithPath;
-use crate::rust_name::RustRelativePath;
-use crate::strx::capitalize;
-use crate::syntax::Syntax;
 
 pub(crate) struct RootScope<'a> {
     pub file_descriptors: &'a [FileDescriptor],

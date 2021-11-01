@@ -2,16 +2,16 @@ use protobuf::descriptor::*;
 use protobuf::reflect::FileDescriptor;
 use protobuf_parse::ProtobufAbsolutePath;
 
-use super::code_writer::CodeWriter;
-use super::rust_types_values::*;
 use crate::customize::Customize;
 use crate::field::rust_field_name_for_protobuf_field_name;
-use crate::file_and_mod::FileAndMod;
-use crate::inside::protobuf_crate_path;
-use crate::message::RustTypeMessage;
-use crate::rust_name::RustIdentWithPath;
-use crate::rust_name::RustRelativePath;
-use crate::scope::RootScope;
+use crate::gen::code_writer::CodeWriter;
+use crate::gen::file_and_mod::FileAndMod;
+use crate::gen::inside::protobuf_crate_path;
+use crate::gen::message::RustTypeMessage;
+use crate::gen::rust_name::RustIdentWithPath;
+use crate::gen::rust_name::RustRelativePath;
+use crate::gen::rust_types_values::*;
+use crate::gen::scope::RootScope;
 
 struct ExtGen<'a> {
     file: &'a FileDescriptor,

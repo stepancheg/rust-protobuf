@@ -3,7 +3,7 @@
 
 use std::io::Write;
 
-use crate::rust_name::RustRelativePath;
+use crate::gen::rust_name::RustRelativePath;
 
 /// Field visibility.
 pub(crate) enum Visibility {
@@ -12,7 +12,7 @@ pub(crate) enum Visibility {
     Path(RustRelativePath),
 }
 
-pub struct CodeWriter<'a> {
+pub(crate) struct CodeWriter<'a> {
     writer: &'a mut (dyn Write + 'a),
     indent: String,
 }
@@ -33,11 +33,6 @@ impl<'a> CodeWriter<'a> {
             self.writer.write_all(s.as_bytes())
         })
         .unwrap();
-    }
-
-    pub fn write_generated(&mut self) {
-        self.write_line("// This file is generated. Do not edit");
-        self.write_generated_common();
     }
 
     pub fn write_generated_by(&mut self, pkg: &str, version: &str, parser: &str) {
@@ -76,10 +71,6 @@ impl<'a> CodeWriter<'a> {
         self.write_line("#![allow(unused_mut)]");
     }
 
-    pub fn todo(&mut self, message: &str) {
-        self.write_line(format!("panic!(\"TODO: {}\");", message));
-    }
-
     pub fn unimplemented(&mut self) {
         self.write_line(format!("unimplemented!();"));
     }
@@ -116,21 +107,6 @@ impl<'a> CodeWriter<'a> {
         ));
     }
 
-    pub fn lazy_static_decl_get<F>(
-        &mut self,
-        name: &str,
-        ty: &str,
-        protobuf_crate_path: &str,
-        init: F,
-    ) where
-        F: Fn(&mut CodeWriter),
-    {
-        self.lazy_static(name, ty, protobuf_crate_path);
-        self.write_line(&format!("{}.get(|| {{", name));
-        self.indented(|w| init(w));
-        self.write_line(&format!("}})"));
-    }
-
     pub fn lazy_static_decl_get_simple(
         &mut self,
         name: &str,
@@ -165,13 +141,6 @@ impl<'a> CodeWriter<'a> {
         self.block(&format!("{} {{", prefix.as_ref()), "};", cb);
     }
 
-    pub fn unsafe_expr<F>(&mut self, cb: F)
-    where
-        F: Fn(&mut CodeWriter),
-    {
-        self.expr_block("unsafe", cb);
-    }
-
     pub fn impl_self_block<S: AsRef<str>, F>(&mut self, name: S, cb: F)
     where
         F: Fn(&mut CodeWriter),
@@ -198,10 +167,6 @@ impl<'a> CodeWriter<'a> {
         self.expr_block(&format!("impl{} {} for {}", args_str, tr, ty), cb);
     }
 
-    pub fn unsafe_impl(&mut self, what: &str, for_what: &str) {
-        self.write_line(&format!("unsafe impl {} for {} {{}}", what, for_what));
-    }
-
     pub fn pub_struct<S: AsRef<str>, F>(&mut self, name: S, cb: F)
     where
         F: Fn(&mut CodeWriter),
@@ -209,32 +174,11 @@ impl<'a> CodeWriter<'a> {
         self.expr_block(&format!("pub struct {}", name.as_ref()), cb);
     }
 
-    pub fn def_struct<S: AsRef<str>, F>(&mut self, name: S, cb: F)
-    where
-        F: Fn(&mut CodeWriter),
-    {
-        self.expr_block(&format!("struct {}", name.as_ref()), cb);
-    }
-
     pub fn pub_enum<F>(&mut self, name: &str, cb: F)
     where
         F: Fn(&mut CodeWriter),
     {
         self.expr_block(&format!("pub enum {}", name), cb);
-    }
-
-    pub fn pub_trait<F>(&mut self, name: &str, cb: F)
-    where
-        F: Fn(&mut CodeWriter),
-    {
-        self.expr_block(&format!("pub trait {}", name), cb);
-    }
-
-    pub fn pub_trait_extend<F>(&mut self, name: &str, extend: &str, cb: F)
-    where
-        F: Fn(&mut CodeWriter),
-    {
-        self.expr_block(&format!("pub trait {} : {}", name, extend), cb);
     }
 
     pub fn field_entry(&mut self, name: &str, value: &str) {
@@ -362,10 +306,6 @@ impl<'a> CodeWriter<'a> {
         }
     }
 
-    pub fn fn_def(&mut self, sig: &str) {
-        self.write_line(&format!("fn {};", sig));
-    }
-
     pub(crate) fn fn_block<F>(&mut self, vis: Visibility, sig: &str, cb: F)
     where
         F: FnOnce(&mut CodeWriter),
@@ -390,13 +330,6 @@ impl<'a> CodeWriter<'a> {
         F: Fn(&mut CodeWriter),
     {
         self.fn_block(Visibility::Default, sig, cb);
-    }
-
-    pub fn def_mod<F>(&mut self, name: &str, cb: F)
-    where
-        F: Fn(&mut CodeWriter),
-    {
-        self.expr_block(&format!("mod {}", name), cb)
     }
 
     pub fn pub_mod<F>(&mut self, name: &str, cb: F)
