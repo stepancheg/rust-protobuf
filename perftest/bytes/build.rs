@@ -10,8 +10,7 @@ fn generate_protos() {
         .out_dir("src")
         .input("src/messages.proto")
         .includes(&["src", "../../proto"])
-        .run()
-        .expect("protoc");
+        .run_from_script();
 }
 
 // % rustc +stable --version

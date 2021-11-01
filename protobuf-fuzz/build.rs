@@ -8,6 +8,5 @@ fn main() {
         .out_dir("src")
         .include("src")
         .input("src/all_types_pb.proto")
-        .run()
-        .expect("protoc_rust");
+        .run_from_script();
 }

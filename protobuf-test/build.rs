@@ -67,8 +67,7 @@ fn generate_interop() {
         .out_dir("src/interop")
         .includes(&["../interop/cxx", "../proto"])
         .input("../interop/cxx/interop_pb.proto")
-        .run()
-        .unwrap();
+        .run_from_script();
 }
 
 fn generate_include_generated() {
@@ -87,8 +86,7 @@ fn generate_include_generated() {
             ..Default::default()
         })
         .include("src/include_generated")
-        .run()
-        .unwrap();
+        .run_from_script();
 }
 
 fn generate_pb_rs() {

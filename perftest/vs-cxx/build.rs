@@ -6,6 +6,5 @@ fn main() {
         .out_dir(".")
         .include(".")
         .input("perftest_data.proto")
-        .run()
-        .expect("protoc");
+        .run_from_script();
 }
