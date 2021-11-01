@@ -26,13 +26,13 @@
 extern crate protobuf;
 extern crate protobuf_codegen;
 
-mod convert;
-
+use std::fmt;
 use std::fs;
 use std::io;
 use std::path::Path;
 use std::path::PathBuf;
 use std::process;
+use std::str;
 
 mod linked_hash_map;
 mod model;
@@ -49,6 +49,7 @@ use protobuf_codegen::ProtoPathBuf;
 
 use crate::parser::ParserErrorWithLocation;
 
+mod convert;
 #[cfg(test)]
 mod test_against_protobuf_protos;
 
@@ -157,14 +158,27 @@ enum Error {
     FileMustResideInImportPath(String, String),
     #[error("could not read file `{0}`: {1}")]
     CouldNotReadFile(String, io::Error),
+    #[error("file `{0}` content is not UTF-8")]
+    FileContentIsNotUtf8(String),
 }
 
-struct Run<'a> {
+/// Resolve `.proto` files. `Display` is used for error messages.
+trait ProtoPathResolver: fmt::Display {
+    fn resolve(&self, path: &ProtoPath) -> anyhow::Result<Option<ResolvedProtoFile>>;
+}
+
+struct Run<R>
+where
+    R: ProtoPathResolver,
+{
     parsed_files: LinkedHashMap<ProtoPathBuf, FileDescriptorPair>,
-    includes: &'a [PathBuf],
+    resolver: R,
 }
 
-impl<'a> Run<'a> {
+impl<R> Run<R>
+where
+    R: ProtoPathResolver,
+{
     fn get_file_and_all_deps_already_parsed(
         &self,
         protobuf_path: &ProtoPath,
@@ -196,11 +210,13 @@ impl<'a> Run<'a> {
     fn add_file_content(
         &mut self,
         protobuf_path: &ProtoPath,
-        fs_path: &Path,
-        content: &str,
+        resolved: &ResolvedProtoFile,
     ) -> anyhow::Result<()> {
-        let parsed = model::FileDescriptor::parse(content).map_err(|e| WithFileError {
-            file: format!("{}", fs_path.display()),
+        let content = str::from_utf8(&resolved.content)
+            .map_err(|_| Error::FileContentIsNotUtf8(protobuf_path.to_string()))?;
+
+        let parsed = model::FileDescriptor::parse(&content).map_err(|e| WithFileError {
+            file: resolved.path.clone(),
             error: e.into(),
         })?;
 
@@ -215,7 +231,7 @@ impl<'a> Run<'a> {
 
         let descriptor = convert::file_descriptor(protobuf_path, &parsed, &this_file_deps)
             .map_err(|e| WithFileError {
-                file: format!("{}", fs_path.display()),
+                file: resolved.path.clone(),
                 error: e.into(),
             })?;
 
@@ -232,14 +248,9 @@ impl<'a> Run<'a> {
             return Ok(());
         }
 
-        for include_dir in self.includes {
-            let fs_path = include_dir.join(protobuf_path.to_path());
-            if fs_path.exists() {
-                let content = fs::read_to_string(&fs_path)
-                    .map_err(|e| Error::CouldNotReadFile(fs_path.display().to_string(), e))?;
-
-                return self.add_file_content(protobuf_path, &fs_path, &content);
-            }
+        let resolved = self.resolver.resolve(protobuf_path)?;
+        if let Some(resolved) = resolved {
+            return self.add_file_content(protobuf_path, &resolved);
         }
 
         let embedded = match protobuf_path.to_str() {
@@ -259,10 +270,16 @@ impl<'a> Run<'a> {
         };
 
         match embedded {
-            Some(content) => self.add_file_content(protobuf_path, protobuf_path.to_path(), content),
+            Some(content) => self.add_file_content(
+                protobuf_path,
+                &ResolvedProtoFile {
+                    path: protobuf_path.to_string(),
+                    content: content.as_bytes().to_vec(),
+                },
+            ),
             None => Err(Error::FileNotFoundInImportPath(
                 protobuf_path.to_string(),
-                format!("{:?}", self.includes),
+                format!("{}", self.resolver),
             )
             .into()),
         }
@@ -296,6 +313,50 @@ fn path_to_proto_path(path: &Path, includes: &[PathBuf]) -> anyhow::Result<Proto
     )
 }
 
+struct ResolvedProtoFile {
+    /// For error reporting.
+    pub path: String,
+    /// File content.
+    pub content: Vec<u8>,
+}
+
+fn fs_resolver(includes: &[PathBuf]) -> impl ProtoPathResolver {
+    struct Impl {
+        includes: Vec<PathBuf>,
+    }
+
+    impl fmt::Display for Impl {
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            write!(f, "{:?}", self.includes)
+        }
+    }
+
+    impl ProtoPathResolver for Impl {
+        fn resolve(&self, proto_path: &ProtoPath) -> anyhow::Result<Option<ResolvedProtoFile>> {
+            for include_dir in &self.includes {
+                let fs_path = include_dir.join(proto_path.to_path());
+                match fs::read_to_string(&fs_path) {
+                    Ok(content) => {
+                        return Ok(Some(ResolvedProtoFile {
+                            path: fs_path.display().to_string(),
+                            content: content.into_bytes(),
+                        }))
+                    }
+                    Err(e) if e.kind() == io::ErrorKind::NotFound => continue,
+                    Err(e) => {
+                        return Err(Error::CouldNotReadFile(fs_path.display().to_string(), e).into())
+                    }
+                }
+            }
+            Ok(None)
+        }
+    }
+
+    Impl {
+        includes: includes.to_vec(),
+    }
+}
+
 #[doc(hidden)]
 pub fn parse_and_typecheck(
     includes: &[PathBuf],
@@ -303,7 +364,7 @@ pub fn parse_and_typecheck(
 ) -> anyhow::Result<ParsedAndTypechecked> {
     let mut run = Run {
         parsed_files: LinkedHashMap::new(),
-        includes,
+        resolver: fs_resolver(includes),
     };
 
     let relative_paths = input
