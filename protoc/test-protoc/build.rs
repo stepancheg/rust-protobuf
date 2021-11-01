@@ -1,10 +1,9 @@
 extern crate protoc;
 
 use std::ffi::OsString;
-use std::io::Result;
 use std::path::PathBuf;
 
-fn main() -> Result<()> {
+fn main() -> anyhow::Result<()> {
     let exe_suffix = if cfg!(windows) {
         ".exe"
     } else if cfg!(unix) {

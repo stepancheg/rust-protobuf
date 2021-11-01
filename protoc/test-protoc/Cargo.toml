@@ -13,6 +13,8 @@ doctest = false
 bench = false
 
 [dependencies]
+anyhow = "1.0.44"
+
 protobuf = { path = "../../protobuf" }
 
 [features]
