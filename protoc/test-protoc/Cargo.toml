@@ -13,8 +13,6 @@ doctest = false
 bench = false
 
 [dependencies]
-anyhow = "1.0.44"
-
 protobuf = { path = "../../protobuf" }
 
 [features]
@@ -24,4 +22,6 @@ with-bytes = ["protobuf/with-bytes"]
 with-serde = ["protobuf/with-serde"]
 
 [build-dependencies]
+anyhow = "1.0.44"
+
 protoc = { path = ".." }
