@@ -1,6 +1,5 @@
 #![deny(rustdoc::broken_intra_doc_links)]
 
-mod amend_io_error_util;
 pub mod case_convert;
 mod compiler_plugin;
 mod customize;
@@ -31,13 +30,11 @@ pub mod code_writer;
 
 use std::collections::hash_map::HashMap;
 use std::fmt::Write as FmtWrite;
-use std::fs::File;
+use std::fs;
 use std::io;
 use std::io::Write;
 use std::path::Path;
 
-#[doc(hidden)]
-pub use amend_io_error_util::amend_io_error;
 use customize::customize_from_rustproto_for_file;
 pub use customize::Customize;
 use inside::protobuf_crate_path;
@@ -431,6 +428,8 @@ enum Error {
     OutputIsNotDirectory(String),
     #[error("output path `{0}` does not exist or not accessible")]
     OutputDoesNotExistOrNotAccssible(String, #[source] io::Error),
+    #[error("failed to create file `{0}`: {1}")]
+    FailedToWriteFile(String, #[source] io::Error),
 }
 
 pub fn gen_and_write(
@@ -458,14 +457,8 @@ pub fn gen_and_write(
     for r in &results {
         let mut file_path = out_dir.to_owned();
         file_path.push(&r.name);
-        let mut file_writer = File::create(&file_path)
-            .map_err(|e| amend_io_error(e, format!("failed to create {:?}", file_path)))?;
-        file_writer
-            .write_all(&r.content)
-            .map_err(|e| amend_io_error(e, format!("failed to write to {:?}", file_path)))?;
-        file_writer
-            .flush()
-            .map_err(|e| amend_io_error(e, format!("failed to flush {:?}", file_path)))?;
+        fs::write(&file_path, r.content.as_slice())
+            .map_err(|e| Error::FailedToWriteFile(file_path.display().to_string(), e))?;
     }
 
     Ok(())
