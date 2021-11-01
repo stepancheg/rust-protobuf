@@ -11,6 +11,7 @@ use crate::gen::code_writer::CodeWriter;
 use crate::gen::code_writer::Visibility;
 use crate::gen::file_and_mod::FileAndMod;
 use crate::gen::inside::protobuf_crate_path;
+use crate::gen::map::map_entry;
 use crate::gen::message::RustTypeMessage;
 use crate::gen::oneof::OneofField;
 use crate::gen::rust;
@@ -28,7 +29,6 @@ use crate::gen::scope::RootScope;
 use crate::gen::scope::WithScope;
 use crate::gen::serde;
 use crate::gen::syntax::Syntax;
-use crate::map::map_entry;
 
 mod accessor;
 
