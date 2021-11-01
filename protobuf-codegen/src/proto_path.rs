@@ -69,6 +69,18 @@ impl fmt::Display for ProtoPathBuf {
     }
 }
 
+impl PartialEq<str> for ProtoPath {
+    fn eq(&self, other: &str) -> bool {
+        &self.path == other
+    }
+}
+
+impl PartialEq<str> for ProtoPathBuf {
+    fn eq(&self, other: &str) -> bool {
+        &self.path == other
+    }
+}
+
 impl ProtoPath {
     fn unchecked_new(path: &str) -> &ProtoPath {
         unsafe { &*(path as *const str as *const ProtoPath) }

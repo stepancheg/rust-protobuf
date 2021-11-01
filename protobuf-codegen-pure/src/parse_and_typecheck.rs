@@ -303,3 +303,46 @@ pub fn parse_and_typecheck_custom(
         .map(|(_, v)| v.descriptor)
         .collect())
 }
+
+#[cfg(test)]
+mod test {
+    use std::fmt;
+
+    use protobuf_codegen::ProtoPath;
+    use protobuf_codegen::ProtoPathBuf;
+
+    use crate::ProtoPathResolver;
+    use crate::ResolvedProtoFile;
+
+    #[test]
+    fn parse_and_typecheck_custom() {
+        struct ResolverImpl;
+
+        impl fmt::Display for ResolverImpl {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+                write!(f, "ResolverImpl")
+            }
+        }
+
+        impl ProtoPathResolver for ResolverImpl {
+            fn resolve(&self, proto_path: &ProtoPath) -> anyhow::Result<Option<ResolvedProtoFile>> {
+                if proto_path == "xx.proto" {
+                    Ok(Some(ResolvedProtoFile {
+                        path: "xx.proto".to_string(),
+                        content: "syntax = 'proto3'; message Foo {}".as_bytes().to_vec(),
+                    }))
+                } else {
+                    Ok(None)
+                }
+            }
+        }
+
+        let resolved = super::parse_and_typecheck_custom(
+            &[ProtoPathBuf::new("xx.proto".to_owned()).unwrap()],
+            ResolverImpl,
+        )
+        .unwrap();
+        assert_eq!(1, resolved.len());
+        assert_eq!("Foo", resolved[0].message_type[0].get_name());
+    }
+}
