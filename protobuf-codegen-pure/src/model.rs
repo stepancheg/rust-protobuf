@@ -20,7 +20,6 @@ use crate::convert::ConvertError;
 use crate::convert::ConvertResult;
 use crate::linked_hash_map::LinkedHashMap;
 use crate::parser::Parser;
-pub use crate::parser::ParserError;
 pub use crate::parser::ParserErrorWithLocation;
 
 #[derive(Debug, Clone, PartialEq)]

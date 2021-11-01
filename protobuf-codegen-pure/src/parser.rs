@@ -17,7 +17,7 @@ use crate::model::*;
 
 /// Basic information about parsing error.
 #[derive(Debug, thiserror::Error)]
-pub enum ParserError {
+pub(crate) enum ParserError {
     #[error("{0}")]
     TokenizerError(#[source] TokenizerError),
     // TODO
@@ -78,77 +78,76 @@ impl From<int::Overflow> for ParserError {
 #[derive(Debug, thiserror::Error)]
 #[error("at {line}:{col}: {error}")]
 pub struct ParserErrorWithLocation {
-    pub error: ParserError,
+    #[source]
+    pub error: anyhow::Error,
     /// 1-based
     pub line: u32,
     /// 1-based
     pub col: u32,
 }
 
-pub type ParserResult<T> = Result<T, ParserError>;
-
 trait ToU8 {
-    fn to_u8(&self) -> ParserResult<u8>;
+    fn to_u8(&self) -> anyhow::Result<u8>;
 }
 
 trait ToI32 {
-    fn to_i32(&self) -> ParserResult<i32>;
+    fn to_i32(&self) -> anyhow::Result<i32>;
 }
 
 trait ToI64 {
-    fn to_i64(&self) -> ParserResult<i64>;
+    fn to_i64(&self) -> anyhow::Result<i64>;
 }
 
 trait ToChar {
-    fn to_char(&self) -> ParserResult<char>;
+    fn to_char(&self) -> anyhow::Result<char>;
 }
 
 impl ToI32 for u64 {
-    fn to_i32(&self) -> ParserResult<i32> {
+    fn to_i32(&self) -> anyhow::Result<i32> {
         if *self <= i32::max_value() as u64 {
             Ok(*self as i32)
         } else {
-            Err(ParserError::IntegerOverflow)
+            Err(ParserError::IntegerOverflow.into())
         }
     }
 }
 
 impl ToI32 for i64 {
-    fn to_i32(&self) -> ParserResult<i32> {
+    fn to_i32(&self) -> anyhow::Result<i32> {
         if *self <= i32::max_value() as i64 && *self >= i32::min_value() as i64 {
             Ok(*self as i32)
         } else {
-            Err(ParserError::IntegerOverflow)
+            Err(ParserError::IntegerOverflow.into())
         }
     }
 }
 
 impl ToI64 for u64 {
-    fn to_i64(&self) -> Result<i64, ParserError> {
+    fn to_i64(&self) -> anyhow::Result<i64> {
         if *self <= i64::max_value() as u64 {
             Ok(*self as i64)
         } else {
-            Err(ParserError::IntegerOverflow)
+            Err(ParserError::IntegerOverflow.into())
         }
     }
 }
 
 impl ToChar for u8 {
-    fn to_char(&self) -> Result<char, ParserError> {
+    fn to_char(&self) -> anyhow::Result<char> {
         if *self <= 0x7f {
             Ok(*self as char)
         } else {
-            Err(ParserError::NotUtf8)
+            Err(ParserError::NotUtf8.into())
         }
     }
 }
 
 impl ToU8 for u32 {
-    fn to_u8(&self) -> Result<u8, ParserError> {
+    fn to_u8(&self) -> anyhow::Result<u8> {
         if *self as u8 as u32 == *self {
             Ok(*self as u8)
         } else {
-            Err(ParserError::IntegerOverflow)
+            Err(ParserError::IntegerOverflow.into())
         }
     }
 }
@@ -238,15 +237,17 @@ pub struct MessageBody {
 }
 
 trait NumLitEx {
-    fn to_option_value(&self, sign_is_plus: bool) -> ParserResult<ProtobufConstant>;
+    fn to_option_value(&self, sign_is_plus: bool) -> anyhow::Result<ProtobufConstant>;
 }
 
 impl NumLitEx for NumLit {
-    fn to_option_value(&self, sign_is_plus: bool) -> ParserResult<ProtobufConstant> {
+    fn to_option_value(&self, sign_is_plus: bool) -> anyhow::Result<ProtobufConstant> {
         Ok(match (*self, sign_is_plus) {
             (NumLit::U64(u), true) => ProtobufConstant::U64(u),
             (NumLit::F64(f), true) => ProtobufConstant::F64(f),
-            (NumLit::U64(u), false) => ProtobufConstant::I64(int::neg(u)?),
+            (NumLit::U64(u), false) => {
+                ProtobufConstant::I64(int::neg(u).map_err(|_| ParserError::IntegerOverflow)?)
+            }
             (NumLit::F64(f), false) => ProtobufConstant::F64(-f),
         })
     }
@@ -263,7 +264,7 @@ impl<'a> Parser<'a> {
     // Protobuf grammar
 
     // fullIdent = ident { "." ident }
-    fn next_full_ident(&mut self) -> ParserResult<ProtobufPath> {
+    fn next_full_ident(&mut self) -> anyhow::Result<ProtobufPath> {
         let mut full_ident = String::new();
         // https://github.com/google/protobuf/issues/4563
         if self.tokenizer.next_symbol_if_eq('.')? {
@@ -278,7 +279,7 @@ impl<'a> Parser<'a> {
     }
 
     // fullIdent = ident { "." ident }
-    fn next_full_ident_rel(&mut self) -> ParserResult<ProtobufRelativePath> {
+    fn next_full_ident_rel(&mut self) -> anyhow::Result<ProtobufRelativePath> {
         let mut full_ident = String::new();
         full_ident.push_str(&self.tokenizer.next_ident()?);
         while self.tokenizer.next_symbol_if_eq('.')? {
@@ -289,7 +290,7 @@ impl<'a> Parser<'a> {
     }
 
     // emptyStatement = ";"
-    fn next_empty_statement_opt(&mut self) -> ParserResult<Option<()>> {
+    fn next_empty_statement_opt(&mut self) -> anyhow::Result<Option<()>> {
         if self.tokenizer.next_symbol_if_eq(';')? {
             Ok(Some(()))
         } else {
@@ -301,17 +302,17 @@ impl<'a> Parser<'a> {
     // enumName = ident
     // messageType = [ "." ] { ident "." } messageName
     // enumType = [ "." ] { ident "." } enumName
-    fn next_message_or_enum_type(&mut self) -> ParserResult<ProtobufPath> {
+    fn next_message_or_enum_type(&mut self) -> anyhow::Result<ProtobufPath> {
         self.next_full_ident()
     }
 
     // groupName = capitalLetter { letter | decimalDigit | "_" }
-    fn next_group_name(&mut self) -> ParserResult<String> {
+    fn next_group_name(&mut self) -> anyhow::Result<String> {
         // lexer cannot distinguish between group name and other ident
         let mut clone = self.clone();
         let ident = clone.tokenizer.next_ident()?;
         if !ident.chars().next().unwrap().is_ascii_uppercase() {
-            return Err(ParserError::GroupNameShouldStartWithUpperCase);
+            return Err(ParserError::GroupNameShouldStartWithUpperCase.into());
         }
         *self = clone;
         Ok(ident)
@@ -320,7 +321,7 @@ impl<'a> Parser<'a> {
     // Boolean
 
     // boolLit = "true" | "false"
-    fn next_bool_lit_opt(&mut self) -> ParserResult<Option<bool>> {
+    fn next_bool_lit_opt(&mut self) -> anyhow::Result<Option<bool>> {
         Ok(if self.tokenizer.next_ident_if_eq("true")? {
             Some(true)
         } else if self.tokenizer.next_ident_if_eq("false")? {
@@ -332,12 +333,12 @@ impl<'a> Parser<'a> {
 
     // Constant
 
-    fn next_num_lit(&mut self) -> ParserResult<NumLit> {
+    fn next_num_lit(&mut self) -> anyhow::Result<NumLit> {
         self.tokenizer
             .next_token_check_map(|token| Ok(token.to_num_lit()?))
     }
 
-    fn next_message_constant(&mut self) -> ParserResult<ProtobufConstantMessage> {
+    fn next_message_constant(&mut self) -> anyhow::Result<ProtobufConstantMessage> {
         let mut r = ProtobufConstantMessage::default();
         self.tokenizer.next_symbol_expect_eq('{')?;
         while !self.tokenizer.lookahead_is_symbol('}')? {
@@ -362,7 +363,7 @@ impl<'a> Parser<'a> {
 
     // constant = fullIdent | ( [ "-" | "+" ] intLit ) | ( [ "-" | "+" ] floatLit ) |
     //            strLit | boolLit
-    fn next_constant(&mut self) -> ParserResult<ProtobufConstant> {
+    fn next_constant(&mut self) -> anyhow::Result<ProtobufConstant> {
         // https://github.com/google/protobuf/blob/a21f225824e994ebd35e8447382ea4e0cd165b3c/src/google/protobuf/unittest_custom_options.proto#L350
         if self.tokenizer.lookahead_is_symbol('{')? {
             return Ok(ProtobufConstant::Message(self.next_message_constant()?));
@@ -397,13 +398,13 @@ impl<'a> Parser<'a> {
             _ => {}
         }
 
-        Err(ParserError::ExpectConstant)
+        Err(ParserError::ExpectConstant.into())
     }
 
-    fn next_int_lit(&mut self) -> ParserResult<u64> {
+    fn next_int_lit(&mut self) -> anyhow::Result<u64> {
         self.tokenizer.next_token_check_map(|token| match token {
             &Token::IntLit(i) => Ok(i),
-            _ => Err(ParserError::IncorrectInput),
+            _ => Err(ParserError::IncorrectInput.into()),
         })
     }
 
@@ -411,7 +412,7 @@ impl<'a> Parser<'a> {
 
     // syntax = "syntax" "=" quote "proto2" quote ";"
     // syntax = "syntax" "=" quote "proto3" quote ";"
-    fn next_syntax(&mut self) -> ParserResult<Option<Syntax>> {
+    fn next_syntax(&mut self) -> anyhow::Result<Option<Syntax>> {
         if self.tokenizer.next_ident_if_eq("syntax")? {
             self.tokenizer.next_symbol_expect_eq('=')?;
             let syntax_str = self.tokenizer.next_str_lit()?.decode_utf8()?;
@@ -420,7 +421,7 @@ impl<'a> Parser<'a> {
             } else if syntax_str == "proto3" {
                 Syntax::Proto3
             } else {
-                return Err(ParserError::UnknownSyntax);
+                return Err(ParserError::UnknownSyntax.into());
             };
             self.tokenizer.next_symbol_expect_eq(';')?;
             Ok(Some(syntax))
@@ -432,7 +433,7 @@ impl<'a> Parser<'a> {
     // Import Statement
 
     // import = "import" [ "weak" | "public" ] strLit ";"
-    fn next_import_opt(&mut self) -> ParserResult<Option<Import>> {
+    fn next_import_opt(&mut self) -> anyhow::Result<Option<Import>> {
         if self.tokenizer.next_ident_if_eq("import")? {
             let vis = if self.tokenizer.next_ident_if_eq("weak")? {
                 ImportVis::Weak
@@ -452,7 +453,7 @@ impl<'a> Parser<'a> {
     // Package
 
     // package = "package" fullIdent ";"
-    fn next_package_opt(&mut self) -> ParserResult<Option<ProtobufAbsolutePath>> {
+    fn next_package_opt(&mut self) -> anyhow::Result<Option<ProtobufAbsolutePath>> {
         if self.tokenizer.next_ident_if_eq("package")? {
             let package = self.next_full_ident_rel()?;
             self.tokenizer.next_symbol_expect_eq(';')?;
@@ -464,11 +465,11 @@ impl<'a> Parser<'a> {
 
     // Option
 
-    fn next_ident(&mut self) -> ParserResult<ProtobufIdent> {
+    fn next_ident(&mut self) -> anyhow::Result<ProtobufIdent> {
         Ok(ProtobufIdent::from(self.tokenizer.next_ident()?))
     }
 
-    fn next_option_name_component(&mut self) -> ParserResult<ProtobufOptionNameComponent> {
+    fn next_option_name_component(&mut self) -> anyhow::Result<ProtobufOptionNameComponent> {
         if self.tokenizer.next_symbol_if_eq('(')? {
             let comp = self.next_full_ident()?;
             self.tokenizer.next_symbol_expect_eq(')')?;
@@ -480,7 +481,7 @@ impl<'a> Parser<'a> {
 
     // https://github.com/google/protobuf/issues/4563
     // optionName = ( ident | "(" fullIdent ")" ) { "." ident }
-    fn next_option_name(&mut self) -> ParserResult<ProtobufOptionName> {
+    fn next_option_name(&mut self) -> anyhow::Result<ProtobufOptionName> {
         let mut components = Vec::new();
         components.push(self.next_option_name_component()?);
         while self.tokenizer.next_symbol_if_eq('.')? {
@@ -495,7 +496,7 @@ impl<'a> Parser<'a> {
     }
 
     // option = "option" optionName  "=" constant ";"
-    fn next_option_opt(&mut self) -> ParserResult<Option<ProtobufOption>> {
+    fn next_option_opt(&mut self) -> anyhow::Result<Option<ProtobufOption>> {
         if self.tokenizer.next_ident_if_eq("option")? {
             let name = self.next_option_name()?;
             self.tokenizer.next_symbol_expect_eq('=')?;
@@ -510,7 +511,7 @@ impl<'a> Parser<'a> {
     // Fields
 
     // label = "required" | "optional" | "repeated"
-    fn next_label(&mut self, mode: MessageBodyParseMode) -> ParserResult<Rule> {
+    fn next_label(&mut self, mode: MessageBodyParseMode) -> anyhow::Result<Rule> {
         let map = &[
             ("optional", Rule::Optional),
             ("required", Rule::Required),
@@ -520,7 +521,7 @@ impl<'a> Parser<'a> {
             let mut clone = self.clone();
             if clone.tokenizer.next_ident_if_eq(name)? {
                 if !mode.label_allowed(value) {
-                    return Err(ParserError::LabelNotAllowed);
+                    return Err(ParserError::LabelNotAllowed.into());
                 }
 
                 *self = clone;
@@ -529,13 +530,13 @@ impl<'a> Parser<'a> {
         }
 
         if mode.some_label_required() {
-            Err(ParserError::LabelRequired)
+            Err(ParserError::LabelRequired.into())
         } else {
             Ok(Rule::Optional)
         }
     }
 
-    fn next_field_type(&mut self) -> ParserResult<FieldType> {
+    fn next_field_type(&mut self) -> anyhow::Result<FieldType> {
         let simple = &[
             ("int32", FieldType::Int32),
             ("int64", FieldType::Int64),
@@ -567,16 +568,16 @@ impl<'a> Parser<'a> {
         Ok(FieldType::MessageOrEnum(message_or_enum))
     }
 
-    fn next_field_number(&mut self) -> ParserResult<i32> {
+    fn next_field_number(&mut self) -> anyhow::Result<i32> {
         // TODO: not all integers are valid field numbers
         self.tokenizer.next_token_check_map(|token| match token {
             &Token::IntLit(i) => i.to_i32(),
-            _ => Err(ParserError::IncorrectInput),
+            _ => Err(ParserError::IncorrectInput.into()),
         })
     }
 
     // fieldOption = optionName "=" constant
-    fn next_field_option(&mut self) -> ParserResult<ProtobufOption> {
+    fn next_field_option(&mut self) -> anyhow::Result<ProtobufOption> {
         let name = self.next_option_name()?;
         self.tokenizer.next_symbol_expect_eq('=')?;
         let value = self.next_constant()?;
@@ -584,7 +585,7 @@ impl<'a> Parser<'a> {
     }
 
     // fieldOptions = fieldOption { ","  fieldOption }
-    fn next_field_options(&mut self) -> ParserResult<Vec<ProtobufOption>> {
+    fn next_field_options(&mut self) -> anyhow::Result<Vec<ProtobufOption>> {
         let mut options = Vec::new();
 
         options.push(self.next_field_option()?);
@@ -598,11 +599,11 @@ impl<'a> Parser<'a> {
 
     // field = label type fieldName "=" fieldNumber [ "[" fieldOptions "]" ] ";"
     // group = label "group" groupName "=" fieldNumber messageBody
-    fn next_field(&mut self, mode: MessageBodyParseMode) -> ParserResult<WithLoc<Field>> {
+    fn next_field(&mut self, mode: MessageBodyParseMode) -> anyhow::Result<WithLoc<Field>> {
         let loc = self.tokenizer.lookahead_loc();
         let rule = if self.clone().tokenizer.next_ident_if_eq("map")? {
             if !mode.map_allowed() {
-                return Err(ParserError::MapFieldNotAllowed);
+                return Err(ParserError::MapFieldNotAllowed.into());
             }
             Rule::Optional
         } else {
@@ -667,7 +668,7 @@ impl<'a> Parser<'a> {
 
     // oneof = "oneof" oneofName "{" { oneofField | emptyStatement } "}"
     // oneofField = type fieldName "=" fieldNumber [ "[" fieldOptions "]" ] ";"
-    fn next_oneof_opt(&mut self) -> ParserResult<Option<OneOf>> {
+    fn next_oneof_opt(&mut self) -> anyhow::Result<Option<OneOf>> {
         if self.tokenizer.next_ident_if_eq("oneof")? {
             let name = self.tokenizer.next_ident()?.to_owned();
             let MessageBody {
@@ -693,7 +694,7 @@ impl<'a> Parser<'a> {
     // mapField = "map" "<" keyType "," type ">" mapName "=" fieldNumber [ "[" fieldOptions "]" ] ";"
     // keyType = "int32" | "int64" | "uint32" | "uint64" | "sint32" | "sint64" |
     //           "fixed32" | "fixed64" | "sfixed32" | "sfixed64" | "bool" | "string"
-    fn next_map_field_type_opt(&mut self) -> ParserResult<Option<FieldType>> {
+    fn next_map_field_type_opt(&mut self) -> anyhow::Result<Option<FieldType>> {
         if self.tokenizer.next_ident_if_eq("map")? {
             self.tokenizer.next_symbol_expect_eq('<')?;
             // TODO: restrict key types
@@ -712,7 +713,7 @@ impl<'a> Parser<'a> {
     // Extensions
 
     // range =  intLit [ "to" ( intLit | "max" ) ]
-    fn next_range(&mut self) -> ParserResult<FieldNumberRange> {
+    fn next_range(&mut self) -> anyhow::Result<FieldNumberRange> {
         let from = self.next_field_number()?;
         let to = if self.tokenizer.next_ident_if_eq("to")? {
             if self.tokenizer.next_ident_if_eq("max")? {
@@ -727,7 +728,7 @@ impl<'a> Parser<'a> {
     }
 
     // ranges = range { "," range }
-    fn next_ranges(&mut self) -> ParserResult<Vec<FieldNumberRange>> {
+    fn next_ranges(&mut self) -> anyhow::Result<Vec<FieldNumberRange>> {
         let mut ranges = Vec::new();
         ranges.push(self.next_range()?);
         while self.tokenizer.next_symbol_if_eq(',')? {
@@ -737,7 +738,7 @@ impl<'a> Parser<'a> {
     }
 
     // extensions = "extensions" ranges ";"
-    fn next_extensions_opt(&mut self) -> ParserResult<Option<Vec<FieldNumberRange>>> {
+    fn next_extensions_opt(&mut self) -> anyhow::Result<Option<Vec<FieldNumberRange>>> {
         if self.tokenizer.next_ident_if_eq("extensions")? {
             Ok(Some(self.next_ranges()?))
         } else {
@@ -750,7 +751,9 @@ impl<'a> Parser<'a> {
     // Grammar is incorrect: https://github.com/google/protobuf/issues/4558
     // reserved = "reserved" ( ranges | fieldNames ) ";"
     // fieldNames = fieldName { "," fieldName }
-    fn next_reserved_opt(&mut self) -> ParserResult<Option<(Vec<FieldNumberRange>, Vec<String>)>> {
+    fn next_reserved_opt(
+        &mut self,
+    ) -> anyhow::Result<Option<(Vec<FieldNumberRange>, Vec<String>)>> {
         if self.tokenizer.next_ident_if_eq("reserved")? {
             let (ranges, names) = if let &Token::StrLit(..) = self.tokenizer.lookahead_some()? {
                 let mut names = Vec::new();
@@ -776,7 +779,7 @@ impl<'a> Parser<'a> {
     // Enum definition
 
     // enumValueOption = optionName "=" constant
-    fn next_enum_value_option(&mut self) -> ParserResult<ProtobufOption> {
+    fn next_enum_value_option(&mut self) -> anyhow::Result<ProtobufOption> {
         let name = self.next_option_name()?;
         self.tokenizer.next_symbol_expect_eq('=')?;
         let value = self.next_constant()?;
@@ -784,14 +787,14 @@ impl<'a> Parser<'a> {
     }
 
     // https://github.com/google/protobuf/issues/4561
-    fn next_enum_value(&mut self) -> ParserResult<i32> {
+    fn next_enum_value(&mut self) -> anyhow::Result<i32> {
         let minus = self.tokenizer.next_symbol_if_eq('-')?;
         let lit = self.next_int_lit()?;
         Ok(if minus {
             let unsigned = lit.to_i64()?;
             match unsigned.checked_neg() {
                 Some(neg) => neg.to_i32()?,
-                None => return Err(ParserError::IntegerOverflow),
+                None => return Err(ParserError::IntegerOverflow.into()),
             }
         } else {
             lit.to_i32()?
@@ -799,7 +802,7 @@ impl<'a> Parser<'a> {
     }
 
     // enumField = ident "=" intLit [ "[" enumValueOption { ","  enumValueOption } "]" ]";"
-    fn next_enum_field(&mut self) -> ParserResult<EnumValue> {
+    fn next_enum_field(&mut self) -> anyhow::Result<EnumValue> {
         let name = self.tokenizer.next_ident()?.to_owned();
         self.tokenizer.next_symbol_expect_eq('=')?;
         let number = self.next_enum_value()?;
@@ -821,7 +824,7 @@ impl<'a> Parser<'a> {
 
     // enum = "enum" enumName enumBody
     // enumBody = "{" { option | enumField | emptyStatement } "}"
-    fn next_enum_opt(&mut self) -> ParserResult<Option<Enumeration>> {
+    fn next_enum_opt(&mut self) -> anyhow::Result<Option<Enumeration>> {
         if self.tokenizer.next_ident_if_eq("enum")? {
             let name = self.tokenizer.next_ident()?.to_owned();
 
@@ -857,7 +860,7 @@ impl<'a> Parser<'a> {
 
     // messageBody = "{" { field | enum | message | extend | extensions | group |
     //               option | oneof | mapField | reserved | emptyStatement } "}"
-    fn next_message_body(&mut self, mode: MessageBodyParseMode) -> ParserResult<MessageBody> {
+    fn next_message_body(&mut self, mode: MessageBodyParseMode) -> anyhow::Result<MessageBody> {
         self.tokenizer.next_symbol_expect_eq('{')?;
 
         let mut r = MessageBody::default();
@@ -930,7 +933,7 @@ impl<'a> Parser<'a> {
     }
 
     // message = "message" messageName messageBody
-    fn next_message_opt(&mut self) -> ParserResult<Option<WithLoc<Message>>> {
+    fn next_message_opt(&mut self) -> anyhow::Result<Option<WithLoc<Message>>> {
         let loc = self.tokenizer.lookahead_loc();
 
         if self.tokenizer.next_ident_if_eq("message")? {
@@ -972,7 +975,7 @@ impl<'a> Parser<'a> {
     // Extend
 
     // extend = "extend" messageType "{" {field | group | emptyStatement} "}"
-    fn next_extend_opt(&mut self) -> ParserResult<Option<Vec<WithLoc<Extension>>>> {
+    fn next_extend_opt(&mut self) -> anyhow::Result<Option<Vec<WithLoc<Extension>>>> {
         let mut clone = self.clone();
         if clone.tokenizer.next_ident_if_eq("extend")? {
             // According to spec `extend` is only for `proto2`, but it is used in `proto3`
@@ -1016,7 +1019,7 @@ impl<'a> Parser<'a> {
 
     // Service definition
 
-    fn next_options_or_colon(&mut self) -> ParserResult<Vec<ProtobufOption>> {
+    fn next_options_or_colon(&mut self) -> anyhow::Result<Vec<ProtobufOption>> {
         let mut options = Vec::new();
         if self.tokenizer.next_symbol_if_eq('{')? {
             while self.tokenizer.lookahead_if_symbol()? != Some('}') {
@@ -1029,7 +1032,7 @@ impl<'a> Parser<'a> {
                     continue;
                 }
 
-                return Err(ParserError::IncorrectInput);
+                return Err(ParserError::IncorrectInput.into());
             }
             self.tokenizer.next_symbol_expect_eq('}')?;
         } else {
@@ -1041,7 +1044,7 @@ impl<'a> Parser<'a> {
 
     // stream = "stream" streamName "(" messageType "," messageType ")"
     //        (( "{" { option | emptyStatement } "}") | ";" )
-    fn next_stream_opt(&mut self) -> ParserResult<Option<Method>> {
+    fn next_stream_opt(&mut self) -> anyhow::Result<Option<Method>> {
         assert_eq!(Syntax::Proto2, self.syntax);
         if self.tokenizer.next_ident_if_eq("stream")? {
             let name = self.tokenizer.next_ident()?;
@@ -1067,7 +1070,7 @@ impl<'a> Parser<'a> {
     // rpc = "rpc" rpcName "(" [ "stream" ] messageType ")"
     //     "returns" "(" [ "stream" ] messageType ")"
     //     (( "{" { option | emptyStatement } "}" ) | ";" )
-    fn next_rpc_opt(&mut self) -> ParserResult<Option<Method>> {
+    fn next_rpc_opt(&mut self) -> anyhow::Result<Option<Method>> {
         if self.tokenizer.next_ident_if_eq("rpc")? {
             let name = self.tokenizer.next_ident()?;
             self.tokenizer.next_symbol_expect_eq('(')?;
@@ -1098,7 +1101,7 @@ impl<'a> Parser<'a> {
     //
     // proto3:
     // service = "service" serviceName "{" { option | rpc | emptyStatement } "}"
-    fn next_service_opt(&mut self) -> ParserResult<Option<WithLoc<Service>>> {
+    fn next_service_opt(&mut self) -> anyhow::Result<Option<WithLoc<Service>>> {
         let loc = self.tokenizer.lookahead_loc();
 
         if self.tokenizer.next_ident_if_eq("service")? {
@@ -1128,7 +1131,7 @@ impl<'a> Parser<'a> {
                     continue;
                 }
 
-                return Err(ParserError::IncorrectInput);
+                return Err(ParserError::IncorrectInput.into());
             }
             self.tokenizer.next_symbol_expect_eq('}')?;
             Ok(Some(WithLoc {
@@ -1148,7 +1151,7 @@ impl<'a> Parser<'a> {
 
     // proto = syntax { import | package | option | topLevelDef | emptyStatement }
     // topLevelDef = message | enum | extend | service
-    pub fn next_proto(&mut self) -> ParserResult<FileDescriptor> {
+    pub fn next_proto(&mut self) -> anyhow::Result<FileDescriptor> {
         let syntax = self.next_syntax()?.unwrap_or(Syntax::Proto2);
         self.syntax = syntax;
 
@@ -1200,7 +1203,7 @@ impl<'a> Parser<'a> {
                 continue;
             }
 
-            return Err(ParserError::IncorrectInput);
+            return Err(ParserError::IncorrectInput.into());
         }
 
         Ok(FileDescriptor {
@@ -1222,7 +1225,7 @@ mod test {
 
     fn parse<P, R>(input: &str, parse_what: P) -> R
     where
-        P: FnOnce(&mut Parser) -> ParserResult<R>,
+        P: FnOnce(&mut Parser) -> anyhow::Result<R>,
     {
         let mut parser = Parser::new(input);
         let r =
@@ -1237,7 +1240,7 @@ mod test {
 
     fn parse_opt<P, R>(input: &str, parse_what: P) -> R
     where
-        P: FnOnce(&mut Parser) -> ParserResult<Option<R>>,
+        P: FnOnce(&mut Parser) -> anyhow::Result<Option<R>>,
     {
         let mut parser = Parser::new(input);
         let o =
