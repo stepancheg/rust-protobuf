@@ -163,7 +163,11 @@ enum Error {
 }
 
 /// Resolve `.proto` files. `Display` is used for error messages.
-trait ProtoPathResolver: fmt::Display {
+pub trait ProtoPathResolver: fmt::Display {
+    /// Resolve a `.proto` file.
+    ///
+    /// Return `None` if a path is unknown, and if a path is a built-in protobuf file,
+    /// like `google/protobuf/descriptor.proto`, it will be handled by the library.
     fn resolve(&self, path: &ProtoPath) -> anyhow::Result<Option<ResolvedProtoFile>>;
 }
 
@@ -313,7 +317,8 @@ fn path_to_proto_path(path: &Path, includes: &[PathBuf]) -> anyhow::Result<Proto
     )
 }
 
-struct ResolvedProtoFile {
+/// `.proto` file result provided from the [`ProtoPathResolver`].
+pub struct ResolvedProtoFile {
     /// For error reporting.
     pub path: String,
     /// File content.
@@ -394,6 +399,27 @@ pub fn parse_and_typecheck(
         relative_paths: relative_paths.into_iter().map(|(p, _)| p).collect(),
         file_descriptors,
     })
+}
+
+#[doc(hidden)]
+pub fn parse_and_typecheck_custom(
+    input: &[ProtoPathBuf],
+    resolver: impl ProtoPathResolver,
+) -> anyhow::Result<Vec<FileDescriptorProto>> {
+    let mut run = Run {
+        parsed_files: LinkedHashMap::new(),
+        resolver,
+    };
+
+    for proto_path in input {
+        run.add_imported_file(proto_path)?;
+    }
+
+    Ok(run
+        .parsed_files
+        .into_iter()
+        .map(|(_, v)| v.descriptor)
+        .collect())
 }
 
 /// Parse imports from a `.proto` file.
