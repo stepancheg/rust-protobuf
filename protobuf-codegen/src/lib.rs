@@ -11,6 +11,7 @@ mod map;
 mod message;
 mod oneof;
 mod paths;
+pub mod protoc_gen_rust;
 pub(crate) mod rust;
 mod rust_name;
 mod rust_types_values;
@@ -452,17 +453,4 @@ pub fn gen_and_write(
     }
 
     Ok(())
-}
-
-pub fn protoc_gen_rust_main() {
-    compiler_plugin::plugin_main(|r| {
-        let customize = Customize::parse_from_parameter(r.parameter).expect("parse options");
-        gen(
-            r.file_descriptors,
-            "protoc --rust-out=...",
-            r.files_to_generate,
-            &customize,
-        )
-    })
-    .expect("plugin failed");
 }
