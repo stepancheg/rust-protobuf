@@ -7,6 +7,7 @@ Stable versions are 2.xx still supported.
 
 - Use `always_output_default_values` option
   [to output empty array for repeated fields when serializing to JSON](https://github.com/stepancheg/rust-protobuf/pull/550)
+- Switch error handling to `thiserorr` and `anyhow` crates
 
 ## [3.0.0-alpha.1] - 2021-10-24
 
