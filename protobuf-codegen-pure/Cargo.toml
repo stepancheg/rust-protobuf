@@ -1,6 +1,6 @@
 [package]
 name = "protobuf-codegen-pure"
-version = "3.0.0-alpha.1"
+version = "3.0.0-alpha.2"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 edition = "2018"
 license = "MIT"
@@ -20,9 +20,9 @@ bench = false
 anyhow    = "1.0.44"
 thiserror = "1.0.30"
 
-protobuf = { path = "../protobuf", version = "=3.0.0-alpha.1" }
-protobuf-codegen = { path = "../protobuf-codegen", version = "=3.0.0-alpha.1" }
-protobuf-parse = { path = "../protobuf-parse", version = "=3.0.0-alpha.1" }
+protobuf = { path = "../protobuf", version = "=3.0.0-alpha.2" }
+protobuf-codegen = { path = "../protobuf-codegen", version = "=3.0.0-alpha.2" }
+protobuf-parse = { path = "../protobuf-parse", version = "=3.0.0-alpha.2" }
 
 [package.metadata.docs.rs]
 all-features = true
