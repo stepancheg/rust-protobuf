@@ -182,8 +182,7 @@ fn super_linter_job() -> Job {
             // Clippy reports too many false positives
             .env("VALIDATE_RUST_CLIPPY", "false")
             // We don't care about previous edition
-            .env("VALIDATE_RUST_2015", "false")
-        ,
+            .env("VALIDATE_RUST_2015", "false"),
     );
     Job {
         id: "super-linter".to_owned(),
