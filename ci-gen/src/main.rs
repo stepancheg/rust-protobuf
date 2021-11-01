@@ -180,7 +180,10 @@ fn super_linter_job() -> Job {
             // Too many dull reports like how we should pluralise variable names
             .env("VALIDATE_PROTOBUF", "false")
             // Clippy reports too many false positives
-            .env("VALIDATE_RUST_CLIPPY", "false"),
+            .env("VALIDATE_RUST_CLIPPY", "false")
+            // We don't care about previous edition
+            .env("VALIDATE_RUST_2015", "false")
+        ,
     );
     Job {
         id: "super-linter".to_owned(),

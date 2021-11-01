@@ -287,6 +287,7 @@ jobs:
                   VALIDATE_JSCPD: false
                   VALIDATE_PROTOBUF: false
                   VALIDATE_RUST_CLIPPY: false
+                  VALIDATE_RUST_2015: false
     rustfmt-check:
         name: rustfmt check
         runs-on: ubuntu-latest
