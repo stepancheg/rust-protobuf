@@ -2,7 +2,8 @@ use std::env;
 use std::fs;
 use std::path::Path;
 
-use protobuf_codegen_pure::Customize;
+use protobuf_codegen::Codegen;
+use protobuf_codegen::Customize;
 
 fn main() {
     let out_dir = env::var("OUT_DIR").unwrap();
@@ -28,7 +29,8 @@ fn main() {
     fs::create_dir(&generated_with_pure_dir).unwrap();
     fs::create_dir(&generated_with_native_dir).unwrap();
 
-    protoc_rust::Codegen::new()
+    Codegen::new()
+        .protoc()
         .customize(Customize {
             gen_mod_rs: Some(true),
             ..Default::default()
@@ -38,7 +40,8 @@ fn main() {
         .include("src/protos")
         .run_from_script();
 
-    protobuf_codegen_pure::Codegen::new()
+    Codegen::new()
+        .pure()
         .customize(Customize {
             gen_mod_rs: Some(true),
             ..Default::default()

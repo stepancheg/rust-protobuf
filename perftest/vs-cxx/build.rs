@@ -1,5 +1,8 @@
+use protobuf_codegen::Codegen;
+
 fn main() {
-    protobuf_codegen_pure::Codegen::new()
+    Codegen::new()
+        .pure()
         .out_dir(".")
         .include(".")
         .input("perftest_data.proto")

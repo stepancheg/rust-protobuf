@@ -1,3 +1,5 @@
+#![doc(hidden)]
+
 use std::fs;
 use std::io;
 use std::path::Path;
@@ -18,6 +20,7 @@ enum Error {
     FailedToWriteFile(String, #[source] io::Error),
 }
 
+#[doc(hidden)]
 pub fn gen_and_write(
     file_descriptors: &[FileDescriptorProto],
     parser: &str,

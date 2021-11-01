@@ -2,8 +2,6 @@ extern crate env_logger;
 extern crate glob;
 extern crate log;
 
-extern crate protobuf_codegen_pure;
-
 extern crate protobuf_test_common;
 
 use std::env;
@@ -12,6 +10,7 @@ use std::io::Read;
 use std::io::Write;
 use std::path::Path;
 
+use protobuf_codegen::Codegen;
 use protobuf_test_common::build::*;
 use protobuf_test_common::print_rerun_if_changed_recursively;
 
@@ -88,7 +87,8 @@ fn gen_in_dir(dir: &str, include_dir: &str) {
              input,
              customize,
          }| {
-            protobuf_codegen_pure::Codegen::new()
+            Codegen::new()
+                .pure()
                 .out_dir(out_dir)
                 .inputs(input)
                 .includes(&[include_dir])
@@ -102,7 +102,8 @@ fn generate_interop() {
     copy_from_protobuf_test("src/interop/mod.rs");
     copy_from_protobuf_test("src/interop/json.rs");
 
-    protobuf_codegen_pure::Codegen::new()
+    Codegen::new()
+        .pure()
         .out_dir("src/interop")
         .includes(&["../interop/cxx", "../proto"])
         .input("../interop/cxx/interop_pb.proto")
@@ -118,7 +119,8 @@ fn generate_include_generated() {
         fs::remove_dir_all(&dir).unwrap();
     }
     fs::create_dir(&dir).unwrap();
-    protobuf_codegen_pure::Codegen::new()
+    Codegen::new()
+        .pure()
         .out_dir(dir)
         .input("../protobuf-test/src/include_generated/v2.proto")
         .input("../protobuf-test/src/include_generated/v3.proto")

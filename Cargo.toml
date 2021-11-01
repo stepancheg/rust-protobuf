@@ -4,11 +4,9 @@ members = [
     "protoc-bin-vendored",
     # Exclude test-protoc from the project, because it depends on binary
     #"protoc/test-protoc",
-    "protoc-rust",
     "protobuf",
     "protobuf-fuzz",
     "protobuf-codegen",
-    "protobuf-codegen-pure",
     "protobuf-codegen-pure-test",
     "protobuf-codegen-identical-test",
     "protobuf-examples",

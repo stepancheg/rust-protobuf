@@ -7,7 +7,7 @@ use std::path::Path;
 
 use protobuf::descriptor::*;
 use protobuf::Message;
-use protobuf_codegen::*;
+use protobuf_codegen::gen_and_write::gen_and_write;
 use protobuf_parse::ProtoPathBuf;
 
 fn write_file(bin: &str) -> anyhow::Result<()> {

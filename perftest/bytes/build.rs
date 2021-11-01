@@ -2,8 +2,11 @@ use std::env;
 use std::io::Read;
 use std::process;
 
+use protobuf_codegen::Codegen;
+
 fn generate_protos() {
-    protobuf_codegen_pure::Codegen::new()
+    Codegen::new()
+        .pure()
         .out_dir("src")
         .input("src/messages.proto")
         .includes(&["src", "../../proto"])

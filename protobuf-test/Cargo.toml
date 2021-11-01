@@ -17,7 +17,7 @@ with-serde = ["serde", "serde_derive", "serde_json", "protobuf/with-serde", "pro
 
 [build-dependencies]
 protoc      = { path = "../protoc" }
-protoc-rust = { path = "../protoc-rust" }
+protobuf-codegen = { path = "../protobuf-codegen" }
 protobuf-test-common = { path = "../protobuf-test-common" }
 glob        = "0.2"
 log         = "0.*"

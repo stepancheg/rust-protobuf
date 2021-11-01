@@ -9,9 +9,7 @@ repository = "https://github.com/stepancheg/rust-protobuf/"
 description = """
 Code generator for rust-protobuf.
 
-Includes a library and `protoc-gen-rust` binary.
-
-See `protoc-rust` and `protobuf-codegen-pure` crates.
+Includes a library to invoke programmatically (e. g. from `build.rs`) and `protoc-gen-rust` binary.
 """
 
 [lib]
@@ -20,9 +18,11 @@ bench = false
 [dependencies]
 thiserror = "1.0.30"
 anyhow    = "1.0.44"
+tempfile  = "3"
 
 protobuf = { path = "../protobuf", version = "=3.0.0-alpha.2" }
 protobuf-parse = { path = "../protobuf-parse", version = "=3.0.0-alpha.2" }
+protoc = { path = "../protoc", version = "=3.0.0-alpha.2" }
 
 [[bin]]
 

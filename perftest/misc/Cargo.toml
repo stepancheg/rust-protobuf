@@ -22,4 +22,4 @@ path = "../../protobuf"
 features = ["with-bytes"]
 
 [build-dependencies]
-protobuf-codegen-pure = { path = "../../protobuf-codegen-pure" }
+protobuf-codegen = { path = "../../protobuf-codegen" }

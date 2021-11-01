@@ -16,9 +16,7 @@ regex = "1.3.9"
 
 protobuf = { path = "../protobuf" }
 protobuf-codegen = { path = "../protobuf-codegen" }
-protobuf-codegen-pure = { path = "../protobuf-codegen-pure" }
 protobuf-test-common = { path = "../protobuf-test-common" }
 protoc = { path = "../protoc" }
-protoc-rust = { path = "../protoc-rust" }
 protoc-bin-vendored = { path = "../protoc-bin-vendored" }
 protobuf-parse = { path = "../protobuf-parse" }

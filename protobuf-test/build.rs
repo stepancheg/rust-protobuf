@@ -3,7 +3,6 @@ extern crate glob;
 extern crate log;
 
 extern crate protoc;
-extern crate protoc_rust;
 
 extern crate protobuf_test_common;
 
@@ -12,6 +11,7 @@ use std::fs;
 use std::path::Path;
 use std::path::PathBuf;
 
+use protobuf_codegen::Codegen;
 use protobuf_test_common::build::*;
 use protoc::Protoc;
 
@@ -21,8 +21,9 @@ fn test_protoc_bin_path() -> PathBuf {
     path
 }
 
-fn codegen() -> protoc_rust::Codegen {
-    let mut codegen = protoc_rust::Codegen::new();
+fn codegen() -> Codegen {
+    let mut codegen = Codegen::new();
+    codegen.protoc();
     codegen.protoc_path(test_protoc_bin_path());
     codegen.extra_arg("--experimental_allow_proto3_optional");
     codegen
@@ -76,7 +77,8 @@ fn generate_include_generated() {
         fs::remove_dir_all(&dir).unwrap();
     }
     fs::create_dir(&dir).unwrap();
-    protoc_rust::Codegen::new()
+    Codegen::new()
+        .protoc()
         .out_dir(dir)
         .input("src/include_generated/v2.proto")
         .input("src/include_generated/v3.proto")

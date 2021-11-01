@@ -11,5 +11,4 @@ publish = false
 protobuf = { path = "../protobuf" }
 
 [build-dependencies]
-protobuf-codegen-pure = { path = "../protobuf-codegen-pure" }
-protoc-rust = { path = "../protoc-rust" }
+protobuf-codegen = { path = "../protobuf-codegen" }

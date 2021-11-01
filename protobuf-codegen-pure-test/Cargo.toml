@@ -16,7 +16,7 @@ with-bytes = ["bytes", "protobuf/with-bytes", "protobuf-test-common/with-bytes"]
 with-serde = ["serde", "serde_derive", "serde_json", "protobuf/with-serde", "protobuf-test-common/with-serde"]
 
 [build-dependencies]
-protobuf-codegen-pure = { path = "../protobuf-codegen-pure" }
+protobuf-codegen = { path = "../protobuf-codegen" }
 protobuf-test-common = { path = "../protobuf-test-common" }
 glob        = "0.2"
 log         = "0.*"

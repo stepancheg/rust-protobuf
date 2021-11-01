@@ -1,7 +1,10 @@
+use protobuf_codegen::Codegen;
+
 fn main() {
     protobuf_test_common::build::clean_old_files();
 
-    protobuf_codegen_pure::Codegen::new()
+    Codegen::new()
+        .pure()
         .out_dir("src")
         .include("src")
         .input("src/all_types_pb.proto")

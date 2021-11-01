@@ -20,6 +20,7 @@ use protobuf::descriptor::OneofDescriptorProto;
 use protobuf::descriptor::ServiceDescriptorProto;
 use protobuf::text_format::lexer::float::parse_protobuf_float;
 use protobuf::Message;
+use protobuf_codegen::Codegen;
 use protobuf_parse::pure;
 use protobuf_test_common::build::copy_tests_v2_v3;
 use protobuf_test_common::build::glob_simple;
@@ -304,7 +305,8 @@ where
     fs::create_dir(&protoc_dir).unwrap();
     fs::create_dir(&pure_dir).unwrap();
 
-    protoc_rust::Codegen::new()
+    Codegen::new()
+        .protoc()
         .protoc_path(protoc_bin_vendored::protoc_bin_path().unwrap())
         .inputs(&inputs)
         .includes(&includes)
@@ -312,7 +314,8 @@ where
         .run()
         .unwrap();
 
-    protobuf_codegen_pure::Codegen::new()
+    Codegen::new()
+        .pure()
         .inputs(&inputs)
         .includes(&includes)
         .out_dir(&pure_dir)

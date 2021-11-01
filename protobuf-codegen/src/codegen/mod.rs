@@ -1,57 +1,32 @@
-//! API to generate `.rs` files.
-//!
-//! This API requires `protoc` command present in `$PATH`
-//! or [passed explicitly to `Codegen` object](crate::Codegen::protoc_path).
-//!
-//! ```no_run
-//! extern crate protoc_rust;
-//!
-//! fn main() {
-//!     protoc_rust::Codegen::new()
-//!         .out_dir("src/protos")
-//!         .inputs(&["protos/a.proto", "protos/b.proto"])
-//!         .include("protos")
-//!         .run()
-//!         .expect("Running protoc failed.");
-//! }
-//! ```
-//!
-//! It is advisable that `protoc-rust` build-dependecy version be the same as
-//! `protobuf` dependency.
-//!
-//! The alternative is to use `protobuf-codegen-pure`.
-
-#![deny(missing_docs)]
-#![deny(rustdoc::broken_intra_doc_links)]
-
-extern crate tempfile;
-
-extern crate protobuf;
-extern crate protobuf_codegen;
-extern crate protoc;
-
 use std::ffi::OsString;
-use std::fs;
-use std::io;
 use std::path::Path;
 use std::path::PathBuf;
 use std::process;
 
-use protobuf::descriptor::FileDescriptorSet;
-use protobuf::Message;
-pub use protobuf_codegen::Customize;
-use protobuf_parse::ProtoPathBuf;
-use protoc::Protoc;
+use ::protoc::Protoc;
 
-#[derive(Debug, thiserror::Error)]
-enum Error {
-    #[error("file `{0}` is not found in includes {}")]
-    NotFound(String, String),
+use crate::gen_and_write::gen_and_write;
+use crate::Customize;
+mod protoc;
+mod pure;
+
+#[derive(Debug)]
+enum WhichParser {
+    Pure,
+    Protoc,
+}
+
+impl Default for WhichParser {
+    fn default() -> WhichParser {
+        WhichParser::Protoc
+    }
 }
 
 /// `Protoc --rust_out...` args
 #[derive(Debug, Default)]
 pub struct Codegen {
+    /// What parser to use to parse `.proto` files.
+    which_parser: WhichParser,
     /// --lang_out= param
     out_dir: PathBuf,
     /// -I args
@@ -67,24 +42,40 @@ pub struct Codegen {
 }
 
 impl Codegen {
-    /// Arguments to the `protoc` found in `$PATH`
+    /// Create new codegen object.
+    ///
+    /// Uses `protoc` from `$PATH` by default.
+    ///
+    /// Can be switched to pure rust parser using [`pure`](Self::pure) function.
     pub fn new() -> Self {
         Self::default()
     }
 
-    /// Set `--LANG_out=...` param
+    /// Switch to pure Rust parser of `.proto` files.
+    pub fn pure(&mut self) -> &mut Self {
+        self.which_parser = WhichParser::Pure;
+        self
+    }
+
+    /// Switch to `protoc` parser of `.proto` files.
+    pub fn protoc(&mut self) -> &mut Self {
+        self.which_parser = WhichParser::Protoc;
+        self
+    }
+
+    /// Output directory for generated code.
     pub fn out_dir(&mut self, out_dir: impl AsRef<Path>) -> &mut Self {
         self.out_dir = out_dir.as_ref().to_owned();
         self
     }
 
-    /// Append a path to `-I` args
+    /// Add an include directory.
     pub fn include(&mut self, include: impl AsRef<Path>) -> &mut Self {
         self.includes.push(include.as_ref().to_owned());
         self
     }
 
-    /// Append multiple paths to `-I` args
+    /// Add include directories.
     pub fn includes(&mut self, includes: impl IntoIterator<Item = impl AsRef<Path>>) -> &mut Self {
         for include in includes {
             self.include(include);
@@ -117,14 +108,17 @@ impl Codegen {
     /// #   }
     /// # }
     ///
-    /// use protoc_rust::Codegen;
+    /// use protobuf_codegen::Codegen;
     ///
     /// Codegen::new()
+    ///     .protoc()
     ///     .protoc_path(protoc_bin_vendored::protoc_bin_path().unwrap())
     ///     // ...
     ///     .run()
     ///     .unwrap();
     /// ```
+    ///
+    /// This option is ignored when pure Rust parser is used.
     pub fn protoc_path(&mut self, protoc: impl Into<PathBuf>) -> &mut Self {
         self.protoc = Some(Protoc::from_path(&protoc.into()));
         self
@@ -139,63 +133,29 @@ impl Codegen {
     /// Extra command line flags for `protoc` invocation.
     ///
     /// For example, `--experimental_allow_proto3_optional` option.
+    ///
+    /// This option is ignored when pure Rust parser is used.
     pub fn extra_arg(&mut self, arg: impl Into<OsString>) -> &mut Self {
         self.extra_args.push(arg.into());
         self
     }
 
-    /// Like `protoc --rust_out=...` but without requiring `protoc-gen-rust` command in `$PATH`.
+    /// Invoke the code generation.
+    ///
+    /// This is roughly equivalent to `protoc --rust_out=...` but
+    /// without requiring `protoc-gen-rust` command in `$PATH`.
+    ///
+    /// This function uses pure Rust parser or `protoc` parser depending on
+    /// how this object was configured.
     pub fn run(&self) -> anyhow::Result<()> {
-        let protoc = match self.protoc.clone() {
-            Some(protoc) => protoc,
-            None => Protoc::from_env_path(),
+        let (parsed_and_typechecked, parser) = match self.which_parser {
+            WhichParser::Protoc => protoc::parse_and_typecheck(self)?,
+            WhichParser::Pure => pure::parse_and_typecheck(self)?,
         };
-        protoc.check()?;
-
-        let temp_dir = tempfile::Builder::new().prefix("protoc-rust").tempdir()?;
-        let temp_file = temp_dir.path().join("descriptor.pbbin");
-
-        protoc
-            .descriptor_set_out_args()
-            .out(&temp_file)
-            .includes(&self.includes)
-            .inputs(&self.inputs)
-            .include_imports(true)
-            .extra_args(self.extra_args.iter())
-            .write_descriptor_set()?;
-
-        let fds = fs::read(temp_file)?;
-        drop(temp_dir);
-
-        let fds: protobuf::descriptor::FileDescriptorSet =
-            FileDescriptorSet::parse_from_bytes(&fds)
-                .map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
-
-        let default_includes = vec![PathBuf::from(".")];
-        let includes = if self.includes.is_empty() {
-            &default_includes
-        } else {
-            &self.includes
-        };
-
-        let mut files_to_generate = Vec::new();
-        'outer: for file in &self.inputs {
-            for include in includes {
-                if let Some(truncated) = remove_path_prefix(file, include) {
-                    files_to_generate.push(ProtoPathBuf::from_path(&truncated)?);
-                    continue 'outer;
-                }
-            }
-
-            return Err(
-                Error::NotFound(file.display().to_string(), format!("{:?}", includes)).into(),
-            );
-        }
-
-        protobuf_codegen::gen_and_write(
-            &fds.file,
-            &format!("protoc {}", protoc.version()?),
-            &files_to_generate,
+        gen_and_write(
+            &parsed_and_typechecked.file_descriptors,
+            &parser,
+            &parsed_and_typechecked.relative_paths,
             &self.out_dir,
             &self.customize,
         )
