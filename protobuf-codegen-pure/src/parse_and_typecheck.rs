@@ -12,20 +12,9 @@ use protobuf_codegen::ProtoPathBuf;
 use crate::convert;
 use crate::linked_hash_map::LinkedHashMap;
 use crate::model;
+use crate::proto;
 use crate::FileDescriptorPair;
 use crate::WithFileError;
-use crate::ANY_PROTO;
-use crate::API_PROTO;
-use crate::DESCRIPTOR_PROTO;
-use crate::DURATION_PROTO;
-use crate::EMPTY_PROTO;
-use crate::FIELD_MASK_PROTO;
-use crate::RUSTPROTO_PROTO;
-use crate::SOURCE_CONTEXT_PROTO;
-use crate::STRUCT_PROTO;
-use crate::TIMESTAMP_PROTO;
-use crate::TYPE_PROTO;
-use crate::WRAPPERS_PROTO;
 
 #[derive(Debug, thiserror::Error)]
 enum ParseAndTypeckError {
@@ -135,18 +124,18 @@ where
         }
 
         let embedded = match protobuf_path.to_str() {
-            "rustproto.proto" => Some(RUSTPROTO_PROTO),
-            "google/protobuf/any.proto" => Some(ANY_PROTO),
-            "google/protobuf/api.proto" => Some(API_PROTO),
-            "google/protobuf/descriptor.proto" => Some(DESCRIPTOR_PROTO),
-            "google/protobuf/duration.proto" => Some(DURATION_PROTO),
-            "google/protobuf/empty.proto" => Some(EMPTY_PROTO),
-            "google/protobuf/field_mask.proto" => Some(FIELD_MASK_PROTO),
-            "google/protobuf/source_context.proto" => Some(SOURCE_CONTEXT_PROTO),
-            "google/protobuf/struct.proto" => Some(STRUCT_PROTO),
-            "google/protobuf/timestamp.proto" => Some(TIMESTAMP_PROTO),
-            "google/protobuf/type.proto" => Some(TYPE_PROTO),
-            "google/protobuf/wrappers.proto" => Some(WRAPPERS_PROTO),
+            "rustproto.proto" => Some(proto::RUSTPROTO_PROTO),
+            "google/protobuf/any.proto" => Some(proto::ANY_PROTO),
+            "google/protobuf/api.proto" => Some(proto::API_PROTO),
+            "google/protobuf/descriptor.proto" => Some(proto::DESCRIPTOR_PROTO),
+            "google/protobuf/duration.proto" => Some(proto::DURATION_PROTO),
+            "google/protobuf/empty.proto" => Some(proto::EMPTY_PROTO),
+            "google/protobuf/field_mask.proto" => Some(proto::FIELD_MASK_PROTO),
+            "google/protobuf/source_context.proto" => Some(proto::SOURCE_CONTEXT_PROTO),
+            "google/protobuf/struct.proto" => Some(proto::STRUCT_PROTO),
+            "google/protobuf/timestamp.proto" => Some(proto::TIMESTAMP_PROTO),
+            "google/protobuf/type.proto" => Some(proto::TYPE_PROTO),
+            "google/protobuf/wrappers.proto" => Some(proto::WRAPPERS_PROTO),
             _ => None,
         };
 
