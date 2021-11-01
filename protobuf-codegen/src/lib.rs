@@ -32,6 +32,7 @@ use protobuf_parse::ProtoPathBuf;
 use protobuf_parse::ProtobufRelativePath;
 
 use crate::gen::file_descriptor::write_file_descriptor_data;
+use crate::gen::mod_rs::gen_mod_rs;
 
 pub(crate) struct FileIndex {
     messsage_to_index: HashMap<ProtobufRelativePath, u32>,
@@ -182,21 +183,6 @@ fn gen_file(
             content: v,
         },
         mod_name: proto_path_to_rust_mod(file_descriptor.proto().get_name()).into_string(),
-    }
-}
-
-fn gen_mod_rs(mods: &[String]) -> compiler_plugin::GenResult {
-    let mut v = Vec::new();
-    let mut w = CodeWriter::new(&mut v);
-    w.comment(&format!("{}generated", "@"));
-    w.write_line("");
-    for m in mods {
-        w.write_line(&format!("pub mod {};", m));
-    }
-    drop(w);
-    compiler_plugin::GenResult {
-        name: "mod.rs".to_owned(),
-        content: v,
     }
 }
 

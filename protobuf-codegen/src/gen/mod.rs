@@ -6,6 +6,7 @@ pub(crate) mod file_and_mod;
 pub(crate) mod file_descriptor;
 pub(crate) mod inside;
 pub(crate) mod message;
+pub(crate) mod mod_rs;
 pub(crate) mod oneof;
 pub(crate) mod paths;
 pub(crate) mod rust;
