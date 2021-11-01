@@ -8,6 +8,7 @@ use protobuf::text_format::lexer::StrLitDecodeError;
 use protobuf::text_format::lexer::Token;
 use protobuf::text_format::lexer::Tokenizer;
 use protobuf::text_format::lexer::TokenizerError;
+use protobuf_codegen::ProtoPathBuf;
 use protobuf_codegen::ProtobufAbsolutePath;
 use protobuf_codegen::ProtobufIdent;
 use protobuf_codegen::ProtobufPath;
@@ -444,6 +445,7 @@ impl<'a> Parser<'a> {
             };
             let path = self.tokenizer.next_str_lit()?.decode_utf8()?;
             self.tokenizer.next_symbol_expect_eq(';')?;
+            let path = ProtoPathBuf::new(path)?;
             Ok(Some(Import { path, vis }))
         } else {
             Ok(None)
@@ -1339,7 +1341,10 @@ mod test {
 
         assert_eq!(
             vec!["test_import_nested_imported_pb.proto"],
-            desc.imports.into_iter().map(|i| i.path).collect::<Vec<_>>()
+            desc.imports
+                .into_iter()
+                .map(|i| i.path.to_str().to_owned())
+                .collect::<Vec<_>>()
         );
     }
 

@@ -1,7 +1,6 @@
 //! Convert parser model to rust-protobuf model
 
 use std::iter;
-use std::path::Path;
 
 use protobuf;
 use protobuf::descriptor::descriptor_proto::ReservedRange;
@@ -16,6 +15,7 @@ use protobuf::text_format::quote_bytes_to;
 use protobuf::Message;
 use protobuf::UnknownFields;
 use protobuf::UnknownValue;
+use protobuf_codegen::ProtoPath;
 use protobuf_codegen::ProtobufPath;
 
 use crate::model;
@@ -1391,12 +1391,12 @@ pub(crate) fn populate_dependencies(
         } else if import.vis == model::ImportVis::Weak {
             output.weak_dependency.push(output.dependency.len() as i32);
         }
-        output.dependency.push(import.path.clone());
+        output.dependency.push(import.path.to_string());
     }
 }
 
 pub(crate) fn file_descriptor(
-    name: &Path,
+    name: &ProtoPath,
     input: &model::FileDescriptor,
     deps: &[FileDescriptorPair],
 ) -> ConvertResult<protobuf::descriptor::FileDescriptorProto> {

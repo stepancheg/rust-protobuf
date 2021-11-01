@@ -31,7 +31,6 @@ mod convert;
 use std::fs;
 use std::path::Path;
 use std::path::PathBuf;
-use std::path::StripPrefixError;
 use std::process;
 
 mod linked_hash_map;
@@ -45,11 +44,10 @@ use linked_hash_map::LinkedHashMap;
 use protobuf::descriptor::FileDescriptorProto;
 use protobuf_codegen::amend_io_error;
 pub use protobuf_codegen::Customize;
+use protobuf_codegen::ProtoPath;
 use protobuf_codegen::ProtoPathBuf;
 
 use crate::parser::ParserErrorWithLocation;
-use crate::rel_path::RelPath;
-use crate::rel_path::RelPathBuf;
 
 #[cfg(test)]
 mod test_against_protobuf_protos;
@@ -160,15 +158,15 @@ enum Error {
 }
 
 struct Run<'a> {
-    parsed_files: LinkedHashMap<PathBuf, FileDescriptorPair>,
+    parsed_files: LinkedHashMap<ProtoPathBuf, FileDescriptorPair>,
     includes: &'a [PathBuf],
 }
 
 impl<'a> Run<'a> {
     fn get_file_and_all_deps_already_parsed(
         &self,
-        protobuf_path: &Path,
-        result: &mut LinkedHashMap<PathBuf, FileDescriptorPair>,
+        protobuf_path: &ProtoPath,
+        result: &mut LinkedHashMap<ProtoPathBuf, FileDescriptorPair>,
     ) {
         if let Some(_) = result.get(protobuf_path) {
             return;
@@ -178,7 +176,7 @@ impl<'a> Run<'a> {
             .parsed_files
             .get(protobuf_path)
             .expect("must be already parsed");
-        result.insert(protobuf_path.to_owned(), pair.clone());
+        result.insert(protobuf_path.to_proto_path_buf(), pair.clone());
 
         self.get_all_deps_already_parsed(&pair.parsed, result);
     }
@@ -186,14 +184,14 @@ impl<'a> Run<'a> {
     fn get_all_deps_already_parsed(
         &self,
         parsed: &model::FileDescriptor,
-        result: &mut LinkedHashMap<PathBuf, FileDescriptorPair>,
+        result: &mut LinkedHashMap<ProtoPathBuf, FileDescriptorPair>,
     ) {
         for import in &parsed.imports {
-            self.get_file_and_all_deps_already_parsed(Path::new(&import.path), result);
+            self.get_file_and_all_deps_already_parsed(&import.path, result);
         }
     }
 
-    fn add_file(&mut self, protobuf_path: &Path, fs_path: &Path) -> anyhow::Result<()> {
+    fn add_file(&mut self, protobuf_path: &ProtoPath, fs_path: &Path) -> anyhow::Result<()> {
         if let Some(_) = self.parsed_files.get(protobuf_path) {
             return Ok(());
         }
@@ -206,7 +204,7 @@ impl<'a> Run<'a> {
 
     fn add_file_content(
         &mut self,
-        protobuf_path: &Path,
+        protobuf_path: &ProtoPath,
         fs_path: &Path,
         content: &str,
     ) -> anyhow::Result<()> {
@@ -216,7 +214,7 @@ impl<'a> Run<'a> {
         })?;
 
         for import in &parsed.imports {
-            self.add_imported_file(Path::new(&import.path))?;
+            self.add_imported_file(&import.path)?;
         }
 
         let mut this_file_deps = LinkedHashMap::new();
@@ -231,57 +229,57 @@ impl<'a> Run<'a> {
             })?;
 
         self.parsed_files.insert(
-            protobuf_path.to_owned(),
+            protobuf_path.to_proto_path_buf(),
             FileDescriptorPair { parsed, descriptor },
         );
 
         Ok(())
     }
 
-    fn add_imported_file(&mut self, protobuf_path: &Path) -> anyhow::Result<()> {
+    fn add_imported_file(&mut self, protobuf_path: &ProtoPath) -> anyhow::Result<()> {
         for include_dir in self.includes {
-            let fs_path = include_dir.join(protobuf_path);
+            let fs_path = include_dir.join(protobuf_path.to_path());
             if fs_path.exists() {
                 return self.add_file(protobuf_path, &fs_path);
             }
         }
 
         let embedded = match protobuf_path.to_str() {
-            Some("rustproto.proto") => Some(RUSTPROTO_PROTO),
-            Some("google/protobuf/any.proto") => Some(ANY_PROTO),
-            Some("google/protobuf/api.proto") => Some(API_PROTO),
-            Some("google/protobuf/descriptor.proto") => Some(DESCRIPTOR_PROTO),
-            Some("google/protobuf/duration.proto") => Some(DURATION_PROTO),
-            Some("google/protobuf/empty.proto") => Some(EMPTY_PROTO),
-            Some("google/protobuf/field_mask.proto") => Some(FIELD_MASK_PROTO),
-            Some("google/protobuf/source_context.proto") => Some(SOURCE_CONTEXT_PROTO),
-            Some("google/protobuf/struct.proto") => Some(STRUCT_PROTO),
-            Some("google/protobuf/timestamp.proto") => Some(TIMESTAMP_PROTO),
-            Some("google/protobuf/type.proto") => Some(TYPE_PROTO),
-            Some("google/protobuf/wrappers.proto") => Some(WRAPPERS_PROTO),
+            "rustproto.proto" => Some(RUSTPROTO_PROTO),
+            "google/protobuf/any.proto" => Some(ANY_PROTO),
+            "google/protobuf/api.proto" => Some(API_PROTO),
+            "google/protobuf/descriptor.proto" => Some(DESCRIPTOR_PROTO),
+            "google/protobuf/duration.proto" => Some(DURATION_PROTO),
+            "google/protobuf/empty.proto" => Some(EMPTY_PROTO),
+            "google/protobuf/field_mask.proto" => Some(FIELD_MASK_PROTO),
+            "google/protobuf/source_context.proto" => Some(SOURCE_CONTEXT_PROTO),
+            "google/protobuf/struct.proto" => Some(STRUCT_PROTO),
+            "google/protobuf/timestamp.proto" => Some(TIMESTAMP_PROTO),
+            "google/protobuf/type.proto" => Some(TYPE_PROTO),
+            "google/protobuf/wrappers.proto" => Some(WRAPPERS_PROTO),
             _ => None,
         };
 
         match embedded {
-            Some(content) => self.add_file_content(protobuf_path, protobuf_path, content),
+            Some(content) => self.add_file_content(protobuf_path, protobuf_path.to_path(), content),
             None => Err(Error::FileNotFoundInImportPath(
-                protobuf_path.display().to_string(),
+                protobuf_path.to_string(),
                 format!("{:?}", self.includes),
             )
             .into()),
         }
     }
 
-    fn strip_prefix<'b>(path: &'b Path, prefix: &Path) -> Result<&'b RelPath, StripPrefixError> {
+    fn strip_prefix<'b>(path: &'b Path, prefix: &Path) -> anyhow::Result<ProtoPathBuf> {
         // special handling of `.` to allow successful `strip_prefix("foo.proto", ".")
         if prefix == Path::new(".") && path.is_relative() {
-            Ok(RelPath::new(path))
+            ProtoPathBuf::from_path(path)
         } else {
-            path.strip_prefix(prefix).map(RelPath::new)
+            ProtoPathBuf::from_path(path.strip_prefix(prefix)?)
         }
     }
 
-    fn add_fs_file(&mut self, fs_path: &Path) -> anyhow::Result<RelPathBuf> {
+    fn add_fs_file(&mut self, fs_path: &Path) -> anyhow::Result<ProtoPathBuf> {
         let relative_path = self
             .includes
             .iter()
@@ -290,8 +288,8 @@ impl<'a> Run<'a> {
 
         match relative_path {
             Some(relative_path) => {
-                self.add_file(relative_path, fs_path)?;
-                Ok(relative_path.to_owned())
+                self.add_file(&relative_path, fs_path)?;
+                Ok(relative_path)
             }
             None => Err(Error::FileMustResideInImportPath(
                 fs_path.display().to_string(),
@@ -324,7 +322,7 @@ pub fn parse_and_typecheck(
     let mut relative_paths = Vec::new();
 
     for input in input {
-        relative_paths.push(ProtoPathBuf::from_path(&run.add_fs_file(input)?)?);
+        relative_paths.push(run.add_fs_file(input)?);
     }
 
     let file_descriptors: Vec<_> = run

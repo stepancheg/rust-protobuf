@@ -24,7 +24,7 @@ impl RelPath {
         unsafe { &*(path as *const Path as *const RelPath) }
     }
 
-    pub(crate) fn to_owned(&self) -> RelPathBuf {
+    pub(crate) fn _to_owned(&self) -> RelPathBuf {
         RelPathBuf {
             path: self.path.to_owned(),
         }

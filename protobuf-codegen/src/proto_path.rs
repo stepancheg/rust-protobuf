@@ -1,4 +1,7 @@
+use std::borrow::Borrow;
 use std::fmt;
+use std::hash::Hash;
+use std::ops::Deref;
 use std::path::Component;
 use std::path::Path;
 use std::path::PathBuf;
@@ -29,9 +32,29 @@ pub struct ProtoPath {
 }
 
 /// Protobuf file relative normalized file path.
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct ProtoPathBuf {
     path: String,
+}
+
+impl Hash for ProtoPathBuf {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.as_path().hash(state);
+    }
+}
+
+impl Borrow<ProtoPath> for ProtoPathBuf {
+    fn borrow(&self) -> &ProtoPath {
+        self.as_path()
+    }
+}
+
+impl Deref for ProtoPathBuf {
+    type Target = ProtoPath;
+
+    fn deref(&self) -> &ProtoPath {
+        self.as_path()
+    }
 }
 
 impl fmt::Display for ProtoPath {
@@ -70,6 +93,20 @@ impl ProtoPath {
             }
         }
         Ok(Self::unchecked_new(path))
+    }
+
+    pub fn to_str(&self) -> &str {
+        &self.path
+    }
+
+    pub fn to_path(&self) -> &Path {
+        Path::new(&self.path)
+    }
+
+    pub fn to_proto_path_buf(&self) -> ProtoPathBuf {
+        ProtoPathBuf {
+            path: self.path.to_owned(),
+        }
     }
 }
 

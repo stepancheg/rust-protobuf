@@ -12,6 +12,7 @@ use protobuf::text_format::lexer::float;
 use protobuf::text_format::lexer::float::format_protobuf_float;
 use protobuf::text_format::lexer::Loc;
 use protobuf::text_format::lexer::StrLit;
+use protobuf_codegen::ProtoPathBuf;
 use protobuf_codegen::ProtobufAbsolutePath;
 use protobuf_codegen::ProtobufIdent;
 use protobuf_codegen::ProtobufPath;
@@ -496,7 +497,7 @@ impl Default for ImportVis {
 /// Import statement
 #[derive(Debug, Default, Clone)]
 pub struct Import {
-    pub path: String,
+    pub path: ProtoPathBuf,
     pub vis: ImportVis,
 }
 
