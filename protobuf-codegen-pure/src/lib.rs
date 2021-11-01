@@ -193,17 +193,6 @@ impl<'a> Run<'a> {
         }
     }
 
-    fn add_file(&mut self, protobuf_path: &ProtoPath, fs_path: &Path) -> anyhow::Result<()> {
-        if let Some(_) = self.parsed_files.get(protobuf_path) {
-            return Ok(());
-        }
-
-        let content = fs::read_to_string(fs_path)
-            .map_err(|e| Error::CouldNotReadFile(fs_path.display().to_string(), e))?;
-
-        self.add_file_content(protobuf_path, fs_path, &content)
-    }
-
     fn add_file_content(
         &mut self,
         protobuf_path: &ProtoPath,
@@ -246,7 +235,10 @@ impl<'a> Run<'a> {
         for include_dir in self.includes {
             let fs_path = include_dir.join(protobuf_path.to_path());
             if fs_path.exists() {
-                return self.add_file(protobuf_path, &fs_path);
+                let content = fs::read_to_string(&fs_path)
+                    .map_err(|e| Error::CouldNotReadFile(fs_path.display().to_string(), e))?;
+
+                return self.add_file_content(protobuf_path, &fs_path, &content);
             }
         }
 
