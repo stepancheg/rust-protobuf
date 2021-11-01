@@ -5,9 +5,11 @@
 Alpha versions of branch 3 are published. They are not guaranteed to have backwards compatibility.
 Stable versions are 2.xx still supported.
 
+## [3.0.0-alpha.2] - 2021-11-01
+
 - Use `always_output_default_values` option
   [to output empty array for repeated fields when serializing to JSON](https://github.com/stepancheg/rust-protobuf/pull/550)
-- Switch error handling to `thiserorr` and `anyhow` crates
+- Switch error handling to `thiserror` and `anyhow` crates
 - `.proto` file parsing now lives in a separate crate `protobuf-parse`
 
 ## [3.0.0-alpha.1] - 2021-10-24
