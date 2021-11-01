@@ -369,11 +369,19 @@ pub fn parse_and_typecheck(
 
     let relative_paths = input
         .iter()
-        .map(|input| path_to_proto_path(input, includes))
+        .map(|input| Ok((path_to_proto_path(input, includes)?, input)))
         .collect::<anyhow::Result<Vec<_>>>()?;
 
-    for input in &relative_paths {
-        run.add_imported_file(&input)?;
+    for (proto_path, path) in &relative_paths {
+        let content = fs::read_to_string(path)
+            .map_err(|e| Error::CouldNotReadFile(path.display().to_string(), e))?;
+        run.add_file_content(
+            proto_path,
+            &ResolvedProtoFile {
+                path: path.display().to_string(),
+                content: content.into_bytes(),
+            },
+        )?;
     }
 
     let file_descriptors: Vec<_> = run
@@ -383,7 +391,7 @@ pub fn parse_and_typecheck(
         .collect();
 
     Ok(ParsedAndTypechecked {
-        relative_paths,
+        relative_paths: relative_paths.into_iter().map(|(p, _)| p).collect(),
         file_descriptors,
     })
 }
