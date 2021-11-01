@@ -28,7 +28,6 @@ extern crate protobuf_codegen;
 
 mod convert;
 
-use std::fmt;
 use std::fs;
 use std::path::Path;
 use std::path::PathBuf;

@@ -13,52 +13,42 @@ use protobuf_codegen::ProtobufIdent;
 use protobuf_codegen::ProtobufPath;
 use protobuf_codegen::ProtobufRelativePath;
 
-use crate::fmt;
 use crate::model::*;
 
 /// Basic information about parsing error.
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum ParserError {
-    TokenizerError(TokenizerError),
+    #[error("{0}")]
+    TokenizerError(#[source] TokenizerError),
+    // TODO
+    #[error("incorrect input")]
     IncorrectInput,
+    #[error("not UTF-8")]
     NotUtf8,
+    #[error("expecting a constant")]
     ExpectConstant,
+    #[error("unknown syntax")]
     UnknownSyntax,
+    #[error("integer overflow")]
     IntegerOverflow,
+    #[error("label not allowed")]
     LabelNotAllowed,
+    #[error("label required")]
     LabelRequired,
+    #[error("group name should start with upper case")]
     GroupNameShouldStartWithUpperCase,
+    #[error("map field not allowed")]
     MapFieldNotAllowed,
-    StrLitDecodeError(StrLitDecodeError),
-    LexerError(LexerError),
+    #[error("string literal decode error: {0}")]
+    StrLitDecodeError(#[source] StrLitDecodeError),
+    #[error("lexer error: {0}")]
+    LexerError(#[source] LexerError),
+    #[error("oneof in group")]
     OneOfInGroup,
+    #[error("oneof in oneof")]
     OneOfInOneOf,
+    #[error("oneof in extend")]
     OneOfInExtend,
-}
-
-impl fmt::Display for ParserError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            ParserError::TokenizerError(e) => write!(f, "{}", e),
-            // TODO
-            ParserError::IncorrectInput => write!(f, "incorrect input"),
-            ParserError::NotUtf8 => write!(f, "not UTF-8"),
-            ParserError::ExpectConstant => write!(f, "expecting a constant"),
-            ParserError::UnknownSyntax => write!(f, "unknown syntax"),
-            ParserError::IntegerOverflow => write!(f, "integer overflow"),
-            ParserError::LabelNotAllowed => write!(f, "label not allowed"),
-            ParserError::LabelRequired => write!(f, "label required"),
-            ParserError::GroupNameShouldStartWithUpperCase => {
-                write!(f, "group name should start with upper case")
-            }
-            ParserError::MapFieldNotAllowed => write!(f, "map field not allowed"),
-            ParserError::StrLitDecodeError(e) => write!(f, "string literal decode error: {}", e),
-            ParserError::LexerError(e) => write!(f, "lexer error: {}", e),
-            ParserError::OneOfInGroup => write!(f, "oneof in group"),
-            ParserError::OneOfInOneOf => write!(f, "oneof in oneof"),
-            ParserError::OneOfInExtend => write!(f, "oneof in extend"),
-        }
-    }
 }
 
 impl From<TokenizerError> for ParserError {
