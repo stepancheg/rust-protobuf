@@ -13,7 +13,7 @@ use std::path::Path;
 pub use customize::Customize;
 #[doc(hidden)]
 pub use gen::paths::proto_name_to_rs;
-use protobuf::descriptor::*;
+use protobuf::descriptor::FileDescriptorProto;
 use protobuf_parse::ProtoPathBuf;
 
 use crate::gen::all::gen_all;
