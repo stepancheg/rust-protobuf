@@ -8,13 +8,13 @@ use protobuf::text_format::lexer::StrLitDecodeError;
 use protobuf::text_format::lexer::Token;
 use protobuf::text_format::lexer::Tokenizer;
 use protobuf::text_format::lexer::TokenizerError;
-use protobuf_codegen::ProtoPathBuf;
-use protobuf_codegen::ProtobufAbsolutePath;
-use protobuf_codegen::ProtobufIdent;
-use protobuf_codegen::ProtobufPath;
-use protobuf_codegen::ProtobufRelativePath;
 
 use crate::model::*;
+use crate::proto_path::ProtoPathBuf;
+use crate::protobuf_abs_path::ProtobufAbsolutePath;
+use crate::protobuf_ident::ProtobufIdent;
+use crate::protobuf_path::ProtobufPath;
+use crate::protobuf_rel_path::ProtobufRelativePath;
 
 /// Basic information about parsing error.
 #[derive(Debug, thiserror::Error)]

@@ -40,7 +40,7 @@ use std::process;
 use protobuf::descriptor::FileDescriptorSet;
 use protobuf::Message;
 pub use protobuf_codegen::Customize;
-use protobuf_codegen::ProtoPathBuf;
+use protobuf_parse::ProtoPathBuf;
 use protoc::Protoc;
 
 #[derive(Debug, thiserror::Error)]

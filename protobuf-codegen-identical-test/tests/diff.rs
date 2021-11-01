@@ -118,7 +118,7 @@ fn protoc_descriptor_set(includes: &[PathBuf], inputs: &[PathBuf]) -> FileDescri
 
 // TODO: expose this utility from protobuf-codegen-pure crate.
 fn pure_descriptor_set(includes: &[PathBuf], inputs: &[PathBuf]) -> FileDescriptorSet {
-    let mut codegen = protobuf_codegen_pure::parse_and_typecheck(includes, inputs).unwrap();
+    let mut codegen = protobuf_parse::parse_and_typecheck(includes, inputs).unwrap();
     let relative_paths: HashSet<_> = codegen
         .relative_paths
         .iter()

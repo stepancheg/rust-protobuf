@@ -1,3 +1,5 @@
+#![doc(hidden)]
+
 use std::fmt;
 
 /// Identifier in `.proto` file

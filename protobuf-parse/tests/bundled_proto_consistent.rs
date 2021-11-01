@@ -13,8 +13,8 @@ fn list_dir(p: &Path) -> Vec<PathBuf> {
 }
 
 fn assert_equal_recursively(a: &Path, b: &Path) {
-    assert_eq!(a.is_dir(), b.is_dir());
-    assert_eq!(a.is_file(), b.is_file());
+    assert_eq!(a.is_dir(), b.is_dir(), "{} {}", a.display(), b.display());
+    assert_eq!(a.is_file(), b.is_file(), "{} {}", a.display(), b.display());
     if a.is_dir() {
         let mut a_contents = list_dir(a).into_iter();
         let mut b_contents = list_dir(b).into_iter();

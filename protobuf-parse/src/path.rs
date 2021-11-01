@@ -1,6 +1,6 @@
 use std::path::is_separator;
 
-use protobuf_codegen::ProtoPath;
+use crate::proto_path::ProtoPath;
 
 pub(crate) fn fs_path_to_proto_path(path: &ProtoPath) -> String {
     path.to_str()
@@ -11,9 +11,8 @@ pub(crate) fn fs_path_to_proto_path(path: &ProtoPath) -> String {
 
 #[cfg(test)]
 mod test {
-    use protobuf_codegen::ProtoPath;
-
     use crate::path::fs_path_to_proto_path;
+    use crate::ProtoPath;
 
     #[test]
     fn test_fs_path_to_proto_path() {

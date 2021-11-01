@@ -1,7 +1,7 @@
 use std::fmt;
 
-use crate::ProtobufAbsolutePath;
-use crate::ProtobufRelativePath;
+use crate::protobuf_abs_path::ProtobufAbsolutePath;
+use crate::protobuf_rel_path::ProtobufRelativePath;
 
 /// Protobuf identifier can be absolute or relative.
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
@@ -20,7 +20,7 @@ impl ProtobufPath {
         }
     }
 
-    pub fn resolve(&self, package: &ProtobufAbsolutePath) -> ProtobufAbsolutePath {
+    pub fn _resolve(&self, package: &ProtobufAbsolutePath) -> ProtobufAbsolutePath {
         match self {
             ProtobufPath::Abs(p) => p.clone(),
             ProtobufPath::Rel(p) => {

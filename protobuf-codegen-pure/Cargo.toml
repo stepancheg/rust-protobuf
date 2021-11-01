@@ -20,14 +20,9 @@ bench = false
 anyhow    = "1.0.44"
 thiserror = "1.0.30"
 
-protobuf = { path = "../protobuf", version = "=3.0.0-alpha.1" }
+protobuf         = { path = "../protobuf", version = "=3.0.0-alpha.1" }
 protobuf-codegen = { path = "../protobuf-codegen", version = "=3.0.0-alpha.1" }
-
-[[bin]]
-
-name = "parse-and-typecheck"
-path = "src/bin/parse-and-typecheck.rs"
-test = false
+protobuf-parse   = { path = "../protobuf-parse", version = "=3.0.0-alpha.1" }
 
 [package.metadata.docs.rs]
 all-features = true

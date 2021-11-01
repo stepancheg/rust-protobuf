@@ -3,6 +3,7 @@
 use std::collections::HashSet;
 
 use protobuf::descriptor::field_descriptor_proto;
+use protobuf_parse::ProtobufAbsolutePath;
 
 use crate::code_writer::CodeWriter;
 use crate::customize::Customize;
@@ -22,7 +23,6 @@ use crate::scope::OneofWithContext;
 use crate::scope::RootScope;
 use crate::scope::WithScope;
 use crate::serde;
-use crate::ProtobufAbsolutePath;
 
 // oneof one { ... }
 #[derive(Clone)]

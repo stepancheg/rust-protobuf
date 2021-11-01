@@ -3,6 +3,7 @@ use protobuf::reflect::ReflectValueRef;
 use protobuf::rt;
 use protobuf::wire_format;
 use protobuf::wire_format::WireType;
+use protobuf_parse::ProtobufAbsolutePath;
 
 use crate::code_writer::CodeWriter;
 use crate::code_writer::Visibility;
@@ -13,7 +14,6 @@ use crate::inside::protobuf_crate_path;
 use crate::map::map_entry;
 use crate::message::RustTypeMessage;
 use crate::oneof::OneofField;
-use crate::protobuf_abs_path::ProtobufAbsolutePath;
 use crate::rust;
 use crate::rust::EXPR_NONE;
 use crate::rust::EXPR_VEC_NEW;

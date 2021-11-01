@@ -4,9 +4,10 @@ use crate::convert::populate_dependencies;
 use crate::model;
 use crate::parser::ParserErrorWithLocation;
 
-pub(crate) fn parse_dependencies(
-    content: &str,
-) -> Result<FileDescriptorProto, ParserErrorWithLocation> {
+/// Parse imports from a `.proto` file.
+///
+/// The result is [`FileDescriptorProto`] object with only `*dependency` fields filled.
+pub fn parse_dependencies(content: &str) -> Result<FileDescriptorProto, ParserErrorWithLocation> {
     let input = model::FileDescriptor::parse(content)?;
     let mut output = FileDescriptorProto::new();
     populate_dependencies(&input, &mut output);

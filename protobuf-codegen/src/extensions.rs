@@ -1,5 +1,6 @@
 use protobuf::descriptor::*;
 use protobuf::reflect::FileDescriptor;
+use protobuf_parse::ProtobufAbsolutePath;
 
 use super::code_writer::CodeWriter;
 use super::rust_types_values::*;
@@ -8,7 +9,6 @@ use crate::field::rust_field_name_for_protobuf_field_name;
 use crate::file_and_mod::FileAndMod;
 use crate::inside::protobuf_crate_path;
 use crate::message::RustTypeMessage;
-use crate::protobuf_abs_path::ProtobufAbsolutePath;
 use crate::rust_name::RustIdentWithPath;
 use crate::rust_name::RustRelativePath;
 use crate::scope::RootScope;

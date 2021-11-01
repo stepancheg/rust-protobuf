@@ -5,8 +5,7 @@ use std::str;
 use protobuf::descriptor::FileDescriptorProto;
 use protobuf::plugin::*;
 use protobuf::Message;
-
-use crate::ProtoPathBuf;
+use protobuf_parse::ProtoPathBuf;
 
 pub struct GenRequest<'a> {
     pub file_descriptors: &'a [FileDescriptorProto],

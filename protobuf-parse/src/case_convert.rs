@@ -1,3 +1,5 @@
+#![doc(hidden)]
+
 // copy-paste from Google Protobuf
 // must be kept in sync with Google for JSON interop
 pub fn camel_case(input: &str) -> String {

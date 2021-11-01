@@ -15,19 +15,19 @@ use protobuf::text_format::quote_bytes_to;
 use protobuf::Message;
 use protobuf::UnknownFields;
 use protobuf::UnknownValue;
-use protobuf_codegen::ProtoPath;
-use protobuf_codegen::ProtobufPath;
 
+use crate::case_convert::camel_case;
 use crate::model;
 use crate::model::ProtobufConstant;
 use crate::model::ProtobufOptionName;
 use crate::model::ProtobufOptionNameComponent;
 use crate::model::ProtobufOptionNameExt;
 use crate::path::fs_path_to_proto_path;
-use crate::protobuf_codegen::case_convert::camel_case;
-use crate::protobuf_codegen::ProtobufAbsolutePath;
-use crate::protobuf_codegen::ProtobufIdent;
-use crate::protobuf_codegen::ProtobufRelativePath;
+use crate::proto_path::ProtoPath;
+use crate::protobuf_abs_path::ProtobufAbsolutePath;
+use crate::protobuf_ident::ProtobufIdent;
+use crate::protobuf_path::ProtobufPath;
+use crate::protobuf_rel_path::ProtobufRelativePath;
 use crate::FileDescriptorPair;
 
 #[derive(Debug, thiserror::Error)]

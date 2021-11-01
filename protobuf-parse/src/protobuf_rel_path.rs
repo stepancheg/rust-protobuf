@@ -1,7 +1,9 @@
+#![doc(hidden)]
+
 use std::fmt;
 
-use crate::ProtobufAbsolutePath;
-use crate::ProtobufIdent;
+use crate::protobuf_abs_path::ProtobufAbsolutePath;
+use crate::protobuf_ident::ProtobufIdent;
 
 impl From<String> for ProtobufRelativePath {
     fn from(s: String) -> ProtobufRelativePath {

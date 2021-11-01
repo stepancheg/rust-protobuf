@@ -1,6 +1,5 @@
 #![deny(rustdoc::broken_intra_doc_links)]
 
-pub mod case_convert;
 mod compiler_plugin;
 mod customize;
 mod enums;
@@ -12,11 +11,6 @@ mod map;
 mod message;
 mod oneof;
 mod paths;
-mod proto_path;
-mod protobuf_abs_path;
-mod protobuf_ident;
-mod protobuf_path;
-mod protobuf_rel_path;
 pub(crate) mod rust;
 mod rust_name;
 mod rust_types_values;
@@ -39,15 +33,12 @@ pub use customize::Customize;
 use inside::protobuf_crate_path;
 #[doc(hidden)]
 pub use paths::proto_name_to_rs;
-pub use proto_path::ProtoPath;
-pub use proto_path::ProtoPathBuf;
 use protobuf::descriptor::*;
 use protobuf::reflect::FileDescriptor;
 use protobuf::Message;
-pub use protobuf_abs_path::ProtobufAbsolutePath;
-pub use protobuf_ident::ProtobufIdent;
-pub use protobuf_path::ProtobufPath;
-pub use protobuf_rel_path::ProtobufRelativePath;
+use protobuf_parse::ProtoPath;
+use protobuf_parse::ProtoPathBuf;
+use protobuf_parse::ProtobufRelativePath;
 use scope::FileScope;
 use scope::RootScope;
 

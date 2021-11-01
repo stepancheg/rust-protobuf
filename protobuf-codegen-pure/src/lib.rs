@@ -29,26 +29,9 @@ extern crate protobuf_codegen;
 use std::path::Path;
 use std::path::PathBuf;
 use std::process;
-use std::str;
 
-mod linked_hash_map;
-mod model;
-mod parse_and_typecheck;
-mod parse_dependencies;
-mod parser;
-mod path;
-mod proto;
-mod rel_path;
-
-use protobuf::descriptor::FileDescriptorProto;
 pub use protobuf_codegen::Customize;
-
-pub use crate::parse_and_typecheck::*;
-use crate::parser::ParserErrorWithLocation;
-
-mod convert;
-#[cfg(test)]
-mod test_against_protobuf_protos;
+use protobuf_parse::parse_and_typecheck;
 
 /// Invoke pure rust codegen. See [crate docs](crate) for example.
 // TODO: merge with protoc-rust def
@@ -131,26 +114,4 @@ impl Codegen {
             process::exit(1);
         }
     }
-}
-
-#[derive(Clone)]
-pub(crate) struct FileDescriptorPair {
-    parsed: model::FileDescriptor,
-    descriptor: protobuf::descriptor::FileDescriptorProto,
-}
-
-#[derive(Debug, thiserror::Error)]
-#[error("error in `{file}`: {error}")]
-struct WithFileError {
-    file: String,
-    #[source]
-    error: anyhow::Error,
-}
-
-/// Parse imports from a `.proto` file.
-///
-/// The result is [`FileDescriptorProto`] object with only `*dependency` fields filled.
-#[doc(hidden)]
-pub fn parse_dependencies(content: &str) -> Result<FileDescriptorProto, ParserErrorWithLocation> {
-    parse_dependencies::parse_dependencies(content)
 }

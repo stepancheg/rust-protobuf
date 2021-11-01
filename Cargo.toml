@@ -12,6 +12,7 @@ members = [
     "protobuf-codegen-pure-test",
     "protobuf-codegen-identical-test",
     "protobuf-examples",
+    "protobuf-parse",
     "protobuf-test",
     "protobuf-test-common",
     "perftest/vs-cxx",

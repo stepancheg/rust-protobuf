@@ -3,6 +3,7 @@ use std::fmt;
 use protobuf::descriptor::*;
 use protobuf::reflect::FileDescriptor;
 use protobuf::reflect::MessageDescriptor;
+use protobuf_parse::snake_case;
 
 use super::code_writer::*;
 use super::customize::customize_from_rustproto_for_message;
@@ -10,7 +11,6 @@ use super::customize::Customize;
 use super::enums::*;
 use super::field::*;
 use super::rust_types_values::*;
-use crate::case_convert::snake_case;
 use crate::file_and_mod::FileAndMod;
 use crate::inside::protobuf_crate_path;
 use crate::oneof::OneofGen;

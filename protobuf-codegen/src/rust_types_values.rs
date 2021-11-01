@@ -1,12 +1,12 @@
 use std::cmp;
 
 use protobuf::descriptor::*;
+use protobuf_parse::ProtobufAbsolutePath;
 
 use crate::customize::Customize;
 use crate::file_and_mod::FileAndMod;
 use crate::inside::protobuf_crate_path;
 use crate::message::RustTypeMessage;
-use crate::protobuf_abs_path::ProtobufAbsolutePath;
 use crate::rust::EXPR_NONE;
 use crate::rust::EXPR_VEC_NEW;
 use crate::rust_name::RustIdent;

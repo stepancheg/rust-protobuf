@@ -6,15 +6,14 @@ use std::path::PathBuf;
 use std::str;
 
 use protobuf::descriptor::FileDescriptorProto;
-use protobuf_codegen::ProtoPath;
-use protobuf_codegen::ProtoPathBuf;
 
 use crate::convert;
 use crate::linked_hash_map::LinkedHashMap;
 use crate::model;
 use crate::proto;
+use crate::proto_path::ProtoPath;
+use crate::proto_path::ProtoPathBuf;
 use crate::FileDescriptorPair;
-use crate::WithFileError;
 
 #[derive(Debug, thiserror::Error)]
 enum ParseAndTypeckError {
@@ -26,6 +25,14 @@ enum ParseAndTypeckError {
     FileMustResideInImportPath(String, String),
     #[error("could not read file `{0}`: {1}")]
     CouldNotReadFile(String, io::Error),
+}
+
+#[derive(Debug, thiserror::Error)]
+#[error("error in `{file}`: {error}")]
+struct WithFileError {
+    file: String,
+    #[source]
+    error: anyhow::Error,
 }
 
 /// Resolve `.proto` files. `Display` is used for error messages.
@@ -297,11 +304,10 @@ pub fn parse_and_typecheck_custom(
 mod test {
     use std::fmt;
 
-    use protobuf_codegen::ProtoPath;
-    use protobuf_codegen::ProtoPathBuf;
-
-    use crate::ProtoPathResolver;
-    use crate::ResolvedProtoFile;
+    use crate::parse_and_typecheck::ProtoPathResolver;
+    use crate::parse_and_typecheck::ResolvedProtoFile;
+    use crate::proto_path::ProtoPath;
+    use crate::ProtoPathBuf;
 
     #[test]
     fn parse_and_typecheck_custom() {

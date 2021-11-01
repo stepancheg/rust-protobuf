@@ -12,16 +12,16 @@ use protobuf::text_format::lexer::float;
 use protobuf::text_format::lexer::float::format_protobuf_float;
 use protobuf::text_format::lexer::Loc;
 use protobuf::text_format::lexer::StrLit;
-use protobuf_codegen::ProtoPathBuf;
-use protobuf_codegen::ProtobufAbsolutePath;
-use protobuf_codegen::ProtobufIdent;
-use protobuf_codegen::ProtobufPath;
 
 use crate::convert::ConvertError;
 use crate::convert::ConvertResult;
 use crate::linked_hash_map::LinkedHashMap;
 use crate::parser::Parser;
 pub use crate::parser::ParserErrorWithLocation;
+use crate::proto_path::ProtoPathBuf;
+use crate::protobuf_abs_path::ProtobufAbsolutePath;
+use crate::protobuf_ident::ProtobufIdent;
+use crate::protobuf_path::ProtobufPath;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct WithLoc<T> {
