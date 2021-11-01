@@ -31,7 +31,7 @@ use std::path::PathBuf;
 use std::process;
 
 pub use protobuf_codegen::Customize;
-use protobuf_parse::parse_and_typecheck;
+use protobuf_parse::pure;
 
 /// Invoke pure rust codegen. See [crate docs](crate) for example.
 // TODO: merge with protoc-rust def
@@ -96,7 +96,7 @@ impl Codegen {
     /// Like `protoc --rust_out=...` but without requiring `protoc` or `protoc-gen-rust`
     /// commands in `$PATH`.
     pub fn run(&self) -> anyhow::Result<()> {
-        let p = parse_and_typecheck(&self.includes, &self.inputs)?;
+        let p = pure::parse_and_typecheck(&self.includes, &self.inputs)?;
 
         protobuf_codegen::gen_and_write(
             &p.file_descriptors,

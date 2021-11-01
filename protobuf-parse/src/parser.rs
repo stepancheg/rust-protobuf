@@ -9,12 +9,35 @@ use protobuf::text_format::lexer::Token;
 use protobuf::text_format::lexer::Tokenizer;
 use protobuf::text_format::lexer::TokenizerError;
 
-use crate::model::*;
 use crate::proto_path::ProtoPathBuf;
 use crate::protobuf_abs_path::ProtobufAbsolutePath;
 use crate::protobuf_ident::ProtobufIdent;
 use crate::protobuf_path::ProtobufPath;
 use crate::protobuf_rel_path::ProtobufRelativePath;
+use crate::pure::model;
+use crate::pure::model::EnumValue;
+use crate::pure::model::Enumeration;
+use crate::pure::model::Extension;
+use crate::pure::model::Field;
+use crate::pure::model::FieldNumberRange;
+use crate::pure::model::FieldOrOneOf;
+use crate::pure::model::FieldType;
+use crate::pure::model::FileDescriptor;
+use crate::pure::model::Group;
+use crate::pure::model::ImportVis;
+use crate::pure::model::Message;
+use crate::pure::model::Method;
+use crate::pure::model::OneOf;
+use crate::pure::model::ProtobufConstant;
+use crate::pure::model::ProtobufConstantMessage;
+use crate::pure::model::ProtobufOption;
+use crate::pure::model::ProtobufOptionName;
+use crate::pure::model::ProtobufOptionNameComponent;
+use crate::pure::model::ProtobufOptionNameExt;
+use crate::pure::model::Rule;
+use crate::pure::model::Service;
+use crate::pure::model::Syntax;
+use crate::pure::model::WithLoc;
 
 /// Basic information about parsing error.
 #[derive(Debug, thiserror::Error)]
@@ -226,7 +249,7 @@ impl MessageBodyParseMode {
 }
 
 #[derive(Default)]
-pub struct MessageBody {
+pub(crate) struct MessageBody {
     pub fields: Vec<WithLoc<FieldOrOneOf>>,
     pub reserved_nums: Vec<FieldNumberRange>,
     pub reserved_names: Vec<String>,
@@ -434,7 +457,7 @@ impl<'a> Parser<'a> {
     // Import Statement
 
     // import = "import" [ "weak" | "public" ] strLit ";"
-    fn next_import_opt(&mut self) -> anyhow::Result<Option<Import>> {
+    fn next_import_opt(&mut self) -> anyhow::Result<Option<model::Import>> {
         if self.tokenizer.next_ident_if_eq("import")? {
             let vis = if self.tokenizer.next_ident_if_eq("weak")? {
                 ImportVis::Weak
@@ -446,7 +469,7 @@ impl<'a> Parser<'a> {
             let path = self.tokenizer.next_str_lit()?.decode_utf8()?;
             self.tokenizer.next_symbol_expect_eq(';')?;
             let path = ProtoPathBuf::new(path)?;
-            Ok(Some(Import { path, vis }))
+            Ok(Some(model::Import { path, vis }))
         } else {
             Ok(None)
         }

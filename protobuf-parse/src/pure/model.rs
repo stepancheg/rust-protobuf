@@ -13,8 +13,6 @@ use protobuf::text_format::lexer::float::format_protobuf_float;
 use protobuf::text_format::lexer::Loc;
 use protobuf::text_format::lexer::StrLit;
 
-use crate::convert::ConvertError;
-use crate::convert::ConvertResult;
 use crate::linked_hash_map::LinkedHashMap;
 use crate::parser::Parser;
 pub use crate::parser::ParserErrorWithLocation;
@@ -22,9 +20,11 @@ use crate::proto_path::ProtoPathBuf;
 use crate::protobuf_abs_path::ProtobufAbsolutePath;
 use crate::protobuf_ident::ProtobufIdent;
 use crate::protobuf_path::ProtobufPath;
+use crate::pure::convert::ConvertError;
+use crate::pure::convert::ConvertResult;
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct WithLoc<T> {
+pub(crate) struct WithLoc<T> {
     pub loc: Loc,
     pub t: T,
 }
@@ -40,7 +40,7 @@ impl<T> WithLoc<T> {
 
 /// Protobox syntax
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
-pub enum Syntax {
+pub(crate) enum Syntax {
     /// Protobuf syntax [2](https://developers.google.com/protocol-buffers/docs/proto) (default)
     Proto2,
     /// Protobuf syntax [3](https://developers.google.com/protocol-buffers/docs/proto3)
@@ -55,7 +55,7 @@ impl Default for Syntax {
 
 /// A field rule
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Hash)]
-pub enum Rule {
+pub(crate) enum Rule {
     /// A well-formed message can have zero or one of this field (but not more than one).
     Optional,
     /// This field can be repeated any number of times (including zero) in a well-formed message.
@@ -67,7 +67,7 @@ pub enum Rule {
 
 /// Protobuf group
 #[derive(Debug, Clone, PartialEq)]
-pub struct Group {
+pub(crate) struct Group {
     /// Group name
     pub name: String,
     pub fields: Vec<WithLoc<Field>>,
@@ -75,7 +75,7 @@ pub struct Group {
 
 /// Protobuf supported field types
 #[derive(Debug, Clone, PartialEq)]
-pub enum FieldType {
+pub(crate) enum FieldType {
     /// Protobuf int32
     ///
     /// # Remarks
@@ -168,7 +168,7 @@ pub enum FieldType {
 
 /// A Protobuf Field
 #[derive(Debug, Clone, PartialEq)]
-pub struct Field {
+pub(crate) struct Field {
     /// Field name
     pub name: String,
     /// Field `Rule`
@@ -183,14 +183,14 @@ pub struct Field {
 
 /// A Protobuf field of oneof group
 #[derive(Debug, Clone, PartialEq)]
-pub enum FieldOrOneOf {
+pub(crate) enum FieldOrOneOf {
     Field(WithLoc<Field>),
     OneOf(OneOf),
 }
 
 /// Extension range
 #[derive(Default, Debug, Eq, PartialEq, Copy, Clone)]
-pub struct FieldNumberRange {
+pub(crate) struct FieldNumberRange {
     /// First number
     pub from: i32,
     /// Inclusive
@@ -199,7 +199,7 @@ pub struct FieldNumberRange {
 
 /// A protobuf message
 #[derive(Debug, Clone, Default)]
-pub struct Message {
+pub(crate) struct Message {
     /// Message name
     pub name: String,
     /// Message fields and oneofs
@@ -276,7 +276,7 @@ impl Message {
 
 /// A protobuf enumeration field
 #[derive(Debug, Clone)]
-pub struct EnumValue {
+pub(crate) struct EnumValue {
     /// enum value name
     pub name: String,
     /// enum value number
@@ -287,7 +287,7 @@ pub struct EnumValue {
 
 /// A protobuf enumerator
 #[derive(Debug, Clone)]
-pub struct Enumeration {
+pub(crate) struct Enumeration {
     /// enum name
     pub name: String,
     /// enum values
@@ -298,7 +298,7 @@ pub struct Enumeration {
 
 /// A OneOf
 #[derive(Debug, Clone, Default, PartialEq)]
-pub struct OneOf {
+pub(crate) struct OneOf {
     /// OneOf name
     pub name: String,
     /// OneOf fields
@@ -308,7 +308,7 @@ pub struct OneOf {
 }
 
 #[derive(Debug, Clone)]
-pub struct Extension {
+pub(crate) struct Extension {
     /// Extend this type with field
     pub extendee: ProtobufPath,
     /// Extension field
@@ -317,7 +317,7 @@ pub struct Extension {
 
 /// Service method
 #[derive(Debug, Clone)]
-pub struct Method {
+pub(crate) struct Method {
     /// Method name
     pub name: String,
     /// Input type
@@ -325,8 +325,10 @@ pub struct Method {
     /// Output type
     pub output_type: ProtobufPath,
     /// If this method is client streaming
+    #[allow(dead_code)] // TODO
     pub client_streaming: bool,
     /// If this method is server streaming
+    #[allow(dead_code)] // TODO
     pub server_streaming: bool,
     /// Method options
     pub options: Vec<ProtobufOption>,
@@ -334,7 +336,7 @@ pub struct Method {
 
 /// Service definition
 #[derive(Debug, Clone)]
-pub struct Service {
+pub(crate) struct Service {
     /// Service name
     pub name: String,
     pub methods: Vec<Method>,
@@ -342,7 +344,7 @@ pub struct Service {
 }
 
 #[derive(Debug, Clone, PartialEq, Default)]
-pub struct ProtobufConstantMessage {
+pub(crate) struct ProtobufConstantMessage {
     pub fields: LinkedHashMap<String, ProtobufConstant>,
     pub extensions: LinkedHashMap<String, ProtobufConstantMessage>,
 }
@@ -350,7 +352,7 @@ pub struct ProtobufConstantMessage {
 /// constant = fullIdent | ( [ "-" | "+" ] intLit ) | ( [ "-" | "+" ] floatLit ) |
 //                 strLit | boolLit
 #[derive(Debug, Clone, PartialEq)]
-pub enum ProtobufConstant {
+pub(crate) enum ProtobufConstant {
     U64(u64),
     I64(i64),
     F64(f64), // TODO: eq
@@ -424,7 +426,7 @@ impl ProtobufConstant {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub enum ProtobufOptionNameComponent {
+pub(crate) enum ProtobufOptionNameComponent {
     Direct(ProtobufIdent),
     Ext(ProtobufPath),
 }
@@ -439,10 +441,10 @@ impl fmt::Display for ProtobufOptionNameComponent {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct ProtobufOptionNameExt(pub Vec<ProtobufOptionNameComponent>);
+pub(crate) struct ProtobufOptionNameExt(pub Vec<ProtobufOptionNameComponent>);
 
 #[derive(Debug, Clone, PartialEq)]
-pub enum ProtobufOptionName {
+pub(crate) enum ProtobufOptionName {
     Builtin(ProtobufIdent),
     Ext(ProtobufOptionNameExt),
 }
@@ -475,14 +477,14 @@ impl fmt::Display for ProtobufOptionName {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct ProtobufOption {
+pub(crate) struct ProtobufOption {
     pub name: ProtobufOptionName,
     pub value: ProtobufConstant,
 }
 
 /// Visibility of import statement
 #[derive(Debug, Clone, Eq, PartialEq)]
-pub enum ImportVis {
+pub(crate) enum ImportVis {
     Default,
     Public,
     Weak,
@@ -496,14 +498,14 @@ impl Default for ImportVis {
 
 /// Import statement
 #[derive(Debug, Default, Clone)]
-pub struct Import {
+pub(crate) struct Import {
     pub path: ProtoPathBuf,
     pub vis: ImportVis,
 }
 
 /// A File descriptor representing a whole .proto file
 #[derive(Debug, Default, Clone)]
-pub struct FileDescriptor {
+pub(crate) struct FileDescriptor {
     /// Imports
     pub imports: Vec<Import>,
     /// Package

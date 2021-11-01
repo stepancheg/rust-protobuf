@@ -17,21 +17,21 @@ use protobuf::UnknownFields;
 use protobuf::UnknownValue;
 
 use crate::case_convert::camel_case;
-use crate::model;
-use crate::model::ProtobufConstant;
-use crate::model::ProtobufOptionName;
-use crate::model::ProtobufOptionNameComponent;
-use crate::model::ProtobufOptionNameExt;
 use crate::path::fs_path_to_proto_path;
 use crate::proto_path::ProtoPath;
 use crate::protobuf_abs_path::ProtobufAbsolutePath;
 use crate::protobuf_ident::ProtobufIdent;
 use crate::protobuf_path::ProtobufPath;
 use crate::protobuf_rel_path::ProtobufRelativePath;
+use crate::pure::model;
+use crate::pure::model::ProtobufConstant;
+use crate::pure::model::ProtobufOptionName;
+use crate::pure::model::ProtobufOptionNameComponent;
+use crate::pure::model::ProtobufOptionNameExt;
 use crate::FileDescriptorPair;
 
 #[derive(Debug, thiserror::Error)]
-pub enum ConvertError {
+pub(crate) enum ConvertError {
     #[error("builtin option {0} not found for options {1}")]
     BuiltinOptionNotFound(String, String),
     #[error("builtin option {0} points to a non-singular field of {1}")]
@@ -77,7 +77,7 @@ impl From<StrLitDecodeError> for ConvertError {
     }
 }
 
-pub type ConvertResult<T> = Result<T, ConvertError>;
+pub(crate) type ConvertResult<T> = Result<T, ConvertError>;
 
 trait ProtobufOptions {
     fn by_name(&self, name: &str) -> Option<&model::ProtobufConstant>;

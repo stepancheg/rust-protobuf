@@ -7,12 +7,12 @@ use std::str;
 
 use protobuf::descriptor::FileDescriptorProto;
 
-use crate::convert;
 use crate::linked_hash_map::LinkedHashMap;
-use crate::model;
 use crate::proto;
 use crate::proto_path::ProtoPath;
 use crate::proto_path::ProtoPathBuf;
+use crate::pure::convert;
+use crate::pure::model;
 use crate::FileDescriptorPair;
 
 #[derive(Debug, thiserror::Error)]
@@ -304,9 +304,9 @@ pub fn parse_and_typecheck_custom(
 mod test {
     use std::fmt;
 
-    use crate::parse_and_typecheck::ProtoPathResolver;
-    use crate::parse_and_typecheck::ResolvedProtoFile;
     use crate::proto_path::ProtoPath;
+    use crate::pure::parse_and_typecheck::ProtoPathResolver;
+    use crate::pure::parse_and_typecheck::ResolvedProtoFile;
     use crate::ProtoPathBuf;
 
     #[test]

@@ -1,8 +1,8 @@
 use protobuf::descriptor::FileDescriptorProto;
 
-use crate::convert::populate_dependencies;
-use crate::model;
 use crate::parser::ParserErrorWithLocation;
+use crate::pure::convert::populate_dependencies;
+use crate::pure::model;
 
 /// Parse imports from a `.proto` file.
 ///
@@ -18,7 +18,7 @@ pub fn parse_dependencies(content: &str) -> Result<FileDescriptorProto, ParserEr
 mod test {
     #[test]
     fn parse_dependencies() {
-        let deps = crate::parse_dependencies::parse_dependencies(
+        let deps = crate::pure::parse_dependencies::parse_dependencies(
             r"
 syntax = 'proto3';
 

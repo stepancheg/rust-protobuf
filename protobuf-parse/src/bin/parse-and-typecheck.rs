@@ -2,6 +2,8 @@ use std::env;
 use std::path::PathBuf;
 use std::process::exit;
 
+use protobuf_parse::pure;
+
 fn main() {
     let args = env::args_os()
         .skip(1)
@@ -23,7 +25,7 @@ fn main() {
 
     assert!(args.len() >= 2);
     let (input, includes) = args.split_at(1);
-    let t = protobuf_parse::parse_and_typecheck(includes, input).expect("parse_and_typecheck");
+    let t = pure::parse_and_typecheck(includes, input).expect("parse_and_typecheck");
     for fd in t.file_descriptors {
         println!("{:#?}", fd);
     }
