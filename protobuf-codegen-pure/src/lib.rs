@@ -29,6 +29,7 @@ extern crate protobuf_codegen;
 mod convert;
 
 use std::fs;
+use std::io;
 use std::path::Path;
 use std::path::PathBuf;
 use std::process;
@@ -42,7 +43,6 @@ mod rel_path;
 
 use linked_hash_map::LinkedHashMap;
 use protobuf::descriptor::FileDescriptorProto;
-use protobuf_codegen::amend_io_error;
 pub use protobuf_codegen::Customize;
 use protobuf_codegen::ProtoPath;
 use protobuf_codegen::ProtoPathBuf;
@@ -155,6 +155,8 @@ enum Error {
     FileNotFoundInImportPath(String, String),
     #[error("file `{0}` must reside in include path {1}")]
     FileMustResideInImportPath(String, String),
+    #[error("could not read file `{0}`: {1}")]
+    CouldNotReadFile(String, io::Error),
 }
 
 struct Run<'a> {
@@ -197,7 +199,7 @@ impl<'a> Run<'a> {
         }
 
         let content = fs::read_to_string(fs_path)
-            .map_err(|e| amend_io_error(e, format!("failed to read {:?}", fs_path)))?;
+            .map_err(|e| Error::CouldNotReadFile(fs_path.display().to_string(), e))?;
 
         self.add_file_content(protobuf_path, fs_path, &content)
     }
