@@ -59,7 +59,7 @@ impl<'a> ReflectValueRef<'a> {
     }
 
     /// Value is "non-zero"?
-    fn _is_non_zero(&self) -> bool {
+    pub(crate) fn is_non_zero(&self) -> bool {
         match self {
             ReflectValueRef::U32(v) => *v != 0,
             ReflectValueRef::U64(v) => *v != 0,
@@ -143,6 +143,14 @@ impl<'a> ReflectValueRef<'a> {
     pub fn to_bytes(&self) -> Option<&[u8]> {
         match *self {
             ReflectValueRef::Bytes(v) => Some(v),
+            _ => None,
+        }
+    }
+
+    /// Take enum value.
+    pub fn to_enum_value(&self) -> Option<i32> {
+        match *self {
+            ReflectValueRef::Enum(_, v) => Some(v),
             _ => None,
         }
     }

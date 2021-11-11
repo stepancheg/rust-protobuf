@@ -14,6 +14,7 @@ use crate::error::ProtobufError;
 use crate::error::ProtobufResult;
 use crate::error::WireError;
 use crate::message::Message;
+use crate::message_dyn::MessageDyn;
 use crate::reflect::types::ProtobufType;
 use crate::reflect::types::ProtobufTypeBool;
 use crate::reflect::types::ProtobufTypeDouble;
@@ -607,6 +608,15 @@ impl<'a> CodedInputStream<'a> {
         let len = self.read_raw_varint64()?;
         let old_limit = self.push_limit(len)?;
         message.merge_from(self)?;
+        self.pop_limit(old_limit);
+        Ok(())
+    }
+
+    /// Like `merge_message`, but for dynamic messages
+    pub fn merge_message_dyn(&mut self, message: &mut dyn MessageDyn) -> ProtobufResult<()> {
+        let len = self.read_raw_varint64()?;
+        let old_limit = self.push_limit(len)?;
+        message.merge_from_dyn(self)?;
         self.pop_limit(old_limit);
         Ok(())
     }
