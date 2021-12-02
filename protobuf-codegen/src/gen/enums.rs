@@ -2,6 +2,7 @@ use std::collections::HashSet;
 
 use protobuf::descriptor::*;
 
+use crate::customize::customize_from_rustproto_for_enum;
 use crate::gen::code_writer::*;
 use crate::gen::file_index::FileIndex;
 use crate::gen::inside::protobuf_crate_path;
@@ -79,11 +80,16 @@ impl<'a> EnumGen<'a> {
                 == file_options::OptimizeMode::LITE_RUNTIME
         });
 
+        let mut customize = customize.clone();
+        customize.update_with(&customize_from_rustproto_for_enum(
+            enum_with_scope.en.get_proto().options.get_or_default(),
+        ));
+
         EnumGen {
             enum_with_scope,
             type_name: enum_with_scope.rust_name().to_path(),
             lite_runtime,
-            customize: customize.clone(),
+            customize: customize,
             path,
             info,
             file_index,
@@ -171,6 +177,14 @@ impl<'a> EnumGen<'a> {
             &self.customize,
             "derive(::serde::Serialize, ::serde::Deserialize)",
         );
+        if let Some(ref ren) = self.customize.serde_rename_all {
+            let attr = format!("serde(rename_all = \"{}\")", ren);
+            serde::write_serde_attr(
+                w,
+                &self.customize,
+                &attr,
+            );
+        }
         let ref type_name = self.type_name;
         w.expr_block(&format!("pub enum {}", type_name), |w| {
             for value in self.values_all() {
