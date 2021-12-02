@@ -9,9 +9,10 @@ use scope::EnumWithScope;
 use scope::RootScope;
 use scope::WithScope;
 use serde;
+use CodeWriter;
 
-use super::code_writer::*;
-use super::customize::Customize;
+use crate::customize::customize_from_rustproto_for_enum;
+use crate::Customize;
 
 #[derive(Clone)]
 pub struct EnumValueGen {
@@ -90,11 +91,16 @@ impl<'a> EnumGen<'a> {
                 == FileOptions_OptimizeMode::LITE_RUNTIME
         });
 
+        let mut customize = customize.clone();
+        customize.update_with(&customize_from_rustproto_for_enum(
+            enum_with_scope.en.options.as_ref().unwrap_or_default(),
+        ));
+
         EnumGen {
             enum_with_scope,
             type_name: rust_name,
             lite_runtime,
-            customize: customize.clone(),
+            customize,
         }
     }
 
@@ -175,6 +181,10 @@ impl<'a> EnumGen<'a> {
             &self.customize,
             "derive(::serde::Serialize, ::serde::Deserialize)",
         );
+        if let Some(ref ren) = self.customize.serde_rename_all {
+            let attr = format!("serde(rename_all = \"{}\")", ren);
+            serde::write_serde_attr(w, &self.customize, &attr);
+        }
         let ref type_name = self.type_name;
         w.expr_block(&format!("pub enum {}", type_name), |w| {
             for value in self.values_all() {
