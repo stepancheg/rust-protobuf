@@ -8,7 +8,7 @@ This crate contains protobuf code generator and a `protoc-gen-rust` `protoc` plu
 
 Probably you do not want to use it directly in Rust environment, there are easier to use alternatives:
 
-* [protoc-rust crate](https://github.com/stepancheg/rust-protobuf/tree/master/protoc-rust)
+* [protoc-rust crate](https://github.com/stepancheg/rust-protobuf/tree/master/protoc)
   which can be invoked programmatically from `build.rs` of your project
   which requires only `protoc` in `$PATH` but not `protoc-gen-rust`.
 * [protobuf-codegen-pure crate](https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen-pure)
