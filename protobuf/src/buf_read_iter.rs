@@ -3,6 +3,7 @@ use std::io::BufRead;
 use std::io::BufReader;
 use std::io::Read;
 use std::mem;
+use std::mem::MaybeUninit;
 use std::u64;
 
 #[cfg(feature = "bytes")]
@@ -19,6 +20,7 @@ use crate::coded_input_stream::READ_RAW_BYTES_MAX_ALLOC;
 use crate::error::ProtobufError;
 use crate::error::ProtobufResult;
 use crate::error::WireError;
+use crate::misc::as_uninit;
 
 // If an input stream is constructed with a `Read`, we create a
 // `BufReader` with an internal buffer of this size.
@@ -354,8 +356,26 @@ impl<'ignore> BufReadIter<'ignore> {
         } else {
             target.reserve_exact(count);
 
+            // This is basically a read_exact, but with a manual implementation of
+            // Vec::spare_capacity_mut
             unsafe {
-                self.read_exact(&mut target.get_unchecked_mut(..count))?;
+                let ptr = target.as_mut_ptr().cast::<MaybeUninit<u8>>();
+                let len = target.len();
+                let cap = target.capacity();
+                let buf = std::slice::from_raw_parts_mut(ptr.add(len), cap - len);
+
+                if self.remaining_in_buf_len() >= buf.len() {
+                    let buf_len = buf.len();
+                    buf.copy_from_slice(as_uninit(
+                        &self.buf[self.pos_within_buf..self.pos_within_buf + buf_len],
+                    ));
+                    self.pos_within_buf += buf_len;
+                } else {
+                    let old_len = target.len();
+                    target.resize(old_len + count, 0);
+                    self.read_exact_slow(&mut target[old_len..])?;
+                }
+
                 target.set_len(count);
             }
         }

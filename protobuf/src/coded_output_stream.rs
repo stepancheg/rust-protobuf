@@ -1,8 +1,9 @@
 use std::io;
 use std::io::Write;
+use std::mem::MaybeUninit;
 
-use crate::misc::remaining_capacity_as_slice_mut;
-use crate::misc::remove_lifetime_mut;
+use crate::misc::as_uninit;
+use crate::misc::as_uninit_mut;
 use crate::varint;
 use crate::wire_format;
 use crate::zigzag::encode_zig_zag_32;
@@ -53,16 +54,39 @@ impl<'a> WithCodedOutputStream for &'a mut Vec<u8> {
 enum OutputTarget<'a> {
     Write(&'a mut dyn Write, Vec<u8>),
     Vec(&'a mut Vec<u8>),
-    Bytes,
+    Bytes(&'a mut [u8]),
 }
 
 /// Buffered write with handy utilities
 pub struct CodedOutputStream<'a> {
     target: OutputTarget<'a>,
-    // alias to buf from target
-    buffer: &'a mut [u8],
     // within buffer
     position: usize,
+}
+
+impl<'a> OutputTarget<'a> {
+    fn buffer(&mut self) -> &mut [MaybeUninit<u8>] {
+        match self {
+            OutputTarget::Write(_, buf) => as_uninit_mut(buf),
+            // SAFETY:
+            // This is a reimplementation of the unstable function Vec::spare_capacity_mut.
+            // Vec guarantees that capacity >= len, and that the allocation extends for capacity
+            // elements.
+            OutputTarget::Vec(buf) => unsafe {
+                let len = buf.len();
+                let cap = buf.capacity();
+                let ptr = buf.as_mut_ptr().cast::<MaybeUninit<u8>>();
+                std::slice::from_raw_parts_mut(ptr.add(len), cap - len)
+            },
+            OutputTarget::Bytes(buf) => as_uninit_mut(buf),
+        }
+    }
+}
+
+impl<'a> CodedOutputStream<'a> {
+    fn buffer(&mut self) -> &mut [MaybeUninit<u8>] {
+        self.target.buffer()
+    }
 }
 
 impl<'a> CodedOutputStream<'a> {
@@ -72,16 +96,10 @@ impl<'a> CodedOutputStream<'a> {
     pub fn new(writer: &'a mut dyn Write) -> CodedOutputStream<'a> {
         let buffer_len = OUTPUT_STREAM_BUFFER_SIZE;
 
-        let mut buffer_storage = Vec::with_capacity(buffer_len);
-        unsafe {
-            buffer_storage.set_len(buffer_len);
-        }
-
-        let buffer = unsafe { remove_lifetime_mut(&mut buffer_storage as &mut [u8]) };
+        let buffer_storage = vec![0; buffer_len];
 
         CodedOutputStream {
             target: OutputTarget::Write(writer, buffer_storage),
-            buffer: buffer,
             position: 0,
         }
     }
@@ -91,8 +109,7 @@ impl<'a> CodedOutputStream<'a> {
     /// Attempt to write more than bytes capacity results in error.
     pub fn bytes(bytes: &'a mut [u8]) -> CodedOutputStream<'a> {
         CodedOutputStream {
-            target: OutputTarget::Bytes,
-            buffer: bytes,
+            target: OutputTarget::Bytes(bytes),
             position: 0,
         }
     }
@@ -101,7 +118,6 @@ impl<'a> CodedOutputStream<'a> {
     pub fn vec(vec: &'a mut Vec<u8>) -> CodedOutputStream<'a> {
         CodedOutputStream {
             target: OutputTarget::Vec(vec),
-            buffer: &mut [],
             position: 0,
         }
     }
@@ -112,9 +128,9 @@ impl<'a> CodedOutputStream<'a> {
     ///
     /// If underlying write has no EOF
     pub fn check_eof(&self) {
-        match self.target {
-            OutputTarget::Bytes => {
-                assert_eq!(self.buffer.len() as u64, self.position as u64);
+        match &self.target {
+            OutputTarget::Bytes(buffer) => {
+                assert_eq!(buffer.len() as u64, self.position as u64);
             }
             OutputTarget::Write(..) | OutputTarget::Vec(..) => {
                 panic!("must not be called with Writer or Vec");
@@ -124,19 +140,23 @@ impl<'a> CodedOutputStream<'a> {
 
     fn refresh_buffer(&mut self) -> ProtobufResult<()> {
         match self.target {
-            OutputTarget::Write(ref mut write, _) => {
-                write.write_all(&self.buffer[..self.position])?;
+            OutputTarget::Write(ref mut write, ref mut buffer) => {
+                write.write_all(&buffer[..self.position])?;
                 self.position = 0;
             }
-            OutputTarget::Vec(ref mut vec) => unsafe {
+            OutputTarget::Vec(ref mut vec) => {
                 let vec_len = vec.len();
                 assert!(vec_len + self.position <= vec.capacity());
-                vec.set_len(vec_len + self.position);
+                // SAFETY: The implementation of this type guarantees that position does not
+                // advance beyond the initialized region of the space between the Vec's len and
+                // capacity.
+                unsafe {
+                    vec.set_len(vec_len + self.position);
+                }
                 vec.reserve(1);
-                self.buffer = remove_lifetime_mut(remaining_capacity_as_slice_mut(vec));
                 self.position = 0;
-            },
-            OutputTarget::Bytes => {
+            }
+            OutputTarget::Bytes(_) => {
                 return Err(ProtobufError::IoError(io::Error::new(
                     io::ErrorKind::Other,
                     "given slice is too small to serialize the message",
@@ -153,7 +173,7 @@ impl<'a> CodedOutputStream<'a> {
     /// before destructor.
     pub fn flush(&mut self) -> ProtobufResult<()> {
         match self.target {
-            OutputTarget::Bytes => Ok(()),
+            OutputTarget::Bytes(_) => Ok(()),
             OutputTarget::Write(..) | OutputTarget::Vec(..) => {
                 // TODO: must not reserve additional in Vec
                 self.refresh_buffer()
@@ -163,20 +183,21 @@ impl<'a> CodedOutputStream<'a> {
 
     /// Write a byte
     pub fn write_raw_byte(&mut self, byte: u8) -> ProtobufResult<()> {
-        if self.position as usize == self.buffer.len() {
+        if self.position as usize == self.buffer().len() {
             self.refresh_buffer()?;
         }
-        self.buffer[self.position as usize] = byte;
+        let pos = self.position as usize;
+        self.buffer()[pos].write(byte);
         self.position += 1;
         Ok(())
     }
 
     /// Write bytes
     pub fn write_raw_bytes(&mut self, bytes: &[u8]) -> ProtobufResult<()> {
-        if bytes.len() <= self.buffer.len() - self.position {
+        if bytes.len() <= self.buffer().len() - self.position {
             let bottom = self.position as usize;
             let top = bottom + (bytes.len() as usize);
-            self.buffer[bottom..top].copy_from_slice(bytes);
+            self.buffer()[bottom..top].copy_from_slice(as_uninit(bytes));
             self.position += bytes.len();
             return Ok(());
         }
@@ -185,14 +206,15 @@ impl<'a> CodedOutputStream<'a> {
 
         assert!(self.position == 0);
 
-        if self.position + bytes.len() < self.buffer.len() {
-            self.buffer[self.position..self.position + bytes.len()].copy_from_slice(bytes);
+        if self.position + bytes.len() < self.buffer().len() {
+            let pos = self.position;
+            self.buffer()[pos..pos + bytes.len()].copy_from_slice(as_uninit(bytes));
             self.position += bytes.len();
             return Ok(());
         }
 
         match self.target {
-            OutputTarget::Bytes => {
+            OutputTarget::Bytes(_) => {
                 unreachable!();
             }
             OutputTarget::Write(ref mut write, _) => {
@@ -200,9 +222,6 @@ impl<'a> CodedOutputStream<'a> {
             }
             OutputTarget::Vec(ref mut vec) => {
                 vec.extend(bytes);
-                unsafe {
-                    self.buffer = remove_lifetime_mut(remaining_capacity_as_slice_mut(vec));
-                }
             }
         }
         Ok(())
@@ -219,30 +238,32 @@ impl<'a> CodedOutputStream<'a> {
 
     /// Write varint
     pub fn write_raw_varint32(&mut self, value: u32) -> ProtobufResult<()> {
-        if self.buffer.len() - self.position >= 5 {
+        if self.buffer().len() - self.position >= 5 {
             // fast path
-            let len = varint::encode_varint32(value, &mut self.buffer[self.position..]);
+            let pos = self.position;
+            let len = varint::encode_varint32(value, &mut self.buffer()[pos..]);
             self.position += len;
             Ok(())
         } else {
             // slow path
             let buf = &mut [0u8; 5];
-            let len = varint::encode_varint32(value, buf);
+            let len = varint::encode_varint32(value, as_uninit_mut(buf));
             self.write_raw_bytes(&buf[..len])
         }
     }
 
     /// Write varint
     pub fn write_raw_varint64(&mut self, value: u64) -> ProtobufResult<()> {
-        if self.buffer.len() - self.position >= 10 {
+        if self.buffer().len() - self.position >= 10 {
             // fast path
-            let len = varint::encode_varint64(value, &mut self.buffer[self.position..]);
+            let pos = self.position;
+            let len = varint::encode_varint64(value, &mut self.buffer()[pos..]);
             self.position += len;
             Ok(())
         } else {
             // slow path
             let buf = &mut [0u8; 10];
-            let len = varint::encode_varint64(value, buf);
+            let len = varint::encode_varint64(value, as_uninit_mut(buf));
             self.write_raw_bytes(&buf[..len])
         }
     }
@@ -653,12 +674,17 @@ mod test {
     fn test_output_stream_write_raw_bytes() {
         test_write("00 ab", |os| os.write_raw_bytes(&[0x00, 0xab]));
 
+        #[cfg(not(miri))]
+        let repeats = 2048;
+        #[cfg(miri)]
+        let repeats = 8;
+
         let expected = iter::repeat("01 02 03 04")
-            .take(2048)
+            .take(repeats)
             .collect::<Vec<_>>()
             .join(" ");
         test_write(&expected, |os| {
-            for _ in 0..2048 {
+            for _ in 0..repeats {
                 os.write_raw_bytes(&[0x01, 0x02, 0x03, 0x04])?;
             }
 
