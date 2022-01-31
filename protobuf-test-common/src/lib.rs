@@ -10,8 +10,8 @@ extern crate tempfile;
 pub mod build;
 pub mod hex;
 
-mod serialize_deserialize_tests;
-pub use serialize_deserialize_tests::*;
+mod serialize_deserialize_generated;
+pub use serialize_deserialize_generated::*;
 
 mod text_format_tests;
 pub use text_format_tests::*;
