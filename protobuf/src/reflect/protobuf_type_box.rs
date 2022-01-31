@@ -1,4 +1,5 @@
 use crate::descriptor::field_descriptor_proto::Type;
+use crate::reflect::ReflectRepeatedMut;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::RuntimeTypeBox;
 use crate::rt;
@@ -76,5 +77,15 @@ impl ProtobufTypeBox {
                 _ => unreachable!(),
             },
         })
+    }
+
+    pub(crate) fn read_repeated_into(
+        &self,
+        is: &mut CodedInputStream,
+        wire_type: WireType,
+        repeated: &mut ReflectRepeatedMut,
+    ) -> ProtobufResult<()> {
+        let _ = (is, wire_type, repeated);
+        unimplemented!()
     }
 }

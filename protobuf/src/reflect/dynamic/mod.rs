@@ -294,8 +294,9 @@ impl Message for DynamicMessage {
                     self.set_field(&field_desc, value);
                 }
                 RuntimeFieldType::Repeated(rtb) => {
-                    let _pt = ProtobufTypeBox::new(rtb, field_desc.get_proto().get_field_type())?;
-                    unimplemented!()
+                    let pt = ProtobufTypeBox::new(rtb, field_desc.get_proto().get_field_type())?;
+                    let mut repeated = self.mut_repeated(&field_desc);
+                    pt.read_repeated_into(is, wire_type, &mut repeated)?;
                 }
                 RuntimeFieldType::Map(_, _) => {
                     unimplemented!()
