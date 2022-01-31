@@ -278,7 +278,14 @@ impl Message for DynamicMessage {
     fn merge_from(&mut self, is: &mut CodedInputStream) -> ProtobufResult<()> {
         while !is.eof()? {
             let (field, wire_type) = is.read_tag_unpack()?;
-            let _ = (field, wire_type);
+            let field_desc = match self.descriptor.get_field_by_number(field) {
+                Some(f) => f,
+                None => {
+                    is.skip_field(wire_type)?;
+                    continue;
+                }
+            };
+            let _ = (field_desc, wire_type);
             unimplemented!()
         }
         Ok(())
