@@ -179,11 +179,7 @@ impl<'a> EnumGen<'a> {
         );
         if let Some(ref ren) = self.customize.serde_rename_all {
             let attr = format!("serde(rename_all = \"{}\")", ren);
-            serde::write_serde_attr(
-                w,
-                &self.customize,
-                &attr,
-            );
+            serde::write_serde_attr(w, &self.customize, &attr);
         }
         let ref type_name = self.type_name;
         w.expr_block(&format!("pub enum {}", type_name), |w| {

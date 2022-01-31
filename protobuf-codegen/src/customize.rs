@@ -1,7 +1,7 @@
+use protobuf::descriptor::EnumOptions;
 use protobuf::descriptor::FieldOptions;
 use protobuf::descriptor::FileOptions;
 use protobuf::descriptor::MessageOptions;
-use protobuf::descriptor::EnumOptions;
 use protobuf::rustproto;
 
 /// Specifies style of generated code.
