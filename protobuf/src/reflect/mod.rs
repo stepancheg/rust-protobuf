@@ -32,6 +32,7 @@ pub use self::field::ReflectFieldRef;
 pub use self::field::RuntimeFieldType;
 #[doc(hidden)]
 pub use self::file::generated::GeneratedFileDescriptor;
+pub use self::file::syntax::Syntax;
 pub use self::file::FileDescriptor;
 pub use self::map::ReflectMapMut;
 pub use self::map::ReflectMapRef;

@@ -14,12 +14,14 @@ use crate::reflect::name::protobuf_name_starts_with_package;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::GeneratedFileDescriptor;
 use crate::reflect::MessageDescriptor;
+use crate::reflect::Syntax;
 
 pub(crate) mod building;
 pub(crate) mod dynamic;
 pub(crate) mod fds;
 pub(crate) mod generated;
 pub(crate) mod index;
+pub(crate) mod syntax;
 
 #[derive(Clone, Debug)]
 pub(crate) enum FileDescriptorImpl {
@@ -83,6 +85,11 @@ impl FileDescriptor {
             .path
             .eval(self.proto())
             .unwrap()
+    }
+
+    /// Syntax of current file.
+    pub fn syntax(&self) -> Option<Syntax> {
+        Syntax::parse(self.proto().get_syntax())
     }
 
     /// Get top-level messages.
