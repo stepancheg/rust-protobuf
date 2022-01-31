@@ -27,9 +27,9 @@ pub(crate) mod name;
 pub use self::enums::generated::GeneratedEnumDescriptorData;
 pub use self::enums::EnumDescriptor;
 pub use self::enums::EnumValueDescriptor;
+pub use self::field::runtime_field_type::RuntimeFieldType;
 pub use self::field::FieldDescriptor;
 pub use self::field::ReflectFieldRef;
-pub use self::field::RuntimeFieldType;
 #[doc(hidden)]
 pub use self::file::generated::GeneratedFileDescriptor;
 pub use self::file::syntax::Syntax;

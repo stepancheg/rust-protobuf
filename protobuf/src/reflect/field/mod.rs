@@ -11,6 +11,7 @@ use crate::reflect::acc::GeneratedFieldAccessor;
 use crate::reflect::dynamic::DynamicMessage;
 use crate::reflect::field::dynamic::DynamicFieldDescriptorRef;
 use crate::reflect::field::index::FieldIndex;
+use crate::reflect::field::runtime_field_type::RuntimeFieldType;
 use crate::reflect::map::ReflectMapMut;
 use crate::reflect::map::ReflectMapRef;
 use crate::reflect::message::message_ref::MessageRef;
@@ -28,6 +29,7 @@ use crate::reflect::RuntimeTypeBox;
 
 pub(crate) mod dynamic;
 pub(crate) mod index;
+pub(crate) mod runtime_field_type;
 
 /// Reference to a value stored in a field, optional, repeated or map.
 // TODO: implement Eq
@@ -65,16 +67,6 @@ impl<'a> ReflectEq for ReflectFieldRef<'a> {
             _ => false,
         }
     }
-}
-
-/// Reflective representation of field type
-pub enum RuntimeFieldType {
-    /// Singular field (required, optional for proto2 or singular for proto3)
-    Singular(RuntimeTypeBox),
-    /// Repeated field
-    Repeated(RuntimeTypeBox),
-    /// Map field
-    Map(RuntimeTypeBox, RuntimeTypeBox),
 }
 
 fn _assert_sync<'a>() {
