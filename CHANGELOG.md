@@ -8,7 +8,6 @@ Stable versions are 2.xx still supported.
 - Remove `protobuf-codegen-pure` and `protoc-rust` crates. Now all codegen
   (pure or with `protoc` is done using `protobuf-codegen` crate).
 - `LazyV2` (internal utility for rust-protobuf) now implements `Drop`.
-- [`serde_rename_all` codegen option](https://github.com/stepancheg/rust-protobuf/pull/586)
 
 ## [3.0.0-alpha.2] - 2021-11-01
 
@@ -52,6 +51,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 - Min supported Rust version is 1.52.1.
 - [Fix `SingularField::unwrap_or_default`](https://github.com/stepancheg/rust-protobuf/issues/572)
+- [`serde_rename_all` codegen option](https://github.com/stepancheg/rust-protobuf/pull/586)
+
 
 ## [2.25.2] - 2021-10-24
 
