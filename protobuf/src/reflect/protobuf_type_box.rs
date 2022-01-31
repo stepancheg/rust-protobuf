@@ -90,8 +90,108 @@ impl ProtobufTypeBox {
             repeated.push(value);
             Ok(())
         } else if wire_type == WireType::WireTypeLengthDelimited {
-            // TODO: handle repeated packed.
-            unimplemented!()
+            fn extend(repeated: &mut ReflectRepeatedMut, v: Vec<impl Into<ReflectValueBox>>) {
+                for v in v {
+                    // TODO: inefficient
+                    repeated.push(v.into());
+                }
+            }
+
+            match self.t {
+                Type::TYPE_INT32 => {
+                    let mut v = Vec::new();
+                    is.read_repeated_packed_int32_into(&mut v)?;
+                    extend(repeated, v);
+                    Ok(())
+                }
+                Type::TYPE_INT64 => {
+                    let mut v = Vec::new();
+                    is.read_repeated_packed_int64_into(&mut v)?;
+                    extend(repeated, v);
+                    Ok(())
+                }
+                Type::TYPE_UINT32 => {
+                    let mut v = Vec::new();
+                    is.read_repeated_packed_uint32_into(&mut v)?;
+                    extend(repeated, v);
+                    Ok(())
+                }
+                Type::TYPE_UINT64 => {
+                    let mut v = Vec::new();
+                    is.read_repeated_packed_uint64_into(&mut v)?;
+                    extend(repeated, v);
+                    Ok(())
+                }
+                Type::TYPE_SINT32 => {
+                    let mut v = Vec::new();
+                    is.read_repeated_packed_sint32_into(&mut v)?;
+                    extend(repeated, v);
+                    Ok(())
+                }
+                Type::TYPE_SINT64 => {
+                    let mut v = Vec::new();
+                    is.read_repeated_packed_sint64_into(&mut v)?;
+                    extend(repeated, v);
+                    Ok(())
+                }
+                Type::TYPE_FIXED32 => {
+                    let mut v = Vec::new();
+                    is.read_repeated_packed_fixed32_into(&mut v)?;
+                    extend(repeated, v);
+                    Ok(())
+                }
+                Type::TYPE_FIXED64 => {
+                    let mut v = Vec::new();
+                    is.read_repeated_packed_fixed64_into(&mut v)?;
+                    extend(repeated, v);
+                    Ok(())
+                }
+                Type::TYPE_SFIXED32 => {
+                    let mut v = Vec::new();
+                    is.read_repeated_packed_sfixed32_into(&mut v)?;
+                    extend(repeated, v);
+                    Ok(())
+                }
+                Type::TYPE_SFIXED64 => {
+                    let mut v = Vec::new();
+                    is.read_repeated_packed_sfixed64_into(&mut v)?;
+                    extend(repeated, v);
+                    Ok(())
+                }
+                Type::TYPE_FLOAT => {
+                    let mut v = Vec::new();
+                    is.read_repeated_packed_float_into(&mut v)?;
+                    extend(repeated, v);
+                    Ok(())
+                }
+                Type::TYPE_DOUBLE => {
+                    let mut v = Vec::new();
+                    is.read_repeated_packed_double_into(&mut v)?;
+                    extend(repeated, v);
+                    Ok(())
+                }
+                Type::TYPE_BOOL => {
+                    let mut v = Vec::new();
+                    is.read_repeated_packed_bool_into(&mut v)?;
+                    extend(repeated, v);
+                    Ok(())
+                }
+                Type::TYPE_ENUM => match &self.runtime {
+                    RuntimeTypeBox::Enum(e) => {
+                        let mut v = Vec::new();
+                        is.read_repeated_packed_enum_values_into(&mut v)?;
+                        for e_v in v {
+                            repeated.push(ReflectValueBox::Enum(e.clone(), e_v));
+                        }
+                        Ok(())
+                    }
+                    _ => unreachable!(),
+                },
+                Type::TYPE_GROUP => Err(ProtobufError::GroupIsNotImplemented),
+                Type::TYPE_MESSAGE | Type::TYPE_STRING | Type::TYPE_BYTES => {
+                    Err(rt::unexpected_wire_type(wire_type))
+                }
+            }
         } else {
             Err(rt::unexpected_wire_type(wire_type))
         }

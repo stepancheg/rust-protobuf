@@ -504,6 +504,14 @@ impl<'a> CodedInputStream<'a> {
         self.read_repeated_packed_into::<ProtobufTypeBool>(target)
     }
 
+    /// Read repeated packed enum values into the vector.
+    pub(crate) fn read_repeated_packed_enum_values_into(
+        &mut self,
+        target: &mut Vec<i32>,
+    ) -> ProtobufResult<()> {
+        self.read_repeated_packed_into::<ProtobufTypeInt32>(target)
+    }
+
     /// Read repeated packed `enum` into `ProtobufEnum`
     pub fn read_repeated_packed_enum_into<E: ProtobufEnum + ProtobufValue>(
         &mut self,
