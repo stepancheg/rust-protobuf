@@ -238,8 +238,43 @@ impl Message for DynamicMessage {
         unimplemented!()
     }
 
-    fn write_to_with_cached_sizes(&self, _os: &mut CodedOutputStream) -> ProtobufResult<()> {
-        unimplemented!()
+    fn write_to_with_cached_sizes(&self, os: &mut CodedOutputStream) -> ProtobufResult<()> {
+        let is_proto3 = self.descriptor.file_descriptor().syntax() == Some(Syntax::Proto3);
+        for field_desc in self.descriptor.fields() {
+            let field_number = field_desc.get_proto().get_number() as u32;
+            match field_desc.runtime_field_type() {
+                RuntimeFieldType::Singular(..) => {
+                    if let Some(v) = field_desc.get_singular(self) {
+                        if !is_proto3 || v.is_non_zero() {
+                            // ignore default value
+                            singular_write_to(
+                                &field_desc.get_proto().get_field_type(),
+                                field_number,
+                                &v,
+                                os,
+                            )?;
+                        }
+                    }
+                }
+                RuntimeFieldType::Repeated(..) => {
+                    let repeated = field_desc.get_repeated(self);
+                    for i in 0..repeated.len() {
+                        let v = repeated.get(i);
+                        singular_write_to(
+                            &field_desc.get_proto().get_field_type(),
+                            field_number,
+                            &v,
+                            os,
+                        )?;
+                    }
+                }
+                RuntimeFieldType::Map(_, _) => {
+                    unimplemented!();
+                }
+            }
+        }
+
+        Ok(())
     }
 
     fn compute_size(&self) -> u32 {
@@ -308,7 +343,7 @@ impl Message for DynamicMessage {
 }
 
 /// Write singular field to output stream
-fn _singular_write_to(
+fn singular_write_to(
     proto_type: &Type,
     field_number: u32,
     v: &ReflectValueRef,
