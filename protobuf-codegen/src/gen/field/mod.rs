@@ -73,30 +73,6 @@ impl FieldDescriptorProtoTypeExt for field_descriptor_proto::Type {
     }
 }
 
-fn field_type_wire_type(field_type: field_descriptor_proto::Type) -> WireType {
-    use field_descriptor_proto::Type;
-    match field_type {
-        Type::TYPE_INT32 => WireType::WireTypeVarint,
-        Type::TYPE_INT64 => WireType::WireTypeVarint,
-        Type::TYPE_UINT32 => WireType::WireTypeVarint,
-        Type::TYPE_UINT64 => WireType::WireTypeVarint,
-        Type::TYPE_SINT32 => WireType::WireTypeVarint,
-        Type::TYPE_SINT64 => WireType::WireTypeVarint,
-        Type::TYPE_BOOL => WireType::WireTypeVarint,
-        Type::TYPE_ENUM => WireType::WireTypeVarint,
-        Type::TYPE_FIXED32 => WireType::WireTypeFixed32,
-        Type::TYPE_FIXED64 => WireType::WireTypeFixed64,
-        Type::TYPE_SFIXED32 => WireType::WireTypeFixed32,
-        Type::TYPE_SFIXED64 => WireType::WireTypeFixed64,
-        Type::TYPE_FLOAT => WireType::WireTypeFixed32,
-        Type::TYPE_DOUBLE => WireType::WireTypeFixed64,
-        Type::TYPE_STRING => WireType::WireTypeLengthDelimited,
-        Type::TYPE_BYTES => WireType::WireTypeLengthDelimited,
-        Type::TYPE_MESSAGE => WireType::WireTypeLengthDelimited,
-        Type::TYPE_GROUP => WireType::WireTypeLengthDelimited, // not true
-    }
-}
-
 fn type_protobuf_name(field_type: field_descriptor_proto::Type) -> &'static str {
     use field_descriptor_proto::Type;
     match field_type {
@@ -131,8 +107,8 @@ fn field_type_protobuf_name<'a>(field: &'a FieldDescriptorProto) -> &'a str {
 fn field_type_size(field_type: field_descriptor_proto::Type) -> Option<u32> {
     match field_type {
         field_descriptor_proto::Type::TYPE_BOOL => Some(1),
-        t if field_type_wire_type(t) == wire_format::WireTypeFixed32 => Some(4),
-        t if field_type_wire_type(t) == wire_format::WireTypeFixed64 => Some(8),
+        t if WireType::for_type(t) == wire_format::WireTypeFixed32 => Some(4),
+        t if WireType::for_type(t) == wire_format::WireTypeFixed64 => Some(8),
         _ => None,
     }
 }
@@ -663,7 +639,7 @@ impl<'a> FieldGen<'a> {
             syntax: field.message.get_scope().file_scope.syntax(),
             rust_name: rust_field_name_for_protobuf_field_name(&field.field.get_name()),
             proto_type: field.field.get_proto().get_field_type(),
-            wire_type: field_type_wire_type(field.field.get_proto().get_field_type()),
+            wire_type: WireType::for_type(field.field.get_proto().get_field_type()),
             serde_name: field.field.get_name().to_string(),
             proto_field: field,
             kind,

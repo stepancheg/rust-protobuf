@@ -2,6 +2,7 @@
 
 // TODO: temporary
 pub use self::WireType::*;
+use crate::descriptor::field_descriptor_proto;
 
 /// Tag occupies three bits.
 pub const TAG_TYPE_BITS: u32 = 3;
@@ -38,6 +39,31 @@ impl WireType {
             4 => Some(WireTypeEndGroup),
             5 => Some(WireTypeFixed32),
             _ => None,
+        }
+    }
+
+    #[doc(hidden)]
+    pub fn for_type(field_type: field_descriptor_proto::Type) -> WireType {
+        use field_descriptor_proto::Type;
+        match field_type {
+            Type::TYPE_INT32 => WireType::WireTypeVarint,
+            Type::TYPE_INT64 => WireType::WireTypeVarint,
+            Type::TYPE_UINT32 => WireType::WireTypeVarint,
+            Type::TYPE_UINT64 => WireType::WireTypeVarint,
+            Type::TYPE_SINT32 => WireType::WireTypeVarint,
+            Type::TYPE_SINT64 => WireType::WireTypeVarint,
+            Type::TYPE_BOOL => WireType::WireTypeVarint,
+            Type::TYPE_ENUM => WireType::WireTypeVarint,
+            Type::TYPE_FIXED32 => WireType::WireTypeFixed32,
+            Type::TYPE_FIXED64 => WireType::WireTypeFixed64,
+            Type::TYPE_SFIXED32 => WireType::WireTypeFixed32,
+            Type::TYPE_SFIXED64 => WireType::WireTypeFixed64,
+            Type::TYPE_FLOAT => WireType::WireTypeFixed32,
+            Type::TYPE_DOUBLE => WireType::WireTypeFixed64,
+            Type::TYPE_STRING => WireType::WireTypeLengthDelimited,
+            Type::TYPE_BYTES => WireType::WireTypeLengthDelimited,
+            Type::TYPE_MESSAGE => WireType::WireTypeLengthDelimited,
+            Type::TYPE_GROUP => WireType::WireTypeLengthDelimited, // not true
         }
     }
 }
