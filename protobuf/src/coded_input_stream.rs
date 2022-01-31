@@ -35,6 +35,7 @@ use crate::unknown::UnknownValue;
 use crate::wire_format;
 use crate::zigzag::decode_zig_zag_32;
 use crate::zigzag::decode_zig_zag_64;
+use crate::MessageDyn;
 
 // Default recursion level limit. 100 is the default value of C++'s implementation.
 const DEFAULT_RECURSION_LIMIT: u32 = 100;
@@ -607,6 +608,15 @@ impl<'a> CodedInputStream<'a> {
         let len = self.read_raw_varint64()?;
         let old_limit = self.push_limit(len)?;
         message.merge_from(self)?;
+        self.pop_limit(old_limit);
+        Ok(())
+    }
+
+    /// Like `merge_message`, but for dynamic messages.
+    pub fn merge_message_dyn(&mut self, message: &mut dyn MessageDyn) -> ProtobufResult<()> {
+        let len = self.read_raw_varint64()?;
+        let old_limit = self.push_limit(len)?;
+        message.merge_from_dyn(self)?;
         self.pop_limit(old_limit);
         Ok(())
     }
