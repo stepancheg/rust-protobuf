@@ -85,7 +85,15 @@ impl ProtobufTypeBox {
         wire_type: WireType,
         repeated: &mut ReflectRepeatedMut,
     ) -> ProtobufResult<()> {
-        let _ = (is, wire_type, repeated);
-        unimplemented!()
+        if wire_type == WireType::for_type(self.t) {
+            let value = self.read(is, wire_type)?;
+            repeated.push(value);
+            Ok(())
+        } else if wire_type == WireType::WireTypeLengthDelimited {
+            // TODO: handle repeated packed.
+            unimplemented!()
+        } else {
+            Err(rt::unexpected_wire_type(wire_type))
+        }
     }
 }
