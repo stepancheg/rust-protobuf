@@ -270,16 +270,16 @@ jobs:
             - name: Test all
               run: cargo test --all --all-targets
               shell: bash
-    super-linter:
-        name: super-linter
+    mega-linter:
+        name: mega-linter
         runs-on: ubuntu-latest
         steps:
             - name: Checkout sources
               uses: actions/checkout@v2
               with:
                   fetch-depth: 0
-            - name: super-linter
-              uses: github/super-linter@v3
+            - name: mega-linter
+              uses: megalinter/megalinter@v5
               env:
                   VALIDATE_ALL_CODEBASE: false
                   DEFAULT_BRANCH: master
@@ -288,6 +288,8 @@ jobs:
                   VALIDATE_PROTOBUF: false
                   VALIDATE_RUST_CLIPPY: false
                   VALIDATE_RUST_2015: false
+                  VALIDATE_COPYPASTE: false
+                  VALIDATE_SPELL: false
     rustfmt-check:
         name: rustfmt check
         runs-on: ubuntu-latest

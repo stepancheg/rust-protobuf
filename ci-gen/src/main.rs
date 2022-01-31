@@ -167,11 +167,12 @@ fn job(channel: RustToolchain, os: Os, features: Features) -> Job {
     }
 }
 
+// https://github.com/megalinter/megalinter
 fn super_linter_job() -> Job {
     let mut steps = Vec::new();
     steps.push(checkout_sources_depth(Some(0)));
     steps.push(
-        Step::uses("super-linter", "github/super-linter@v3")
+        Step::uses("mega-linter", "megalinter/megalinter@v5")
             .env("VALIDATE_ALL_CODEBASE", "false")
             .env("DEFAULT_BRANCH", "master")
             .env("GITHUB_TOKEN", "${{ secrets.GITHUB_TOKEN }}")
@@ -182,11 +183,15 @@ fn super_linter_job() -> Job {
             // Clippy reports too many false positives
             .env("VALIDATE_RUST_CLIPPY", "false")
             // We don't care about previous edition
-            .env("VALIDATE_RUST_2015", "false"),
+            .env("VALIDATE_RUST_2015", "false")
+            // Finds copy-paste in LICENSE files.
+            .env("VALIDATE_COPYPASTE", "false")
+            // Complains about protobuf" in yml files.
+            .env("VALIDATE_SPELL", "false"),
     );
     Job {
-        id: "super-linter".to_owned(),
-        name: "super-linter".to_owned(),
+        id: "mega-linter".to_owned(),
+        name: "mega-linter".to_owned(),
         runs_on: LINUX.ghwf,
         steps,
         ..Default::default()
