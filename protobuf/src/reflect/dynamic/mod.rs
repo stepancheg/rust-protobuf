@@ -184,6 +184,47 @@ impl DynamicMessage {
     pub fn downcast_mut(message: &mut dyn MessageDyn) -> &mut DynamicMessage {
         <dyn MessageDyn>::downcast_mut(message).unwrap()
     }
+
+    fn for_each_field_to_write(
+        &self,
+        handler: &mut impl ForEachSingularFieldToWrite,
+    ) -> ProtobufResult<()> {
+        let is_proto3 = self.descriptor.file_descriptor().syntax() == Some(Syntax::Proto3);
+        for field_desc in self.descriptor.fields() {
+            let field_number = field_desc.get_proto().get_number() as u32;
+            match field_desc.runtime_field_type() {
+                RuntimeFieldType::Singular(..) => {
+                    if let Some(v) = field_desc.get_singular(self) {
+                        // Ignore default value for proto3.
+                        if !is_proto3 || v.is_non_zero() {
+                            handler.field(
+                                field_desc.get_proto().get_field_type(),
+                                field_number,
+                                &v,
+                            )?;
+                        }
+                    }
+                }
+                RuntimeFieldType::Repeated(..) => {
+                    let repeated = field_desc.get_repeated(self);
+                    for i in 0..repeated.len() {
+                        let v = repeated.get(i);
+                        handler.field(field_desc.get_proto().get_field_type(), field_number, &v)?;
+                    }
+                }
+                RuntimeFieldType::Map(_, _) => {
+                    unimplemented!();
+                }
+            }
+        }
+
+        // TODO: unknown fields
+        Ok(())
+    }
+}
+
+trait ForEachSingularFieldToWrite {
+    fn field(&mut self, t: Type, number: u32, value: &ReflectValueRef) -> ProtobufResult<()>;
 }
 
 impl Clear for DynamicMessage {
@@ -239,80 +280,49 @@ impl Message for DynamicMessage {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut CodedOutputStream) -> ProtobufResult<()> {
-        let is_proto3 = self.descriptor.file_descriptor().syntax() == Some(Syntax::Proto3);
-        for field_desc in self.descriptor.fields() {
-            let field_number = field_desc.get_proto().get_number() as u32;
-            match field_desc.runtime_field_type() {
-                RuntimeFieldType::Singular(..) => {
-                    if let Some(v) = field_desc.get_singular(self) {
-                        if !is_proto3 || v.is_non_zero() {
-                            // ignore default value
-                            singular_write_to(
-                                &field_desc.get_proto().get_field_type(),
-                                field_number,
-                                &v,
-                                os,
-                            )?;
-                        }
-                    }
-                }
-                RuntimeFieldType::Repeated(..) => {
-                    let repeated = field_desc.get_repeated(self);
-                    for i in 0..repeated.len() {
-                        let v = repeated.get(i);
-                        singular_write_to(
-                            &field_desc.get_proto().get_field_type(),
-                            field_number,
-                            &v,
-                            os,
-                        )?;
-                    }
-                }
-                RuntimeFieldType::Map(_, _) => {
-                    unimplemented!();
-                }
+        struct Handler<'a, 'o> {
+            os: &'a mut CodedOutputStream<'o>,
+        }
+
+        impl<'a, 'o> ForEachSingularFieldToWrite for Handler<'a, 'o> {
+            fn field(
+                &mut self,
+                t: Type,
+                number: u32,
+                value: &ReflectValueRef,
+            ) -> ProtobufResult<()> {
+                singular_write_to(t, number, value, self.os)
             }
         }
 
-        Ok(())
+        let mut handler = Handler { os };
+
+        self.for_each_field_to_write(&mut handler)
     }
 
     fn compute_size(&self) -> u32 {
-        let is_proto3 = self.descriptor.file_descriptor().syntax() == Some(Syntax::Proto3);
-        let mut m_size = 0;
-        for field_desc in self.descriptor.fields() {
-            let field_number = field_desc.get_proto().get_number() as u32;
-            match field_desc.get_reflect(self) {
-                ReflectFieldRef::Optional(v) => {
-                    if let Some(v) = v {
-                        if !is_proto3 || v.is_non_zero() {
-                            m_size += compute_singular_size(
-                                &field_desc.get_proto().get_field_type(),
-                                field_number,
-                                &v,
-                            );
-                        }
-                    }
-                }
-                ReflectFieldRef::Repeated(vs) => {
-                    if !vs.is_empty() {
-                        // TODO: use packed when needed.
-                        for v in vs {
-                            m_size += compute_singular_size(
-                                &field_desc.get_proto().get_field_type(),
-                                field_number,
-                                &v,
-                            );
-                        }
-                    }
-                }
-                ReflectFieldRef::Map(_v) => {
-                    unimplemented!()
-                }
+        struct Handler {
+            m_size: u32,
+        }
+
+        impl ForEachSingularFieldToWrite for Handler {
+            fn field(
+                &mut self,
+                t: Type,
+                number: u32,
+                value: &ReflectValueRef,
+            ) -> ProtobufResult<()> {
+                self.m_size += compute_singular_size(t, number, value);
+                Ok(())
             }
         }
-        // TODO: unknown fields
-        m_size
+
+        let mut handler = Handler { m_size: 0 };
+
+        self.for_each_field_to_write(&mut handler)
+            .expect("compute_size should not fail");
+
+        handler.m_size
     }
 
     fn get_cached_size(&self) -> u32 {
@@ -344,7 +354,7 @@ impl Message for DynamicMessage {
 
 /// Write singular field to output stream
 fn singular_write_to(
-    proto_type: &Type,
+    proto_type: Type,
     field_number: u32,
     v: &ReflectValueRef,
     os: &mut CodedOutputStream,
@@ -380,7 +390,7 @@ fn singular_write_to(
 }
 
 /// Compute singular field size
-fn compute_singular_size(proto_type: &Type, field_number: u32, v: &ReflectValueRef) -> u32 {
+fn compute_singular_size(proto_type: Type, field_number: u32, v: &ReflectValueRef) -> u32 {
     match proto_type {
         Type::TYPE_ENUM => {
             let enum_v = v.to_enum_value().unwrap();
