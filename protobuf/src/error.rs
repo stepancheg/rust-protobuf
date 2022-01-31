@@ -1,5 +1,3 @@
-use std::error::Error;
-use std::fmt;
 use std::io;
 use std::str;
 
@@ -39,51 +37,20 @@ pub enum WireError {
 }
 
 /// Generic protobuf error
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum ProtobufError {
     /// I/O error when reading or writing
-    IoError(io::Error),
+    #[error(transparent)]
+    IoError(#[from] io::Error),
     /// Malformed input
-    WireError(WireError),
+    #[error(transparent)]
+    WireError(#[from] WireError),
     /// Protocol contains a string which is not valid UTF-8 string
-    Utf8(str::Utf8Error),
+    #[error("UTF-8 decode error")]
+    Utf8(#[from] str::Utf8Error),
     /// Not all required fields of message set.
+    #[error("Message `{}` is missing required fields", .0)]
     MessageNotInitialized(String),
-}
-
-impl fmt::Display for ProtobufError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            // not sure that cause should be included in message
-            &ProtobufError::IoError(ref e) => write!(f, "IO error: {}", e),
-            &ProtobufError::WireError(ref e) => fmt::Display::fmt(e, f),
-            &ProtobufError::Utf8(ref e) => write!(f, "{}", e),
-            &ProtobufError::MessageNotInitialized { .. } => write!(f, "not all message fields set"),
-        }
-    }
-}
-
-impl Error for ProtobufError {
-    fn cause(&self) -> Option<&dyn Error> {
-        match self {
-            &ProtobufError::IoError(ref e) => Some(e),
-            &ProtobufError::Utf8(ref e) => Some(e),
-            &ProtobufError::WireError(..) => None,
-            &ProtobufError::MessageNotInitialized { .. } => None,
-        }
-    }
-}
-
-impl From<io::Error> for ProtobufError {
-    fn from(err: io::Error) -> Self {
-        ProtobufError::IoError(err)
-    }
-}
-
-impl From<str::Utf8Error> for ProtobufError {
-    fn from(err: str::Utf8Error) -> Self {
-        ProtobufError::Utf8(err)
-    }
 }
 
 impl From<ProtobufError> for io::Error {
