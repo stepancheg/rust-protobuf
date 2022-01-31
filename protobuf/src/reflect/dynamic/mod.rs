@@ -192,25 +192,25 @@ impl Message for DynamicMessage {
         for f in self.descriptor.fields() {
             let fv = self.get_reflect(&f);
             match fv {
-                ReflectFieldRef::Optional(s) => {
-                    match s {
-                        None => if f.is_required() {
+                ReflectFieldRef::Optional(s) => match s {
+                    None => {
+                        if f.is_required() {
                             return false;
                         }
-                        Some(v) => {
-                            if !v.is_initialized() {
-                                return false;
-                            }
+                    }
+                    Some(v) => {
+                        if !v.is_initialized() {
+                            return false;
                         }
                     }
-                }
+                },
                 ReflectFieldRef::Repeated(r) => {
                     for v in &r {
                         if !v.is_initialized() {
                             return false;
                         }
                     }
-                },
+                }
                 ReflectFieldRef::Map(m) => {
                     for (_k, v) in &m {
                         // Keys cannot be messages, so only check values.
