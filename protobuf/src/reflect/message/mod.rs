@@ -240,6 +240,11 @@ impl MessageDescriptor {
         &self.get_index_entry().full_name
     }
 
+    /// Name relative to the package where the message is declared.
+    pub fn name_to_package(&self) -> &str {
+        &self.get_index_entry().name_to_package
+    }
+
     /// Message field descriptors.
     pub fn fields<'a>(&'a self) -> impl ExactSizeIterator<Item = FieldDescriptor> + 'a {
         (0..self.get_index().fields.len()).map(move |index| FieldDescriptor {
