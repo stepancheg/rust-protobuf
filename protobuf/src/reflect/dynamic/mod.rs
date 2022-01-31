@@ -276,6 +276,7 @@ impl Message for DynamicMessage {
                 }
             }
         }
+        // TODO: unknown fields
         m_size
     }
 
