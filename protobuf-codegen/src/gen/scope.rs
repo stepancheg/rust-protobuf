@@ -5,6 +5,7 @@ use protobuf::reflect::FieldDescriptor;
 use protobuf::reflect::FileDescriptor;
 use protobuf::reflect::MessageDescriptor;
 use protobuf::reflect::OneofDescriptor;
+use protobuf::reflect::Syntax;
 use protobuf_parse::ProtobufAbsolutePath;
 use protobuf_parse::ProtobufIdent;
 use protobuf_parse::ProtobufRelativePath;
@@ -21,7 +22,6 @@ use crate::gen::rust_name::RustIdent;
 use crate::gen::rust_name::RustIdentWithPath;
 use crate::gen::rust_name::RustRelativePath;
 use crate::gen::strx::capitalize;
-use crate::gen::syntax::Syntax;
 
 pub(crate) struct RootScope<'a> {
     pub file_descriptors: &'a [FileDescriptor],
@@ -78,7 +78,7 @@ impl<'a> FileScope<'a> {
     }
 
     pub fn syntax(&self) -> Syntax {
-        Syntax::parse(self.file_descriptor.proto().get_syntax())
+        self.file_descriptor.syntax().expect("Unknown syntax")
     }
 
     pub fn to_scope(&self) -> Scope<'a> {

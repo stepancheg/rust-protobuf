@@ -1,5 +1,6 @@
 use protobuf::descriptor::*;
 use protobuf::reflect::ReflectValueRef;
+use protobuf::reflect::Syntax;
 use protobuf::rt;
 use protobuf::wire_format;
 use protobuf::wire_format::WireType;
@@ -28,7 +29,6 @@ use crate::gen::scope::MessageWithScope;
 use crate::gen::scope::RootScope;
 use crate::gen::scope::WithScope;
 use crate::gen::serde;
-use crate::gen::syntax::Syntax;
 
 mod accessor;
 
@@ -591,7 +591,7 @@ impl<'a> FieldGen<'a> {
 
         let syntax = field.message.scope.file_scope.syntax();
 
-        let field_may_have_custom_default_value = syntax == Syntax::PROTO2
+        let field_may_have_custom_default_value = syntax == Syntax::Proto2
             && field.field.get_proto().get_label() != field_descriptor_proto::Label::LABEL_REPEATED
             && field.field.get_proto().get_field_type()
                 != field_descriptor_proto::Type::TYPE_MESSAGE;
@@ -637,7 +637,7 @@ impl<'a> FieldGen<'a> {
         } else if let Some(oneof) = field.oneof() {
             FieldKind::Oneof(OneofField::parse(&oneof, &field, elem, root_scope))
         } else {
-            let flag = if field.message.scope.file_scope.syntax() == Syntax::PROTO3
+            let flag = if field.message.scope.file_scope.syntax() == Syntax::Proto3
                 && field.field.get_proto().get_field_type()
                     != field_descriptor_proto::Type::TYPE_MESSAGE
             {
@@ -959,7 +959,7 @@ impl<'a> FieldGen<'a> {
     pub fn reconstruct_def(&self) -> String {
         let prefix = match (self.proto_field.field.get_proto().get_label(), self.syntax) {
             (field_descriptor_proto::Label::LABEL_REPEATED, _) => "repeated ",
-            (_, Syntax::PROTO3) => "",
+            (_, Syntax::Proto3) => "",
             (field_descriptor_proto::Label::LABEL_OPTIONAL, _) => "optional ",
             (field_descriptor_proto::Label::LABEL_REQUIRED, _) => "required ",
         };
