@@ -103,6 +103,7 @@ mod test {
     use super::Chars;
 
     #[test]
+    #[cfg_attr(miri, ignore)] // bytes violates SB, see https://github.com/tokio-rs/bytes/issues/522
     fn test_display_and_debug() {
         let s = "test";
         let string: String = s.into();
