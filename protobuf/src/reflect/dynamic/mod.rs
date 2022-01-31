@@ -307,6 +307,46 @@ impl Message for DynamicMessage {
     }
 }
 
+/// Write singular field to output stream
+fn _singular_write_to(
+    proto_type: &Type,
+    field_number: u32,
+    v: &ReflectValueRef,
+    os: &mut CodedOutputStream,
+) -> ProtobufResult<()> {
+    match proto_type {
+        Type::TYPE_ENUM => {
+            if let ReflectValueRef::Enum(_e, enum_v) = v {
+                os.write_enum(field_number, *enum_v)
+            } else {
+                panic!("Protobuf type and Runtime type mismatch");
+            }
+        }
+        Type::TYPE_MESSAGE => {
+            let msg_v = v.to_message().unwrap();
+            os.write_message_dyn(field_number, &*msg_v)
+        }
+        Type::TYPE_GROUP => {
+            unimplemented!()
+        }
+        Type::TYPE_UINT32 => os.write_uint32(field_number, v.to_u32().unwrap()),
+        Type::TYPE_UINT64 => os.write_uint64(field_number, v.to_u64().unwrap()),
+        Type::TYPE_INT32 => os.write_int32(field_number, v.to_i32().unwrap()),
+        Type::TYPE_INT64 => os.write_int64(field_number, v.to_i64().unwrap()),
+        Type::TYPE_SINT32 => os.write_sint32(field_number, v.to_i32().unwrap()),
+        Type::TYPE_SINT64 => os.write_sint64(field_number, v.to_i64().unwrap()),
+        Type::TYPE_FIXED32 => os.write_fixed32(field_number, v.to_u32().unwrap()),
+        Type::TYPE_FIXED64 => os.write_fixed64(field_number, v.to_u64().unwrap()),
+        Type::TYPE_SFIXED64 => os.write_sfixed64(field_number, v.to_i64().unwrap()),
+        Type::TYPE_SFIXED32 => os.write_sfixed32(field_number, v.to_i32().unwrap()),
+        Type::TYPE_BOOL => os.write_bool(field_number, v.to_bool().unwrap()),
+        Type::TYPE_STRING => os.write_string(field_number, v.to_str().unwrap()),
+        Type::TYPE_BYTES => os.write_bytes(field_number, v.to_bytes().unwrap()),
+        Type::TYPE_FLOAT => os.write_float(field_number, v.to_f32().unwrap()),
+        Type::TYPE_DOUBLE => os.write_double(field_number, v.to_f64().unwrap()),
+    }
+}
+
 /// Compute singular field size
 fn compute_singular_size(proto_type: &Type, field_number: u32, v: &ReflectValueRef) -> u32 {
     match proto_type {
