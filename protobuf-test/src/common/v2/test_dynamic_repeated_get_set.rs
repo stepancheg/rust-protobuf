@@ -1,11 +1,13 @@
 use protobuf::reflect::FileDescriptor;
 use protobuf::reflect::ReflectValueBox;
 
-use super::test_dynamic_repeated_pb;
+use super::test_dynamic_repeated_get_set_pb;
 
 fn dynamic_file_descriptor() -> FileDescriptor {
     FileDescriptor::new_dynamic(
-        test_dynamic_repeated_pb::file_descriptor().proto().clone(),
+        test_dynamic_repeated_get_set_pb::file_descriptor()
+            .proto()
+            .clone(),
         Vec::new(),
     )
 }
@@ -35,5 +37,5 @@ fn generated_repeated() {
 
 #[test]
 fn dynamic_repeated() {
-    do_test_repeated(&test_dynamic_repeated_pb::file_descriptor());
+    do_test_repeated(&test_dynamic_repeated_get_set_pb::file_descriptor());
 }

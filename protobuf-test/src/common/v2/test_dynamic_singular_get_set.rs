@@ -2,11 +2,13 @@ use protobuf::reflect::FileDescriptor;
 use protobuf::reflect::ReflectValueBox;
 use protobuf::reflect::ReflectValueRef;
 
-use super::test_dynamic_singular_pb;
+use super::test_dynamic_singular_get_set_pb;
 
 fn dynamic_file_descriptor() -> FileDescriptor {
     FileDescriptor::new_dynamic(
-        test_dynamic_singular_pb::file_descriptor().proto().clone(),
+        test_dynamic_singular_get_set_pb::file_descriptor()
+            .proto()
+            .clone(),
         Vec::new(),
     )
 }
@@ -27,7 +29,7 @@ fn do_test_get_set(file_descriptor: &FileDescriptor) {
 
 #[test]
 fn generated_get_set() {
-    do_test_get_set(&test_dynamic_singular_pb::file_descriptor());
+    do_test_get_set(&test_dynamic_singular_get_set_pb::file_descriptor());
 }
 
 #[test]
@@ -48,7 +50,7 @@ fn do_test_set_panic_on_wrong_field_type(file_descriptor: &FileDescriptor) {
 #[test]
 #[should_panic]
 fn generated_set_panic_on_wrong_field_type() {
-    do_test_set_panic_on_wrong_field_type(&test_dynamic_singular_pb::file_descriptor());
+    do_test_set_panic_on_wrong_field_type(&test_dynamic_singular_get_set_pb::file_descriptor());
 }
 
 #[test]
