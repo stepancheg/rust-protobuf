@@ -166,11 +166,12 @@ fn job(channel: RustToolchain, os: Os, features: Features) -> Job {
     }
 }
 
-fn super_linter_job() -> Job {
+// https://github.com/megalinter/megalinter
+fn mega_linter_job() -> Job {
     let mut steps = Vec::new();
     steps.push(checkout_sources_depth(Some(0)));
     steps.push(
-        Step::uses("super-linter", "github/super-linter@v3")
+        Step::uses("mega-linter", "megalinter/megalinter@v5")
             .env("VALIDATE_ALL_CODEBASE", "false")
             .env("DEFAULT_BRANCH", "master")
             .env("GITHUB_TOKEN", "${{ secrets.GITHUB_TOKEN }}")
@@ -179,11 +180,17 @@ fn super_linter_job() -> Job {
             // Too many dull reports like how we should pluralise variable names
             .env("VALIDATE_PROTOBUF", "false")
             // Clippy reports too many false positives
-            .env("VALIDATE_RUST_CLIPPY", "false"),
+            .env("VALIDATE_RUST_CLIPPY", "false")
+            // We don't care about previous edition
+            .env("VALIDATE_RUST_2015", "false")
+            // Finds copy-paste in LICENSE files.
+            .env("VALIDATE_COPYPASTE", "false")
+            // Complains about protobuf" in yml files.
+            .env("VALIDATE_SPELL", "false"),
     );
     Job {
-        id: "super-linter".to_owned(),
-        name: "super-linter".to_owned(),
+        id: "mega-linter".to_owned(),
+        name: "mega-linter".to_owned(),
         runs_on: LINUX.ghwf,
         steps,
         ..Default::default()
@@ -231,7 +238,7 @@ fn jobs() -> Yaml {
 
     r.push(job(RustToolchain::Stable, WINDOWS, Features::Default));
 
-    r.push(super_linter_job());
+    r.push(mega_linter_job());
 
     r.push(rustfmt_job());
 
