@@ -5,10 +5,13 @@ use std::io::Write;
 
 use crate::actions::cargo_check;
 use crate::actions::cargo_doc;
+use crate::actions::cargo_miri_setup;
+use crate::actions::cargo_miri_test;
 use crate::actions::cargo_test;
 use crate::actions::checkout_sources;
 use crate::actions::checkout_sources_depth;
 use crate::actions::rust_install_toolchain;
+use crate::actions::rust_install_toolchain_with_components;
 use crate::actions::RustToolchain;
 use crate::ghwf::Env;
 use crate::ghwf::Job;
@@ -167,6 +170,33 @@ fn job(channel: RustToolchain, os: Os, features: Features) -> Job {
     }
 }
 
+fn miri_test_job() -> Job {
+    let mut steps = Vec::new();
+
+    steps.push(checkout_sources());
+    steps.push(rust_install_toolchain_with_components(
+        RustToolchain::Nightly,
+        &["miri"],
+    ));
+    steps.push(cargo_miri_setup("cargo-miri-setup"));
+    steps.push(cargo_miri_test("cargo-miri-test", "-p protobuf --lib"));
+
+    let id = "miri-test".to_owned();
+    let name = "Miri test".to_owned();
+    let env = vec![
+        ("RUST_BACKTRACE".to_owned(), "1".to_owned()),
+        ("RUST_TEST_THREADS".to_owned(), "1".to_owned()),
+    ];
+    Job {
+        id,
+        name,
+        runs_on: LINUX.ghwf.to_owned(),
+        steps,
+        env,
+        ..Job::default()
+    }
+}
+
 // https://github.com/megalinter/megalinter
 fn super_linter_job() -> Job {
     let mut steps = Vec::new();
@@ -233,6 +263,8 @@ fn jobs() -> Yaml {
     r.push(job(RustToolchain::Nightly, LINUX, Features::All));
 
     r.push(job(RustToolchain::Stable, WINDOWS, Features::Default));
+
+    r.push(miri_test_job());
 
     r.push(super_linter_job());
 

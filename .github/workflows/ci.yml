@@ -270,6 +270,32 @@ jobs:
             - name: Test all
               run: cargo test --all --all-targets
               shell: bash
+    miri-test:
+        name: Miri test
+        runs-on: ubuntu-latest
+        env:
+            RUST_BACKTRACE: 1
+            RUST_TEST_THREADS: 1
+        steps:
+            - name: Checkout sources
+              uses: actions/checkout@v2
+            - name: Install toolchain
+              uses: actions-rs/toolchain@v1
+              with:
+                  profile: minimal
+                  toolchain: nightly
+                  override: true
+                  components: miri
+            - name: cargo-miri-setup
+              uses: actions-rs/cargo@v1
+              with:
+                  command: miri
+                  args: setup
+            - name: cargo-miri-test
+              uses: actions-rs/cargo@v1
+              with:
+                  command: miri
+                  args: test -p protobuf --lib
     mega-linter:
         name: mega-linter
         runs-on: ubuntu-latest

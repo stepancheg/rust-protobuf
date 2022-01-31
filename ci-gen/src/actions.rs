@@ -35,16 +35,24 @@ impl fmt::Display for RustToolchain {
     }
 }
 
-pub fn rust_install_toolchain(channel: RustToolchain) -> Step {
+pub fn rust_install_toolchain_with_components(channel: RustToolchain, components: &[&str]) -> Step {
+    let mut params = vec![
+        ("profile", "minimal".to_owned()),
+        ("toolchain", format!("{}", channel)),
+        ("override", "true".to_owned()),
+    ];
+    if !components.is_empty() {
+        params.push(("components", components.join(", ")));
+    }
     Step::uses_with(
         "Install toolchain",
         "actions-rs/toolchain@v1",
-        Yaml::map(vec![
-            ("profile", "minimal"),
-            ("toolchain", &format!("{}", channel)),
-            ("override", "true"),
-        ]),
+        Yaml::map(params),
     )
+}
+
+pub fn rust_install_toolchain(channel: RustToolchain) -> Step {
+    rust_install_toolchain_with_components(channel, &[])
 }
 
 pub fn cargo(name: &str, command: &str, args: &str) -> Step {
@@ -57,6 +65,14 @@ pub fn cargo(name: &str, command: &str, args: &str) -> Step {
 
 pub fn cargo_test(name: &str, args: &str) -> Step {
     cargo(name, "test", args)
+}
+
+pub fn cargo_miri_setup(name: &str) -> Step {
+    cargo(name, "miri", "setup")
+}
+
+pub fn cargo_miri_test(name: &str, args: &str) -> Step {
+    cargo(name, "miri", &format!("test {}", args))
 }
 
 #[allow(dead_code)]
