@@ -38,7 +38,7 @@ impl<T> WithLoc<T> {
     }
 }
 
-/// Protobox syntax
+/// Protobuf syntax.
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub(crate) enum Syntax {
     /// Protobuf syntax [2](https://developers.google.com/protocol-buffers/docs/proto) (default)
