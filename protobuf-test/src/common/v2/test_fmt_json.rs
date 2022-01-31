@@ -1,6 +1,3 @@
-use std::f32;
-use std::f64;
-
 use protobuf::json;
 use protobuf::Message;
 use protobuf_test_common::*;
