@@ -59,7 +59,7 @@ impl<'a> ReflectValueRef<'a> {
     }
 
     /// Value is "non-zero"?
-    fn _is_non_zero(&self) -> bool {
+    pub(crate) fn is_non_zero(&self) -> bool {
         match self {
             ReflectValueRef::U32(v) => *v != 0,
             ReflectValueRef::U64(v) => *v != 0,

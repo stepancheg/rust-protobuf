@@ -1,4 +1,5 @@
 use crate::cached_size::CachedSize;
+use crate::descriptor::field_descriptor_proto::Type;
 use crate::message_dyn::MessageDyn;
 use crate::reflect::dynamic::map::DynamicMap;
 use crate::reflect::dynamic::optional::DynamicOptional;
@@ -14,7 +15,16 @@ use crate::reflect::ReflectMapRef;
 use crate::reflect::ReflectRepeatedMut;
 use crate::reflect::ReflectRepeatedRef;
 use crate::reflect::ReflectValueBox;
+use crate::reflect::ReflectValueRef;
 use crate::reflect::RuntimeFieldType;
+use crate::reflect::Syntax;
+use crate::rt::bytes_size;
+use crate::rt::compute_raw_varint32_size;
+use crate::rt::string_size;
+use crate::rt::tag_size;
+use crate::rt::value_size;
+use crate::rt::value_varint_zigzag_size;
+use crate::wire_format::WireType;
 use crate::Clear;
 use crate::CodedInputStream;
 use crate::CodedOutputStream;
@@ -233,7 +243,40 @@ impl Message for DynamicMessage {
     }
 
     fn compute_size(&self) -> u32 {
-        unimplemented!()
+        let is_proto3 = self.descriptor.file_descriptor().syntax() == Some(Syntax::Proto3);
+        let mut m_size = 0;
+        for field_desc in self.descriptor.fields() {
+            let field_number = field_desc.get_proto().get_number() as u32;
+            match field_desc.get_reflect(self) {
+                ReflectFieldRef::Optional(v) => {
+                    if let Some(v) = v {
+                        if !is_proto3 || v.is_non_zero() {
+                            m_size += compute_singular_size(
+                                &field_desc.get_proto().get_field_type(),
+                                field_number,
+                                &v,
+                            );
+                        }
+                    }
+                }
+                ReflectFieldRef::Repeated(vs) => {
+                    if !vs.is_empty() {
+                        // TODO: use packed when needed.
+                        for v in vs {
+                            m_size += compute_singular_size(
+                                &field_desc.get_proto().get_field_type(),
+                                field_number,
+                                &v,
+                            );
+                        }
+                    }
+                }
+                ReflectFieldRef::Map(_v) => {
+                    unimplemented!()
+                }
+            }
+        }
+        m_size
     }
 
     fn get_cached_size(&self) -> u32 {
@@ -260,5 +303,68 @@ impl Message for DynamicMessage {
         Self: Sized,
     {
         panic!("There's no default instance for dynamic message")
+    }
+}
+
+/// Compute singular field size
+fn compute_singular_size(proto_type: &Type, field_number: u32, v: &ReflectValueRef) -> u32 {
+    match proto_type {
+        Type::TYPE_ENUM => {
+            if let ReflectValueRef::Enum(_e, enum_v) = v {
+                value_size(field_number, *enum_v, WireType::WireTypeVarint)
+            } else {
+                panic!("Protobuf type and Runtime type mismatch");
+            }
+        }
+        Type::TYPE_MESSAGE => {
+            let msg_v = v.to_message().unwrap();
+            let len = msg_v.compute_size_dyn();
+            tag_size(field_number) + compute_raw_varint32_size(len) + len
+        }
+        Type::TYPE_GROUP => {
+            unimplemented!()
+        }
+        Type::TYPE_UINT32 => {
+            let typed_v = v.to_u32().unwrap();
+            value_size(field_number, typed_v, WireType::WireTypeVarint)
+        }
+        Type::TYPE_UINT64 => {
+            let typed_v = v.to_u64().unwrap();
+            value_size(field_number, typed_v, WireType::WireTypeVarint)
+        }
+        Type::TYPE_INT32 => {
+            let typed_v = v.to_i32().unwrap();
+            value_size(field_number, typed_v, WireType::WireTypeVarint)
+        }
+        Type::TYPE_INT64 => {
+            let typed_v = v.to_i64().unwrap();
+            value_size(field_number, typed_v, WireType::WireTypeVarint)
+        }
+        Type::TYPE_SINT32 => {
+            let typed_v = v.to_i32().unwrap();
+            value_varint_zigzag_size(field_number, typed_v)
+        }
+        Type::TYPE_SINT64 => {
+            let typed_v = v.to_i64().unwrap();
+            value_varint_zigzag_size(field_number, typed_v)
+        }
+        Type::TYPE_FIXED32 => tag_size(field_number) + 4,
+        Type::TYPE_FIXED64 => tag_size(field_number) + 8,
+        Type::TYPE_SFIXED32 => tag_size(field_number) + 4,
+        Type::TYPE_SFIXED64 => tag_size(field_number) + 8,
+        Type::TYPE_BOOL => {
+            let typed_v = v.to_bool().unwrap();
+            value_size(field_number, typed_v, WireType::WireTypeVarint)
+        }
+        Type::TYPE_STRING => {
+            let typed_v = v.to_str().unwrap();
+            string_size(field_number, typed_v)
+        }
+        Type::TYPE_BYTES => {
+            let typed_v = v.to_bytes().unwrap();
+            bytes_size(field_number, typed_v)
+        }
+        Type::TYPE_FLOAT => tag_size(field_number) + 4,
+        Type::TYPE_DOUBLE => tag_size(field_number) + 8,
     }
 }
