@@ -316,11 +316,8 @@ fn _singular_write_to(
 ) -> ProtobufResult<()> {
     match proto_type {
         Type::TYPE_ENUM => {
-            if let ReflectValueRef::Enum(_e, enum_v) = v {
-                os.write_enum(field_number, *enum_v)
-            } else {
-                panic!("Protobuf type and Runtime type mismatch");
-            }
+            let enum_v = v.to_enum_value().unwrap();
+            os.write_enum(field_number, enum_v)
         }
         Type::TYPE_MESSAGE => {
             let msg_v = v.to_message().unwrap();
@@ -351,11 +348,8 @@ fn _singular_write_to(
 fn compute_singular_size(proto_type: &Type, field_number: u32, v: &ReflectValueRef) -> u32 {
     match proto_type {
         Type::TYPE_ENUM => {
-            if let ReflectValueRef::Enum(_e, enum_v) = v {
-                value_size(field_number, *enum_v, WireType::WireTypeVarint)
-            } else {
-                panic!("Protobuf type and Runtime type mismatch");
-            }
+            let enum_v = v.to_enum_value().unwrap();
+            value_size(field_number, enum_v, WireType::WireTypeVarint)
         }
         Type::TYPE_MESSAGE => {
             let msg_v = v.to_message().unwrap();

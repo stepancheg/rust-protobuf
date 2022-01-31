@@ -155,6 +155,14 @@ impl<'a> ReflectValueRef<'a> {
         }
     }
 
+    /// Take enum value.
+    pub fn to_enum_value(&self) -> Option<i32> {
+        match *self {
+            ReflectValueRef::Enum(_, v) => Some(v),
+            _ => None,
+        }
+    }
+
     /// Take message value.
     pub fn to_message(&self) -> Option<MessageRef<'a>> {
         match self {
