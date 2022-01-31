@@ -30,6 +30,7 @@ use crate::reflect::types::ProtobufTypeSint32;
 use crate::reflect::types::ProtobufTypeSint64;
 use crate::reflect::types::ProtobufTypeUint32;
 use crate::reflect::types::ProtobufTypeUint64;
+use crate::reflect::MessageDescriptor;
 use crate::reflect::ProtobufValue;
 use crate::unknown::UnknownValue;
 use crate::wire_format;
@@ -630,6 +631,17 @@ impl<'a> CodedInputStream<'a> {
         let mut r: M = Message::new();
         self.merge_message(&mut r)?;
         r.check_initialized()?;
+        Ok(r)
+    }
+
+    /// Read message.
+    pub fn read_message_dyn(
+        &mut self,
+        descriptor: &MessageDescriptor,
+    ) -> ProtobufResult<Box<dyn MessageDyn>> {
+        let mut r = descriptor.new_instance();
+        self.merge_message_dyn(&mut *r)?;
+        r.check_initialized_dyn()?;
         Ok(r)
     }
 }
