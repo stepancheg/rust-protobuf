@@ -828,6 +828,7 @@ mod test {
     }
 
     #[test]
+    #[cfg_attr(miri, ignore)] // Miri is too slow for this test.
     fn test_input_stream_read_raw_bytes_into_huge() {
         let mut v = Vec::new();
         for i in 0..READ_RAW_BYTES_MAX_ALLOC + 1000 {

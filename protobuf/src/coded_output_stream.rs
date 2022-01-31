@@ -629,6 +629,7 @@ mod test {
     }
 
     #[test]
+    #[cfg_attr(miri, ignore)] // Miri is too slow for this test.
     fn test_output_stream_write_raw_bytes() {
         test_write("00 ab", |os| os.write_raw_bytes(&[0x00, 0xab]));
 

@@ -236,6 +236,7 @@ mod test {
     use crate::descriptor;
 
     #[test]
+    #[cfg_attr(miri, ignore)] // TODO: figure out why this test hangs on Miri.
     fn eq() {
         assert!(descriptor::file_descriptor() == descriptor::file_descriptor().clone());
     }

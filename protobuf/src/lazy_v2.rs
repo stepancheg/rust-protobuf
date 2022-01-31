@@ -45,9 +45,9 @@ mod test {
 
     #[test]
     fn many_threads_calling_get() {
-        const N_THREADS: usize = 32;
-        const N_ITERS_IN_THREAD: usize = 32;
-        const N_ITERS: usize = 16;
+        const N_THREADS: usize = if cfg!(miri) { 4 } else { 32 };
+        const N_ITERS_IN_THREAD: usize = if cfg!(miri) { 4 } else { 32 };
+        const N_ITERS: usize = if cfg!(miri) { 4 } else { 16 };
 
         static mut LAZY: LazyV2<String> = LazyV2::INIT;
         static CALL_COUNT: AtomicIsize = AtomicIsize::new(0);
