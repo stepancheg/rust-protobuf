@@ -285,8 +285,20 @@ impl Message for DynamicMessage {
                     continue;
                 }
             };
-            let _ = (field_desc, wire_type);
-            unimplemented!()
+            let _ = wire_type;
+            match field_desc.runtime_field_type() {
+                RuntimeFieldType::Singular(rtb) => {
+                    let _ = rtb;
+                    unimplemented!()
+                }
+                RuntimeFieldType::Repeated(rtb) => {
+                    let _ = rtb;
+                    unimplemented!()
+                }
+                RuntimeFieldType::Map(_, _) => {
+                    unimplemented!()
+                }
+            }
         }
         Ok(())
     }
