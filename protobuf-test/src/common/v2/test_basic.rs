@@ -121,7 +121,7 @@ fn test_types_singular() {
     message.set_string_field("thirty two".to_string());
     message.set_bytes_field([33u8, 34].to_vec());
     message.set_enum_field(TestEnumDescriptor::BLUE);
-    test_serialize_deserialize_no_hex(&message);
+    test_serialize_deserialize_no_hex_with_dynamic(&message);
 }
 
 #[test]

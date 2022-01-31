@@ -171,15 +171,22 @@ impl FileDescriptor {
         proto: FileDescriptorProto,
         dependencies: Vec<FileDescriptor>,
     ) -> FileDescriptor {
+        // TODO: make it return `Result` on unsatisfied dependencies.
         // remove undeclared dependencies
-        let dependencies: HashMap<_, _> = dependencies
+        let dependencies: HashMap<_, &FileDescriptor> = dependencies
             .iter()
             .map(|d| (d.proto().get_name(), d))
             .collect();
-        let dependencies: Vec<_> = proto
+        let dependencies: Vec<FileDescriptor> = proto
             .dependency
             .iter()
-            .map(|d| dependencies[d.as_str()].clone())
+            .map(|d| {
+                // TODO: do not panic
+                (*dependencies
+                    .get(d.as_str())
+                    .unwrap_or_else(|| panic!("dependency not found: {}", d)))
+                .clone()
+            })
             .collect();
 
         FileDescriptor {
@@ -203,7 +210,8 @@ impl FileDescriptor {
         }
     }
 
-    fn deps(&self) -> &[FileDescriptor] {
+    /// Direct dependencies of this file.
+    pub fn deps(&self) -> &[FileDescriptor] {
         match &self.imp {
             FileDescriptorImpl::Generated(g) => &g.dependencies,
             FileDescriptorImpl::Dynamic(d) => &d.dependencies,

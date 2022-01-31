@@ -13,6 +13,12 @@ pub mod hex;
 mod serialize_deserialize_generated;
 pub use serialize_deserialize_generated::*;
 
+mod serialize_deserialize_dynamic;
+pub use serialize_deserialize_dynamic::*;
+
+mod serialize_deserialize_both;
+pub use serialize_deserialize_both::*;
+
 mod text_format_tests;
 pub use text_format_tests::*;
 
