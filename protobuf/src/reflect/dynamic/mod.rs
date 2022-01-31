@@ -64,6 +64,8 @@ impl DynamicFieldValue {
 #[derive(Debug, Clone)]
 pub(crate) struct DynamicMessage {
     pub(crate) descriptor: MessageDescriptor,
+    /// Fields by index in the description.
+    /// This field is lazy-init: it is empty when created.
     fields: Box<[DynamicFieldValue]>,
     unknown_fields: UnknownFields,
     cached_size: CachedSize,
