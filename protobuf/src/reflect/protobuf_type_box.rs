@@ -71,10 +71,10 @@ impl ProtobufTypeBox {
                 _ => unreachable!(),
             },
             Type::TYPE_GROUP => return Err(ProtobufError::GroupIsNotImplemented),
-            Type::TYPE_MESSAGE => {
-                // TODO
-                unimplemented!()
-            }
+            Type::TYPE_MESSAGE => match &self.runtime {
+                RuntimeTypeBox::Message(m) => ReflectValueBox::Message(is.read_message_dyn(m)?),
+                _ => unreachable!(),
+            },
         })
     }
 }
