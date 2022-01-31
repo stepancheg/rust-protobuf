@@ -10,41 +10,32 @@ pub type ProtobufResult<T> = Result<T, ProtobufError>;
 
 /// Enum values added here for diagnostic purposes.
 /// Users should not depend on specific values.
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum WireError {
+    #[error("Unexpected EOF")]
     UnexpectedEof,
+    #[error("Unexpected wire type")]
     UnexpectedWireType(WireType),
+    #[error("Incorrect tag")]
     IncorrectTag(u32),
     // unused since https://github.com/stepancheg/rust-protobuf/issues/318
+    #[error("Incomplete map")]
     IncompleteMap,
+    #[error("Incorrect varint")]
     IncorrectVarint,
+    #[error("Invalid UTF-8 sequence")]
     Utf8Error,
+    #[error("Invalid enum value: {}", .0)]
     InvalidEnumValue(i32),
+    #[error("Over recursion limit")]
     OverRecursionLimit,
+    #[error("Truncated message")]
     TruncatedMessage,
     // not really possible
+    #[error("Limit overflow")]
     LimitOverflow,
+    #[error("New limit must not be greater than current limit")]
     LimitIncrease,
-}
-
-impl fmt::Display for WireError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            WireError::Utf8Error => write!(f, "invalid UTF-8 sequence"),
-            WireError::UnexpectedWireType(..) => write!(f, "unexpected wire type"),
-            WireError::InvalidEnumValue(..) => write!(f, "invalid enum value"),
-            WireError::IncorrectTag(..) => write!(f, "incorrect tag"),
-            WireError::IncorrectVarint => write!(f, "incorrect varint"),
-            WireError::IncompleteMap => write!(f, "incomplete map"),
-            WireError::UnexpectedEof => write!(f, "unexpected EOF"),
-            WireError::OverRecursionLimit => write!(f, "over recursion limit"),
-            WireError::TruncatedMessage => write!(f, "truncated message"),
-            WireError::LimitOverflow => write!(f, "limit overflow"),
-            WireError::LimitIncrease => {
-                write!(f, "new limit must be not greater than current limit")
-            }
-        }
-    }
 }
 
 /// Generic protobuf error
