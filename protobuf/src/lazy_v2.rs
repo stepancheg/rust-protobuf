@@ -33,6 +33,17 @@ impl<T: Sync> LazyV2<T> {
     }
 }
 
+impl<T: Sync> Drop for LazyV2<T> {
+    fn drop(&mut self) {
+        let ptr = self.ptr.load(Ordering::Relaxed);
+        if !ptr.is_null() {
+            unsafe {
+                Box::from_raw(ptr);
+            }
+        }
+    }
+}
+
 #[cfg(test)]
 mod test {
     use std::sync::atomic::AtomicIsize;
