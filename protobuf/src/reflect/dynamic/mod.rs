@@ -275,8 +275,13 @@ impl Message for DynamicMessage {
         true
     }
 
-    fn merge_from(&mut self, _is: &mut CodedInputStream) -> ProtobufResult<()> {
-        unimplemented!()
+    fn merge_from(&mut self, is: &mut CodedInputStream) -> ProtobufResult<()> {
+        while !is.eof()? {
+            let (field, wire_type) = is.read_tag_unpack()?;
+            let _ = (field, wire_type);
+            unimplemented!()
+        }
+        Ok(())
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut CodedOutputStream) -> ProtobufResult<()> {
