@@ -9,6 +9,7 @@ mod find_message_or_enum;
 mod map;
 pub(crate) mod message;
 mod oneof;
+mod protobuf_type_box;
 mod repeated;
 mod runtime_type_box;
 mod type_dynamic;

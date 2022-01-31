@@ -5,6 +5,7 @@ use crate::reflect::dynamic::map::DynamicMap;
 use crate::reflect::dynamic::optional::DynamicOptional;
 use crate::reflect::dynamic::repeated::DynamicRepeated;
 use crate::reflect::map::ReflectMap;
+use crate::reflect::protobuf_type_box::ProtobufTypeBox;
 use crate::reflect::repeated::ReflectRepeated;
 use crate::reflect::value::value_ref::ReflectValueMut;
 use crate::reflect::FieldDescriptor;
@@ -288,11 +289,12 @@ impl Message for DynamicMessage {
             let _ = wire_type;
             match field_desc.runtime_field_type() {
                 RuntimeFieldType::Singular(rtb) => {
-                    let _ = rtb;
-                    unimplemented!()
+                    let pt = ProtobufTypeBox::new(rtb, field_desc.get_proto().get_field_type())?;
+                    let value = pt.read(is, wire_type)?;
+                    self.set_field(&field_desc, value);
                 }
                 RuntimeFieldType::Repeated(rtb) => {
-                    let _ = rtb;
+                    let _pt = ProtobufTypeBox::new(rtb, field_desc.get_proto().get_field_type())?;
                     unimplemented!()
                 }
                 RuntimeFieldType::Map(_, _) => {

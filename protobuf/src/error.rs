@@ -51,6 +51,12 @@ pub enum ProtobufError {
     /// Not all required fields of message set.
     #[error("Message `{}` is missing required fields", .0)]
     MessageNotInitialized(String),
+    /// Protobuf type and runtime types mismatch.
+    #[error("Protobuf type and runtime types are not compatible")]
+    IncompatibleProtobufTypeAndRuntimeType,
+    /// Group field type not implemented.
+    #[error("Group field is not supported")]
+    GroupIsNotImplemented,
 }
 
 impl From<ProtobufError> for io::Error {

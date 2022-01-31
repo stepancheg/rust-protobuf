@@ -343,9 +343,13 @@ impl<'a> CodedInputStream<'a> {
         self.read_raw_varint32().map(|v| v != 0)
     }
 
+    pub(crate) fn read_enum_value(&mut self) -> ProtobufResult<i32> {
+        self.read_int32()
+    }
+
     /// Read `enum` as `ProtobufEnum`
     pub fn read_enum<E: ProtobufEnum>(&mut self) -> ProtobufResult<E> {
-        let i = self.read_int32()?;
+        let i = self.read_enum_value()?;
         match ProtobufEnum::from_i32(i) {
             Some(e) => Ok(e),
             None => Err(ProtobufError::WireError(WireError::InvalidEnumValue(i))),
