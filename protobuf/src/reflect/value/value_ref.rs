@@ -75,6 +75,14 @@ impl<'a> ReflectValueRef<'a> {
         }
     }
 
+    pub(crate) fn is_initialized(&self) -> bool {
+        if let ReflectValueRef::Message(m) = self {
+            m.is_initialized_dyn()
+        } else {
+            true
+        }
+    }
+
     /// Take `i32` value.
     pub fn to_i32(&self) -> Option<i32> {
         match *self {

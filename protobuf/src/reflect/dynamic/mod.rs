@@ -188,7 +188,40 @@ impl Message for DynamicMessage {
     }
 
     fn is_initialized(&self) -> bool {
-        unimplemented!()
+        // TODO: this check can be much faster for proto3 without contained proto2 messages.
+        for f in self.descriptor.fields() {
+            let fv = self.get_reflect(&f);
+            match fv {
+                ReflectFieldRef::Optional(s) => {
+                    match s {
+                        None => if f.is_required() {
+                            return false;
+                        }
+                        Some(v) => {
+                            if !v.is_initialized() {
+                                return false;
+                            }
+                        }
+                    }
+                }
+                ReflectFieldRef::Repeated(r) => {
+                    for v in &r {
+                        if !v.is_initialized() {
+                            return false;
+                        }
+                    }
+                },
+                ReflectFieldRef::Map(m) => {
+                    for (_k, v) in &m {
+                        // Keys cannot be messages, so only check values.
+                        if !v.is_initialized() {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        true
     }
 
     fn merge_from(&mut self, _is: &mut CodedInputStream) -> ProtobufResult<()> {

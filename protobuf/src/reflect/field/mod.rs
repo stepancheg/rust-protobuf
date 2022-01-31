@@ -146,6 +146,11 @@ impl FieldDescriptor {
         }
     }
 
+    /// Is this field required.
+    pub fn is_required(&self) -> bool {
+        self.get_proto().get_label() == field_descriptor_proto::Label::LABEL_REQUIRED
+    }
+
     /// If this field repeated or map?
     pub fn is_repeated_or_map(&self) -> bool {
         self.get_proto().get_label() == field_descriptor_proto::Label::LABEL_REPEATED
