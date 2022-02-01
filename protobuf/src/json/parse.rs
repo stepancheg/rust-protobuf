@@ -1,6 +1,5 @@
 use std::f32;
 use std::f64;
-use std::fmt;
 use std::num::ParseFloatError;
 use std::num::ParseIntError;
 
@@ -46,66 +45,46 @@ use crate::well_known_types::UInt32Value;
 use crate::well_known_types::UInt64Value;
 use crate::well_known_types::Value;
 
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 enum ParseErrorWithoutLocInner {
-    TokenizerError(TokenizerError),
+    #[error(transparent)]
+    TokenizerError(#[from] TokenizerError),
+    #[error("Unknown field name: `{}`", .0)]
     UnknownFieldName(String),
+    #[error("Unknown enum variant name: `{}`", .0)]
     UnknownEnumVariantName(String),
+    #[error("Unknown enum variant number: {}", .0)]
     UnknownEnumVariantNumber(i32),
-    FromBase64Error(FromBase64Error),
-    IncorrectStrLit(LexerError),
+    #[error(transparent)]
+    FromBase64Error(#[from] FromBase64Error),
+    #[error(transparent)]
+    IncorrectStrLit(#[from] LexerError),
+    #[error("Incorrect duration")]
     IncorrectDuration,
-    Rfc3339(rfc_3339::Rfc3339ParseError),
-    ParseIntError(ParseIntError),
-    ParseFloatError(ParseFloatError),
+    #[error(transparent)]
+    Rfc3339(#[from] rfc_3339::Rfc3339ParseError),
+    #[error(transparent)]
+    ParseIntError(#[from] ParseIntError),
+    #[error(transparent)]
+    ParseFloatError(#[from] ParseFloatError),
+    #[error("Expecting bool")]
     ExpectingBool,
+    #[error("Expecting string or integer")]
     ExpectingStrOrInt,
+    #[error("Expecting number")]
     ExpectingNumber,
+    #[error("Unexpected token")]
     UnexpectedToken,
+    #[error("Any parsing is not implemented")]
     AnyParsingIsNotImplemented,
+    #[error("Message not initialized")]
     MessageNotInitialized,
 }
 
 /// JSON parse error.
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
+#[error(transparent)]
 struct ParseErrorWithoutLoc(ParseErrorWithoutLocInner);
-
-impl fmt::Display for ParseErrorWithoutLoc {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match &self.0 {
-            ParseErrorWithoutLocInner::TokenizerError(e) => write!(f, "{}", e),
-            ParseErrorWithoutLocInner::UnknownFieldName(n) => {
-                write!(f, "unknown field name: {}", n)
-            }
-            ParseErrorWithoutLocInner::UnknownEnumVariantName(n) => {
-                write!(f, "unknown enum variant name: {}", n)
-            }
-            ParseErrorWithoutLocInner::UnknownEnumVariantNumber(n) => {
-                write!(f, "unknown enum value: {}", n)
-            }
-            ParseErrorWithoutLocInner::FromBase64Error(e) => write!(f, "{}", e),
-            ParseErrorWithoutLocInner::IncorrectStrLit(e) => write!(f, "{}", e),
-            ParseErrorWithoutLocInner::IncorrectDuration => write!(f, "incorrect duration"),
-            ParseErrorWithoutLocInner::Rfc3339(e) => write!(f, "RFC3339 parse error: {}", e),
-            ParseErrorWithoutLocInner::ParseIntError(e) => write!(f, "{}", e),
-            ParseErrorWithoutLocInner::ParseFloatError(e) => write!(f, "{}", e),
-            ParseErrorWithoutLocInner::ExpectingBool => write!(f, "expecting bool"),
-            ParseErrorWithoutLocInner::ExpectingStrOrInt => {
-                write!(f, "expecting string or integer")
-            }
-            ParseErrorWithoutLocInner::ExpectingNumber => write!(f, "expecting number"),
-            ParseErrorWithoutLocInner::UnexpectedToken => write!(f, "unexpected token"),
-            ParseErrorWithoutLocInner::AnyParsingIsNotImplemented => {
-                write!(f, "Any parsing is not implemented")
-            }
-            ParseErrorWithoutLocInner::MessageNotInitialized => {
-                write!(f, "Message not initialized")
-            }
-        }
-    }
-}
-
-impl std::error::Error for ParseErrorWithoutLoc {}
 
 impl From<TokenizerError> for ParseErrorWithoutLoc {
     fn from(e: TokenizerError) -> Self {
