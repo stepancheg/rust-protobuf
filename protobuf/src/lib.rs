@@ -1,4 +1,4 @@
-//! Library to read and write protocol buffers data.
+//! # Library to read and write protocol buffers data
 //!
 //! # Version 2 is stable
 //!
@@ -12,14 +12,82 @@
 //!
 //! [Tracking issue for version 3](https://github.com/stepancheg/rust-protobuf/issues/518).
 //!
+//! # How to generate rust code
+//!
+//! There are several ways to generate rust code from `.proto` files
+//!
+//! ## Invoke `protoc` programmatically with protoc-rust crate (recommended)
+//!
+//! Have a look at readme in [protoc-rust crate](https://docs.rs/protoc-rust/=2).
+//!
+//! ## Use pure rust protobuf parser and code generator
+//!
+//! Readme should be in
+//! [protobuf-codegen-pure crate](https://docs.rs/protobuf-codegen-pure/=2).
+//!
+//! ## Use protoc-gen-rust plugin
+//!
+//! Readme is [here](https://docs.rs/protobuf-codegen/=2).
+//!
+//! ## Generated code
+//!
+//! Have a look at generated files (for current development version),
+//! used internally in rust-protobuf:
+//!
+//! * [descriptor.rs](https://github.com/stepancheg/rust-protobuf/blob/master/protobuf/src/descriptor.rs)
+//!   for [descriptor.proto](https://github.com/stepancheg/rust-protobuf/blob/master/proto/google/protobuf/descriptor.proto)
+//!   (that is part of Google protobuf)
+//!
+//! # Copy on write
+//!
+//! Rust-protobuf can be used with [bytes crate](https://github.com/tokio-rs/bytes).
+//!
+//! To enable `Bytes` you need to:
+//!
+//! 1. Enable `with-bytes` feature in rust-protobuf:
+//!
+//! ```
+//! [dependencies]
+//! protobuf = { version = "~2.0", features = ["with-bytes"] }
+//! ```
+//!
+//! 2. Enable bytes option
+//!
+//! with `Customize` when codegen is invoked programmatically:
+//!
+//! ```ignore
+//! protoc_rust::run(protoc_rust::Args {
+//!     ...
+//!     customize: Customize {
+//!         carllerche_bytes_for_bytes: Some(true),
+//!         carllerche_bytes_for_string: Some(true),
+//!         ..Default::default()
+//!     },
+//! });
+//! ```
+//!
+//! or in `.proto` file:
+//!
+//! ```ignore
+//! import "rustproto.proto";
+//!
+//! option (rustproto.carllerche_bytes_for_bytes_all) = true;
+//! option (rustproto.carllerche_bytes_for_string_all) = true;
+//! ```
+//!
+//! With these options enabled, fields of type `bytes` or `string` are
+//! generated as `Bytes` or `Chars` respectively. When `CodedInputStream` is constructed
+//! from `Bytes` object, fields of these types get subslices of original `Bytes` object,
+//! instead of being allocated on heap.
+//!
 //! # Accompanying crates
 //!
-//! * [`protoc-rust`](https://docs.rs/protoc-rust)
-//!   and [`protobuf-codegen-pure`](https://docs.rs/protobuf-codegen-pure)
+//! * [`protoc-rust`](https://docs.rs/protoc-rust/=2)
+//!   and [`protobuf-codegen-pure`](https://docs.rs/protobuf-codegen-pure/=2)
 //!   can be used to rust code from `.proto` crates.
-//! * [`protobuf-codegen`](https://docs.rs/protobuf-codegen=2) for `protoc-gen-rust` protoc plugin.
-//! * [`protoc`](https://docs.rs/protoc) crate can be used to invoke `protoc` programmatically.
-//! * [`protoc-bin-vendored`](https://docs.rs/protoc-bin-vendored) contains `protoc` command
+//! * [`protobuf-codegen`](https://docs.rs/protobuf-codegen/=2) for `protoc-gen-rust` protoc plugin.
+//! * [`protoc`](https://docs.rs/protoc/=2) crate can be used to invoke `protoc` programmatically.
+//! * [`protoc-bin-vendored`](https://docs.rs/protoc-bin-vendored/=2) contains `protoc` command
 //!   packed into the crate.
 
 #![deny(missing_docs)]
