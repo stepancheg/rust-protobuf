@@ -18,7 +18,7 @@ enum WhichParser {
 
 impl Default for WhichParser {
     fn default() -> WhichParser {
-        WhichParser::Protoc
+        WhichParser::Pure
     }
 }
 
