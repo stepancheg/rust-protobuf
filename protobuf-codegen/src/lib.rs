@@ -1,4 +1,8 @@
-//! This crate implement protobuf codegen.
+//! # Protobuf code generator implementation for `protobuf` crate
+//!
+//! # This crate is not meant to be used directly.
+//!
+//! This crate implements protobuf codegen.
 //!
 //! This crate:
 //! * provides `protoc-gen-rust` plugin for `protoc` command
@@ -8,9 +12,18 @@
 //! (except for `protoc-gen-rust` binary).
 //!
 //! Code can be generated with either:
-//! * `protoc-gen-rust` binary or
-//! * `protoc-rust` crate (codegen which depends on `protoc` binary for parsing)
-//! * `protobuf-codegen-pure` crate
+//! * `protoc-gen-rust` plugin for `protoc` or
+//! * [`protoc-rust`](https://docs.rs/protoc) crate
+//!   (code generator which depends on `protoc` binary for parsing of `.proto` files)
+//! * [`protobuf-codegen-pure`](https://docs.rs/protobuf-codegen-pure) crate,
+//!   similar API to `protoc-rust`, but uses pure rust parser of `.proto` files.
+//!
+//! # Version 2
+//!
+//! This is documentation for version 2 of the crate.
+//!
+//! Version 3 of the crate (currently in development) encapsulates both `protoc` and pure
+//! codegens in this crate.
 
 #![deny(rustdoc::broken_intra_doc_links)]
 #![deny(missing_docs)]
