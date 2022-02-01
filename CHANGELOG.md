@@ -11,6 +11,7 @@ Stable versions are 2.xx still supported.
   (pure or with `protoc` is done using `protobuf-codegen` crate).
 - `LazyV2` (internal utility for rust-protobuf) now implements `Drop`.
 - Default `.proto` parser in `protobuf-codegen` is now pure-rust (not using `protoc` command)
+- Dynamic messages mostly work
 
 ## [3.0.0-alpha.2] - 2021-11-01
 
