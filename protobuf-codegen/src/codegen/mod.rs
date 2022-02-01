@@ -140,7 +140,7 @@ impl Codegen {
 
     /// Set options to customize code generation
     pub fn customize(&mut self, customize: Customize) -> &mut Self {
-        self.customize = customize;
+        self.customize.update_with(&customize);
         self
     }
 
