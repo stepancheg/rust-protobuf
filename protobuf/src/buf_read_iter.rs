@@ -435,6 +435,7 @@ mod test_bytes {
     }
 
     #[test]
+    #[cfg_attr(miri, ignore)] // bytes violates SB, see https://github.com/tokio-rs/bytes/issues/522
     fn read_exact_bytes_from_slice() {
         let bytes = make_long_string(100);
         let mut bri = BufReadIter::from_byte_slice(&bytes[..]);
@@ -443,7 +444,7 @@ mod test_bytes {
     }
 
     #[test]
-    #[cfg_attr(miri, ignore)] // TODO: fix this
+    #[cfg_attr(miri, ignore)] // bytes violates SB, see https://github.com/tokio-rs/bytes/issues/522
     fn read_exact_bytes_from_bytes() {
         let bytes = Bytes::from(make_long_string(100));
         let mut bri = BufReadIter::from_bytes(&bytes);
