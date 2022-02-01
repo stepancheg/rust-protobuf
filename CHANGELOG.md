@@ -50,6 +50,12 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.26] - Unreleased
 
+## [2.26.1] - 2022-02-01
+
+- Documentation
+
+## [2.26.0] - 2020-01-31
+
 - Min supported Rust version is 1.52.1.
 - [Fix `SingularField::unwrap_or_default`](https://github.com/stepancheg/rust-protobuf/issues/572)
 - [`serde_rename_all` codegen option](https://github.com/stepancheg/rust-protobuf/pull/586)
