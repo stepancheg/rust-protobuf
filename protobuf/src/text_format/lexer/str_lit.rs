@@ -5,33 +5,18 @@ use super::lexer_impl::Lexer;
 use super::lexer_impl::LexerError;
 use crate::text_format::lexer::ParserLanguage;
 
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum StrLitDecodeError {
-    FromUtf8Error(FromUtf8Error),
+    #[error(transparent)]
+    FromUtf8Error(#[from] FromUtf8Error),
     // TODO: be more specific
+    #[error("String literal decode error")]
     OtherError,
 }
-
-impl fmt::Display for StrLitDecodeError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            StrLitDecodeError::FromUtf8Error(e) => write!(f, "{}", e),
-            StrLitDecodeError::OtherError => write!(f, "String literal decode error"),
-        }
-    }
-}
-
-impl std::error::Error for StrLitDecodeError {}
 
 impl From<LexerError> for StrLitDecodeError {
     fn from(_: LexerError) -> Self {
         StrLitDecodeError::OtherError
-    }
-}
-
-impl From<FromUtf8Error> for StrLitDecodeError {
-    fn from(e: FromUtf8Error) -> Self {
-        StrLitDecodeError::FromUtf8Error(e)
     }
 }
 
