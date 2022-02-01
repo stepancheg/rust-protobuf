@@ -14,9 +14,10 @@
 //!
 //! # Accompanying crates
 //!
-//! * [`protobuf-codegen`](https://docs.rs/protobuf-codegen)
+//! * [`protoc-rust`](https://docs.rs/protoc-rust)
 //!   and [`protobuf-codegen-pure`](https://docs.rs/protobuf-codegen-pure)
 //!   can be used to rust code from `.proto` crates.
+//! * [`protobuf-codegen`](https://docs.rs/protobuf-codegen=2) for `protoc-gen-rust` protoc plugin.
 //! * [`protoc`](https://docs.rs/protoc) crate can be used to invoke `protoc` programmatically.
 //! * [`protoc-bin-vendored`](https://docs.rs/protoc-bin-vendored) contains `protoc` command
 //!   packed into the crate.
