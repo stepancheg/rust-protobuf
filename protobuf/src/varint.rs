@@ -1,16 +1,18 @@
+use std::mem::MaybeUninit;
+
 /// Encode u64 as varint.
 /// Panics if buffer length is less than 10.
 #[inline]
-pub fn encode_varint64(mut value: u64, buf: &mut [u8]) -> usize {
+pub fn encode_varint64(mut value: u64, buf: &mut [MaybeUninit<u8>]) -> usize {
     assert!(buf.len() >= 10);
 
-    fn iter(value: &mut u64, byte: &mut u8) -> bool {
+    fn iter(value: &mut u64, byte: &mut MaybeUninit<u8>) -> bool {
         if (*value & !0x7F) > 0 {
-            *byte = ((*value & 0x7F) | 0x80) as u8;
+            byte.write(((*value & 0x7F) | 0x80) as u8);
             *value >>= 7;
             true
         } else {
-            *byte = *value as u8;
+            byte.write(*value as u8);
             false
         }
     }
@@ -45,23 +47,23 @@ pub fn encode_varint64(mut value: u64, buf: &mut [u8]) -> usize {
     if !iter(&mut value, &mut buf[8]) {
         return 9;
     };
-    buf[9] = value as u8;
+    buf[9].write(value as u8);
     10
 }
 
 /// Encode u32 value as varint.
 /// Panics if buffer length is less than 5.
 #[inline]
-pub fn encode_varint32(mut value: u32, buf: &mut [u8]) -> usize {
+pub fn encode_varint32(mut value: u32, buf: &mut [MaybeUninit<u8>]) -> usize {
     assert!(buf.len() >= 5);
 
-    fn iter(value: &mut u32, byte: &mut u8) -> bool {
+    fn iter(value: &mut u32, byte: &mut MaybeUninit<u8>) -> bool {
         if (*value & !0x7F) > 0 {
-            *byte = ((*value & 0x7F) | 0x80) as u8;
+            byte.write(((*value & 0x7F) | 0x80) as u8);
             *value >>= 7;
             true
         } else {
-            *byte = *value as u8;
+            byte.write(*value as u8);
             false
         }
     }
@@ -81,6 +83,6 @@ pub fn encode_varint32(mut value: u32, buf: &mut [u8]) -> usize {
     if !iter(&mut value, &mut buf[3]) {
         return 4;
     };
-    buf[4] = value as u8;
+    buf[4].write(value as u8);
     5
 }
