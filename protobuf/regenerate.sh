@@ -25,7 +25,7 @@ where_am_i=$(cd ..; pwd)
 rm -rf tmp-generated
 mkdir tmp-generated
 
-case `uname` in
+case $(uname) in
     Linux)
         exe_suffix=""
     ;;

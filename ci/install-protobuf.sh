@@ -10,7 +10,7 @@ die() {
 test -n "$PROTOBUF_VERSION" || die "PROTOBUF_VERSION env var is undefined"
 
 path_tr() {
-    case `uname` in
+    case $(uname) in
         MINGW64*)
             cygpath --mixed "$1"
         ;;
@@ -47,7 +47,7 @@ cd
 rm -rf pb
 mkdir pb
 
-case `uname` in
+case $(uname) in
     Linux|Darwin)
         # Check we have ccache
         # ccache --version
