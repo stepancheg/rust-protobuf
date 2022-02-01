@@ -16,11 +16,11 @@
 //! ```
 //!
 //! And in `Cargo.toml`:
-//
-// ```
-// [build-dependencies]
-// protobuf-codegen-pure = "2"
-// ```
+//!
+//! ```toml
+//! [build-dependencies]
+//! protobuf-codegen-pure = "2"
+//! ```
 //!
 //! It is advisable that `protobuf-codegen-pure` build-dependecy version be the same as
 //! `protobuf` dependency.
