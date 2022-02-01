@@ -19,16 +19,16 @@ There are several ways to generate rust code from `.proto` files
 
 ### Invoke protoc programmatically with protoc-rust crate (recommended)
 
-Have a look at readme in [protoc-rust crate](https://github.com/stepancheg/rust-protobuf/tree/master/protoc-rust).
+Have a look at readme in [protoc-rust crate](https://docs.rs/protoc-rust/=2).
 
 ### Use pure rust protobuf parser and code generator (alpha)
 
 Readme should be in
-[protobuf-codegen-pure crate](https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen-pure).
+[protobuf-codegen-pure crate](https://docs.rs/protobuf-codegen-pure/=2).
 
 ### Use protoc-gen-rust plugin
 
-Readme is [here](https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen).
+Readme is [here](https://docs.rs/protobuf-codegen/=2).
 
 ## Generated code
 
