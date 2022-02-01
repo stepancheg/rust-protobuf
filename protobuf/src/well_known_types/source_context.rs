@@ -73,7 +73,7 @@ impl crate::Message for SourceContext {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeLengthDelimited {
+                    if wire_type != crate::wire_format::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.file_name = is.read_string()?;

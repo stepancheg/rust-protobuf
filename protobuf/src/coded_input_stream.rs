@@ -524,10 +524,10 @@ impl<'a> CodedInputStream<'a> {
     /// Read `UnknownValue`
     pub fn read_unknown(&mut self, wire_type: WireType) -> ProtobufResult<UnknownValue> {
         match wire_type {
-            WireType::WireTypeVarint => self.read_raw_varint64().map(|v| UnknownValue::Varint(v)),
-            WireType::WireTypeFixed64 => self.read_fixed64().map(|v| UnknownValue::Fixed64(v)),
-            WireType::WireTypeFixed32 => self.read_fixed32().map(|v| UnknownValue::Fixed32(v)),
-            WireType::WireTypeLengthDelimited => {
+            WireType::Varint => self.read_raw_varint64().map(|v| UnknownValue::Varint(v)),
+            WireType::Fixed64 => self.read_fixed64().map(|v| UnknownValue::Fixed64(v)),
+            WireType::Fixed32 => self.read_fixed32().map(|v| UnknownValue::Fixed32(v)),
+            WireType::LengthDelimited => {
                 let len = self.read_raw_varint32()?;
                 self.read_raw_bytes(len)
                     .map(|v| UnknownValue::LengthDelimited(v))

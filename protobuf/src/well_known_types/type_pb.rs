@@ -121,7 +121,7 @@ impl crate::Message for Type {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeLengthDelimited {
+                    if wire_type != crate::wire_format::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.name = is.read_string()?;
@@ -139,7 +139,7 @@ impl crate::Message for Type {
                     crate::rt::read_singular_message_into_field(wire_type, is, &mut self.source_context)?;
                 },
                 6 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.syntax = is.read_enum_or_unknown()?;
@@ -382,43 +382,43 @@ impl crate::Message for Field {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.kind = is.read_enum_or_unknown()?;
                 },
                 2 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.cardinality = is.read_enum_or_unknown()?;
                 },
                 3 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.number = is.read_int32()?;
                 },
                 4 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeLengthDelimited {
+                    if wire_type != crate::wire_format::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.name = is.read_string()?;
                 },
                 6 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeLengthDelimited {
+                    if wire_type != crate::wire_format::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.type_url = is.read_string()?;
                 },
                 7 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.oneof_index = is.read_int32()?;
                 },
                 8 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.packed = is.read_bool()?;
@@ -427,13 +427,13 @@ impl crate::Message for Field {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.options)?;
                 },
                 10 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeLengthDelimited {
+                    if wire_type != crate::wire_format::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.json_name = is.read_string()?;
                 },
                 11 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeLengthDelimited {
+                    if wire_type != crate::wire_format::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.default_value = is.read_string()?;
@@ -457,7 +457,7 @@ impl crate::Message for Field {
             my_size += crate::rt::enum_or_unknown_size(2, self.cardinality);
         }
         if self.number != 0 {
-            my_size += crate::rt::value_size(3, self.number, crate::wire_format::WireType::WireTypeVarint);
+            my_size += crate::rt::value_size(3, self.number, crate::wire_format::WireType::Varint);
         }
         if !self.name.is_empty() {
             my_size += crate::rt::string_size(4, &self.name);
@@ -466,7 +466,7 @@ impl crate::Message for Field {
             my_size += crate::rt::string_size(6, &self.type_url);
         }
         if self.oneof_index != 0 {
-            my_size += crate::rt::value_size(7, self.oneof_index, crate::wire_format::WireType::WireTypeVarint);
+            my_size += crate::rt::value_size(7, self.oneof_index, crate::wire_format::WireType::Varint);
         }
         if self.packed != false {
             my_size += 2;
@@ -839,7 +839,7 @@ impl crate::Message for Enum {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeLengthDelimited {
+                    if wire_type != crate::wire_format::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.name = is.read_string()?;
@@ -854,7 +854,7 @@ impl crate::Message for Enum {
                     crate::rt::read_singular_message_into_field(wire_type, is, &mut self.source_context)?;
                 },
                 5 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.syntax = is.read_enum_or_unknown()?;
@@ -1038,13 +1038,13 @@ impl crate::Message for EnumValue {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeLengthDelimited {
+                    if wire_type != crate::wire_format::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.name = is.read_string()?;
                 },
                 2 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.number = is.read_int32()?;
@@ -1068,7 +1068,7 @@ impl crate::Message for EnumValue {
             my_size += crate::rt::string_size(1, &self.name);
         }
         if self.number != 0 {
-            my_size += crate::rt::value_size(2, self.number, crate::wire_format::WireType::WireTypeVarint);
+            my_size += crate::rt::value_size(2, self.number, crate::wire_format::WireType::Varint);
         }
         for value in &self.options {
             let len = value.compute_size();
@@ -1213,7 +1213,7 @@ impl crate::Message for Option {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeLengthDelimited {
+                    if wire_type != crate::wire_format::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.name = is.read_string()?;

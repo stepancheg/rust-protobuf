@@ -421,7 +421,7 @@ fn compute_singular_size(proto_type: Type, field_number: u32, v: &ReflectValueRe
     match proto_type {
         Type::TYPE_ENUM => {
             let enum_v = v.to_enum_value().unwrap();
-            value_size(field_number, enum_v, WireType::WireTypeVarint)
+            value_size(field_number, enum_v, WireType::Varint)
         }
         Type::TYPE_MESSAGE => {
             let msg_v = v.to_message().unwrap();
@@ -433,19 +433,19 @@ fn compute_singular_size(proto_type: Type, field_number: u32, v: &ReflectValueRe
         }
         Type::TYPE_UINT32 => {
             let typed_v = v.to_u32().unwrap();
-            value_size(field_number, typed_v, WireType::WireTypeVarint)
+            value_size(field_number, typed_v, WireType::Varint)
         }
         Type::TYPE_UINT64 => {
             let typed_v = v.to_u64().unwrap();
-            value_size(field_number, typed_v, WireType::WireTypeVarint)
+            value_size(field_number, typed_v, WireType::Varint)
         }
         Type::TYPE_INT32 => {
             let typed_v = v.to_i32().unwrap();
-            value_size(field_number, typed_v, WireType::WireTypeVarint)
+            value_size(field_number, typed_v, WireType::Varint)
         }
         Type::TYPE_INT64 => {
             let typed_v = v.to_i64().unwrap();
-            value_size(field_number, typed_v, WireType::WireTypeVarint)
+            value_size(field_number, typed_v, WireType::Varint)
         }
         Type::TYPE_SINT32 => {
             let typed_v = v.to_i32().unwrap();
@@ -461,7 +461,7 @@ fn compute_singular_size(proto_type: Type, field_number: u32, v: &ReflectValueRe
         Type::TYPE_SFIXED64 => tag_size(field_number) + 8,
         Type::TYPE_BOOL => {
             let typed_v = v.to_bool().unwrap();
-            value_size(field_number, typed_v, WireType::WireTypeVarint)
+            value_size(field_number, typed_v, WireType::Varint)
         }
         Type::TYPE_STRING => {
             let typed_v = v.to_str().unwrap();

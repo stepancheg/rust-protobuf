@@ -73,7 +73,7 @@ impl crate::Message for DoubleValue {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeFixed64 {
+                    if wire_type != crate::wire_format::WireType::Fixed64 {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.value = is.read_double()?;
@@ -205,7 +205,7 @@ impl crate::Message for FloatValue {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeFixed32 {
+                    if wire_type != crate::wire_format::WireType::Fixed32 {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.value = is.read_float()?;
@@ -337,7 +337,7 @@ impl crate::Message for Int64Value {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.value = is.read_int64()?;
@@ -355,7 +355,7 @@ impl crate::Message for Int64Value {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if self.value != 0 {
-            my_size += crate::rt::value_size(1, self.value, crate::wire_format::WireType::WireTypeVarint);
+            my_size += crate::rt::value_size(1, self.value, crate::wire_format::WireType::Varint);
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -469,7 +469,7 @@ impl crate::Message for UInt64Value {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.value = is.read_uint64()?;
@@ -487,7 +487,7 @@ impl crate::Message for UInt64Value {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if self.value != 0 {
-            my_size += crate::rt::value_size(1, self.value, crate::wire_format::WireType::WireTypeVarint);
+            my_size += crate::rt::value_size(1, self.value, crate::wire_format::WireType::Varint);
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -601,7 +601,7 @@ impl crate::Message for Int32Value {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.value = is.read_int32()?;
@@ -619,7 +619,7 @@ impl crate::Message for Int32Value {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if self.value != 0 {
-            my_size += crate::rt::value_size(1, self.value, crate::wire_format::WireType::WireTypeVarint);
+            my_size += crate::rt::value_size(1, self.value, crate::wire_format::WireType::Varint);
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -733,7 +733,7 @@ impl crate::Message for UInt32Value {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.value = is.read_uint32()?;
@@ -751,7 +751,7 @@ impl crate::Message for UInt32Value {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if self.value != 0 {
-            my_size += crate::rt::value_size(1, self.value, crate::wire_format::WireType::WireTypeVarint);
+            my_size += crate::rt::value_size(1, self.value, crate::wire_format::WireType::Varint);
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
@@ -865,7 +865,7 @@ impl crate::Message for BoolValue {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.value = is.read_bool()?;
@@ -997,7 +997,7 @@ impl crate::Message for StringValue {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeLengthDelimited {
+                    if wire_type != crate::wire_format::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.value = is.read_string()?;
@@ -1129,7 +1129,7 @@ impl crate::Message for BytesValue {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeLengthDelimited {
+                    if wire_type != crate::wire_format::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.value = is.read_bytes()?;

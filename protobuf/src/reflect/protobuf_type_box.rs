@@ -89,7 +89,7 @@ impl ProtobufTypeBox {
             let value = self.read(is, wire_type)?;
             repeated.push(value);
             Ok(())
-        } else if wire_type == WireType::WireTypeLengthDelimited {
+        } else if wire_type == WireType::LengthDelimited {
             fn extend(repeated: &mut ReflectRepeatedMut, v: Vec<impl Into<ReflectValueBox>>) {
                 for v in v {
                     // TODO: inefficient

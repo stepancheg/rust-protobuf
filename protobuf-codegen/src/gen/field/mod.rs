@@ -106,8 +106,8 @@ fn field_type_protobuf_name<'a>(field: &'a FieldDescriptorProto) -> &'a str {
 fn field_type_size(field_type: field_descriptor_proto::Type) -> Option<u32> {
     match field_type {
         field_descriptor_proto::Type::TYPE_BOOL => Some(1),
-        t if WireType::for_type(t) == WireType::WireTypeFixed32 => Some(4),
-        t if WireType::for_type(t) == WireType::WireTypeFixed64 => Some(8),
+        t if WireType::for_type(t) == WireType::Fixed32 => Some(4),
+        t if WireType::for_type(t) == WireType::Fixed64 => Some(8),
         _ => None,
     }
 }
@@ -1820,7 +1820,7 @@ impl<'a> FieldGen<'a> {
                         "os.write_tag({}, {}::wire_format::WireType::{:?})?;",
                         number,
                         protobuf_crate_path(&self.customize),
-                        WireType::WireTypeLengthDelimited
+                        WireType::LengthDelimited
                     ));
                     w.comment("TODO: Data size is computed again, it should be cached");
                     let data_size_expr = self.self_field_vec_packed_data_size();

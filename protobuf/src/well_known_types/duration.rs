@@ -84,13 +84,13 @@ impl crate::Message for Duration {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.seconds = is.read_int64()?;
                 },
                 2 => {
-                    if wire_type != crate::wire_format::WireType::WireTypeVarint {
+                    if wire_type != crate::wire_format::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.nanos = is.read_int32()?;
@@ -108,10 +108,10 @@ impl crate::Message for Duration {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         if self.seconds != 0 {
-            my_size += crate::rt::value_size(1, self.seconds, crate::wire_format::WireType::WireTypeVarint);
+            my_size += crate::rt::value_size(1, self.seconds, crate::wire_format::WireType::Varint);
         }
         if self.nanos != 0 {
-            my_size += crate::rt::value_size(2, self.nanos, crate::wire_format::WireType::WireTypeVarint);
+            my_size += crate::rt::value_size(2, self.nanos, crate::wire_format::WireType::Varint);
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);

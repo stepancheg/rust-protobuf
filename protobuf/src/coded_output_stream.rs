@@ -266,14 +266,14 @@ impl<'a> CodedOutputStream<'a> {
 
     /// Write `float` field
     pub fn write_float(&mut self, field_number: u32, value: f32) -> ProtobufResult<()> {
-        self.write_tag(field_number, WireType::WireTypeFixed32)?;
+        self.write_tag(field_number, WireType::Fixed32)?;
         self.write_float_no_tag(value)?;
         Ok(())
     }
 
     /// Write `double` field
     pub fn write_double(&mut self, field_number: u32, value: f64) -> ProtobufResult<()> {
-        self.write_tag(field_number, WireType::WireTypeFixed64)?;
+        self.write_tag(field_number, WireType::Fixed64)?;
         self.write_double_no_tag(value)?;
         Ok(())
     }
@@ -369,84 +369,84 @@ impl<'a> CodedOutputStream<'a> {
 
     /// Write `uint64` field
     pub fn write_uint64(&mut self, field_number: u32, value: u64) -> ProtobufResult<()> {
-        self.write_tag(field_number, WireType::WireTypeVarint)?;
+        self.write_tag(field_number, WireType::Varint)?;
         self.write_uint64_no_tag(value)?;
         Ok(())
     }
 
     /// Write `uint32` field
     pub fn write_uint32(&mut self, field_number: u32, value: u32) -> ProtobufResult<()> {
-        self.write_tag(field_number, WireType::WireTypeVarint)?;
+        self.write_tag(field_number, WireType::Varint)?;
         self.write_uint32_no_tag(value)?;
         Ok(())
     }
 
     /// Write `int64` field
     pub fn write_int64(&mut self, field_number: u32, value: i64) -> ProtobufResult<()> {
-        self.write_tag(field_number, WireType::WireTypeVarint)?;
+        self.write_tag(field_number, WireType::Varint)?;
         self.write_int64_no_tag(value)?;
         Ok(())
     }
 
     /// Write `int32` field
     pub fn write_int32(&mut self, field_number: u32, value: i32) -> ProtobufResult<()> {
-        self.write_tag(field_number, WireType::WireTypeVarint)?;
+        self.write_tag(field_number, WireType::Varint)?;
         self.write_int32_no_tag(value)?;
         Ok(())
     }
 
     /// Write `sint64` field
     pub fn write_sint64(&mut self, field_number: u32, value: i64) -> ProtobufResult<()> {
-        self.write_tag(field_number, WireType::WireTypeVarint)?;
+        self.write_tag(field_number, WireType::Varint)?;
         self.write_sint64_no_tag(value)?;
         Ok(())
     }
 
     /// Write `sint32` field
     pub fn write_sint32(&mut self, field_number: u32, value: i32) -> ProtobufResult<()> {
-        self.write_tag(field_number, WireType::WireTypeVarint)?;
+        self.write_tag(field_number, WireType::Varint)?;
         self.write_sint32_no_tag(value)?;
         Ok(())
     }
 
     /// Write `fixed64` field
     pub fn write_fixed64(&mut self, field_number: u32, value: u64) -> ProtobufResult<()> {
-        self.write_tag(field_number, WireType::WireTypeFixed64)?;
+        self.write_tag(field_number, WireType::Fixed64)?;
         self.write_fixed64_no_tag(value)?;
         Ok(())
     }
 
     /// Write `fixed32` field
     pub fn write_fixed32(&mut self, field_number: u32, value: u32) -> ProtobufResult<()> {
-        self.write_tag(field_number, WireType::WireTypeFixed32)?;
+        self.write_tag(field_number, WireType::Fixed32)?;
         self.write_fixed32_no_tag(value)?;
         Ok(())
     }
 
     /// Write `sfixed64` field
     pub fn write_sfixed64(&mut self, field_number: u32, value: i64) -> ProtobufResult<()> {
-        self.write_tag(field_number, WireType::WireTypeFixed64)?;
+        self.write_tag(field_number, WireType::Fixed64)?;
         self.write_sfixed64_no_tag(value)?;
         Ok(())
     }
 
     /// Write `sfixed32` field
     pub fn write_sfixed32(&mut self, field_number: u32, value: i32) -> ProtobufResult<()> {
-        self.write_tag(field_number, WireType::WireTypeFixed32)?;
+        self.write_tag(field_number, WireType::Fixed32)?;
         self.write_sfixed32_no_tag(value)?;
         Ok(())
     }
 
     /// Write `bool` field
     pub fn write_bool(&mut self, field_number: u32, value: bool) -> ProtobufResult<()> {
-        self.write_tag(field_number, WireType::WireTypeVarint)?;
+        self.write_tag(field_number, WireType::Varint)?;
         self.write_bool_no_tag(value)?;
         Ok(())
     }
 
     /// Write `enum` field
     pub fn write_enum(&mut self, field_number: u32, value: i32) -> ProtobufResult<()> {
-        self.write_tag(field_number, WireType::WireTypeVarint)?;
+        self.write_tag(field_number, WireType::Varint)?;
         self.write_enum_no_tag(value)?;
         Ok(())
     }
@@ -534,21 +534,21 @@ impl<'a> CodedOutputStream<'a> {
 
     /// Write `bytes` field
     pub fn write_bytes(&mut self, field_number: u32, bytes: &[u8]) -> ProtobufResult<()> {
-        self.write_tag(field_number, WireType::WireTypeLengthDelimited)?;
+        self.write_tag(field_number, WireType::LengthDelimited)?;
         self.write_bytes_no_tag(bytes)?;
         Ok(())
     }
 
     /// Write `string` field
     pub fn write_string(&mut self, field_number: u32, s: &str) -> ProtobufResult<()> {
-        self.write_tag(field_number, WireType::WireTypeLengthDelimited)?;
+        self.write_tag(field_number, WireType::LengthDelimited)?;
         self.write_string_no_tag(s)?;
         Ok(())
     }
 
     /// Write `message` field
     pub fn write_message<M: Message>(&mut self, field_number: u32, msg: &M) -> ProtobufResult<()> {
-        self.write_tag(field_number, WireType::WireTypeLengthDelimited)?;
+        self.write_tag(field_number, WireType::LengthDelimited)?;
         self.write_message_no_tag(msg)?;
         Ok(())
     }
@@ -559,7 +559,7 @@ impl<'a> CodedOutputStream<'a> {
         field_number: u32,
         msg: &dyn MessageDyn,
     ) -> ProtobufResult<()> {
-        self.write_tag(field_number, WireType::WireTypeLengthDelimited)?;
+        self.write_tag(field_number, WireType::LengthDelimited)?;
         self.write_message_no_tag_dyn(msg)?;
         Ok(())
     }
@@ -642,7 +642,7 @@ mod test {
 
     #[test]
     fn test_output_stream_write_tag() {
-        test_write("08", |os| os.write_tag(1, WireType::WireTypeVarint));
+        test_write("08", |os| os.write_tag(1, WireType::Varint));
     }
 
     #[test]

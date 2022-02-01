@@ -13,29 +13,29 @@ pub const FIELD_NUMBER_MAX: u32 = 0x1fffffff;
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
 pub enum WireType {
     /// Variable-length integer
-    WireTypeVarint = 0,
+    Varint = 0,
     /// 32-bit field (e. g. `fixed64` or `double`)
-    WireTypeFixed64 = 1,
+    Fixed64 = 1,
     /// Length-delimited field
-    WireTypeLengthDelimited = 2,
+    LengthDelimited = 2,
     /// Groups are not supported in rust-protobuf
-    WireTypeStartGroup = 3,
+    StartGroup = 3,
     /// Groups are not supported in rust-protobuf
-    WireTypeEndGroup = 4,
+    EndGroup = 4,
     /// 32-bit field (e. g. `fixed32` or `float`)
-    WireTypeFixed32 = 5,
+    Fixed32 = 5,
 }
 
 impl WireType {
     /// Construct `WireType` from number, or return `None` if type is unknown.
     pub fn new(n: u32) -> Option<WireType> {
         match n {
-            0 => Some(WireType::WireTypeVarint),
-            1 => Some(WireType::WireTypeFixed64),
-            2 => Some(WireType::WireTypeLengthDelimited),
-            3 => Some(WireType::WireTypeStartGroup),
-            4 => Some(WireType::WireTypeEndGroup),
-            5 => Some(WireType::WireTypeFixed32),
+            0 => Some(WireType::Varint),
+            1 => Some(WireType::Fixed64),
+            2 => Some(WireType::LengthDelimited),
+            3 => Some(WireType::StartGroup),
+            4 => Some(WireType::EndGroup),
+            5 => Some(WireType::Fixed32),
             _ => None,
         }
     }
@@ -44,24 +44,24 @@ impl WireType {
     pub fn for_type(field_type: field_descriptor_proto::Type) -> WireType {
         use field_descriptor_proto::Type;
         match field_type {
-            Type::TYPE_INT32 => WireType::WireTypeVarint,
-            Type::TYPE_INT64 => WireType::WireTypeVarint,
-            Type::TYPE_UINT32 => WireType::WireTypeVarint,
-            Type::TYPE_UINT64 => WireType::WireTypeVarint,
-            Type::TYPE_SINT32 => WireType::WireTypeVarint,
-            Type::TYPE_SINT64 => WireType::WireTypeVarint,
-            Type::TYPE_BOOL => WireType::WireTypeVarint,
-            Type::TYPE_ENUM => WireType::WireTypeVarint,
-            Type::TYPE_FIXED32 => WireType::WireTypeFixed32,
-            Type::TYPE_FIXED64 => WireType::WireTypeFixed64,
-            Type::TYPE_SFIXED32 => WireType::WireTypeFixed32,
-            Type::TYPE_SFIXED64 => WireType::WireTypeFixed64,
-            Type::TYPE_FLOAT => WireType::WireTypeFixed32,
-            Type::TYPE_DOUBLE => WireType::WireTypeFixed64,
-            Type::TYPE_STRING => WireType::WireTypeLengthDelimited,
-            Type::TYPE_BYTES => WireType::WireTypeLengthDelimited,
-            Type::TYPE_MESSAGE => WireType::WireTypeLengthDelimited,
-            Type::TYPE_GROUP => WireType::WireTypeLengthDelimited, // not true
+            Type::TYPE_INT32 => WireType::Varint,
+            Type::TYPE_INT64 => WireType::Varint,
+            Type::TYPE_UINT32 => WireType::Varint,
+            Type::TYPE_UINT64 => WireType::Varint,
+            Type::TYPE_SINT32 => WireType::Varint,
+            Type::TYPE_SINT64 => WireType::Varint,
+            Type::TYPE_BOOL => WireType::Varint,
+            Type::TYPE_ENUM => WireType::Varint,
+            Type::TYPE_FIXED32 => WireType::Fixed32,
+            Type::TYPE_FIXED64 => WireType::Fixed64,
+            Type::TYPE_SFIXED32 => WireType::Fixed32,
+            Type::TYPE_SFIXED64 => WireType::Fixed64,
+            Type::TYPE_FLOAT => WireType::Fixed32,
+            Type::TYPE_DOUBLE => WireType::Fixed64,
+            Type::TYPE_STRING => WireType::LengthDelimited,
+            Type::TYPE_BYTES => WireType::LengthDelimited,
+            Type::TYPE_MESSAGE => WireType::LengthDelimited,
+            Type::TYPE_GROUP => WireType::LengthDelimited, // not true
         }
     }
 }
