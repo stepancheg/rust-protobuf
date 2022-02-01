@@ -37,7 +37,6 @@ pub use crate::error::ProtobufResult;
 
 // generated
 pub mod descriptor;
-// TODO: move plugin to mod codegen
 pub mod plugin;
 pub mod rustproto;
 
