@@ -5,6 +5,8 @@
 Alpha versions of branch 3 are published. They are not guaranteed to have backwards compatibility.
 Stable versions are 2.xx still supported.
 
+## [3.0.0-alpha.3] - 2022-02-01
+
 - Remove `protobuf-codegen-pure` and `protoc-rust` crates. Now all codegen
   (pure or with `protoc` is done using `protobuf-codegen` crate).
 - `LazyV2` (internal utility for rust-protobuf) now implements `Drop`.
