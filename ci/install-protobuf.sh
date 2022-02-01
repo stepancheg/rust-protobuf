@@ -23,7 +23,7 @@ path_tr() {
 test -n "$GITHUB_PATH"
 test -n "$GITHUB_ENV"
 
-echo "$(path_tr $HOME/pb/bin)" >> "$GITHUB_PATH"
+path_tr "$HOME/pb/bin" >> "$GITHUB_PATH"
 echo "LD_LIBRARY_PATH=$(path_tr $HOME/pb/lib)" >> "$GITHUB_ENV"
 echo "PKG_CONFIG_PATH=$(path_tr $HOME/pb/lib/pkgconfig)" >> "$GITHUB_ENV"
 echo "PROTOBUF_PREFIX=$(path_tr $HOME/pb)" >> "$GITHUB_ENV"
