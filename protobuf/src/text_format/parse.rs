@@ -1,4 +1,3 @@
-use std::fmt;
 use std::str;
 
 use crate::message::Message;
@@ -16,28 +15,24 @@ use crate::text_format::lexer::StrLitDecodeError;
 use crate::text_format::lexer::Tokenizer;
 use crate::text_format::lexer::TokenizerError;
 
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum ParseErrorWithoutLoc {
-    TokenizerError(TokenizerError),
-    StrLitDecodeError(StrLitDecodeError),
+    #[error(transparent)]
+    TokenizerError(#[from] TokenizerError),
+    #[error(transparent)]
+    StrLitDecodeError(#[from] StrLitDecodeError),
+    #[error("Unknown field: `{}`", .0)]
     UnknownField(String),
+    #[error("Unknown enum value: `{}`", .0)]
     UnknownEnumValue(String),
+    #[error("Map field specified more than once: `{}`", .0)]
     MapFieldIsSpecifiedMoreThanOnce(String),
+    #[error("Integer overflow")]
     IntegerOverflow,
+    #[error("Expecting bool")]
     ExpectingBool,
+    #[error("Message not initialized")]
     MessageNotInitialized,
-}
-
-impl From<TokenizerError> for ParseErrorWithoutLoc {
-    fn from(e: TokenizerError) -> Self {
-        ParseErrorWithoutLoc::TokenizerError(e)
-    }
-}
-
-impl From<StrLitDecodeError> for ParseErrorWithoutLoc {
-    fn from(e: StrLitDecodeError) -> Self {
-        ParseErrorWithoutLoc::StrLitDecodeError(e)
-    }
 }
 
 impl From<int::Overflow> for ParseErrorWithoutLoc {
@@ -47,19 +42,12 @@ impl From<int::Overflow> for ParseErrorWithoutLoc {
 }
 
 /// Text format parse error.
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
+#[error("{}: {}", loc, error)]
 pub struct ParseError {
     error: ParseErrorWithoutLoc,
     loc: Loc,
 }
-
-impl fmt::Display for ParseError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}: {:?}", self.loc, self.error)
-    }
-}
-
-impl std::error::Error for ParseError {}
 
 pub type ParseResult<A> = Result<A, ParseErrorWithoutLoc>;
 pub type ParseWithLocResult<A> = Result<A, ParseError>;
