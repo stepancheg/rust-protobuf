@@ -24,10 +24,6 @@ use crate::reflect::ProtobufValue;
 use crate::unknown::UnknownFields;
 use crate::wire_format;
 use crate::wire_format::WireType;
-use crate::wire_format::WireTypeFixed32;
-use crate::wire_format::WireTypeFixed64;
-use crate::wire_format::WireTypeLengthDelimited;
-use crate::wire_format::WireTypeVarint;
 use crate::zigzag::*;
 use crate::MessageField;
 use crate::ProtobufEnumOrUnknown;
@@ -206,16 +202,16 @@ pub fn vec_packed_enum_or_unknown_size<E: ProtobufEnum>(
 
 /// Compute tag size. Size of tag does not depend on wire type.
 pub fn tag_size(field_number: u32) -> u32 {
-    wire_format::Tag::make(field_number, WireTypeFixed64)
+    wire_format::Tag::make(field_number, WireType::WireTypeFixed64)
         .value()
         .len_varint()
 }
 
 fn value_size_no_tag<T: ProtobufVarint>(value: T, wt: WireType) -> u32 {
     match wt {
-        WireTypeFixed64 => 8,
-        WireTypeFixed32 => 4,
-        WireTypeVarint => value.len_varint(),
+        WireType::WireTypeFixed64 => 8,
+        WireType::WireTypeFixed32 => 4,
+        WireType::WireTypeVarint => value.len_varint(),
         _ => panic!(),
     }
 }
@@ -302,8 +298,8 @@ pub fn read_repeated_int32_into(
     target: &mut Vec<i32>,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => is.read_repeated_packed_int32_into(target),
-        WireTypeVarint => {
+        WireType::WireTypeLengthDelimited => is.read_repeated_packed_int32_into(target),
+        WireType::WireTypeVarint => {
             target.push(is.read_int32()?);
             Ok(())
         }
@@ -318,8 +314,8 @@ pub fn read_repeated_int64_into(
     target: &mut Vec<i64>,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => is.read_repeated_packed_int64_into(target),
-        WireTypeVarint => {
+        WireType::WireTypeLengthDelimited => is.read_repeated_packed_int64_into(target),
+        WireType::WireTypeVarint => {
             target.push(is.read_int64()?);
             Ok(())
         }
@@ -334,8 +330,8 @@ pub fn read_repeated_uint32_into(
     target: &mut Vec<u32>,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => is.read_repeated_packed_uint32_into(target),
-        WireTypeVarint => {
+        WireType::WireTypeLengthDelimited => is.read_repeated_packed_uint32_into(target),
+        WireType::WireTypeVarint => {
             target.push(is.read_uint32()?);
             Ok(())
         }
@@ -350,8 +346,8 @@ pub fn read_repeated_uint64_into(
     target: &mut Vec<u64>,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => is.read_repeated_packed_uint64_into(target),
-        WireTypeVarint => {
+        WireType::WireTypeLengthDelimited => is.read_repeated_packed_uint64_into(target),
+        WireType::WireTypeVarint => {
             target.push(is.read_uint64()?);
             Ok(())
         }
@@ -366,8 +362,8 @@ pub fn read_repeated_sint32_into(
     target: &mut Vec<i32>,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => is.read_repeated_packed_sint32_into(target),
-        WireTypeVarint => {
+        WireType::WireTypeLengthDelimited => is.read_repeated_packed_sint32_into(target),
+        WireType::WireTypeVarint => {
             target.push(is.read_sint32()?);
             Ok(())
         }
@@ -382,8 +378,8 @@ pub fn read_repeated_sint64_into(
     target: &mut Vec<i64>,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => is.read_repeated_packed_sint64_into(target),
-        WireTypeVarint => {
+        WireType::WireTypeLengthDelimited => is.read_repeated_packed_sint64_into(target),
+        WireType::WireTypeVarint => {
             target.push(is.read_sint64()?);
             Ok(())
         }
@@ -398,8 +394,8 @@ pub fn read_repeated_fixed32_into(
     target: &mut Vec<u32>,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => is.read_repeated_packed_fixed32_into(target),
-        WireTypeFixed32 => {
+        WireType::WireTypeLengthDelimited => is.read_repeated_packed_fixed32_into(target),
+        WireType::WireTypeFixed32 => {
             target.push(is.read_fixed32()?);
             Ok(())
         }
@@ -414,8 +410,8 @@ pub fn read_repeated_fixed64_into(
     target: &mut Vec<u64>,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => is.read_repeated_packed_fixed64_into(target),
-        WireTypeFixed64 => {
+        WireType::WireTypeLengthDelimited => is.read_repeated_packed_fixed64_into(target),
+        WireType::WireTypeFixed64 => {
             target.push(is.read_fixed64()?);
             Ok(())
         }
@@ -430,8 +426,8 @@ pub fn read_repeated_sfixed32_into(
     target: &mut Vec<i32>,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => is.read_repeated_packed_sfixed32_into(target),
-        WireTypeFixed32 => {
+        WireType::WireTypeLengthDelimited => is.read_repeated_packed_sfixed32_into(target),
+        WireType::WireTypeFixed32 => {
             target.push(is.read_sfixed32()?);
             Ok(())
         }
@@ -446,8 +442,8 @@ pub fn read_repeated_sfixed64_into(
     target: &mut Vec<i64>,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => is.read_repeated_packed_sfixed64_into(target),
-        WireTypeFixed64 => {
+        WireType::WireTypeLengthDelimited => is.read_repeated_packed_sfixed64_into(target),
+        WireType::WireTypeFixed64 => {
             target.push(is.read_sfixed64()?);
             Ok(())
         }
@@ -462,8 +458,8 @@ pub fn read_repeated_double_into(
     target: &mut Vec<f64>,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => is.read_repeated_packed_double_into(target),
-        WireTypeFixed64 => {
+        WireType::WireTypeLengthDelimited => is.read_repeated_packed_double_into(target),
+        WireType::WireTypeFixed64 => {
             target.push(is.read_double()?);
             Ok(())
         }
@@ -478,8 +474,8 @@ pub fn read_repeated_float_into(
     target: &mut Vec<f32>,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => is.read_repeated_packed_float_into(target),
-        WireTypeFixed32 => {
+        WireType::WireTypeLengthDelimited => is.read_repeated_packed_float_into(target),
+        WireType::WireTypeFixed32 => {
             target.push(is.read_float()?);
             Ok(())
         }
@@ -494,8 +490,8 @@ pub fn read_repeated_bool_into(
     target: &mut Vec<bool>,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => is.read_repeated_packed_bool_into(target),
-        WireTypeVarint => {
+        WireType::WireTypeLengthDelimited => is.read_repeated_packed_bool_into(target),
+        WireType::WireTypeVarint => {
             target.push(is.read_bool()?);
             Ok(())
         }
@@ -511,8 +507,8 @@ pub fn read_repeated_enum_into<E: ProtobufEnum + ProtobufValue>(
     target: &mut Vec<E>,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => is.read_repeated_packed_enum_into(target),
-        WireTypeVarint => {
+        WireType::WireTypeLengthDelimited => is.read_repeated_packed_enum_into(target),
+        WireType::WireTypeVarint => {
             target.push(is.read_enum()?);
             Ok(())
         }
@@ -581,13 +577,13 @@ pub fn read_repeated_enum_with_unknown_fields_into<E: ProtobufEnum>(
     unknown_fields: &mut UnknownFields,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => read_repeated_packed_enum_with_unknown_fields_into(
+        WireType::WireTypeLengthDelimited => read_repeated_packed_enum_with_unknown_fields_into(
             is,
             target,
             field_number,
             unknown_fields,
         ),
-        WireTypeVarint => {
+        WireType::WireTypeVarint => {
             read_enum_with_unknown_fields_into(is, |e| target.push(e), field_number, unknown_fields)
         }
         _ => Err(unexpected_wire_type(wire_type)),
@@ -606,8 +602,8 @@ pub fn read_repeated_enum_or_unknown_into<E: ProtobufEnum>(
     target: &mut Vec<ProtobufEnumOrUnknown<E>>,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => read_repeated_packed_enum_or_unknown_into(is, target),
-        WireTypeVarint => {
+        WireType::WireTypeLengthDelimited => read_repeated_packed_enum_or_unknown_into(is, target),
+        WireType::WireTypeVarint => {
             target.push(is.read_enum_or_unknown()?);
             Ok(())
         }
@@ -662,7 +658,7 @@ pub fn read_repeated_string_into(
     target: &mut Vec<String>,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => {
+        WireType::WireTypeLengthDelimited => {
             target.push(is.read_string()?);
             Ok(())
         }
@@ -678,7 +674,7 @@ pub fn read_repeated_carllerche_string_into(
     target: &mut Vec<Chars>,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => {
+        WireType::WireTypeLengthDelimited => {
             target.push(is.read_carllerche_chars()?);
             Ok(())
         }
@@ -694,7 +690,7 @@ pub fn read_singular_carllerche_string_into(
     target: &mut Option<Chars>,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => {
+        WireType::WireTypeLengthDelimited => {
             *target = Some(is.read_carllerche_chars()?);
             Ok(())
         }
@@ -709,7 +705,7 @@ pub fn read_singular_proto3_string_into(
     target: &mut String,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => is.read_string_into(target),
+        WireType::WireTypeLengthDelimited => is.read_string_into(target),
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
@@ -722,7 +718,7 @@ pub fn read_singular_proto3_carllerche_string_into(
     target: &mut Chars,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => {
+        WireType::WireTypeLengthDelimited => {
             *target = is.read_carllerche_chars()?;
             Ok(())
         }
@@ -737,7 +733,7 @@ pub fn read_repeated_bytes_into(
     target: &mut Vec<Vec<u8>>,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => {
+        WireType::WireTypeLengthDelimited => {
             target.push(is.read_bytes()?);
             Ok(())
         }
@@ -753,7 +749,7 @@ pub fn read_repeated_carllerche_bytes_into(
     target: &mut Vec<Bytes>,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => {
+        WireType::WireTypeLengthDelimited => {
             target.push(is.read_carllerche_bytes()?);
             Ok(())
         }
@@ -769,7 +765,7 @@ pub fn read_singular_carllerche_bytes_into(
     target: &mut Option<Bytes>,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => {
+        WireType::WireTypeLengthDelimited => {
             *target = Some(is.read_carllerche_bytes()?);
             Ok(())
         }
@@ -784,7 +780,7 @@ pub fn read_singular_proto3_bytes_into(
     target: &mut Vec<u8>,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => is.read_bytes_into(target),
+        WireType::WireTypeLengthDelimited => is.read_bytes_into(target),
         _ => Err(unexpected_wire_type(wire_type)),
     }
 }
@@ -797,7 +793,7 @@ pub fn read_singular_proto3_carllerche_bytes_into(
     target: &mut Bytes,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => {
+        WireType::WireTypeLengthDelimited => {
             *target = is.read_carllerche_bytes()?;
             Ok(())
         }
@@ -812,7 +808,7 @@ pub fn read_repeated_message_into_vec<M: Message + Default>(
     target: &mut Vec<M>,
 ) -> ProtobufResult<()> {
     match wire_type {
-        WireTypeLengthDelimited => {
+        WireType::WireTypeLengthDelimited => {
             is.incr_recursion()?;
             let res = match is.read_message() {
                 Ok(m) => {
@@ -838,7 +834,7 @@ where
     M: Message + Default,
 {
     match wire_type {
-        WireTypeLengthDelimited => {
+        WireType::WireTypeLengthDelimited => {
             is.incr_recursion()?;
             let mut m = M::new();
             let res = is.merge_message(&mut m);
@@ -853,7 +849,7 @@ where
 fn skip_group(is: &mut CodedInputStream) -> ProtobufResult<()> {
     loop {
         let (_, wire_type) = is.read_tag_unpack()?;
-        if wire_type == wire_format::WireTypeEndGroup {
+        if wire_type == wire_format::WireType::WireTypeEndGroup {
             return Ok(());
         }
         is.skip_field(wire_type)?;
@@ -869,7 +865,7 @@ pub fn read_unknown_or_skip_group(
     unknown_fields: &mut UnknownFields,
 ) -> ProtobufResult<()> {
     match wire_type {
-        wire_format::WireTypeStartGroup => skip_group(is),
+        wire_format::WireType::WireTypeStartGroup => skip_group(is),
         _ => {
             let unknown = is.read_unknown(wire_type)?;
             unknown_fields.add_value(field_number, unknown);

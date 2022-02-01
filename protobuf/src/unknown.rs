@@ -105,10 +105,10 @@ impl<'o> UnknownValueRef<'o> {
     /// Wire-type to serialize this unknown
     pub fn wire_type(&self) -> wire_format::WireType {
         match *self {
-            UnknownValueRef::Fixed32(_) => wire_format::WireTypeFixed32,
-            UnknownValueRef::Fixed64(_) => wire_format::WireTypeFixed64,
-            UnknownValueRef::Varint(_) => wire_format::WireTypeVarint,
-            UnknownValueRef::LengthDelimited(_) => wire_format::WireTypeLengthDelimited,
+            UnknownValueRef::Fixed32(_) => wire_format::WireType::WireTypeFixed32,
+            UnknownValueRef::Fixed64(_) => wire_format::WireType::WireTypeFixed64,
+            UnknownValueRef::Varint(_) => wire_format::WireType::WireTypeVarint,
+            UnknownValueRef::LengthDelimited(_) => wire_format::WireType::WireTypeLengthDelimited,
         }
     }
 

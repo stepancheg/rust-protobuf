@@ -1,7 +1,5 @@
 //! Constants used in serializations.
 
-// TODO: temporary
-pub use self::WireType::*;
 use crate::descriptor::field_descriptor_proto;
 
 /// Tag occupies three bits.
@@ -32,12 +30,12 @@ impl WireType {
     /// Construct `WireType` from number, or return `None` if type is unknown.
     pub fn new(n: u32) -> Option<WireType> {
         match n {
-            0 => Some(WireTypeVarint),
-            1 => Some(WireTypeFixed64),
-            2 => Some(WireTypeLengthDelimited),
-            3 => Some(WireTypeStartGroup),
-            4 => Some(WireTypeEndGroup),
-            5 => Some(WireTypeFixed32),
+            0 => Some(WireType::WireTypeVarint),
+            1 => Some(WireType::WireTypeFixed64),
+            2 => Some(WireType::WireTypeLengthDelimited),
+            3 => Some(WireType::WireTypeStartGroup),
+            4 => Some(WireType::WireTypeEndGroup),
+            5 => Some(WireType::WireTypeFixed32),
             _ => None,
         }
     }
