@@ -1,3 +1,4 @@
+use std::env;
 use std::ffi::OsString;
 use std::path::Path;
 use std::path::PathBuf;
@@ -66,9 +67,20 @@ impl Codegen {
     }
 
     /// Output directory for generated code.
+    ///
+    /// When invoking from `build.rs`, consider using
+    /// [`cargo_out_dir`](Self::cargo_out_dir) instead.
     pub fn out_dir(&mut self, out_dir: impl AsRef<Path>) -> &mut Self {
         self.out_dir = out_dir.as_ref().to_owned();
         self
+    }
+
+    /// Set output directory relative to Cargo output dir.
+    pub fn cargo_out_dir(&mut self, rel: &str) -> &mut Self {
+        let cargo_out_dir = env::var("OUT_DIR").expect("OUT_DIR env var not set");
+        let mut path = PathBuf::from(cargo_out_dir);
+        path.push(rel);
+        self.out_dir(path)
     }
 
     /// Add an include directory.

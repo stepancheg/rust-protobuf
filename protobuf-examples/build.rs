@@ -35,7 +35,7 @@ fn main() {
             gen_mod_rs: Some(true),
             ..Default::default()
         })
-        .out_dir(generated_with_native_dir)
+        .cargo_out_dir("generated_with_native")
         .input("src/protos/example.proto")
         .include("src/protos")
         .run_from_script();
@@ -46,7 +46,7 @@ fn main() {
             gen_mod_rs: Some(true),
             ..Default::default()
         })
-        .out_dir(generated_with_pure_dir)
+        .cargo_out_dir("generated_with_pure")
         .input("src/protos/example.proto")
         .include("src/protos")
         .run_from_script();
