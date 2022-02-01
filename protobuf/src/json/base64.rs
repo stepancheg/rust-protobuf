@@ -77,24 +77,15 @@ pub fn encode(input: &[u8]) -> String {
 }
 
 /// Errors that can occur when decoding a base64 encoded string
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, thiserror::Error)]
 pub enum FromBase64Error {
     /// The input contained a character not part of the base64 format
+    #[error("Invalid base64 byte")]
     InvalidBase64Byte(u8, usize),
     /// The input had an invalid length
+    #[error("Invalid base64 length")]
     InvalidBase64Length,
 }
-
-impl fmt::Display for FromBase64Error {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            FromBase64Error::InvalidBase64Byte(_, _) => write!(f, "Invalid base64 byte"),
-            FromBase64Error::InvalidBase64Length => write!(f, "Invalid base64 length"),
-        }
-    }
-}
-
-impl std::error::Error for FromBase64Error {}
 
 pub fn decode(input: &str) -> Result<Vec<u8>, FromBase64Error> {
     let mut r = Vec::with_capacity(input.len());
