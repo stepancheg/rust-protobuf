@@ -16,9 +16,18 @@ use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::MessageDescriptor;
 use crate::unknown::UnknownFields;
 
-/// Trait implemented for all generated structs for protobuf messages.
+/// Trait implemented for all the messages (generated and dynamic).
+///
+/// * Generated messages are generated from `.proto` files
+/// * Dynamic messages can be created without code generation using only parsed proto files
+///   (see [FileDescriptor::new_dynamic](crate::reflect::FileDescriptor::new_dynamic)).
+///
 ///
 /// Also, generated messages implement `Clone + Default + PartialEq`
+///
+/// This trait is sized, there's accompanying [`MessageDyn`](crate::MessageDyn) trait
+/// which is implemented for all messages which can be used in functions
+/// without making message a function type parameter.
 pub trait Message: fmt::Debug + Clear + Send + Sync + Sized + 'static {
     /// Message descriptor for this message, used for reflection.
     ///
