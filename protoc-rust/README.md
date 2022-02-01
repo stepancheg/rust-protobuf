@@ -1,31 +1,35 @@
-# API to generate .rs files
+<!-- cargo-sync-readme start -->
 
-API to generate `.rs` files to be used e. g. [from build.rs](https://github.com/stepancheg/rust-protobuf/blob/master/protobuf-test/build.rs).
+# API to generate `.rs` files using `protoc` to parse files
 
-Example code:
+This API requires `protoc` command present in `$PATH`
+or explicitly passed to `Codegen` object
+(but `protoc` *plugin* is not needed).
 
-```
+```rust
 extern crate protoc_rust;
 
-protoc_rust::run(protoc_rust::Args {
-    out_dir: "src/protos",
-    input: &["protos/a.proto", "protos/b.proto"],
-    includes: &["protos"],
-    customize: Customize {
-      ..Default::default()
-    },
-}).expect("protoc");
+fn main() {
+    protoc_rust::Codegen::new()
+        .out_dir("src/protos")
+        .inputs(&["protos/a.proto", "protos/b.proto"])
+        .include("protos")
+        .run()
+        .expect("Running protoc failed.");
+}
 ```
 
-And in `Cargo.toml`:
+and in `build.rs`:
 
-```
+```toml
 [build-dependencies]
-protoc-rust = "1.5"
+protoc-rust = "2"
 ```
 
-Note this API requires `protoc` command present in `$PATH`.
-Although `protoc-gen-rust` command is not needed.
+It is advisable that `protoc-rust` build-dependency version be the same as
+`protobuf` dependency.
 
 The alternative is to use
-[pure-rust .proto parser and code generator](https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen-pure).
+[`protobuf-codegen-pure` crate](https://docs.rs/protobuf-codegen-pure).
+
+<!-- cargo-sync-readme end -->

@@ -1,7 +1,8 @@
-//! API to generate `.rs` files.
+//! # API to generate `.rs` files using `protoc` to parse files
 //!
 //! This API requires `protoc` command present in `$PATH`
-//! or [passed explicitly to `Codegen` object](crate::Codegen::protoc_path).
+//! or explicitly passed to `Codegen` object
+//! (but `protoc` *plugin* is not needed).
 //!
 //! ```no_run
 //! extern crate protoc_rust;
@@ -16,10 +17,18 @@
 //! }
 //! ```
 //!
-//! It is advisable that `protoc-rust` build-dependecy version be the same as
+//! and in `build.rs`:
+//!
+//! ```toml
+//! [build-dependencies]
+//! protoc-rust = "2"
+//! ```
+//!
+//! It is advisable that `protoc-rust` build-dependency version be the same as
 //! `protobuf` dependency.
 //!
-//! The alternative is to use `protobuf-codegen-pure`.
+//! The alternative is to use
+//! [`protobuf-codegen-pure` crate](https://docs.rs/protobuf-codegen-pure).
 
 #![deny(missing_docs)]
 #![deny(rustdoc::broken_intra_doc_links)]
