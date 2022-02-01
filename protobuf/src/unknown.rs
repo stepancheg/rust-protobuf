@@ -10,7 +10,7 @@ use std::slice;
 use crate::clear::Clear;
 use crate::reflect::ReflectValueRef;
 use crate::rt;
-use crate::wire_format;
+use crate::wire_format::WireType;
 use crate::zigzag::encode_zig_zag_32;
 use crate::zigzag::encode_zig_zag_64;
 use crate::CodedOutputStream;
@@ -32,7 +32,7 @@ pub enum UnknownValue {
 
 impl UnknownValue {
     /// Wire type for this unknown
-    pub fn wire_type(&self) -> wire_format::WireType {
+    pub fn wire_type(&self) -> WireType {
         self.get_ref().wire_type()
     }
 
@@ -103,12 +103,12 @@ pub enum UnknownValueRef<'o> {
 
 impl<'o> UnknownValueRef<'o> {
     /// Wire-type to serialize this unknown
-    pub fn wire_type(&self) -> wire_format::WireType {
+    pub fn wire_type(&self) -> WireType {
         match *self {
-            UnknownValueRef::Fixed32(_) => wire_format::WireType::WireTypeFixed32,
-            UnknownValueRef::Fixed64(_) => wire_format::WireType::WireTypeFixed64,
-            UnknownValueRef::Varint(_) => wire_format::WireType::WireTypeVarint,
-            UnknownValueRef::LengthDelimited(_) => wire_format::WireType::WireTypeLengthDelimited,
+            UnknownValueRef::Fixed32(_) => WireType::WireTypeFixed32,
+            UnknownValueRef::Fixed64(_) => WireType::WireTypeFixed64,
+            UnknownValueRef::Varint(_) => WireType::WireTypeVarint,
+            UnknownValueRef::LengthDelimited(_) => WireType::WireTypeLengthDelimited,
         }
     }
 

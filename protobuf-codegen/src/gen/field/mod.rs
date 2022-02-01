@@ -2,7 +2,6 @@ use protobuf::descriptor::*;
 use protobuf::reflect::ReflectValueRef;
 use protobuf::reflect::Syntax;
 use protobuf::rt;
-use protobuf::wire_format;
 use protobuf::wire_format::WireType;
 use protobuf_parse::ProtobufAbsolutePath;
 
@@ -107,8 +106,8 @@ fn field_type_protobuf_name<'a>(field: &'a FieldDescriptorProto) -> &'a str {
 fn field_type_size(field_type: field_descriptor_proto::Type) -> Option<u32> {
     match field_type {
         field_descriptor_proto::Type::TYPE_BOOL => Some(1),
-        t if WireType::for_type(t) == wire_format::WireType::WireTypeFixed32 => Some(4),
-        t if WireType::for_type(t) == wire_format::WireType::WireTypeFixed64 => Some(8),
+        t if WireType::for_type(t) == WireType::WireTypeFixed32 => Some(4),
+        t if WireType::for_type(t) == WireType::WireTypeFixed64 => Some(8),
         _ => None,
     }
 }
@@ -533,7 +532,7 @@ pub(crate) struct FieldGen<'a> {
     // field name in generated code
     pub rust_name: RustIdent,
     pub proto_type: field_descriptor_proto::Type,
-    wire_type: wire_format::WireType,
+    wire_type: WireType,
     serde_name: String,
     pub kind: FieldKind<'a>,
     pub expose_field: bool,
@@ -1821,7 +1820,7 @@ impl<'a> FieldGen<'a> {
                         "os.write_tag({}, {}::wire_format::WireType::{:?})?;",
                         number,
                         protobuf_crate_path(&self.customize),
-                        wire_format::WireType::WireTypeLengthDelimited
+                        WireType::WireTypeLengthDelimited
                     ));
                     w.comment("TODO: Data size is computed again, it should be cached");
                     let data_size_expr = self.self_field_vec_packed_data_size();

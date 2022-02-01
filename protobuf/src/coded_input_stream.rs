@@ -34,6 +34,7 @@ use crate::reflect::MessageDescriptor;
 use crate::reflect::ProtobufValue;
 use crate::unknown::UnknownValue;
 use crate::wire_format;
+use crate::wire_format::WireType;
 use crate::zigzag::decode_zig_zag_32;
 use crate::zigzag::decode_zig_zag_64;
 use crate::MessageDyn;
@@ -273,7 +274,7 @@ impl<'a> CodedInputStream<'a> {
 
     /// Read tag, return it is pair (field number, wire type)
     #[inline]
-    pub fn read_tag_unpack(&mut self) -> ProtobufResult<(u32, wire_format::WireType)> {
+    pub fn read_tag_unpack(&mut self) -> ProtobufResult<(u32, WireType)> {
         self.read_tag().map(|t| t.unpack())
     }
 
@@ -521,21 +522,12 @@ impl<'a> CodedInputStream<'a> {
     }
 
     /// Read `UnknownValue`
-    pub fn read_unknown(
-        &mut self,
-        wire_type: wire_format::WireType,
-    ) -> ProtobufResult<UnknownValue> {
+    pub fn read_unknown(&mut self, wire_type: WireType) -> ProtobufResult<UnknownValue> {
         match wire_type {
-            wire_format::WireType::WireTypeVarint => {
-                self.read_raw_varint64().map(|v| UnknownValue::Varint(v))
-            }
-            wire_format::WireType::WireTypeFixed64 => {
-                self.read_fixed64().map(|v| UnknownValue::Fixed64(v))
-            }
-            wire_format::WireType::WireTypeFixed32 => {
-                self.read_fixed32().map(|v| UnknownValue::Fixed32(v))
-            }
-            wire_format::WireType::WireTypeLengthDelimited => {
+            WireType::WireTypeVarint => self.read_raw_varint64().map(|v| UnknownValue::Varint(v)),
+            WireType::WireTypeFixed64 => self.read_fixed64().map(|v| UnknownValue::Fixed64(v)),
+            WireType::WireTypeFixed32 => self.read_fixed32().map(|v| UnknownValue::Fixed32(v)),
+            WireType::WireTypeLengthDelimited => {
                 let len = self.read_raw_varint32()?;
                 self.read_raw_bytes(len)
                     .map(|v| UnknownValue::LengthDelimited(v))
@@ -547,7 +539,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     /// Skip field
-    pub fn skip_field(&mut self, wire_type: wire_format::WireType) -> ProtobufResult<()> {
+    pub fn skip_field(&mut self, wire_type: WireType) -> ProtobufResult<()> {
         self.read_unknown(wire_type).map(|_| ())
     }
 

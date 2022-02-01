@@ -849,7 +849,7 @@ where
 fn skip_group(is: &mut CodedInputStream) -> ProtobufResult<()> {
     loop {
         let (_, wire_type) = is.read_tag_unpack()?;
-        if wire_type == wire_format::WireType::WireTypeEndGroup {
+        if wire_type == WireType::WireTypeEndGroup {
             return Ok(());
         }
         is.skip_field(wire_type)?;
@@ -865,7 +865,7 @@ pub fn read_unknown_or_skip_group(
     unknown_fields: &mut UnknownFields,
 ) -> ProtobufResult<()> {
     match wire_type {
-        wire_format::WireType::WireTypeStartGroup => skip_group(is),
+        WireType::WireTypeStartGroup => skip_group(is),
         _ => {
             let unknown = is.read_unknown(wire_type)?;
             unknown_fields.add_value(field_number, unknown);
