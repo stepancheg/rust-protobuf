@@ -18,6 +18,15 @@
 //! * [`protobuf-codegen-pure`](https://docs.rs/protobuf-codegen-pure) crate,
 //!   similar API to `protoc-rust`, but uses pure rust parser of `.proto` files.
 //!
+//! # `protoc-gen-rust` plugin for `protoc`
+//!
+//! When non-cargo build system is used, consider using standard protobuf code generation pattern:
+//! `protoc` command does all the work of handling paths and parsing `.proto` files.
+//! When `protoc` is invoked with `--rust_out=` option, it invokes `protoc-gen-rust` plugin.
+//! provided by this crate.
+//!
+//! When building with cargo, consider using `protoc-rust` or `protobuf-codegen-pure` crates.
+//!
 //! # Version 2
 //!
 //! This is documentation for version 2 of the crate.
