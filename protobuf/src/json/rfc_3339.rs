@@ -85,38 +85,25 @@ pub struct TmUtc {
     nanos: u32,
 }
 
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum Rfc3339ParseError {
+    #[error("Unexpected EOF")]
     UnexpectedEof,
+    #[error("Trailing characters")]
     TrailngCharacters,
+    #[error("Expecting digits")]
     ExpectingDigits,
+    #[error("Expecting character: {:?}", .0)]
     ExpectingChar(char),
+    #[error("Expecting timezone")]
     ExpectingTimezone,
+    #[error("No digits after dot")]
     NoDigitsAfterDot,
+    #[error("Date-time field is out of range")]
     DateTimeFieldOutOfRange,
+    #[error("Expecting date-time separator")]
     ExpectingDateTimeSeparator,
 }
-
-impl fmt::Display for Rfc3339ParseError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Rfc3339ParseError::UnexpectedEof => write!(f, "Unexpected EOF"),
-            Rfc3339ParseError::TrailngCharacters => write!(f, "Trailing characters"),
-            Rfc3339ParseError::ExpectingDigits => write!(f, "Expecting digits"),
-            Rfc3339ParseError::ExpectingChar(c) => write!(f, "Expecting char: {}", c),
-            Rfc3339ParseError::ExpectingTimezone => write!(f, "Expecting timezone"),
-            Rfc3339ParseError::NoDigitsAfterDot => write!(f, "No digits after dot"),
-            Rfc3339ParseError::DateTimeFieldOutOfRange => {
-                write!(f, "Date-time field is out of range")
-            }
-            Rfc3339ParseError::ExpectingDateTimeSeparator => {
-                write!(f, "Expecting date-time separator")
-            }
-        }
-    }
-}
-
-impl std::error::Error for Rfc3339ParseError {}
 
 pub type Rfc3339ParseResult<A> = Result<A, Rfc3339ParseError>;
 
