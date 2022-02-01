@@ -22,7 +22,9 @@ impl Default for WhichParser {
     }
 }
 
-/// `Protoc --rust_out...` args
+/// Entry point for `.proto` to `.rs` code generation.
+///
+/// This is similar to `protoc --rust_out...`.
 #[derive(Debug, Default)]
 pub struct Codegen {
     /// What parser to use to parse `.proto` files.
