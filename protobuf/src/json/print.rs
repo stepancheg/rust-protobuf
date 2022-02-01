@@ -251,8 +251,13 @@ impl PrintableToJson for Value {
             // None should not be possible here, but it's better to print null than crash
             None => w.print_json_null(),
             Some(value::Kind::null_value(null_value)) => {
-                // TODO: number if unknown
-                w.print_wk_null_value(&null_value.enum_value_or_default())
+                match null_value.enum_value() {
+                    Ok(value) => w.print_wk_null_value(&value),
+                    Err(n) => {
+                        // Practically not possible, but it is safer this way.
+                        w.print_printable(&n)
+                    }
+                }
             }
             Some(value::Kind::bool_value(b)) => w.print_printable(&b),
             Some(value::Kind::number_value(n)) => w.print_printable(&n),
