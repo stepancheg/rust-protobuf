@@ -40,6 +40,19 @@
 //!
 //! In version 2 `protobuf-codegen` contains `protoc`-based codegen,
 //! and `protobuf-codegen-pure` is pure rust codegen.
+//!
+//! # Example
+//!
+//! ```no_run
+//! // Use this in build.rs
+//! protobuf_codegen::Codegen::new()
+//!     .includes(&["src/protos"])
+//!     // Inputs must reside in some of include paths.
+//!     .input("src/protos/apple.proto")
+//!     .input("src/protos/banana.proto")
+//!     .out_dir("src/protos")
+//!     .run_from_script();
+//! ```
 
 #![deny(rustdoc::broken_intra_doc_links)]
 
