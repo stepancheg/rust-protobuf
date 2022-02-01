@@ -47,7 +47,7 @@ pub enum ProtobufError {
     WireError(#[from] WireError),
     /// Protocol contains a string which is not valid UTF-8 string
     #[error("UTF-8 decode error")]
-    Utf8(#[from] str::Utf8Error),
+    Utf8(#[source] str::Utf8Error),
     /// Not all required fields of message set.
     #[error("Message `{}` is missing required fields", .0)]
     MessageNotInitialized(String),
