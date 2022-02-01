@@ -1,5 +1,3 @@
-use std::fmt;
-
 use crate::text_format::lexer::Lexer;
 use crate::text_format::lexer::LexerError;
 use crate::text_format::lexer::Loc;
@@ -9,63 +7,36 @@ use crate::text_format::lexer::StrLitDecodeError;
 use crate::text_format::lexer::Token;
 use crate::text_format::lexer::TokenWithLocation;
 
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum TokenizerError {
-    LexerError(LexerError),
-    StrLitDecodeError(StrLitDecodeError),
+    #[error(transparent)]
+    LexerError(#[from] LexerError),
+    #[error(transparent)]
+    StrLitDecodeError(#[from] StrLitDecodeError),
+    #[error("Internal tokenizer error")]
     InternalError,
-    IncorrectInput, // TODO: too broad
+    // TODO: too broad
+    #[error("Incorrect input")]
+    IncorrectInput,
+    #[error("Unexpected end of input")]
     UnexpectedEof,
+    #[error("Expecting string literal")]
     ExpectStrLit,
+    #[error("Expecting int literal")]
     ExpectIntLit,
+    #[error("Expecting float literal")]
     ExpectFloatLit,
+    #[error("Expecting identifier")]
     ExpectIdent,
+    #[error("Expecting identifier `{}`", .0)]
     ExpectNamedIdent(String),
+    #[error("Expecting char `{}`", .0)]
     ExpectChar(char),
+    #[error("Expecting any char of: {}", .0.iter().map(|c| format!("`{}`", c)).collect::<Vec<_>>().join(", "))]
     ExpectAnyChar(Vec<char>),
 }
 
-impl fmt::Display for TokenizerError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            TokenizerError::LexerError(e) => write!(f, "{}", e),
-            TokenizerError::StrLitDecodeError(e) => write!(f, "{}", e),
-            TokenizerError::InternalError => write!(f, "Internal tokenizer error"),
-            TokenizerError::IncorrectInput => write!(f, "Incorrect input"),
-            TokenizerError::UnexpectedEof => write!(f, "Unexpected EOF"),
-            TokenizerError::ExpectStrLit => write!(f, "Expecting string literal"),
-            TokenizerError::ExpectIntLit => write!(f, "Expecting int literal"),
-            TokenizerError::ExpectFloatLit => write!(f, "Expecting float literal"),
-            TokenizerError::ExpectIdent => write!(f, "Expecting identifier"),
-            TokenizerError::ExpectNamedIdent(n) => write!(f, "Expecting identifier {}", n),
-            TokenizerError::ExpectChar(c) => write!(f, "Expecting char {}", c),
-            TokenizerError::ExpectAnyChar(c) => write!(
-                f,
-                "Expecting one of: {}",
-                c.iter()
-                    .map(|c| format!("{}", c))
-                    .collect::<Vec<String>>()
-                    .join(", ")
-            ),
-        }
-    }
-}
-
-impl std::error::Error for TokenizerError {}
-
 pub type TokenizerResult<R> = Result<R, TokenizerError>;
-
-impl From<LexerError> for TokenizerError {
-    fn from(e: LexerError) -> Self {
-        TokenizerError::LexerError(e)
-    }
-}
-
-impl From<StrLitDecodeError> for TokenizerError {
-    fn from(e: StrLitDecodeError) -> Self {
-        TokenizerError::StrLitDecodeError(e)
-    }
-}
 
 #[derive(Clone)]
 pub struct Tokenizer<'a> {
