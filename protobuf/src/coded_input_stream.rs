@@ -802,6 +802,7 @@ mod test {
     }
 
     #[test]
+    #[cfg_attr(miri, ignore)] // TODO: fix
     fn test_input_stream_skip_raw_bytes() {
         test_read("", |reader| {
             reader.skip_raw_bytes(0).unwrap();
@@ -825,6 +826,7 @@ mod test {
     }
 
     #[test]
+    #[cfg_attr(miri, ignore)] // TODO: fix
     fn test_input_stream_limits() {
         test_read("aa bb cc", |is| {
             let old_limit = is.push_limit(1).unwrap();

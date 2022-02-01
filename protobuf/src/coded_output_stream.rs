@@ -583,7 +583,8 @@ impl<'a> Drop for CodedOutputStream<'a> {
     }
 }
 
-#[cfg(test)]
+// TODO: fix and enable miri
+#[cfg(all(test, not(miri)))]
 mod test {
     use std::iter;
 

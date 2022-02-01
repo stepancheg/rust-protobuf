@@ -159,6 +159,7 @@ mod test {
     use super::*;
 
     #[test]
+    #[cfg_attr(miri, ignore)] // TODO: fix
     fn test_remaining_capacity_as_slice_mut() {
         let mut v = Vec::with_capacity(5);
         v.push(10);
