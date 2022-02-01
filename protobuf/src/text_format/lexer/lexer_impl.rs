@@ -1,7 +1,6 @@
 use std::char;
 use std::convert::TryFrom;
 use std::f64;
-use std::fmt;
 use std::num::ParseFloatError;
 use std::num::ParseIntError;
 
@@ -15,54 +14,41 @@ use super::token::TokenWithLocation;
 use super::ParserLanguage;
 use crate::text_format::lexer::JsonNumberLit;
 
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum LexerError {
-    IncorrectInput, // TODO: something better than this
+    // TODO: something better than this
+    #[error("Incorrect input")]
+    IncorrectInput,
+    #[error("Unexpected EOF")]
     UnexpectedEof,
+    #[error("Expecting char: {:?}", .0)]
     ExpectChar(char),
+    #[error("Parse int error")]
     ParseIntError,
+    #[error("Parse float error")]
     ParseFloatError,
-    IncorrectFloatLit, // TODO: how it is different from ParseFloatError?
+    // TODO: how it is different from ParseFloatError?
+    #[error("Incorrect float literal")]
+    IncorrectFloatLit,
+    #[error("Incorrect JSON escape")]
     IncorrectJsonEscape,
+    #[error("Incorrect JSON number")]
     IncorrectJsonNumber,
+    #[error("Incorrect Unicode character")]
     IncorrectUnicodeChar,
+    #[error("Expecting hex digit")]
     ExpectHexDigit,
+    #[error("Expecting oct digit")]
     ExpectOctDigit,
+    #[error("Expecting dec digit")]
     ExpectDecDigit,
-    StrLitDecodeError(StrLitDecodeError),
+    #[error(transparent)]
+    StrLitDecodeError(#[from] StrLitDecodeError),
+    #[error("Expecting identifier")]
     ExpectedIdent,
 }
 
-impl fmt::Display for LexerError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            LexerError::IncorrectInput => write!(f, "Incorrect input"),
-            LexerError::UnexpectedEof => write!(f, "Unexpected EOF"),
-            LexerError::ExpectChar(c) => write!(f, "Expecting char: {}", c),
-            LexerError::ParseIntError => write!(f, "Parse int error"),
-            LexerError::ParseFloatError => write!(f, "Parse float error"),
-            LexerError::IncorrectFloatLit => write!(f, "Incorrect float literal"),
-            LexerError::IncorrectJsonEscape => write!(f, "Incorrect JSON escape"),
-            LexerError::IncorrectJsonNumber => write!(f, "Incorrect JSON number"),
-            LexerError::IncorrectUnicodeChar => write!(f, "Incorrect Unicode char"),
-            LexerError::ExpectHexDigit => write!(f, "Expecting hex digit"),
-            LexerError::ExpectOctDigit => write!(f, "Expecting oct digit"),
-            LexerError::ExpectDecDigit => write!(f, "Expecting dec digit"),
-            LexerError::StrLitDecodeError(e) => write!(f, "{}", e),
-            LexerError::ExpectedIdent => write!(f, "Expecting identifier"),
-        }
-    }
-}
-
-impl std::error::Error for LexerError {}
-
 pub type LexerResult<T> = Result<T, LexerError>;
-
-impl From<StrLitDecodeError> for LexerError {
-    fn from(e: StrLitDecodeError) -> Self {
-        LexerError::StrLitDecodeError(e)
-    }
-}
 
 impl From<ParseIntError> for LexerError {
     fn from(_: ParseIntError) -> Self {
