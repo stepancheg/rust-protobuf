@@ -186,7 +186,7 @@ fn test_reflect() {
 fn test_parse_error() {
     let e = protobuf::text_format::parse_from_str::<TestTypes>("nonexistent: 42").unwrap_err();
     let _error: &dyn std::error::Error = &e;
-    assert_eq!(e.to_string(), "1:1: UnknownField(\"nonexistent\")");
+    assert_eq!(e.to_string(), "1:1: Unknown field: `nonexistent`");
 }
 
 fn t<F: FnMut(&mut TestTypes)>(expected: &str, mut setter: F) {
