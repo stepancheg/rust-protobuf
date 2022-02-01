@@ -1,6 +1,6 @@
 [package]
 name = "protobuf-codegen"
-version = "3.0.0-alpha.2"
+version = "3.0.0-alpha.3"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 edition = "2018"
 license = "MIT"
@@ -20,9 +20,9 @@ thiserror = "1.0.30"
 anyhow    = "1.0.44"
 tempfile  = "3"
 
-protobuf = { path = "../protobuf", version = "=3.0.0-alpha.2" }
-protobuf-parse = { path = "../protobuf-parse", version = "=3.0.0-alpha.2" }
-protoc = { path = "../protoc", version = "=3.0.0-alpha.2" }
+protobuf = { path = "../protobuf", version = "=3.0.0-alpha.3" }
+protobuf-parse = { path = "../protobuf-parse", version = "=3.0.0-alpha.3" }
+protoc = { path = "../protoc", version = "=3.0.0-alpha.3" }
 
 [[bin]]
 
