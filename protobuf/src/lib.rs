@@ -2,8 +2,8 @@
 //!
 //! # Version 2 is stable
 //!
-//! Currently developed branch of rust-protobuf is 3. It has the same spirit as version 2,
-//! but contains numerous improvements like:
+//! Currently developed branch of rust-protobuf [is 3](https://docs.rs/protobuf/%3E=3.0.0-alpha).
+//! It has the same spirit as version 2, but contains numerous improvements like:
 //! * runtime reflection for mutability, not just for access
 //! * protobuf text format and JSON parsing (which rely on reflection)
 //! * dynamic message support: work with protobuf data without generating code from schema
