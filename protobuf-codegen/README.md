@@ -1,6 +1,6 @@
 # protobuf-codegen
 
-This crate contains protobuf code generator and a `protoc-gen-rust` `protoc` plugin.
+This crate contains protobuf code generator implementation and a `protoc-gen-rust` `protoc` plugin.
 
 ## protoc-gen-rust
 
@@ -8,16 +8,16 @@ This crate contains protobuf code generator and a `protoc-gen-rust` `protoc` plu
 
 Probably you do not want to use it directly in Rust environment, there are easier to use alternatives:
 
-* [protoc-rust crate](https://github.com/stepancheg/rust-protobuf/tree/master/protoc-rust)
+* [protoc-rust crate](https://docs.rs/protoc-rust)
   which can be invoked programmatically from `build.rs` of your project
   which requires only `protoc` in `$PATH` but not `protoc-gen-rust`.
-* [protobuf-codegen-pure crate](https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen-pure)
+* [protobuf-codegen-pure crate](https://docs.rs/protobuf-codegen-pure)
   which behaves like protoc-rust, but does not depend on `protoc` binary
 
 ## But if you really want to use that plugin, here's the instruction
 
 (Note `protoc` can be invoked programmatically with
-[protoc crate](https://github.com/stepancheg/rust-protobuf/tree/master/protoc/))
+[protoc crate](https://docs.rs/protoc))
 
 0) Install protobuf for `protoc` binary.
 
