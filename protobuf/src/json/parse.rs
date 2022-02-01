@@ -138,19 +138,12 @@ impl From<rfc_3339::Rfc3339ParseError> for ParseErrorWithoutLoc {
 }
 
 /// JSON parse error
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
+#[error("{} at {}", error, loc)]
 pub struct ParseError {
     error: ParseErrorWithoutLoc,
     loc: Loc,
 }
-
-impl fmt::Display for ParseError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{} at {}", self.error, self.loc)
-    }
-}
-
-impl std::error::Error for ParseError {}
 
 type ParseResultWithoutLoc<A> = Result<A, ParseErrorWithoutLoc>;
 type ParseResult<A> = Result<A, ParseError>;
