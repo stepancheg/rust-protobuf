@@ -35,7 +35,7 @@
 //! used internally in rust-protobuf:
 //!
 //! * [descriptor.rs](https://github.com/stepancheg/rust-protobuf/blob/master/protobuf/src/descriptor.rs)
-//!   for [descriptor.proto](https://github.com/stepancheg/rust-protobuf/blob/master/proto/google/protobuf/descriptor.proto)
+//!   for [descriptor.proto](https://github.com/stepancheg/rust-protobuf/blob/master/protoc-bin-vendored/include/google/protobuf/descriptor.proto)
 //!   (that is part of Google protobuf)
 //!
 //! # Copy on write
