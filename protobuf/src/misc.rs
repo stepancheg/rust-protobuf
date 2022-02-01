@@ -1,15 +1,25 @@
-use std::mem;
+use std::mem::MaybeUninit;
+use std::ptr;
 
 use crate::well_known_types;
 
-/// Slice from `vec[vec.len()..vec.capacity()]`
-pub unsafe fn remaining_capacity_as_slice_mut<A>(vec: &mut Vec<A>) -> &mut [A] {
-    let range = vec.len()..vec.capacity();
-    vec.get_unchecked_mut(range)
+/// `Vec::spare_capacity_mut` is not stable until Rust 1.60.
+pub(crate) unsafe fn vec_spare_capacity_mut<A>(vec: &mut Vec<A>) -> *mut [MaybeUninit<A>] {
+    ptr::slice_from_raw_parts_mut(
+        vec.as_mut_ptr().add(vec.len()) as *mut MaybeUninit<A>,
+        vec.capacity() - vec.len(),
+    )
 }
 
-pub unsafe fn remove_lifetime_mut<A: ?Sized>(a: &mut A) -> &'static mut A {
-    mem::transmute(a)
+/// `MaybeUninit::write_slice` is not stable.
+pub(crate) fn maybe_uninit_write_slice<T>(this: &mut [MaybeUninit<T>], src: &[T])
+where
+    T: Copy,
+{
+    // SAFETY: &[T] and &[MaybeUninit<T>] have the same layout
+    let uninit_src: &[MaybeUninit<T>] = unsafe { std::mem::transmute(src) };
+
+    this.copy_from_slice(uninit_src);
 }
 
 // bool <-> BoolValue
@@ -153,27 +163,3 @@ impl From<()> for well_known_types::Empty {
 }
 
 // TODO Think about `std::time::Duration` and `std::time::SystemTime` conversions.
-
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    #[cfg_attr(miri, ignore)] // TODO: fix
-    fn test_remaining_capacity_as_slice_mut() {
-        let mut v = Vec::with_capacity(5);
-        v.push(10);
-        v.push(11);
-        v.push(12);
-        unsafe {
-            {
-                let s = remaining_capacity_as_slice_mut(&mut v);
-                assert_eq!(2, s.len());
-                s[0] = 13;
-                s[1] = 14;
-            }
-            v.set_len(5);
-        }
-        assert_eq!(vec![10, 11, 12, 13, 14], v);
-    }
-}
