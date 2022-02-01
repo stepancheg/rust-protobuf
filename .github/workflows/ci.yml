@@ -295,7 +295,7 @@ jobs:
               uses: actions-rs/cargo@v1
               with:
                   command: miri
-                  args: test -p protobuf --lib
+                  args: test -p protobuf --lib --all-features
     mega-linter:
         name: mega-linter
         runs-on: ubuntu-latest

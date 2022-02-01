@@ -179,7 +179,7 @@ fn miri_test_job() -> Job {
         &["miri"],
     ));
     steps.push(cargo_miri_setup("cargo-miri-setup"));
-    steps.push(cargo_miri_test("cargo-miri-test", "-p protobuf --lib"));
+    steps.push(cargo_miri_test("cargo-miri-test", "-p protobuf --lib --all-features"));
 
     let id = "miri-test".to_owned();
     let name = "Miri test".to_owned();
