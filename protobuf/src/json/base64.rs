@@ -1,7 +1,4 @@
 //! Copy-pasted from the internet
-
-use std::fmt;
-
 /// Available encoding character sets
 #[derive(Clone, Copy, Debug)]
 enum _CharacterSet {
