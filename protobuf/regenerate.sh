@@ -16,6 +16,9 @@ case "$protoc_ver" in
 esac
 
 cargo build --manifest-path=../protobuf-codegen/Cargo.toml
+cargo build --manifest-path=../protoc-bin-vendored/Cargo.toml --bin protoc-bin-which
+
+PROTOC=$(cargo run --manifest-path=../protoc-bin-vendored/Cargo.toml --bin protoc-bin-which)
 
 where_am_i=$(cd ..; pwd)
 
@@ -31,7 +34,7 @@ case `uname` in
     ;;
 esac
 
-protoc \
+"$PROTOC" \
     --plugin=protoc-gen-rust="$where_am_i/target/debug/protoc-gen-rust$exe_suffix" \
     --rust_out tmp-generated \
     --rust_opt 'serde_derive=true inside_protobuf=true' \
