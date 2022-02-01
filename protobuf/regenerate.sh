@@ -48,7 +48,7 @@ mv tmp-generated/descriptor.rs tmp-generated/plugin.rs tmp-generated/rustproto.r
 mv tmp-generated/*.rs src/well_known_types/
 (
     cd src/well_known_types
-    exec > mod.rs
+    exec >mod.rs
     echo "// This file is generated. Do not edit"
     echo '//! Generated code for "well known types"'
     echo "//!"
