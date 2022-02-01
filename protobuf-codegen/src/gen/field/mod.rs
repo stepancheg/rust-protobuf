@@ -1017,7 +1017,7 @@ impl<'a> FieldGen<'a> {
                         )
                     } else {
                         format!(
-                            "{}::rt::value_size({}, {}, {}::wire_format::{:?})",
+                            "{}::rt::value_size({}, {}, {}::wire_format::WireType::{:?})",
                             protobuf_crate_path(&self.customize),
                             self.proto_field.number(),
                             var_type.into_target(&param_type, var, &self.customize),
@@ -1622,7 +1622,7 @@ impl<'a> FieldGen<'a> {
     fn write_assert_wire_type(&self, wire_type_var: &str, w: &mut CodeWriter) {
         w.if_stmt(
             &format!(
-                "{} != {}::wire_format::{:?}",
+                "{} != {}::wire_format::WireType::{:?}",
                 wire_type_var,
                 protobuf_crate_path(&self.customize),
                 self.wire_type,
@@ -1818,7 +1818,7 @@ impl<'a> FieldGen<'a> {
                 self.write_if_self_field_is_not_empty(w, |w| {
                     let number = self.proto_field.number();
                     w.write_line(&format!(
-                        "os.write_tag({}, {}::wire_format::{:?})?;",
+                        "os.write_tag({}, {}::wire_format::WireType::{:?})?;",
                         number,
                         protobuf_crate_path(&self.customize),
                         wire_format::WireTypeLengthDelimited
