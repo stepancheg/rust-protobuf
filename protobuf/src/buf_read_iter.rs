@@ -443,6 +443,7 @@ mod test_bytes {
     }
 
     #[test]
+    #[cfg_attr(miri, ignore)] // TODO: fix this
     fn read_exact_bytes_from_bytes() {
         let bytes = Bytes::from(make_long_string(100));
         let mut bri = BufReadIter::from_bytes(&bytes);
