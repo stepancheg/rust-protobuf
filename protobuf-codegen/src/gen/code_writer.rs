@@ -4,6 +4,7 @@
 use std::io::Write;
 
 use crate::gen::rust_name::RustRelativePath;
+use crate::rust_ast::attr::RustAttr;
 use crate::rust_ast::RustAst;
 
 /// Field visibility.
@@ -185,6 +186,11 @@ impl<'a> CodeWriter<'a> {
 
     pub fn field_entry(&mut self, name: &str, value: &str) {
         self.write_line(&format!("{}: {},", name, value));
+    }
+
+    pub fn allow(&mut self, what: &[&str]) {
+        let v: Vec<String> = what.iter().map(|&s| s.to_string()).collect();
+        self.write_line(&format!("#[allow({})]", v.join(",")));
     }
 
     pub fn comment(&mut self, comment: &str) {

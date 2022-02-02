@@ -18,31 +18,23 @@ impl RustAttrArg {
     }
 
     fn ident(ident: &str) -> RustAttrArg {
-        RustAttrArg::Attr(RustAttr::no_args(ident))
+        RustAttrArg::Attr(RustAttr::ident(ident))
     }
 }
 
 impl RustAttr {
-    pub(crate) fn no_args(name: &str) -> RustAttr {
+    pub(crate) fn ident(name: &str) -> RustAttr {
         RustAttr {
             name: name.to_owned(),
             args: None,
         }
     }
 
-    pub(crate) fn ident_args(name: &str, args: &[&str]) -> RustAttr {
-        RustAttr {
-            name: name.to_owned(),
-            args: Some(args.iter().map(|s| RustAttrArg::ident(s)).collect()),
-        }
-    }
-
     pub(crate) fn derive(traits: &[&str]) -> RustAttr {
-        RustAttr::ident_args("derive", traits)
-    }
-
-    pub(crate) fn allow(attrs: &[&str]) -> RustAttr {
-        RustAttr::ident_args("allow", attrs)
+        RustAttr {
+            name: "derive".to_string(),
+            args: Some(traits.iter().map(|t| RustAttrArg::ident(t)).collect()),
+        }
     }
 
     fn to_string(&self) -> String {
