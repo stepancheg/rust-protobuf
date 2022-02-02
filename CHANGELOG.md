@@ -1,9 +1,11 @@
 # Changelog
 
-## [3] - Unreleased
-
 Alpha versions of branch 3 are published. They are not guaranteed to have backwards compatibility.
 Stable versions are 2.xx still supported.
+
+## [3] - Unreleased
+
+- `Display` for message now outputs text format, and `Debug` for message does standard rust `#[derive(Debug)]`.
 
 ## [3.0.0-alpha.3] - 2022-02-01
 
