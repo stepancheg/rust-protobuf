@@ -234,6 +234,7 @@ impl Clear for DynamicMessage {
     }
 }
 
+// TODO: implement PartialEq, Default
 impl Message for DynamicMessage {
     fn descriptor_by_instance(&self) -> MessageDescriptor {
         self.descriptor.clone()

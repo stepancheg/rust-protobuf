@@ -23,12 +23,12 @@ use crate::unknown::UnknownFields;
 ///   (see [FileDescriptor::new_dynamic](crate::reflect::FileDescriptor::new_dynamic)).
 ///
 ///
-/// Also, generated messages implement `Clone + Default + PartialEq`
+/// Also, generated messages implement `Default + PartialEq`
 ///
 /// This trait is sized, there's accompanying [`MessageDyn`](crate::MessageDyn) trait
 /// which is implemented for all messages which can be used in functions
 /// without making message a function type parameter.
-pub trait Message: fmt::Debug + Clear + Send + Sync + Sized + 'static {
+pub trait Message: fmt::Debug + Clear + Clone + Send + Sync + Sized + 'static {
     /// Message descriptor for this message, used for reflection.
     ///
     /// This function is rarely needed to be called directly, use
