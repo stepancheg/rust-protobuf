@@ -4,23 +4,10 @@ use protobuf::Message;
 use protobuf_test_common::*;
 
 use super::interop_pb::*;
-
-fn interop_json_encode(m: &InteropMessageList) -> String {
-    let m_bytes = m.write_to_bytes().expect("write_to_bytes");
-
-    let json = interop_command("json-encode", &m_bytes);
-
-    String::from_utf8(json).expect("utf8")
-}
-
-fn interop_json_decode(m: &str) -> InteropMessageList {
-    let bytes = interop_command("json-decode", m.as_bytes());
-
-    InteropMessageList::parse_from_bytes(&bytes).expect("parse_from_bytes")
-}
+use crate::interop;
 
 fn test_parse_message(m: &InteropMessageList) {
-    let json = interop_json_encode(m);
+    let json = interop::interop_json_encode_typed(m);
 
     let mut mm = InteropMessageList::new();
 
@@ -38,7 +25,7 @@ fn test_parse_message(m: &InteropMessageList) {
 fn test_print_message(m: &InteropMessageList) {
     let m_json = json::print_to_string(m).unwrap();
 
-    let mm = interop_json_decode(&m_json);
+    let mm = interop::interop_json_decode_typed(&m_json);
 
     assert!(
         Message::reflect_eq(m, &mm, &ReflectEqMode::nan_equal()),

@@ -101,6 +101,7 @@ fn gen_in_dir(dir: &str, include_dir: &str) {
 fn generate_interop() {
     copy_from_protobuf_test("src/interop/mod.rs");
     copy_from_protobuf_test("src/interop/json.rs");
+    copy_from_protobuf_test("src/interop/bin.rs");
 
     Codegen::new()
         .pure()
