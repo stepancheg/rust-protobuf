@@ -532,8 +532,8 @@ impl<'a> MessageGen<'a> {
         )
     }
 
-    fn write_impl_show(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::std::fmt::Debug", &format!("{}", self.type_name), |w| {
+    fn write_impl_display(&self, w: &mut CodeWriter) {
+        w.impl_for_block("::std::fmt::Display", &format!("{}", self.type_name), |w| {
             w.def_fn(
                 "fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result",
                 |w| {
@@ -572,10 +572,7 @@ impl<'a> MessageGen<'a> {
         if self.supports_derive_partial_eq() {
             derive.push("PartialEq");
         }
-        derive.extend(&["Clone", "Default"]);
-        if self.lite_runtime {
-            derive.push("Debug");
-        }
+        derive.extend(&["Clone", "Default", "Debug"]);
         w.derive(&derive);
         serde::write_serde_attr(
             w,
@@ -666,10 +663,8 @@ impl<'a> MessageGen<'a> {
         self.write_impl_message(w);
         w.write_line("");
         self.write_impl_clear(w);
-        if !self.lite_runtime {
-            w.write_line("");
-            self.write_impl_show(w);
-        }
+        w.write_line("");
+        self.write_impl_display(w);
         w.write_line("");
         self.write_impl_value(w);
 

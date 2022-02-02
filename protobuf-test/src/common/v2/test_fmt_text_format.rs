@@ -5,10 +5,10 @@ use protobuf_test_common::*;
 use super::test_fmt_text_format_pb::*;
 
 #[test]
-fn test_show() {
+fn test_display() {
     let mut m = TestTypes::new();
     m.set_bool_singular(true);
-    assert_eq!("bool_singular: true", &*format!("{:?}", m));
+    assert_eq!("bool_singular: true", &*format!("{}", m));
 }
 
 #[test]
@@ -22,7 +22,7 @@ fn test_pretty() {
     m.mut_string_repeated().push("ghi".to_string());
     assert_eq!(
         "string_singular: \"abc\"\ntest_message_singular {\n  value: 23\n}\nstring_repeated: \"def\"\nstring_repeated: \"ghi\"\n",
-        &*format!("{:#?}", m)
+        &*format!("{:#}", m)
     );
 }
 
@@ -30,7 +30,7 @@ fn test_pretty() {
 fn test_rust_identifier() {
     let mut m = TestTextFormatRustIdentifier::new();
     m.set_field_const(true);
-    assert_eq!("const: true", &*format!("{:?}", m));
+    assert_eq!("const: true", &*format!("{}", m));
 }
 
 #[test]
@@ -280,6 +280,6 @@ fn test_string_escaped() {
     m.set_string_singular("quote\"newline\nbackslash\\del\x7f".to_string());
     assert_eq!(
         "string_singular: \"quote\\\"newline\\nbackslash\\\\del\\177\"",
-        &*format!("{:?}", m)
+        &*format!("{}", m)
     );
 }
