@@ -1886,6 +1886,12 @@ impl<'a> FieldGen<'a> {
                     }
                 };
             }
+            FieldKind::Repeated(RepeatedField { packed: true, .. }) => {
+                self.write_if_self_field_is_not_empty(w, |w| {
+                    let size_expr = self.self_field_vec_packed_size();
+                    w.write_line(&format!("{} += {};", sum_var, size_expr));
+                });
+            }
             FieldKind::Map(MapField {
                 ref key, ref value, ..
             }) => {
@@ -1898,12 +1904,6 @@ impl<'a> FieldGen<'a> {
                     self.proto_field.number(),
                     self.self_field()
                 ));
-            }
-            FieldKind::Repeated(RepeatedField { packed: true, .. }) => {
-                self.write_if_self_field_is_not_empty(w, |w| {
-                    let size_expr = self.self_field_vec_packed_size();
-                    w.write_line(&format!("{} += {};", sum_var, size_expr));
-                });
             }
             FieldKind::Oneof(..) => unreachable!(),
         }
