@@ -27,6 +27,9 @@ use crate::rt::string_size;
 use crate::rt::tag_size;
 use crate::rt::value_size;
 use crate::rt::value_varint_zigzag_size;
+use crate::rt::vec_packed_fixed_size;
+use crate::rt::vec_packed_varint_size;
+use crate::rt::vec_packed_varint_zigzag_size;
 use crate::text_format;
 use crate::wire_format::WireType;
 use crate::Clear;
@@ -211,9 +214,21 @@ impl DynamicMessage {
                 }
                 RuntimeFieldType::Repeated(..) => {
                     let repeated = field_desc.get_repeated(self);
-                    for i in 0..repeated.len() {
-                        let v = repeated.get(i);
-                        handler.field(field_desc.get_proto().get_field_type(), field_number, &v)?;
+                    if field_desc.get_proto().options.get_or_default().get_packed() {
+                        handler.repeated_packed(
+                            field_desc.get_proto().get_field_type(),
+                            field_number,
+                            &repeated,
+                        )?;
+                    } else {
+                        for i in 0..repeated.len() {
+                            let v = repeated.get(i);
+                            handler.field(
+                                field_desc.get_proto().get_field_type(),
+                                field_number,
+                                &v,
+                            )?;
+                        }
                     }
                 }
                 RuntimeFieldType::Map(_, _) => {
@@ -229,6 +244,12 @@ impl DynamicMessage {
 
 trait ForEachSingularFieldToWrite {
     fn field(&mut self, t: Type, number: u32, value: &ReflectValueRef) -> ProtobufResult<()>;
+    fn repeated_packed(
+        &mut self,
+        t: Type,
+        number: u32,
+        value: &ReflectRepeatedRef,
+    ) -> ProtobufResult<()>;
 }
 
 impl Clear for DynamicMessage {
@@ -330,6 +351,15 @@ impl Message for DynamicMessage {
             ) -> ProtobufResult<()> {
                 singular_write_to(t, number, value, self.os)
             }
+
+            fn repeated_packed(
+                &mut self,
+                t: Type,
+                number: u32,
+                value: &ReflectRepeatedRef,
+            ) -> ProtobufResult<()> {
+                repeated_write_to(t, number, value, self.os)
+            }
         }
 
         let mut handler = Handler { os };
@@ -350,6 +380,16 @@ impl Message for DynamicMessage {
                 value: &ReflectValueRef,
             ) -> ProtobufResult<()> {
                 self.m_size += compute_singular_size(t, number, value);
+                Ok(())
+            }
+
+            fn repeated_packed(
+                &mut self,
+                t: Type,
+                number: u32,
+                value: &ReflectRepeatedRef,
+            ) -> ProtobufResult<()> {
+                self.m_size += compute_repeated_packed_size(t, number, value);
                 Ok(())
             }
         }
@@ -483,5 +523,60 @@ fn compute_singular_size(proto_type: Type, field_number: u32, v: &ReflectValueRe
         }
         Type::TYPE_FLOAT => tag_size(field_number) + 4,
         Type::TYPE_DOUBLE => tag_size(field_number) + 8,
+    }
+}
+
+fn compute_repeated_packed_size(
+    proto_type: Type,
+    field_number: u32,
+    v: &ReflectRepeatedRef,
+) -> u32 {
+    match proto_type {
+        Type::TYPE_INT32 => vec_packed_varint_size(field_number, v.data_i32()),
+        Type::TYPE_INT64 => vec_packed_varint_size(field_number, v.data_i64()),
+        Type::TYPE_UINT32 => vec_packed_varint_size(field_number, v.data_u32()),
+        Type::TYPE_UINT64 => vec_packed_varint_size(field_number, v.data_u64()),
+        Type::TYPE_SINT32 => vec_packed_varint_zigzag_size(field_number, v.data_i32()),
+        Type::TYPE_SINT64 => vec_packed_varint_zigzag_size(field_number, v.data_i64()),
+        Type::TYPE_FIXED32 => vec_packed_fixed_size(field_number, v.data_u32()),
+        Type::TYPE_FIXED64 => vec_packed_fixed_size(field_number, v.data_u64()),
+        Type::TYPE_SFIXED32 => vec_packed_fixed_size(field_number, v.data_i32()),
+        Type::TYPE_SFIXED64 => vec_packed_fixed_size(field_number, v.data_i64()),
+        Type::TYPE_FLOAT => vec_packed_fixed_size(field_number, v.data_f32()),
+        Type::TYPE_DOUBLE => vec_packed_fixed_size(field_number, v.data_f64()),
+        Type::TYPE_BOOL => vec_packed_fixed_size(field_number, v.data_bool()),
+        Type::TYPE_STRING => panic!("strings cannot be packed"),
+        Type::TYPE_BYTES => panic!("bytes cannot be packed"),
+        Type::TYPE_ENUM => vec_packed_varint_size(field_number, v.data_enum_values()),
+        Type::TYPE_MESSAGE => panic!("messages cannot be packed"),
+        Type::TYPE_GROUP => panic!("groups cannot be packed"),
+    }
+}
+
+fn repeated_write_to(
+    proto_type: Type,
+    field_number: u32,
+    v: &ReflectRepeatedRef,
+    os: &mut CodedOutputStream,
+) -> ProtobufResult<()> {
+    match proto_type {
+        Type::TYPE_INT32 => os.write_repeated_packed_int32(field_number, v.data_i32()),
+        Type::TYPE_INT64 => os.write_repeated_packed_int64(field_number, v.data_i64()),
+        Type::TYPE_UINT64 => os.write_repeated_packed_uint64(field_number, v.data_u64()),
+        Type::TYPE_FIXED64 => os.write_repeated_packed_fixed64(field_number, v.data_u64()),
+        Type::TYPE_FIXED32 => os.write_repeated_packed_fixed32(field_number, v.data_u32()),
+        Type::TYPE_UINT32 => os.write_repeated_packed_uint32(field_number, v.data_u32()),
+        Type::TYPE_SINT32 => os.write_repeated_packed_sint32(field_number, v.data_i32()),
+        Type::TYPE_SINT64 => os.write_repeated_packed_sint64(field_number, v.data_i64()),
+        Type::TYPE_SFIXED32 => os.write_repeated_packed_sfixed32(field_number, v.data_i32()),
+        Type::TYPE_SFIXED64 => os.write_repeated_packed_sfixed64(field_number, v.data_i64()),
+        Type::TYPE_BOOL => os.write_repeated_packed_bool(field_number, v.data_bool()),
+        Type::TYPE_FLOAT => os.write_repeated_packed_float(field_number, v.data_f32()),
+        Type::TYPE_DOUBLE => os.write_repeated_packed_double(field_number, v.data_f64()),
+        Type::TYPE_ENUM => os.write_repeated_packed_int32(field_number, v.data_enum_values()),
+        Type::TYPE_STRING => panic!("strings cannot be packed"),
+        Type::TYPE_BYTES => panic!("bytes cannot be packed"),
+        Type::TYPE_GROUP => panic!("groups cannot be packed"),
+        Type::TYPE_MESSAGE => panic!("messages cannot be packed"),
     }
 }

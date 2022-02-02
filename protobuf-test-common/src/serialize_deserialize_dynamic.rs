@@ -26,7 +26,7 @@ pub fn serialize_and_parse_as_dynamic_and_serialize<M: Message>(m: &M) -> Box<dy
     assert_eq!(
         encode_hex(&bytes),
         encode_hex(&serialized_again),
-        "serialized({:?}) != serialized({:?})",
+        "serialized({}) != serialized({})",
         m,
         parsed
     );

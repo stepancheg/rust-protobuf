@@ -1,4 +1,6 @@
+use std::any::TypeId;
 use std::fmt;
+use std::mem;
 use std::slice;
 
 use crate::reflect::dynamic::repeated::DynamicRepeated;
@@ -29,6 +31,28 @@ pub(crate) trait ReflectRepeated: Sync + 'static + fmt::Debug {
     fn clear(&mut self);
     /// Get the collection element type.
     fn element_type(&self) -> RuntimeTypeBox;
+
+    /// Get array data for enum elements.
+    ///
+    /// # Panics
+    ///
+    /// * if the element type is not an enum
+    fn data_enum_values(&self) -> &[i32];
+
+    /// Get array data if the element type is bool.
+    fn data_bool(&self) -> &[bool];
+    /// Get array data if the element type is i32.
+    fn data_i32(&self) -> &[i32];
+    /// Get array data if the element type is u32.
+    fn data_u32(&self) -> &[u32];
+    /// Get array data if the element type is i64.
+    fn data_i64(&self) -> &[i64];
+    /// Get array data if the element type is u64.
+    fn data_u64(&self) -> &[u64];
+    /// Get array data if the element type is f32.
+    fn data_f32(&self) -> &[f32];
+    /// Get array data if the element type is f64.
+    fn data_f64(&self) -> &[f64];
 }
 
 impl<V: ProtobufValue> ReflectRepeated for Vec<V> {
@@ -63,6 +87,38 @@ impl<V: ProtobufValue> ReflectRepeated for Vec<V> {
     fn element_type(&self) -> RuntimeTypeBox {
         V::runtime_type_box()
     }
+
+    fn data_enum_values(&self) -> &[i32] {
+        self.as_slice().data_enum_values()
+    }
+
+    fn data_bool(&self) -> &[bool] {
+        self.as_slice().data_bool()
+    }
+
+    fn data_i32(&self) -> &[i32] {
+        self.as_slice().data_i32()
+    }
+
+    fn data_u32(&self) -> &[u32] {
+        self.as_slice().data_u32()
+    }
+
+    fn data_i64(&self) -> &[i64] {
+        self.as_slice().data_i64()
+    }
+
+    fn data_u64(&self) -> &[u64] {
+        self.as_slice().data_u64()
+    }
+
+    fn data_f32(&self) -> &[f32] {
+        self.as_slice().data_f32()
+    }
+
+    fn data_f64(&self) -> &[f64] {
+        self.as_slice().data_f64()
+    }
 }
 
 // useless
@@ -96,6 +152,73 @@ impl<V: ProtobufValue> ReflectRepeated for [V] {
 
     fn element_type(&self) -> RuntimeTypeBox {
         V::runtime_type_box()
+    }
+
+    fn data_enum_values(&self) -> &[i32] {
+        V::cast_to_enum_values(&self)
+    }
+
+    fn data_bool(&self) -> &[bool] {
+        if TypeId::of::<Self>() == TypeId::of::<[bool]>() {
+            // Safety: we've just checked types
+            unsafe { mem::transmute(self) }
+        } else {
+            panic!("not bool");
+        }
+    }
+
+    fn data_i32(&self) -> &[i32] {
+        if TypeId::of::<Self>() == TypeId::of::<[i32]>() {
+            // Safety: we've just checked types
+            unsafe { mem::transmute(self) }
+        } else {
+            panic!("not i32");
+        }
+    }
+
+    fn data_u32(&self) -> &[u32] {
+        if TypeId::of::<Self>() == TypeId::of::<[u32]>() {
+            // Safety: we've just checked types
+            unsafe { mem::transmute(self) }
+        } else {
+            panic!("not u32");
+        }
+    }
+
+    fn data_i64(&self) -> &[i64] {
+        if TypeId::of::<Self>() == TypeId::of::<[i64]>() {
+            // Safety: we've just checked types
+            unsafe { mem::transmute(self) }
+        } else {
+            panic!("not i64");
+        }
+    }
+
+    fn data_u64(&self) -> &[u64] {
+        if TypeId::of::<Self>() == TypeId::of::<[u64]>() {
+            // Safety: we've just checked types
+            unsafe { mem::transmute(self) }
+        } else {
+            panic!("not u64");
+        }
+    }
+
+    fn data_f32(&self) -> &[f32] {
+        if TypeId::of::<Self>() == TypeId::of::<[f32]>() {
+            // Safety: we've just checked types
+            unsafe { mem::transmute(self) }
+        } else {
+            panic!("not f32");
+        }
+    }
+
+    fn data_f64(&self) -> &[f64] {
+        if TypeId::of::<Self>() == TypeId::of::<[f64]>() {
+            // Safety: we've just checked types
+            unsafe { mem::transmute(self) }
+        } else {
+            panic!("not f64");
+        }
     }
 }
 
@@ -202,6 +325,62 @@ impl<'a> ReflectRepeatedRef<'a> {
         match &self.imp {
             ReflectRepeatedRefImpl::Generated(r) => r.element_type(),
             ReflectRepeatedRefImpl::DynamicEmpty(r) => r.element_type(),
+        }
+    }
+
+    pub(crate) fn data_enum_values(&self) -> &[i32] {
+        match &self.imp {
+            ReflectRepeatedRefImpl::Generated(r) => r.data_enum_values(),
+            ReflectRepeatedRefImpl::DynamicEmpty(r) => r.data_enum_values(),
+        }
+    }
+
+    pub(crate) fn data_bool(&self) -> &[bool] {
+        match &self.imp {
+            ReflectRepeatedRefImpl::Generated(r) => r.data_bool(),
+            ReflectRepeatedRefImpl::DynamicEmpty(r) => r.data_bool(),
+        }
+    }
+
+    pub(crate) fn data_u32(&self) -> &[u32] {
+        match &self.imp {
+            ReflectRepeatedRefImpl::Generated(r) => r.data_u32(),
+            ReflectRepeatedRefImpl::DynamicEmpty(r) => r.data_u32(),
+        }
+    }
+
+    pub(crate) fn data_i32(&self) -> &[i32] {
+        match &self.imp {
+            ReflectRepeatedRefImpl::Generated(r) => r.data_i32(),
+            ReflectRepeatedRefImpl::DynamicEmpty(r) => r.data_i32(),
+        }
+    }
+
+    pub(crate) fn data_u64(&self) -> &[u64] {
+        match &self.imp {
+            ReflectRepeatedRefImpl::Generated(r) => r.data_u64(),
+            ReflectRepeatedRefImpl::DynamicEmpty(r) => r.data_u64(),
+        }
+    }
+
+    pub(crate) fn data_i64(&self) -> &[i64] {
+        match &self.imp {
+            ReflectRepeatedRefImpl::Generated(r) => r.data_i64(),
+            ReflectRepeatedRefImpl::DynamicEmpty(r) => r.data_i64(),
+        }
+    }
+
+    pub(crate) fn data_f32(&self) -> &[f32] {
+        match &self.imp {
+            ReflectRepeatedRefImpl::Generated(r) => r.data_f32(),
+            ReflectRepeatedRefImpl::DynamicEmpty(r) => r.data_f32(),
+        }
+    }
+
+    pub(crate) fn data_f64(&self) -> &[f64] {
+        match &self.imp {
+            ReflectRepeatedRefImpl::Generated(r) => r.data_f64(),
+            ReflectRepeatedRefImpl::DynamicEmpty(r) => r.data_f64(),
         }
     }
 }

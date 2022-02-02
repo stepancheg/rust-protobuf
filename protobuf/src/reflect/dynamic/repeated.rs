@@ -158,6 +158,62 @@ impl ReflectRepeated for DynamicRepeated {
             }
         }
     }
+
+    fn data_enum_values(&self) -> &[i32] {
+        match self {
+            DynamicRepeated::Enum(_descriptor, vs) => &vs,
+            _ => panic!("Expected enum value"),
+        }
+    }
+
+    fn data_bool(&self) -> &[bool] {
+        match self {
+            DynamicRepeated::Bool(vs) => &vs,
+            _ => panic!("Expected bool value"),
+        }
+    }
+
+    fn data_u32(&self) -> &[u32] {
+        match self {
+            DynamicRepeated::U32(vs) => &vs,
+            _ => panic!("Expected u32 value"),
+        }
+    }
+
+    fn data_u64(&self) -> &[u64] {
+        match self {
+            DynamicRepeated::U64(vs) => &vs,
+            _ => panic!("Expected u64 value"),
+        }
+    }
+
+    fn data_i32(&self) -> &[i32] {
+        match self {
+            DynamicRepeated::I32(vs) => &vs,
+            _ => panic!("Expected i32 value"),
+        }
+    }
+
+    fn data_i64(&self) -> &[i64] {
+        match self {
+            DynamicRepeated::I64(vs) => &vs,
+            _ => panic!("Expected i64 value"),
+        }
+    }
+
+    fn data_f32(&self) -> &[f32] {
+        match self {
+            DynamicRepeated::F32(vs) => &vs,
+            _ => panic!("Expected f32 value"),
+        }
+    }
+
+    fn data_f64(&self) -> &[f64] {
+        match self {
+            DynamicRepeated::F64(vs) => &vs,
+            _ => panic!("Expected f64 value"),
+        }
+    }
 }
 
 impl DynamicRepeated {

@@ -3,6 +3,7 @@
 use std::collections::HashMap;
 use std::fmt;
 use std::marker;
+use std::mem;
 
 #[cfg(feature = "bytes")]
 use bytes::Bytes;
@@ -70,6 +71,16 @@ pub trait RuntimeType: fmt::Debug + Send + Sync + 'static {
     /// Write the value.
     fn set_from_value_box(target: &mut Self::Value, value_box: ReflectValueBox) {
         *target = Self::from_value_box(value_box).expect("wrong type");
+    }
+
+    /// Cast values to enum values.
+    ///
+    /// # Panics
+    ///
+    /// If self is not an enum.
+    fn cast_to_enum_values(values: &[Self::Value]) -> &[i32] {
+        let _ = values;
+        panic!("not enum")
     }
 }
 
@@ -779,6 +790,15 @@ where
 
     fn is_non_zero(value: &ProtobufEnumOrUnknown<E>) -> bool {
         value.value() != 0
+    }
+
+    fn cast_to_enum_values(values: &[ProtobufEnumOrUnknown<E>]) -> &[i32] {
+        assert_eq!(
+            mem::size_of::<i32>(),
+            mem::size_of::<ProtobufEnumOrUnknown<E>>()
+        );
+        // SAFETY: `ProtobufEnumOrUnknown<E>` is transparent as `i32`.
+        unsafe { mem::transmute(values) }
     }
 }
 

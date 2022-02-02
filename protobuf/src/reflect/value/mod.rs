@@ -86,6 +86,15 @@ pub trait ProtobufValue:
     fn is_non_zero(value: &Self) -> bool {
         Self::RuntimeType::is_non_zero(value)
     }
+
+    /// Cast enum element data to integers.
+    ///
+    /// # Panics
+    ///
+    /// If self does not represent an enum.
+    fn cast_to_enum_values(values: &[Self]) -> &[i32] {
+        Self::RuntimeType::cast_to_enum_values(values)
+    }
 }
 
 impl ProtobufValue for u32 {
