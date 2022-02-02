@@ -13,14 +13,14 @@ use super::test_basic_pb::*;
 fn test1() {
     let mut test1 = Test1::new();
     test1.set_a(150);
-    test_serialize_deserialize("08 96 01", &test1);
+    test_serialize_deserialize_with_dynamic("08 96 01", &test1);
 }
 
 #[test]
 fn test2() {
     let mut test2 = Test2::new();
     test2.set_b("testing".to_string());
-    test_serialize_deserialize("12 07 74 65 73 74 69 6e 67", &test2);
+    test_serialize_deserialize_with_dynamic("12 07 74 65 73 74 69 6e 67", &test2);
 }
 
 #[test]
@@ -29,7 +29,7 @@ fn test3() {
     test1.set_a(150);
     let mut test3 = Test3::new();
     test3.set_c(test1);
-    test_serialize_deserialize("1a 03 08 96 01", &test3);
+    test_serialize_deserialize_with_dynamic("1a 03 08 96 01", &test3);
 }
 
 #[test]
