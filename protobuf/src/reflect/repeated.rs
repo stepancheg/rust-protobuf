@@ -13,9 +13,21 @@ pub(crate) trait ReflectRepeated: Sync + 'static + fmt::Debug {
     fn reflect_iter(&self) -> ReflectRepeatedIter;
     fn len(&self) -> usize;
     fn get(&self, index: usize) -> ReflectValueRef;
+    /// Set element at index.
+    ///
+    /// # Panics
+    ///
+    /// * if index is out of bounds
+    /// * if the element type does not match the collection element type
     fn set(&mut self, index: usize, value: ReflectValueBox);
+    /// Append element.
+    ///
+    /// # Panics
+    ///
+    /// * if the element type does not match the collection element type
     fn push(&mut self, value: ReflectValueBox);
     fn clear(&mut self);
+    /// Get the collection element type.
     fn element_type(&self) -> RuntimeTypeBox;
 }
 
