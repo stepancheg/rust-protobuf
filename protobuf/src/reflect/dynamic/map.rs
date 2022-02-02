@@ -69,6 +69,9 @@ impl Maps {
 
 #[derive(Debug, Clone)]
 pub(crate) struct DynamicMap {
+    /// Type of value.
+    ///
+    /// Type of key is defined by the maps key.
     value: RuntimeTypeBox,
     maps: Maps,
 }

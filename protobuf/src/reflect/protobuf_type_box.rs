@@ -10,11 +10,21 @@ use crate::ProtobufResult;
 
 /// Runtime type and protobuf type.
 pub(crate) struct ProtobufTypeBox {
+    /// Runtime type.
     runtime: RuntimeTypeBox,
+    /// Wire type.
     t: Type,
 }
 
 impl ProtobufTypeBox {
+    pub(crate) fn runtime(&self) -> &RuntimeTypeBox {
+        &self.runtime
+    }
+
+    pub(crate) fn t(&self) -> Type {
+        self.t
+    }
+
     pub(crate) fn new(runtime: RuntimeTypeBox, t: Type) -> ProtobufResult<ProtobufTypeBox> {
         match (t, &runtime) {
             (Type::TYPE_INT32, RuntimeTypeBox::I32) => {}

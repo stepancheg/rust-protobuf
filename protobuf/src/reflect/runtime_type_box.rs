@@ -55,6 +55,10 @@ impl RuntimeTypeBox {
         }
     }
 
+    pub(crate) fn default_value_box(&self) -> ReflectValueBox {
+        self.default_value_ref().to_box()
+    }
+
     /// Rust type from protobuf type.
     ///
     /// # Panics

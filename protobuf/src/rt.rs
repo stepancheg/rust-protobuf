@@ -999,6 +999,30 @@ where
     message.write_to_with_cached_sizes(os)
 }
 
+pub(crate) fn read_map_template(
+    wire_type: WireType,
+    is: &mut CodedInputStream,
+    mut key: impl FnMut(WireType, &mut CodedInputStream) -> ProtobufResult<()>,
+    mut value: impl FnMut(WireType, &mut CodedInputStream) -> ProtobufResult<()>,
+) -> ProtobufResult<()> {
+    if wire_type != WireType::LengthDelimited {
+        return Err(unexpected_wire_type(wire_type));
+    }
+
+    let len = is.read_raw_varint32()?;
+    let old_limit = is.push_limit(len as u64)?;
+    while !is.eof()? {
+        let (field_number, wire_type) = is.read_tag_unpack()?;
+        match field_number {
+            1 => key(wire_type, is)?,
+            2 => value(wire_type, is)?,
+            _ => is.skip_field(wire_type)?,
+        }
+    }
+    is.pop_limit(old_limit);
+    Ok(())
+}
+
 /// Read `map` field.
 pub fn read_map_into<K, V>(
     wire_type: WireType,
@@ -1010,34 +1034,27 @@ where
     V: ProtobufType,
     K::ProtobufValue: Eq + Hash,
 {
-    if wire_type != WireType::LengthDelimited {
-        return Err(unexpected_wire_type(wire_type));
-    }
-
     let mut key = Default::default();
     let mut value = Default::default();
 
-    let len = is.read_raw_varint32()?;
-    let old_limit = is.push_limit(len as u64)?;
-    while !is.eof()? {
-        let (field_number, wire_type) = is.read_tag_unpack()?;
-        match field_number {
-            1 => {
-                if wire_type != K::WIRE_TYPE {
-                    return Err(unexpected_wire_type(wire_type));
-                }
-                key = K::read(is)?;
+    read_map_template(
+        wire_type,
+        is,
+        |wire_type, is| {
+            if wire_type != K::WIRE_TYPE {
+                return Err(unexpected_wire_type(wire_type));
             }
-            2 => {
-                if wire_type != V::WIRE_TYPE {
-                    return Err(unexpected_wire_type(wire_type));
-                }
-                value = V::read(is)?;
+            key = K::read(is)?;
+            Ok(())
+        },
+        |wire_type, is| {
+            if wire_type != V::WIRE_TYPE {
+                return Err(unexpected_wire_type(wire_type));
             }
-            _ => is.skip_field(wire_type)?,
-        }
-    }
-    is.pop_limit(old_limit);
+            value = V::read(is)?;
+            Ok(())
+        },
+    )?;
 
     target.insert(key, value);
 

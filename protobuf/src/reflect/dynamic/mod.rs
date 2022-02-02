@@ -23,6 +23,7 @@ use crate::reflect::RuntimeFieldType;
 use crate::reflect::Syntax;
 use crate::rt::bytes_size;
 use crate::rt::compute_raw_varint32_size;
+use crate::rt::read_map_template;
 use crate::rt::read_unknown_or_skip_group;
 use crate::rt::string_size;
 use crate::rt::tag_size;
@@ -320,7 +321,6 @@ impl Message for DynamicMessage {
                     continue;
                 }
             };
-            let _ = wire_type;
             match field_desc.runtime_field_type() {
                 RuntimeFieldType::Singular(rtb) => {
                     let pt = ProtobufTypeBox::new(rtb, field_desc.get_proto().get_field_type())?;
@@ -332,8 +332,24 @@ impl Message for DynamicMessage {
                     let mut repeated = self.mut_repeated(&field_desc);
                     pt.read_repeated_into(is, wire_type, &mut repeated)?;
                 }
-                RuntimeFieldType::Map(_, _) => {
-                    unimplemented!()
+                RuntimeFieldType::Map(..) => {
+                    let (key_type, value_type) = field_desc.map_proto_type();
+                    let mut map = self.mut_map(&field_desc);
+                    let mut key = key_type.runtime().default_value_box();
+                    let mut value = value_type.runtime().default_value_box();
+                    read_map_template(
+                        wire_type,
+                        is,
+                        |wire_type, is| {
+                            key = key_type.read(is, wire_type)?;
+                            Ok(())
+                        },
+                        |wire_type, is| {
+                            value = value_type.read(is, wire_type)?;
+                            Ok(())
+                        },
+                    )?;
+                    map.insert(key, value);
                 }
             }
         }
