@@ -330,7 +330,7 @@ impl<'a> MessageGen<'a> {
         // in serialization order are appended recursively.");
         w.comment("Compute sizes of nested messages");
         // there are unused variables in oneof
-        w.allow(&["unused_variables"]);
+        w.write_ast(&RustAttr::allow(&["unused_variables"]));
         w.def_fn("compute_size(&self) -> u32", |w| {
             // To have access to its methods but not polute the name space.
             w.write_line("let mut my_size = 0;");
