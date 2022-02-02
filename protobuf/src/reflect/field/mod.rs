@@ -11,6 +11,7 @@ use crate::reflect::acc::GeneratedFieldAccessor;
 use crate::reflect::dynamic::DynamicMessage;
 use crate::reflect::field::dynamic::DynamicFieldDescriptorRef;
 use crate::reflect::field::index::FieldIndex;
+use crate::reflect::field::protobuf_field_type::ProtobufFieldType;
 use crate::reflect::field::runtime_field_type::RuntimeFieldType;
 use crate::reflect::map::ReflectMapMut;
 use crate::reflect::map::ReflectMapRef;
@@ -30,6 +31,7 @@ use crate::reflect::RuntimeTypeBox;
 
 pub(crate) mod dynamic;
 pub(crate) mod index;
+pub(crate) mod protobuf_field_type;
 pub(crate) mod runtime_field_type;
 
 /// Reference to a value stored in a field, optional, repeated or map.
@@ -233,8 +235,10 @@ impl FieldDescriptor {
 
     /// Obtain type of map key and value.
     pub(crate) fn map_proto_type(&self) -> (ProtobufTypeBox, ProtobufTypeBox) {
-        assert!(self.is_map());
-        unimplemented!()
+        match self.protobuf_field_type() {
+            ProtobufFieldType::Map(k, v) => (k, v),
+            _ => panic!("not a map field: {}", self),
+        }
     }
 
     /// Get message field or default instance if field is unset.
@@ -330,9 +334,14 @@ impl FieldDescriptor {
         }
     }
 
+    /// Dynamic representation of field type with wire type.
+    pub(crate) fn protobuf_field_type(&self) -> ProtobufFieldType {
+        self.get_index().field_type.resolve(self)
+    }
+
     /// Dynamic representation of field type.
     pub fn runtime_field_type(&self) -> RuntimeFieldType {
-        self.get_index().field_type.resolve(self)
+        self.protobuf_field_type().runtime()
     }
 
     /// Get field of any type.

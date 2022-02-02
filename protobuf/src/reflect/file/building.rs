@@ -5,8 +5,8 @@ use crate::descriptor::DescriptorProto;
 use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::FieldDescriptorProto;
 use crate::descriptor::FileDescriptorProto;
+use crate::reflect::field::index::ForwardProtobufFieldType;
 use crate::reflect::field::index::ForwardProtobufTypeBox;
-use crate::reflect::field::index::ForwardRuntimeFieldType;
 use crate::reflect::file::index::FileIndex;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
@@ -56,11 +56,11 @@ impl<'a> FileDescriptorBuilding<'a> {
             .join(", ")
     }
 
-    pub fn resolve_field_type(&self, field: &FieldDescriptorProto) -> ForwardRuntimeFieldType {
+    pub fn resolve_field_type(&self, field: &FieldDescriptorProto) -> ForwardProtobufFieldType {
         match field.get_label() {
             field_descriptor_proto::Label::LABEL_OPTIONAL
             | field_descriptor_proto::Label::LABEL_REQUIRED => {
-                ForwardRuntimeFieldType::Singular(self.resolve_field_element_type(field))
+                ForwardProtobufFieldType::Singular(self.resolve_field_element_type(field))
             }
             field_descriptor_proto::Label::LABEL_REPEATED => {
                 let element = self.resolve_field_element_type(field);
@@ -79,7 +79,7 @@ impl<'a> FileDescriptorBuilding<'a> {
                 };
                 match type_proto {
                     Some(m) if m.options.get_or_default().get_map_entry() => self.map_field(m),
-                    _ => ForwardRuntimeFieldType::Repeated(element),
+                    _ => ForwardProtobufFieldType::Repeated(element),
                 }
             }
         }
@@ -140,7 +140,7 @@ impl<'a> FileDescriptorBuilding<'a> {
         }
     }
 
-    fn map_field(&self, type_proto: &DescriptorProto) -> ForwardRuntimeFieldType {
+    fn map_field(&self, type_proto: &DescriptorProto) -> ForwardProtobufFieldType {
         assert!(type_proto.get_name().ends_with("Entry"));
 
         assert_eq!(0, type_proto.extension.len());
@@ -171,6 +171,6 @@ impl<'a> FileDescriptorBuilding<'a> {
         // should always point to the same file.
         let key = self.resolve_field_element_type(key);
         let value = self.resolve_field_element_type(value);
-        ForwardRuntimeFieldType::Map(key, value)
+        ForwardProtobufFieldType::Map(key, value)
     }
 }

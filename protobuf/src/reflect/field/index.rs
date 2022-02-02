@@ -2,6 +2,7 @@ use crate::descriptor::field_descriptor_proto;
 use crate::descriptor::field_descriptor_proto::Type;
 use crate::descriptor::FieldDescriptorProto;
 use crate::json::json_name;
+use crate::reflect::field::protobuf_field_type::ProtobufFieldType;
 use crate::reflect::file::building::FileDescriptorBuilding;
 use crate::reflect::protobuf_type_box::ProtobufTypeBox;
 use crate::reflect::EnumDescriptor;
@@ -10,7 +11,6 @@ use crate::reflect::FieldDescriptor;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
-use crate::reflect::RuntimeFieldType;
 use crate::reflect::RuntimeTypeBox;
 
 #[derive(Debug)]
@@ -47,25 +47,20 @@ impl ForwardProtobufTypeBox {
 }
 
 #[derive(Debug)]
-pub(crate) enum ForwardRuntimeFieldType {
+pub(crate) enum ForwardProtobufFieldType {
     Singular(ForwardProtobufTypeBox),
     Repeated(ForwardProtobufTypeBox),
     Map(ForwardProtobufTypeBox, ForwardProtobufTypeBox),
 }
 
-impl ForwardRuntimeFieldType {
-    pub fn resolve(&self, field: &FieldDescriptor) -> RuntimeFieldType {
+impl ForwardProtobufFieldType {
+    pub(crate) fn resolve(&self, field: &FieldDescriptor) -> ProtobufFieldType {
         match self {
-            ForwardRuntimeFieldType::Singular(t) => {
-                RuntimeFieldType::Singular(t.resolve(field).into_runtime())
+            ForwardProtobufFieldType::Singular(t) => ProtobufFieldType::Singular(t.resolve(field)),
+            ForwardProtobufFieldType::Repeated(t) => ProtobufFieldType::Repeated(t.resolve(field)),
+            ForwardProtobufFieldType::Map(k, v) => {
+                ProtobufFieldType::Map(k.resolve(field), v.resolve(field))
             }
-            ForwardRuntimeFieldType::Repeated(t) => {
-                RuntimeFieldType::Repeated(t.resolve(field).into_runtime())
-            }
-            ForwardRuntimeFieldType::Map(k, v) => RuntimeFieldType::Map(
-                k.resolve(field).into_runtime(),
-                v.resolve(field).into_runtime(),
-            ),
         }
     }
 }
@@ -79,7 +74,7 @@ pub(crate) enum FieldDefaultValue {
 #[derive(Debug)]
 pub(crate) struct FieldIndex {
     pub(crate) json_name: String,
-    pub(crate) field_type: ForwardRuntimeFieldType,
+    pub(crate) field_type: ForwardProtobufFieldType,
     pub(crate) default_value: Option<FieldDefaultValue>,
 }
 

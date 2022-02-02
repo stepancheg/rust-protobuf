@@ -28,7 +28,7 @@ impl ProtobufTypeBox {
         self.t
     }
 
-    pub(crate) fn into_runtime(self) -> RuntimeTypeBox {
+    pub(crate) fn _into_runtime(self) -> RuntimeTypeBox {
         self.runtime
     }
 
