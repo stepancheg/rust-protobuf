@@ -3,6 +3,10 @@ use std::io::Write;
 
 use crate::misc::remaining_capacity_as_slice_mut;
 use crate::misc::remove_lifetime_mut;
+use crate::rt::vec_packed_enum_or_unknown_data_size;
+use crate::rt::vec_packed_fixed_data_size;
+use crate::rt::vec_packed_varint_data_size;
+use crate::rt::vec_packed_varint_zigzag_data_size;
 use crate::varint;
 use crate::wire_format;
 use crate::wire_format::WireType;
@@ -554,11 +558,43 @@ impl<'a> CodedOutputStream<'a> {
         Ok(())
     }
 
+    /// Write field header and data for repeated packed float.
+    pub fn write_repeated_packed_float(
+        &mut self,
+        field_number: u32,
+        values: &[f32],
+    ) -> ProtobufResult<()> {
+        if values.is_empty() {
+            return Ok(());
+        }
+        self.write_tag(field_number, WireType::LengthDelimited)?;
+        let data_size = vec_packed_fixed_data_size(values);
+        self.write_raw_varint32(data_size)?;
+        self.write_repeated_packed_float_no_tag(values)?;
+        Ok(())
+    }
+
     /// Write repeated packed double values.
     pub fn write_repeated_packed_double_no_tag(&mut self, values: &[f64]) -> ProtobufResult<()> {
         for v in values {
             self.write_double_no_tag(*v)?;
         }
+        Ok(())
+    }
+
+    /// Write field header and data for repeated packed double.
+    pub fn write_repeated_packed_double(
+        &mut self,
+        field_number: u32,
+        values: &[f64],
+    ) -> ProtobufResult<()> {
+        if values.is_empty() {
+            return Ok(());
+        }
+        self.write_tag(field_number, WireType::LengthDelimited)?;
+        let data_size = vec_packed_fixed_data_size(values);
+        self.write_raw_varint32(data_size)?;
+        self.write_repeated_packed_double_no_tag(values)?;
         Ok(())
     }
 
@@ -571,11 +607,43 @@ impl<'a> CodedOutputStream<'a> {
         Ok(())
     }
 
+    /// Write field header and data for repeated packed fixed32.
+    pub fn write_repeated_packed_fixed32(
+        &mut self,
+        field_number: u32,
+        values: &[u32],
+    ) -> ProtobufResult<()> {
+        if values.is_empty() {
+            return Ok(());
+        }
+        self.write_tag(field_number, WireType::LengthDelimited)?;
+        let data_size = vec_packed_fixed_data_size(values);
+        self.write_raw_varint32(data_size)?;
+        self.write_repeated_packed_fixed32_no_tag(values)?;
+        Ok(())
+    }
+
     /// Write repeated packed fixed64 values.
     pub fn write_repeated_packed_fixed64_no_tag(&mut self, values: &[u64]) -> ProtobufResult<()> {
         for v in values {
             self.write_fixed64_no_tag(*v)?;
         }
+        Ok(())
+    }
+
+    /// Write field header and data for repeated packed fixed64.
+    pub fn write_repeated_packed_fixed64(
+        &mut self,
+        field_number: u32,
+        values: &[u64],
+    ) -> ProtobufResult<()> {
+        if values.is_empty() {
+            return Ok(());
+        }
+        self.write_tag(field_number, WireType::LengthDelimited)?;
+        let data_size = vec_packed_fixed_data_size(values);
+        self.write_raw_varint32(data_size)?;
+        self.write_repeated_packed_fixed64_no_tag(values)?;
         Ok(())
     }
 
@@ -587,11 +655,43 @@ impl<'a> CodedOutputStream<'a> {
         Ok(())
     }
 
+    /// Write field header and data for repeated packed sfixed32.
+    pub fn write_repeated_packed_sfixed32(
+        &mut self,
+        field_number: u32,
+        values: &[i32],
+    ) -> ProtobufResult<()> {
+        if values.is_empty() {
+            return Ok(());
+        }
+        self.write_tag(field_number, WireType::LengthDelimited)?;
+        let data_size = vec_packed_fixed_data_size(values);
+        self.write_raw_varint32(data_size)?;
+        self.write_repeated_packed_sfixed32_no_tag(values)?;
+        Ok(())
+    }
+
     /// Write repeated packed sfixed64 values.
     pub fn write_repeated_packed_sfixed64_no_tag(&mut self, values: &[i64]) -> ProtobufResult<()> {
         for v in values {
             self.write_sfixed64_no_tag(*v)?;
         }
+        Ok(())
+    }
+
+    /// Write field header and data for repeated packed sfixed64.
+    pub fn write_repeated_packed_sfixed64(
+        &mut self,
+        field_number: u32,
+        values: &[i64],
+    ) -> ProtobufResult<()> {
+        if values.is_empty() {
+            return Ok(());
+        }
+        self.write_tag(field_number, WireType::LengthDelimited)?;
+        let data_size = vec_packed_fixed_data_size(values);
+        self.write_raw_varint32(data_size)?;
+        self.write_repeated_packed_sfixed64_no_tag(values)?;
         Ok(())
     }
 
@@ -603,11 +703,43 @@ impl<'a> CodedOutputStream<'a> {
         Ok(())
     }
 
+    /// Write field header and data for repeated packed int32.
+    pub fn write_repeated_packed_int32(
+        &mut self,
+        field_number: u32,
+        values: &[i32],
+    ) -> ProtobufResult<()> {
+        if values.is_empty() {
+            return Ok(());
+        }
+        self.write_tag(field_number, WireType::LengthDelimited)?;
+        let data_size = vec_packed_varint_data_size(values);
+        self.write_raw_varint32(data_size)?;
+        self.write_repeated_packed_int32_no_tag(values)?;
+        Ok(())
+    }
+
     /// Write repeated packed int64 values.
     pub fn write_repeated_packed_int64_no_tag(&mut self, values: &[i64]) -> ProtobufResult<()> {
         for v in values {
             self.write_int64_no_tag(*v)?;
         }
+        Ok(())
+    }
+
+    /// Write field header and data for repeated packed int64.
+    pub fn write_repeated_packed_int64(
+        &mut self,
+        field_number: u32,
+        values: &[i64],
+    ) -> ProtobufResult<()> {
+        if values.is_empty() {
+            return Ok(());
+        }
+        self.write_tag(field_number, WireType::LengthDelimited)?;
+        let data_size = vec_packed_varint_data_size(values);
+        self.write_raw_varint32(data_size)?;
+        self.write_repeated_packed_int64_no_tag(values)?;
         Ok(())
     }
 
@@ -619,11 +751,43 @@ impl<'a> CodedOutputStream<'a> {
         Ok(())
     }
 
+    /// Write field header and data for repeated packed uint32.
+    pub fn write_repeated_packed_uint32(
+        &mut self,
+        field_number: u32,
+        values: &[u32],
+    ) -> ProtobufResult<()> {
+        if values.is_empty() {
+            return Ok(());
+        }
+        self.write_tag(field_number, WireType::LengthDelimited)?;
+        let data_size = vec_packed_varint_data_size(values);
+        self.write_raw_varint32(data_size)?;
+        self.write_repeated_packed_uint32_no_tag(values)?;
+        Ok(())
+    }
+
     /// Write repeated packed uint64 values.
     pub fn write_repeated_packed_uint64_no_tag(&mut self, values: &[u64]) -> ProtobufResult<()> {
         for v in values {
             self.write_uint64_no_tag(*v)?;
         }
+        Ok(())
+    }
+
+    /// Write field header and data for repeated packed uint64.
+    pub fn write_repeated_packed_uint64(
+        &mut self,
+        field_number: u32,
+        values: &[u64],
+    ) -> ProtobufResult<()> {
+        if values.is_empty() {
+            return Ok(());
+        }
+        self.write_tag(field_number, WireType::LengthDelimited)?;
+        let data_size = vec_packed_varint_data_size(values);
+        self.write_raw_varint32(data_size)?;
+        self.write_repeated_packed_uint64_no_tag(values)?;
         Ok(())
     }
 
@@ -635,6 +799,22 @@ impl<'a> CodedOutputStream<'a> {
         Ok(())
     }
 
+    /// Write field header and data for repeated packed sint32.
+    pub fn write_repeated_packed_sint32(
+        &mut self,
+        field_number: u32,
+        values: &[i32],
+    ) -> ProtobufResult<()> {
+        if values.is_empty() {
+            return Ok(());
+        }
+        self.write_tag(field_number, WireType::LengthDelimited)?;
+        let data_size = vec_packed_varint_zigzag_data_size(values);
+        self.write_raw_varint32(data_size)?;
+        self.write_repeated_packed_sint32_no_tag(values)?;
+        Ok(())
+    }
+
     /// Write repeated packed sint64 values.
     pub fn write_repeated_packed_sint64_no_tag(&mut self, values: &[i64]) -> ProtobufResult<()> {
         for v in values {
@@ -643,11 +823,43 @@ impl<'a> CodedOutputStream<'a> {
         Ok(())
     }
 
+    /// Write field header and data for repeated packed sint64.
+    pub fn write_repeated_packed_sint64(
+        &mut self,
+        field_number: u32,
+        values: &[i64],
+    ) -> ProtobufResult<()> {
+        if values.is_empty() {
+            return Ok(());
+        }
+        self.write_tag(field_number, WireType::LengthDelimited)?;
+        let data_size = vec_packed_varint_zigzag_data_size(values);
+        self.write_raw_varint32(data_size)?;
+        self.write_repeated_packed_sint64_no_tag(values)?;
+        Ok(())
+    }
+
     /// Write repeated packed bool values.
     pub fn write_repeated_packed_bool_no_tag(&mut self, values: &[bool]) -> ProtobufResult<()> {
         for v in values {
             self.write_bool_no_tag(*v)?;
         }
+        Ok(())
+    }
+
+    /// Write field header and data for repeated packed bool.
+    pub fn write_repeated_packed_bool(
+        &mut self,
+        field_number: u32,
+        values: &[bool],
+    ) -> ProtobufResult<()> {
+        if values.is_empty() {
+            return Ok(());
+        }
+        self.write_tag(field_number, WireType::LengthDelimited)?;
+        let data_size = vec_packed_fixed_data_size(values);
+        self.write_raw_varint32(data_size)?;
+        self.write_repeated_packed_bool_no_tag(values)?;
         Ok(())
     }
 
@@ -667,6 +879,22 @@ impl<'a> CodedOutputStream<'a> {
         for v in values {
             self.write_enum_or_unknown_no_tag(*v)?;
         }
+        Ok(())
+    }
+
+    /// Write field header and data for repeated packed enum.
+    pub fn write_repeated_packed_enum_or_unknown<E: ProtobufEnum>(
+        &mut self,
+        field_number: u32,
+        values: &[ProtobufEnumOrUnknown<E>],
+    ) -> ProtobufResult<()> {
+        if values.is_empty() {
+            return Ok(());
+        }
+        self.write_tag(field_number, WireType::LengthDelimited)?;
+        let data_size = vec_packed_enum_or_unknown_data_size(values);
+        self.write_raw_varint32(data_size)?;
+        self.write_repeated_packed_enum_or_unknown_no_tag(values)?;
         Ok(())
     }
 

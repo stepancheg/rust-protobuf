@@ -670,13 +670,6 @@ impl<'a> FieldGen<'a> {
         }
     }
 
-    fn is_repeated_not_map(&self) -> bool {
-        match self.kind {
-            FieldKind::Repeated(..) => true,
-            _ => false,
-        }
-    }
-
     fn is_repeated_or_map(&self) -> bool {
         match self.kind {
             FieldKind::Repeated(..) | FieldKind::Map(..) => true,
@@ -1475,43 +1468,6 @@ impl<'a> FieldGen<'a> {
         }
     }
 
-    fn self_field_vec_packed_fixed_data_size(&self) -> String {
-        assert!(self.is_fixed());
-        format!(
-            "{}::rt::vec_packed_fixed_data_size(&{})",
-            protobuf_crate_path(&self.customize),
-            self.self_field()
-        )
-    }
-
-    fn self_field_vec_packed_varint_data_size(&self) -> String {
-        assert!(!self.is_fixed());
-        let fn_name = if self.is_enum() {
-            "vec_packed_enum_or_unknown_data_size"
-        } else {
-            if self.is_zigzag() {
-                "vec_packed_varint_zigzag_data_size"
-            } else {
-                "vec_packed_varint_data_size"
-            }
-        };
-        format!(
-            "{}::rt::{}(&{})",
-            protobuf_crate_path(&self.customize),
-            fn_name,
-            self.self_field()
-        )
-    }
-
-    fn self_field_vec_packed_data_size(&self) -> String {
-        assert!(self.is_repeated_not_map());
-        if self.is_fixed() {
-            self.self_field_vec_packed_fixed_data_size()
-        } else {
-            self.self_field_vec_packed_varint_data_size()
-        }
-    }
-
     fn self_field_vec_packed_fixed_size(&self) -> String {
         format!(
             "{}::rt::vec_packed_fixed_size({}, &{})",
@@ -1826,24 +1782,12 @@ impl<'a> FieldGen<'a> {
                 });
             }
             FieldKind::Repeated(RepeatedField { packed: true, .. }) => {
-                self.write_if_self_field_is_not_empty(w, |w| {
-                    let number = self.proto_field.number();
-                    w.write_line(&format!(
-                        "os.write_tag({}, {}::wire_format::WireType::{:?})?;",
-                        number,
-                        protobuf_crate_path(&self.customize),
-                        WireType::LengthDelimited
-                    ));
-                    w.comment("TODO: Data size is computed again, it should be cached");
-                    let data_size_expr = self.self_field_vec_packed_data_size();
-                    w.write_line(&format!("os.write_raw_varint32({})?;", data_size_expr));
-                    let os_write_fn_suffix = self.os_write_fn_suffix_with_unknown_for_enum();
-                    w.write_line(&format!(
-                        "os.write_repeated_packed_{}_no_tag(&{})?;",
-                        os_write_fn_suffix,
-                        self.self_field()
-                    ));
-                });
+                w.write_line(&format!(
+                    "os.write_repeated_packed_{}({}, &{})?;",
+                    self.os_write_fn_suffix_with_unknown_for_enum(),
+                    self.proto_field.number(),
+                    self.self_field()
+                ));
             }
             FieldKind::Map(MapField {
                 ref key, ref value, ..
