@@ -25,7 +25,6 @@ use crate::gen::scope::MessageWithScope;
 use crate::gen::scope::RootScope;
 use crate::gen::scope::WithScope;
 use crate::gen::serde;
-use crate::rust_ast::attr::RustAttr;
 use crate::rust_ast::field::RustField;
 use crate::Customize;
 
@@ -578,7 +577,7 @@ impl<'a> MessageGen<'a> {
         if self.lite_runtime {
             derive.push("Debug");
         }
-        w.write_ast(&RustAttr::derive(&derive));
+        w.derive(&derive);
         serde::write_serde_attr(
             w,
             &self.customize,
