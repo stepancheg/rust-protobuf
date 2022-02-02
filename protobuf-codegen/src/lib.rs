@@ -62,6 +62,7 @@ mod customize;
 mod gen;
 pub mod gen_and_write;
 pub mod protoc_gen_rust;
+pub(crate) mod rust_ast;
 
 pub use codegen::Codegen;
 pub use customize::Customize;

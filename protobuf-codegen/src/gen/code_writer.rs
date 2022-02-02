@@ -4,8 +4,10 @@
 use std::io::Write;
 
 use crate::gen::rust_name::RustRelativePath;
+use crate::rust_ast::RustAst;
 
 /// Field visibility.
+#[derive(Clone)]
 pub(crate) enum Visibility {
     Public,
     Default,
@@ -183,22 +185,6 @@ impl<'a> CodeWriter<'a> {
 
     pub fn field_entry(&mut self, name: &str, value: &str) {
         self.write_line(&format!("{}: {},", name, value));
-    }
-
-    pub fn field_decl(&mut self, name: &str, field_type: &str) {
-        self.write_line(&format!("{}: {},", name, field_type));
-    }
-
-    pub fn pub_field_decl(&mut self, name: &str, field_type: &str) {
-        self.write_line(&format!("pub {}: {},", name, field_type));
-    }
-
-    pub(crate) fn field_decl_vis(&mut self, vis: Visibility, name: &str, field_type: &str) {
-        match vis {
-            Visibility::Public => self.pub_field_decl(name, field_type),
-            Visibility::Default => self.field_decl(name, field_type),
-            Visibility::Path(..) => unimplemented!(),
-        }
     }
 
     pub fn derive(&mut self, derive: &[&str]) {
@@ -411,5 +397,9 @@ impl<'a> CodeWriter<'a> {
 
     pub fn case_expr<S1: AsRef<str>, S2: AsRef<str>>(&mut self, cond: S1, body: S2) {
         self.write_line(&format!("{} => {},", cond.as_ref(), body.as_ref()));
+    }
+
+    pub(crate) fn write_ast(&mut self, ast: &impl RustAst) {
+        ast.write_to(self);
     }
 }
