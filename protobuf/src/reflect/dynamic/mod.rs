@@ -23,8 +23,10 @@ use crate::reflect::RuntimeFieldType;
 use crate::reflect::Syntax;
 use crate::rt::bytes_size;
 use crate::rt::compute_raw_varint32_size;
+use crate::rt::read_unknown_or_skip_group;
 use crate::rt::string_size;
 use crate::rt::tag_size;
+use crate::rt::unknown_fields_size;
 use crate::rt::value_size;
 use crate::rt::value_varint_zigzag_size;
 use crate::rt::vec_packed_fixed_size;
@@ -237,7 +239,7 @@ impl DynamicMessage {
             }
         }
 
-        // TODO: unknown fields
+        handler.unknown_fields(&self.unknown_fields)?;
         Ok(())
     }
 }
@@ -250,6 +252,7 @@ trait ForEachSingularFieldToWrite {
         number: u32,
         value: &ReflectRepeatedRef,
     ) -> ProtobufResult<()>;
+    fn unknown_fields(&mut self, unknown_fields: &UnknownFields) -> ProtobufResult<()>;
 }
 
 impl Clear for DynamicMessage {
@@ -313,7 +316,7 @@ impl Message for DynamicMessage {
             let field_desc = match self.descriptor.get_field_by_number(field) {
                 Some(f) => f,
                 None => {
-                    is.skip_field(wire_type)?;
+                    read_unknown_or_skip_group(field, wire_type, is, &mut self.unknown_fields)?;
                     continue;
                 }
             };
@@ -360,6 +363,10 @@ impl Message for DynamicMessage {
             ) -> ProtobufResult<()> {
                 repeated_write_to(t, number, value, self.os)
             }
+
+            fn unknown_fields(&mut self, unknown_fields: &UnknownFields) -> ProtobufResult<()> {
+                self.os.write_unknown_fields(unknown_fields)
+            }
         }
 
         let mut handler = Handler { os };
@@ -390,6 +397,11 @@ impl Message for DynamicMessage {
                 value: &ReflectRepeatedRef,
             ) -> ProtobufResult<()> {
                 self.m_size += compute_repeated_packed_size(t, number, value);
+                Ok(())
+            }
+
+            fn unknown_fields(&mut self, unknown_fields: &UnknownFields) -> ProtobufResult<()> {
+                self.m_size += unknown_fields_size(unknown_fields);
                 Ok(())
             }
         }
