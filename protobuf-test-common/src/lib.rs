@@ -34,3 +34,6 @@ pub use cargo::*;
 
 mod interop;
 pub use interop::*;
+
+mod dynamic;
+pub use dynamic::*;

@@ -12,20 +12,20 @@ fn test_map() {
     test_serialize_deserialize_with_dynamic("", &map);
 
     map.mut_m().insert("two".to_owned(), 2);
-    test_serialize_deserialize("0a 07 0a 03 74 77 6f 10 02", &map);
+    test_serialize_deserialize_with_dynamic("0a 07 0a 03 74 77 6f 10 02", &map);
 
     map.mut_m().insert("sixty six".to_owned(), 66);
     // Insert map entry sub message
     map.mut_mm().insert("map".to_owned(), entry);
     // cannot (easily) test hex, because order is not specified
-    test_serialize_deserialize_no_hex(&map);
+    test_serialize_deserialize_no_hex_with_dynamic(&map);
 }
 
 #[test]
 fn test_map_negative_i32_value() {
     let mut map = TestMap::new();
     map.mut_m().insert("two".to_owned(), -2);
-    test_serialize_deserialize(
+    test_serialize_deserialize_with_dynamic(
         "0a 10 0a 03 74 77 6f 10 fe ff ff ff ff ff ff ff ff 01",
         &map,
     );
@@ -38,11 +38,11 @@ fn test_map_with_object() {
     let mut entry = TestMapEntry::new();
     entry.set_v(10);
 
-    test_serialize_deserialize("", &map);
+    test_serialize_deserialize_with_dynamic("", &map);
 
     map.mut_mm().insert("map".to_owned(), entry);
     // cannot (easily) test hex, because order is not specified
-    test_serialize_deserialize_no_hex(&map);
+    test_serialize_deserialize_no_hex_with_dynamic(&map);
 }
 
 #[test]
@@ -71,5 +71,9 @@ fn text_format() {
 
     map.mut_m().insert("two".to_owned(), 2);
 
-    assert_eq!(&*print_to_string(&map), "m {key: \"two\" value: 2}")
+    assert_eq!(&*print_to_string(&map), "m {key: \"two\" value: 2}");
+
+    let map = recreate_as_dynamic(&map);
+
+    assert_eq!(&*print_to_string(&*map), "m {key: \"two\" value: 2}");
 }

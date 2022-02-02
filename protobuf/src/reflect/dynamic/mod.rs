@@ -238,7 +238,13 @@ impl DynamicMessage {
                     let map = field_desc.get_map(self);
                     let (key_type, value_type) = field_desc.map_proto_type();
                     for (k, v) in &map {
-                        handler.map_field_entry(&k, key_type.t(), &v, value_type.t())?;
+                        handler.map_field_entry(
+                            field_number,
+                            &k,
+                            key_type.t(),
+                            &v,
+                            value_type.t(),
+                        )?;
                     }
                 }
             }
@@ -259,6 +265,7 @@ trait ForEachSingularFieldToWrite {
     ) -> ProtobufResult<()>;
     fn map_field_entry(
         &mut self,
+        number: u32,
         key: &ReflectValueRef,
         kt: Type,
         value: &ReflectValueRef,
@@ -269,7 +276,7 @@ trait ForEachSingularFieldToWrite {
 
 impl Clear for DynamicMessage {
     fn clear(&mut self) {
-        unimplemented!()
+        self.fields = Vec::new().into_boxed_slice();
     }
 }
 
@@ -393,13 +400,18 @@ impl Message for DynamicMessage {
 
             fn map_field_entry(
                 &mut self,
+                number: u32,
                 key: &ReflectValueRef,
                 kt: Type,
                 value: &ReflectValueRef,
                 vt: Type,
             ) -> ProtobufResult<()> {
-                let _ = (key, kt, value, vt);
-                unimplemented!()
+                let entry_data_size = compute_map_entry_field_data_size(key, kt, value, vt);
+                self.os.write_tag(number, WireType::LengthDelimited)?;
+                self.os.write_raw_varint32(entry_data_size)?;
+                singular_write_to(kt, 1, key, self.os)?;
+                singular_write_to(vt, 2, value, self.os)?;
+                Ok(())
             }
 
             fn unknown_fields(&mut self, unknown_fields: &UnknownFields) -> ProtobufResult<()> {
@@ -440,13 +452,17 @@ impl Message for DynamicMessage {
 
             fn map_field_entry(
                 &mut self,
+                number: u32,
                 key: &ReflectValueRef,
                 kt: Type,
                 value: &ReflectValueRef,
                 vt: Type,
             ) -> ProtobufResult<()> {
-                let _ = (key, kt, value, vt);
-                unimplemented!()
+                let entry_data_size = compute_map_entry_field_data_size(key, kt, value, vt);
+                self.m_size += tag_size(number)
+                    + compute_raw_varint32_size(entry_data_size as u32)
+                    + entry_data_size;
+                Ok(())
             }
 
             fn unknown_fields(&mut self, unknown_fields: &UnknownFields) -> ProtobufResult<()> {
@@ -640,4 +656,15 @@ fn repeated_write_to(
         Type::TYPE_GROUP => panic!("groups cannot be packed"),
         Type::TYPE_MESSAGE => panic!("messages cannot be packed"),
     }
+}
+
+fn compute_map_entry_field_data_size(
+    key: &ReflectValueRef,
+    kt: Type,
+    value: &ReflectValueRef,
+    vt: Type,
+) -> u32 {
+    let key_size = compute_singular_size(kt, 1, key);
+    let value_size = compute_singular_size(vt, 2, value);
+    key_size + value_size
 }
