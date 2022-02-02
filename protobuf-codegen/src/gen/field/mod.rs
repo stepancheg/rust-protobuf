@@ -1516,10 +1516,13 @@ impl<'a> FieldGen<'a> {
         // zero is filtered outside
         assert!(!self.is_fixed());
         let fn_name = if self.is_enum() {
-            "vec_packed_enum_or_unknown_size".to_string()
+            "vec_packed_enum_or_unknown_size"
         } else {
-            let zigzag_suffix = if self.is_zigzag() { "_zigzag" } else { "" };
-            format!("vec_packed_varint{}_size", zigzag_suffix)
+            if self.is_zigzag() {
+                "vec_packed_varint_zigzag_size"
+            } else {
+                "vec_packed_varint_size"
+            }
         };
         format!(
             "{}::rt::{}({}, &{})",
