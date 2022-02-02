@@ -7858,22 +7858,8 @@ pub mod source_code_info {
         }
 
         fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
-            if !self.path.is_empty() {
-                os.write_tag(1, crate::wire_format::WireType::LengthDelimited)?;
-                // TODO: Data size is computed again, it should be cached
-                os.write_raw_varint32(crate::rt::vec_packed_varint_data_size(&self.path))?;
-                for v in &self.path {
-                    os.write_int32_no_tag(*v)?;
-                };
-            }
-            if !self.span.is_empty() {
-                os.write_tag(2, crate::wire_format::WireType::LengthDelimited)?;
-                // TODO: Data size is computed again, it should be cached
-                os.write_raw_varint32(crate::rt::vec_packed_varint_data_size(&self.span))?;
-                for v in &self.span {
-                    os.write_int32_no_tag(*v)?;
-                };
-            }
+            os.write_repeated_packed_int32(1, &self.path)?;
+            os.write_repeated_packed_int32(2, &self.span)?;
             if let Some(v) = self.leading_comments.as_ref() {
                 os.write_string(3, v)?;
             }
@@ -8282,14 +8268,7 @@ pub mod generated_code_info {
         }
 
         fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
-            if !self.path.is_empty() {
-                os.write_tag(1, crate::wire_format::WireType::LengthDelimited)?;
-                // TODO: Data size is computed again, it should be cached
-                os.write_raw_varint32(crate::rt::vec_packed_varint_data_size(&self.path))?;
-                for v in &self.path {
-                    os.write_int32_no_tag(*v)?;
-                };
-            }
+            os.write_repeated_packed_int32(1, &self.path)?;
             if let Some(v) = self.source_file.as_ref() {
                 os.write_string(2, v)?;
             }

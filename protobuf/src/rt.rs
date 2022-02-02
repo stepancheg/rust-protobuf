@@ -237,7 +237,7 @@ pub fn vec_packed_enum_or_unknown_size<E: ProtobufEnum>(
 }
 
 /// Compute data size of fixed encoding of repeated field data.
-pub fn vec_packed_fixed_data_size<V: ProtobufFixed>(vec: &[V]) -> u32 {
+pub(crate) fn vec_packed_fixed_data_size<V: ProtobufFixed>(vec: &[V]) -> u32 {
     (vec.len() * V::LEN as usize) as u32
 }
 
