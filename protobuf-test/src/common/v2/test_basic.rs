@@ -70,12 +70,12 @@ fn test_end_by_negative_int() {
     // added following https://github.com/stepancheg/rust-protobuf/pull/209
     let mut test = Test1::new();
     test.set_a(-1);
-    test_serialize_deserialize("08 ff ff ff ff ff ff ff ff ff 01", &test);
+    test_serialize_deserialize_with_dynamic("08 ff ff ff ff ff ff ff ff ff 01", &test);
 }
 
 #[test]
 fn test_empty() {
-    test_serialize_deserialize("", &TestEmpty::new());
+    test_serialize_deserialize_with_dynamic("", &TestEmpty::new());
 }
 
 #[test]
@@ -90,6 +90,7 @@ fn test_unknown_fields_length_delimited() {
     message
         .mut_unknown_fields()
         .add_length_delimited(4, [0x10u8, 0x20, 0x30].to_vec());
+    // TODO: unknown fields are lost
     test_serialize_deserialize("08 96 01 22 03 10 20 30", &message);
 }
 
@@ -99,6 +100,7 @@ fn test_unknown_fields_fixed32() {
     message.set_a(150);
     message.mut_unknown_fields().add_fixed32(4, 0x01020304);
     message.mut_unknown_fields().add_fixed32(4, 0xA1A2A3A4);
+    // TODO: unknown fields are lost
     test_serialize_deserialize("08 96 01 25 04 03 02 01 25 A4 A3 A2 A1", &message);
 }
 
@@ -149,7 +151,7 @@ fn test_types_repeated() {
         ]
         .to_vec(),
     );
-    test_serialize_deserialize_no_hex(&message);
+    test_serialize_deserialize_no_hex_with_dynamic(&message);
 }
 
 #[test]
@@ -177,7 +179,7 @@ fn test_types_repeated_packed() {
         ]
         .to_vec(),
     );
-    test_serialize_deserialize_no_hex(&message);
+    test_serialize_deserialize_no_hex_with_dynamic(&message);
 }
 
 #[test]
