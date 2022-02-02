@@ -367,130 +367,6 @@ impl<'a> CodedOutputStream<'a> {
         }
     }
 
-    /// Write repeated packed float values.
-    pub fn write_repeated_packed_float_no_tag(&mut self, values: &[f32]) -> ProtobufResult<()> {
-        for v in values {
-            self.write_float_no_tag(*v)?;
-        }
-        Ok(())
-    }
-
-    /// Write repeated packed double values.
-    pub fn write_repeated_packed_double_no_tag(&mut self, values: &[f64]) -> ProtobufResult<()> {
-        for v in values {
-            self.write_double_no_tag(*v)?;
-        }
-        Ok(())
-    }
-
-    /// Write repeated packed fixed32 values.
-    pub fn write_repeated_packed_fixed32_no_tag(&mut self, values: &[u32]) -> ProtobufResult<()> {
-        // TODO: these can be memcopied.
-        for v in values {
-            self.write_fixed32_no_tag(*v)?;
-        }
-        Ok(())
-    }
-
-    /// Write repeated packed fixed64 values.
-    pub fn write_repeated_packed_fixed64_no_tag(&mut self, values: &[u64]) -> ProtobufResult<()> {
-        for v in values {
-            self.write_fixed64_no_tag(*v)?;
-        }
-        Ok(())
-    }
-
-    /// Write repeated packed sfixed32 values.
-    pub fn write_repeated_packed_sfixed32_no_tag(&mut self, values: &[i32]) -> ProtobufResult<()> {
-        for v in values {
-            self.write_sfixed32_no_tag(*v)?;
-        }
-        Ok(())
-    }
-
-    /// Write repeated packed sfixed64 values.
-    pub fn write_repeated_packed_sfixed64_no_tag(&mut self, values: &[i64]) -> ProtobufResult<()> {
-        for v in values {
-            self.write_sfixed64_no_tag(*v)?;
-        }
-        Ok(())
-    }
-
-    /// Write repeated packed int32 values.
-    pub fn write_repeated_packed_int32_no_tag(&mut self, values: &[i32]) -> ProtobufResult<()> {
-        for v in values {
-            self.write_int32_no_tag(*v)?;
-        }
-        Ok(())
-    }
-
-    /// Write repeated packed int64 values.
-    pub fn write_repeated_packed_int64_no_tag(&mut self, values: &[i64]) -> ProtobufResult<()> {
-        for v in values {
-            self.write_int64_no_tag(*v)?;
-        }
-        Ok(())
-    }
-
-    /// Write repeated packed uint32 values.
-    pub fn write_repeated_packed_uint32_no_tag(&mut self, values: &[u32]) -> ProtobufResult<()> {
-        for v in values {
-            self.write_uint32_no_tag(*v)?;
-        }
-        Ok(())
-    }
-
-    /// Write repeated packed uint64 values.
-    pub fn write_repeated_packed_uint64_no_tag(&mut self, values: &[u64]) -> ProtobufResult<()> {
-        for v in values {
-            self.write_uint64_no_tag(*v)?;
-        }
-        Ok(())
-    }
-
-    /// Write repeated packed sint32 values.
-    pub fn write_repeated_packed_sint32_no_tag(&mut self, values: &[i32]) -> ProtobufResult<()> {
-        for v in values {
-            self.write_sint32_no_tag(*v)?;
-        }
-        Ok(())
-    }
-
-    /// Write repeated packed sint64 values.
-    pub fn write_repeated_packed_sint64_no_tag(&mut self, values: &[i64]) -> ProtobufResult<()> {
-        for v in values {
-            self.write_sint64_no_tag(*v)?;
-        }
-        Ok(())
-    }
-
-    /// Write repeated packed bool values.
-    pub fn write_repeated_packed_bool_no_tag(&mut self, values: &[bool]) -> ProtobufResult<()> {
-        for v in values {
-            self.write_bool_no_tag(*v)?;
-        }
-        Ok(())
-    }
-
-    /// Write repeated packed enum values.
-    pub fn write_repeated_packed_enum_no_tag(&mut self, values: &[i32]) -> ProtobufResult<()> {
-        for v in values {
-            self.write_enum_no_tag(*v)?;
-        }
-        Ok(())
-    }
-
-    /// Write repeated packed enum values.
-    pub fn write_repeated_packed_enum_or_unknown_no_tag<E: ProtobufEnum>(
-        &mut self,
-        values: &[ProtobufEnumOrUnknown<E>],
-    ) -> ProtobufResult<()> {
-        for v in values {
-            self.write_enum_or_unknown_no_tag(*v)?;
-        }
-        Ok(())
-    }
-
     /// Write `uint64` field
     pub fn write_uint64(&mut self, field_number: u32, value: u64) -> ProtobufResult<()> {
         self.write_tag(field_number, WireType::Varint)?;
@@ -667,6 +543,130 @@ impl<'a> CodedOutputStream<'a> {
     pub fn write_string(&mut self, field_number: u32, s: &str) -> ProtobufResult<()> {
         self.write_tag(field_number, WireType::LengthDelimited)?;
         self.write_string_no_tag(s)?;
+        Ok(())
+    }
+
+    /// Write repeated packed float values.
+    pub fn write_repeated_packed_float_no_tag(&mut self, values: &[f32]) -> ProtobufResult<()> {
+        for v in values {
+            self.write_float_no_tag(*v)?;
+        }
+        Ok(())
+    }
+
+    /// Write repeated packed double values.
+    pub fn write_repeated_packed_double_no_tag(&mut self, values: &[f64]) -> ProtobufResult<()> {
+        for v in values {
+            self.write_double_no_tag(*v)?;
+        }
+        Ok(())
+    }
+
+    /// Write repeated packed fixed32 values.
+    pub fn write_repeated_packed_fixed32_no_tag(&mut self, values: &[u32]) -> ProtobufResult<()> {
+        // TODO: these can be memcopied.
+        for v in values {
+            self.write_fixed32_no_tag(*v)?;
+        }
+        Ok(())
+    }
+
+    /// Write repeated packed fixed64 values.
+    pub fn write_repeated_packed_fixed64_no_tag(&mut self, values: &[u64]) -> ProtobufResult<()> {
+        for v in values {
+            self.write_fixed64_no_tag(*v)?;
+        }
+        Ok(())
+    }
+
+    /// Write repeated packed sfixed32 values.
+    pub fn write_repeated_packed_sfixed32_no_tag(&mut self, values: &[i32]) -> ProtobufResult<()> {
+        for v in values {
+            self.write_sfixed32_no_tag(*v)?;
+        }
+        Ok(())
+    }
+
+    /// Write repeated packed sfixed64 values.
+    pub fn write_repeated_packed_sfixed64_no_tag(&mut self, values: &[i64]) -> ProtobufResult<()> {
+        for v in values {
+            self.write_sfixed64_no_tag(*v)?;
+        }
+        Ok(())
+    }
+
+    /// Write repeated packed int32 values.
+    pub fn write_repeated_packed_int32_no_tag(&mut self, values: &[i32]) -> ProtobufResult<()> {
+        for v in values {
+            self.write_int32_no_tag(*v)?;
+        }
+        Ok(())
+    }
+
+    /// Write repeated packed int64 values.
+    pub fn write_repeated_packed_int64_no_tag(&mut self, values: &[i64]) -> ProtobufResult<()> {
+        for v in values {
+            self.write_int64_no_tag(*v)?;
+        }
+        Ok(())
+    }
+
+    /// Write repeated packed uint32 values.
+    pub fn write_repeated_packed_uint32_no_tag(&mut self, values: &[u32]) -> ProtobufResult<()> {
+        for v in values {
+            self.write_uint32_no_tag(*v)?;
+        }
+        Ok(())
+    }
+
+    /// Write repeated packed uint64 values.
+    pub fn write_repeated_packed_uint64_no_tag(&mut self, values: &[u64]) -> ProtobufResult<()> {
+        for v in values {
+            self.write_uint64_no_tag(*v)?;
+        }
+        Ok(())
+    }
+
+    /// Write repeated packed sint32 values.
+    pub fn write_repeated_packed_sint32_no_tag(&mut self, values: &[i32]) -> ProtobufResult<()> {
+        for v in values {
+            self.write_sint32_no_tag(*v)?;
+        }
+        Ok(())
+    }
+
+    /// Write repeated packed sint64 values.
+    pub fn write_repeated_packed_sint64_no_tag(&mut self, values: &[i64]) -> ProtobufResult<()> {
+        for v in values {
+            self.write_sint64_no_tag(*v)?;
+        }
+        Ok(())
+    }
+
+    /// Write repeated packed bool values.
+    pub fn write_repeated_packed_bool_no_tag(&mut self, values: &[bool]) -> ProtobufResult<()> {
+        for v in values {
+            self.write_bool_no_tag(*v)?;
+        }
+        Ok(())
+    }
+
+    /// Write repeated packed enum values.
+    pub fn write_repeated_packed_enum_no_tag(&mut self, values: &[i32]) -> ProtobufResult<()> {
+        for v in values {
+            self.write_enum_no_tag(*v)?;
+        }
+        Ok(())
+    }
+
+    /// Write repeated packed enum values.
+    pub fn write_repeated_packed_enum_or_unknown_no_tag<E: ProtobufEnum>(
+        &mut self,
+        values: &[ProtobufEnumOrUnknown<E>],
+    ) -> ProtobufResult<()> {
+        for v in values {
+            self.write_enum_or_unknown_no_tag(*v)?;
+        }
         Ok(())
     }
 
