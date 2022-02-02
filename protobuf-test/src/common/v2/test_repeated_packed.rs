@@ -40,10 +40,14 @@ fn test_read_packed_to_unpacked() {
 }
 
 #[test]
-fn test_write_packed() {
+fn test_write_packed_varint() {
     let mut test = TestPacked::new();
     test.varints = vec![17i32, 1000];
     test_serialize_deserialize("22 03 11 e8 07", &test);
+}
+
+#[test]
+fn test_write_packed_fixed() {
     let mut test = TestPacked::new();
     test.sfixed32s = vec![17i32, 1000];
     test_serialize_deserialize("2a 08 11 00 00 00 e8 03 00 00", &test);
