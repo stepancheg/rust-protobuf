@@ -29,6 +29,19 @@
 //!
 //! The alternative is to use
 //! [`protobuf-codegen-pure` crate](https://docs.rs/protobuf-codegen-pure).
+//!
+//! # Protoc binary
+//!
+//! This crate searches for `protoc` binary in `$PATH` by default.
+//!
+//! `protoc` binary can be obtained using
+//! [`protoc-bin-vendored` crate](https://docs.rs/protoc-bin-vendored)
+//! and supplied to `Codegen` object.
+//!
+//! # This is version 2
+//!
+//! In branch 3 of rust-protobuf this functionality is provided by
+//! [`protobuf-codegen` crate](https://docs.rs/protobuf-codegen/%3E=3.0.0-alpha).
 
 #![deny(missing_docs)]
 #![deny(rustdoc::broken_intra_doc_links)]
