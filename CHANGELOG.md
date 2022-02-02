@@ -6,6 +6,8 @@ Stable versions are 2.xx still supported.
 ## [3] - Unreleased
 
 - `Display` for message now outputs text format, and `Debug` for message does standard rust `#[derive(Debug)]`.
+- Smaller generated code (common code snippets extracted into the library runtime)
+- Improvements in dynamic messages
 
 ## [3.0.0-alpha.3] - 2022-02-01
 
