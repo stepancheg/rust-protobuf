@@ -1,6 +1,16 @@
 //! `protoc` binary downloaded and stored inside the crate.
 //!
 //! Can be used to avoid downloading and installing `protoc` binary.
+//!
+//! # Example
+//!
+//! ```no_run
+//! # let _ =
+//! protoc_bin_vendored::protoc_bin_path().unwrap()
+//! # ;
+//! ```
+//!
+//! returns a path to a `protoc` binary packaged into the crate.
 
 #![deny(missing_docs)]
 #![deny(rustdoc::broken_intra_doc_links)]
