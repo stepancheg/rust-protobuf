@@ -23,6 +23,7 @@ use crate::gen::scope::OneofWithContext;
 use crate::gen::scope::RootScope;
 use crate::gen::scope::WithScope;
 use crate::gen::serde;
+use crate::rust_ast::attr::RustAttr;
 
 // oneof one { ... }
 #[derive(Clone)]
@@ -237,7 +238,7 @@ impl<'a> OneofGen<'a> {
 
     fn write_enum(&self, w: &mut CodeWriter) {
         let derive = vec!["Clone", "PartialEq", "Debug"];
-        w.derive(&derive);
+        w.write_ast(&RustAttr::derive(&derive));
         serde::write_serde_attr(
             w,
             &self.customize,

@@ -1,3 +1,4 @@
+pub(crate) mod attr;
 pub(crate) mod field;
 
 use crate::gen::code_writer::CodeWriter;
