@@ -1470,9 +1470,9 @@ impl<'a> FieldGen<'a> {
     fn self_field_vec_packed_fixed_data_size(&self) -> String {
         assert!(self.is_fixed());
         format!(
-            "({}.len() * {}) as u32",
-            self.self_field(),
-            field_type_size(self.proto_type).unwrap()
+            "{}::rt::vec_packed_fixed_data_size(&{})",
+            protobuf_crate_path(&self.customize),
+            self.self_field()
         )
     }
 
@@ -1505,13 +1505,11 @@ impl<'a> FieldGen<'a> {
     }
 
     fn self_field_vec_packed_fixed_size(&self) -> String {
-        // zero is filtered outside
         format!(
-            "{} + {}::rt::compute_raw_varint32_size({}) + {}",
-            self.tag_size(),
+            "{}::rt::vec_packed_fixed_size({}, &{})",
             protobuf_crate_path(&self.customize),
-            self.self_field_vec_packed_fixed_data_size(),
-            self.self_field_vec_packed_fixed_data_size()
+            self.proto_field.number(),
+            self.self_field()
         )
     }
 

@@ -65,6 +65,12 @@ pub fn compute_raw_varint32_size(value: u32) -> u32 {
     compute_raw_varint64_size(value as u64)
 }
 
+/// Fixed size integers.
+pub trait ProtobufFixed {
+    /// Size of this fixed type in bytes.
+    const LEN: u32;
+}
+
 /// Helper trait implemented by integer types which could be encoded as varint.
 pub trait ProtobufVarint {
     /// Size of self when encoded as varint.
@@ -119,6 +125,36 @@ impl ProtobufVarint for bool {
     fn len_varint(&self) -> u32 {
         1
     }
+}
+
+impl ProtobufFixed for u32 {
+    const LEN: u32 = 4;
+}
+
+impl ProtobufFixed for i32 {
+    const LEN: u32 = 4;
+}
+
+impl ProtobufFixed for u64 {
+    const LEN: u32 = 8;
+}
+
+impl ProtobufFixed for i64 {
+    const LEN: u32 = 8;
+}
+
+impl ProtobufFixed for f32 {
+    const LEN: u32 = 4;
+}
+
+impl ProtobufFixed for f64 {
+    const LEN: u32 = 8;
+}
+
+/// Technically `bool` is not fixed, but it can be considered as fixed
+/// for the purpose of encoding.
+impl ProtobufFixed for bool {
+    const LEN: u32 = 1;
 }
 
 /* Commented out due to https://github.com/mozilla/rust/issues/8075
@@ -196,6 +232,21 @@ pub fn vec_packed_enum_or_unknown_size<E: ProtobufEnum>(
         0
     } else {
         let data_size = vec_packed_enum_or_unknown_data_size(vec);
+        tag_size(field_number) + data_size.len_varint() + data_size
+    }
+}
+
+/// Compute data size of fixed encoding of repeated field data.
+pub fn vec_packed_fixed_data_size<V: ProtobufFixed>(vec: &[V]) -> u32 {
+    (vec.len() * V::LEN as usize) as u32
+}
+
+/// Compute field size (data plus header) of fixed encoding of repeated field.
+pub fn vec_packed_fixed_size<V: ProtobufFixed>(field_number: u32, vec: &[V]) -> u32 {
+    if vec.is_empty() {
+        0
+    } else {
+        let data_size = vec_packed_fixed_data_size::<V>(vec);
         tag_size(field_number) + data_size.len_varint() + data_size
     }
 }
