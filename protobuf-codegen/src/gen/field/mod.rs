@@ -737,6 +737,14 @@ impl<'a> FieldGen<'a> {
         protobuf_name(self.proto_type)
     }
 
+    fn os_write_fn_suffix_with_unknown_for_enum(&self) -> &str {
+        if self.proto_type == field_descriptor_proto::Type::TYPE_ENUM {
+            "enum_or_unknown"
+        } else {
+            self.os_write_fn_suffix()
+        }
+    }
+
     // type of `v` in `os.write_xxx_no_tag(v)`
     fn os_write_fn_param_type(&self) -> RustType {
         match self.proto_type {
@@ -1829,15 +1837,12 @@ impl<'a> FieldGen<'a> {
                     w.comment("TODO: Data size is computed again, it should be cached");
                     let data_size_expr = self.self_field_vec_packed_data_size();
                     w.write_line(&format!("os.write_raw_varint32({})?;", data_size_expr));
-                    self.write_for_self_field(w, "v", |w, v_type| {
-                        let param_type = self.os_write_fn_param_type();
-                        let os_write_fn_suffix = self.os_write_fn_suffix();
-                        w.write_line(&format!(
-                            "os.write_{}_no_tag({})?;",
-                            os_write_fn_suffix,
-                            v_type.into_target(&param_type, "v", &self.customize)
-                        ));
-                    });
+                    let os_write_fn_suffix = self.os_write_fn_suffix_with_unknown_for_enum();
+                    w.write_line(&format!(
+                        "os.write_repeated_packed_{}_no_tag(&{})?;",
+                        os_write_fn_suffix,
+                        self.self_field()
+                    ));
                 });
             }
             FieldKind::Map(MapField {
