@@ -1,3 +1,4 @@
+use crate::reflect::dynamic::map::DynamicMap;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::ReflectValueBox;
@@ -58,10 +59,16 @@ impl<'a> IntoIterator for &'a dyn ReflectMap {
     }
 }
 
+#[derive(Clone)]
+enum ReflectMapRefImpl<'a> {
+    Generated(&'a dyn ReflectMap),
+    DynamicEmpty(DynamicMap),
+}
+
 /// Dynamic reference to `map` field
-#[derive(Copy, Clone)]
+#[derive(Clone)] // TODO: add `Debug`
 pub struct ReflectMapRef<'a> {
-    map: &'a dyn ReflectMap,
+    imp: ReflectMapRefImpl<'a>,
 }
 
 /// Dynamic mutable reference to `map` field
@@ -71,32 +78,56 @@ pub struct ReflectMapMut<'a> {
 
 impl<'a> ReflectMapRef<'a> {
     pub(crate) fn new(map: &'a dyn ReflectMap) -> ReflectMapRef<'a> {
-        ReflectMapRef { map }
+        ReflectMapRef {
+            imp: ReflectMapRefImpl::Generated(map),
+        }
+    }
+
+    pub(crate) fn new_empty(key: RuntimeTypeBox, value: RuntimeTypeBox) -> ReflectMapRef<'a> {
+        ReflectMapRef {
+            // TODO: this might be a bit expensive.
+            imp: ReflectMapRefImpl::DynamicEmpty(DynamicMap::new(key, value)),
+        }
     }
 
     /// Size of the map
     pub fn len(&self) -> usize {
-        self.map.len()
+        match &self.imp {
+            ReflectMapRefImpl::Generated(map) => map.len(),
+            ReflectMapRefImpl::DynamicEmpty(map) => map.len(),
+        }
     }
 
     /// Is map empty?
     pub fn is_empty(&self) -> bool {
-        self.map.is_empty()
+        match &self.imp {
+            ReflectMapRefImpl::Generated(map) => map.is_empty(),
+            ReflectMapRefImpl::DynamicEmpty(map) => map.is_empty(),
+        }
     }
 
     /// Find a value by given key.
     pub fn get(&self, key: ReflectValueRef) -> Option<ReflectValueRef> {
-        self.map.get(key)
+        match &self.imp {
+            ReflectMapRefImpl::Generated(map) => map.get(key),
+            ReflectMapRefImpl::DynamicEmpty(map) => map.get(key),
+        }
     }
 
     /// Map key type
     pub fn key_type(&self) -> RuntimeTypeBox {
-        self.map.key_type()
+        match &self.imp {
+            ReflectMapRefImpl::Generated(map) => map.key_type(),
+            ReflectMapRefImpl::DynamicEmpty(map) => map.key_type(),
+        }
     }
 
     /// Map value type
     pub fn value_type(&self) -> RuntimeTypeBox {
-        self.map.value_type()
+        match &self.imp {
+            ReflectMapRefImpl::Generated(map) => map.value_type(),
+            ReflectMapRefImpl::DynamicEmpty(map) => map.value_type(),
+        }
     }
 }
 
@@ -129,7 +160,7 @@ impl<'a> ReflectMapMut<'a> {
     }
 
     fn as_ref(&'a self) -> ReflectMapRef<'a> {
-        ReflectMapRef { map: self.map }
+        ReflectMapRef::new(self.map)
     }
 
     /// Map key type
@@ -195,13 +226,18 @@ impl<'a> Iterator for ReflectMapRefIter<'a> {
     }
 }
 
-impl<'a, 'b> IntoIterator for &'b ReflectMapRef<'a> {
+impl<'a, 'b: 'a> IntoIterator for &'b ReflectMapRef<'a> {
     type Item = (ReflectValueRef<'a>, ReflectValueRef<'a>);
     type IntoIter = ReflectMapRefIter<'a>;
 
     fn into_iter(self) -> ReflectMapRefIter<'a> {
-        ReflectMapRefIter {
-            iter: self.map.reflect_iter(),
+        match &self.imp {
+            ReflectMapRefImpl::Generated(map) => ReflectMapRefIter {
+                iter: map.reflect_iter(),
+            },
+            ReflectMapRefImpl::DynamicEmpty(map) => ReflectMapRefIter {
+                iter: map.reflect_iter(),
+            },
         }
     }
 }

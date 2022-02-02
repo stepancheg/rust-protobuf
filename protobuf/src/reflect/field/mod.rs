@@ -50,7 +50,7 @@ impl<'a> ReflectFieldRef<'a> {
             RuntimeFieldType::Repeated(elem) => {
                 ReflectFieldRef::Repeated(ReflectRepeatedRef::new_empty(elem))
             }
-            RuntimeFieldType::Map(..) => unimplemented!(),
+            RuntimeFieldType::Map(k, v) => ReflectFieldRef::Map(ReflectMapRef::new_empty(k, v)),
         }
     }
 }
@@ -234,7 +234,7 @@ impl FieldDescriptor {
     /// Obtain type of map key and value.
     pub(crate) fn map_proto_type(&self) -> (ProtobufTypeBox, ProtobufTypeBox) {
         assert!(self.is_map());
-        todo!()
+        unimplemented!()
     }
 
     /// Get message field or default instance if field is unset.

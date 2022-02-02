@@ -235,7 +235,11 @@ impl DynamicMessage {
                     }
                 }
                 RuntimeFieldType::Map(_, _) => {
-                    unimplemented!();
+                    let map = field_desc.get_map(self);
+                    let (key_type, value_type) = field_desc.map_proto_type();
+                    for (k, v) in &map {
+                        handler.map_field_entry(&k, key_type.t(), &v, value_type.t())?;
+                    }
                 }
             }
         }
@@ -252,6 +256,13 @@ trait ForEachSingularFieldToWrite {
         t: Type,
         number: u32,
         value: &ReflectRepeatedRef,
+    ) -> ProtobufResult<()>;
+    fn map_field_entry(
+        &mut self,
+        key: &ReflectValueRef,
+        kt: Type,
+        value: &ReflectValueRef,
+        vt: Type,
     ) -> ProtobufResult<()>;
     fn unknown_fields(&mut self, unknown_fields: &UnknownFields) -> ProtobufResult<()>;
 }
@@ -380,6 +391,17 @@ impl Message for DynamicMessage {
                 repeated_write_to(t, number, value, self.os)
             }
 
+            fn map_field_entry(
+                &mut self,
+                key: &ReflectValueRef,
+                kt: Type,
+                value: &ReflectValueRef,
+                vt: Type,
+            ) -> ProtobufResult<()> {
+                let _ = (key, kt, value, vt);
+                unimplemented!()
+            }
+
             fn unknown_fields(&mut self, unknown_fields: &UnknownFields) -> ProtobufResult<()> {
                 self.os.write_unknown_fields(unknown_fields)
             }
@@ -414,6 +436,17 @@ impl Message for DynamicMessage {
             ) -> ProtobufResult<()> {
                 self.m_size += compute_repeated_packed_size(t, number, value);
                 Ok(())
+            }
+
+            fn map_field_entry(
+                &mut self,
+                key: &ReflectValueRef,
+                kt: Type,
+                value: &ReflectValueRef,
+                vt: Type,
+            ) -> ProtobufResult<()> {
+                let _ = (key, kt, value, vt);
+                unimplemented!()
             }
 
             fn unknown_fields(&mut self, unknown_fields: &UnknownFields) -> ProtobufResult<()> {
