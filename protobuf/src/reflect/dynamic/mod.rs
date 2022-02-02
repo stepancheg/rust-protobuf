@@ -1,3 +1,5 @@
+use std::fmt;
+
 use crate::cached_size::CachedSize;
 use crate::descriptor::field_descriptor_proto::Type;
 use crate::message_dyn::MessageDyn;
@@ -25,6 +27,7 @@ use crate::rt::string_size;
 use crate::rt::tag_size;
 use crate::rt::value_size;
 use crate::rt::value_varint_zigzag_size;
+use crate::text_format;
 use crate::wire_format::WireType;
 use crate::Clear;
 use crate::CodedInputStream;
@@ -231,6 +234,12 @@ trait ForEachSingularFieldToWrite {
 impl Clear for DynamicMessage {
     fn clear(&mut self) {
         unimplemented!()
+    }
+}
+
+impl fmt::Display for DynamicMessage {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        text_format::fmt(self, f)
     }
 }
 

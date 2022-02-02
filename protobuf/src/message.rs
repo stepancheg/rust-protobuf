@@ -28,7 +28,14 @@ use crate::unknown::UnknownFields;
 /// This trait is sized, there's accompanying [`MessageDyn`](crate::MessageDyn) trait
 /// which is implemented for all messages which can be used in functions
 /// without making message a function type parameter.
-pub trait Message: fmt::Debug + Clear + Clone + Send + Sync + Sized + 'static {
+///
+/// ## `Display`
+///
+/// [`Display`](fmt::Display) implementation for messages does protobuf text format.
+/// See [`text_format`](crate::text_format) for more details.
+pub trait Message:
+    fmt::Debug + fmt::Display + Clear + Clone + Send + Sync + Sized + 'static
+{
     /// Message descriptor for this message, used for reflection.
     ///
     /// This function is rarely needed to be called directly, use
