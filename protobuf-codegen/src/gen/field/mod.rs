@@ -1479,10 +1479,13 @@ impl<'a> FieldGen<'a> {
     fn self_field_vec_packed_varint_data_size(&self) -> String {
         assert!(!self.is_fixed());
         let fn_name = if self.is_enum() {
-            "vec_packed_enum_or_unknown_data_size".to_string()
+            "vec_packed_enum_or_unknown_data_size"
         } else {
-            let zigzag_suffix = if self.is_zigzag() { "_zigzag" } else { "" };
-            format!("vec_packed_varint{}_data_size", zigzag_suffix)
+            if self.is_zigzag() {
+                "vec_packed_varint_zigzag_data_size"
+            } else {
+                "vec_packed_varint_data_size"
+            }
         };
         format!(
             "{}::rt::{}(&{})",
