@@ -25,7 +25,6 @@ use crate::gen::scope::MessageWithScope;
 use crate::gen::scope::RootScope;
 use crate::gen::scope::WithScope;
 use crate::gen::serde;
-use crate::rust_ast::field::RustField;
 use crate::Customize;
 
 /// Protobuf message Rust type name
@@ -597,27 +596,25 @@ impl<'a> MessageGen<'a> {
                         true => Visibility::Public,
                         false => Visibility::Default,
                     };
-                    w.write_ast(&RustField {
+                    w.field_decl_vis(
                         vis,
-                        name: oneof.oneof.field_name().to_string(),
-                        ty: oneof.full_storage_type().to_code(&self.customize),
-                    });
+                        &oneof.oneof.field_name().to_string(),
+                        &oneof.full_storage_type().to_code(&self.customize),
+                    );
                 }
             }
             w.comment("special fields");
 
             serde::write_serde_attr(w, &self.customize, "serde(skip)");
-            w.write_ast(&RustField {
-                vis: Visibility::Public,
-                name: "unknown_fields".to_owned(),
-                ty: format!("{}::UnknownFields", protobuf_crate_path(&self.customize)),
-            });
+            w.pub_field_decl(
+                "unknown_fields",
+                &format!("{}::UnknownFields", protobuf_crate_path(&self.customize)),
+            );
             serde::write_serde_attr(w, &self.customize, "serde(skip)");
-            w.write_ast(&RustField {
-                vis: Visibility::Public,
-                name: "cached_size".to_owned(),
-                ty: format!("{}::rt::CachedSize", protobuf_crate_path(&self.customize)),
-            });
+            w.pub_field_decl(
+                "cached_size",
+                &format!("{}::rt::CachedSize", protobuf_crate_path(&self.customize)),
+            );
         });
     }
 

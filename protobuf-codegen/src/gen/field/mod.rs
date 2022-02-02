@@ -28,7 +28,6 @@ use crate::gen::scope::MessageWithScope;
 use crate::gen::scope::RootScope;
 use crate::gen::scope::WithScope;
 use crate::gen::serde;
-use crate::rust_ast::field::RustField;
 
 mod accessor;
 
@@ -1150,10 +1149,10 @@ impl<'a> FieldGen<'a> {
 
             self.write_serde_attr(w);
             let vis = self.visibility();
-            w.write_ast(&RustField {
+            w.field_decl_vis(
                 vis,
-                name: self.rust_name.get().to_owned(),
-                ty: self
+                self.rust_name.get(),
+                &self
                     .full_storage_type(
                         &self
                             .proto_field
@@ -1162,7 +1161,7 @@ impl<'a> FieldGen<'a> {
                             .get_file_and_mod(self.customize.clone()),
                     )
                     .to_code(&self.customize),
-            });
+            );
         }
     }
 
