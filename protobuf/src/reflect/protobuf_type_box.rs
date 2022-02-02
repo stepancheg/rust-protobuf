@@ -1,4 +1,6 @@
 use crate::descriptor::field_descriptor_proto::Type;
+use crate::reflect::EnumDescriptor;
+use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectRepeatedMut;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::RuntimeTypeBox;
@@ -9,6 +11,7 @@ use crate::ProtobufError;
 use crate::ProtobufResult;
 
 /// Runtime type and protobuf type.
+#[derive(Debug, Clone)]
 pub(crate) struct ProtobufTypeBox {
     /// Runtime type.
     runtime: RuntimeTypeBox,
@@ -23,6 +26,22 @@ impl ProtobufTypeBox {
 
     pub(crate) fn t(&self) -> Type {
         self.t
+    }
+
+    pub(crate) fn into_runtime(self) -> RuntimeTypeBox {
+        self.runtime
+    }
+
+    pub(crate) fn message(message: MessageDescriptor) -> ProtobufTypeBox {
+        ProtobufTypeBox::new(RuntimeTypeBox::Message(message), Type::TYPE_MESSAGE).unwrap()
+    }
+
+    pub(crate) fn enumeration(enumeration: EnumDescriptor) -> ProtobufTypeBox {
+        ProtobufTypeBox::new(RuntimeTypeBox::Enum(enumeration), Type::TYPE_ENUM).unwrap()
+    }
+
+    pub(crate) fn from_proto_type(t: Type) -> ProtobufTypeBox {
+        ProtobufTypeBox::new(RuntimeTypeBox::from_proto_type(t), t).unwrap()
     }
 
     pub(crate) fn new(runtime: RuntimeTypeBox, t: Type) -> ProtobufResult<ProtobufTypeBox> {

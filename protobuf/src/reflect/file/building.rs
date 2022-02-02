@@ -5,8 +5,8 @@ use crate::descriptor::DescriptorProto;
 use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::FieldDescriptorProto;
 use crate::descriptor::FileDescriptorProto;
+use crate::reflect::field::index::ForwardProtobufTypeBox;
 use crate::reflect::field::index::ForwardRuntimeFieldType;
-use crate::reflect::field::index::ForwardRuntimeTypeBox;
 use crate::reflect::file::index::FileIndex;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
@@ -65,15 +65,16 @@ impl<'a> FileDescriptorBuilding<'a> {
             field_descriptor_proto::Label::LABEL_REPEATED => {
                 let element = self.resolve_field_element_type(field);
                 let type_proto = match &element {
-                    ForwardRuntimeTypeBox::CurrentFileMessage(m) => Some(
+                    ForwardProtobufTypeBox::CurrentFileMessage(m) => Some(
                         self.current_file_index.messages[*m]
                             .path
                             .eval(self.current_file_descriptor)
                             .unwrap(),
                     ),
-                    ForwardRuntimeTypeBox::RuntimeTypeBox(RuntimeTypeBox::Message(m)) => {
-                        Some(m.get_proto())
-                    }
+                    ForwardProtobufTypeBox::ProtobufTypeBox(t) => match t.runtime() {
+                        RuntimeTypeBox::Message(m) => Some(m.get_proto()),
+                        _ => None,
+                    },
                     _ => None,
                 };
                 match type_proto {
@@ -84,7 +85,7 @@ impl<'a> FileDescriptorBuilding<'a> {
         }
     }
 
-    fn resolve_field_element_type(&self, field: &FieldDescriptorProto) -> ForwardRuntimeTypeBox {
+    fn resolve_field_element_type(&self, field: &FieldDescriptorProto) -> ForwardProtobufTypeBox {
         match field.get_field_type() {
             field_descriptor_proto::Type::TYPE_MESSAGE
             | field_descriptor_proto::Type::TYPE_GROUP => {
@@ -97,12 +98,12 @@ impl<'a> FileDescriptorBuilding<'a> {
                         .message_by_name_to_package
                         .get(name_to_package)
                     {
-                        return ForwardRuntimeTypeBox::CurrentFileMessage(*index);
+                        return ForwardProtobufTypeBox::CurrentFileMessage(*index);
                     }
                 }
                 for dep in self.deps_with_public {
                     if let Some(m) = dep.message_by_full_name(field.get_type_name()) {
-                        return ForwardRuntimeTypeBox::RuntimeTypeBox(RuntimeTypeBox::Message(m));
+                        return ForwardProtobufTypeBox::message(m);
                     }
                 }
                 panic!(
@@ -121,12 +122,12 @@ impl<'a> FileDescriptorBuilding<'a> {
                         .enums_by_name_to_package
                         .get(name_to_package)
                     {
-                        return ForwardRuntimeTypeBox::CurrentFileEnum(*index);
+                        return ForwardProtobufTypeBox::CurrentFileEnum(*index);
                     }
                 }
                 for dep in self.deps_with_public {
                     if let Some(m) = dep.enum_by_full_name(field.get_type_name()) {
-                        return ForwardRuntimeTypeBox::RuntimeTypeBox(RuntimeTypeBox::Enum(m));
+                        return ForwardProtobufTypeBox::enumeration(m);
                     }
                 }
                 panic!(
@@ -135,7 +136,7 @@ impl<'a> FileDescriptorBuilding<'a> {
                     self.all_files_str()
                 );
             }
-            t => ForwardRuntimeTypeBox::RuntimeTypeBox(RuntimeTypeBox::from_proto_type(t)),
+            t => ForwardProtobufTypeBox::from_proto_type(t),
         }
     }
 

@@ -1,7 +1,9 @@
 use crate::descriptor::field_descriptor_proto;
+use crate::descriptor::field_descriptor_proto::Type;
 use crate::descriptor::FieldDescriptorProto;
 use crate::json::json_name;
 use crate::reflect::file::building::FileDescriptorBuilding;
+use crate::reflect::protobuf_type_box::ProtobufTypeBox;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::EnumValueDescriptor;
 use crate::reflect::FieldDescriptor;
@@ -12,42 +14,58 @@ use crate::reflect::RuntimeFieldType;
 use crate::reflect::RuntimeTypeBox;
 
 #[derive(Debug)]
-pub(crate) enum ForwardRuntimeTypeBox {
-    RuntimeTypeBox(RuntimeTypeBox),
+pub(crate) enum ForwardProtobufTypeBox {
+    ProtobufTypeBox(ProtobufTypeBox),
     CurrentFileEnum(usize),
     CurrentFileMessage(usize),
 }
 
-impl ForwardRuntimeTypeBox {
-    fn resolve(&self, field: &FieldDescriptor) -> RuntimeTypeBox {
+impl ForwardProtobufTypeBox {
+    pub(crate) fn message(message: MessageDescriptor) -> ForwardProtobufTypeBox {
+        ForwardProtobufTypeBox::ProtobufTypeBox(ProtobufTypeBox::message(message))
+    }
+
+    pub(crate) fn enumeration(enumeration: EnumDescriptor) -> ForwardProtobufTypeBox {
+        ForwardProtobufTypeBox::ProtobufTypeBox(ProtobufTypeBox::enumeration(enumeration))
+    }
+
+    pub(crate) fn from_proto_type(t: Type) -> ForwardProtobufTypeBox {
+        ForwardProtobufTypeBox::ProtobufTypeBox(ProtobufTypeBox::from_proto_type(t))
+    }
+
+    fn resolve(&self, field: &FieldDescriptor) -> ProtobufTypeBox {
         match self {
-            ForwardRuntimeTypeBox::RuntimeTypeBox(t) => t.clone(),
-            ForwardRuntimeTypeBox::CurrentFileMessage(m) => RuntimeTypeBox::Message(
+            ForwardProtobufTypeBox::ProtobufTypeBox(t) => t.clone(),
+            ForwardProtobufTypeBox::CurrentFileMessage(m) => ProtobufTypeBox::message(
                 MessageDescriptor::new(field.message_descriptor.file_descriptor().clone(), *m),
             ),
-            ForwardRuntimeTypeBox::CurrentFileEnum(m) => RuntimeTypeBox::Enum(EnumDescriptor::new(
-                field.message_descriptor.file_descriptor().clone(),
-                *m,
-            )),
+            ForwardProtobufTypeBox::CurrentFileEnum(m) => ProtobufTypeBox::enumeration(
+                EnumDescriptor::new(field.message_descriptor.file_descriptor().clone(), *m),
+            ),
         }
     }
 }
 
 #[derive(Debug)]
 pub(crate) enum ForwardRuntimeFieldType {
-    Singular(ForwardRuntimeTypeBox),
-    Repeated(ForwardRuntimeTypeBox),
-    Map(ForwardRuntimeTypeBox, ForwardRuntimeTypeBox),
+    Singular(ForwardProtobufTypeBox),
+    Repeated(ForwardProtobufTypeBox),
+    Map(ForwardProtobufTypeBox, ForwardProtobufTypeBox),
 }
 
 impl ForwardRuntimeFieldType {
     pub fn resolve(&self, field: &FieldDescriptor) -> RuntimeFieldType {
         match self {
-            ForwardRuntimeFieldType::Singular(t) => RuntimeFieldType::Singular(t.resolve(field)),
-            ForwardRuntimeFieldType::Repeated(t) => RuntimeFieldType::Repeated(t.resolve(field)),
-            ForwardRuntimeFieldType::Map(k, v) => {
-                RuntimeFieldType::Map(k.resolve(field), v.resolve(field))
+            ForwardRuntimeFieldType::Singular(t) => {
+                RuntimeFieldType::Singular(t.resolve(field).into_runtime())
             }
+            ForwardRuntimeFieldType::Repeated(t) => {
+                RuntimeFieldType::Repeated(t.resolve(field).into_runtime())
+            }
+            ForwardRuntimeFieldType::Map(k, v) => RuntimeFieldType::Map(
+                k.resolve(field).into_runtime(),
+                v.resolve(field).into_runtime(),
+            ),
         }
     }
 }
