@@ -14,7 +14,7 @@ use crate::ProtobufResult;
 use crate::UnknownFields;
 
 /// Dynamic-dispatch version of [`Message`].
-pub trait MessageDyn: Any + fmt::Debug + Send + Sync + 'static {
+pub trait MessageDyn: Any + fmt::Debug + fmt::Display + Send + Sync + 'static {
     /// Message descriptor for this message, used for reflection.
     fn descriptor_dyn(&self) -> MessageDescriptor;
 
