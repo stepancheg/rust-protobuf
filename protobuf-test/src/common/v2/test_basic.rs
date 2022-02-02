@@ -36,6 +36,7 @@ fn test3() {
 fn test4() {
     let mut test4 = Test4::new();
     test4.set_d([3i32, 270, 86942].to_vec());
+    // TODO: fails with dynamic
     test_serialize_deserialize("22 06 03 8E 02 9E A7 05", &test4);
 }
 

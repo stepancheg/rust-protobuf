@@ -2,6 +2,8 @@ use protobuf::reflect::FileDescriptor;
 use protobuf::Message;
 use protobuf::MessageDyn;
 
+use crate::hex::encode_hex;
+
 /// Serialize/deserialize test for `DynamicMessage`.
 pub fn serialize_and_parse_as_dynamic_and_serialize<M: Message>(m: &M) -> Box<dyn MessageDyn> {
     // Recreate generated message file descriptor as dynamic descriptor.
@@ -21,6 +23,12 @@ pub fn serialize_and_parse_as_dynamic_and_serialize<M: Message>(m: &M) -> Box<dy
     // Now serialize dynamic message.
     let serialized_again = parsed.write_to_bytes_dyn().unwrap();
     // And compare serialized dynamic message with serialized generated message.
-    assert_eq!(bytes, serialized_again);
+    assert_eq!(
+        encode_hex(&bytes),
+        encode_hex(&serialized_again),
+        "serialized({:?}) != serialized({:?})",
+        m,
+        parsed
+    );
     parsed
 }
