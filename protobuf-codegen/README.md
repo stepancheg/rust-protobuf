@@ -58,13 +58,13 @@ It can be installed either from source or with `cargo install protobuf` command.
 
 If you installed it with cargo, it should be
 
-```sh
+```rust
 PATH="$HOME/.cargo/bin:$PATH"
 ```
 
 3) Generate .rs files:
 
-```sh
+```rust
 protoc --rust_out . foo.proto
 ```
 
