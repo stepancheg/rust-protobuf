@@ -2,6 +2,7 @@ use std::io;
 use std::io::BufRead;
 use std::io::Read;
 use std::mem;
+use std::mem::MaybeUninit;
 
 use crate::buf_read_iter::BufReadIter;
 #[cfg(feature = "bytes")]
@@ -14,6 +15,7 @@ use crate::error::ProtobufError;
 use crate::error::ProtobufResult;
 use crate::error::WireError;
 use crate::message::Message;
+use crate::misc::maybe_ununit_array_assume_init;
 use crate::reflect::types::ProtobufType;
 use crate::reflect::types::ProtobufTypeBool;
 use crate::reflect::types::ProtobufTypeDouble;
@@ -121,7 +123,7 @@ impl<'a> CodedInputStream<'a> {
 
     /// Read bytes into given `buf`.
     #[inline]
-    pub fn read_exact(&mut self, buf: &mut [u8]) -> ProtobufResult<()> {
+    pub fn read_exact(&mut self, buf: &mut [MaybeUninit<u8>]) -> ProtobufResult<()> {
         self.source.read_exact(buf)
     }
 
@@ -250,15 +252,19 @@ impl<'a> CodedInputStream<'a> {
 
     /// Read little-endian 32-bit integer
     pub fn read_raw_little_endian32(&mut self) -> ProtobufResult<u32> {
-        let mut bytes = [0; 4];
+        let mut bytes = [MaybeUninit::uninit(); 4];
         self.read_exact(&mut bytes)?;
+        // SAFETY: `read_exact` guarantees that the buffer is filled.
+        let bytes = unsafe { maybe_ununit_array_assume_init(bytes) };
         Ok(u32::from_le_bytes(bytes))
     }
 
     /// Read little-endian 64-bit integer
     pub fn read_raw_little_endian64(&mut self) -> ProtobufResult<u64> {
-        let mut bytes = [0; 8];
+        let mut bytes = [MaybeUninit::uninit(); 8];
         self.read_exact(&mut bytes)?;
+        // SAFETY: `read_exact` guarantees that the buffer is filled.
+        let bytes = unsafe { maybe_ununit_array_assume_init(bytes) };
         Ok(u64::from_le_bytes(bytes))
     }
 
@@ -802,7 +808,6 @@ mod test {
     }
 
     #[test]
-    #[cfg_attr(miri, ignore)] // TODO: fix
     fn test_input_stream_skip_raw_bytes() {
         test_read("", |reader| {
             reader.skip_raw_bytes(0).unwrap();
@@ -826,7 +831,6 @@ mod test {
     }
 
     #[test]
-    #[cfg_attr(miri, ignore)] // TODO: fix
     fn test_input_stream_limits() {
         test_read("aa bb cc", |is| {
             let old_limit = is.push_limit(1).unwrap();

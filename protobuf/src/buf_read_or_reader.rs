@@ -1,9 +1,13 @@
 //! `BufRead` pointer or `BufReader` owned.
 
+use std::cmp;
 use std::io;
 use std::io::BufRead;
 use std::io::BufReader;
 use std::io::Read;
+use std::mem::MaybeUninit;
+
+use crate::misc::maybe_uninit_write_slice;
 
 /// Helper type to simplify `BufReadIter` implementation.
 pub(crate) enum BufReadOrReader<'a> {
@@ -31,6 +35,36 @@ impl<'a> Read for BufReadOrReader<'a> {
             BufReadOrReader::BufReader(r) => r.read_exact(buf),
             BufReadOrReader::BufRead(r) => r.read_exact(buf),
         }
+    }
+}
+
+impl<'a> BufReadOrReader<'a> {
+    /// Similar to `read_exact` but reads into `MaybeUninit`.
+    pub(crate) fn read_exact_uninit(
+        &mut self,
+        buf: &mut [MaybeUninit<u8>],
+    ) -> Result<(), io::Error> {
+        let mut pos = 0;
+        while pos != buf.len() {
+            let fill_buf = match self {
+                BufReadOrReader::BufReader(r) => r.fill_buf()?,
+                BufReadOrReader::BufRead(r) => r.fill_buf()?,
+            };
+            if fill_buf.is_empty() {
+                return Err(io::Error::new(
+                    io::ErrorKind::UnexpectedEof,
+                    "Unexpected end of file",
+                ));
+            }
+            let consume = cmp::min(fill_buf.len(), buf.len() - pos);
+            maybe_uninit_write_slice(&mut buf[pos..pos + consume], &fill_buf[..consume]);
+            match self {
+                BufReadOrReader::BufReader(r) => r.consume(consume),
+                BufReadOrReader::BufRead(r) => r.consume(consume),
+            }
+            pos += consume;
+        }
+        Ok(())
     }
 }
 

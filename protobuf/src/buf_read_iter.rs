@@ -3,6 +3,7 @@ use std::io::BufRead;
 use std::io::BufReader;
 use std::io::Read;
 use std::mem;
+use std::mem::MaybeUninit;
 use std::u64;
 
 #[cfg(feature = "bytes")]
@@ -19,6 +20,8 @@ use crate::coded_input_stream::READ_RAW_BYTES_MAX_ALLOC;
 use crate::error::ProtobufError;
 use crate::error::ProtobufResult;
 use crate::error::WireError;
+use crate::misc::maybe_uninit_write_slice;
+use crate::misc::vec_spare_capacity_mut;
 
 // If an input stream is constructed with a `Read`, we create a
 // `BufReader` with an internal buffer of this size.
@@ -256,9 +259,9 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     #[cfg(feature = "bytes")]
-    unsafe fn uninit_slice_as_mut_slice(slice: &mut UninitSlice) -> &mut [u8] {
+    unsafe fn uninit_slice_as_mut_slice(slice: &mut UninitSlice) -> &mut [MaybeUninit<u8>] {
         use std::slice;
-        slice::from_raw_parts_mut(slice.as_mut_ptr(), slice.len())
+        slice::from_raw_parts_mut(slice.as_mut_ptr() as *mut MaybeUninit<u8>, slice.len())
     }
 
     /// Returns 0 when EOF or limit reached.
@@ -283,7 +286,7 @@ impl<'ignore> BufReadIter<'ignore> {
         Ok(len)
     }
 
-    fn read_exact_slow(&mut self, buf: &mut [u8]) -> ProtobufResult<()> {
+    fn read_exact_slow(&mut self, buf: &mut [MaybeUninit<u8>]) -> ProtobufResult<()> {
         if self.bytes_until_limit() < buf.len() as u64 {
             return Err(ProtobufError::WireError(WireError::UnexpectedEof));
         }
@@ -297,7 +300,7 @@ impl<'ignore> BufReadIter<'ignore> {
         match self.input_source {
             InputSource::Read(ref mut buf_read) => {
                 buf_read.consume(consume);
-                buf_read.read_exact(buf)?;
+                buf_read.read_exact_uninit(buf)?;
             }
             _ => {
                 return Err(ProtobufError::WireError(WireError::UnexpectedEof));
@@ -312,10 +315,13 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     #[inline]
-    pub fn read_exact(&mut self, buf: &mut [u8]) -> ProtobufResult<()> {
+    pub fn read_exact(&mut self, buf: &mut [MaybeUninit<u8>]) -> ProtobufResult<()> {
         if self.remaining_in_buf_len() >= buf.len() {
             let buf_len = buf.len();
-            buf.copy_from_slice(&self.buf[self.pos_within_buf..self.pos_within_buf + buf_len]);
+            maybe_uninit_write_slice(
+                buf,
+                &self.buf[self.pos_within_buf..self.pos_within_buf + buf_len],
+            );
             self.pos_within_buf += buf_len;
             return Ok(());
         }
@@ -355,7 +361,7 @@ impl<'ignore> BufReadIter<'ignore> {
             target.reserve_exact(count);
 
             unsafe {
-                self.read_exact(&mut target.get_unchecked_mut(..count))?;
+                self.read_exact(&mut vec_spare_capacity_mut(target)[..count])?;
                 target.set_len(count);
             }
         }
@@ -500,7 +506,12 @@ mod test {
         let _prev_limit = buf_read_iter.push_limit(5);
         buf_read_iter.read_byte().expect("read_byte");
         buf_read_iter
-            .read_exact(&mut [1, 2, 3, 4])
+            .read_exact(&mut [
+                MaybeUninit::uninit(),
+                MaybeUninit::uninit(),
+                MaybeUninit::uninit(),
+                MaybeUninit::uninit(),
+            ])
             .expect("read_exact");
         assert!(buf_read_iter.eof().expect("eof"));
     }
