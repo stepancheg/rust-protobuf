@@ -345,6 +345,24 @@ jobs:
             - name: cargo fmt check
               run: cargo fmt -- --check
               shell: bash
+    :
+        name: Check sync-readme
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout sources
+              uses: actions/checkout@v2
+            - name: Install toolchain
+              uses: actions-rs/toolchain@v1
+              with:
+                  profile: minimal
+                  toolchain: stable
+                  override: true
+            - name: install cargo sync-readme
+              run: cargo install cargo-sync-readme
+              shell: bash
+            - name: sync-readme
+              run: cd protoc-bin-vendored && cargo sync-readme --check
+              shell: bash
     self-check:
         name: CI self-check
         runs-on: ubuntu-latest

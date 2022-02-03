@@ -85,6 +85,19 @@ impl Features {
     }
 }
 
+fn sync_readme_job() -> Job {
+    Job {
+        name: "Check sync-readme".to_owned(),
+        steps: vec![
+            checkout_sources(),
+            rust_install_toolchain(RustToolchain::Stable),
+            Step::run("install cargo sync-readme", "cargo install cargo-sync-readme"),
+            Step::run("sync-readme", "cd protoc-bin-vendored && cargo sync-readme --check"),
+        ],
+        ..Job::default()
+    }
+}
+
 fn self_check_job() -> Job {
     Job {
         id: format!("self-check"),
@@ -273,6 +286,8 @@ fn jobs() -> Yaml {
     r.push(super_linter_job());
 
     r.push(rustfmt_job());
+
+    r.push(sync_readme_job());
 
     r.push(self_check_job());
 
