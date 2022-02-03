@@ -5,7 +5,7 @@ Stable versions are 2.xx still supported.
 
 ## [3] - Unreleased
 
-## [3.0.0-alpha.4] - 2022-02-02
+## [3.0.0-alpha.5] - 2022-02-02
 
 - Dynamic messages work (but not tested enough)
 
