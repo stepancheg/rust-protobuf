@@ -66,6 +66,7 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 ## [2.27] - Unreleased
 
 - Bump min rust version to 1.55.0
+- [Fixed invalid aliasing and uninitialized memory access](https://github.com/stepancheg/rust-protobuf/pull/592)
 
 ## [2.26.1] - 2022-02-01
 
