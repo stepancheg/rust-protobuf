@@ -95,7 +95,8 @@ impl<'a> CodedOutputStream<'a> {
         // SAFETY: we are not using the `buffer_storage`
         // except for initializing the `buffer` field.
         // See `buffer` field documentation.
-        let buffer = unsafe { vec_spare_capacity_mut(&mut buffer_storage) };
+        let buffer = vec_spare_capacity_mut(&mut buffer_storage);
+        let buffer: *mut [MaybeUninit<u8>] = buffer;
 
         CodedOutputStream {
             target: OutputTarget::Write(writer, buffer_storage),
@@ -242,9 +243,7 @@ impl<'a> CodedOutputStream<'a> {
             }
             OutputTarget::Vec(ref mut vec) => {
                 vec.extend(bytes);
-                unsafe {
-                    self.buffer = vec_spare_capacity_mut(vec);
-                }
+                self.buffer = vec_spare_capacity_mut(vec)
             }
         }
         Ok(())

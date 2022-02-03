@@ -1,14 +1,17 @@
 use std::mem::MaybeUninit;
-use std::ptr;
+use std::slice;
 
 use crate::well_known_types;
 
 /// `Vec::spare_capacity_mut` is not stable until Rust 1.60.
-pub(crate) unsafe fn vec_spare_capacity_mut<A>(vec: &mut Vec<A>) -> *mut [MaybeUninit<A>] {
-    ptr::slice_from_raw_parts_mut(
-        vec.as_mut_ptr().add(vec.len()) as *mut MaybeUninit<A>,
-        vec.capacity() - vec.len(),
-    )
+pub(crate) fn vec_spare_capacity_mut<A>(vec: &mut Vec<A>) -> &mut [MaybeUninit<A>] {
+    // SAFETY: copy-paste from rust stdlib.
+    unsafe {
+        slice::from_raw_parts_mut(
+            vec.as_mut_ptr().add(vec.len()) as *mut MaybeUninit<A>,
+            vec.capacity() - vec.len(),
+        )
+    }
 }
 
 /// `MaybeUninit::write_slice` is not stable.
