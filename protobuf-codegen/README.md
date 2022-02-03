@@ -88,13 +88,13 @@ It can be installed either from source or with `cargo install protobuf-codegen` 
 
 If you installed it with cargo, it should be
 
-```rust
+```sh
 PATH="$HOME/.cargo/bin:$PATH"
 ```
 
 3) Generate .rs files:
 
-```rust
+```sh
 protoc --rust_out . foo.proto
 ```
 
