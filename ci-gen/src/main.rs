@@ -10,6 +10,7 @@ use crate::actions::checkout_sources;
 use crate::actions::checkout_sources_depth;
 use crate::actions::rust_install_toolchain;
 use crate::actions::RustToolchain;
+use crate::cargo_sync_readme::cargo_sync_readme_job;
 use crate::ghwf::Env;
 use crate::ghwf::Job;
 use crate::ghwf::Step;
@@ -17,6 +18,7 @@ use crate::yaml::Yaml;
 use crate::yaml::YamlWriter;
 
 mod actions;
+mod cargo_sync_readme;
 mod ghwf;
 mod install_protobuf;
 mod yaml;
@@ -241,6 +243,8 @@ fn jobs() -> Yaml {
     r.push(mega_linter_job());
 
     r.push(rustfmt_job());
+
+    r.push(cargo_sync_readme_job());
 
     r.push(self_check_job());
 
