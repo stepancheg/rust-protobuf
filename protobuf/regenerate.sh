@@ -9,9 +9,9 @@ die() {
 
 protoc_ver=$(protoc --version)
 case "$protoc_ver" in
-    "libprotoc 3"*) ;;
-    *)
-        die "you need to use protobuf 3 to regenerate .rs from .proto"
+"libprotoc 3"*) ;;
+*)
+    die "you need to use protobuf 3 to regenerate .rs from .proto"
     ;;
 esac
 
@@ -20,17 +20,20 @@ cargo build --manifest-path=../protoc-bin-vendored/Cargo.toml --bin protoc-bin-w
 
 PROTOC=$(cargo run --manifest-path=../protoc-bin-vendored/Cargo.toml --bin protoc-bin-which)
 
-where_am_i=$(cd ..; pwd)
+where_am_i=$(
+    cd ..
+    pwd
+)
 
 rm -rf tmp-generated
 mkdir tmp-generated
 
 case $(uname) in
-    Linux)
-        exe_suffix=""
+Linux)
+    exe_suffix=""
     ;;
-    MSYS_NT*)
-        exe_suffix=".exe"
+MSYS_NT*)
+    exe_suffix=".exe"
     ;;
 esac
 
