@@ -53,7 +53,7 @@ enum InputSource<'a> {
 /// It is important for `CodedInputStream` performance that small reads
 /// (e. g. 4 bytes reads) do not involve virtual calls or switches.
 /// This is achievable with `BufReadIter`.
-pub struct BufReadIter<'a> {
+pub(crate) struct BufReadIter<'a> {
     input_source: InputSource<'a>,
     buf: &'a [u8],
     pos_within_buf: usize,
@@ -72,7 +72,7 @@ impl<'a> Drop for BufReadIter<'a> {
 }
 
 impl<'ignore> BufReadIter<'ignore> {
-    pub fn from_read<'a>(read: &'a mut dyn Read) -> BufReadIter<'a> {
+    pub(crate) fn from_read<'a>(read: &'a mut dyn Read) -> BufReadIter<'a> {
         BufReadIter {
             input_source: InputSource::Read(BufReadOrReader::BufReader(BufReader::with_capacity(
                 INPUT_STREAM_BUFFER_SIZE,
@@ -86,7 +86,7 @@ impl<'ignore> BufReadIter<'ignore> {
         }
     }
 
-    pub fn from_buf_read<'a>(buf_read: &'a mut dyn BufRead) -> BufReadIter<'a> {
+    pub(crate) fn from_buf_read<'a>(buf_read: &'a mut dyn BufRead) -> BufReadIter<'a> {
         BufReadIter {
             input_source: InputSource::Read(BufReadOrReader::BufRead(buf_read)),
             buf: &[],
@@ -97,7 +97,7 @@ impl<'ignore> BufReadIter<'ignore> {
         }
     }
 
-    pub fn from_byte_slice<'a>(bytes: &'a [u8]) -> BufReadIter<'a> {
+    pub(crate) fn from_byte_slice<'a>(bytes: &'a [u8]) -> BufReadIter<'a> {
         BufReadIter {
             input_source: InputSource::Slice(bytes),
             buf: bytes,
@@ -109,7 +109,7 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     #[cfg(feature = "bytes")]
-    pub fn from_bytes<'a>(bytes: &'a Bytes) -> BufReadIter<'a> {
+    pub(crate) fn from_bytes<'a>(bytes: &'a Bytes) -> BufReadIter<'a> {
         BufReadIter {
             input_source: InputSource::Bytes(bytes),
             buf: &bytes,
@@ -128,7 +128,7 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     #[inline(always)]
-    pub fn pos(&self) -> u64 {
+    pub(crate) fn pos(&self) -> u64 {
         self.pos_of_buf_start + self.pos_within_buf as u64
     }
 
@@ -144,7 +144,7 @@ impl<'ignore> BufReadIter<'ignore> {
         self.assertions();
     }
 
-    pub fn push_limit(&mut self, limit: u64) -> ProtobufResult<u64> {
+    pub(crate) fn push_limit(&mut self, limit: u64) -> ProtobufResult<u64> {
         let new_limit = match self.pos().checked_add(limit) {
             Some(new_limit) => new_limit,
             None => return Err(ProtobufError::WireError(WireError::LimitOverflow)),
@@ -162,7 +162,7 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     #[inline]
-    pub fn pop_limit(&mut self, limit: u64) {
+    pub(crate) fn pop_limit(&mut self, limit: u64) {
         assert!(limit >= self.limit);
 
         self.limit = limit;
@@ -171,7 +171,7 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     #[inline]
-    pub fn remaining_in_buf(&self) -> &[u8] {
+    pub(crate) fn remaining_in_buf(&self) -> &[u8] {
         if USE_UNSAFE_FOR_SPEED {
             unsafe {
                 &self
@@ -184,12 +184,12 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     #[inline(always)]
-    pub fn remaining_in_buf_len(&self) -> usize {
+    pub(crate) fn remaining_in_buf_len(&self) -> usize {
         self.limit_within_buf - self.pos_within_buf
     }
 
     #[inline(always)]
-    pub fn bytes_until_limit(&self) -> u64 {
+    pub(crate) fn bytes_until_limit(&self) -> u64 {
         if self.limit == NO_LIMIT {
             NO_LIMIT
         } else {
@@ -198,7 +198,7 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     #[inline(always)]
-    pub fn eof(&mut self) -> ProtobufResult<bool> {
+    pub(crate) fn eof(&mut self) -> ProtobufResult<bool> {
         if self.pos_within_buf == self.limit_within_buf {
             Ok(self.fill_buf()?.is_empty())
         } else {
@@ -207,7 +207,7 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     #[inline(always)]
-    pub fn read_byte(&mut self) -> ProtobufResult<u8> {
+    pub(crate) fn read_byte(&mut self) -> ProtobufResult<u8> {
         if self.pos_within_buf == self.limit_within_buf {
             self.do_fill_buf()?;
             if self.remaining_in_buf_len() == 0 {
@@ -225,7 +225,7 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     #[cfg(feature = "bytes")]
-    pub fn read_exact_bytes(&mut self, len: usize) -> ProtobufResult<Bytes> {
+    pub(crate) fn read_exact_bytes(&mut self, len: usize) -> ProtobufResult<Bytes> {
         if let InputSource::Bytes(bytes) = self.input_source {
             let end = match self.pos_within_buf.checked_add(len) {
                 Some(end) => end,
@@ -265,7 +265,7 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     /// Returns 0 when EOF or limit reached.
-    pub fn read(&mut self, buf: &mut [u8]) -> ProtobufResult<usize> {
+    pub(crate) fn read(&mut self, buf: &mut [u8]) -> ProtobufResult<usize> {
         let rem = self.fill_buf()?;
 
         let len = cmp::min(rem.len(), buf.len());
@@ -315,7 +315,7 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     #[inline]
-    pub fn read_exact(&mut self, buf: &mut [MaybeUninit<u8>]) -> ProtobufResult<()> {
+    pub(crate) fn read_exact(&mut self, buf: &mut [MaybeUninit<u8>]) -> ProtobufResult<()> {
         if self.remaining_in_buf_len() >= buf.len() {
             let buf_len = buf.len();
             maybe_uninit_write_slice(
@@ -331,7 +331,11 @@ impl<'ignore> BufReadIter<'ignore> {
 
     /// Read raw bytes into the supplied vector.  The vector will be resized as needed and
     /// overwritten.
-    pub fn read_exact_to_vec(&mut self, count: usize, target: &mut Vec<u8>) -> ProtobufResult<()> {
+    pub(crate) fn read_exact_to_vec(
+        &mut self,
+        count: usize,
+        target: &mut Vec<u8>,
+    ) -> ProtobufResult<()> {
         // TODO: also do some limits when reading from unlimited source
         if count as u64 > self.bytes_until_limit() {
             return Err(ProtobufError::WireError(WireError::TruncatedMessage));
@@ -402,7 +406,7 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     #[inline(always)]
-    pub fn fill_buf(&mut self) -> ProtobufResult<&[u8]> {
+    pub(crate) fn fill_buf(&mut self) -> ProtobufResult<&[u8]> {
         if self.pos_within_buf == self.limit_within_buf {
             self.do_fill_buf()?;
         }
@@ -418,7 +422,7 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     #[inline(always)]
-    pub fn consume(&mut self, amt: usize) {
+    pub(crate) fn consume(&mut self, amt: usize) {
         assert!(amt <= self.limit_within_buf - self.pos_within_buf);
         self.pos_within_buf += amt;
     }
