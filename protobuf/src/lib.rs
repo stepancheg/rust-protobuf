@@ -180,6 +180,7 @@ mod zigzag;
 mod misc;
 
 mod buf_read_iter;
+mod buf_read_or_reader;
 
 /// This symbol is in generated `version.rs`, include here for IDE
 #[cfg(never)]

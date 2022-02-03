@@ -14,6 +14,7 @@ use bytes::Bytes;
 #[cfg(feature = "bytes")]
 use bytes::BytesMut;
 
+use crate::buf_read_or_reader::BufReadOrReader;
 use crate::coded_input_stream::READ_RAW_BYTES_MAX_ALLOC;
 use crate::error::WireError;
 use crate::ProtobufError;
@@ -29,8 +30,7 @@ const NO_LIMIT: u64 = u64::MAX;
 
 /// Hold all possible combinations of input source
 enum InputSource<'a> {
-    BufRead(&'a mut dyn BufRead),
-    Read(BufReader<&'a mut dyn Read>),
+    Read(BufReadOrReader<'a>),
     Slice(&'a [u8]),
     #[cfg(feature = "bytes")]
     Bytes(&'a Bytes),
@@ -62,10 +62,7 @@ pub(crate) struct BufReadIter<'a> {
 impl<'a> Drop for BufReadIter<'a> {
     fn drop(&mut self) {
         match self.input_source {
-            InputSource::BufRead(ref mut buf_read) => buf_read.consume(self.pos_within_buf),
-            InputSource::Read(_) => {
-                // Nothing to flush, because we own BufReader
-            }
+            InputSource::Read(ref mut buf_read) => buf_read.consume(self.pos_within_buf),
             _ => {}
         }
     }
@@ -74,10 +71,10 @@ impl<'a> Drop for BufReadIter<'a> {
 impl<'ignore> BufReadIter<'ignore> {
     pub(crate) fn from_read<'a>(read: &'a mut dyn Read) -> BufReadIter<'a> {
         BufReadIter {
-            input_source: InputSource::Read(BufReader::with_capacity(
+            input_source: InputSource::Read(BufReadOrReader::BufReader(BufReader::with_capacity(
                 INPUT_STREAM_BUFFER_SIZE,
                 read,
-            )),
+            ))),
             buf: &[],
             pos_within_buf: 0,
             limit_within_buf: 0,
@@ -88,7 +85,7 @@ impl<'ignore> BufReadIter<'ignore> {
 
     pub(crate) fn from_buf_read<'a>(buf_read: &'a mut dyn BufRead) -> BufReadIter<'a> {
         BufReadIter {
-            input_source: InputSource::BufRead(buf_read),
+            input_source: InputSource::Read(BufReadOrReader::BufRead(buf_read)),
             buf: &[],
             pos_within_buf: 0,
             limit_within_buf: 0,
@@ -358,10 +355,6 @@ impl<'ignore> BufReadIter<'ignore> {
                 buf_read.consume(consume);
                 buf_read.read_exact(buf)?;
             }
-            InputSource::BufRead(ref mut buf_read) => {
-                buf_read.consume(consume);
-                buf_read.read_exact(buf)?;
-            }
             _ => {
                 return Err(ProtobufError::WireError(WireError::UnexpectedEof));
             }
@@ -391,10 +384,6 @@ impl<'ignore> BufReadIter<'ignore> {
 
         match self.input_source {
             InputSource::Read(ref mut buf_read) => {
-                buf_read.consume(consume);
-                self.buf = unsafe { mem::transmute(buf_read.fill_buf()?) };
-            }
-            InputSource::BufRead(ref mut buf_read) => {
                 buf_read.consume(consume);
                 self.buf = unsafe { mem::transmute(buf_read.fill_buf()?) };
             }
