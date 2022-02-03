@@ -24,9 +24,11 @@ test -n "$GITHUB_PATH"
 test -n "$GITHUB_ENV"
 
 path_tr "$HOME/pb/bin" >>"$GITHUB_PATH"
-echo "LD_LIBRARY_PATH=$(path_tr $HOME/pb/lib)" >>"$GITHUB_ENV"
-echo "PKG_CONFIG_PATH=$(path_tr $HOME/pb/lib/pkgconfig)" >>"$GITHUB_ENV"
-echo "PROTOBUF_PREFIX=$(path_tr $HOME/pb)" >>"$GITHUB_ENV"
+cat << EOF >> "$GITHUB_ENV"
+LD_LIBRARY_PATH=$(path_tr $HOME/pb/lib)
+PKG_CONFIG_PATH=$(path_tr $HOME/pb/lib/pkgconfig)
+PROTOBUF_PREFIX=$(path_tr $HOME/pb)
+EOF
 
 if test -e "$HOME/pb/bin/protoc" -o -e "$HOME/pb/bin/protoc.exe"; then
     echo "Already exists"
