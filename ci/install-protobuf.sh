@@ -24,7 +24,7 @@ test -n "$GITHUB_PATH"
 test -n "$GITHUB_ENV"
 
 path_tr "$HOME/pb/bin" >>"$GITHUB_PATH"
-cat << EOF >> "$GITHUB_ENV"
+cat <<EOF >>"$GITHUB_ENV"
 LD_LIBRARY_PATH=$(path_tr "$HOME/pb/lib")
 PKG_CONFIG_PATH=$(path_tr "$HOME/pb/lib/pkgconfig")
 PROTOBUF_PREFIX=$(path_tr "$HOME/pb")
