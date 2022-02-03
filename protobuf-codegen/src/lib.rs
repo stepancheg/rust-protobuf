@@ -56,13 +56,13 @@
 //!
 //! If you installed it with cargo, it should be
 //!
-//! ```ignore
+//! ```sh
 //! PATH="$HOME/.cargo/bin:$PATH"
 //! ```
 //!
 //! 3) Generate .rs files:
 //!
-//! ```ignore
+//! ```sh
 //! protoc --rust_out . foo.proto
 //! ```
 //!
