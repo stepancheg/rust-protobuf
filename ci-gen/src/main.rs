@@ -13,6 +13,7 @@ use crate::actions::checkout_sources_depth;
 use crate::actions::rust_install_toolchain;
 use crate::actions::rust_install_toolchain_with_components;
 use crate::actions::RustToolchain;
+use crate::cargo_sync_readme::cargo_sync_readme_job;
 use crate::ghwf::Env;
 use crate::ghwf::Job;
 use crate::ghwf::Step;
@@ -20,6 +21,7 @@ use crate::yaml::Yaml;
 use crate::yaml::YamlWriter;
 
 mod actions;
+mod cargo_sync_readme;
 mod ghwf;
 mod install_protobuf;
 mod yaml;
@@ -82,26 +84,6 @@ impl Features {
             Features::All => format!("all features"),
             Features::Specific(s) => s.join(","),
         }
-    }
-}
-
-fn sync_readme_job() -> Job {
-    Job {
-        id: "cargo-sync-readme".to_owned(),
-        name: "Check sync-readme".to_owned(),
-        steps: vec![
-            checkout_sources(),
-            rust_install_toolchain(RustToolchain::Stable),
-            Step::run(
-                "install cargo sync-readme",
-                "cargo install cargo-sync-readme",
-            ),
-            Step::run(
-                "sync-readme",
-                "cd protoc-bin-vendored && cargo sync-readme --check",
-            ),
-        ],
-        ..Job::default()
     }
 }
 
@@ -294,7 +276,7 @@ fn jobs() -> Yaml {
 
     r.push(rustfmt_job());
 
-    r.push(sync_readme_job());
+    r.push(cargo_sync_readme_job());
 
     r.push(self_check_job());
 
