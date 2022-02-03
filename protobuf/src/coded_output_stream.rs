@@ -109,9 +109,8 @@ impl<'a> CodedOutputStream<'a> {
     /// Attempt to write more than bytes capacity results in error.
     pub fn bytes(bytes: &'a mut [u8]) -> CodedOutputStream<'a> {
         // SAFETY: it is safe to cast from &mut [u8] to &mut [MaybeUninit<u8>].
-        let buffer = unsafe {
-            ptr::slice_from_raw_parts_mut(bytes.as_mut_ptr() as *mut MaybeUninit<u8>, bytes.len())
-        };
+        let buffer =
+            ptr::slice_from_raw_parts_mut(bytes.as_mut_ptr() as *mut MaybeUninit<u8>, bytes.len());
         CodedOutputStream {
             target: OutputTarget::Bytes,
             buffer,
