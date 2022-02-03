@@ -1,4 +1,4 @@
-//! Library to read and write protocol buffers data.
+//! # Library to read and write protocol buffers data
 //!
 //! # Version 3 is alpha
 //!
@@ -8,17 +8,20 @@
 //! * protobuf text format and JSON parsing (which rely on reflection)
 //! * dynamic message support: work with protobuf data without generating code from schema
 //!
-//! Latest stable version of rust-protobuf will be supported until version 3 released.
+//! Stable version of rust-protobuf will be supported until version 3 released.
 //!
 //! [Tracking issue for version 3](https://github.com/stepancheg/rust-protobuf/issues/518).
 //!
 //! # Accompanying crates
 //!
-//! * `protobuf-codegen` can be used to rust code from `.proto` crates.
-//! * `protoc` crate can be used to invoke `protoc` programmatically.
-//! * `protoc-bin-vendored` contains `protoc` command packed into the crate.
-//! * `protobuf-parse` contains `.proto` file parser. Rarely need to be used directly,
-//!    but can be used for mechanical processing of `.proto` files.
+//! * [`protobuf-codegen`](https://docs.rs/protobuf-codegen/%3E=3.0.0-alpha)
+//!   can be used to rust code from `.proto` crates.
+//! * [`protoc`](https://docs.rs/protoc/%3E=3.0.0-alpha) crate can be used to invoke `protoc` programmatically.
+//! * [`protoc-bin-vendored`](https://docs.rs/protoc-bin-vendored/%3E=3.0.0-alpha)
+//!   contains `protoc` command packed into the crate.
+//! * [`protobuf-parse`](https://docs.rs/protobuf-parse/%3E=3.0.0-alpha) contains
+//!   `.proto` file parser. Rarely need to be used directly,
+//!   but can be used for mechanical processing of `.proto` files.
 
 #![deny(missing_docs)]
 #![deny(rustdoc::broken_intra_doc_links)]
