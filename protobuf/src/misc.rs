@@ -1,3 +1,4 @@
+use std::mem;
 use std::mem::MaybeUninit;
 use std::slice;
 
@@ -15,14 +16,20 @@ pub(crate) fn vec_spare_capacity_mut<A>(vec: &mut Vec<A>) -> &mut [MaybeUninit<A
 }
 
 /// `MaybeUninit::write_slice` is not stable.
-pub(crate) fn maybe_uninit_write_slice<T>(this: &mut [MaybeUninit<T>], src: &[T])
+pub(crate) fn maybe_uninit_write_slice<'a, T>(
+    this: &'a mut [MaybeUninit<T>],
+    src: &[T],
+) -> &'a mut [T]
 where
     T: Copy,
 {
-    // SAFETY: &[T] and &[MaybeUninit<T>] have the same layout
-    let uninit_src: &[MaybeUninit<T>] = unsafe { std::mem::transmute(src) };
+    // SAFETY: copy-paste from rust stdlib.
+
+    let uninit_src: &[MaybeUninit<T>] = unsafe { mem::transmute(src) };
 
     this.copy_from_slice(uninit_src);
+
+    unsafe { &mut *(this as *mut [MaybeUninit<T>] as *mut [T]) }
 }
 
 // bool <-> BoolValue
