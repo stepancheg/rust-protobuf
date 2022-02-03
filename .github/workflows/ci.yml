@@ -360,7 +360,7 @@ jobs:
             - name: install cargo sync-readme
               run: cargo install cargo-sync-readme
               shell: bash
-            - name: sync-readme
+            - name: sync-readme protoc-bin-vendored
               run: cd protoc-bin-vendored && cargo sync-readme --check
               shell: bash
     self-check:
