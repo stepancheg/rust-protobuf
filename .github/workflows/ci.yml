@@ -345,7 +345,7 @@ jobs:
             - name: cargo fmt check
               run: cargo fmt -- --check
               shell: bash
-    :
+    cargo-sync-readme:
         name: Check sync-readme
         runs-on: ubuntu-latest
         steps:

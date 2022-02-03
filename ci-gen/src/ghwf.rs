@@ -135,6 +135,7 @@ impl Job {
 
 impl Into<(String, Yaml)> for Job {
     fn into(self) -> (String, Yaml) {
+        assert!(!self.id.is_empty());
         let mut entries = vec![
             ("name", Yaml::string(self.name)),
             ("runs-on", Yaml::string(format!("{}", self.runs_on))),

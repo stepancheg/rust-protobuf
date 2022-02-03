@@ -87,6 +87,7 @@ impl Features {
 
 fn sync_readme_job() -> Job {
     Job {
+        id: "cargo-sync-readme".to_owned(),
         name: "Check sync-readme".to_owned(),
         steps: vec![
             checkout_sources(),
