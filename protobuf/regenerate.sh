@@ -1,6 +1,6 @@
 #!/bin/sh -ex
 
-cd $(dirname $0)
+cd "$(dirname "$0")"
 
 die() {
     echo "$@" >&2
@@ -58,6 +58,7 @@ mv tmp-generated/*.rs src/well_known_types/
     echo "//! [This document](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf) describes these types."
 
     mod_list() {
+        # shellcheck disable=SC2010
         ls | grep -v mod.rs | sed -e 's,\.rs$,,'
     }
 
@@ -65,7 +66,7 @@ mv tmp-generated/*.rs src/well_known_types/
     mod_list | sed -e 's,^,mod ,; s,$,;,'
 
     echo
-    mod_list | while read mod; do
+    mod_list | while read -r mod; do
         echo "pub use self::$mod::*;"
     done
 )
