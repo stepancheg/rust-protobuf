@@ -40,7 +40,7 @@ impl<'a> Read for BufReadOrReader<'a> {
 
 impl<'a> BufReadOrReader<'a> {
     /// Similar to `read_exact` but reads into `MaybeUninit`.
-    pub(crate) fn _read_exact_uninit(
+    pub(crate) fn read_exact_uninit(
         &mut self,
         buf: &mut [MaybeUninit<u8>],
     ) -> Result<(), io::Error> {

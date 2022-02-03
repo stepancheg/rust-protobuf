@@ -29,3 +29,16 @@ where
 
     unsafe { &mut *(this as *mut [MaybeUninit<T>] as *mut [T]) }
 }
+
+/// `MaybeUninit::array_assume_init` is not stable.
+#[inline]
+pub(crate) unsafe fn maybe_ununit_array_assume_init<T, const N: usize>(
+    array: [MaybeUninit<T>; N],
+) -> [T; N] {
+    // SAFETY:
+    // * The caller guarantees that all elements of the array are initialized
+    // * `MaybeUninit<T>` and T are guaranteed to have the same layout
+    // * `MaybeUninit` does not drop, so there are no double-frees
+    // And thus the conversion is safe
+    (&array as *const _ as *const [T; N]).read()
+}
