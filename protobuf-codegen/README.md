@@ -1,40 +1,84 @@
-# protobuf-codegen
+<!-- cargo-sync-readme start -->
 
-This crate contains protobuf code generator and a `protoc-gen-rust` `protoc` plugin.
+# Protobuf code generator for `protobuf` crate
 
-## protoc-gen-rust
+This crate is useful mostly from `build.rs` scripts to generate `.rs` files during the build.
 
-`protoc-gen-rust` implements standard protobuf `protoc` plugin conventions.
+# How to generate code
 
-Probably you do not want to use it directly in Rust environment, there are easier to use alternatives:
+There are three main ways to generate `.rs` files from `.proto` files:
+* using `protoc` command line tool and `protoc-gen-rust` plugin
+* using this crate `Codegen` with pure rust parser
+* using this crate `Codegen` with `protoc` parser
 
-* [protoc-rust crate](https://github.com/stepancheg/rust-protobuf/tree/master/protoc)
-  which can be invoked programmatically from `build.rs` of your project
-  which requires only `protoc` in `$PATH` but not `protoc-gen-rust`.
-* [protobuf-codegen-pure crate](https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen-pure)
-  which behaves like protoc-rust, but does not depend on `protoc` binary
+Which one should you use depends on your needs.
 
-## But if you really want to use that plugin, here's the instruction
+If you are using non-cargo build system (like Bazel), you might prefer
+using `protoc-gen-rust` plugin for `protoc`.
+
+If you build with `cargo`, you probably want to use `Codegen` from this crate.
+
+# Protoc parser vs pure rust parser
+
+There are two protobuf parsers which can be plugged into this crate:
+* `protoc`-based parser (`protoc` is a command like utility from Google protobuf)
+* pure rust parser (`protobuf-parse` crate)
+
+`protoc`-based parser is expected to parse `.proto` files very correctly:
+all Google's protobuf implementations rely on it.
+
+Where there are no known bugs in `protobuf-parse`, it is not tested very well.
+Also `protobuf-parse` does not implement certain rarely used features of `.proto` parser,
+mostly complex message options specified in `.proto` files.
+I never saw anyone using them, but you have been warned.
+
+Note `protoc` command can be obtained from `protoc-bin-vendored` crate.
+
+# Version 3
+
+Note this is documentation for protobuf-codegen version 3 (which is currently in development).
+
+In version 3 this crate encapsulates both `protoc`-based codegen and pure rust codegen.
+
+In version 2 `protobuf-codegen` contains `protoc`-based codegen,
+and `protobuf-codegen-pure` is pure rust codegen.
+
+# Example
+
+```rust
+// Use this in build.rs
+protobuf_codegen::Codegen::new()
+    .includes(&["src/protos"])
+    // Inputs must reside in some of include paths.
+    .input("src/protos/apple.proto")
+    .input("src/protos/banana.proto")
+    .out_dir("src/protos")
+    .run_from_script();
+```
+
+## How to use `protoc-gen-rust`
+
+If you have to.
 
 (Note `protoc` can be invoked programmatically with
-[protoc crate](https://github.com/stepancheg/rust-protobuf/tree/master/protoc/))
+[protoc crate](https://docs.rs/protoc/%3E=3.0.0-alpha))
 
 0) Install protobuf for `protoc` binary.
 
 On OS X [Homebrew](https://github.com/Homebrew/brew) can be used:
 
-```
+```sh
 brew install protobuf
 ```
 
 On Ubuntu, `protobuf-compiler` package can be installed:
 
-```
+```sh
 apt-get install protobuf-compiler
 ```
 
 Protobuf is needed only for code generation, `rust-protobuf` runtime
-does not use `protobuf` library.
+does not use C++ protobuf library.
 
 1) Install `protoc-gen-rust` program (which is `protoc` plugin)
 
@@ -44,14 +88,16 @@ It can be installed either from source or with `cargo install protobuf-codegen` 
 
 If you installed it with cargo, it should be
 
-```
+```rust
 PATH="$HOME/.cargo/bin:$PATH"
 ```
 
 3) Generate .rs files:
 
-```
+```rust
 protoc --rust_out . foo.proto
 ```
 
 This will generate .rs files in current directory.
+
+<!-- cargo-sync-readme end -->
