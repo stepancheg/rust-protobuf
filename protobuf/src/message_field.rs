@@ -1,5 +1,7 @@
 use std::default::Default;
 use std::hash::Hash;
+use std::ops::Deref;
+use std::ops::DerefMut;
 use std::option;
 
 #[cfg(feature = "with-serde")]
@@ -186,6 +188,25 @@ impl<M: Message + Default> MessageField<M> {
             *self = MessageField::some(Default::default());
         }
         self.get_mut_ref()
+    }
+}
+
+/// Get a reference to contained value or a default instance if the field is not initialized.
+impl<M: Message + Default> Deref for MessageField<M> {
+    type Target = M;
+
+    fn deref(&self) -> &Self::Target {
+        self.get_or_default()
+    }
+}
+
+/// Get a mutable reference to the message **and** initialize the message if not initialized yet.
+///
+/// Note that part about initializing is not conventional.
+/// Generally `DerefMut` is not supposed to modify the state.
+impl<M: Message + Default> DerefMut for MessageField<M> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        self.mut_or_default()
     }
 }
 
