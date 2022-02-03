@@ -1,4 +1,6 @@
-//! Parse `.proto` files.
+//! # Parse `.proto` files
+//!
+//! Parse `.proto` file definitions, **not** the protobuf text format serialization.
 //!
 //! Files can be parsed using pure Rust parser (mod `pure`)
 //! or using the `protoc` command (mod `protoc`).
