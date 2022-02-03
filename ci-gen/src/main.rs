@@ -92,8 +92,14 @@ fn sync_readme_job() -> Job {
         steps: vec![
             checkout_sources(),
             rust_install_toolchain(RustToolchain::Stable),
-            Step::run("install cargo sync-readme", "cargo install cargo-sync-readme"),
-            Step::run("sync-readme", "cd protoc-bin-vendored && cargo sync-readme --check"),
+            Step::run(
+                "install cargo sync-readme",
+                "cargo install cargo-sync-readme",
+            ),
+            Step::run(
+                "sync-readme",
+                "cd protoc-bin-vendored && cargo sync-readme --check",
+            ),
         ],
         ..Job::default()
     }
