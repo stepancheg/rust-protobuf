@@ -274,9 +274,9 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     #[cfg(feature = "bytes")]
-    unsafe fn uninit_slice_as_mut_slice(slice: &mut UninitSlice) -> &mut [u8] {
+    unsafe fn uninit_slice_as_mut_slice(slice: &mut UninitSlice) -> &mut [MaybeUninit<u8>] {
         use std::slice;
-        slice::from_raw_parts_mut(slice.as_mut_ptr(), slice.len())
+        slice::from_raw_parts_mut(slice.as_mut_ptr() as *mut MaybeUninit<u8>, slice.len())
     }
 
     /// Returns 0 when EOF or limit reached.
