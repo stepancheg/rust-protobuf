@@ -88,8 +88,8 @@ impl FileDescriptor {
     }
 
     /// Syntax of current file.
-    pub fn syntax(&self) -> Option<Syntax> {
-        Syntax::parse(self.proto().get_syntax())
+    pub fn syntax(&self) -> Syntax {
+        Syntax::parse(self.proto().get_syntax()).unwrap_or(Syntax::Proto2)
     }
 
     /// Get top-level messages.

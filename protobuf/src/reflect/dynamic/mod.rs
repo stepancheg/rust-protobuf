@@ -199,7 +199,7 @@ impl DynamicMessage {
         &self,
         handler: &mut impl ForEachSingularFieldToWrite,
     ) -> ProtobufResult<()> {
-        let is_proto3 = self.descriptor.file_descriptor().syntax() == Some(Syntax::Proto3);
+        let is_proto3 = self.descriptor.file_descriptor().syntax() == Syntax::Proto3;
         for field_desc in self.descriptor.fields() {
             let field_number = field_desc.get_proto().get_number() as u32;
             match field_desc.runtime_field_type() {

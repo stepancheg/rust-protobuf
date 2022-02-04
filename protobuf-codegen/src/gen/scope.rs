@@ -78,7 +78,7 @@ impl<'a> FileScope<'a> {
     }
 
     pub fn syntax(&self) -> Syntax {
-        self.file_descriptor.syntax().expect("Unknown syntax")
+        self.file_descriptor.syntax()
     }
 
     pub fn to_scope(&self) -> Scope<'a> {
