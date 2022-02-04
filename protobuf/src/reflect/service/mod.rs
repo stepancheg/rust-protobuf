@@ -3,9 +3,12 @@ use crate::descriptor::ServiceDescriptorProto;
 use crate::reflect::FileDescriptor;
 use crate::reflect::MessageDescriptor;
 
-/// Dynamic representation of message type.
+/// Dynamic representation of service type.
 ///
-/// Used for reflection.
+/// Rust-protobuf does not support services (it is not an RPC library),
+/// but it support querying service description. Which might be useful
+/// for example to generate source files for the services.
+/// or to perform invocations dynamically.
 #[derive(Clone, Eq, PartialEq)]
 pub struct ServiceDescriptor {
     file_descriptor: FileDescriptor,
