@@ -5,7 +5,7 @@ use crate::protobuf_rel_path::ProtobufRelPath;
 
 /// Protobuf identifier can be absolute or relative.
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
-pub enum ProtobufPath {
+pub(crate) enum ProtobufPath {
     Abs(ProtobufAbsPath),
     Rel(ProtobufRelPath),
 }
