@@ -1,5 +1,6 @@
 use protobuf::descriptor::*;
 use protobuf::reflect::ReflectValueRef;
+use protobuf::reflect::RuntimeFieldType;
 use protobuf::reflect::Syntax;
 use protobuf::rt;
 use protobuf::wire_format::WireType;
@@ -19,7 +20,6 @@ use crate::gen::rust::EXPR_NONE;
 use crate::gen::rust::EXPR_VEC_NEW;
 use crate::gen::rust_name::RustIdent;
 use crate::gen::rust_name::RustIdentWithPath;
-use crate::gen::rust_name::RustRelativePath;
 use crate::gen::rust_types_values::*;
 use crate::gen::scope::EnumValueWithContext;
 use crate::gen::scope::FieldWithContext;
@@ -359,7 +359,6 @@ impl<'a> FieldElemEnum<'a> {
 
 #[derive(Clone, Debug)]
 pub(crate) struct FieldElemMessage<'a> {
-    map_entry: Option<Box<EntryKeyValue<'a>>>,
     pub message: MessageWithScope<'a>,
 }
 
@@ -450,10 +449,12 @@ impl<'a> FieldElem<'a> {
 fn field_elem<'a>(
     field: &FieldWithContext,
     root_scope: &'a RootScope<'a>,
-    parse_map: bool,
     customize: &Customize,
-    current_file_path: &RustRelativePath,
 ) -> FieldElem<'a> {
+    if let RuntimeFieldType::Map(..) = field.field.runtime_field_type() {
+        unreachable!();
+    }
+
     if field.field.get_proto().get_field_type() == field_descriptor_proto::Type::TYPE_GROUP {
         FieldElem::Group
     } else if field.field.get_proto().has_type_name() {
@@ -464,21 +465,9 @@ fn field_elem<'a>(
             (
                 field_descriptor_proto::Type::TYPE_MESSAGE,
                 MessageOrEnumWithScope::Message(message),
-            ) => {
-                let entry_key_value =
-                    if let (true, Some((key, value))) = (parse_map, map_entry(&message)) {
-                        Some(Box::new(EntryKeyValue(
-                            field_elem(&key, root_scope, false, customize, current_file_path),
-                            field_elem(&value, root_scope, false, customize, current_file_path),
-                        )))
-                    } else {
-                        None
-                    };
-                FieldElem::Message(FieldElemMessage {
-                    map_entry: entry_key_value,
-                    message: message.clone(),
-                })
-            }
+            ) => FieldElem::Message(FieldElemMessage {
+                message: message.clone(),
+            }),
             (
                 field_descriptor_proto::Type::TYPE_ENUM,
                 MessageOrEnumWithScope::Enum(enum_with_scope),
@@ -556,14 +545,6 @@ impl<'a> FieldGen<'a> {
             field.field.get_proto().options.get_or_default(),
         ));
 
-        let elem = field_elem(
-            &field,
-            root_scope,
-            true,
-            &customize,
-            &field.message.scope.rust_path_to_file(),
-        );
-
         let syntax = field.message.scope.file_scope.syntax();
 
         let field_may_have_custom_default_value = syntax == Syntax::Proto2
@@ -584,22 +565,27 @@ impl<'a> FieldGen<'a> {
         let generate_getter =
             customize.generate_getter.unwrap_or(default_generate_getter) || field.is_oneof();
 
-        let kind = if field.field.get_proto().get_label()
-            == field_descriptor_proto::Label::LABEL_REPEATED
-        {
-            match elem {
-                // map field
-                FieldElem::Message(FieldElemMessage {
-                    message,
-                    map_entry: Some(key_value),
-                    ..
-                }) => FieldKind::Map(MapField {
-                    _message: message.clone(),
-                    key: key_value.0.clone(),
-                    value: key_value.1.clone(),
-                }),
-                // regular repeated field
-                elem => FieldKind::Repeated(RepeatedField {
+        let kind = match field.field.runtime_field_type() {
+            RuntimeFieldType::Map(..) => {
+                let message = root_scope.find_message(&ProtobufAbsolutePath::from(
+                    field.field.get_proto().get_type_name(),
+                ));
+
+                let (key, value) = map_entry(&message).unwrap();
+
+                let key = field_elem(&key, root_scope, &customize);
+                let value = field_elem(&value, root_scope, &customize);
+
+                FieldKind::Map(MapField {
+                    _message: message,
+                    key,
+                    value,
+                })
+            }
+            RuntimeFieldType::Repeated(..) => {
+                let elem = field_elem(&field, root_scope, &customize);
+
+                FieldKind::Repeated(RepeatedField {
                     elem,
                     packed: field
                         .field
@@ -607,30 +593,35 @@ impl<'a> FieldGen<'a> {
                         .options
                         .get_or_default()
                         .get_packed(),
-                }),
+                })
             }
-        } else if let Some(oneof) = field.oneof() {
-            FieldKind::Oneof(OneofField::parse(&oneof, &field, elem, root_scope))
-        } else {
-            let flag = if field.message.scope.file_scope.syntax() == Syntax::Proto3
-                && field.field.get_proto().get_field_type()
-                    != field_descriptor_proto::Type::TYPE_MESSAGE
-            {
-                SingularFieldFlag::WithoutFlag
-            } else {
-                let required = field.field.get_proto().get_label()
-                    == field_descriptor_proto::Label::LABEL_REQUIRED;
-                let option_kind = match field.field.get_proto().get_field_type() {
-                    field_descriptor_proto::Type::TYPE_MESSAGE => OptionKind::MessageField,
-                    _ => OptionKind::Option,
-                };
+            RuntimeFieldType::Singular(..) => {
+                let elem = field_elem(&field, root_scope, &customize);
 
-                SingularFieldFlag::WithFlag {
-                    required,
-                    option_kind,
+                if let Some(oneof) = field.oneof() {
+                    FieldKind::Oneof(OneofField::parse(&oneof, &field, elem, root_scope))
+                } else {
+                    let flag = if field.message.scope.file_scope.syntax() == Syntax::Proto3
+                        && field.field.get_proto().get_field_type()
+                            != field_descriptor_proto::Type::TYPE_MESSAGE
+                    {
+                        SingularFieldFlag::WithoutFlag
+                    } else {
+                        let required = field.field.get_proto().get_label()
+                            == field_descriptor_proto::Label::LABEL_REQUIRED;
+                        let option_kind = match field.field.get_proto().get_field_type() {
+                            field_descriptor_proto::Type::TYPE_MESSAGE => OptionKind::MessageField,
+                            _ => OptionKind::Option,
+                        };
+
+                        SingularFieldFlag::WithFlag {
+                            required,
+                            option_kind,
+                        }
+                    };
+                    FieldKind::Singular(SingularField { elem, flag })
                 }
-            };
-            FieldKind::Singular(SingularField { elem, flag })
+            }
         };
 
         FieldGen {

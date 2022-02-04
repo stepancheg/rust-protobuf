@@ -400,10 +400,6 @@ impl<'a> MessageWithScope<'a> {
             .collect()
     }
 
-    pub fn oneof_by_index(&self, index: u32) -> OneofWithContext<'a> {
-        self.oneofs().swap_remove(index as usize)
-    }
-
     pub fn mod_name(&self) -> RustIdent {
         message_name_to_nested_mod_name(self.message.get_name())
     }
@@ -525,17 +521,16 @@ pub(crate) struct FieldWithContext<'a> {
 
 impl<'a> FieldWithContext<'a> {
     pub fn is_oneof(&self) -> bool {
-        self.field.get_proto().has_oneof_index()
+        self.field.containing_oneof().is_some()
     }
 
     pub fn oneof(&self) -> Option<OneofWithContext<'a>> {
-        if self.is_oneof() {
-            Some(
-                self.message
-                    .oneof_by_index(self.field.get_proto().get_oneof_index() as u32),
-            )
-        } else {
-            None
+        match self.field.containing_oneof() {
+            Some(oneof) => Some(OneofWithContext {
+                message: self.message.clone(),
+                oneof,
+            }),
+            None => None,
         }
     }
 
