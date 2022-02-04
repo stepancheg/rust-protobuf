@@ -15,9 +15,9 @@ use crate::gen::file_index::FileIndex;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::oneof::OneofGen;
 use crate::gen::oneof::OneofVariantGen;
+use crate::gen::rust::expr_vec_with_capacity;
 use crate::gen::rust::is_rust_keyword;
 use crate::gen::rust::EXPR_NONE;
-use crate::gen::rust::EXPR_VEC_NEW;
 use crate::gen::rust_name::RustIdent;
 use crate::gen::rust_name::RustIdentWithPath;
 use crate::gen::rust_types_values::*;
@@ -438,7 +438,10 @@ impl<'a> MessageGen<'a> {
             &sig,
             |w| {
                 let fields = self.fields_except_group();
-                w.write_line(&format!("let mut fields = {};", EXPR_VEC_NEW));
+                w.write_line(&format!(
+                    "let mut fields = {};",
+                    expr_vec_with_capacity(&format!("{}", fields.len()))
+                ));
                 for field in fields {
                     field.write_descriptor_field("fields", w);
                 }
