@@ -1,6 +1,5 @@
 pub(crate) mod all;
 pub(crate) mod code_writer;
-pub(crate) mod custom_attr;
 pub(crate) mod enums;
 pub(crate) mod extensions;
 pub(crate) mod field;

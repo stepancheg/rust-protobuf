@@ -22,12 +22,12 @@
 //! Generated file from `doctest_pb.proto`
 
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
+#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct MyMessage {
     // special fields
-    #[cfg_attr(serde,serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde,serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 

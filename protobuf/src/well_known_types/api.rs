@@ -31,7 +31,7 @@
 ///  this message itself. See https://cloud.google.com/apis/design/glossary for
 ///  detailed terminology.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
+#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct Api {
     // message fields
     ///  The fully qualified name of this interface, including package name
@@ -71,9 +71,9 @@ pub struct Api {
     ///  The source syntax of the service.
     pub syntax: crate::ProtobufEnumOrUnknown<crate::well_known_types::Syntax>,
     // special fields
-    #[cfg_attr(serde,serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde,serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -321,7 +321,7 @@ impl crate::reflect::ProtobufValue for Api {
 
 ///  Method represents a method of an API interface.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
+#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct Method {
     // message fields
     ///  The simple name of this method.
@@ -339,9 +339,9 @@ pub struct Method {
     ///  The source syntax of this method.
     pub syntax: crate::ProtobufEnumOrUnknown<crate::well_known_types::Syntax>,
     // special fields
-    #[cfg_attr(serde,serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde,serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -579,7 +579,7 @@ impl crate::reflect::ProtobufValue for Method {
 }
 
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
+#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct Mixin {
     // message fields
     ///  The fully qualified name of the interface which is included.
@@ -588,9 +588,9 @@ pub struct Mixin {
     ///  are rooted.
     pub root: ::std::string::String,
     // special fields
-    #[cfg_attr(serde,serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde,serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 

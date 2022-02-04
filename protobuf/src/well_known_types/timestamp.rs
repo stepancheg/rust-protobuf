@@ -22,7 +22,7 @@
 //! Generated file from `google/protobuf/timestamp.proto`
 
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
+#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct Timestamp {
     // message fields
     ///  Represents seconds of UTC time since Unix epoch
@@ -35,9 +35,9 @@ pub struct Timestamp {
     ///  inclusive.
     pub nanos: i32,
     // special fields
-    #[cfg_attr(serde,serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde,serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 

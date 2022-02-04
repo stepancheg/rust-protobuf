@@ -22,15 +22,15 @@
 //! Generated file from `google/protobuf/field_mask.proto`
 
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
+#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
 pub struct FieldMask {
     // message fields
     ///  The set of field mask paths.
     pub paths: ::std::vec::Vec<::std::string::String>,
     // special fields
-    #[cfg_attr(serde,serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde,serde(skip))]
+    #[cfg_attr(serde, serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 

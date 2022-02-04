@@ -40,7 +40,7 @@ esac
 "$PROTOC" \
     --plugin=protoc-gen-rust="$where_am_i/target/debug/protoc-gen-rust$exe_suffix" \
     --rust_out tmp-generated \
-    --rust_opt 'inside_protobuf=true type_attr=#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))] special_field_attr=#[cfg_attr(serde,serde(skip))]' \
+    --rust_opt 'serde_derive=true serde_derive_cfg=serde inside_protobuf=true' \
     -I../proto \
     -I../protoc-bin-vendored/include \
     ../protoc-bin-vendored/include/google/protobuf/*.proto \

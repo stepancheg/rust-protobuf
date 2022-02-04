@@ -4,7 +4,6 @@ use protobuf::descriptor::*;
 
 use crate::customize::customize_from_rustproto_for_enum;
 use crate::gen::code_writer::*;
-use crate::gen::custom_attr::write_custom_type_attr;
 use crate::gen::file_index::FileIndex;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::rust::EXPR_NONE;
@@ -178,7 +177,6 @@ impl<'a> EnumGen<'a> {
             &self.customize,
             "derive(::serde::Serialize, ::serde::Deserialize)",
         );
-        write_custom_type_attr(w, &self.customize);
         if let Some(ref ren) = self.customize.serde_rename_all {
             let attr = format!("serde(rename_all = \"{}\")", ren);
             serde::write_serde_attr(w, &self.customize, &attr);
