@@ -7,8 +7,10 @@ use protobuf::reflect::MessageDescriptor;
 use protobuf::reflect::OneofDescriptor;
 use protobuf::reflect::Syntax;
 use protobuf_parse::ProtobufAbsPath;
+use protobuf_parse::ProtobufAbsPathRef;
 use protobuf_parse::ProtobufIdentRef;
 use protobuf_parse::ProtobufRelPath;
+use protobuf_parse::ProtobufRelPathRef;
 
 use crate::customize::Customize;
 use crate::gen::field::rust_field_name_for_protobuf_field_name;
@@ -85,19 +87,23 @@ impl<'a> FileScope<'a> {
         }
     }
 
-    fn find_message_or_enum(&self, name: &ProtobufRelPath) -> Option<MessageOrEnumWithScope<'a>> {
+    fn find_message_or_enum(
+        &self,
+        name: &ProtobufRelPathRef,
+    ) -> Option<MessageOrEnumWithScope<'a>> {
         self.find_messages_and_enums()
             .into_iter()
-            .filter(|e| e.protobuf_name_to_package() == *name)
+            .filter(|e| e.protobuf_name_to_package().as_ref() == name)
             .next()
     }
 
     fn find_message_or_enum_abs(
         &self,
-        name: &ProtobufAbsPath,
+        name: &ProtobufAbsPathRef,
     ) -> Option<MessageOrEnumWithScope<'a>> {
+        let name = name.to_owned();
         match name.remove_prefix(&self.get_package()) {
-            Some(ref rem) => self.find_message_or_enum(rem),
+            Some(rem) => self.find_message_or_enum(&rem),
             None => None,
         }
     }

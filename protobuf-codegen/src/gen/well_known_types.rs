@@ -1,6 +1,7 @@
 use protobuf::reflect::FileDescriptor;
 use protobuf_parse::ProtobufAbsPath;
 use protobuf_parse::ProtobufRelPath;
+use protobuf_parse::ProtobufRelPathRef;
 
 use crate::compiler_plugin;
 use crate::gen::code_writer::CodeWriter;
@@ -68,14 +69,14 @@ static NAMES: &'static [&'static str] = &[
     "Value",
 ];
 
-fn is_well_known_type(name: &ProtobufRelPath) -> bool {
+fn is_well_known_type(name: &ProtobufRelPathRef) -> bool {
     NAMES.iter().any(|&n| n == format!("{}", name))
 }
 
 pub fn is_well_known_type_full(name: &ProtobufAbsPath) -> Option<ProtobufRelPath> {
-    if let Some(ref rem) = name.remove_prefix(&ProtobufAbsPath::from(".google.protobuf")) {
+    if let Some(rem) = name.remove_prefix(&ProtobufAbsPath::from(".google.protobuf")) {
         if is_well_known_type(rem) {
-            Some(rem.clone())
+            Some(rem.to_owned())
         } else {
             None
         }

@@ -22,6 +22,10 @@ impl From<&'_ str> for ProtobufRelPath {
 }
 
 impl ProtobufRelPathRef {
+    pub fn as_str(&self) -> &str {
+        &self
+    }
+
     pub fn empty() -> &'static ProtobufRelPathRef {
         Self::new("")
     }
@@ -110,6 +114,10 @@ impl ProtobufRelPathRef {
 }
 
 impl ProtobufRelPath {
+    pub fn as_ref(&self) -> &ProtobufRelPathRef {
+        &self
+    }
+
     pub fn empty() -> ProtobufRelPath {
         ProtobufRelPath {
             path: String::new(),
@@ -169,6 +177,12 @@ impl Deref for ProtobufRelPath {
 impl From<ProtobufIdent> for ProtobufRelPath {
     fn from(s: ProtobufIdent) -> ProtobufRelPath {
         ProtobufRelPath { path: s.into() }
+    }
+}
+
+impl fmt::Display for ProtobufRelPathRef {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", &self.0)
     }
 }
 
