@@ -11,6 +11,7 @@ use crate::reflect::file::fds::FdsBuilder;
 use crate::reflect::file::index::FileIndex;
 use crate::reflect::file::index::FileIndexMessageEntry;
 use crate::reflect::name::protobuf_name_starts_with_package;
+use crate::reflect::service::ServiceDescriptor;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::GeneratedFileDescriptor;
 use crate::reflect::MessageDescriptor;
@@ -108,6 +109,16 @@ impl FileDescriptor {
             .iter()
             .enumerate()
             .map(|(i, _)| EnumDescriptor::new(self.clone(), i))
+            .collect()
+    }
+
+    /// Get services defined in `.proto` file.
+    pub fn services(&self) -> Vec<ServiceDescriptor> {
+        self.proto()
+            .service
+            .iter()
+            .enumerate()
+            .map(|(i, _)| ServiceDescriptor::new(self.clone(), i))
             .collect()
     }
 

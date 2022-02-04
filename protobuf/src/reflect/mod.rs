@@ -12,6 +12,7 @@ mod oneof;
 mod protobuf_type_box;
 mod repeated;
 mod runtime_type_box;
+mod service;
 mod type_dynamic;
 pub(crate) mod value;
 
@@ -47,6 +48,8 @@ pub use self::reflect_eq::ReflectEqMode;
 pub use self::repeated::ReflectRepeatedMut;
 pub use self::repeated::ReflectRepeatedRef;
 pub use self::runtime_type_box::RuntimeTypeBox;
+pub use self::service::MethodDescriptor;
+pub use self::service::ServiceDescriptor;
 pub use self::value::value_box::ReflectValueBox;
 pub use self::value::value_ref::ReflectValueRef;
 pub use self::value::ProtobufValue;
