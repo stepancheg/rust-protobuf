@@ -23,7 +23,7 @@
 
 ///  A protocol buffer message type.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct Type {
     // message fields
     ///  The fully qualified message name.
@@ -39,9 +39,9 @@ pub struct Type {
     ///  The source syntax.
     pub syntax: crate::ProtobufEnumOrUnknown<Syntax>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -264,7 +264,7 @@ impl crate::reflect::ProtobufValue for Type {
 
 ///  A single field of a message type.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct Field {
     // message fields
     ///  The field type.
@@ -290,9 +290,9 @@ pub struct Field {
     ///  The string value of the default value of this field. Proto2 syntax only.
     pub default_value: ::std::string::String,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -590,7 +590,7 @@ impl crate::reflect::ProtobufValue for Field {
 pub mod field {
     ///  Basic field types.
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    #[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
     pub enum Kind {
         TYPE_UNKNOWN = 0,
         TYPE_DOUBLE = 1,
@@ -691,7 +691,7 @@ pub mod field {
 
     ///  Whether a field is optional, required, or repeated.
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    #[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
     pub enum Cardinality {
         CARDINALITY_UNKNOWN = 0,
         CARDINALITY_OPTIONAL = 1,
@@ -748,7 +748,7 @@ pub mod field {
 
 ///  Enum type definition.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct Enum {
     // message fields
     ///  Enum type name.
@@ -762,9 +762,9 @@ pub struct Enum {
     ///  The source syntax.
     pub syntax: crate::ProtobufEnumOrUnknown<Syntax>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -971,7 +971,7 @@ impl crate::reflect::ProtobufValue for Enum {
 
 ///  Enum value definition.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct EnumValue {
     // message fields
     ///  Enum value name.
@@ -981,9 +981,9 @@ pub struct EnumValue {
     ///  Protocol buffer options.
     pub options: ::std::vec::Vec<Option>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -1147,7 +1147,7 @@ impl crate::reflect::ProtobufValue for EnumValue {
 ///  A protocol buffer option, which can be attached to a message, field,
 ///  enumeration, etc.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct Option {
     // message fields
     ///  The option's name. For protobuf built-in options (options defined in
@@ -1161,9 +1161,9 @@ pub struct Option {
     ///  value using the google.protobuf.Int32Value type.
     pub value: crate::MessageField<crate::well_known_types::Any>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -1307,7 +1307,7 @@ impl crate::reflect::ProtobufValue for Option {
 
 ///  The syntax in which a protocol buffer element is defined.
 #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub enum Syntax {
     SYNTAX_PROTO2 = 0,
     SYNTAX_PROTO3 = 1,

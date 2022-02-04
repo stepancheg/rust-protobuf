@@ -25,15 +25,15 @@
 ///
 ///  The JSON representation for `DoubleValue` is JSON number.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct DoubleValue {
     // message fields
     ///  The double value.
     pub value: f64,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -157,15 +157,15 @@ impl crate::reflect::ProtobufValue for DoubleValue {
 ///
 ///  The JSON representation for `FloatValue` is JSON number.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct FloatValue {
     // message fields
     ///  The float value.
     pub value: f32,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -289,15 +289,15 @@ impl crate::reflect::ProtobufValue for FloatValue {
 ///
 ///  The JSON representation for `Int64Value` is JSON string.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct Int64Value {
     // message fields
     ///  The int64 value.
     pub value: i64,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -421,15 +421,15 @@ impl crate::reflect::ProtobufValue for Int64Value {
 ///
 ///  The JSON representation for `UInt64Value` is JSON string.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct UInt64Value {
     // message fields
     ///  The uint64 value.
     pub value: u64,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -553,15 +553,15 @@ impl crate::reflect::ProtobufValue for UInt64Value {
 ///
 ///  The JSON representation for `Int32Value` is JSON number.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct Int32Value {
     // message fields
     ///  The int32 value.
     pub value: i32,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -685,15 +685,15 @@ impl crate::reflect::ProtobufValue for Int32Value {
 ///
 ///  The JSON representation for `UInt32Value` is JSON number.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct UInt32Value {
     // message fields
     ///  The uint32 value.
     pub value: u32,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -817,15 +817,15 @@ impl crate::reflect::ProtobufValue for UInt32Value {
 ///
 ///  The JSON representation for `BoolValue` is JSON `true` and `false`.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct BoolValue {
     // message fields
     ///  The bool value.
     pub value: bool,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -949,15 +949,15 @@ impl crate::reflect::ProtobufValue for BoolValue {
 ///
 ///  The JSON representation for `StringValue` is JSON string.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct StringValue {
     // message fields
     ///  The string value.
     pub value: ::std::string::String,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -1081,15 +1081,15 @@ impl crate::reflect::ProtobufValue for StringValue {
 ///
 ///  The JSON representation for `BytesValue` is JSON string.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct BytesValue {
     // message fields
     ///  The bytes value.
     pub value: ::std::vec::Vec<u8>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 

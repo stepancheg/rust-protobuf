@@ -8,6 +8,7 @@ use protobuf_parse::ProtobufAbsPath;
 
 use crate::customize::Customize;
 use crate::gen::code_writer::CodeWriter;
+use crate::gen::custom_attr::write_custom_type_attr;
 use crate::gen::field::rust_field_name_for_protobuf_field_name;
 use crate::gen::field::FieldElem;
 use crate::gen::field::FieldGen;
@@ -247,6 +248,7 @@ impl<'a> OneofGen<'a> {
             &self.customize,
             "derive(::serde::Serialize, ::serde::Deserialize)",
         );
+        write_custom_type_attr(w, &self.customize);
         w.pub_enum(&self.oneof.rust_name().ident.to_string(), |w| {
             for variant in self.variants_except_group() {
                 w.write_line(&format!(

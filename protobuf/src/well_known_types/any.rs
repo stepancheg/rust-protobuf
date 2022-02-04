@@ -22,7 +22,7 @@
 //! Generated file from `google/protobuf/any.proto`
 
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct Any {
     // message fields
     ///  A URL/resource name that uniquely identifies the type of the serialized
@@ -57,9 +57,9 @@ pub struct Any {
     ///  Must be a valid serialized protocol buffer of the above specified type.
     pub value: ::std::vec::Vec<u8>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 

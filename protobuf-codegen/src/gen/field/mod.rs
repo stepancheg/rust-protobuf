@@ -10,6 +10,7 @@ use crate::customize::customize_from_rustproto_for_field;
 use crate::customize::Customize;
 use crate::gen::code_writer::CodeWriter;
 use crate::gen::code_writer::Visibility;
+use crate::gen::custom_attr::write_custom_field_attr;
 use crate::gen::file_and_mod::FileAndMod;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::map::map_entry;
@@ -1171,6 +1172,7 @@ impl<'a> FieldGen<'a> {
         if !tags.is_empty() {
             serde::write_serde_attr(w, &self.customize, &format!("serde({})", tags.join(", ")));
         }
+        write_custom_field_attr(w, &self.customize);
     }
 
     fn write_if_let_self_field_is_some<F>(&self, s: &SingularField, w: &mut CodeWriter, cb: F)

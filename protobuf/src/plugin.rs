@@ -23,7 +23,7 @@
 
 ///  The version number of protocol compiler.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct Version {
     // message fields
     major: ::std::option::Option<i32>,
@@ -33,9 +33,9 @@ pub struct Version {
     ///  be empty for mainline stable releases.
     suffix: ::std::option::Option<::std::string::String>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -311,7 +311,7 @@ impl crate::reflect::ProtobufValue for Version {
 
 ///  An encoded CodeGeneratorRequest is written to the plugin's stdin.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct CodeGeneratorRequest {
     // message fields
     ///  The .proto files that were explicitly listed on the command-line.  The
@@ -338,9 +338,9 @@ pub struct CodeGeneratorRequest {
     ///  The version number of protocol compiler.
     pub compiler_version: crate::MessageField<Version>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -559,7 +559,7 @@ impl crate::reflect::ProtobufValue for CodeGeneratorRequest {
 
 ///  The plugin writes an encoded CodeGeneratorResponse to stdout.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct CodeGeneratorResponse {
     // message fields
     ///  Error message.  If non-empty, code generation failed.  The plugin process
@@ -576,9 +576,9 @@ pub struct CodeGeneratorResponse {
     supported_features: ::std::option::Option<u64>,
     pub file: ::std::vec::Vec<code_generator_response::File>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -800,7 +800,7 @@ impl crate::reflect::ProtobufValue for CodeGeneratorResponse {
 pub mod code_generator_response {
     ///  Represents a single generated file.
     #[derive(PartialEq,Clone,Default,Debug)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    #[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
     pub struct File {
         // message fields
         ///  The file name, relative to the output directory.  The name must not
@@ -860,9 +860,9 @@ pub mod code_generator_response {
         ///  into the code generation metadata for the generated files.
         pub generated_code_info: crate::MessageField<crate::descriptor::GeneratedCodeInfo>,
         // special fields
-        #[cfg_attr(serde, serde(skip))]
+        #[cfg_attr(serde,serde(skip))]
         pub unknown_fields: crate::UnknownFields,
-        #[cfg_attr(serde, serde(skip))]
+        #[cfg_attr(serde,serde(skip))]
         pub cached_size: crate::rt::CachedSize,
     }
 
@@ -1155,7 +1155,7 @@ pub mod code_generator_response {
 
     ///  Sync with code_generator.h.
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    #[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
     pub enum Feature {
         FEATURE_NONE = 0,
         FEATURE_PROTO3_OPTIONAL = 1,

@@ -24,14 +24,14 @@
 ///  The protocol compiler can output a FileDescriptorSet containing the .proto
 ///  files it parses.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct FileDescriptorSet {
     // message fields
     pub file: ::std::vec::Vec<FileDescriptorProto>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -156,7 +156,7 @@ impl crate::reflect::ProtobufValue for FileDescriptorSet {
 
 ///  Describes a complete .proto file.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct FileDescriptorProto {
     // message fields
     name: ::std::option::Option<::std::string::String>,
@@ -183,9 +183,9 @@ pub struct FileDescriptorProto {
     ///  The supported values are "proto2" and "proto3".
     syntax: ::std::option::Option<::std::string::String>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -636,7 +636,7 @@ impl crate::reflect::ProtobufValue for FileDescriptorProto {
 
 ///  Describes a message type.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct DescriptorProto {
     // message fields
     name: ::std::option::Option<::std::string::String>,
@@ -652,9 +652,9 @@ pub struct DescriptorProto {
     ///  A given name may only be reserved once.
     pub reserved_name: ::std::vec::Vec<::std::string::String>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -1006,16 +1006,16 @@ impl crate::reflect::ProtobufValue for DescriptorProto {
 /// Nested message and enums of message `DescriptorProto`
 pub mod descriptor_proto {
     #[derive(PartialEq,Clone,Default,Debug)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    #[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
     pub struct ExtensionRange {
         // message fields
         start: ::std::option::Option<i32>,
         end: ::std::option::Option<i32>,
         pub options: crate::MessageField<super::ExtensionRangeOptions>,
         // special fields
-        #[cfg_attr(serde, serde(skip))]
+        #[cfg_attr(serde,serde(skip))]
         pub unknown_fields: crate::UnknownFields,
-        #[cfg_attr(serde, serde(skip))]
+        #[cfg_attr(serde,serde(skip))]
         pub cached_size: crate::rt::CachedSize,
     }
 
@@ -1220,15 +1220,15 @@ pub mod descriptor_proto {
     ///  fields or extension ranges in the same message. Reserved ranges may
     ///  not overlap.
     #[derive(PartialEq,Clone,Default,Debug)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    #[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
     pub struct ReservedRange {
         // message fields
         start: ::std::option::Option<i32>,
         end: ::std::option::Option<i32>,
         // special fields
-        #[cfg_attr(serde, serde(skip))]
+        #[cfg_attr(serde,serde(skip))]
         pub unknown_fields: crate::UnknownFields,
-        #[cfg_attr(serde, serde(skip))]
+        #[cfg_attr(serde,serde(skip))]
         pub cached_size: crate::rt::CachedSize,
     }
 
@@ -1409,15 +1409,15 @@ pub mod descriptor_proto {
 }
 
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct ExtensionRangeOptions {
     // message fields
     ///  The parser stores options it doesn't recognize here. See above.
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -1542,7 +1542,7 @@ impl crate::reflect::ProtobufValue for ExtensionRangeOptions {
 
 ///  Describes a field within a message.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct FieldDescriptorProto {
     // message fields
     name: ::std::option::Option<::std::string::String>,
@@ -1550,7 +1550,6 @@ pub struct FieldDescriptorProto {
     label: ::std::option::Option<crate::ProtobufEnumOrUnknown<field_descriptor_proto::Label>>,
     ///  If type_name is set, this need not be set.  If both this and type_name
     ///  are set, this must be one of TYPE_ENUM, TYPE_MESSAGE or TYPE_GROUP.
-    #[cfg_attr(serde, serde(alias="type"))]
     field_type: ::std::option::Option<crate::ProtobufEnumOrUnknown<field_descriptor_proto::Type>>,
     ///  For message and enum types, this is the name of the type.  If the name
     ///  starts with a '.', it is fully-qualified.  Otherwise, C++-like scoping
@@ -1599,9 +1598,9 @@ pub struct FieldDescriptorProto {
     ///  optional with `LABEL_OPTIONAL`.
     proto3_optional: ::std::option::Option<bool>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -2208,7 +2207,7 @@ impl crate::reflect::ProtobufValue for FieldDescriptorProto {
 /// Nested message and enums of message `FieldDescriptorProto`
 pub mod field_descriptor_proto {
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    #[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
     pub enum Type {
         TYPE_DOUBLE = 1,
         TYPE_FLOAT = 2,
@@ -2306,7 +2305,7 @@ pub mod field_descriptor_proto {
     }
 
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    #[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
     pub enum Label {
         LABEL_OPTIONAL = 1,
         LABEL_REQUIRED = 2,
@@ -2361,15 +2360,15 @@ pub mod field_descriptor_proto {
 
 ///  Describes a oneof.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct OneofDescriptorProto {
     // message fields
     name: ::std::option::Option<::std::string::String>,
     pub options: crate::MessageField<OneofOptions>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -2550,7 +2549,7 @@ impl crate::reflect::ProtobufValue for OneofDescriptorProto {
 
 ///  Describes an enum type.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct EnumDescriptorProto {
     // message fields
     name: ::std::option::Option<::std::string::String>,
@@ -2564,9 +2563,9 @@ pub struct EnumDescriptorProto {
     ///  be reserved once.
     pub reserved_name: ::std::vec::Vec<::std::string::String>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -2814,15 +2813,15 @@ pub mod enum_descriptor_proto {
     ///  is inclusive such that it can appropriately represent the entire int32
     ///  domain.
     #[derive(PartialEq,Clone,Default,Debug)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    #[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
     pub struct EnumReservedRange {
         // message fields
         start: ::std::option::Option<i32>,
         end: ::std::option::Option<i32>,
         // special fields
-        #[cfg_attr(serde, serde(skip))]
+        #[cfg_attr(serde,serde(skip))]
         pub unknown_fields: crate::UnknownFields,
-        #[cfg_attr(serde, serde(skip))]
+        #[cfg_attr(serde,serde(skip))]
         pub cached_size: crate::rt::CachedSize,
     }
 
@@ -3004,16 +3003,16 @@ pub mod enum_descriptor_proto {
 
 ///  Describes a value within an enum.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct EnumValueDescriptorProto {
     // message fields
     name: ::std::option::Option<::std::string::String>,
     number: ::std::option::Option<i32>,
     pub options: crate::MessageField<EnumValueOptions>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -3233,16 +3232,16 @@ impl crate::reflect::ProtobufValue for EnumValueDescriptorProto {
 
 ///  Describes a service.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct ServiceDescriptorProto {
     // message fields
     name: ::std::option::Option<::std::string::String>,
     pub method: ::std::vec::Vec<MethodDescriptorProto>,
     pub options: crate::MessageField<ServiceOptions>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -3445,7 +3444,7 @@ impl crate::reflect::ProtobufValue for ServiceDescriptorProto {
 
 ///  Describes a method of a service.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct MethodDescriptorProto {
     // message fields
     name: ::std::option::Option<::std::string::String>,
@@ -3459,9 +3458,9 @@ pub struct MethodDescriptorProto {
     ///  Identifies if server streams multiple server messages
     server_streaming: ::std::option::Option<bool>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -3831,7 +3830,7 @@ impl crate::reflect::ProtobufValue for MethodDescriptorProto {
 }
 
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct FileOptions {
     // message fields
     ///  Sets the Java package where classes generated from this .proto will be
@@ -3919,9 +3918,9 @@ pub struct FileOptions {
     ///  See the documentation for the "Options" section above.
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -5001,7 +5000,7 @@ impl crate::reflect::ProtobufValue for FileOptions {
 pub mod file_options {
     ///  Generated classes can be optimized for speed or code size.
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    #[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
     pub enum OptimizeMode {
         SPEED = 1,
         CODE_SIZE = 2,
@@ -5055,7 +5054,7 @@ pub mod file_options {
 }
 
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct MessageOptions {
     // message fields
     message_set_wire_format: ::std::option::Option<bool>,
@@ -5072,9 +5071,9 @@ pub struct MessageOptions {
     ///  The parser stores options it doesn't recognize here. See above.
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -5354,7 +5353,7 @@ impl crate::reflect::ProtobufValue for MessageOptions {
 }
 
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct FieldOptions {
     // message fields
     ///  The ctype option instructs the C++ code generator to use a different
@@ -5419,9 +5418,9 @@ pub struct FieldOptions {
     ///  The parser stores options it doesn't recognize here. See above.
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -5787,7 +5786,7 @@ impl crate::reflect::ProtobufValue for FieldOptions {
 /// Nested message and enums of message `FieldOptions`
 pub mod field_options {
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    #[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
     pub enum CType {
         STRING = 0,
         CORD = 1,
@@ -5839,7 +5838,7 @@ pub mod field_options {
     }
 
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    #[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
     pub enum JSType {
         JS_NORMAL = 0,
         JS_STRING = 1,
@@ -5892,15 +5891,15 @@ pub mod field_options {
 }
 
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct OneofOptions {
     // message fields
     ///  The parser stores options it doesn't recognize here. See above.
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -6024,7 +6023,7 @@ impl crate::reflect::ProtobufValue for OneofOptions {
 }
 
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct EnumOptions {
     // message fields
     ///  Set this option to true to allow mapping different tag names to the same
@@ -6038,9 +6037,9 @@ pub struct EnumOptions {
     ///  The parser stores options it doesn't recognize here. See above.
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -6242,7 +6241,7 @@ impl crate::reflect::ProtobufValue for EnumOptions {
 }
 
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct EnumValueOptions {
     // message fields
     ///  Is this enum value deprecated?
@@ -6253,9 +6252,9 @@ pub struct EnumValueOptions {
     ///  The parser stores options it doesn't recognize here. See above.
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -6418,7 +6417,7 @@ impl crate::reflect::ProtobufValue for EnumValueOptions {
 }
 
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct ServiceOptions {
     // message fields
     ///  Is this service deprecated?
@@ -6429,9 +6428,9 @@ pub struct ServiceOptions {
     ///  The parser stores options it doesn't recognize here. See above.
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -6594,7 +6593,7 @@ impl crate::reflect::ProtobufValue for ServiceOptions {
 }
 
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct MethodOptions {
     // message fields
     ///  Is this method deprecated?
@@ -6606,9 +6605,9 @@ pub struct MethodOptions {
     ///  The parser stores options it doesn't recognize here. See above.
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -6818,7 +6817,7 @@ pub mod method_options {
     ///  or neither? HTTP based RPC implementation may choose GET verb for safe
     ///  methods, and PUT verb for idempotent methods instead of the default POST.
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    #[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
     pub enum IdempotencyLevel {
         IDEMPOTENCY_UNKNOWN = 0,
         NO_SIDE_EFFECTS = 1,
@@ -6877,7 +6876,7 @@ pub mod method_options {
 ///  or produced by Descriptor::CopyTo()) will never have UninterpretedOptions
 ///  in them.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct UninterpretedOption {
     // message fields
     pub name: ::std::vec::Vec<uninterpreted_option::NamePart>,
@@ -6890,9 +6889,9 @@ pub struct UninterpretedOption {
     string_value: ::std::option::Option<::std::vec::Vec<u8>>,
     aggregate_value: ::std::option::Option<::std::string::String>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -7308,15 +7307,15 @@ pub mod uninterpreted_option {
     ///  E.g.,{ ["foo", false], ["bar.baz", true], ["qux", false] } represents
     ///  "foo.(bar.baz).qux".
     #[derive(PartialEq,Clone,Default,Debug)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    #[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
     pub struct NamePart {
         // message fields
         name_part: ::std::option::Option<::std::string::String>,
         is_extension: ::std::option::Option<bool>,
         // special fields
-        #[cfg_attr(serde, serde(skip))]
+        #[cfg_attr(serde,serde(skip))]
         pub unknown_fields: crate::UnknownFields,
-        #[cfg_attr(serde, serde(skip))]
+        #[cfg_attr(serde,serde(skip))]
         pub cached_size: crate::rt::CachedSize,
     }
 
@@ -7522,14 +7521,14 @@ pub mod uninterpreted_option {
 ///  Encapsulates information about the original source file from which a
 ///  FileDescriptorProto was generated.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct SourceCodeInfo {
     // message fields
     pub location: ::std::vec::Vec<source_code_info::Location>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -7655,7 +7654,7 @@ impl crate::reflect::ProtobufValue for SourceCodeInfo {
 /// Nested message and enums of message `SourceCodeInfo`
 pub mod source_code_info {
     #[derive(PartialEq,Clone,Default,Debug)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    #[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
     pub struct Location {
         // message fields
         pub path: ::std::vec::Vec<i32>,
@@ -7669,9 +7668,9 @@ pub mod source_code_info {
         trailing_comments: ::std::option::Option<::std::string::String>,
         pub leading_detached_comments: ::std::vec::Vec<::std::string::String>,
         // special fields
-        #[cfg_attr(serde, serde(skip))]
+        #[cfg_attr(serde,serde(skip))]
         pub unknown_fields: crate::UnknownFields,
-        #[cfg_attr(serde, serde(skip))]
+        #[cfg_attr(serde,serde(skip))]
         pub cached_size: crate::rt::CachedSize,
     }
 
@@ -7933,16 +7932,16 @@ pub mod source_code_info {
 ///  file. A GeneratedCodeInfo message is associated with only one generated
 ///  source file, but may contain references to different source .proto files.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct GeneratedCodeInfo {
     // message fields
     ///  An Annotation connects some span of text in generated code to an element
     ///  of its generating .proto file.
     pub annotation: ::std::vec::Vec<generated_code_info::Annotation>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -8068,7 +8067,7 @@ impl crate::reflect::ProtobufValue for GeneratedCodeInfo {
 /// Nested message and enums of message `GeneratedCodeInfo`
 pub mod generated_code_info {
     #[derive(PartialEq,Clone,Default,Debug)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    #[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
     pub struct Annotation {
         // message fields
         ///  Identifies the element in the original source .proto file. This field
@@ -8084,9 +8083,9 @@ pub mod generated_code_info {
         ///  the last relevant byte (so the length of the text = end - begin).
         end: ::std::option::Option<i32>,
         // special fields
-        #[cfg_attr(serde, serde(skip))]
+        #[cfg_attr(serde,serde(skip))]
         pub unknown_fields: crate::UnknownFields,
-        #[cfg_attr(serde, serde(skip))]
+        #[cfg_attr(serde,serde(skip))]
         pub cached_size: crate::rt::CachedSize,
     }
 

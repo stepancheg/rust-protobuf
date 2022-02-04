@@ -7,6 +7,8 @@ use protobuf::descriptor::FileOptions;
 use protobuf::descriptor::MessageOptions;
 use protobuf::rustproto;
 
+use crate::customize::custom_attr::CustomAttr;
+
 /// Specifies style of generated code.
 /// Generated files can be customized using this proto
 /// or using `rustproto.proto` options.
@@ -24,6 +26,12 @@ pub struct Customize {
     pub(crate) carllerche_bytes_for_bytes: Option<bool>,
     /// Use `bytes::Bytes` for `string` fields
     pub(crate) carllerche_bytes_for_string: Option<bool>,
+    /// Custom attributes for types.
+    pub(crate) type_attrs: Option<Vec<CustomAttr>>,
+    /// Custom attributes for fields.
+    pub(crate) field_attrs: Option<Vec<CustomAttr>>,
+    /// Custom attributes for `unknown_fields` and `computed_size`.
+    pub(crate) special_field_attrs: Option<Vec<CustomAttr>>,
     /// Implement serde_derive for messages
     pub(crate) serde_derive: Option<bool>,
     /// When `serde_derive` is set, serde annotations will be guarded with `#[cfg(cfg, ...)]`.
@@ -83,6 +91,51 @@ impl Customize {
         self
     }
 
+    fn add_type_attr(&mut self, type_attr: &str) {
+        if let None = self.type_attrs {
+            self.type_attrs = Some(Vec::with_capacity(1));
+        };
+        self.type_attrs
+            .as_mut()
+            .unwrap()
+            .push(CustomAttr::from_str(type_attr));
+    }
+
+    pub fn type_attr(mut self, type_attr: &str) -> Self {
+        self.add_type_attr(type_attr);
+        self
+    }
+
+    fn add_field_attr(&mut self, field_attr: &str) {
+        if let None = self.field_attrs {
+            self.field_attrs = Some(Vec::with_capacity(1));
+        };
+        self.field_attrs
+            .as_mut()
+            .unwrap()
+            .push(CustomAttr::from_str(field_attr));
+    }
+
+    pub fn field_attr(mut self, field_attr: &str) -> Self {
+        self.add_field_attr(field_attr);
+        self
+    }
+
+    fn add_special_field_attr(&mut self, special_field_attr: &str) {
+        if let None = self.special_field_attrs {
+            self.special_field_attrs = Some(Vec::with_capacity(1));
+        };
+        self.special_field_attrs
+            .as_mut()
+            .unwrap()
+            .push(CustomAttr::from_str(special_field_attr));
+    }
+
+    pub fn special_field_attr(mut self, special_field_attr: &str) -> Self {
+        self.add_special_field_attr(special_field_attr);
+        self
+    }
+
     pub fn serde_derive(mut self, serde_derive: bool) -> Self {
         self.serde_derive = Some(serde_derive);
         self
@@ -132,6 +185,9 @@ impl Customize {
         }
         if let Some(v) = that.carllerche_bytes_for_string {
             self.carllerche_bytes_for_string = Some(v);
+        }
+        if let Some(v) = &that.type_attrs {
+            self.type_attrs = Some(v.clone());
         }
         if let Some(v) = that.serde_derive {
             self.serde_derive = Some(v);
@@ -201,6 +257,12 @@ impl Customize {
                 r.gen_mod_rs = Some(parse_bool(v)?);
             } else if n == "inside_protobuf" {
                 r.inside_protobuf = Some(parse_bool(v)?);
+            } else if n == "type_attr" {
+                r.add_type_attr(v);
+            } else if n == "field_attr" {
+                r.add_field_attr(v);
+            } else if n == "special_field_attr" {
+                r.add_special_field_attr(v);
             } else {
                 return Err(CustomizeParseParameterError::UnknownOptionName(
                     n.to_owned(),
@@ -218,6 +280,9 @@ pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customiz
     let generate_getter = rustproto::exts::generate_getter.get(source);
     let carllerche_bytes_for_bytes = rustproto::exts::carllerche_bytes_for_bytes.get(source);
     let carllerche_bytes_for_string = rustproto::exts::carllerche_bytes_for_string.get(source);
+    let type_attrs = None; // TODO
+    let field_attrs = None; // TODO
+    let special_field_attrs = None; // TODO
     let serde_derive = rustproto::exts::serde_derive.get(source);
     let serde_derive_cfg = rustproto::exts::serde_derive_cfg.get(source);
     let lite_runtime = None;
@@ -231,6 +296,9 @@ pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customiz
         generate_getter,
         carllerche_bytes_for_bytes,
         carllerche_bytes_for_string,
+        type_attrs,
+        field_attrs,
+        special_field_attrs,
         serde_derive,
         serde_derive_cfg,
         serde_rename_all,
@@ -255,6 +323,9 @@ pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
     let carllerche_bytes_for_bytes = rustproto::exts::carllerche_bytes_for_bytes_field.get(source);
     let carllerche_bytes_for_string =
         rustproto::exts::carllerche_bytes_for_string_field.get(source);
+    let type_attrs = None;
+    let field_attrs = None; // TODO
+    let special_field_attrs = None; // TODO
     let serde_rename_all = None;
     let serde_derive = None;
     let serde_derive_cfg = None;
@@ -268,6 +339,9 @@ pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
         generate_getter,
         carllerche_bytes_for_bytes,
         carllerche_bytes_for_string,
+        type_attrs,
+        field_attrs,
+        special_field_attrs,
         serde_derive,
         serde_derive_cfg,
         serde_rename_all,
@@ -284,6 +358,9 @@ pub fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
     let generate_getter = rustproto::exts::generate_getter_all.get(source);
     let carllerche_bytes_for_bytes = rustproto::exts::carllerche_bytes_for_bytes_all.get(source);
     let carllerche_bytes_for_string = rustproto::exts::carllerche_bytes_for_string_all.get(source);
+    let type_attrs = None; // TODO
+    let field_attrs = None; // TODO
+    let special_field_attrs = None; // TODO
     let serde_derive = rustproto::exts::serde_derive_all.get(source);
     let serde_derive_cfg = rustproto::exts::serde_derive_cfg_all.get(source);
     let lite_runtime = rustproto::exts::lite_runtime_all.get(source);
@@ -297,6 +374,9 @@ pub fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
         generate_getter,
         carllerche_bytes_for_bytes,
         carllerche_bytes_for_string,
+        type_attrs,
+        field_attrs,
+        special_field_attrs,
         serde_derive,
         serde_derive_cfg,
         serde_rename_all,

@@ -30,16 +30,15 @@
 ///
 ///  The JSON representation for `Struct` is JSON object.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct Struct {
     // message fields
     ///  Unordered map of dynamically typed values.
-    #[cfg_attr(serde, serde(default))]
     pub fields: ::std::collections::HashMap<::std::string::String, Value>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -155,14 +154,14 @@ impl crate::reflect::ProtobufValue for Struct {
 ///
 ///  The JSON representation for `Value` is JSON value.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct Value {
     // message oneof groups
     pub kind: ::std::option::Option<value::Kind>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -626,7 +625,7 @@ impl crate::reflect::ProtobufValue for Value {
 pub mod value {
 
     #[derive(Clone,PartialEq,Debug)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    #[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
     pub enum Kind {
         null_value(crate::ProtobufEnumOrUnknown<super::NullValue>),
         number_value(f64),
@@ -644,15 +643,15 @@ pub mod value {
 ///
 ///  The JSON representation for `ListValue` is JSON array.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub struct ListValue {
     // message fields
     ///  Repeated field of dynamically typed values.
     pub values: ::std::vec::Vec<Value>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    #[cfg_attr(serde,serde(skip))]
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -780,7 +779,7 @@ impl crate::reflect::ProtobufValue for ListValue {
 ///
 ///   The JSON representation for `NullValue` is JSON `null`.
 #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+#[cfg_attr(serde,derive(::serde::Serialize,::serde::Deserialize))]
 pub enum NullValue {
     NULL_VALUE = 0,
 }

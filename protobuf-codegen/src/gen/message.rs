@@ -7,6 +7,8 @@ use protobuf_parse::snake_case;
 
 use crate::customize::customize_from_rustproto_for_message;
 use crate::gen::code_writer::*;
+use crate::gen::custom_attr::write_custom_type_attr;
+use crate::gen::custom_attr::write_special_field_attr;
 use crate::gen::enums::*;
 use crate::gen::field::FieldGen;
 use crate::gen::field::FieldKind;
@@ -582,6 +584,7 @@ impl<'a> MessageGen<'a> {
             &self.customize,
             "derive(::serde::Serialize, ::serde::Deserialize)",
         );
+        write_custom_type_attr(w, &self.customize);
         w.pub_struct(&format!("{}", self.type_name), |w| {
             if !self.fields_except_oneof().is_empty() {
                 w.comment("message fields");
@@ -606,11 +609,13 @@ impl<'a> MessageGen<'a> {
             w.comment("special fields");
 
             serde::write_serde_attr(w, &self.customize, "serde(skip)");
+            write_special_field_attr(w, &self.customize);
             w.pub_field_decl(
                 "unknown_fields",
                 &format!("{}::UnknownFields", protobuf_crate_path(&self.customize)),
             );
             serde::write_serde_attr(w, &self.customize, "serde(skip)");
+            write_special_field_attr(w, &self.customize);
             w.pub_field_decl(
                 "cached_size",
                 &format!("{}::rt::CachedSize", protobuf_crate_path(&self.customize)),
