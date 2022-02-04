@@ -167,6 +167,7 @@ impl FileDescriptor {
     }
 
     /// Dynamic message created from [`FileDescriptorProto`] without generated files.
+    // TODO: this should return Result
     pub fn new_dynamic(
         proto: FileDescriptorProto,
         dependencies: Vec<FileDescriptor>,

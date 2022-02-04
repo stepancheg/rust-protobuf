@@ -1,5 +1,5 @@
 [package]
-name = "protobuf-examples"
+name = "protobuf-examples-pure-vs-protoc"
 version = "0.0.0"
 authors = ["Jeff Garzik <jeff@bloq.com>"]
 edition = "2018"
