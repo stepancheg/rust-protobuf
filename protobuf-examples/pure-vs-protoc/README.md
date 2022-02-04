@@ -24,7 +24,3 @@ Standard rust package:
 $ cargo build
 $ cargo run
 ```
-
-## Contributions
-
-Contributions are welcome.  File an issue or PR.
