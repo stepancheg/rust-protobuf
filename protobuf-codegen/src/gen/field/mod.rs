@@ -599,7 +599,7 @@ impl<'a> FieldGen<'a> {
                 let elem = field_elem(&field, root_scope, &customize);
 
                 if let Some(oneof) = field.oneof() {
-                    FieldKind::Oneof(OneofField::parse(&oneof, &field, elem, root_scope))
+                    FieldKind::Oneof(OneofField::parse(&oneof, &field.field, elem, root_scope))
                 } else {
                     let flag = if field.message.scope.file_scope.syntax() == Syntax::Proto3
                         && field.field.get_proto().get_field_type()
