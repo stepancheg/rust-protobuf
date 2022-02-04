@@ -10,7 +10,7 @@ pub(crate) struct FileIndexMessageEntry {
     pub path: MessagePath,
     pub name_to_package: String,
     pub full_name: String,
-    pub _parent: Option<usize>,
+    pub enclosing_message: Option<usize>,
     pub nested_messages: Vec<usize>,
     pub _nested_enums: Vec<usize>,
     pub map_entry: bool,
@@ -79,7 +79,7 @@ impl FileIndex {
             path: path.clone(),
             name_to_package: String::new(),
             full_name: String::new(),
-            _parent: parent,
+            enclosing_message: parent,
             nested_messages: Vec::with_capacity(message.nested_type.len()),
             _nested_enums: Vec::with_capacity(message.enum_type.len()), // TODO
             map_entry: message.options.get_or_default().get_map_entry(),

@@ -166,7 +166,7 @@ impl<'a> Scope<'a> {
         if self.path.is_empty() {
             self.file_scope.file_descriptor.messages()
         } else {
-            self.path.last().unwrap().get_nested_messages()
+            self.path.last().unwrap().nested_messages()
         }
     }
 

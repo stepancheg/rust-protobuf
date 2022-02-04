@@ -101,12 +101,19 @@ impl MessageDescriptor {
     }
 
     /// Messages declared in this messages.
-    pub fn get_nested_messages(&self) -> Vec<MessageDescriptor> {
+    pub fn nested_messages(&self) -> Vec<MessageDescriptor> {
         self.get_index_entry()
             .nested_messages
             .iter()
             .map(|i| MessageDescriptor::new(self.file_descriptor.clone(), *i))
             .collect()
+    }
+
+    /// Get a message containing this message, or `None` if this message is declared at file level.
+    pub fn enclosing_message(&self) -> Option<MessageDescriptor> {
+        self.get_index_entry()
+            .enclosing_message
+            .map(|i| MessageDescriptor::new(self.file_descriptor.clone(), i))
     }
 
     pub(crate) fn get_impl(&self) -> MessageDescriptorImplRef {
@@ -338,4 +345,30 @@ impl MessageDescriptor {
 pub(crate) enum MessageDescriptorImplRef<'a> {
     Generated(&'static GeneratedMessageDescriptor),
     Dynamic(&'a DynamicMessageDescriptor),
+}
+
+#[cfg(test)]
+mod test {
+    use crate::descriptor::descriptor_proto::ExtensionRange;
+    use crate::descriptor::DescriptorProto;
+    use crate::Message;
+
+    #[test]
+    fn nested_messages() {
+        assert!(DescriptorProto::descriptor_static()
+            .nested_messages()
+            .contains(&ExtensionRange::descriptor_static()));
+    }
+
+    #[test]
+    fn enclosing_message() {
+        assert_eq!(
+            Some(DescriptorProto::descriptor_static()),
+            ExtensionRange::descriptor_static().enclosing_message()
+        );
+        assert_eq!(
+            None,
+            DescriptorProto::descriptor_static().enclosing_message()
+        );
+    }
 }
