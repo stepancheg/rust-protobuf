@@ -42,6 +42,12 @@ impl From<String> for ProtobufIdent {
     }
 }
 
+impl Into<String> for ProtobufIdent {
+    fn into(self) -> String {
+        self.0
+    }
+}
+
 impl fmt::Display for ProtobufIdent {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         fmt::Display::fmt(&self.get(), f)

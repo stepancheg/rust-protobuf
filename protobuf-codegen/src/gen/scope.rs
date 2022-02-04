@@ -7,7 +7,6 @@ use protobuf::reflect::MessageDescriptor;
 use protobuf::reflect::OneofDescriptor;
 use protobuf::reflect::Syntax;
 use protobuf_parse::ProtobufAbsPath;
-use protobuf_parse::ProtobufIdent;
 use protobuf_parse::ProtobufIdentRef;
 use protobuf_parse::ProtobufRelPath;
 
@@ -261,7 +260,9 @@ impl<'a> Scope<'a> {
 
     pub fn protobuf_path_to_file(&self) -> ProtobufRelPath {
         ProtobufRelPath::from_components(
-            self.path.iter().map(|m| ProtobufIdent::from(m.get_name())),
+            self.path
+                .iter()
+                .map(|m| ProtobufIdentRef::new(m.get_name())),
         )
     }
 

@@ -30,6 +30,7 @@ use crate::pure::model::ProtobufOptionNameComponent;
 use crate::pure::model::ProtobufOptionNameExt;
 use crate::FileDescriptorPair;
 use crate::ProtobufIdentRef;
+use crate::ProtobufRelPathRef;
 
 #[derive(Debug, thiserror::Error)]
 pub(crate) enum ConvertError {
@@ -215,7 +216,7 @@ impl<'a> LookupScope<'a> {
 
     fn find_message_or_enum(
         &self,
-        path: &ProtobufRelPath,
+        path: &ProtobufRelPathRef,
     ) -> Option<WithFullName<MessageOrEnum<'a>>> {
         let current_path = self.current_path();
         let (first, rem) = match path.split_first_rem() {
@@ -241,7 +242,7 @@ impl<'a> LookupScope<'a> {
                     let mut message_path = current_path.clone();
                     message_path.push_simple(ProtobufIdentRef::new(&message.name));
                     let message_scope = LookupScope::Message(message, message_path);
-                    message_scope.find_message_or_enum(&rem)
+                    message_scope.find_message_or_enum(rem)
                 }
                 None => None,
             }
