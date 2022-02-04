@@ -7,12 +7,7 @@ use crate::gen::scope::MessageWithScope;
 pub(crate) fn map_entry<'a>(
     d: &'a MessageWithScope,
 ) -> Option<(FieldWithContext<'a>, FieldWithContext<'a>)> {
-    if d.message
-        .get_proto()
-        .options
-        .get_or_default()
-        .get_map_entry()
-    {
+    if d.message.is_map_entry() {
         // Must be consistent with
         // DescriptorBuilder::ValidateMapEntry
 
