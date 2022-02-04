@@ -1,4 +1,6 @@
 pub(crate) mod by_path;
+pub(crate) mod custom_attr;
+
 use protobuf::descriptor::EnumOptions;
 use protobuf::descriptor::FieldOptions;
 use protobuf::descriptor::FileOptions;
