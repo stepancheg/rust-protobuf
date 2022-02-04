@@ -13,39 +13,34 @@ use protobuf::rustproto;
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Customize {
     /// Make oneof enum public.
-    pub expose_oneof: Option<bool>,
+    pub(crate) expose_oneof: Option<bool>,
     /// When true all fields are public, and accessors are not generated
-    pub expose_fields: Option<bool>,
+    pub(crate) expose_fields: Option<bool>,
     /// When false, `get_`, `set_`, `mut_` etc. accessors are not generated
-    pub generate_accessors: Option<bool>,
+    pub(crate) generate_accessors: Option<bool>,
     /// When false, `get_` is not generated even if `syntax = "proto2"`
-    pub generate_getter: Option<bool>,
+    pub(crate) generate_getter: Option<bool>,
     /// Use `bytes::Bytes` for `bytes` fields
-    pub carllerche_bytes_for_bytes: Option<bool>,
+    pub(crate) carllerche_bytes_for_bytes: Option<bool>,
     /// Use `bytes::Bytes` for `string` fields
-    pub carllerche_bytes_for_string: Option<bool>,
+    pub(crate) carllerche_bytes_for_string: Option<bool>,
     /// Implement serde_derive for messages
-    pub serde_derive: Option<bool>,
+    pub(crate) serde_derive: Option<bool>,
     /// When `serde_derive` is set, serde annotations will be guarded with `#[cfg(cfg, ...)]`.
-    pub serde_derive_cfg: Option<String>,
+    pub(crate) serde_derive_cfg: Option<String>,
     /// When `serde_derive` is set, use attribute rename_all
-    pub serde_rename_all: Option<String>,
+    pub(crate) serde_rename_all: Option<String>,
     /// Enable lite runtime
-    pub lite_runtime: Option<bool>,
+    pub(crate) lite_runtime: Option<bool>,
     /// Generate `mod.rs` in the output directory.
     ///
     /// This option allows inclusion of generated files from cargo output directory.
     ///
     /// This option will likely be on by default in rust-protobuf version 3.
-    pub gen_mod_rs: Option<bool>,
+    pub(crate) gen_mod_rs: Option<bool>,
     /// Used internally to generate protos bundled in protobuf crate
     /// like `descriptor.proto`
-    pub inside_protobuf: Option<bool>,
-
-    // When adding more options please keep in sync with `parse_from_parameter` below.
-    /// Make sure `Customize` is always used with `..Default::default()`
-    /// for future compatibility.
-    pub _future_options: (),
+    pub(crate) inside_protobuf: Option<bool>,
 }
 
 #[derive(Debug)]
@@ -58,6 +53,66 @@ pub enum CustomizeParseParameterError {
 pub type CustomizeParseParameterResult<T> = Result<T, CustomizeParseParameterError>;
 
 impl Customize {
+    pub fn expose_oneof(mut self, expose_oneof: bool) -> Self {
+        self.expose_oneof = Some(expose_oneof);
+        self
+    }
+
+    pub fn expose_fields(mut self, expose_fields: bool) -> Self {
+        self.expose_fields = Some(expose_fields);
+        self
+    }
+
+    pub fn generate_accessors(mut self, generate_accessors: bool) -> Self {
+        self.generate_accessors = Some(generate_accessors);
+        self
+    }
+
+    pub fn generate_getter(mut self, generate_getter: bool) -> Self {
+        self.generate_getter = Some(generate_getter);
+        self
+    }
+
+    pub fn carllerche_bytes_for_bytes(mut self, carllerche_bytes_for_bytes: bool) -> Self {
+        self.carllerche_bytes_for_bytes = Some(carllerche_bytes_for_bytes);
+        self
+    }
+
+    pub fn carllerche_bytes_for_string(mut self, carllerche_bytes_for_string: bool) -> Self {
+        self.carllerche_bytes_for_string = Some(carllerche_bytes_for_string);
+        self
+    }
+
+    pub fn serde_derive(mut self, serde_derive: bool) -> Self {
+        self.serde_derive = Some(serde_derive);
+        self
+    }
+
+    pub fn serde_derive_cfg(mut self, serde_derive_cfg: &str) -> Self {
+        self.serde_derive_cfg = Some(serde_derive_cfg.to_owned());
+        self
+    }
+
+    pub fn serde_rename_all(mut self, serde_rename_all: &str) -> Self {
+        self.serde_rename_all = Some(serde_rename_all.to_owned());
+        self
+    }
+
+    pub fn lite_runtime(mut self, lite_runtime: bool) -> Self {
+        self.lite_runtime = Some(lite_runtime);
+        self
+    }
+
+    pub fn gen_mod_rs(mut self, gen_mod_rs: bool) -> Self {
+        self.gen_mod_rs = Some(gen_mod_rs);
+        self
+    }
+
+    pub fn inside_protobuf(mut self, inside_protobuf: bool) -> Self {
+        self.inside_protobuf = Some(inside_protobuf);
+        self
+    }
+
     /// Update fields of self with fields defined in other customize
     pub fn update_with(&mut self, that: &Customize) {
         if let Some(v) = that.expose_oneof {
@@ -182,7 +237,6 @@ pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customiz
         lite_runtime,
         gen_mod_rs,
         inside_protobuf,
-        _future_options: (),
     }
 }
 
@@ -220,7 +274,6 @@ pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
         lite_runtime,
         gen_mod_rs,
         inside_protobuf,
-        _future_options: (),
     }
 }
 
@@ -250,6 +303,5 @@ pub fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
         lite_runtime,
         inside_protobuf,
         gen_mod_rs,
-        _future_options: (),
     }
 }

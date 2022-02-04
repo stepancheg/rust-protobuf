@@ -81,10 +81,7 @@ fn generate_include_generated() {
         .out_dir(dir)
         .input("src/include_generated/v2.proto")
         .input("src/include_generated/v3.proto")
-        .customize(Customize {
-            gen_mod_rs: Some(true),
-            ..Default::default()
-        })
+        .customize(Customize::default().gen_mod_rs(true))
         .include("src/include_generated")
         .run_from_script();
 }

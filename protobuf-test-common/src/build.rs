@@ -221,10 +221,7 @@ where
         dir, protos
     );
 
-    let customize = Customize {
-        serde_derive_cfg: Some("serde".to_owned()),
-        ..Default::default()
-    };
+    let customize = Customize::default().serde_derive_cfg("serde");
 
     gen(GenInDirArgs {
         out_dir: dir,

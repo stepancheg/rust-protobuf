@@ -31,10 +31,7 @@ fn main() {
 
     Codegen::new()
         .protoc()
-        .customize(Customize {
-            gen_mod_rs: Some(true),
-            ..Default::default()
-        })
+        .customize(Customize::default().gen_mod_rs(true))
         .cargo_out_dir("generated_with_native")
         .input("src/protos/example.proto")
         .include("src/protos")
@@ -42,10 +39,7 @@ fn main() {
 
     Codegen::new()
         .pure()
-        .customize(Customize {
-            gen_mod_rs: Some(true),
-            ..Default::default()
-        })
+        .customize(Customize::default().gen_mod_rs(true))
         .cargo_out_dir("generated_with_pure")
         .input("src/protos/example.proto")
         .include("src/protos")
