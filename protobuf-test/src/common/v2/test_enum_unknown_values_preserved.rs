@@ -8,12 +8,12 @@ fn unknown_values_preserved() {
     let mut new = NewMessage::new();
     new.set_eee(NewEnum::C);
 
-    test_serialize_deserialize("08 1e", &new);
+    test_serialize_deserialize_with_dynamic("08 1e", &new);
 
     // `OldEnum` doesn't have variant `C = 30`,
     // but message still properly serialized and deserialized.
 
     let old: OldMessage = OldMessage::parse_from_bytes(&hex::decode_hex("08 1e")).expect("parse");
 
-    test_serialize_deserialize("08 1e", &old);
+    test_serialize_deserialize_with_dynamic("08 1e", &old);
 }

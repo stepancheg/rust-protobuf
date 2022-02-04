@@ -18,7 +18,7 @@ fn test_map() {
     // Insert map entry sub message
     map.mut_mm().insert("map".to_owned(), entry);
     // cannot (easily) test hex, because order is not specified
-    test_serialize_deserialize_no_hex(&map);
+    test_serialize_deserialize_no_hex_with_dynamic(&map);
 }
 
 #[test]
@@ -42,7 +42,7 @@ fn test_map_with_object() {
 
     map.mut_mm().insert("map".to_owned(), entry);
     // cannot (easily) test hex, because order is not specified
-    test_serialize_deserialize_no_hex(&map);
+    test_serialize_deserialize_no_hex_with_dynamic(&map);
 }
 
 #[test]

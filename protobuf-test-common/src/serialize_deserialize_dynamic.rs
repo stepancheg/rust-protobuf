@@ -3,9 +3,14 @@ use protobuf::MessageDyn;
 
 use crate::dynamic_descriptor_for_descriptor;
 use crate::hex::encode_hex;
+use crate::recreate_as_dynamic;
 
-/// Serialize/deserialize test for `DynamicMessage`.
-pub fn serialize_and_parse_as_dynamic_and_serialize<M: Message>(m: &M) -> Box<dyn MessageDyn> {
+/// Message comparison test for dynamic messages.
+/// - serialize message
+/// - deserialize message as dynamic
+/// - serialize dynamic message
+/// - compare bytes output of generated and dynamic messages
+pub fn serialize_then_parse_as_dynamic_then_serialize<M: Message>(m: &M) -> Box<dyn MessageDyn> {
     // Find the dynamic version of the generated message.
     let description_dynamic = dynamic_descriptor_for_descriptor::<M>();
 
@@ -24,4 +29,20 @@ pub fn serialize_and_parse_as_dynamic_and_serialize<M: Message>(m: &M) -> Box<dy
         parsed
     );
     parsed
+}
+
+/// Message comparison test for dynamic message.
+/// - serialize message
+/// - parse it as dynamic message
+/// - serialize dynamic message
+/// - parse serialized dynamic message
+/// - compare dynamic messages
+pub fn serialize_then_parse_as_dynamic_and_serialize_and_parse<M: Message>(m: &M) {
+    let parsed_1 = recreate_as_dynamic(m);
+    let bytes_1 = parsed_1.write_to_bytes_dyn().unwrap();
+    let parsed_2 = parsed_1
+        .descriptor_dyn()
+        .parse_from_bytes(&bytes_1)
+        .unwrap();
+    assert_eq!(&parsed_1, &parsed_2);
 }

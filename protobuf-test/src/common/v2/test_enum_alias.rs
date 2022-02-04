@@ -23,5 +23,5 @@ fn test_enum() {
 fn test_enum_in_message() {
     let mut m = TestEnumWithAlias::new();
     m.set_en(EnumWithAlias::A);
-    test_serialize_deserialize("08 0a", &m);
+    test_serialize_deserialize_with_dynamic("08 0a", &m);
 }

@@ -20,5 +20,5 @@ fn test() {
     sr.push(Chars::from("ss2"));
     m.set_sr(sr);
 
-    test_serialize_deserialize_no_hex(&m);
+    test_serialize_deserialize_no_hex_with_dynamic(&m);
 }
