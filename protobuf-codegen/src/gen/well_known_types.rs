@@ -1,6 +1,6 @@
 use protobuf::reflect::FileDescriptor;
-use protobuf_parse::ProtobufAbsolutePath;
-use protobuf_parse::ProtobufRelativePath;
+use protobuf_parse::ProtobufAbsPath;
+use protobuf_parse::ProtobufRelPath;
 
 use crate::compiler_plugin;
 use crate::gen::code_writer::CodeWriter;
@@ -68,12 +68,12 @@ static NAMES: &'static [&'static str] = &[
     "Value",
 ];
 
-fn is_well_known_type(name: &ProtobufRelativePath) -> bool {
+fn is_well_known_type(name: &ProtobufRelPath) -> bool {
     NAMES.iter().any(|&n| n == format!("{}", name))
 }
 
-pub fn is_well_known_type_full(name: &ProtobufAbsolutePath) -> Option<ProtobufRelativePath> {
-    if let Some(ref rem) = name.remove_prefix(&ProtobufAbsolutePath::from(".google.protobuf")) {
+pub fn is_well_known_type_full(name: &ProtobufAbsPath) -> Option<ProtobufRelPath> {
+    if let Some(ref rem) = name.remove_prefix(&ProtobufAbsPath::from(".google.protobuf")) {
         if is_well_known_type(rem) {
             Some(rem.clone())
         } else {
@@ -175,12 +175,12 @@ mod test {
     #[test]
     fn test_is_well_known_type_full() {
         assert_eq!(
-            Some(ProtobufRelativePath::from("BoolValue")),
-            is_well_known_type_full(&ProtobufAbsolutePath::from(".google.protobuf.BoolValue"))
+            Some(ProtobufRelPath::from("BoolValue")),
+            is_well_known_type_full(&ProtobufAbsPath::from(".google.protobuf.BoolValue"))
         );
         assert_eq!(
             None,
-            is_well_known_type_full(&ProtobufAbsolutePath::from(".google.protobuf.Fgfg"))
+            is_well_known_type_full(&ProtobufAbsPath::from(".google.protobuf.Fgfg"))
         );
     }
 }

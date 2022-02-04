@@ -4,11 +4,12 @@ use std::collections::HashSet;
 
 use protobuf::descriptor::field_descriptor_proto;
 use protobuf::reflect::FieldDescriptor;
-use protobuf_parse::ProtobufAbsolutePath;
+use protobuf_parse::ProtobufAbsPath;
 
 use crate::customize::Customize;
 use crate::gen::code_writer::CodeWriter;
-use crate::gen::field::{FieldElem, rust_field_name_for_protobuf_field_name};
+use crate::gen::field::rust_field_name_for_protobuf_field_name;
+use crate::gen::field::FieldElem;
 use crate::gen::field::FieldGen;
 use crate::gen::file_and_mod::FileAndMod;
 use crate::gen::inside::protobuf_crate_path;
@@ -41,13 +42,13 @@ impl<'a> OneofField<'a> {
     fn need_boxed(
         field: &FieldDescriptor,
         root_scope: &RootScope,
-        owner_name: &ProtobufAbsolutePath,
+        owner_name: &ProtobufAbsPath,
     ) -> bool {
         let mut visited_messages = HashSet::new();
         let mut fields = vec![field.clone()];
         while let Some(field) = fields.pop() {
             if field.get_proto().get_field_type() == field_descriptor_proto::Type::TYPE_MESSAGE {
-                let message_name = ProtobufAbsolutePath::from(field.get_proto().get_type_name());
+                let message_name = ProtobufAbsPath::from(field.get_proto().get_type_name());
                 if !visited_messages.insert(message_name.clone()) {
                     continue;
                 }
@@ -73,8 +74,7 @@ impl<'a> OneofField<'a> {
         elem: FieldElem<'a>,
         root_scope: &RootScope,
     ) -> OneofField<'a> {
-        let boxed =
-            OneofField::need_boxed(field, root_scope, &oneof.message.name_absolute());
+        let boxed = OneofField::need_boxed(field, root_scope, &oneof.message.name_absolute());
 
         OneofField {
             elem,

@@ -4,22 +4,23 @@ use std::fmt;
 use std::ops::Deref;
 
 use crate::protobuf_ident::ProtobufIdent;
-use crate::protobuf_rel_path::ProtobufRelativePath;
+use crate::protobuf_rel_path::ProtobufRelPath;
+use crate::ProtobufIdentRef;
 
 /// Protobuf absolute name (e. g. `.foo.Bar`).
 #[derive(Clone, Eq, PartialEq, Debug, Hash)]
 #[doc(hidden)]
-pub struct ProtobufAbsolutePath {
+pub struct ProtobufAbsPath {
     pub path: String,
 }
 
-impl Default for ProtobufAbsolutePath {
-    fn default() -> ProtobufAbsolutePath {
-        ProtobufAbsolutePath::root()
+impl Default for ProtobufAbsPath {
+    fn default() -> ProtobufAbsPath {
+        ProtobufAbsPath::root()
     }
 }
 
-impl Deref for ProtobufAbsolutePath {
+impl Deref for ProtobufAbsPath {
     type Target = str;
 
     fn deref(&self) -> &str {
@@ -27,28 +28,36 @@ impl Deref for ProtobufAbsolutePath {
     }
 }
 
-impl ProtobufAbsolutePath {
-    pub fn root() -> ProtobufAbsolutePath {
-        ProtobufAbsolutePath::new(String::new())
+impl ProtobufAbsPath {
+    pub fn root() -> ProtobufAbsPath {
+        ProtobufAbsPath::new(String::new())
     }
 
     /// If given name is an fully quialified protobuf name.
     pub fn is_abs(path: &str) -> bool {
-        path.is_empty() || path.starts_with(".")
+        path.is_empty() || (path.starts_with(".") && path != ".")
     }
 
-    pub fn new<S: Into<String>>(path: S) -> ProtobufAbsolutePath {
+    pub fn try_new(path: &str) -> Option<ProtobufAbsPath> {
+        if ProtobufAbsPath::is_abs(path) {
+            Some(ProtobufAbsPath::new(path))
+        } else {
+            None
+        }
+    }
+
+    pub fn new<S: Into<String>>(path: S) -> ProtobufAbsPath {
         let path = path.into();
         assert!(
-            ProtobufAbsolutePath::is_abs(&path),
+            ProtobufAbsPath::is_abs(&path),
             "path is not absolute: `{}`",
             path
         );
         assert!(!path.ends_with("."), "{}", path);
-        ProtobufAbsolutePath { path }
+        ProtobufAbsPath { path }
     }
 
-    pub fn concat(mut a: ProtobufAbsolutePath, b: ProtobufRelativePath) -> ProtobufAbsolutePath {
+    pub fn concat(mut a: ProtobufAbsPath, b: ProtobufRelPath) -> ProtobufAbsPath {
         a.push_relative(&b.into());
         a
     }
@@ -57,54 +66,71 @@ impl ProtobufAbsolutePath {
         self.path.is_empty()
     }
 
-    pub fn from_path_without_dot(path: &str) -> ProtobufAbsolutePath {
+    pub fn from_path_without_dot(path: &str) -> ProtobufAbsPath {
         assert!(!path.is_empty());
         assert!(!path.starts_with("."));
         assert!(!path.ends_with("."));
-        ProtobufAbsolutePath::new(format!(".{}", path))
+        ProtobufAbsPath::new(format!(".{}", path))
     }
 
-    pub fn from_path_maybe_dot(path: &str) -> ProtobufAbsolutePath {
+    pub fn from_path_maybe_dot(path: &str) -> ProtobufAbsPath {
         if path.starts_with(".") {
-            ProtobufAbsolutePath::new(path.to_owned())
+            ProtobufAbsPath::new(path.to_owned())
         } else {
-            ProtobufAbsolutePath::from_path_without_dot(path)
+            ProtobufAbsPath::from_path_without_dot(path)
         }
     }
 
-    pub fn push_simple(&mut self, simple: ProtobufIdent) {
+    pub fn push_simple(&mut self, simple: &ProtobufIdentRef) {
         self.path.push('.');
-        self.path.push_str(simple.get());
+        self.path.push_str(&simple);
     }
 
-    pub fn push_relative(&mut self, relative: &ProtobufRelativePath) {
+    pub fn push_relative(&mut self, relative: &ProtobufRelPath) {
         if !relative.is_empty() {
             self.path.push('.');
             self.path.push_str(&format!("{}", relative));
         }
     }
 
-    pub fn remove_prefix(&self, prefix: &ProtobufAbsolutePath) -> Option<ProtobufRelativePath> {
+    pub fn remove_prefix(&self, prefix: &ProtobufAbsPath) -> Option<ProtobufRelPath> {
         if self.path.starts_with(&prefix.path) {
             let rem = &self.path[prefix.path.len()..];
             if rem.is_empty() {
-                return Some(ProtobufRelativePath::empty());
+                return Some(ProtobufRelPath::empty());
             }
             if rem.starts_with('.') {
-                return Some(ProtobufRelativePath::new(rem[1..].to_owned()));
+                return Some(ProtobufRelPath::new(rem[1..].to_owned()));
             }
         }
         None
     }
 
-    pub fn parent(&self) -> Option<ProtobufAbsolutePath> {
+    pub fn remove_suffix(&self, suffix: &ProtobufRelPath) -> Option<ProtobufAbsPath> {
+        if suffix.is_empty() {
+            return Some(self.clone());
+        }
+
+        if self.path.ends_with(&suffix.path) {
+            let rem = &self.path[..self.path.len() - suffix.path.len()];
+            if rem.is_empty() {
+                return Some(ProtobufAbsPath::root());
+            }
+            if rem.ends_with('.') {
+                return Some(ProtobufAbsPath::new(rem[..rem.len() - 1].to_owned()));
+            }
+        }
+        None
+    }
+
+    pub fn parent(&self) -> Option<ProtobufAbsPath> {
         match self.path.rfind('.') {
-            Some(pos) => Some(ProtobufAbsolutePath::new(self.path[..pos].to_owned())),
+            Some(pos) => Some(ProtobufAbsPath::new(self.path[..pos].to_owned())),
             None => {
                 if self.path.is_empty() {
                     None
                 } else {
-                    Some(ProtobufAbsolutePath::root())
+                    Some(ProtobufAbsPath::root())
                 }
             }
         }
@@ -122,7 +148,7 @@ impl ProtobufAbsolutePath {
         }
     }
 
-    pub fn self_and_parents(&self) -> Vec<ProtobufAbsolutePath> {
+    pub fn self_and_parents(&self) -> Vec<ProtobufAbsPath> {
         let mut tmp = self.clone();
 
         let mut r = Vec::new();
@@ -137,32 +163,36 @@ impl ProtobufAbsolutePath {
         r
     }
 
-    pub fn to_root_rel(&self) -> ProtobufRelativePath {
+    pub fn to_root_rel(&self) -> ProtobufRelPath {
         if self == &Self::root() {
-            ProtobufRelativePath::empty()
+            ProtobufRelPath::empty()
         } else {
-            ProtobufRelativePath::new(&self.path[1..])
+            ProtobufRelPath::new(&self.path[1..])
         }
     }
 
-    pub fn starts_with(&self, that: &ProtobufAbsolutePath) -> bool {
+    pub fn starts_with(&self, that: &ProtobufAbsPath) -> bool {
         self.remove_prefix(that).is_some()
     }
+
+    pub fn ends_with(&self, that: &ProtobufRelPath) -> bool {
+        self.remove_suffix(that).is_some()
+    }
 }
 
-impl From<&'_ str> for ProtobufAbsolutePath {
+impl From<&'_ str> for ProtobufAbsPath {
     fn from(s: &str) -> Self {
-        ProtobufAbsolutePath::new(s.to_owned())
+        ProtobufAbsPath::new(s.to_owned())
     }
 }
 
-impl From<String> for ProtobufAbsolutePath {
+impl From<String> for ProtobufAbsPath {
     fn from(s: String) -> Self {
-        ProtobufAbsolutePath::new(s)
+        ProtobufAbsPath::new(s)
     }
 }
 
-impl fmt::Display for ProtobufAbsolutePath {
+impl fmt::Display for ProtobufAbsPath {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         fmt::Display::fmt(&self.path, f)
     }
@@ -174,36 +204,36 @@ mod test {
 
     #[test]
     fn absolute_path_push_simple() {
-        let mut foo = ProtobufAbsolutePath::new(".foo".to_owned());
-        foo.push_simple(ProtobufIdent::from("bar"));
-        assert_eq!(ProtobufAbsolutePath::new(".foo.bar".to_owned()), foo);
+        let mut foo = ProtobufAbsPath::new(".foo".to_owned());
+        foo.push_simple(ProtobufIdentRef::new("bar"));
+        assert_eq!(ProtobufAbsPath::new(".foo.bar".to_owned()), foo);
 
-        let mut foo = ProtobufAbsolutePath::root();
-        foo.push_simple(ProtobufIdent::from("bar"));
-        assert_eq!(ProtobufAbsolutePath::new(".bar".to_owned()), foo);
+        let mut foo = ProtobufAbsPath::root();
+        foo.push_simple(ProtobufIdentRef::new("bar"));
+        assert_eq!(ProtobufAbsPath::new(".bar".to_owned()), foo);
     }
 
     #[test]
     fn absolute_path_remove_prefix() {
         assert_eq!(
-            Some(ProtobufRelativePath::empty()),
-            ProtobufAbsolutePath::new(".foo".to_owned())
-                .remove_prefix(&ProtobufAbsolutePath::new(".foo".to_owned()))
+            Some(ProtobufRelPath::empty()),
+            ProtobufAbsPath::new(".foo".to_owned())
+                .remove_prefix(&ProtobufAbsPath::new(".foo".to_owned()))
         );
         assert_eq!(
-            Some(ProtobufRelativePath::new("bar".to_owned())),
-            ProtobufAbsolutePath::new(".foo.bar".to_owned())
-                .remove_prefix(&ProtobufAbsolutePath::new(".foo".to_owned()))
+            Some(ProtobufRelPath::new("bar".to_owned())),
+            ProtobufAbsPath::new(".foo.bar".to_owned())
+                .remove_prefix(&ProtobufAbsPath::new(".foo".to_owned()))
         );
         assert_eq!(
-            Some(ProtobufRelativePath::new("baz.qux".to_owned())),
-            ProtobufAbsolutePath::new(".foo.bar.baz.qux".to_owned())
-                .remove_prefix(&ProtobufAbsolutePath::new(".foo.bar".to_owned()))
+            Some(ProtobufRelPath::new("baz.qux".to_owned())),
+            ProtobufAbsPath::new(".foo.bar.baz.qux".to_owned())
+                .remove_prefix(&ProtobufAbsPath::new(".foo.bar".to_owned()))
         );
         assert_eq!(
             None,
-            ProtobufAbsolutePath::new(".foo.barbaz".to_owned())
-                .remove_prefix(&ProtobufAbsolutePath::new(".foo.bar".to_owned()))
+            ProtobufAbsPath::new(".foo.barbaz".to_owned())
+                .remove_prefix(&ProtobufAbsPath::new(".foo.bar".to_owned()))
         );
     }
 
@@ -211,12 +241,20 @@ mod test {
     fn self_and_parents() {
         assert_eq!(
             vec![
-                ProtobufAbsolutePath::new(".ab.cde.fghi".to_owned()),
-                ProtobufAbsolutePath::new(".ab.cde".to_owned()),
-                ProtobufAbsolutePath::new(".ab".to_owned()),
-                ProtobufAbsolutePath::root(),
+                ProtobufAbsPath::new(".ab.cde.fghi".to_owned()),
+                ProtobufAbsPath::new(".ab.cde".to_owned()),
+                ProtobufAbsPath::new(".ab".to_owned()),
+                ProtobufAbsPath::root(),
             ],
-            ProtobufAbsolutePath::new(".ab.cde.fghi".to_owned()).self_and_parents()
+            ProtobufAbsPath::new(".ab.cde.fghi".to_owned()).self_and_parents()
         );
+    }
+
+    #[test]
+    fn ends_with() {
+        assert!(ProtobufAbsPath::new(".foo.bar").ends_with(&ProtobufRelPath::new("")));
+        assert!(ProtobufAbsPath::new(".foo.bar").ends_with(&ProtobufRelPath::new("bar")));
+        assert!(ProtobufAbsPath::new(".foo.bar").ends_with(&ProtobufRelPath::new("foo.bar")));
+        assert!(!ProtobufAbsPath::new(".foo.bar").ends_with(&ProtobufRelPath::new("foo.bar.baz")));
     }
 }

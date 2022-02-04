@@ -1,7 +1,7 @@
 use std::cmp;
 
 use protobuf::descriptor::*;
-use protobuf_parse::ProtobufAbsolutePath;
+use protobuf_parse::ProtobufAbsPath;
 
 use crate::customize::Customize;
 use crate::gen::file_and_mod::FileAndMod;
@@ -549,7 +549,7 @@ pub(crate) fn message_or_enum_to_rust_relative(
 }
 
 pub(crate) fn type_name_to_rust_relative(
-    type_name: &ProtobufAbsolutePath,
+    type_name: &ProtobufAbsPath,
     current: &FileAndMod,
     root_scope: &RootScope,
 ) -> RustIdentWithPath {

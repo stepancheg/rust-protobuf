@@ -1,26 +1,26 @@
 use std::fmt;
 
-use crate::protobuf_abs_path::ProtobufAbsolutePath;
-use crate::protobuf_rel_path::ProtobufRelativePath;
+use crate::protobuf_abs_path::ProtobufAbsPath;
+use crate::protobuf_rel_path::ProtobufRelPath;
 
 /// Protobuf identifier can be absolute or relative.
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
 pub enum ProtobufPath {
-    Abs(ProtobufAbsolutePath),
-    Rel(ProtobufRelativePath),
+    Abs(ProtobufAbsPath),
+    Rel(ProtobufRelPath),
 }
 
 impl ProtobufPath {
     pub fn new<S: Into<String>>(path: S) -> ProtobufPath {
         let path = path.into();
         if path.starts_with('.') {
-            ProtobufPath::Abs(ProtobufAbsolutePath::new(path))
+            ProtobufPath::Abs(ProtobufAbsPath::new(path))
         } else {
-            ProtobufPath::Rel(ProtobufRelativePath::new(path))
+            ProtobufPath::Rel(ProtobufRelPath::new(path))
         }
     }
 
-    pub fn _resolve(&self, package: &ProtobufAbsolutePath) -> ProtobufAbsolutePath {
+    pub fn _resolve(&self, package: &ProtobufAbsPath) -> ProtobufAbsPath {
         match self {
             ProtobufPath::Abs(p) => p.clone(),
             ProtobufPath::Rel(p) => {

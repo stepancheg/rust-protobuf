@@ -1,13 +1,13 @@
 use std::collections::HashMap;
 
-use protobuf_parse::ProtobufRelativePath;
+use protobuf_parse::ProtobufRelPath;
 
 use crate::gen::scope::FileScope;
 use crate::gen::scope::WithScope;
 
 pub(crate) struct FileIndex {
-    pub(crate) messsage_to_index: HashMap<ProtobufRelativePath, u32>,
-    pub(crate) enum_to_index: HashMap<ProtobufRelativePath, u32>,
+    pub(crate) messsage_to_index: HashMap<ProtobufRelPath, u32>,
+    pub(crate) enum_to_index: HashMap<ProtobufRelPath, u32>,
 }
 
 impl FileIndex {

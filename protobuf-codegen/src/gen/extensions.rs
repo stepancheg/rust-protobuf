@@ -1,6 +1,6 @@
 use protobuf::descriptor::*;
 use protobuf::reflect::FileDescriptor;
-use protobuf_parse::ProtobufAbsolutePath;
+use protobuf_parse::ProtobufAbsPath;
 
 use crate::customize::Customize;
 use crate::gen::code_writer::CodeWriter;
@@ -23,7 +23,7 @@ struct ExtGen<'a> {
 impl<'a> ExtGen<'a> {
     fn extendee_rust_name(&self) -> RustIdentWithPath {
         type_name_to_rust_relative(
-            &ProtobufAbsolutePath::from(self.field.get_extendee()),
+            &ProtobufAbsPath::from(self.field.get_extendee()),
             &FileAndMod {
                 file: self.file.proto().get_name().to_owned(),
                 relative_mod: RustRelativePath::from("exts"),
@@ -46,7 +46,7 @@ impl<'a> ExtGen<'a> {
     fn return_type_gen(&self) -> ProtobufTypeGen {
         if self.field.has_type_name() {
             let rust_name_relative = type_name_to_rust_relative(
-                &ProtobufAbsolutePath::from(self.field.get_type_name()),
+                &ProtobufAbsPath::from(self.field.get_type_name()),
                 &FileAndMod {
                     file: self.file.proto().get_name().to_owned(),
                     relative_mod: RustRelativePath::from("exts"),

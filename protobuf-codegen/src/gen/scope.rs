@@ -6,9 +6,10 @@ use protobuf::reflect::FileDescriptor;
 use protobuf::reflect::MessageDescriptor;
 use protobuf::reflect::OneofDescriptor;
 use protobuf::reflect::Syntax;
-use protobuf_parse::ProtobufAbsolutePath;
+use protobuf_parse::ProtobufAbsPath;
 use protobuf_parse::ProtobufIdent;
-use protobuf_parse::ProtobufRelativePath;
+use protobuf_parse::ProtobufIdentRef;
+use protobuf_parse::ProtobufRelPath;
 
 use crate::customize::Customize;
 use crate::gen::field::rust_field_name_for_protobuf_field_name;
@@ -38,7 +39,7 @@ impl<'a> RootScope<'a> {
     }
 
     // find enum by fully qualified name
-    pub fn _find_enum(&'a self, fqn: &ProtobufAbsolutePath) -> EnumWithScope<'a> {
+    pub fn _find_enum(&'a self, fqn: &ProtobufAbsPath) -> EnumWithScope<'a> {
         match self.find_message_or_enum(fqn) {
             MessageOrEnumWithScope::Enum(e) => e,
             _ => panic!("not an enum: {}", fqn),
@@ -46,7 +47,7 @@ impl<'a> RootScope<'a> {
     }
 
     // find message by fully qualified name
-    pub fn find_message(&'a self, fqn: &ProtobufAbsolutePath) -> MessageWithScope<'a> {
+    pub fn find_message(&'a self, fqn: &ProtobufAbsPath) -> MessageWithScope<'a> {
         match self.find_message_or_enum(fqn) {
             MessageOrEnumWithScope::Message(m) => m,
             _ => panic!("not a message: {}", fqn),
@@ -54,10 +55,7 @@ impl<'a> RootScope<'a> {
     }
 
     // find message or enum by fully qualified name
-    pub fn find_message_or_enum(
-        &'a self,
-        fqn: &ProtobufAbsolutePath,
-    ) -> MessageOrEnumWithScope<'a> {
+    pub fn find_message_or_enum(&'a self, fqn: &ProtobufAbsPath) -> MessageOrEnumWithScope<'a> {
         assert!(!fqn.is_root());
         self.packages()
             .into_iter()
@@ -73,8 +71,8 @@ pub(crate) struct FileScope<'a> {
 }
 
 impl<'a> FileScope<'a> {
-    fn get_package(&self) -> ProtobufAbsolutePath {
-        ProtobufRelativePath::from(self.file_descriptor.proto().get_package()).into_absolute()
+    fn get_package(&self) -> ProtobufAbsPath {
+        ProtobufRelPath::from(self.file_descriptor.proto().get_package()).into_absolute()
     }
 
     pub fn syntax(&self) -> Syntax {
@@ -88,10 +86,7 @@ impl<'a> FileScope<'a> {
         }
     }
 
-    fn find_message_or_enum(
-        &self,
-        name: &ProtobufRelativePath,
-    ) -> Option<MessageOrEnumWithScope<'a>> {
+    fn find_message_or_enum(&self, name: &ProtobufRelPath) -> Option<MessageOrEnumWithScope<'a>> {
         self.find_messages_and_enums()
             .into_iter()
             .filter(|e| e.protobuf_name_to_package() == *name)
@@ -100,7 +95,7 @@ impl<'a> FileScope<'a> {
 
     fn find_message_or_enum_abs(
         &self,
-        name: &ProtobufAbsolutePath,
+        name: &ProtobufAbsPath,
     ) -> Option<MessageOrEnumWithScope<'a>> {
         match name.remove_prefix(&self.get_package()) {
             Some(ref rem) => self.find_message_or_enum(rem),
@@ -264,13 +259,13 @@ impl<'a> Scope<'a> {
         }
     }
 
-    pub fn protobuf_path_to_file(&self) -> ProtobufRelativePath {
-        ProtobufRelativePath::from_components(
+    pub fn protobuf_path_to_file(&self) -> ProtobufRelPath {
+        ProtobufRelPath::from_components(
             self.path.iter().map(|m| ProtobufIdent::from(m.get_name())),
         )
     }
 
-    pub fn protobuf_absolute_path(&self) -> ProtobufAbsolutePath {
+    pub fn protobuf_absolute_path(&self) -> ProtobufAbsPath {
         let mut r = self.file_scope.get_package();
         r.push_relative(&self.protobuf_path_to_file());
         r
@@ -298,23 +293,23 @@ pub(crate) trait WithScope<'a> {
     }
 
     // message or enum name
-    fn get_name(&self) -> ProtobufIdent;
+    fn get_name(&self) -> &ProtobufIdentRef;
 
     fn escape_prefix(&self) -> &'static str;
 
     fn name_to_package(&self) -> String {
         let mut r = self.get_scope().prefix();
-        r.push_str(self.get_name().get());
+        r.push_str(&self.get_name());
         r
     }
 
-    fn protobuf_name_to_package(&self) -> ProtobufRelativePath {
+    fn protobuf_name_to_package(&self) -> ProtobufRelPath {
         let r = self.get_scope().protobuf_path_to_file();
-        r.append_ident(&ProtobufIdent::from(self.get_name()))
+        r.append_ident(ProtobufIdentRef::new(self.get_name()))
     }
 
     /// Return absolute name starting with dot
-    fn name_absolute(&self) -> ProtobufAbsolutePath {
+    fn name_absolute(&self) -> ProtobufAbsPath {
         let mut path = self.get_scope().protobuf_absolute_path();
         path.push_simple(self.get_name());
         path
@@ -322,7 +317,7 @@ pub(crate) trait WithScope<'a> {
 
     // rust type name of this descriptor
     fn rust_name(&self) -> RustIdent {
-        let mut rust_name = capitalize(self.get_name().get());
+        let mut rust_name = capitalize(&self.get_name());
 
         if is_rust_keyword(&rust_name) {
             rust_name.insert_str(0, self.escape_prefix());
@@ -363,8 +358,8 @@ impl<'a> WithScope<'a> for MessageWithScope<'a> {
         "message_"
     }
 
-    fn get_name(&self) -> ProtobufIdent {
-        ProtobufIdent::from(self.message.get_name())
+    fn get_name(&self) -> &ProtobufIdentRef {
+        ProtobufIdentRef::new(self.message.get_name())
     }
 }
 
@@ -476,8 +471,8 @@ impl<'a> WithScope<'a> for EnumWithScope<'a> {
         &self.scope
     }
 
-    fn get_name(&self) -> ProtobufIdent {
-        ProtobufIdent::from(self.en.get_name())
+    fn get_name(&self) -> &ProtobufIdentRef {
+        ProtobufIdentRef::new(self.en.get_name())
     }
 
     fn escape_prefix(&self) -> &'static str {
@@ -505,7 +500,7 @@ impl<'a> WithScope<'a> for MessageOrEnumWithScope<'a> {
         }
     }
 
-    fn get_name(&self) -> ProtobufIdent {
+    fn get_name(&self) -> &ProtobufIdentRef {
         match self {
             &MessageOrEnumWithScope::Message(ref m) => m.get_name(),
             &MessageOrEnumWithScope::Enum(ref e) => e.get_name(),

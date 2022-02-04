@@ -19,16 +19,17 @@ use protobuf::UnknownValue;
 use crate::case_convert::camel_case;
 use crate::path::fs_path_to_proto_path;
 use crate::proto_path::ProtoPath;
-use crate::protobuf_abs_path::ProtobufAbsolutePath;
+use crate::protobuf_abs_path::ProtobufAbsPath;
 use crate::protobuf_ident::ProtobufIdent;
 use crate::protobuf_path::ProtobufPath;
-use crate::protobuf_rel_path::ProtobufRelativePath;
+use crate::protobuf_rel_path::ProtobufRelPath;
 use crate::pure::model;
 use crate::pure::model::ProtobufConstant;
 use crate::pure::model::ProtobufOptionName;
 use crate::pure::model::ProtobufOptionNameComponent;
 use crate::pure::model::ProtobufOptionNameExt;
 use crate::FileDescriptorPair;
+use crate::ProtobufIdentRef;
 
 #[derive(Debug, thiserror::Error)]
 pub(crate) enum ConvertError {
@@ -57,14 +58,14 @@ pub(crate) enum ConvertError {
     #[error("constants of this type are not implemented")]
     ConstantsOfTypeMessageEnumGroupNotImplemented,
     #[error("object is not found by path: {0}")]
-    NotFoundByAbsPath(ProtobufAbsolutePath),
+    NotFoundByAbsPath(ProtobufAbsPath),
     // TODO: explain what are the arguments
     #[error("object is not found by path: {0} {1}")]
-    NotFoundByRelPath(ProtobufRelativePath, ProtobufAbsolutePath),
+    NotFoundByRelPath(ProtobufRelPath, ProtobufAbsPath),
     #[error("expecting a message for name {0}")]
-    ExpectingMessage(ProtobufAbsolutePath),
+    ExpectingMessage(ProtobufAbsPath),
     #[error("expecting an enum for name {0}")]
-    ExpectingEnum(ProtobufAbsolutePath),
+    ExpectingEnum(ProtobufAbsPath),
     #[error("unknown enum value: {0}")]
     UnknownEnumValue(String),
     #[error("unknown field name: {0}")]
@@ -133,18 +134,18 @@ impl MessageOrEnum<'_> {
 }
 
 pub struct WithFullName<T> {
-    full_name: ProtobufAbsolutePath,
+    full_name: ProtobufAbsPath,
     t: T,
 }
 
 #[derive(Clone)]
 enum LookupScope<'a> {
     File(&'a model::FileDescriptor),
-    Message(&'a model::Message, ProtobufAbsolutePath),
+    Message(&'a model::Message, ProtobufAbsPath),
 }
 
 impl<'a> LookupScope<'a> {
-    fn current_path(&self) -> ProtobufAbsolutePath {
+    fn current_path(&self) -> ProtobufAbsPath {
         match self {
             LookupScope::File(f) => f.package.clone(),
             LookupScope::Message(_, p) => p.clone(),
@@ -158,10 +159,10 @@ impl<'a> LookupScope<'a> {
         }
     }
 
-    fn find_message(&self, simple_name: &ProtobufIdent) -> Option<&'a model::Message> {
+    fn find_message(&self, simple_name: &ProtobufIdentRef) -> Option<&'a model::Message> {
         self.messages()
             .into_iter()
-            .find(|m| m.t.name == simple_name.get())
+            .find(|m| m.t.name == simple_name.as_str())
             .map(|m| &m.t)
     }
 
@@ -188,11 +189,11 @@ impl<'a> LookupScope<'a> {
         r
     }
 
-    fn find_member(&self, simple_name: &ProtobufIdent) -> Option<MessageOrEnum<'a>> {
+    fn find_member(&self, simple_name: &ProtobufIdentRef) -> Option<MessageOrEnum<'a>> {
         self.members()
             .into_iter()
             .filter_map(|(member_name, message_or_enum)| {
-                if &member_name == simple_name {
+                if member_name.as_ref() == simple_name {
                     Some(message_or_enum)
                 } else {
                     None
@@ -201,7 +202,7 @@ impl<'a> LookupScope<'a> {
             .next()
     }
 
-    fn down(&self, name: &ProtobufIdent) -> Option<LookupScope<'a>> {
+    fn down(&self, name: &ProtobufIdentRef) -> Option<LookupScope<'a>> {
         match self.find_member(name)? {
             MessageOrEnum::Enum(_) => return None,
             MessageOrEnum::Message(m) => {
@@ -214,7 +215,7 @@ impl<'a> LookupScope<'a> {
 
     fn find_message_or_enum(
         &self,
-        path: &ProtobufRelativePath,
+        path: &ProtobufRelPath,
     ) -> Option<WithFullName<MessageOrEnum<'a>>> {
         let current_path = self.current_path();
         let (first, rem) = match path.split_first_rem() {
@@ -223,7 +224,7 @@ impl<'a> LookupScope<'a> {
         };
 
         if rem.is_empty() {
-            match self.find_member(&first) {
+            match self.find_member(first) {
                 Some(message_or_enum) => {
                     let mut result_path = current_path.clone();
                     result_path.push_simple(first);
@@ -235,10 +236,10 @@ impl<'a> LookupScope<'a> {
                 None => None,
             }
         } else {
-            match self.find_message(&first) {
+            match self.find_message(first) {
                 Some(message) => {
                     let mut message_path = current_path.clone();
-                    message_path.push_simple(ProtobufIdent::from(message.name.clone()));
+                    message_path.push_simple(ProtobufIdentRef::new(&message.name));
                     let message_scope = LookupScope::Message(message, message_path);
                     message_scope.find_message_or_enum(&rem)
                 }
@@ -257,15 +258,15 @@ impl<'a> LookupScope<'a> {
 
 #[derive(Clone)]
 struct LookupScopeUnion<'a> {
-    path: ProtobufAbsolutePath,
+    path: ProtobufAbsPath,
     scopes: Vec<LookupScope<'a>>,
     partial_scopes: Vec<&'a model::FileDescriptor>,
 }
 
 impl<'a> LookupScopeUnion<'a> {
-    fn down(&self, name: &ProtobufIdent) -> LookupScopeUnion<'a> {
-        let mut path: ProtobufAbsolutePath = self.path.clone();
-        path.push_simple(name.clone());
+    fn down(&self, name: &ProtobufIdentRef) -> LookupScopeUnion<'a> {
+        let mut path: ProtobufAbsPath = self.path.clone();
+        path.push_simple(name);
 
         let mut scopes: Vec<_> = self.scopes.iter().flat_map(|f| f.down(name)).collect();
         let mut partial_scopes = Vec::new();
@@ -284,7 +285,7 @@ impl<'a> LookupScopeUnion<'a> {
         }
     }
 
-    fn lookup(&self, path: &ProtobufRelativePath) -> LookupScopeUnion<'a> {
+    fn lookup(&self, path: &ProtobufRelPath) -> LookupScopeUnion<'a> {
         let mut scope = self.clone();
         for c in path.components() {
             scope = scope.down(c);
@@ -314,9 +315,9 @@ enum TypeResolved {
     Fixed32,
     Sfixed32,
     Float,
-    Message(ProtobufAbsolutePath),
-    Enum(ProtobufAbsolutePath),
-    Group(ProtobufAbsolutePath),
+    Message(ProtobufAbsPath),
+    Enum(ProtobufAbsPath),
+    Group(ProtobufAbsPath),
 }
 
 impl TypeResolved {
@@ -339,15 +340,15 @@ impl TypeResolved {
             Type::TYPE_BYTES => TypeResolved::Bytes,
             Type::TYPE_GROUP => {
                 assert!(!field.get_type_name().is_empty());
-                TypeResolved::Group(ProtobufAbsolutePath::new(field.get_type_name()))
+                TypeResolved::Group(ProtobufAbsPath::new(field.get_type_name()))
             }
             Type::TYPE_ENUM => {
                 assert!(!field.get_type_name().is_empty());
-                TypeResolved::Enum(ProtobufAbsolutePath::new(field.get_type_name()))
+                TypeResolved::Enum(ProtobufAbsPath::new(field.get_type_name()))
             }
             Type::TYPE_MESSAGE => {
                 assert!(!field.get_type_name().is_empty());
-                TypeResolved::Message(ProtobufAbsolutePath::new(field.get_type_name()))
+                TypeResolved::Message(ProtobufAbsPath::new(field.get_type_name()))
             }
         }
     }
@@ -375,7 +376,7 @@ impl TypeResolved {
         }
     }
 
-    fn type_name(&self) -> Option<&ProtobufAbsolutePath> {
+    fn type_name(&self) -> Option<&ProtobufAbsPath> {
         match self {
             TypeResolved::Message(t) | TypeResolved::Enum(t) | TypeResolved::Group(t) => Some(t),
             _ => None,
@@ -398,7 +399,7 @@ impl<'a> Resolver<'a> {
 
     fn map_entry_field(
         &self,
-        scope: &ProtobufAbsolutePath,
+        scope: &ProtobufAbsPath,
         name: &str,
         number: i32,
         field_type: &model::FieldType,
@@ -425,7 +426,7 @@ impl<'a> Resolver<'a> {
 
     fn map_entry_message(
         &self,
-        scope: &ProtobufAbsolutePath,
+        scope: &ProtobufAbsPath,
         field_name: &str,
         key: &model::FieldType,
         value: &model::FieldType,
@@ -446,7 +447,7 @@ impl<'a> Resolver<'a> {
 
     fn group_message(
         &self,
-        scope: &ProtobufAbsolutePath,
+        scope: &ProtobufAbsPath,
         name: &str,
         fields: &[model::WithLoc<model::Field>],
     ) -> ConvertResult<protobuf::descriptor::DescriptorProto> {
@@ -463,7 +464,7 @@ impl<'a> Resolver<'a> {
 
     fn message_options(
         &self,
-        scope: &ProtobufAbsolutePath,
+        scope: &ProtobufAbsPath,
         input: &[model::ProtobufOption],
     ) -> ConvertResult<protobuf::descriptor::MessageOptions> {
         self.custom_options(scope, input)
@@ -471,11 +472,11 @@ impl<'a> Resolver<'a> {
 
     fn message(
         &self,
-        scope: &ProtobufAbsolutePath,
+        scope: &ProtobufAbsPath,
         input: &model::Message,
     ) -> ConvertResult<protobuf::descriptor::DescriptorProto> {
         let mut nested_scope = scope.clone();
-        nested_scope.push_simple(ProtobufIdent::from(&input.name[..]));
+        nested_scope.push_simple(ProtobufIdentRef::new(&input.name));
 
         let mut output = protobuf::descriptor::DescriptorProto::new();
         output.set_name(input.name.clone());
@@ -631,7 +632,7 @@ impl<'a> Resolver<'a> {
 
     fn custom_option_builtin<M>(
         &self,
-        _scope: &ProtobufAbsolutePath,
+        _scope: &ProtobufAbsPath,
         options: &mut M,
         option: &ProtobufIdent,
         option_value: &ProtobufConstant,
@@ -671,13 +672,13 @@ impl<'a> Resolver<'a> {
 
     fn ext_resolve_field_ext(
         &self,
-        scope: &ProtobufAbsolutePath,
+        scope: &ProtobufAbsPath,
         message: &WithFullName<&DescriptorProto>,
         field_name: &ProtobufPath,
     ) -> ConvertResult<FieldDescriptorProto> {
         let expected_extendee = &message.full_name;
         let (_extension, field) = self.find_extension_by_path(scope, field_name)?;
-        if &ProtobufAbsolutePath::new(field.get_extendee()) != expected_extendee {
+        if &ProtobufAbsPath::new(field.get_extendee()) != expected_extendee {
             return Err(ConvertError::WrongExtensionType(
                 format!("{}", field_name),
                 format!("{}", field.get_extendee()),
@@ -690,7 +691,7 @@ impl<'a> Resolver<'a> {
 
     fn ext_resolve_field(
         &self,
-        scope: &ProtobufAbsolutePath,
+        scope: &ProtobufAbsPath,
         message: &WithFullName<&DescriptorProto>,
         field: &ProtobufOptionNameComponent,
     ) -> ConvertResult<FieldDescriptorProto> {
@@ -709,7 +710,7 @@ impl<'a> Resolver<'a> {
 
     fn custom_option_ext_step(
         &self,
-        scope: &ProtobufAbsolutePath,
+        scope: &ProtobufAbsPath,
         options_type: &WithFullName<&DescriptorProto>,
         options: &mut UnknownFields,
         option_name: &ProtobufOptionNameComponent,
@@ -775,7 +776,7 @@ impl<'a> Resolver<'a> {
 
     fn custom_option_ext<M>(
         &self,
-        scope: &ProtobufAbsolutePath,
+        scope: &ProtobufAbsPath,
         options: &mut M,
         option_name: &ProtobufOptionNameExt,
         option_value: &ProtobufConstant,
@@ -786,7 +787,7 @@ impl<'a> Resolver<'a> {
         self.custom_option_ext_step(
             scope,
             &WithFullName {
-                full_name: ProtobufAbsolutePath::from_path_without_dot(
+                full_name: ProtobufAbsPath::from_path_without_dot(
                     M::descriptor_static().full_name(),
                 ),
                 t: M::descriptor_static().get_proto(),
@@ -800,7 +801,7 @@ impl<'a> Resolver<'a> {
 
     fn custom_option<M>(
         &self,
-        scope: &ProtobufAbsolutePath,
+        scope: &ProtobufAbsPath,
         options: &mut M,
         option: &model::ProtobufOption,
     ) -> ConvertResult<()>
@@ -817,7 +818,7 @@ impl<'a> Resolver<'a> {
 
     fn custom_options<M>(
         &self,
-        scope: &ProtobufAbsolutePath,
+        scope: &ProtobufAbsPath,
         input: &[model::ProtobufOption],
     ) -> ConvertResult<M>
     where
@@ -833,7 +834,7 @@ impl<'a> Resolver<'a> {
 
     fn field_options(
         &self,
-        scope: &ProtobufAbsolutePath,
+        scope: &ProtobufAbsPath,
         input: &[model::ProtobufOption],
     ) -> ConvertResult<protobuf::descriptor::FieldOptions> {
         self.custom_options(scope, input)
@@ -841,7 +842,7 @@ impl<'a> Resolver<'a> {
 
     fn field(
         &self,
-        scope: &ProtobufAbsolutePath,
+        scope: &ProtobufAbsPath,
         input: &model::WithLoc<model::Field>,
         oneof_index: Option<i32>,
     ) -> ConvertResult<protobuf::descriptor::FieldDescriptorProto> {
@@ -905,7 +906,7 @@ impl<'a> Resolver<'a> {
             .collect()
     }
 
-    fn _package_files(&self, package: &ProtobufAbsolutePath) -> Vec<&model::FileDescriptor> {
+    fn _package_files(&self, package: &ProtobufAbsPath) -> Vec<&model::FileDescriptor> {
         self.all_files()
             .into_iter()
             .filter(|f| &f.package == package)
@@ -914,8 +915,8 @@ impl<'a> Resolver<'a> {
 
     fn _package_files_for_prefix(
         &self,
-        path: &ProtobufAbsolutePath,
-    ) -> Vec<(&model::FileDescriptor, ProtobufRelativePath)> {
+        path: &ProtobufAbsPath,
+    ) -> Vec<(&model::FileDescriptor, ProtobufRelPath)> {
         self.all_files()
             .into_iter()
             .flat_map(|f| f.package.remove_prefix(path).map(|rel| (f, rel)))
@@ -928,19 +929,19 @@ impl<'a> Resolver<'a> {
             .into_iter()
             .partition::<Vec<_>, _>(|f| f.package.is_root());
         LookupScopeUnion {
-            path: ProtobufAbsolutePath::root(),
+            path: ProtobufAbsPath::root(),
             scopes: scopes.into_iter().map(LookupScope::File).collect(),
             partial_scopes,
         }
     }
 
-    fn lookup(&self, path: &ProtobufAbsolutePath) -> LookupScopeUnion {
+    fn lookup(&self, path: &ProtobufAbsPath) -> LookupScopeUnion {
         self.root_scope().lookup(&path.to_root_rel())
     }
 
     fn find_message_or_enum_by_abs_name(
         &self,
-        absolute_path: &ProtobufAbsolutePath,
+        absolute_path: &ProtobufAbsPath,
     ) -> ConvertResult<WithFullName<MessageOrEnum<'a>>> {
         for file in self.all_files() {
             if let Some(relative) = absolute_path.remove_prefix(&file.package) {
@@ -955,7 +956,7 @@ impl<'a> Resolver<'a> {
 
     fn find_message_by_abs_name(
         &self,
-        abs_path: &ProtobufAbsolutePath,
+        abs_path: &ProtobufAbsPath,
     ) -> ConvertResult<WithFullName<&'a model::Message>> {
         let with_full_name = self.find_message_or_enum_by_abs_name(abs_path)?;
         match with_full_name.t {
@@ -969,7 +970,7 @@ impl<'a> Resolver<'a> {
 
     fn find_enum_by_abs_name(
         &self,
-        abs_path: &ProtobufAbsolutePath,
+        abs_path: &ProtobufAbsPath,
     ) -> ConvertResult<&'a model::Enumeration> {
         match self.find_message_or_enum_by_abs_name(abs_path)?.t {
             MessageOrEnum::Enum(e) => Ok(e),
@@ -978,9 +979,9 @@ impl<'a> Resolver<'a> {
     }
 
     fn scope_resolved_candidates_rel(
-        scope: &ProtobufAbsolutePath,
-        rel: &ProtobufRelativePath,
-    ) -> Vec<ProtobufAbsolutePath> {
+        scope: &ProtobufAbsPath,
+        rel: &ProtobufRelPath,
+    ) -> Vec<ProtobufAbsPath> {
         scope
             .self_and_parents()
             .into_iter()
@@ -992,9 +993,9 @@ impl<'a> Resolver<'a> {
     }
 
     fn scope_resolved_candidates(
-        scope: &ProtobufAbsolutePath,
+        scope: &ProtobufAbsPath,
         path: &ProtobufPath,
-    ) -> Vec<ProtobufAbsolutePath> {
+    ) -> Vec<ProtobufAbsPath> {
         match path {
             ProtobufPath::Abs(p) => vec![p.clone()],
             ProtobufPath::Rel(p) => Self::scope_resolved_candidates_rel(scope, p),
@@ -1003,7 +1004,7 @@ impl<'a> Resolver<'a> {
 
     fn resolve_message_or_enum(
         &self,
-        scope: &ProtobufAbsolutePath,
+        scope: &ProtobufAbsPath,
         name: &ProtobufPath,
     ) -> ConvertResult<WithFullName<MessageOrEnum>> {
         match name {
@@ -1025,7 +1026,7 @@ impl<'a> Resolver<'a> {
 
     fn field_type(
         &self,
-        scope: &ProtobufAbsolutePath,
+        scope: &ProtobufAbsPath,
         name: &str,
         input: &model::FieldType,
     ) -> ConvertResult<TypeResolved> {
@@ -1054,7 +1055,7 @@ impl<'a> Resolver<'a> {
             }
             model::FieldType::Map(..) => {
                 let mut type_name = scope.clone();
-                type_name.push_simple(Resolver::map_entry_name_for_field_name(name));
+                type_name.push_simple(&Resolver::map_entry_name_for_field_name(name));
                 TypeResolved::Message(type_name)
             }
             model::FieldType::Group(model::Group {
@@ -1062,7 +1063,7 @@ impl<'a> Resolver<'a> {
                 ..
             }) => {
                 let mut type_name = scope.clone();
-                type_name.push_simple(ProtobufIdent::from(group_name.clone()));
+                type_name.push_simple(ProtobufIdentRef::new(group_name));
                 TypeResolved::Group(type_name)
             }
         })
@@ -1091,7 +1092,7 @@ impl<'a> Resolver<'a> {
 
     fn enum_value(
         &self,
-        scope: &ProtobufAbsolutePath,
+        scope: &ProtobufAbsPath,
         input: &model::EnumValue,
     ) -> ConvertResult<protobuf::descriptor::EnumValueDescriptorProto> {
         let mut output = protobuf::descriptor::EnumValueDescriptorProto::new();
@@ -1103,7 +1104,7 @@ impl<'a> Resolver<'a> {
 
     fn enum_options(
         &self,
-        scope: &ProtobufAbsolutePath,
+        scope: &ProtobufAbsPath,
         input: &[model::ProtobufOption],
     ) -> ConvertResult<protobuf::descriptor::EnumOptions> {
         self.custom_options(scope, input)
@@ -1111,7 +1112,7 @@ impl<'a> Resolver<'a> {
 
     fn enum_value_options(
         &self,
-        scope: &ProtobufAbsolutePath,
+        scope: &ProtobufAbsPath,
         input: &[model::ProtobufOption],
     ) -> ConvertResult<protobuf::descriptor::EnumValueOptions> {
         self.custom_options(scope, input)
@@ -1119,7 +1120,7 @@ impl<'a> Resolver<'a> {
 
     fn enumeration(
         &self,
-        scope: &ProtobufAbsolutePath,
+        scope: &ProtobufAbsPath,
         input: &model::Enumeration,
     ) -> ConvertResult<protobuf::descriptor::EnumDescriptorProto> {
         let mut output = protobuf::descriptor::EnumDescriptorProto::new();
@@ -1135,7 +1136,7 @@ impl<'a> Resolver<'a> {
 
     fn oneof_options(
         &self,
-        scope: &ProtobufAbsolutePath,
+        scope: &ProtobufAbsPath,
         input: &[model::ProtobufOption],
     ) -> ConvertResult<protobuf::descriptor::OneofOptions> {
         self.custom_options(scope, input)
@@ -1143,7 +1144,7 @@ impl<'a> Resolver<'a> {
 
     fn oneof(
         &self,
-        scope: &ProtobufAbsolutePath,
+        scope: &ProtobufAbsPath,
         input: &model::OneOf,
     ) -> ConvertResult<protobuf::descriptor::OneofDescriptorProto> {
         let mut output = protobuf::descriptor::OneofDescriptorProto::new();
@@ -1154,7 +1155,7 @@ impl<'a> Resolver<'a> {
 
     fn find_extension_by_abs_path(
         &self,
-        path: &ProtobufAbsolutePath,
+        path: &ProtobufAbsPath,
     ) -> ConvertResult<Option<(&model::Extension, FieldDescriptorProto)>> {
         let mut path = path.clone();
         let extension = path.pop().unwrap();
@@ -1173,7 +1174,7 @@ impl<'a> Resolver<'a> {
 
     fn find_extension_by_path(
         &self,
-        scope: &ProtobufAbsolutePath,
+        scope: &ProtobufAbsPath,
         path: &ProtobufPath,
     ) -> ConvertResult<(&model::Extension, FieldDescriptorProto)> {
         for candidate in Self::scope_resolved_candidates(scope, path) {
@@ -1317,7 +1318,7 @@ impl<'a> Resolver<'a> {
 
     fn option_value_field_to_unknown_value(
         &self,
-        scope: &ProtobufAbsolutePath,
+        scope: &ProtobufAbsPath,
         value: &model::ProtobufConstant,
         name: &str,
         field_type: &model::FieldType,
@@ -1329,7 +1330,7 @@ impl<'a> Resolver<'a> {
 
     fn file_options(
         &self,
-        scope: &ProtobufAbsolutePath,
+        scope: &ProtobufAbsPath,
         input: &[model::ProtobufOption],
     ) -> ConvertResult<protobuf::descriptor::FileOptions> {
         self.custom_options(scope, input)
@@ -1337,7 +1338,7 @@ impl<'a> Resolver<'a> {
 
     fn extension(
         &self,
-        scope: &ProtobufAbsolutePath,
+        scope: &ProtobufAbsPath,
         input: &model::Extension,
     ) -> ConvertResult<(
         protobuf::descriptor::FieldDescriptorProto,
@@ -1409,7 +1410,7 @@ pub(crate) fn file_descriptor(
     output.set_name(fs_path_to_proto_path(name));
     output.set_syntax(syntax(input.syntax));
 
-    if input.package != ProtobufAbsolutePath::root() {
+    if input.package != ProtobufAbsPath::root() {
         output.set_package(input.package.to_root_rel().to_string());
     }
 

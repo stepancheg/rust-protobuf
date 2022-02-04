@@ -1,3 +1,4 @@
+pub(crate) mod by_path;
 use protobuf::descriptor::EnumOptions;
 use protobuf::descriptor::FieldOptions;
 use protobuf::descriptor::FileOptions;
@@ -7,7 +8,7 @@ use protobuf::rustproto;
 /// Specifies style of generated code.
 /// Generated files can be customized using this proto
 /// or using `rustproto.proto` options.
-#[derive(Default, Debug, Clone)]
+#[derive(Default, Debug, Clone, PartialEq)]
 pub struct Customize {
     /// Make oneof enum public.
     pub expose_oneof: Option<bool>,

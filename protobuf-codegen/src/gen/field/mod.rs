@@ -4,7 +4,7 @@ use protobuf::reflect::RuntimeFieldType;
 use protobuf::reflect::Syntax;
 use protobuf::rt;
 use protobuf::wire_format::WireType;
-use protobuf_parse::ProtobufAbsolutePath;
+use protobuf_parse::ProtobufAbsPath;
 
 use crate::customize::customize_from_rustproto_for_field;
 use crate::customize::Customize;
@@ -458,7 +458,7 @@ fn field_elem<'a>(
     if field.field.get_proto().get_field_type() == field_descriptor_proto::Type::TYPE_GROUP {
         FieldElem::Group
     } else if field.field.get_proto().has_type_name() {
-        let message_or_enum = root_scope.find_message_or_enum(&ProtobufAbsolutePath::from(
+        let message_or_enum = root_scope.find_message_or_enum(&ProtobufAbsPath::from(
             field.field.get_proto().get_type_name(),
         ));
         match (field.field.get_proto().get_field_type(), message_or_enum) {
@@ -567,7 +567,7 @@ impl<'a> FieldGen<'a> {
 
         let kind = match field.field.runtime_field_type() {
             RuntimeFieldType::Map(..) => {
-                let message = root_scope.find_message(&ProtobufAbsolutePath::from(
+                let message = root_scope.find_message(&ProtobufAbsPath::from(
                     field.field.get_proto().get_type_name(),
                 ));
 

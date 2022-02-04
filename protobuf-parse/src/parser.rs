@@ -10,10 +10,10 @@ use protobuf::text_format::lexer::Tokenizer;
 use protobuf::text_format::lexer::TokenizerError;
 
 use crate::proto_path::ProtoPathBuf;
-use crate::protobuf_abs_path::ProtobufAbsolutePath;
+use crate::protobuf_abs_path::ProtobufAbsPath;
 use crate::protobuf_ident::ProtobufIdent;
 use crate::protobuf_path::ProtobufPath;
-use crate::protobuf_rel_path::ProtobufRelativePath;
+use crate::protobuf_rel_path::ProtobufRelPath;
 use crate::pure::model;
 use crate::pure::model::EnumValue;
 use crate::pure::model::Enumeration;
@@ -303,14 +303,14 @@ impl<'a> Parser<'a> {
     }
 
     // fullIdent = ident { "." ident }
-    fn next_full_ident_rel(&mut self) -> anyhow::Result<ProtobufRelativePath> {
+    fn next_full_ident_rel(&mut self) -> anyhow::Result<ProtobufRelPath> {
         let mut full_ident = String::new();
         full_ident.push_str(&self.tokenizer.next_ident()?);
         while self.tokenizer.next_symbol_if_eq('.')? {
             full_ident.push('.');
             full_ident.push_str(&self.tokenizer.next_ident()?);
         }
-        Ok(ProtobufRelativePath::new(full_ident))
+        Ok(ProtobufRelPath::new(full_ident))
     }
 
     // emptyStatement = ";"
@@ -478,7 +478,7 @@ impl<'a> Parser<'a> {
     // Package
 
     // package = "package" fullIdent ";"
-    fn next_package_opt(&mut self) -> anyhow::Result<Option<ProtobufAbsolutePath>> {
+    fn next_package_opt(&mut self) -> anyhow::Result<Option<ProtobufAbsPath>> {
         if self.tokenizer.next_ident_if_eq("package")? {
             let package = self.next_full_ident_rel()?;
             self.tokenizer.next_symbol_expect_eq(';')?;
@@ -1181,7 +1181,7 @@ impl<'a> Parser<'a> {
         self.syntax = syntax;
 
         let mut imports = Vec::new();
-        let mut package = ProtobufAbsolutePath::root();
+        let mut package = ProtobufAbsPath::root();
         let mut messages = Vec::new();
         let mut enums = Vec::new();
         let mut extensions = Vec::new();

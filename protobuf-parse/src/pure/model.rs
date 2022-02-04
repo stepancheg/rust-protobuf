@@ -17,7 +17,7 @@ use crate::linked_hash_map::LinkedHashMap;
 use crate::parser::Parser;
 pub use crate::parser::ParserErrorWithLocation;
 use crate::proto_path::ProtoPathBuf;
-use crate::protobuf_abs_path::ProtobufAbsolutePath;
+use crate::protobuf_abs_path::ProtobufAbsPath;
 use crate::protobuf_ident::ProtobufIdent;
 use crate::protobuf_path::ProtobufPath;
 use crate::pure::convert::ConvertError;
@@ -509,7 +509,7 @@ pub(crate) struct FileDescriptor {
     /// Imports
     pub imports: Vec<Import>,
     /// Package
-    pub package: ProtobufAbsolutePath,
+    pub package: ProtobufAbsPath,
     /// Protobuf Syntax
     pub syntax: Syntax,
     /// Top level messages
