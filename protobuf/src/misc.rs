@@ -42,3 +42,11 @@ pub(crate) unsafe fn maybe_ununit_array_assume_init<T, const N: usize>(
     // And thus the conversion is safe
     (&array as *const _ as *const [T; N]).read()
 }
+
+/// `MaybeUninit::write` is stable since 1.55.
+#[inline]
+pub(crate) fn maybe_uninit_write<T>(uninit: &mut MaybeUninit<T>, val: T) -> &mut T {
+    // SAFETY: copy-paste from rust stdlib.
+    *uninit = MaybeUninit::new(val);
+    unsafe { &mut *uninit.as_mut_ptr() }
+}

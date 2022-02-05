@@ -5,6 +5,7 @@ use std::mem::MaybeUninit;
 use std::ptr;
 use std::slice;
 
+use crate::misc::maybe_uninit_write;
 use crate::misc::maybe_uninit_write_slice;
 use crate::misc::vec_spare_capacity_mut;
 use crate::varint;
@@ -208,7 +209,7 @@ impl<'a> CodedOutputStream<'a> {
         if self.position as usize == self.buffer().len() {
             self.refresh_buffer()?;
         }
-        unsafe { (&mut *self.buffer)[self.position as usize].write(byte) };
+        unsafe { maybe_uninit_write(&mut (&mut *self.buffer)[self.position as usize], byte) };
         self.position += 1;
         Ok(())
     }
