@@ -233,7 +233,7 @@ fn jobs() -> Yaml {
     ));
     r.push(job(RustToolchain::Nightly, LINUX, Features::All));
     r.push(job(
-        RustToolchain::Version("1.55.0".to_owned()),
+        RustToolchain::Version("1.52.1".to_owned()),
         LINUX,
         Features::All,
     ));
