@@ -67,6 +67,10 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.27] - Unreleased
 
+## [2.27.1] - 2022-02-05
+
+- Min rust version bumped back to 1.52.1
+
 ## [2.27.0] - 2022-02-03
 
 - Bump min rust version to 1.55.0
