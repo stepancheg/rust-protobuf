@@ -84,4 +84,12 @@ rust-protobuf can do both:
 * parse using `protoc` binary
 * has pure rust parser (and typechecker) of `.proto` files
 
+## gRPC
+
+[tonic](https://docs.rs/tonic/latest/tonic/) is a quality pure rust gRPC implementation
+for prost.
+
+[grpc-rs](https://github.com/tikv/grpc-rs) is an implementation for both
+prost and rust-protobuf.
+
 <!-- cargo-sync-readme end -->
