@@ -1,5 +1,6 @@
 use std::fs;
 use std::io;
+
 use crate::checkout_sources;
 use crate::rust_install_toolchain;
 use crate::Job;
@@ -21,7 +22,10 @@ fn find_sync_readme_crates() -> Vec<String> {
             }
 
             let child_path = if path.is_empty() {
-                file_name.clone() } else { format!("{}/{}", path, file_name) };
+                file_name.clone()
+            } else {
+                format!("{}/{}", path, file_name)
+            };
 
             if depth == 0 {
                 walk(&child_path, depth + 1, crates);
