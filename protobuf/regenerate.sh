@@ -40,7 +40,7 @@ esac
 "$PROTOC" \
     --plugin=protoc-gen-rust="$where_am_i/target/debug/protoc-gen-rust$exe_suffix" \
     --rust_out tmp-generated \
-    --rust_opt 'inside_protobuf=true' \
+    --rust_opt 'inside_protobuf=true gen_mod_rs=false' \
     -I../proto \
     -I../protoc-bin-vendored/include \
     ../protoc-bin-vendored/include/google/protobuf/*.proto \
