@@ -1,0 +1,14 @@
+[package]
+name = "protobuf-examples-vs-prost"
+version = "0.0.0"
+authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
+edition = "2018"
+publish = false
+
+[dependencies]
+protobuf = { path = "../../protobuf" }
+prost = "0.9.0"
+
+[build-dependencies]
+protobuf-codegen = { path = "../../protobuf-codegen" }
+prost-build = "0.9.0"

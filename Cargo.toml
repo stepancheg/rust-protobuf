@@ -12,6 +12,7 @@ members = [
     "protobuf-examples/customize-serde",
     "protobuf-examples/dynamic",
     "protobuf-examples/pure-vs-protoc",
+    "protobuf-examples/vs-prost",
     "protobuf-parse",
     "protobuf-test",
     "protobuf-test-common",

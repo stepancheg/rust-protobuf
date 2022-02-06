@@ -324,6 +324,9 @@ jobs:
             - name: sync-readme protobuf-examples/customize-serde
               run: cd protobuf-examples/customize-serde && cargo sync-readme --check
               shell: bash
+            - name: sync-readme protobuf-examples/vs-prost
+              run: cd protobuf-examples/vs-prost && cargo sync-readme --check
+              shell: bash
             - name: sync-readme protobuf-parse
               run: cd protobuf-parse && cargo sync-readme --check
               shell: bash
