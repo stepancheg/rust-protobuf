@@ -11,7 +11,8 @@ Stable versions are 2.xx still supported.
 - serde is no longer supported natively. See explanations [in the issue](https://github.com/stepancheg/rust-protobuf/issues/519).
 - Rename `ProtobufError` to `Error` and make it opaque type. Rename `ProtobufResult` to `Result`.
 - Rename `ProtobufEnum` to `Enum` and `ProtobufEnumOrUnknown` to `EnumOrUnknown`
-- `gen_mod_rs` option is `true` by default now
+- `gen_mod_rs` option is `true` by default now: code generator now generates `mod.rs` with modules
+- `carllerche` options renamed to `tokio` (since `bytes` crate now lives in `tokio` org)
 
 ## [3.0.0-alpha.5] - 2022-02-02
 
