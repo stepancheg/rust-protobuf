@@ -13,7 +13,6 @@ bench = false
 default = []
 proto3 = []
 with-bytes = ["bytes", "protobuf/with-bytes", "protobuf-test-common/with-bytes"]
-with-serde = ["serde", "serde_derive", "serde_json", "protobuf/with-serde", "protobuf-test-common/with-serde"]
 
 [build-dependencies]
 protobuf-codegen = { path = "../protobuf-codegen" }

@@ -19,7 +19,6 @@ protobuf = { path = "../../protobuf" }
 default = []
 # Feature to avoid recompilation of protobuf
 with-bytes = ["protobuf/with-bytes"]
-with-serde = ["protobuf/with-serde"]
 
 [build-dependencies]
 anyhow = "1.0.44"

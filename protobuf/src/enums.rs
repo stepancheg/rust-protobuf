@@ -122,29 +122,3 @@ impl<E: ProtobufEnum> fmt::Debug for ProtobufEnumOrUnknown<E> {
 impl<E: ProtobufEnum + ProtobufValue> ProtobufValue for ProtobufEnumOrUnknown<E> {
     type RuntimeType = RuntimeTypeEnumOrUnknown<E>;
 }
-
-#[cfg(feature = "with-serde")]
-impl<E: serde::Serialize + ProtobufEnum> serde::Serialize for ProtobufEnumOrUnknown<E> {
-    fn serialize<S>(
-        &self,
-        serializer: S,
-    ) -> Result<<S as serde::Serializer>::Ok, <S as serde::Serializer>::Error>
-    where
-        S: serde::Serializer,
-    {
-        // TODO: serialize number when unknown
-        self.enum_value_or_default().serialize(serializer)
-    }
-}
-
-#[cfg(feature = "with-serde")]
-impl<'de, E: serde::Deserialize<'de> + ProtobufEnum> serde::Deserialize<'de>
-    for ProtobufEnumOrUnknown<E>
-{
-    fn deserialize<D>(deserializer: D) -> Result<Self, <D as serde::Deserializer<'de>>::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        Ok(ProtobufEnumOrUnknown::new(E::deserialize(deserializer)?))
-    }
-}

@@ -28,11 +28,6 @@
 
 #[cfg(feature = "bytes")]
 extern crate bytes;
-#[cfg(feature = "with-serde")]
-extern crate serde;
-#[macro_use]
-#[cfg(feature = "with-serde")]
-extern crate serde_derive;
 pub use crate::clear::Clear;
 pub use crate::coded_input_stream::CodedInputStream;
 pub use crate::coded_output_stream::CodedOutputStream;
