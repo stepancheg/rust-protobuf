@@ -12,8 +12,8 @@ message TestMessage {
 }
 
 message TestMessageWithBytes {
-    option (rustproto.carllerche_bytes_for_bytes) = true;
-    option (rustproto.carllerche_bytes_for_string) = true;
+    option (rustproto.tokio_bytes_for_bytes) = true;
+    option (rustproto.tokio_bytes_for_string) = true;
 
     optional string s1 = 1;
     optional bytes b1 = 2;
