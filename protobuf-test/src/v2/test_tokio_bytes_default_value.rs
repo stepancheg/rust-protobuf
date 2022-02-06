@@ -1,6 +1,6 @@
 use protobuf::*;
 
-use super::test_carllerche_bytes_default_value_pb::*;
+use super::test_tokio_bytes_default_value_pb::*;
 
 #[test]
 fn test_default_values() {
