@@ -77,7 +77,7 @@ impl<'a> CodedInputStream<'a> {
     /// Read from `Bytes`.
     ///
     /// `CodedInputStream` operations like
-    /// [`read_carllerche_bytes`](crate::CodedInputStream::read_tokio_bytes)
+    /// [`read_tokio_bytes`](crate::CodedInputStream::read_tokio_bytes)
     /// will return a shared copy of this bytes object.
     #[cfg(feature = "bytes")]
     pub fn from_tokio_bytes(bytes: &'a Bytes) -> CodedInputStream<'a> {
