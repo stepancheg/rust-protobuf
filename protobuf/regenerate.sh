@@ -37,14 +37,28 @@ MSYS_NT*)
     ;;
 esac
 
+mkdir -p tmp-generated/google-protobuf/google/protobuf/compiler
+cp ../google-protobuf/src/google/protobuf/*.proto tmp-generated/google-protobuf/google/protobuf/
+cp ../google-protobuf/src/google/protobuf/compiler/*.proto tmp-generated/google-protobuf/google/protobuf/compiler/
+
 "$PROTOC" \
     --plugin=protoc-gen-rust="$where_am_i/target/debug/protoc-gen-rust$exe_suffix" \
     --rust_out tmp-generated \
     --rust_opt 'serde_derive=true inside_protobuf=true' \
     -I../proto \
-    -I../protoc-bin-vendored/include \
-    ../protoc-bin-vendored/include/google/protobuf/*.proto \
-    ../protoc-bin-vendored/include/google/protobuf/compiler/* \
+    -I tmp-generated/google-protobuf \
+    tmp-generated/google-protobuf/google/protobuf/any.proto \
+    tmp-generated/google-protobuf/google/protobuf/api.proto \
+    tmp-generated/google-protobuf/google/protobuf/descriptor.proto \
+    tmp-generated/google-protobuf/google/protobuf/duration.proto \
+    tmp-generated/google-protobuf/google/protobuf/empty.proto \
+    tmp-generated/google-protobuf/google/protobuf/field_mask.proto \
+    tmp-generated/google-protobuf/google/protobuf/source_context.proto \
+    tmp-generated/google-protobuf/google/protobuf/struct.proto \
+    tmp-generated/google-protobuf/google/protobuf/timestamp.proto \
+    tmp-generated/google-protobuf/google/protobuf/type.proto \
+    tmp-generated/google-protobuf/google/protobuf/wrappers.proto \
+    tmp-generated/google-protobuf/google/protobuf/compiler/plugin.proto \
     ../proto/rustproto.proto
 
 mv tmp-generated/descriptor.rs tmp-generated/plugin.rs tmp-generated/rustproto.rs src/
