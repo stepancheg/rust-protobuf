@@ -1153,6 +1153,7 @@ pub mod code_generator_response {
 
     ///  Sync with code_generator.h.
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
     pub enum Feature {
         FEATURE_NONE = 0,
         FEATURE_PROTO3_OPTIONAL = 1,

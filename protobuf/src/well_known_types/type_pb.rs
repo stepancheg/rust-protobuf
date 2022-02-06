@@ -590,6 +590,7 @@ impl crate::reflect::ProtobufValue for Field {
 pub mod field {
     ///  Basic field types.
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
     pub enum Kind {
         TYPE_UNKNOWN = 0,
         TYPE_DOUBLE = 1,
@@ -690,6 +691,7 @@ pub mod field {
 
     ///  Whether a field is optional, required, or repeated.
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
     pub enum Cardinality {
         CARDINALITY_UNKNOWN = 0,
         CARDINALITY_OPTIONAL = 1,
@@ -1305,6 +1307,7 @@ impl crate::reflect::ProtobufValue for Option {
 
 ///  The syntax in which a protocol buffer element is defined.
 #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
 pub enum Syntax {
     SYNTAX_PROTO2 = 0,
     SYNTAX_PROTO3 = 1,

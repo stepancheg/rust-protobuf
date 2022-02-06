@@ -2207,6 +2207,7 @@ impl crate::reflect::ProtobufValue for FieldDescriptorProto {
 /// Nested message and enums of message `FieldDescriptorProto`
 pub mod field_descriptor_proto {
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
     pub enum Type {
         TYPE_DOUBLE = 1,
         TYPE_FLOAT = 2,
@@ -2304,6 +2305,7 @@ pub mod field_descriptor_proto {
     }
 
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
     pub enum Label {
         LABEL_OPTIONAL = 1,
         LABEL_REQUIRED = 2,
@@ -4998,6 +5000,7 @@ impl crate::reflect::ProtobufValue for FileOptions {
 pub mod file_options {
     ///  Generated classes can be optimized for speed or code size.
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
     pub enum OptimizeMode {
         SPEED = 1,
         CODE_SIZE = 2,
@@ -5783,6 +5786,7 @@ impl crate::reflect::ProtobufValue for FieldOptions {
 /// Nested message and enums of message `FieldOptions`
 pub mod field_options {
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
     pub enum CType {
         STRING = 0,
         CORD = 1,
@@ -5834,6 +5838,7 @@ pub mod field_options {
     }
 
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
     pub enum JSType {
         JS_NORMAL = 0,
         JS_STRING = 1,
@@ -6812,6 +6817,7 @@ pub mod method_options {
     ///  or neither? HTTP based RPC implementation may choose GET verb for safe
     ///  methods, and PUT verb for idempotent methods instead of the default POST.
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
     pub enum IdempotencyLevel {
         IDEMPOTENCY_UNKNOWN = 0,
         NO_SIDE_EFFECTS = 1,

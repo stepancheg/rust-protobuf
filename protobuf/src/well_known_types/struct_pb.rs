@@ -778,6 +778,7 @@ impl crate::reflect::ProtobufValue for ListValue {
 ///
 ///   The JSON representation for `NullValue` is JSON `null`.
 #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
+#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
 pub enum NullValue {
     NULL_VALUE = 0,
 }
