@@ -35,6 +35,20 @@
 //!
 //! In 99% of the cases, unknown fields are not needed to be preserved.
 //!
+//! ## Cached size
+//!
+//! Prost seems to not cache "cached size" of message before serialization.
+//!
+//! In the worst case, with deeply nested messages, it results in exponential growth
+//! serialization time. But deeply nested messages are rare, and API is clearer without it.
+//!
+//! (Note, serialization can be linear if message sizes are stored in a queue/stack
+//! during serialization. rust-protobuf did it
+//! [before 2014](https://github.com/stepancheg/rust-protobuf/commit/86fe60cc67e3ea257fcad417bcb039973ace3bfc),
+//! see `compute_sizes` function signature. But it was changed to storing cached size
+//! because storing cached size is faster. If prost doesn't want to store cached size,
+//! perhaps they can at least use similar approach.)
+//!
 //! ## Enums
 //!
 //! In prost, enum fields have type `i32`.
