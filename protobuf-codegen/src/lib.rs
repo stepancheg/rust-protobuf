@@ -97,6 +97,33 @@
 //! ```
 //!
 //! This will generate .rs files in current directory.
+//!
+//! # Customize generate code
+//!
+//! Sometimes generated code need to be adjusted, e. g. to have custom derives.
+//!
+//! rust-protobuf provides two options to do that:
+//! * generated `.rs` files contain `@@protoc_insertion_point(...)` markers
+//!   (similar markers inserts Google's protobuf generator for C++ or Java).
+//!   Simple script `sed` one-liners can be used to replace these markers with custom annotations.
+//! * `Codegen::customize_callback` can be used to patch generated code
+//!   when invoked from `build.rs` script.
+//!
+//! # Serde
+//!
+//! rust-protobuf since version 3 no longer directly supports serde.
+//!
+//! Rust-protobuf 3 fully supports:
+//! * runtime reflection
+//! * JSON parsing and printing
+//!
+//! Which covers the most of serde use cases.
+//!
+//! If you still need serde, generic customization callback (see above) can be used
+//! to insert `#[serde(...)]` annotations.
+//!
+//! [Example project](https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-examples/customize)
+//! in the rust-protobuf repository demonstrates how to do it.
 
 #![deny(rustdoc::broken_intra_doc_links)]
 
