@@ -7,7 +7,7 @@ use protobuf_parse::ProtoPathBuf;
 
 use crate::compiler_plugin;
 use crate::customize::ctx::CustomizeElemCtx;
-use crate::customize::CustomizeCallbackDefault;
+use crate::customize::CustomizeCallback;
 use crate::gen::file::gen_file;
 use crate::gen::mod_rs::gen_mod_rs;
 use crate::gen::scope::RootScope;
@@ -19,6 +19,7 @@ pub(crate) fn gen_all(
     parser: &str,
     files_to_generate: &[ProtoPathBuf],
     customize: &Customize,
+    customize_callback: &dyn CustomizeCallback,
 ) -> anyhow::Result<Vec<compiler_plugin::GenResult>> {
     let file_descriptors = FileDescriptor::new_dynamic_fds(file_descriptors.to_vec());
 
@@ -37,7 +38,7 @@ pub(crate) fn gen_all(
     let customize = CustomizeElemCtx {
         for_elem: customize.clone(),
         for_children: customize.clone(),
-        callback: &CustomizeCallbackDefault,
+        callback: customize_callback,
     };
 
     for file_name in files_to_generate {

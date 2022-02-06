@@ -1,6 +1,7 @@
 #![doc(hidden)]
 
 use crate::compiler_plugin;
+use crate::customize::CustomizeCallbackDefault;
 use crate::gen::all::gen_all;
 use crate::Customize;
 
@@ -13,6 +14,7 @@ pub fn protoc_gen_rust_main() {
             "protoc --rust-out=...",
             r.files_to_generate,
             &customize,
+            &CustomizeCallbackDefault,
         )
     })
     .expect("plugin failed");

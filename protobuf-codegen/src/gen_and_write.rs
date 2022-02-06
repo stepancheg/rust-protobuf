@@ -7,6 +7,7 @@ use std::path::Path;
 use protobuf::descriptor::FileDescriptorProto;
 use protobuf_parse::ProtoPathBuf;
 
+use crate::customize::CustomizeCallback;
 use crate::gen::all::gen_all;
 use crate::Customize;
 
@@ -27,6 +28,7 @@ pub fn gen_and_write(
     files_to_generate: &[ProtoPathBuf],
     out_dir: &Path,
     customize: &Customize,
+    customize_callback: &dyn CustomizeCallback,
 ) -> anyhow::Result<()> {
     match out_dir.metadata() {
         Ok(m) => {
@@ -41,7 +43,13 @@ pub fn gen_and_write(
         }
     }
 
-    let results = gen_all(file_descriptors, parser, files_to_generate, customize)?;
+    let results = gen_all(
+        file_descriptors,
+        parser,
+        files_to_generate,
+        customize,
+        customize_callback,
+    )?;
 
     for r in &results {
         let mut file_path = out_dir.to_owned();

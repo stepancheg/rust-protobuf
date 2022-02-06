@@ -4,6 +4,7 @@ pub(crate) mod custom_attr;
 pub(crate) mod rustproto_proto;
 
 use std::fmt;
+use std::ops::Deref;
 use std::rc::Rc;
 
 use protobuf::reflect::EnumDescriptor;
@@ -50,6 +51,26 @@ impl CustomizeCallback for CustomizeCallbackDefault {}
 
 #[derive(Clone)]
 pub(crate) struct CustomizeCallbackHolder(pub(crate) Rc<dyn CustomizeCallback>);
+
+impl CustomizeCallbackHolder {
+    pub(crate) fn new(callback: impl CustomizeCallback) -> CustomizeCallbackHolder {
+        CustomizeCallbackHolder(Rc::new(callback))
+    }
+}
+
+impl Deref for CustomizeCallbackHolder {
+    type Target = dyn CustomizeCallback;
+
+    fn deref(&self) -> &Self::Target {
+        &*self.0
+    }
+}
+
+impl Default for CustomizeCallbackHolder {
+    fn default() -> Self {
+        CustomizeCallbackHolder(Rc::new(CustomizeCallbackDefault))
+    }
+}
 
 impl PartialEq for CustomizeCallbackHolder {
     fn eq(&self, other: &Self) -> bool {

@@ -6,8 +6,11 @@ use std::process;
 
 use ::protoc::Protoc;
 
+use crate::customize::CustomizeCallback;
+use crate::customize::CustomizeCallbackHolder;
 use crate::gen_and_write::gen_and_write;
 use crate::Customize;
+
 mod protoc;
 mod pure;
 
@@ -38,6 +41,8 @@ pub struct Codegen {
     inputs: Vec<PathBuf>,
     /// Customize code generation
     customize: Customize,
+    /// Customize code generation
+    customize_callback: CustomizeCallbackHolder,
     /// Protoc command path
     protoc: Option<Protoc>,
     /// Extra `protoc` args
@@ -144,6 +149,12 @@ impl Codegen {
         self
     }
 
+    /// Callback for dynamic per-element customization.
+    pub fn customize_callback(&mut self, callback: impl CustomizeCallback) -> &mut Self {
+        self.customize_callback = CustomizeCallbackHolder::new(callback);
+        self
+    }
+
     /// Extra command line flags for `protoc` invocation.
     ///
     /// For example, `--experimental_allow_proto3_optional` option.
@@ -172,6 +183,7 @@ impl Codegen {
             &parsed_and_typechecked.relative_paths,
             &self.out_dir,
             &self.customize,
+            &*self.customize_callback,
         )
     }
 
