@@ -6,7 +6,7 @@ use std::num::ParseIntError;
 use super::base64;
 use super::float;
 use super::rfc_3339;
-use crate::enums::ProtobufEnum;
+use crate::enums::Enum;
 use crate::json::base64::FromBase64Error;
 use crate::json::well_known_wrapper::WellKnownWrapper;
 use crate::message::Message;

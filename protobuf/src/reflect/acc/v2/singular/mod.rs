@@ -1,8 +1,8 @@
 use std::fmt;
 use std::marker;
 
+use crate::enums::Enum;
 use crate::enums::EnumOrUnknown;
-use crate::enums::ProtobufEnum;
 use crate::message::Message;
 use crate::message_dyn::MessageDyn;
 use crate::reflect::acc::v2::AccessorV2;
@@ -535,12 +535,12 @@ where
     )
 }
 
-struct GetOrDefaultEnum<M, E: ProtobufEnum> {
+struct GetOrDefaultEnum<M, E: Enum> {
     get_field: for<'a> fn(&'a M) -> &'a Option<EnumOrUnknown<E>>,
     default_value: E,
 }
 
-impl<M: Message, E: ProtobufEnum> GetOrDefaultImpl<M> for GetOrDefaultEnum<M, E> {
+impl<M: Message, E: Enum> GetOrDefaultImpl<M> for GetOrDefaultEnum<M, E> {
     fn get_singular_field_or_default_impl<'a>(&self, m: &'a M) -> ReflectValueRef<'a> {
         ReflectValueRef::Enum(
             E::enum_descriptor_static(),
@@ -561,7 +561,7 @@ pub fn make_option_enum_accessor<M, E>(
 ) -> FieldAccessor
 where
     M: Message + 'static,
-    E: ProtobufEnum + ProtobufValue,
+    E: Enum + ProtobufValue,
 {
     FieldAccessor::new_v2(
         name,

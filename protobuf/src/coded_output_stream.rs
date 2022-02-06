@@ -16,10 +16,10 @@ use crate::wire_format;
 use crate::wire_format::WireType;
 use crate::zigzag::encode_zig_zag_32;
 use crate::zigzag::encode_zig_zag_64;
+use crate::Enum;
 use crate::EnumOrUnknown;
 use crate::Message;
 use crate::MessageDyn;
-use crate::ProtobufEnum;
 use crate::Result;
 use crate::UnknownFields;
 use crate::UnknownValueRef;
@@ -390,7 +390,7 @@ impl<'a> CodedOutputStream<'a> {
     /// Write `enum`
     pub fn write_enum_obj_no_tag<E>(&mut self, value: E) -> Result<()>
     where
-        E: ProtobufEnum,
+        E: Enum,
     {
         self.write_enum_no_tag(value.value())
     }
@@ -398,7 +398,7 @@ impl<'a> CodedOutputStream<'a> {
     /// Write `enum`
     pub fn write_enum_or_unknown_no_tag<E>(&mut self, value: EnumOrUnknown<E>) -> Result<()>
     where
-        E: ProtobufEnum,
+        E: Enum,
     {
         self.write_enum_no_tag(value.value())
     }
@@ -500,7 +500,7 @@ impl<'a> CodedOutputStream<'a> {
     /// Write `enum` field
     pub fn write_enum_obj<E>(&mut self, field_number: u32, value: E) -> Result<()>
     where
-        E: ProtobufEnum,
+        E: Enum,
     {
         self.write_enum(field_number, value.value())
     }
@@ -512,7 +512,7 @@ impl<'a> CodedOutputStream<'a> {
         value: EnumOrUnknown<E>,
     ) -> Result<()>
     where
-        E: ProtobufEnum,
+        E: Enum,
     {
         self.write_enum(field_number, value.value())
     }
@@ -891,7 +891,7 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write repeated packed enum values.
-    pub fn write_repeated_packed_enum_or_unknown_no_tag<E: ProtobufEnum>(
+    pub fn write_repeated_packed_enum_or_unknown_no_tag<E: Enum>(
         &mut self,
         values: &[EnumOrUnknown<E>],
     ) -> Result<()> {
@@ -902,7 +902,7 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write field header and data for repeated packed enum.
-    pub fn write_repeated_packed_enum_or_unknown<E: ProtobufEnum>(
+    pub fn write_repeated_packed_enum_or_unknown<E: Enum>(
         &mut self,
         field_number: u32,
         values: &[EnumOrUnknown<E>],

@@ -334,13 +334,13 @@ impl RustType {
                        _ => false,
                    } => return Ok(format!("&{}", v)),
             (&RustType::Enum(..), &RustType::Int(true, 32)) => {
-                return Ok(format!("{}::ProtobufEnum::value(&{})", protobuf_crate_path(customize), v))
+                return Ok(format!("{}::Enum::value(&{})", protobuf_crate_path(customize), v))
             },
             (&RustType::EnumOrUnknown(..), &RustType::Int(true, 32)) => {
                 return Ok(format!("{}::EnumOrUnknown::value(&{})", protobuf_crate_path(customize), v))
             },
             (&RustType::Ref(ref t), &RustType::Int(true, 32)) if t.is_enum() => {
-                return Ok(format!("{}::ProtobufEnum::value({})", protobuf_crate_path(customize), v))
+                return Ok(format!("{}::Enum::value({})", protobuf_crate_path(customize), v))
             }
             (&RustType::Ref(ref t), &RustType::Int(true, 32)) if t.is_enum_or_unknown() => {
                 return Ok(format!("{}::EnumOrUnknown::value({})", protobuf_crate_path(customize), v))

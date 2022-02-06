@@ -13,7 +13,7 @@ pub use crate::cached_size::CachedSize;
 use crate::chars::Chars;
 use crate::coded_input_stream::CodedInputStream;
 use crate::coded_output_stream::CodedOutputStream;
-use crate::enums::ProtobufEnum;
+use crate::enums::Enum;
 use crate::error::ProtobufError;
 use crate::error::Result;
 use crate::error::WireError;
@@ -178,14 +178,14 @@ pub fn vec_packed_varint_zigzag_data_size<T: ProtobufVarintZigzag>(vec: &[T]) ->
 }
 
 /// Size of serialized repeated packed enum field, excluding length and tag.
-pub fn vec_packed_enum_data_size<E: ProtobufEnum>(vec: &[E]) -> u32 {
+pub fn vec_packed_enum_data_size<E: Enum>(vec: &[E]) -> u32 {
     vec.iter()
         .map(|e| compute_raw_varint32_size(e.value() as u32))
         .fold(0, |a, i| a + i)
 }
 
 /// Size of serialized repeated packed enum field, excluding length and tag.
-pub fn vec_packed_enum_or_unknown_data_size<E: ProtobufEnum>(vec: &[EnumOrUnknown<E>]) -> u32 {
+pub fn vec_packed_enum_or_unknown_data_size<E: Enum>(vec: &[EnumOrUnknown<E>]) -> u32 {
     vec.iter()
         .map(|e| compute_raw_varint32_size(e.value() as u32))
         .fold(0, |a, i| a + i)
@@ -212,7 +212,7 @@ pub fn vec_packed_varint_zigzag_size<T: ProtobufVarintZigzag>(field_number: u32,
 }
 
 /// Size of serialized data with length prefix and tag
-pub fn vec_packed_enum_size<E: ProtobufEnum>(field_number: u32, vec: &[E]) -> u32 {
+pub fn vec_packed_enum_size<E: Enum>(field_number: u32, vec: &[E]) -> u32 {
     if vec.is_empty() {
         0
     } else {
@@ -222,7 +222,7 @@ pub fn vec_packed_enum_size<E: ProtobufEnum>(field_number: u32, vec: &[E]) -> u3
 }
 
 /// Size of serialized data with length prefix and tag
-pub fn vec_packed_enum_or_unknown_size<E: ProtobufEnum>(
+pub fn vec_packed_enum_or_unknown_size<E: Enum>(
     field_number: u32,
     vec: &[EnumOrUnknown<E>],
 ) -> u32 {
@@ -280,22 +280,22 @@ pub fn value_varint_zigzag_size<T: ProtobufVarintZigzag>(field_number: u32, valu
     tag_size(field_number) + value_varint_zigzag_size_no_tag(value)
 }
 
-fn enum_size_no_tag<E: ProtobufEnum>(value: E) -> u32 {
+fn enum_size_no_tag<E: Enum>(value: E) -> u32 {
     value.value().len_varint()
 }
 
-fn enum_or_unknown_size_no_tag<E: ProtobufEnum>(value: EnumOrUnknown<E>) -> u32 {
+fn enum_or_unknown_size_no_tag<E: Enum>(value: EnumOrUnknown<E>) -> u32 {
     value.value().len_varint()
 }
 
 /// Size of encoded enum field value.
 // TODO: drop
-pub fn enum_size<E: ProtobufEnum>(field_number: u32, value: E) -> u32 {
+pub fn enum_size<E: Enum>(field_number: u32, value: E) -> u32 {
     tag_size(field_number) + enum_size_no_tag(value)
 }
 
 /// Size of encoded enum field value.
-pub fn enum_or_unknown_size<E: ProtobufEnum>(field_number: u32, value: EnumOrUnknown<E>) -> u32 {
+pub fn enum_or_unknown_size<E: Enum>(field_number: u32, value: EnumOrUnknown<E>) -> u32 {
     tag_size(field_number) + enum_or_unknown_size_no_tag(value)
 }
 
@@ -547,7 +547,7 @@ pub fn read_repeated_bool_into(
 
 /// Read repeated `enum` field into given vec.
 /// This function is no longer called from generated code, remove in 1.5.
-pub fn read_repeated_enum_into<E: ProtobufEnum + ProtobufValue>(
+pub fn read_repeated_enum_into<E: Enum + ProtobufValue>(
     wire_type: WireType,
     is: &mut CodedInputStream,
     target: &mut Vec<E>,
@@ -564,7 +564,7 @@ pub fn read_repeated_enum_into<E: ProtobufEnum + ProtobufValue>(
 
 /// Helper function to read single enum value.
 #[inline]
-fn read_enum_with_unknown_fields_into<E: ProtobufEnum, C>(
+fn read_enum_with_unknown_fields_into<E: Enum, C>(
     is: &mut CodedInputStream,
     target: C,
     field_number: u32,
@@ -574,14 +574,14 @@ where
     C: FnOnce(E),
 {
     let i = is.read_int32()?;
-    match ProtobufEnum::from_i32(i) {
+    match Enum::from_i32(i) {
         Some(e) => target(e),
         None => unknown_fields.add_varint(field_number, i as i64 as u64),
     }
     Ok(())
 }
 
-fn read_repeated_packed_enum_with_unknown_fields_into<E: ProtobufEnum>(
+fn read_repeated_packed_enum_with_unknown_fields_into<E: Enum>(
     is: &mut CodedInputStream,
     target: &mut Vec<E>,
     field_number: u32,
@@ -596,7 +596,7 @@ fn read_repeated_packed_enum_with_unknown_fields_into<E: ProtobufEnum>(
     Ok(())
 }
 
-fn read_repeated_packed_enum_or_unknown_into<E: ProtobufEnum>(
+fn read_repeated_packed_enum_or_unknown_into<E: Enum>(
     is: &mut CodedInputStream,
     target: &mut Vec<EnumOrUnknown<E>>,
 ) -> Result<()> {
@@ -615,7 +615,7 @@ fn read_repeated_packed_enum_or_unknown_into<E: ProtobufEnum>(
 ///
 /// See explanation
 /// [here](https://github.com/stepancheg/rust-protobuf/issues/233#issuecomment-375142710)
-pub fn read_repeated_enum_with_unknown_fields_into<E: ProtobufEnum>(
+pub fn read_repeated_enum_with_unknown_fields_into<E: Enum>(
     wire_type: WireType,
     is: &mut CodedInputStream,
     target: &mut Vec<E>,
@@ -642,7 +642,7 @@ pub fn read_repeated_enum_with_unknown_fields_into<E: ProtobufEnum>(
 ///
 /// See explanation
 /// [here](https://github.com/stepancheg/rust-protobuf/issues/233#issuecomment-375142710)
-pub fn read_repeated_enum_or_unknown_into<E: ProtobufEnum>(
+pub fn read_repeated_enum_or_unknown_into<E: Enum>(
     wire_type: WireType,
     is: &mut CodedInputStream,
     target: &mut Vec<EnumOrUnknown<E>>,
@@ -663,7 +663,7 @@ pub fn read_repeated_enum_or_unknown_into<E: ProtobufEnum>(
 ///
 /// See explanation
 /// [here](https://github.com/stepancheg/rust-protobuf/issues/233#issuecomment-375142710)
-pub fn read_proto3_enum_with_unknown_fields_into<E: ProtobufEnum>(
+pub fn read_proto3_enum_with_unknown_fields_into<E: Enum>(
     wire_type: WireType,
     is: &mut CodedInputStream,
     target: &mut E,
@@ -683,7 +683,7 @@ pub fn read_proto3_enum_with_unknown_fields_into<E: ProtobufEnum>(
 ///
 /// See explanation
 /// [here](https://github.com/stepancheg/rust-protobuf/issues/233#issuecomment-375142710)
-pub fn read_proto2_enum_with_unknown_fields_into<E: ProtobufEnum>(
+pub fn read_proto2_enum_with_unknown_fields_into<E: Enum>(
     wire_type: WireType,
     is: &mut CodedInputStream,
     target: &mut Option<E>,

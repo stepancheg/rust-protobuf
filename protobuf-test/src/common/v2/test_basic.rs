@@ -2,8 +2,8 @@ use protobuf::descriptor;
 use protobuf::reflect;
 use protobuf::CodedInputStream;
 use protobuf::CodedOutputStream;
+use protobuf::Enum;
 use protobuf::Message;
-use protobuf::ProtobufEnum;
 use protobuf_test_common::hex::decode_hex;
 use protobuf_test_common::*;
 

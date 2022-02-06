@@ -10,8 +10,8 @@ use bytes::Bytes;
 
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;
+use crate::enums::Enum;
 use crate::enums::EnumOrUnknown;
-use crate::enums::ProtobufEnum;
 use crate::message::Message;
 use crate::reflect::runtime_type_box::RuntimeTypeBox;
 use crate::reflect::value::value_ref::ReflectValueMut;
@@ -148,10 +148,10 @@ pub struct RuntimeTypeCarllercheChars;
 
 /// Implementation for enum.
 #[derive(Debug, Copy, Clone)]
-pub struct RuntimeTypeEnum<E: ProtobufEnum + ProtobufValue>(marker::PhantomData<E>);
+pub struct RuntimeTypeEnum<E: Enum + ProtobufValue>(marker::PhantomData<E>);
 /// Implementation for enum.
 #[derive(Debug, Copy, Clone)]
-pub struct RuntimeTypeEnumOrUnknown<E: ProtobufEnum + ProtobufValue>(marker::PhantomData<E>);
+pub struct RuntimeTypeEnumOrUnknown<E: Enum + ProtobufValue>(marker::PhantomData<E>);
 /// Implementation for [`Message`].
 #[derive(Debug, Copy, Clone)]
 pub struct RuntimeTypeMessage<M: Message>(marker::PhantomData<M>);
@@ -692,7 +692,7 @@ impl RuntimeTypeHashable for RuntimeTypeCarllercheChars {
 
 impl<E> RuntimeType for RuntimeTypeEnum<E>
 where
-    E: ProtobufEnum + ProtobufValue + fmt::Debug,
+    E: Enum + ProtobufValue + fmt::Debug,
 {
     type Value = E;
 
@@ -743,7 +743,7 @@ where
 
 impl<E> RuntimeType for RuntimeTypeEnumOrUnknown<E>
 where
-    E: ProtobufEnum + ProtobufValue + fmt::Debug,
+    E: Enum + ProtobufValue + fmt::Debug,
 {
     type Value = EnumOrUnknown<E>;
 

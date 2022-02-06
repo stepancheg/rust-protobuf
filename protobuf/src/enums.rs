@@ -7,7 +7,7 @@ use crate::reflect::EnumValueDescriptor;
 use crate::reflect::ProtobufValue;
 
 /// Trait implemented by all protobuf enum types.
-pub trait ProtobufEnum: Eq + Sized + Copy + 'static + ProtobufValue + fmt::Debug + Default {
+pub trait Enum: Eq + Sized + Copy + 'static + ProtobufValue + fmt::Debug + Default {
     /// Get enum `i32` value.
     fn value(&self) -> i32;
 
@@ -59,7 +59,7 @@ impl<E> EnumOrUnknown<E> {
     }
 }
 
-impl<E: ProtobufEnum> EnumOrUnknown<E> {
+impl<E: Enum> EnumOrUnknown<E> {
     /// Construct from typed enum
     pub fn new(e: E) -> EnumOrUnknown<E> {
         EnumOrUnknown::from_i32(e.value())
@@ -98,19 +98,19 @@ impl<E: ProtobufEnum> EnumOrUnknown<E> {
     }
 }
 
-impl<E: ProtobufEnum> From<E> for EnumOrUnknown<E> {
+impl<E: Enum> From<E> for EnumOrUnknown<E> {
     fn from(e: E) -> Self {
         EnumOrUnknown::new(e)
     }
 }
 
-impl<E: ProtobufEnum> Default for EnumOrUnknown<E> {
+impl<E: Enum> Default for EnumOrUnknown<E> {
     fn default() -> EnumOrUnknown<E> {
         EnumOrUnknown::new(E::default())
     }
 }
 
-impl<E: ProtobufEnum> fmt::Debug for EnumOrUnknown<E> {
+impl<E: Enum> fmt::Debug for EnumOrUnknown<E> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self.enum_value() {
             Ok(e) => fmt::Debug::fmt(&e, f),
@@ -119,6 +119,6 @@ impl<E: ProtobufEnum> fmt::Debug for EnumOrUnknown<E> {
     }
 }
 
-impl<E: ProtobufEnum + ProtobufValue> ProtobufValue for EnumOrUnknown<E> {
+impl<E: Enum + ProtobufValue> ProtobufValue for EnumOrUnknown<E> {
     type RuntimeType = RuntimeTypeEnumOrUnknown<E>;
 }

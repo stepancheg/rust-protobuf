@@ -793,7 +793,7 @@ pub enum NullValue {
     NULL_VALUE = 0,
 }
 
-impl crate::ProtobufEnum for NullValue {
+impl crate::Enum for NullValue {
     fn value(&self) -> i32 {
         *self as i32
     }

@@ -1,4 +1,4 @@
-use protobuf::ProtobufEnum;
+use protobuf::Enum;
 use protobuf_test_common::*;
 
 use super::test_enum_alias_pb::*;

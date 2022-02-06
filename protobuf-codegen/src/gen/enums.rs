@@ -224,10 +224,7 @@ impl<'a> EnumGen<'a> {
     fn write_impl_enum(&self, w: &mut CodeWriter) {
         let ref type_name = self.type_name;
         w.impl_for_block(
-            &format!(
-                "{}::ProtobufEnum",
-                protobuf_crate_path(&self.customize.for_elem)
-            ),
+            &format!("{}::Enum", protobuf_crate_path(&self.customize.for_elem)),
             &format!("{}", type_name),
             |w| {
                 self.write_fn_value(w);
@@ -342,7 +339,7 @@ impl<'a> EnumGen<'a> {
             |w| {
                 w.def_fn("eq(&self, other: &Self) -> bool", |w| {
                     w.write_line(&format!(
-                        "{}::ProtobufEnum::value(self) == {}::ProtobufEnum::value(other)",
+                        "{}::Enum::value(self) == {}::Enum::value(other)",
                         protobuf_crate_path(&self.customize.for_elem),
                         protobuf_crate_path(&self.customize.for_elem)
                     ));
@@ -356,7 +353,7 @@ impl<'a> EnumGen<'a> {
         w.impl_for_block("::std::hash::Hash", &format!("{}", self.type_name), |w| {
             w.def_fn("hash<H : ::std::hash::Hasher>(&self, state: &mut H)", |w| {
                 w.write_line(&format!(
-                    "state.write_i32({}::ProtobufEnum::value(self))",
+                    "state.write_i32({}::Enum::value(self))",
                     protobuf_crate_path(&self.customize.for_elem)
                 ));
             });

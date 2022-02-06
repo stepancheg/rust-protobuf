@@ -5,7 +5,7 @@ use std::hash::Hasher;
 
 use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::EnumValueDescriptorProto;
-use crate::enums::ProtobufEnum;
+use crate::enums::Enum;
 use crate::reflect::enums::dynamic::DynamicEnumDescriptor;
 use crate::reflect::enums::generated::GeneratedEnumDescriptor;
 use crate::reflect::file::FileDescriptorImpl;
@@ -81,7 +81,7 @@ impl EnumValueDescriptor {
     ///
     /// ```
     /// # use protobuf::well_known_types::NullValue;
-    /// # use protobuf::ProtobufEnum;
+    /// # use protobuf::Enum;
     /// # use protobuf::reflect::EnumValueDescriptor;
     ///
     /// # if !cfg!(miri) {
@@ -91,7 +91,7 @@ impl EnumValueDescriptor {
     /// assert_eq!(Some(NullValue::NULL_VALUE), null);
     /// # }
     /// ```
-    pub fn cast<E: ProtobufEnum>(&self) -> Option<E> {
+    pub fn cast<E: Enum>(&self) -> Option<E> {
         if self.enum_descriptor != E::enum_descriptor_static() {
             return None;
         }
@@ -158,7 +158,7 @@ impl EnumDescriptor {
     }
 
     /// Get `EnumDescriptor` object for given enum type
-    pub fn for_type<E: ProtobufEnum>() -> EnumDescriptor {
+    pub fn for_type<E: Enum>() -> EnumDescriptor {
         E::enum_descriptor_static()
     }
 
@@ -227,7 +227,7 @@ impl EnumDescriptor {
     /// Check if this enum descriptor corresponds given enum type
     ///
     /// ```
-    /// # use protobuf::ProtobufEnum;
+    /// # use protobuf::Enum;
     /// # use protobuf::descriptor::field_descriptor_proto::Label;
     /// # use protobuf::reflect::EnumDescriptor;
     ///
@@ -238,7 +238,7 @@ impl EnumDescriptor {
     /// assert!(descriptor.is::<Label>())
     /// }
     /// ```
-    pub fn is<E: ProtobufEnum>(&self) -> bool {
+    pub fn is<E: Enum>(&self) -> bool {
         match self.get_impl() {
             EnumDescriptorImplRef::Generated(g) => g.type_id == TypeId::of::<E>(),
             EnumDescriptorImplRef::Dynamic(..) => false,

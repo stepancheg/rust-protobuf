@@ -9,8 +9,8 @@ use crate::buf_read_iter::BufReadIter;
 use crate::bytes::Bytes;
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;
+use crate::enums::Enum;
 use crate::enums::EnumOrUnknown;
-use crate::enums::ProtobufEnum;
 use crate::error::ProtobufError;
 use crate::error::Result;
 use crate::error::WireError;
@@ -356,16 +356,16 @@ impl<'a> CodedInputStream<'a> {
     }
 
     /// Read `enum` as `ProtobufEnum`
-    pub fn read_enum<E: ProtobufEnum>(&mut self) -> Result<E> {
+    pub fn read_enum<E: Enum>(&mut self) -> Result<E> {
         let i = self.read_enum_value()?;
-        match ProtobufEnum::from_i32(i) {
+        match Enum::from_i32(i) {
             Some(e) => Ok(e),
             None => Err(ProtobufError::WireError(WireError::InvalidEnumValue(i)).into()),
         }
     }
 
     /// Read `enum` as `ProtobufEnumOrUnknown`
-    pub fn read_enum_or_unknown<E: ProtobufEnum>(&mut self) -> Result<EnumOrUnknown<E>> {
+    pub fn read_enum_or_unknown<E: Enum>(&mut self) -> Result<EnumOrUnknown<E>> {
         Ok(EnumOrUnknown::from_i32(self.read_int32()?))
     }
 
@@ -491,7 +491,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     /// Read repeated packed `enum` into `ProtobufEnum`
-    pub fn read_repeated_packed_enum_into<E: ProtobufEnum + ProtobufValue>(
+    pub fn read_repeated_packed_enum_into<E: Enum + ProtobufValue>(
         &mut self,
         target: &mut Vec<E>,
     ) -> Result<()> {

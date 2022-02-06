@@ -1178,7 +1178,7 @@ pub mod code_generator_response {
         FEATURE_PROTO3_OPTIONAL = 1,
     }
 
-    impl crate::ProtobufEnum for Feature {
+    impl crate::Enum for Feature {
         fn value(&self) -> i32 {
             *self as i32
         }

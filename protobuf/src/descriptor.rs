@@ -2287,7 +2287,7 @@ pub mod field_descriptor_proto {
         TYPE_SINT64 = 18,
     }
 
-    impl crate::ProtobufEnum for Type {
+    impl crate::Enum for Type {
         fn value(&self) -> i32 {
             *self as i32
         }
@@ -2373,7 +2373,7 @@ pub mod field_descriptor_proto {
         LABEL_REPEATED = 3,
     }
 
-    impl crate::ProtobufEnum for Label {
+    impl crate::Enum for Label {
         fn value(&self) -> i32 {
             *self as i32
         }
@@ -5113,7 +5113,7 @@ pub mod file_options {
         LITE_RUNTIME = 3,
     }
 
-    impl crate::ProtobufEnum for OptimizeMode {
+    impl crate::Enum for OptimizeMode {
         fn value(&self) -> i32 {
             *self as i32
         }
@@ -5914,7 +5914,7 @@ pub mod field_options {
         STRING_PIECE = 2,
     }
 
-    impl crate::ProtobufEnum for CType {
+    impl crate::Enum for CType {
         fn value(&self) -> i32 {
             *self as i32
         }
@@ -5969,7 +5969,7 @@ pub mod field_options {
         JS_NUMBER = 2,
     }
 
-    impl crate::ProtobufEnum for JSType {
+    impl crate::Enum for JSType {
         fn value(&self) -> i32 {
             *self as i32
         }
@@ -6962,7 +6962,7 @@ pub mod method_options {
         IDEMPOTENT = 2,
     }
 
-    impl crate::ProtobufEnum for IdempotencyLevel {
+    impl crate::Enum for IdempotencyLevel {
         fn value(&self) -> i32 {
             *self as i32
         }

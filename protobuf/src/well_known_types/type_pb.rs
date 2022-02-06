@@ -648,7 +648,7 @@ pub mod field {
         TYPE_SINT64 = 18,
     }
 
-    impl crate::ProtobufEnum for Kind {
+    impl crate::Enum for Kind {
         fn value(&self) -> i32 {
             *self as i32
         }
@@ -738,7 +738,7 @@ pub mod field {
         CARDINALITY_REPEATED = 3,
     }
 
-    impl crate::ProtobufEnum for Cardinality {
+    impl crate::Enum for Cardinality {
         fn value(&self) -> i32 {
             *self as i32
         }
@@ -1364,7 +1364,7 @@ pub enum Syntax {
     SYNTAX_PROTO3 = 1,
 }
 
-impl crate::ProtobufEnum for Syntax {
+impl crate::Enum for Syntax {
     fn value(&self) -> i32 {
         *self as i32
     }

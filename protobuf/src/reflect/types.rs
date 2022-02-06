@@ -11,8 +11,8 @@ use crate::bytes::Bytes;
 use crate::chars::Chars;
 use crate::coded_input_stream::CodedInputStream;
 use crate::coded_output_stream::CodedOutputStream;
+use crate::enums::Enum;
 use crate::enums::EnumOrUnknown;
-use crate::enums::ProtobufEnum;
 use crate::error::Result;
 use crate::message::Message;
 pub use crate::reflect::type_dynamic::ProtobufTypeDynamic;
@@ -150,10 +150,10 @@ pub struct ProtobufTypeCarllercheChars;
 
 /// `enum` as `ProtobufEnum`
 #[derive(Copy, Clone)]
-pub struct ProtobufTypeEnum<E: ProtobufEnum>(marker::PhantomData<E>);
+pub struct ProtobufTypeEnum<E: Enum>(marker::PhantomData<E>);
 /// `enum` as `ProtobufEnumOrUnknown`
 #[derive(Copy, Clone)]
-pub struct ProtobufTypeEnumOrUnknown<E: ProtobufEnum>(marker::PhantomData<E>);
+pub struct ProtobufTypeEnumOrUnknown<E: Enum>(marker::PhantomData<E>);
 /// `message`
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeMessage<M: Message>(marker::PhantomData<M>);
@@ -642,7 +642,7 @@ impl ProtobufType for ProtobufTypeCarllercheChars {
     }
 }
 
-impl<E: ProtobufEnum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufTypeEnum<E> {
+impl<E: Enum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufTypeEnum<E> {
     type ProtobufValue = E;
 
     const WIRE_TYPE: WireType = WireType::Varint;
@@ -670,7 +670,7 @@ impl<E: ProtobufEnum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufType
     }
 }
 
-impl<E: ProtobufEnum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufTypeEnumOrUnknown<E> {
+impl<E: Enum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufTypeEnumOrUnknown<E> {
     type ProtobufValue = EnumOrUnknown<E>;
 
     const WIRE_TYPE: WireType = WireType::Varint;
