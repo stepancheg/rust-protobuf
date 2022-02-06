@@ -13,6 +13,7 @@ pub(crate) mod message;
 pub(crate) mod mod_rs;
 pub(crate) mod oneof;
 pub(crate) mod paths;
+pub(crate) mod protoc_insertion_point;
 pub(crate) mod rust;
 pub(crate) mod rust_name;
 pub(crate) mod rust_types_values;

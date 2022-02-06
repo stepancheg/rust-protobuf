@@ -24,24 +24,33 @@
 ///  A protocol buffer message type.
 #[derive(PartialEq,Clone,Default,Debug)]
 #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.Type)
 pub struct Type {
     // message fields
     ///  The fully qualified message name.
+    // @@protoc_insertion_point(field:google.protobuf.Type.name)
     pub name: ::std::string::String,
     ///  The list of fields.
+    // @@protoc_insertion_point(field:google.protobuf.Type.fields)
     pub fields: ::std::vec::Vec<Field>,
     ///  The list of types appearing in `oneof` definitions in this type.
+    // @@protoc_insertion_point(field:google.protobuf.Type.oneofs)
     pub oneofs: ::std::vec::Vec<::std::string::String>,
     ///  The protocol buffer options.
+    // @@protoc_insertion_point(field:google.protobuf.Type.options)
     pub options: ::std::vec::Vec<Option>,
     ///  The source context.
+    // @@protoc_insertion_point(field:google.protobuf.Type.source_context)
     pub source_context: crate::MessageField<crate::well_known_types::SourceContext>,
     ///  The source syntax.
+    // @@protoc_insertion_point(field:google.protobuf.Type.syntax)
     pub syntax: crate::ProtobufEnumOrUnknown<Syntax>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.Type.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.Type.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -265,34 +274,47 @@ impl crate::reflect::ProtobufValue for Type {
 ///  A single field of a message type.
 #[derive(PartialEq,Clone,Default,Debug)]
 #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.Field)
 pub struct Field {
     // message fields
     ///  The field type.
+    // @@protoc_insertion_point(field:google.protobuf.Field.kind)
     pub kind: crate::ProtobufEnumOrUnknown<field::Kind>,
     ///  The field cardinality.
+    // @@protoc_insertion_point(field:google.protobuf.Field.cardinality)
     pub cardinality: crate::ProtobufEnumOrUnknown<field::Cardinality>,
     ///  The field number.
+    // @@protoc_insertion_point(field:google.protobuf.Field.number)
     pub number: i32,
     ///  The field name.
+    // @@protoc_insertion_point(field:google.protobuf.Field.name)
     pub name: ::std::string::String,
     ///  The field type URL, without the scheme, for message or enumeration
     ///  types. Example: `"type.googleapis.com/google.protobuf.Timestamp"`.
+    // @@protoc_insertion_point(field:google.protobuf.Field.type_url)
     pub type_url: ::std::string::String,
     ///  The index of the field type in `Type.oneofs`, for message or enumeration
     ///  types. The first type has index 1; zero means the type is not in the list.
+    // @@protoc_insertion_point(field:google.protobuf.Field.oneof_index)
     pub oneof_index: i32,
     ///  Whether to use alternative packed wire representation.
+    // @@protoc_insertion_point(field:google.protobuf.Field.packed)
     pub packed: bool,
     ///  The protocol buffer options.
+    // @@protoc_insertion_point(field:google.protobuf.Field.options)
     pub options: ::std::vec::Vec<Option>,
     ///  The field JSON name.
+    // @@protoc_insertion_point(field:google.protobuf.Field.json_name)
     pub json_name: ::std::string::String,
     ///  The string value of the default value of this field. Proto2 syntax only.
+    // @@protoc_insertion_point(field:google.protobuf.Field.default_value)
     pub default_value: ::std::string::String,
     // special fields
     #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.Field.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.Field.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -591,25 +613,45 @@ pub mod field {
     ///  Basic field types.
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
     #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    // @@protoc_insertion_point(enum:google.protobuf.Field.Kind)
     pub enum Kind {
+        // @@protoc_insertion_point(enum_value:google.protobuf.Field.Kind.TYPE_UNKNOWN)
         TYPE_UNKNOWN = 0,
+        // @@protoc_insertion_point(enum_value:google.protobuf.Field.Kind.TYPE_DOUBLE)
         TYPE_DOUBLE = 1,
+        // @@protoc_insertion_point(enum_value:google.protobuf.Field.Kind.TYPE_FLOAT)
         TYPE_FLOAT = 2,
+        // @@protoc_insertion_point(enum_value:google.protobuf.Field.Kind.TYPE_INT64)
         TYPE_INT64 = 3,
+        // @@protoc_insertion_point(enum_value:google.protobuf.Field.Kind.TYPE_UINT64)
         TYPE_UINT64 = 4,
+        // @@protoc_insertion_point(enum_value:google.protobuf.Field.Kind.TYPE_INT32)
         TYPE_INT32 = 5,
+        // @@protoc_insertion_point(enum_value:google.protobuf.Field.Kind.TYPE_FIXED64)
         TYPE_FIXED64 = 6,
+        // @@protoc_insertion_point(enum_value:google.protobuf.Field.Kind.TYPE_FIXED32)
         TYPE_FIXED32 = 7,
+        // @@protoc_insertion_point(enum_value:google.protobuf.Field.Kind.TYPE_BOOL)
         TYPE_BOOL = 8,
+        // @@protoc_insertion_point(enum_value:google.protobuf.Field.Kind.TYPE_STRING)
         TYPE_STRING = 9,
+        // @@protoc_insertion_point(enum_value:google.protobuf.Field.Kind.TYPE_GROUP)
         TYPE_GROUP = 10,
+        // @@protoc_insertion_point(enum_value:google.protobuf.Field.Kind.TYPE_MESSAGE)
         TYPE_MESSAGE = 11,
+        // @@protoc_insertion_point(enum_value:google.protobuf.Field.Kind.TYPE_BYTES)
         TYPE_BYTES = 12,
+        // @@protoc_insertion_point(enum_value:google.protobuf.Field.Kind.TYPE_UINT32)
         TYPE_UINT32 = 13,
+        // @@protoc_insertion_point(enum_value:google.protobuf.Field.Kind.TYPE_ENUM)
         TYPE_ENUM = 14,
+        // @@protoc_insertion_point(enum_value:google.protobuf.Field.Kind.TYPE_SFIXED32)
         TYPE_SFIXED32 = 15,
+        // @@protoc_insertion_point(enum_value:google.protobuf.Field.Kind.TYPE_SFIXED64)
         TYPE_SFIXED64 = 16,
+        // @@protoc_insertion_point(enum_value:google.protobuf.Field.Kind.TYPE_SINT32)
         TYPE_SINT32 = 17,
+        // @@protoc_insertion_point(enum_value:google.protobuf.Field.Kind.TYPE_SINT64)
         TYPE_SINT64 = 18,
     }
 
@@ -692,10 +734,15 @@ pub mod field {
     ///  Whether a field is optional, required, or repeated.
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
     #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    // @@protoc_insertion_point(enum:google.protobuf.Field.Cardinality)
     pub enum Cardinality {
+        // @@protoc_insertion_point(enum_value:google.protobuf.Field.Cardinality.CARDINALITY_UNKNOWN)
         CARDINALITY_UNKNOWN = 0,
+        // @@protoc_insertion_point(enum_value:google.protobuf.Field.Cardinality.CARDINALITY_OPTIONAL)
         CARDINALITY_OPTIONAL = 1,
+        // @@protoc_insertion_point(enum_value:google.protobuf.Field.Cardinality.CARDINALITY_REQUIRED)
         CARDINALITY_REQUIRED = 2,
+        // @@protoc_insertion_point(enum_value:google.protobuf.Field.Cardinality.CARDINALITY_REPEATED)
         CARDINALITY_REPEATED = 3,
     }
 
@@ -749,22 +796,30 @@ pub mod field {
 ///  Enum type definition.
 #[derive(PartialEq,Clone,Default,Debug)]
 #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.Enum)
 pub struct Enum {
     // message fields
     ///  Enum type name.
+    // @@protoc_insertion_point(field:google.protobuf.Enum.name)
     pub name: ::std::string::String,
     ///  Enum value definitions.
+    // @@protoc_insertion_point(field:google.protobuf.Enum.enumvalue)
     pub enumvalue: ::std::vec::Vec<EnumValue>,
     ///  Protocol buffer options.
+    // @@protoc_insertion_point(field:google.protobuf.Enum.options)
     pub options: ::std::vec::Vec<Option>,
     ///  The source context.
+    // @@protoc_insertion_point(field:google.protobuf.Enum.source_context)
     pub source_context: crate::MessageField<crate::well_known_types::SourceContext>,
     ///  The source syntax.
+    // @@protoc_insertion_point(field:google.protobuf.Enum.syntax)
     pub syntax: crate::ProtobufEnumOrUnknown<Syntax>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.Enum.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.Enum.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -972,18 +1027,24 @@ impl crate::reflect::ProtobufValue for Enum {
 ///  Enum value definition.
 #[derive(PartialEq,Clone,Default,Debug)]
 #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.EnumValue)
 pub struct EnumValue {
     // message fields
     ///  Enum value name.
+    // @@protoc_insertion_point(field:google.protobuf.EnumValue.name)
     pub name: ::std::string::String,
     ///  Enum value number.
+    // @@protoc_insertion_point(field:google.protobuf.EnumValue.number)
     pub number: i32,
     ///  Protocol buffer options.
+    // @@protoc_insertion_point(field:google.protobuf.EnumValue.options)
     pub options: ::std::vec::Vec<Option>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.EnumValue.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.EnumValue.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -1148,22 +1209,27 @@ impl crate::reflect::ProtobufValue for EnumValue {
 ///  enumeration, etc.
 #[derive(PartialEq,Clone,Default,Debug)]
 #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.Option)
 pub struct Option {
     // message fields
     ///  The option's name. For protobuf built-in options (options defined in
     ///  descriptor.proto), this is the short name. For example, `"map_entry"`.
     ///  For custom options, it should be the fully-qualified name. For example,
     ///  `"google.api.http"`.
+    // @@protoc_insertion_point(field:google.protobuf.Option.name)
     pub name: ::std::string::String,
     ///  The option's value packed in an Any message. If the value is a primitive,
     ///  the corresponding wrapper type defined in google/protobuf/wrappers.proto
     ///  should be used. If the value is an enum, it should be stored as an int32
     ///  value using the google.protobuf.Int32Value type.
+    // @@protoc_insertion_point(field:google.protobuf.Option.value)
     pub value: crate::MessageField<crate::well_known_types::Any>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.Option.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.Option.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -1308,8 +1374,11 @@ impl crate::reflect::ProtobufValue for Option {
 ///  The syntax in which a protocol buffer element is defined.
 #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
 #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(enum:google.protobuf.Syntax)
 pub enum Syntax {
+    // @@protoc_insertion_point(enum_value:google.protobuf.Syntax.SYNTAX_PROTO2)
     SYNTAX_PROTO2 = 0,
+    // @@protoc_insertion_point(enum_value:google.protobuf.Syntax.SYNTAX_PROTO3)
     SYNTAX_PROTO3 = 1,
 }
 

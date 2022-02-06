@@ -31,15 +31,19 @@
 ///  The JSON representation for `Struct` is JSON object.
 #[derive(PartialEq,Clone,Default,Debug)]
 #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.Struct)
 pub struct Struct {
     // message fields
     ///  Unordered map of dynamically typed values.
     #[cfg_attr(serde, serde(default))]
+    // @@protoc_insertion_point(field:google.protobuf.Struct.fields)
     pub fields: ::std::collections::HashMap<::std::string::String, Value>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.Struct.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.Struct.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -156,13 +160,16 @@ impl crate::reflect::ProtobufValue for Struct {
 ///  The JSON representation for `Value` is JSON value.
 #[derive(PartialEq,Clone,Default,Debug)]
 #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.Value)
 pub struct Value {
     // message oneof groups
     pub kind: ::std::option::Option<value::Kind>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.Value.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.Value.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -627,12 +634,19 @@ pub mod value {
 
     #[derive(Clone,PartialEq,Debug)]
     #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    // @@protoc_insertion_point(oneof:google.protobuf.Value.kind)
     pub enum Kind {
+        // @@protoc_insertion_point(oneof_field:google.protobuf.Value.null_value)
         null_value(crate::ProtobufEnumOrUnknown<super::NullValue>),
+        // @@protoc_insertion_point(oneof_field:google.protobuf.Value.number_value)
         number_value(f64),
+        // @@protoc_insertion_point(oneof_field:google.protobuf.Value.string_value)
         string_value(::std::string::String),
+        // @@protoc_insertion_point(oneof_field:google.protobuf.Value.bool_value)
         bool_value(bool),
+        // @@protoc_insertion_point(oneof_field:google.protobuf.Value.struct_value)
         struct_value(super::Struct),
+        // @@protoc_insertion_point(oneof_field:google.protobuf.Value.list_value)
         list_value(super::ListValue),
     }
 
@@ -645,14 +659,18 @@ pub mod value {
 ///  The JSON representation for `ListValue` is JSON array.
 #[derive(PartialEq,Clone,Default,Debug)]
 #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.ListValue)
 pub struct ListValue {
     // message fields
     ///  Repeated field of dynamically typed values.
+    // @@protoc_insertion_point(field:google.protobuf.ListValue.values)
     pub values: ::std::vec::Vec<Value>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.ListValue.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.ListValue.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -781,7 +799,9 @@ impl crate::reflect::ProtobufValue for ListValue {
 ///   The JSON representation for `NullValue` is JSON `null`.
 #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
 #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(enum:google.protobuf.NullValue)
 pub enum NullValue {
+    // @@protoc_insertion_point(enum_value:google.protobuf.NullValue.NULL_VALUE)
     NULL_VALUE = 0,
 }
 

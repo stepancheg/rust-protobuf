@@ -104,6 +104,16 @@ impl FieldDescriptor {
         self.get_proto().get_name()
     }
 
+    /// Fully qualified name of the field: fully qualified name of the message
+    /// followed by the field name.
+    pub fn full_name(&self) -> String {
+        format!(
+            "{}.{}",
+            self.message_descriptor.full_name(),
+            self.get_name()
+        )
+    }
+
     /// Oneof descriptor containing this field.
     pub fn containing_oneof(&self) -> Option<OneofDescriptor> {
         let proto = self.get_proto();

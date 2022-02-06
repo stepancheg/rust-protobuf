@@ -62,6 +62,11 @@ impl EnumValueDescriptor {
         self.get_proto().get_name()
     }
 
+    /// Fully qualified enum value name: fully qualified enum name followed by value name.
+    pub fn full_name(&self) -> String {
+        format!("{}.{}", self.enum_descriptor.full_name(), self.get_name())
+    }
+
     /// `i32` value of the enum variant
     pub fn value(&self) -> i32 {
         self.get_proto().get_number()

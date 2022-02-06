@@ -15,6 +15,7 @@ use crate::gen::inside::protobuf_crate_path;
 use crate::gen::map::map_entry;
 use crate::gen::message::RustTypeMessage;
 use crate::gen::oneof::OneofField;
+use crate::gen::protoc_insertion_point::write_protoc_insertion_point_for_field;
 use crate::gen::rust;
 use crate::gen::rust::EXPR_NONE;
 use crate::gen::rust::EXPR_VEC_NEW;
@@ -1140,6 +1141,7 @@ impl<'a> FieldGen<'a> {
             w.all_documentation(self.info, &self.path);
 
             self.write_serde_attr(w);
+            write_protoc_insertion_point_for_field(w, &self.proto_field.field);
             let vis = self.visibility();
             w.field_decl_vis(
                 vis,

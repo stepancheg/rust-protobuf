@@ -23,6 +23,7 @@
 
 #[derive(PartialEq,Clone,Default,Debug)]
 #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.Any)
 pub struct Any {
     // message fields
     ///  A URL/resource name that uniquely identifies the type of the serialized
@@ -53,13 +54,17 @@ pub struct Any {
     ///  Schemes other than `http`, `https` (or the empty scheme) might be
     ///  used with implementation specific semantics.
     ///
+    // @@protoc_insertion_point(field:google.protobuf.Any.type_url)
     pub type_url: ::std::string::String,
     ///  Must be a valid serialized protocol buffer of the above specified type.
+    // @@protoc_insertion_point(field:google.protobuf.Any.value)
     pub value: ::std::vec::Vec<u8>,
     // special fields
     #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.Any.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.Any.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 

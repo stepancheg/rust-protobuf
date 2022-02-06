@@ -23,21 +23,26 @@
 
 #[derive(PartialEq,Clone,Default,Debug)]
 #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.Timestamp)
 pub struct Timestamp {
     // message fields
     ///  Represents seconds of UTC time since Unix epoch
     ///  1970-01-01T00:00:00Z. Must be from 0001-01-01T00:00:00Z to
     ///  9999-12-31T23:59:59Z inclusive.
+    // @@protoc_insertion_point(field:google.protobuf.Timestamp.seconds)
     pub seconds: i64,
     ///  Non-negative fractions of a second at nanosecond resolution. Negative
     ///  second values with fractions must still have non-negative nanos values
     ///  that count forward in time. Must be from 0 to 999,999,999
     ///  inclusive.
+    // @@protoc_insertion_point(field:google.protobuf.Timestamp.nanos)
     pub nanos: i32,
     // special fields
     #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.Timestamp.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.Timestamp.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 

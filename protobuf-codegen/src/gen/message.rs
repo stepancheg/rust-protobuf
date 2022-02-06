@@ -15,6 +15,8 @@ use crate::gen::file_index::FileIndex;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::oneof::OneofGen;
 use crate::gen::oneof::OneofVariantGen;
+use crate::gen::protoc_insertion_point::write_protoc_insertion_point_for_message;
+use crate::gen::protoc_insertion_point::write_protoc_insertion_point_for_special_field;
 use crate::gen::rust::expr_vec_with_capacity;
 use crate::gen::rust::is_rust_keyword;
 use crate::gen::rust::EXPR_NONE;
@@ -582,6 +584,7 @@ impl<'a> MessageGen<'a> {
             &self.customize,
             "derive(::serde::Serialize, ::serde::Deserialize)",
         );
+        write_protoc_insertion_point_for_message(w, &self.message_descriptor);
         w.pub_struct(&format!("{}", self.type_name), |w| {
             if !self.fields_except_oneof().is_empty() {
                 w.comment("message fields");
@@ -606,11 +609,21 @@ impl<'a> MessageGen<'a> {
             w.comment("special fields");
 
             serde::write_serde_attr(w, &self.customize, "serde(skip)");
+            write_protoc_insertion_point_for_special_field(
+                w,
+                &self.message_descriptor,
+                "unknown_fields",
+            );
             w.pub_field_decl(
                 "unknown_fields",
                 &format!("{}::UnknownFields", protobuf_crate_path(&self.customize)),
             );
             serde::write_serde_attr(w, &self.customize, "serde(skip)");
+            write_protoc_insertion_point_for_special_field(
+                w,
+                &self.message_descriptor,
+                "cached_size",
+            );
             w.pub_field_decl(
                 "cached_size",
                 &format!("{}::rt::CachedSize", protobuf_crate_path(&self.customize)),

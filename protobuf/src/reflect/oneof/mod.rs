@@ -20,6 +20,16 @@ impl OneofDescriptor {
         self.get_proto().get_name()
     }
 
+    /// Fully qualified name of oneof (fully qualified name of enclosing message
+    /// followed by oneof name).
+    pub fn full_name(&self) -> String {
+        format!(
+            "{}.{}",
+            self.message_descriptor.full_name(),
+            self.get_name()
+        )
+    }
+
     /// Fields in this oneof.
     pub fn fields<'a>(&'a self) -> impl Iterator<Item = FieldDescriptor> + 'a {
         self.message_descriptor

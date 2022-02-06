@@ -14,6 +14,8 @@ use crate::gen::field::FieldGen;
 use crate::gen::file_and_mod::FileAndMod;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::message::MessageGen;
+use crate::gen::protoc_insertion_point::write_protoc_insertion_point_for_oneof;
+use crate::gen::protoc_insertion_point::write_protoc_insertion_point_for_oneof_field;
 use crate::gen::rust_name::RustIdent;
 use crate::gen::rust_name::RustIdentWithPath;
 use crate::gen::rust_name::RustPath;
@@ -247,8 +249,10 @@ impl<'a> OneofGen<'a> {
             &self.customize,
             "derive(::serde::Serialize, ::serde::Deserialize)",
         );
+        write_protoc_insertion_point_for_oneof(w, &self.oneof.oneof);
         w.pub_enum(&self.oneof.rust_name().ident.to_string(), |w| {
             for variant in self.variants_except_group() {
+                write_protoc_insertion_point_for_oneof_field(w, &variant.field.proto_field.field);
                 w.write_line(&format!(
                     "{}({}),",
                     variant.field.rust_name,
