@@ -262,7 +262,7 @@ impl Customize {
     }
 }
 
-pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customize {
+pub(crate) fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customize {
     let expose_oneof = rustproto::exts::expose_oneof.get(source);
     let expose_fields = rustproto::exts::expose_fields.get(source);
     let generate_accessors = rustproto::exts::generate_accessors.get(source);
@@ -291,14 +291,14 @@ pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customiz
     }
 }
 
-pub fn customize_from_rustproto_for_enum(source: &EnumOptions) -> Customize {
+pub(crate) fn customize_from_rustproto_for_enum(source: &EnumOptions) -> Customize {
     let serde_rename_all = rustproto::exts::serde_rename_all.get(source);
     let mut r = Customize::default();
     r.serde_rename_all = serde_rename_all;
     return r;
 }
 
-pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
+pub(crate) fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
     let expose_oneof = None;
     let expose_fields = rustproto::exts::expose_fields_field.get(source);
     let generate_accessors = rustproto::exts::generate_accessors_field.get(source);
@@ -328,7 +328,7 @@ pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
     }
 }
 
-pub fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
+pub(crate) fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
     let expose_oneof = rustproto::exts::expose_oneof_all.get(source);
     let expose_fields = rustproto::exts::expose_fields_all.get(source);
     let generate_accessors = rustproto::exts::generate_accessors_all.get(source);
