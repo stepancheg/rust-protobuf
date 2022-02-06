@@ -259,11 +259,6 @@ fn jobs() -> Yaml {
     r.push(job(
         RustToolchain::Stable,
         LINUX,
-        Features::Specific(&["with-serde"]),
-    ));
-    r.push(job(
-        RustToolchain::Stable,
-        LINUX,
         Features::Specific(&["with-bytes"]),
     ));
     r.push(job(RustToolchain::Nightly, LINUX, Features::All));

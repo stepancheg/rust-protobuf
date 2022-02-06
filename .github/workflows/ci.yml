@@ -101,51 +101,6 @@ jobs:
             - name: test protoc
               run: protoc/test.sh
               shell: bash
-    linux-stable-with-serde:
-        name: linux stable (with-serde)
-        runs-on: ubuntu-latest
-        env:
-            RUST_BACKTRACE: 1
-        steps:
-            - name: Checkout sources
-              uses: actions/checkout@v2
-            - name: Install toolchain
-              uses: actions-rs/toolchain@v1
-              with:
-                  profile: minimal
-                  toolchain: stable
-                  override: true
-            - name: Cache protobuf
-              uses: actions/cache@v2
-              with:
-                  key: pb-linux
-                  path: ~/pb
-              env:
-                  cache-name: pb
-            - name: Install protobuf
-              run: ci/install-protobuf.sh
-              shell: bash
-              env:
-                  PROTOBUF_VERSION: 3.6.1
-            - name: Protoc check
-              run: protoc --version
-              shell: bash
-            - name: Compile interop
-              run: interop/cxx/compile.sh
-              shell: bash
-            - name: protobuf-test
-              uses: actions-rs/cargo@v1
-              with:
-                  command: test
-                  args: --manifest-path=protobuf-test/Cargo.toml --features=with-serde
-            - name: protobuf-codegen-pure-test
-              uses: actions-rs/cargo@v1
-              with:
-                  command: test
-                  args: --manifest-path=protobuf-codegen-pure-test/Cargo.toml --features=with-serde
-            - name: test protoc
-              run: protoc/test.sh
-              shell: bash
     linux-stable-with-bytes:
         name: linux stable (with-bytes)
         runs-on: ubuntu-latest
