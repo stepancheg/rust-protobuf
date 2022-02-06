@@ -104,12 +104,6 @@ pub struct Customize {
     pub(crate) carllerche_bytes_for_bytes: Option<bool>,
     /// Use `bytes::Bytes` for `string` fields
     pub(crate) carllerche_bytes_for_string: Option<bool>,
-    /// Implement serde_derive for messages
-    pub(crate) serde_derive: Option<bool>,
-    /// When `serde_derive` is set, serde annotations will be guarded with `#[cfg(cfg, ...)]`.
-    pub(crate) serde_derive_cfg: Option<String>,
-    /// When `serde_derive` is set, use attribute rename_all
-    pub(crate) serde_rename_all: Option<String>,
     /// Enable lite runtime
     pub(crate) lite_runtime: Option<bool>,
     /// Generate `mod.rs` in the output directory.
@@ -168,21 +162,6 @@ impl Customize {
         self
     }
 
-    pub fn serde_derive(mut self, serde_derive: bool) -> Self {
-        self.serde_derive = Some(serde_derive);
-        self
-    }
-
-    pub fn serde_derive_cfg(mut self, serde_derive_cfg: &str) -> Self {
-        self.serde_derive_cfg = Some(serde_derive_cfg.to_owned());
-        self
-    }
-
-    pub fn serde_rename_all(mut self, serde_rename_all: &str) -> Self {
-        self.serde_rename_all = Some(serde_rename_all.to_owned());
-        self
-    }
-
     pub fn lite_runtime(mut self, lite_runtime: bool) -> Self {
         self.lite_runtime = Some(lite_runtime);
         self
@@ -220,15 +199,6 @@ impl Customize {
         }
         if let Some(v) = that.carllerche_bytes_for_string {
             self.carllerche_bytes_for_string = Some(v);
-        }
-        if let Some(v) = that.serde_derive {
-            self.serde_derive = Some(v);
-        }
-        if let Some(ref v) = that.serde_derive_cfg {
-            self.serde_derive_cfg = Some(v.clone());
-        }
-        if let Some(ref v) = that.serde_rename_all {
-            self.serde_rename_all = Some(v.clone());
         }
         if let Some(v) = that.lite_runtime {
             self.lite_runtime = Some(v);
@@ -277,12 +247,6 @@ impl Customize {
                 r.carllerche_bytes_for_bytes = Some(parse_bool(v)?);
             } else if n == "carllerche_bytes_for_string" {
                 r.carllerche_bytes_for_string = Some(parse_bool(v)?);
-            } else if n == "serde_derive" {
-                r.serde_derive = Some(parse_bool(v)?);
-            } else if n == "serde_derive_cfg" {
-                r.serde_derive_cfg = Some(v.to_owned());
-            } else if n == "serde_rename_all" {
-                r.serde_rename_all = Some(v.to_owned());
             } else if n == "lite_runtime" {
                 r.lite_runtime = Some(parse_bool(v)?);
             } else if n == "gen_mod_rs" {

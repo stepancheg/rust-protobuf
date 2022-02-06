@@ -28,7 +28,6 @@ use crate::gen::rust_types_values::*;
 use crate::gen::scope::MessageWithScope;
 use crate::gen::scope::RootScope;
 use crate::gen::scope::WithScope;
-use crate::gen::serde;
 use crate::Customize;
 
 /// Protobuf message Rust type name
@@ -585,11 +584,6 @@ impl<'a> MessageGen<'a> {
         }
         derive.extend(&["Clone", "Default", "Debug"]);
         w.derive(&derive);
-        serde::write_serde_attr(
-            w,
-            &self.customize.for_elem,
-            "derive(::serde::Serialize, ::serde::Deserialize)",
-        );
         write_protoc_insertion_point_for_message(
             w,
             &self.customize.for_elem,
@@ -639,7 +633,6 @@ impl<'a> MessageGen<'a> {
                 )
                 .for_elem;
 
-            serde::write_serde_attr(w, &customize_unknown_fields, "serde(skip)");
             write_protoc_insertion_point_for_special_field(
                 w,
                 &customize_unknown_fields,
@@ -653,7 +646,6 @@ impl<'a> MessageGen<'a> {
                     protobuf_crate_path(&self.customize.for_elem)
                 ),
             );
-            serde::write_serde_attr(w, &customize_cached_size, "serde(skip)");
             write_protoc_insertion_point_for_special_field(
                 w,
                 &customize_cached_size,

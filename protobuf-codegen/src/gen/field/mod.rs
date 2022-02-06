@@ -29,7 +29,6 @@ use crate::gen::scope::MessageOrEnumWithScope;
 use crate::gen::scope::MessageWithScope;
 use crate::gen::scope::RootScope;
 use crate::gen::scope::WithScope;
-use crate::gen::serde;
 
 mod accessor;
 
@@ -524,7 +523,6 @@ pub(crate) struct FieldGen<'a> {
     pub rust_name: RustIdent,
     pub proto_type: field_descriptor_proto::Type,
     wire_type: WireType,
-    serde_name: String,
     pub kind: FieldKind<'a>,
     pub expose_field: bool,
     pub generate_accessors: bool,
@@ -636,7 +634,6 @@ impl<'a> FieldGen<'a> {
             rust_name: rust_field_name_for_protobuf_field_name(&field.field.get_name()),
             proto_type: field.field.get_proto().get_field_type(),
             wire_type: WireType::for_type(field.field.get_proto().get_field_type()),
-            serde_name: field.field.get_name().to_string(),
             proto_field: field,
             kind,
             expose_field,
@@ -1145,7 +1142,6 @@ impl<'a> FieldGen<'a> {
         } else {
             w.all_documentation(self.info, &self.path);
 
-            self.write_serde_attr(w);
             write_protoc_insertion_point_for_field(w, &self.customize, &self.proto_field.field);
             let vis = self.visibility();
             w.field_decl_vis(
@@ -1161,22 +1157,6 @@ impl<'a> FieldGen<'a> {
                     )
                     .to_code(&self.customize),
             );
-        }
-    }
-
-    fn write_serde_attr(&self, w: &mut CodeWriter) {
-        let mut tags = Vec::new();
-        if self.rust_name.get() != &self.serde_name {
-            tags.push(format!(r#"alias="{}""#, &self.serde_name));
-        }
-
-        match self.kind {
-            FieldKind::Map(..) => tags.push("default".to_string()),
-            _ => {}
-        }
-
-        if !tags.is_empty() {
-            serde::write_serde_attr(w, &self.customize, &format!("serde({})", tags.join(", ")));
         }
     }
 

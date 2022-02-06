@@ -16,7 +16,6 @@ use crate::gen::scope::EnumValueWithContext;
 use crate::gen::scope::EnumWithScope;
 use crate::gen::scope::RootScope;
 use crate::gen::scope::WithScope;
-use crate::gen::serde;
 
 #[derive(Clone)]
 pub(crate) struct EnumValueGen<'a> {
@@ -175,15 +174,6 @@ impl<'a> EnumGen<'a> {
             w.comment("Note: you cannot use pattern matching for enums with allow_alias option");
         }
         w.derive(&derive);
-        serde::write_serde_attr(
-            w,
-            &self.customize.for_elem,
-            "derive(::serde::Serialize, ::serde::Deserialize)",
-        );
-        if let Some(ref ren) = self.customize.for_elem.serde_rename_all {
-            let attr = format!("serde(rename_all = \"{}\")", ren);
-            serde::write_serde_attr(w, &self.customize.for_elem, &attr);
-        }
         let ref type_name = self.type_name;
         write_protoc_insertion_point_for_enum(
             w,
