@@ -14,6 +14,14 @@ rust-protobuf
   (Coded{Input|Output}Stream impl)
 * Supports both Protobuf versions 2 and 3
 
+# This documentation is outdated
+
+rust-protobuf 3 is on the way (see [the post](https://github.com/stepancheg/rust-protobuf/blob/master/doc/past-present-future.md)),
+a lot of documentation migrated to crates documentation on docs.rs, and this page contains a mix of documentation
+for version 2, older version 2, and version 3. This need to be cleaned up.
+
+# This documentation is outdated
+
 ## List of crates
 
 `rust-protobuf` — repository provides multiple crates:
