@@ -1,5 +1,7 @@
 use std::env;
 use std::ffi::OsString;
+use std::fs;
+use std::path::Component;
 use std::path::Path;
 use std::path::PathBuf;
 use std::process;
@@ -33,6 +35,8 @@ impl Default for WhichParser {
 pub struct Codegen {
     /// What parser to use to parse `.proto` files.
     which_parser: WhichParser,
+    /// Create out directory.
+    create_out_dir: bool,
     /// --lang_out= param
     out_dir: PathBuf,
     /// -I args
@@ -81,10 +85,35 @@ impl Codegen {
     }
 
     /// Set output directory relative to Cargo output dir.
+    ///
+    /// With this option, output directory is erased and recreated during invocation.
     pub fn cargo_out_dir(&mut self, rel: &str) -> &mut Self {
+        let rel = Path::new(rel);
+        let mut not_empty = false;
+        for comp in rel.components() {
+            match comp {
+                Component::ParentDir => {
+                    panic!("parent path in components of rel path: `{}`", rel.display());
+                }
+                Component::CurDir => {
+                    continue;
+                }
+                Component::Normal(..) => {}
+                Component::RootDir | Component::Prefix(..) => {
+                    panic!("root dir in components of rel path: `{}`", rel.display());
+                }
+            }
+            not_empty = true;
+        }
+
+        if !not_empty {
+            panic!("empty rel path: `{}`", rel.display());
+        }
+
         let cargo_out_dir = env::var("OUT_DIR").expect("OUT_DIR env var not set");
         let mut path = PathBuf::from(cargo_out_dir);
         path.push(rel);
+        self.create_out_dir = true;
         self.out_dir(path)
     }
 
@@ -173,6 +202,13 @@ impl Codegen {
     /// This function uses pure Rust parser or `protoc` parser depending on
     /// how this object was configured.
     pub fn run(&self) -> anyhow::Result<()> {
+        if self.create_out_dir {
+            if self.out_dir.exists() {
+                fs::remove_dir_all(&self.out_dir)?;
+            }
+            fs::create_dir(&self.out_dir)?;
+        }
+
         let (parsed_and_typechecked, parser) = match self.which_parser {
             WhichParser::Protoc => protoc::parse_and_typecheck(self)?,
             WhichParser::Pure => pure::parse_and_typecheck(self)?,
