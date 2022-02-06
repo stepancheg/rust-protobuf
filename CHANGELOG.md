@@ -10,6 +10,7 @@ Stable versions are 2.xx still supported.
 - Slightly more compact generated code
 - serde is no longer supported natively. See explanations [in the issue](https://github.com/stepancheg/rust-protobuf/issues/519).
 - Rename `ProtobufError` to `Error` and make it opaque type. Rename `ProtobufResult` to `Result`.
+- Rename `ProtobufEnum` to `Enum` and `ProtobufEnumOrUnknown` to `EnumOrUnknown`
 
 ## [3.0.0-alpha.5] - 2022-02-02
 
