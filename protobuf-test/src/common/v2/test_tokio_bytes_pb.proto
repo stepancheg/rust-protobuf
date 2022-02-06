@@ -6,7 +6,7 @@ option (rustproto.tokio_bytes_for_bytes_all) = true;
 option (rustproto.tokio_bytes_for_string_all) = true;
 option (rustproto.generate_accessors_all) = true;
 
-message TestCarllercheBytes {
+message TestTokioBytes {
     optional bytes b1 = 1;
     optional string s1 = 2;
     repeated bytes br = 3;

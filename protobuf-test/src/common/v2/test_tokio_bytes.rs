@@ -6,7 +6,7 @@ use super::test_tokio_bytes_pb::*;
 
 #[test]
 fn test() {
-    let mut m = TestCarllercheBytes::new();
+    let mut m = TestTokioBytes::new();
     m.set_b1(Bytes::from("aabb"));
     m.set_s1(Chars::from("ccdd"));
 
