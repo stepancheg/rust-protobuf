@@ -50,6 +50,16 @@
 //! because storing cached size is faster. If prost doesn't want to store cached size,
 //! perhaps they can at least use similar approach.)
 //!
+//! ## Default instance
+//!
+//! For each message, rust-protobuf generates `M::default_instance()` function
+//! and `Default for <&M>` (similarly to what C++ and Java generators do).
+//! So when fetching an optional field reference, rust-protobuf is able to
+//! always provide a reference to a message instance: either a real message or a default instance
+//! if a field is unset.
+//!
+//! Prost doesn't do it.
+//!
 //! ## Enums
 //!
 //! In prost, enum fields have type `i32`.

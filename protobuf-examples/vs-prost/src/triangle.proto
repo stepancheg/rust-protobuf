@@ -7,7 +7,11 @@ enum Color {
     BLUE = 3;
 }
 
+message Properties {
+}
+
 message Triangle {
   string description = 1;
   Color color = 2;
+  Properties properties = 3;
 }
