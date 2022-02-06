@@ -16,6 +16,9 @@ Feel free to submit more items here.
 
 ## The differences
 
+The comparison is rust-protobuf from master and
+prost version 0.9.0, which is the latest released version at the moment of writing.
+
 ### Use of derives
 
 Prost relies on `#[derive(::prost::Message)]` in generated code.
@@ -43,5 +46,42 @@ to preserve unknown values when reading future message with old schema
 and writing it back.
 
 So rust-protobuf is a bit more type-safe, but generated code is somewhat harder to use.
+
+## Reflection
+
+Both prost and rust-protobuf can be configured to generate serde annotations.
+
+But rust-protobuf fully supports runtime reflection
+(e. g. find field by name, get field, set field).
+This is implemented similarly to C++ implementation of protobuf.
+The drawback is that generated code is quite large (which also affects binary size).
+
+However, for prost there's [prost-reflect](https://github.com/andrewhickman/prost-reflect)
+crate. I don't know what is it's status.
+
+## Dynamic messages
+
+rust-protobuf supports dynamic messages.
+
+For prost, `prost-reflect` implements them.
+
+## JSON
+
+Proper [protobuf JSON mapping](https://developers.google.com/protocol-buffers/docs/proto3#json)
+is supported natively by rust-protobuf.
+
+For prost it can be done with `prost-reflect` package.
+
+## Protobuf text format
+
+rust-protobuf supports text format printing and parsing. Prost seems to be missing this feature.
+
+## Dependency on `protoc` binary
+
+prost depends on `protoc` binary to parse `.proto` files.
+
+rust-protobuf can do both:
+* parse using `protoc` binary
+* has pure rust parser (and typechecker) of `.proto` files
 
 <!-- cargo-sync-readme end -->
