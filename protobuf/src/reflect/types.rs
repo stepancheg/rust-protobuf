@@ -595,7 +595,7 @@ impl ProtobufType for ProtobufTypeCarllercheBytes {
     const WIRE_TYPE: WireType = ProtobufTypeBytes::WIRE_TYPE;
 
     fn read(is: &mut CodedInputStream) -> Result<Bytes> {
-        is.read_carllerche_bytes()
+        is.read_tokio_bytes()
     }
 
     fn get_from_unknown(unknown_values: &UnknownValues) -> Option<Bytes> {
@@ -622,7 +622,7 @@ impl ProtobufType for ProtobufTypeCarllercheChars {
     const WIRE_TYPE: WireType = ProtobufTypeBytes::WIRE_TYPE;
 
     fn read(is: &mut CodedInputStream) -> Result<Chars> {
-        is.read_carllerche_chars()
+        is.read_tokio_chars()
     }
 
     fn get_from_unknown(unknown_values: &UnknownValues) -> Option<Chars> {

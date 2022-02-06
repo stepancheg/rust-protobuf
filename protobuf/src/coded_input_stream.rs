@@ -80,7 +80,7 @@ impl<'a> CodedInputStream<'a> {
     /// [`read_carllerche_bytes`](crate::CodedInputStream::read_carllerche_bytes)
     /// will return a shared copy of this bytes object.
     #[cfg(feature = "bytes")]
-    pub fn from_carllerche_bytes(bytes: &'a Bytes) -> CodedInputStream<'a> {
+    pub fn from_tokio_bytes(bytes: &'a Bytes) -> CodedInputStream<'a> {
         CodedInputStream::from_buf_read_iter(BufReadIter::from_bytes(bytes))
     }
 
@@ -546,15 +546,15 @@ impl<'a> CodedInputStream<'a> {
 
     /// Read `bytes` field, length delimited
     #[cfg(feature = "bytes")]
-    pub fn read_carllerche_bytes(&mut self) -> Result<Bytes> {
+    pub fn read_tokio_bytes(&mut self) -> Result<Bytes> {
         let len = self.read_raw_varint32()?;
         self.read_raw_callerche_bytes(len as usize)
     }
 
     /// Read `string` field, length delimited
     #[cfg(feature = "bytes")]
-    pub fn read_carllerche_chars(&mut self) -> Result<Chars> {
-        let bytes = self.read_carllerche_bytes()?;
+    pub fn read_tokio_chars(&mut self) -> Result<Chars> {
+        let bytes = self.read_tokio_bytes()?;
         Ok(Chars::from_bytes(bytes).map_err(ProtobufError::Utf8)?)
     }
 

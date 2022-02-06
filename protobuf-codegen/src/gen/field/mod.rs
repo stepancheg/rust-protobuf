@@ -57,7 +57,7 @@ impl FieldDescriptorProtoTypeExt for field_descriptor_proto::Type {
                         field_descriptor_proto::Type::TYPE_STRING => "chars",
                         _ => protobuf_name(*self),
                     };
-                    format!("{}.read_carllerche_{}()", is, protobuf_name)
+                    format!("{}.read_tokio_{}()", is, protobuf_name)
                 }
             },
         }
@@ -486,17 +486,17 @@ fn field_elem<'a>(
             ),
         }
     } else if field.field.get_proto().has_field_type() {
-        let carllerche_for_bytes = customize.tokio_bytes_for_bytes.unwrap_or(false);
-        let carllerche_for_string = customize.tokio_bytes_for_string.unwrap_or(false);
+        let tokio_for_bytes = customize.tokio_bytes_for_bytes.unwrap_or(false);
+        let tokio_for_string = customize.tokio_bytes_for_string.unwrap_or(false);
 
         let elem = match field.field.get_proto().get_field_type() {
-            field_descriptor_proto::Type::TYPE_STRING if carllerche_for_string => {
+            field_descriptor_proto::Type::TYPE_STRING if tokio_for_string => {
                 FieldElem::Primitive(
                     field_descriptor_proto::Type::TYPE_STRING,
                     PrimitiveTypeVariant::TokioBytes,
                 )
             }
-            field_descriptor_proto::Type::TYPE_BYTES if carllerche_for_bytes => {
+            field_descriptor_proto::Type::TYPE_BYTES if tokio_for_bytes => {
                 FieldElem::Primitive(
                     field_descriptor_proto::Type::TYPE_BYTES,
                     PrimitiveTypeVariant::TokioBytes,
@@ -1485,8 +1485,8 @@ impl<'a> FieldGen<'a> {
         r: &RepeatedField,
         w: &mut CodeWriter,
     ) {
-        let carllerche = match r.elem.primitive_type_variant() {
-            PrimitiveTypeVariant::TokioBytes => "carllerche_",
+        let tokio = match r.elem.primitive_type_variant() {
+            PrimitiveTypeVariant::TokioBytes => "tokio_",
             PrimitiveTypeVariant::Default => "",
         };
         let type_name_for_fn = protobuf_name(self.proto_type);
@@ -1500,7 +1500,7 @@ impl<'a> FieldGen<'a> {
         w.write_line(&format!(
             "{}::rt::read_repeated_{}{}_into{}(wire_type, is, &mut self.{})?;",
             protobuf_crate_path(&self.customize),
-            carllerche,
+            tokio,
             type_name_for_fn,
             into_what_suffix,
             self.rust_name,
@@ -1526,8 +1526,8 @@ impl<'a> FieldGen<'a> {
             FieldElem::Message(..) => "into_field",
             _ => "into",
         };
-        let carllerche = match s.elem.primitive_type_variant() {
-            PrimitiveTypeVariant::TokioBytes => "carllerche_",
+        let tokio = match s.elem.primitive_type_variant() {
+            PrimitiveTypeVariant::TokioBytes => "tokio_",
             PrimitiveTypeVariant::Default => "",
         };
         let type_name_for_fn = protobuf_name(self.proto_type);
@@ -1535,7 +1535,7 @@ impl<'a> FieldGen<'a> {
             "{}::rt::read_{}_{}{}_{}(wire_type, is, &mut self.{})?;",
             protobuf_crate_path(&self.customize),
             singular_or_proto3,
-            carllerche,
+            tokio,
             type_name_for_fn,
             suffix,
             self.rust_name,

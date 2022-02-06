@@ -44,7 +44,7 @@ fn parse_repeated_small_regular(b: &mut test::Bencher) {
 #[bench]
 fn parse_repeated_small_bytes(b: &mut test::Bencher) {
     let bs = Bytes::from(make_repeated(30));
-    b.iter(|| messages::TestMessageWithBytes::parse_from_carllerche_bytes(&bs).expect("parse"))
+    b.iter(|| messages::TestMessageWithBytes::parse_from_tokio_bytes(&bs).expect("parse"))
 }
 
 #[bench]
@@ -56,7 +56,7 @@ fn parse_repeated_medium_regular(b: &mut test::Bencher) {
 #[bench]
 fn parse_repeated_medium_bytes(b: &mut test::Bencher) {
     let bs = Bytes::from(make_repeated(300));
-    b.iter(|| messages::TestMessageWithBytes::parse_from_carllerche_bytes(&bs).expect("parse"))
+    b.iter(|| messages::TestMessageWithBytes::parse_from_tokio_bytes(&bs).expect("parse"))
 }
 
 #[bench]
@@ -68,7 +68,7 @@ fn parse_repeated_large_regular(b: &mut test::Bencher) {
 #[bench]
 fn parse_repeated_large_bytes(b: &mut test::Bencher) {
     let bs = Bytes::from(make_repeated(3000));
-    b.iter(|| messages::TestMessageWithBytes::parse_from_carllerche_bytes(&bs).expect("parse"))
+    b.iter(|| messages::TestMessageWithBytes::parse_from_tokio_bytes(&bs).expect("parse"))
 }
 
 #[bench]
@@ -80,5 +80,5 @@ fn parse_repeated_huge_regular(b: &mut test::Bencher) {
 #[bench]
 fn parse_repeated_huge_bytes(b: &mut test::Bencher) {
     let bs = Bytes::from(make_repeated(30000));
-    b.iter(|| messages::TestMessageWithBytes::parse_from_carllerche_bytes(&bs).expect("parse"))
+    b.iter(|| messages::TestMessageWithBytes::parse_from_tokio_bytes(&bs).expect("parse"))
 }

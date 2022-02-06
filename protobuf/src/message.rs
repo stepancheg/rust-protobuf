@@ -154,11 +154,11 @@ pub trait Message:
     /// Parse message from `Bytes` object.
     /// Resulting message may share references to the passed bytes object.
     #[cfg(feature = "bytes")]
-    fn parse_from_carllerche_bytes(bytes: &Bytes) -> Result<Self>
+    fn parse_from_tokio_bytes(bytes: &Bytes) -> Result<Self>
     where
         Self: Sized,
     {
-        let mut is = CodedInputStream::from_carllerche_bytes(bytes);
+        let mut is = CodedInputStream::from_tokio_bytes(bytes);
         let r = Self::parse_from(&mut is)?;
         is.check_eof()?;
         Ok(r)

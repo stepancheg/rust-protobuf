@@ -714,14 +714,14 @@ pub fn read_repeated_string_into(
 
 /// Read repeated `Chars` field into given vec.
 #[cfg(feature = "bytes")]
-pub fn read_repeated_carllerche_string_into(
+pub fn read_repeated_tokio_string_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
     target: &mut Vec<Chars>,
 ) -> Result<()> {
     match wire_type {
         WireType::LengthDelimited => {
-            target.push(is.read_carllerche_chars()?);
+            target.push(is.read_tokio_chars()?);
             Ok(())
         }
         _ => Err(unexpected_wire_type(wire_type)),
@@ -730,14 +730,14 @@ pub fn read_repeated_carllerche_string_into(
 
 /// Read singular `Chars` field.
 #[cfg(feature = "bytes")]
-pub fn read_singular_carllerche_string_into(
+pub fn read_singular_tokio_string_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
     target: &mut Option<Chars>,
 ) -> Result<()> {
     match wire_type {
         WireType::LengthDelimited => {
-            *target = Some(is.read_carllerche_chars()?);
+            *target = Some(is.read_tokio_chars()?);
             Ok(())
         }
         _ => Err(unexpected_wire_type(wire_type)),
@@ -758,14 +758,14 @@ pub fn read_singular_proto3_string_into(
 
 /// Read singular `Chars` field for proto3.
 #[cfg(feature = "bytes")]
-pub fn read_singular_proto3_carllerche_string_into(
+pub fn read_singular_proto3_tokio_string_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
     target: &mut Chars,
 ) -> Result<()> {
     match wire_type {
         WireType::LengthDelimited => {
-            *target = is.read_carllerche_chars()?;
+            *target = is.read_tokio_chars()?;
             Ok(())
         }
         _ => Err(unexpected_wire_type(wire_type)),
@@ -789,14 +789,14 @@ pub fn read_repeated_bytes_into(
 
 /// Read repeated `Bytes` field into given vec.
 #[cfg(feature = "bytes")]
-pub fn read_repeated_carllerche_bytes_into(
+pub fn read_repeated_tokio_bytes_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
     target: &mut Vec<Bytes>,
 ) -> Result<()> {
     match wire_type {
         WireType::LengthDelimited => {
-            target.push(is.read_carllerche_bytes()?);
+            target.push(is.read_tokio_bytes()?);
             Ok(())
         }
         _ => Err(unexpected_wire_type(wire_type)),
@@ -805,14 +805,14 @@ pub fn read_repeated_carllerche_bytes_into(
 
 /// Read singular `Bytes` field.
 #[cfg(feature = "bytes")]
-pub fn read_singular_carllerche_bytes_into(
+pub fn read_singular_tokio_bytes_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
     target: &mut Option<Bytes>,
 ) -> Result<()> {
     match wire_type {
         WireType::LengthDelimited => {
-            *target = Some(is.read_carllerche_bytes()?);
+            *target = Some(is.read_tokio_bytes()?);
             Ok(())
         }
         _ => Err(unexpected_wire_type(wire_type)),
@@ -833,14 +833,14 @@ pub fn read_singular_proto3_bytes_into(
 
 /// Read singular `Bytes` field for proto3.
 #[cfg(feature = "bytes")]
-pub fn read_singular_proto3_carllerche_bytes_into(
+pub fn read_singular_proto3_tokio_bytes_into(
     wire_type: WireType,
     is: &mut CodedInputStream,
     target: &mut Bytes,
 ) -> Result<()> {
     match wire_type {
         WireType::LengthDelimited => {
-            *target = is.read_carllerche_bytes()?;
+            *target = is.read_tokio_bytes()?;
             Ok(())
         }
         _ => Err(unexpected_wire_type(wire_type)),
