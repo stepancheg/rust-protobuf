@@ -35,8 +35,8 @@ fn assert_equal_recursively(a: &Path, b: &Path) {
             }
         }
     } else {
-        let a_contents = fs::read(a).unwrap();
-        let b_contents = fs::read(b).unwrap();
+        let a_contents = fs::read_to_string(a).unwrap();
+        let b_contents = fs::read_to_string(b).unwrap();
         assert_eq!(a_contents, b_contents);
     }
 }
