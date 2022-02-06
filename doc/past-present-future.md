@@ -26,6 +26,11 @@ Another example, in the old times `cargo` didn't have `build.rs` files,
 so files needed to be generated manually and probably committed to the repository,
 and the code generator was optimized for storing generated files in the source tree.
 
+Also, in earlier days, rust-protobuf had zero external dependencies because all
+the libraries broke too often). This also explains some API or implementation decisions.
+In rust-protobuf version 2, core library, `protobuf`, still has no non-optional dependencies.
+Version 3 however started depending on other libraries.
+
 ## Present
 
 There are two versions of rust-protobuf now: 2 and 3-alpha.
