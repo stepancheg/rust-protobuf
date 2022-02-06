@@ -1,3 +1,5 @@
+use std::fmt;
+
 use protobuf::reflect::EnumDescriptor;
 use protobuf::reflect::FieldDescriptor;
 use protobuf::reflect::FileDescriptor;
@@ -12,6 +14,15 @@ pub(crate) struct CustomizeElemCtx<'a> {
     pub(crate) for_elem: Customize,
     pub(crate) for_children: Customize,
     pub(crate) callback: &'a dyn CustomizeCallback,
+}
+
+impl<'a> fmt::Debug for CustomizeElemCtx<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("CustomizeElemCtx")
+            .field("for_elem", &self.for_elem)
+            .field("for_children", &self.for_children)
+            .finish_non_exhaustive()
+    }
 }
 
 impl<'a> CustomizeElemCtx<'a> {
@@ -66,5 +77,16 @@ impl DescriptorForCustomize for OneofDescriptor {
 impl DescriptorForCustomize for FileDescriptor {
     fn customize(&self, callback: &dyn CustomizeCallback) -> Customize {
         callback.file(self)
+    }
+}
+
+pub(crate) struct SpecialFieldPseudoDescriptor<'a> {
+    pub(crate) message: &'a MessageDescriptor,
+    pub(crate) field: &'a str,
+}
+
+impl<'a> DescriptorForCustomize for SpecialFieldPseudoDescriptor<'a> {
+    fn customize(&self, callback: &dyn CustomizeCallback) -> Customize {
+        callback.special_field(self.message, self.field)
     }
 }

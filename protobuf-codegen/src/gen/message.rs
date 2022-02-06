@@ -6,6 +6,7 @@ use protobuf::reflect::MessageDescriptor;
 use protobuf_parse::snake_case;
 
 use crate::customize::ctx::CustomizeElemCtx;
+use crate::customize::ctx::SpecialFieldPseudoDescriptor;
 use crate::customize::rustproto_proto::customize_from_rustproto_for_message;
 use crate::gen::code_writer::*;
 use crate::gen::enums::*;
@@ -617,10 +618,31 @@ impl<'a> MessageGen<'a> {
             }
             w.comment("special fields");
 
-            serde::write_serde_attr(w, &self.customize.for_elem, "serde(skip)");
+            let customize_unknown_fields = self
+                .customize
+                .child(
+                    &Customize::default(),
+                    &SpecialFieldPseudoDescriptor {
+                        message: &self.message.message,
+                        field: "unknown_fields",
+                    },
+                )
+                .for_elem;
+            let customize_cached_size = self
+                .customize
+                .child(
+                    &Customize::default(),
+                    &SpecialFieldPseudoDescriptor {
+                        message: &self.message.message,
+                        field: "cached_size",
+                    },
+                )
+                .for_elem;
+
+            serde::write_serde_attr(w, &customize_unknown_fields, "serde(skip)");
             write_protoc_insertion_point_for_special_field(
                 w,
-                &self.customize.for_elem,
+                &customize_unknown_fields,
                 &self.message_descriptor,
                 "unknown_fields",
             );
@@ -631,10 +653,10 @@ impl<'a> MessageGen<'a> {
                     protobuf_crate_path(&self.customize.for_elem)
                 ),
             );
-            serde::write_serde_attr(w, &self.customize.for_elem, "serde(skip)");
+            serde::write_serde_attr(w, &customize_cached_size, "serde(skip)");
             write_protoc_insertion_point_for_special_field(
                 w,
-                &self.customize.for_elem,
+                &customize_cached_size,
                 &self.message_descriptor,
                 "cached_size",
             );

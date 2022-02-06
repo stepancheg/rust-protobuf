@@ -109,5 +109,6 @@ pub mod protoc_gen_rust;
 
 pub use codegen::Codegen;
 pub use customize::Customize;
+pub use customize::CustomizeCallback;
 #[doc(hidden)]
 pub use gen::paths::proto_name_to_rs;
