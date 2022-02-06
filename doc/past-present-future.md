@@ -3,7 +3,7 @@
 ## Past
 
 I started rust-protobuf 7 years ago (time flies).
-I wanted to implement something and found that there's no protobuf implementation in Rust.
+I wanted to implement something and found no protobuf implementation in Rust.
 
 So I decided to implement it. Implementation took quite a lot of time,
 and I didn't implement that other project I wanted rust-protobuf to be used for.
@@ -11,15 +11,16 @@ and I didn't implement that other project I wanted rust-protobuf to be used for.
 That was a fun time. Rust was very far from being stable, breaking changes occurred weekly,
 and patching rust-protobuf was not trivial because rust-protobuf itself contains generated code,
 and fixing for rust updates required patching the library, the code generator
-**and generated code** inside protobuf. I usually used `sed` to patch generated code.
+**and generated code** inside protobuf. I usually used `sed` to patch generated code
+and occasionally I used previous version of rust to generate code compatible with newer rust.
 
 There are still references to these old times. For example, `Debug` trait was called `Show` in early rust,
 and this name is still
 [mentioned in the code generator](https://github.com/stepancheg/rust-protobuf/blob/188596b3d78b381d49a753cdb3ecb5fbc9382b0d/protobuf-codegen/src/gen/message.rs#L535).
 
-Many API features of rust-protobuf which seem to be strange, can be explained by historical reasons.
+Many API decisions of rust-protobuf which seem to be strange, they can be explained by historical reasons.
 For example, in rust-protobuf version 2 `Debug` implementation of messages outputs protobuf text format,
-not standard rust debugging output.
+not standard rust debugging output: there was no clear explanation what `Debug` was supposed to do.
 
 Another example, in the old times `cargo` didn't have `build.rs` files,
 so files needed to be generated manually and probably committed to the repository,
