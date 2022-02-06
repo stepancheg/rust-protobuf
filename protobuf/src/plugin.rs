@@ -23,19 +23,23 @@
 
 ///  The version number of protocol compiler.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.compiler.Version)
 pub struct Version {
     // message fields
+    // @@protoc_insertion_point(field:google.protobuf.compiler.Version.major)
     major: ::std::option::Option<i32>,
+    // @@protoc_insertion_point(field:google.protobuf.compiler.Version.minor)
     minor: ::std::option::Option<i32>,
+    // @@protoc_insertion_point(field:google.protobuf.compiler.Version.patch)
     patch: ::std::option::Option<i32>,
     ///  A suffix for alpha, beta or rc release, e.g., "alpha-1", "rc2". It should
     ///  be empty for mainline stable releases.
+    // @@protoc_insertion_point(field:google.protobuf.compiler.Version.suffix)
     suffix: ::std::option::Option<::std::string::String>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.compiler.Version.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.compiler.Version.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -311,14 +315,16 @@ impl crate::reflect::ProtobufValue for Version {
 
 ///  An encoded CodeGeneratorRequest is written to the plugin's stdin.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.compiler.CodeGeneratorRequest)
 pub struct CodeGeneratorRequest {
     // message fields
     ///  The .proto files that were explicitly listed on the command-line.  The
     ///  code generator should generate code only for these files.  Each file's
     ///  descriptor will be included in proto_file, below.
+    // @@protoc_insertion_point(field:google.protobuf.compiler.CodeGeneratorRequest.file_to_generate)
     pub file_to_generate: ::std::vec::Vec<::std::string::String>,
     ///  The generator parameter passed on the command-line.
+    // @@protoc_insertion_point(field:google.protobuf.compiler.CodeGeneratorRequest.parameter)
     parameter: ::std::option::Option<::std::string::String>,
     ///  FileDescriptorProtos for all files in files_to_generate and everything
     ///  they import.  The files will appear in topological order, so each file
@@ -334,13 +340,15 @@ pub struct CodeGeneratorRequest {
     ///
     ///  Type names of fields and extensions in the FileDescriptorProto are always
     ///  fully qualified.
+    // @@protoc_insertion_point(field:google.protobuf.compiler.CodeGeneratorRequest.proto_file)
     pub proto_file: ::std::vec::Vec<crate::descriptor::FileDescriptorProto>,
     ///  The version number of protocol compiler.
+    // @@protoc_insertion_point(field:google.protobuf.compiler.CodeGeneratorRequest.compiler_version)
     pub compiler_version: crate::MessageField<Version>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.compiler.CodeGeneratorRequest.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.compiler.CodeGeneratorRequest.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -559,7 +567,7 @@ impl crate::reflect::ProtobufValue for CodeGeneratorRequest {
 
 ///  The plugin writes an encoded CodeGeneratorResponse to stdout.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.compiler.CodeGeneratorResponse)
 pub struct CodeGeneratorResponse {
     // message fields
     ///  Error message.  If non-empty, code generation failed.  The plugin process
@@ -570,15 +578,18 @@ pub struct CodeGeneratorResponse {
     ///  problem in protoc itself -- such as the input CodeGeneratorRequest being
     ///  unparseable -- should be reported by writing a message to stderr and
     ///  exiting with a non-zero status code.
+    // @@protoc_insertion_point(field:google.protobuf.compiler.CodeGeneratorResponse.error)
     error: ::std::option::Option<::std::string::String>,
     ///  A bitmask of supported features that the code generator supports.
     ///  This is a bitwise "or" of values from the Feature enum.
+    // @@protoc_insertion_point(field:google.protobuf.compiler.CodeGeneratorResponse.supported_features)
     supported_features: ::std::option::Option<u64>,
+    // @@protoc_insertion_point(field:google.protobuf.compiler.CodeGeneratorResponse.file)
     pub file: ::std::vec::Vec<code_generator_response::File>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.compiler.CodeGeneratorResponse.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.compiler.CodeGeneratorResponse.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -800,7 +811,7 @@ impl crate::reflect::ProtobufValue for CodeGeneratorResponse {
 pub mod code_generator_response {
     ///  Represents a single generated file.
     #[derive(PartialEq,Clone,Default,Debug)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    // @@protoc_insertion_point(message:google.protobuf.compiler.CodeGeneratorResponse.File)
     pub struct File {
         // message fields
         ///  The file name, relative to the output directory.  The name must not
@@ -814,6 +825,7 @@ pub mod code_generator_response {
         ///  files need not reside completely in memory at one time.  Note that as of
         ///  this writing protoc does not optimize for this -- it will read the entire
         ///  CodeGeneratorResponse before writing files to disk.
+        // @@protoc_insertion_point(field:google.protobuf.compiler.CodeGeneratorResponse.File.name)
         name: ::std::option::Option<::std::string::String>,
         ///  If non-empty, indicates that the named file should already exist, and the
         ///  content here is to be inserted into that file at a defined insertion
@@ -821,6 +833,7 @@ pub mod code_generator_response {
         ///  produced by another code generator.  The original generator may provide
         ///  insertion points by placing special annotations in the file that look
         ///  like:
+        ///    @@protoc_insertion_point(NAME)
         ///  The annotation can have arbitrary text before and after it on the line,
         ///  which allows it to be placed in a comment.  NAME should be replaced with
         ///  an identifier naming the point -- this is what other generators will use
@@ -832,6 +845,7 @@ pub mod code_generator_response {
         ///
         ///  For example, the C++ code generator places the following line in the
         ///  .pb.h files that it generates:
+        ///    // @@protoc_insertion_point(namespace_scope)
         ///  This line appears within the scope of the file's package namespace, but
         ///  outside of any particular class.  Another plugin can then specify the
         ///  insertion_point "namespace_scope" to generate additional classes or
@@ -850,17 +864,20 @@ pub mod code_generator_response {
         ///  command line.
         ///
         ///  If |insertion_point| is present, |name| must also be present.
+        // @@protoc_insertion_point(field:google.protobuf.compiler.CodeGeneratorResponse.File.insertion_point)
         insertion_point: ::std::option::Option<::std::string::String>,
         ///  The file contents.
+        // @@protoc_insertion_point(field:google.protobuf.compiler.CodeGeneratorResponse.File.content)
         content: ::std::option::Option<::std::string::String>,
         ///  Information describing the file content being inserted. If an insertion
         ///  point is used, this information will be appropriately offset and inserted
         ///  into the code generation metadata for the generated files.
+        // @@protoc_insertion_point(field:google.protobuf.compiler.CodeGeneratorResponse.File.generated_code_info)
         pub generated_code_info: crate::MessageField<crate::descriptor::GeneratedCodeInfo>,
         // special fields
-        #[cfg_attr(serde, serde(skip))]
+        // @@protoc_insertion_point(special_field:google.protobuf.compiler.CodeGeneratorResponse.File.unknown_fields)
         pub unknown_fields: crate::UnknownFields,
-        #[cfg_attr(serde, serde(skip))]
+        // @@protoc_insertion_point(special_field:google.protobuf.compiler.CodeGeneratorResponse.File.cached_size)
         pub cached_size: crate::rt::CachedSize,
     }
 
@@ -1153,9 +1170,11 @@ pub mod code_generator_response {
 
     ///  Sync with code_generator.h.
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    // @@protoc_insertion_point(enum:google.protobuf.compiler.CodeGeneratorResponse.Feature)
     pub enum Feature {
+        // @@protoc_insertion_point(enum_value:google.protobuf.compiler.CodeGeneratorResponse.Feature.FEATURE_NONE)
         FEATURE_NONE = 0,
+        // @@protoc_insertion_point(enum_value:google.protobuf.compiler.CodeGeneratorResponse.Feature.FEATURE_PROTO3_OPTIONAL)
         FEATURE_PROTO3_OPTIONAL = 1,
     }
 
@@ -1387,6 +1406,7 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x20output\n\x20produced\x20by\x20another\x20code\x20generator.\x20\x20T\
     he\x20original\x20generator\x20may\x20provide\n\x20insertion\x20points\
     \x20by\x20placing\x20special\x20annotations\x20in\x20the\x20file\x20that\
+    \x20look\n\x20like:\n\x20\x20\x20@@protoc_insertion_point(NAME)\n\x20The\
     \x20annotation\x20can\x20have\x20arbitrary\x20text\x20before\x20and\x20a\
     fter\x20it\x20on\x20the\x20line,\n\x20which\x20allows\x20it\x20to\x20be\
     \x20placed\x20in\x20a\x20comment.\x20\x20NAME\x20should\x20be\x20replace\

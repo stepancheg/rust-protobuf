@@ -22,15 +22,16 @@
 //! Generated file from `google/protobuf/field_mask.proto`
 
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.FieldMask)
 pub struct FieldMask {
     // message fields
     ///  The set of field mask paths.
+    // @@protoc_insertion_point(field:google.protobuf.FieldMask.paths)
     pub paths: ::std::vec::Vec<::std::string::String>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.FieldMask.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.FieldMask.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 

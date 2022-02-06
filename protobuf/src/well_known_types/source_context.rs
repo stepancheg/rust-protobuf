@@ -24,16 +24,17 @@
 ///  `SourceContext` represents information about the source of a
 ///  protobuf element, like the file in which it is defined.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.SourceContext)
 pub struct SourceContext {
     // message fields
     ///  The path-qualified name of the .proto file that contained the associated
     ///  protobuf element.  For example: `"google/protobuf/source_context.proto"`.
+    // @@protoc_insertion_point(field:google.protobuf.SourceContext.file_name)
     pub file_name: ::std::string::String,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.SourceContext.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.SourceContext.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 

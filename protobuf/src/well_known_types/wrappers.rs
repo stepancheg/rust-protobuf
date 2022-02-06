@@ -25,15 +25,16 @@
 ///
 ///  The JSON representation for `DoubleValue` is JSON number.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.DoubleValue)
 pub struct DoubleValue {
     // message fields
     ///  The double value.
+    // @@protoc_insertion_point(field:google.protobuf.DoubleValue.value)
     pub value: f64,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.DoubleValue.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.DoubleValue.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -157,15 +158,16 @@ impl crate::reflect::ProtobufValue for DoubleValue {
 ///
 ///  The JSON representation for `FloatValue` is JSON number.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.FloatValue)
 pub struct FloatValue {
     // message fields
     ///  The float value.
+    // @@protoc_insertion_point(field:google.protobuf.FloatValue.value)
     pub value: f32,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.FloatValue.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.FloatValue.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -289,15 +291,16 @@ impl crate::reflect::ProtobufValue for FloatValue {
 ///
 ///  The JSON representation for `Int64Value` is JSON string.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.Int64Value)
 pub struct Int64Value {
     // message fields
     ///  The int64 value.
+    // @@protoc_insertion_point(field:google.protobuf.Int64Value.value)
     pub value: i64,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.Int64Value.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.Int64Value.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -421,15 +424,16 @@ impl crate::reflect::ProtobufValue for Int64Value {
 ///
 ///  The JSON representation for `UInt64Value` is JSON string.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.UInt64Value)
 pub struct UInt64Value {
     // message fields
     ///  The uint64 value.
+    // @@protoc_insertion_point(field:google.protobuf.UInt64Value.value)
     pub value: u64,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.UInt64Value.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.UInt64Value.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -553,15 +557,16 @@ impl crate::reflect::ProtobufValue for UInt64Value {
 ///
 ///  The JSON representation for `Int32Value` is JSON number.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.Int32Value)
 pub struct Int32Value {
     // message fields
     ///  The int32 value.
+    // @@protoc_insertion_point(field:google.protobuf.Int32Value.value)
     pub value: i32,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.Int32Value.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.Int32Value.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -685,15 +690,16 @@ impl crate::reflect::ProtobufValue for Int32Value {
 ///
 ///  The JSON representation for `UInt32Value` is JSON number.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.UInt32Value)
 pub struct UInt32Value {
     // message fields
     ///  The uint32 value.
+    // @@protoc_insertion_point(field:google.protobuf.UInt32Value.value)
     pub value: u32,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.UInt32Value.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.UInt32Value.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -817,15 +823,16 @@ impl crate::reflect::ProtobufValue for UInt32Value {
 ///
 ///  The JSON representation for `BoolValue` is JSON `true` and `false`.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.BoolValue)
 pub struct BoolValue {
     // message fields
     ///  The bool value.
+    // @@protoc_insertion_point(field:google.protobuf.BoolValue.value)
     pub value: bool,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.BoolValue.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.BoolValue.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -949,15 +956,16 @@ impl crate::reflect::ProtobufValue for BoolValue {
 ///
 ///  The JSON representation for `StringValue` is JSON string.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.StringValue)
 pub struct StringValue {
     // message fields
     ///  The string value.
+    // @@protoc_insertion_point(field:google.protobuf.StringValue.value)
     pub value: ::std::string::String,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.StringValue.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.StringValue.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -1081,15 +1089,16 @@ impl crate::reflect::ProtobufValue for StringValue {
 ///
 ///  The JSON representation for `BytesValue` is JSON string.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.BytesValue)
 pub struct BytesValue {
     // message fields
     ///  The bytes value.
+    // @@protoc_insertion_point(field:google.protobuf.BytesValue.value)
     pub value: ::std::vec::Vec<u8>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.BytesValue.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.BytesValue.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 

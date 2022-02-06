@@ -31,15 +31,18 @@
 ///  this message itself. See https://cloud.google.com/apis/design/glossary for
 ///  detailed terminology.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.Api)
 pub struct Api {
     // message fields
     ///  The fully qualified name of this interface, including package name
     ///  followed by the interface's simple name.
+    // @@protoc_insertion_point(field:google.protobuf.Api.name)
     pub name: ::std::string::String,
     ///  The methods of this interface, in unspecified order.
+    // @@protoc_insertion_point(field:google.protobuf.Api.methods)
     pub methods: ::std::vec::Vec<Method>,
     ///  Any metadata attached to the interface.
+    // @@protoc_insertion_point(field:google.protobuf.Api.options)
     pub options: ::std::vec::Vec<crate::well_known_types::Option>,
     ///  A version string for this interface. If specified, must have the form
     ///  `major-version.minor-version`, as in `1.10`. If the minor version is
@@ -62,18 +65,22 @@ pub struct Api {
     ///  experimental, non-GA interfaces.
     ///
     ///
+    // @@protoc_insertion_point(field:google.protobuf.Api.version)
     pub version: ::std::string::String,
     ///  Source context for the protocol buffer service represented by this
     ///  message.
+    // @@protoc_insertion_point(field:google.protobuf.Api.source_context)
     pub source_context: crate::MessageField<crate::well_known_types::SourceContext>,
     ///  Included interfaces. See [Mixin][].
+    // @@protoc_insertion_point(field:google.protobuf.Api.mixins)
     pub mixins: ::std::vec::Vec<Mixin>,
     ///  The source syntax of the service.
+    // @@protoc_insertion_point(field:google.protobuf.Api.syntax)
     pub syntax: crate::ProtobufEnumOrUnknown<crate::well_known_types::Syntax>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.Api.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.Api.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -321,27 +328,34 @@ impl crate::reflect::ProtobufValue for Api {
 
 ///  Method represents a method of an API interface.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.Method)
 pub struct Method {
     // message fields
     ///  The simple name of this method.
+    // @@protoc_insertion_point(field:google.protobuf.Method.name)
     pub name: ::std::string::String,
     ///  A URL of the input message type.
+    // @@protoc_insertion_point(field:google.protobuf.Method.request_type_url)
     pub request_type_url: ::std::string::String,
     ///  If true, the request is streamed.
+    // @@protoc_insertion_point(field:google.protobuf.Method.request_streaming)
     pub request_streaming: bool,
     ///  The URL of the output message type.
+    // @@protoc_insertion_point(field:google.protobuf.Method.response_type_url)
     pub response_type_url: ::std::string::String,
     ///  If true, the response is streamed.
+    // @@protoc_insertion_point(field:google.protobuf.Method.response_streaming)
     pub response_streaming: bool,
     ///  Any metadata attached to the method.
+    // @@protoc_insertion_point(field:google.protobuf.Method.options)
     pub options: ::std::vec::Vec<crate::well_known_types::Option>,
     ///  The source syntax of this method.
+    // @@protoc_insertion_point(field:google.protobuf.Method.syntax)
     pub syntax: crate::ProtobufEnumOrUnknown<crate::well_known_types::Syntax>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.Method.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.Method.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -579,18 +593,20 @@ impl crate::reflect::ProtobufValue for Method {
 }
 
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.Mixin)
 pub struct Mixin {
     // message fields
     ///  The fully qualified name of the interface which is included.
+    // @@protoc_insertion_point(field:google.protobuf.Mixin.name)
     pub name: ::std::string::String,
     ///  If non-empty specifies a path under which inherited HTTP paths
     ///  are rooted.
+    // @@protoc_insertion_point(field:google.protobuf.Mixin.root)
     pub root: ::std::string::String,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.Mixin.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.Mixin.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 

@@ -24,14 +24,15 @@
 ///  The protocol compiler can output a FileDescriptorSet containing the .proto
 ///  files it parses.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.FileDescriptorSet)
 pub struct FileDescriptorSet {
     // message fields
+    // @@protoc_insertion_point(field:google.protobuf.FileDescriptorSet.file)
     pub file: ::std::vec::Vec<FileDescriptorProto>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.FileDescriptorSet.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.FileDescriptorSet.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -156,36 +157,48 @@ impl crate::reflect::ProtobufValue for FileDescriptorSet {
 
 ///  Describes a complete .proto file.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.FileDescriptorProto)
 pub struct FileDescriptorProto {
     // message fields
+    // @@protoc_insertion_point(field:google.protobuf.FileDescriptorProto.name)
     name: ::std::option::Option<::std::string::String>,
+    // @@protoc_insertion_point(field:google.protobuf.FileDescriptorProto.package)
     package: ::std::option::Option<::std::string::String>,
     ///  Names of files imported by this file.
+    // @@protoc_insertion_point(field:google.protobuf.FileDescriptorProto.dependency)
     pub dependency: ::std::vec::Vec<::std::string::String>,
     ///  Indexes of the public imported files in the dependency list above.
+    // @@protoc_insertion_point(field:google.protobuf.FileDescriptorProto.public_dependency)
     pub public_dependency: ::std::vec::Vec<i32>,
     ///  Indexes of the weak imported files in the dependency list.
     ///  For Google-internal migration only. Do not use.
+    // @@protoc_insertion_point(field:google.protobuf.FileDescriptorProto.weak_dependency)
     pub weak_dependency: ::std::vec::Vec<i32>,
     ///  All top-level definitions in this file.
+    // @@protoc_insertion_point(field:google.protobuf.FileDescriptorProto.message_type)
     pub message_type: ::std::vec::Vec<DescriptorProto>,
+    // @@protoc_insertion_point(field:google.protobuf.FileDescriptorProto.enum_type)
     pub enum_type: ::std::vec::Vec<EnumDescriptorProto>,
+    // @@protoc_insertion_point(field:google.protobuf.FileDescriptorProto.service)
     pub service: ::std::vec::Vec<ServiceDescriptorProto>,
+    // @@protoc_insertion_point(field:google.protobuf.FileDescriptorProto.extension)
     pub extension: ::std::vec::Vec<FieldDescriptorProto>,
+    // @@protoc_insertion_point(field:google.protobuf.FileDescriptorProto.options)
     pub options: crate::MessageField<FileOptions>,
     ///  This field contains optional information about the original source code.
     ///  You may safely remove this entire field without harming runtime
     ///  functionality of the descriptors -- the information is needed only by
     ///  development tools.
+    // @@protoc_insertion_point(field:google.protobuf.FileDescriptorProto.source_code_info)
     pub source_code_info: crate::MessageField<SourceCodeInfo>,
     ///  The syntax of the proto file.
     ///  The supported values are "proto2" and "proto3".
+    // @@protoc_insertion_point(field:google.protobuf.FileDescriptorProto.syntax)
     syntax: ::std::option::Option<::std::string::String>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.FileDescriptorProto.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.FileDescriptorProto.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -636,25 +649,35 @@ impl crate::reflect::ProtobufValue for FileDescriptorProto {
 
 ///  Describes a message type.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.DescriptorProto)
 pub struct DescriptorProto {
     // message fields
+    // @@protoc_insertion_point(field:google.protobuf.DescriptorProto.name)
     name: ::std::option::Option<::std::string::String>,
+    // @@protoc_insertion_point(field:google.protobuf.DescriptorProto.field)
     pub field: ::std::vec::Vec<FieldDescriptorProto>,
+    // @@protoc_insertion_point(field:google.protobuf.DescriptorProto.extension)
     pub extension: ::std::vec::Vec<FieldDescriptorProto>,
+    // @@protoc_insertion_point(field:google.protobuf.DescriptorProto.nested_type)
     pub nested_type: ::std::vec::Vec<DescriptorProto>,
+    // @@protoc_insertion_point(field:google.protobuf.DescriptorProto.enum_type)
     pub enum_type: ::std::vec::Vec<EnumDescriptorProto>,
+    // @@protoc_insertion_point(field:google.protobuf.DescriptorProto.extension_range)
     pub extension_range: ::std::vec::Vec<descriptor_proto::ExtensionRange>,
+    // @@protoc_insertion_point(field:google.protobuf.DescriptorProto.oneof_decl)
     pub oneof_decl: ::std::vec::Vec<OneofDescriptorProto>,
+    // @@protoc_insertion_point(field:google.protobuf.DescriptorProto.options)
     pub options: crate::MessageField<MessageOptions>,
+    // @@protoc_insertion_point(field:google.protobuf.DescriptorProto.reserved_range)
     pub reserved_range: ::std::vec::Vec<descriptor_proto::ReservedRange>,
     ///  Reserved field names, which may not be used by fields in the same message.
     ///  A given name may only be reserved once.
+    // @@protoc_insertion_point(field:google.protobuf.DescriptorProto.reserved_name)
     pub reserved_name: ::std::vec::Vec<::std::string::String>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.DescriptorProto.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.DescriptorProto.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -1006,16 +1029,19 @@ impl crate::reflect::ProtobufValue for DescriptorProto {
 /// Nested message and enums of message `DescriptorProto`
 pub mod descriptor_proto {
     #[derive(PartialEq,Clone,Default,Debug)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    // @@protoc_insertion_point(message:google.protobuf.DescriptorProto.ExtensionRange)
     pub struct ExtensionRange {
         // message fields
+        // @@protoc_insertion_point(field:google.protobuf.DescriptorProto.ExtensionRange.start)
         start: ::std::option::Option<i32>,
+        // @@protoc_insertion_point(field:google.protobuf.DescriptorProto.ExtensionRange.end)
         end: ::std::option::Option<i32>,
+        // @@protoc_insertion_point(field:google.protobuf.DescriptorProto.ExtensionRange.options)
         pub options: crate::MessageField<super::ExtensionRangeOptions>,
         // special fields
-        #[cfg_attr(serde, serde(skip))]
+        // @@protoc_insertion_point(special_field:google.protobuf.DescriptorProto.ExtensionRange.unknown_fields)
         pub unknown_fields: crate::UnknownFields,
-        #[cfg_attr(serde, serde(skip))]
+        // @@protoc_insertion_point(special_field:google.protobuf.DescriptorProto.ExtensionRange.cached_size)
         pub cached_size: crate::rt::CachedSize,
     }
 
@@ -1220,15 +1246,17 @@ pub mod descriptor_proto {
     ///  fields or extension ranges in the same message. Reserved ranges may
     ///  not overlap.
     #[derive(PartialEq,Clone,Default,Debug)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    // @@protoc_insertion_point(message:google.protobuf.DescriptorProto.ReservedRange)
     pub struct ReservedRange {
         // message fields
+        // @@protoc_insertion_point(field:google.protobuf.DescriptorProto.ReservedRange.start)
         start: ::std::option::Option<i32>,
+        // @@protoc_insertion_point(field:google.protobuf.DescriptorProto.ReservedRange.end)
         end: ::std::option::Option<i32>,
         // special fields
-        #[cfg_attr(serde, serde(skip))]
+        // @@protoc_insertion_point(special_field:google.protobuf.DescriptorProto.ReservedRange.unknown_fields)
         pub unknown_fields: crate::UnknownFields,
-        #[cfg_attr(serde, serde(skip))]
+        // @@protoc_insertion_point(special_field:google.protobuf.DescriptorProto.ReservedRange.cached_size)
         pub cached_size: crate::rt::CachedSize,
     }
 
@@ -1409,15 +1437,16 @@ pub mod descriptor_proto {
 }
 
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.ExtensionRangeOptions)
 pub struct ExtensionRangeOptions {
     // message fields
     ///  The parser stores options it doesn't recognize here. See above.
+    // @@protoc_insertion_point(field:google.protobuf.ExtensionRangeOptions.uninterpreted_option)
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.ExtensionRangeOptions.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.ExtensionRangeOptions.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -1542,38 +1571,48 @@ impl crate::reflect::ProtobufValue for ExtensionRangeOptions {
 
 ///  Describes a field within a message.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.FieldDescriptorProto)
 pub struct FieldDescriptorProto {
     // message fields
+    // @@protoc_insertion_point(field:google.protobuf.FieldDescriptorProto.name)
     name: ::std::option::Option<::std::string::String>,
+    // @@protoc_insertion_point(field:google.protobuf.FieldDescriptorProto.number)
     number: ::std::option::Option<i32>,
+    // @@protoc_insertion_point(field:google.protobuf.FieldDescriptorProto.label)
     label: ::std::option::Option<crate::ProtobufEnumOrUnknown<field_descriptor_proto::Label>>,
     ///  If type_name is set, this need not be set.  If both this and type_name
     ///  are set, this must be one of TYPE_ENUM, TYPE_MESSAGE or TYPE_GROUP.
+    // @@protoc_insertion_point(field:google.protobuf.FieldDescriptorProto.type)
     field_type: ::std::option::Option<crate::ProtobufEnumOrUnknown<field_descriptor_proto::Type>>,
     ///  For message and enum types, this is the name of the type.  If the name
     ///  starts with a '.', it is fully-qualified.  Otherwise, C++-like scoping
     ///  rules are used to find the type (i.e. first the nested types within this
     ///  message are searched, then within the parent, on up to the root
     ///  namespace).
+    // @@protoc_insertion_point(field:google.protobuf.FieldDescriptorProto.type_name)
     type_name: ::std::option::Option<::std::string::String>,
     ///  For extensions, this is the name of the type being extended.  It is
     ///  resolved in the same manner as type_name.
+    // @@protoc_insertion_point(field:google.protobuf.FieldDescriptorProto.extendee)
     extendee: ::std::option::Option<::std::string::String>,
     ///  For numeric types, contains the original text representation of the value.
     ///  For booleans, "true" or "false".
     ///  For strings, contains the default text contents (not escaped in any way).
     ///  For bytes, contains the C escaped value.  All bytes >= 128 are escaped.
     ///  TODO(kenton):  Base-64 encode?
+    // @@protoc_insertion_point(field:google.protobuf.FieldDescriptorProto.default_value)
     default_value: ::std::option::Option<::std::string::String>,
     ///  If set, gives the index of a oneof in the containing type's oneof_decl
     ///  list.  This field is a member of that oneof.
+    // @@protoc_insertion_point(field:google.protobuf.FieldDescriptorProto.oneof_index)
     oneof_index: ::std::option::Option<i32>,
     ///  JSON name of this field. The value is set by protocol compiler. If the
     ///  user has set a "json_name" option on this field, that option's value
     ///  will be used. Otherwise, it's deduced from the field's name by converting
     ///  it to camelCase.
+    // @@protoc_insertion_point(field:google.protobuf.FieldDescriptorProto.json_name)
     json_name: ::std::option::Option<::std::string::String>,
+    // @@protoc_insertion_point(field:google.protobuf.FieldDescriptorProto.options)
     pub options: crate::MessageField<FieldOptions>,
     ///  If true, this is a proto3 "optional". When a proto3 field is optional, it
     ///  tracks presence regardless of field type.
@@ -1596,11 +1635,12 @@ pub struct FieldDescriptorProto {
     ///
     ///  Proto2 optional fields do not set this flag, because they already indicate
     ///  optional with `LABEL_OPTIONAL`.
+    // @@protoc_insertion_point(field:google.protobuf.FieldDescriptorProto.proto3_optional)
     proto3_optional: ::std::option::Option<bool>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.FieldDescriptorProto.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.FieldDescriptorProto.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -2207,25 +2247,43 @@ impl crate::reflect::ProtobufValue for FieldDescriptorProto {
 /// Nested message and enums of message `FieldDescriptorProto`
 pub mod field_descriptor_proto {
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    // @@protoc_insertion_point(enum:google.protobuf.FieldDescriptorProto.Type)
     pub enum Type {
+        // @@protoc_insertion_point(enum_value:google.protobuf.FieldDescriptorProto.Type.TYPE_DOUBLE)
         TYPE_DOUBLE = 1,
+        // @@protoc_insertion_point(enum_value:google.protobuf.FieldDescriptorProto.Type.TYPE_FLOAT)
         TYPE_FLOAT = 2,
+        // @@protoc_insertion_point(enum_value:google.protobuf.FieldDescriptorProto.Type.TYPE_INT64)
         TYPE_INT64 = 3,
+        // @@protoc_insertion_point(enum_value:google.protobuf.FieldDescriptorProto.Type.TYPE_UINT64)
         TYPE_UINT64 = 4,
+        // @@protoc_insertion_point(enum_value:google.protobuf.FieldDescriptorProto.Type.TYPE_INT32)
         TYPE_INT32 = 5,
+        // @@protoc_insertion_point(enum_value:google.protobuf.FieldDescriptorProto.Type.TYPE_FIXED64)
         TYPE_FIXED64 = 6,
+        // @@protoc_insertion_point(enum_value:google.protobuf.FieldDescriptorProto.Type.TYPE_FIXED32)
         TYPE_FIXED32 = 7,
+        // @@protoc_insertion_point(enum_value:google.protobuf.FieldDescriptorProto.Type.TYPE_BOOL)
         TYPE_BOOL = 8,
+        // @@protoc_insertion_point(enum_value:google.protobuf.FieldDescriptorProto.Type.TYPE_STRING)
         TYPE_STRING = 9,
+        // @@protoc_insertion_point(enum_value:google.protobuf.FieldDescriptorProto.Type.TYPE_GROUP)
         TYPE_GROUP = 10,
+        // @@protoc_insertion_point(enum_value:google.protobuf.FieldDescriptorProto.Type.TYPE_MESSAGE)
         TYPE_MESSAGE = 11,
+        // @@protoc_insertion_point(enum_value:google.protobuf.FieldDescriptorProto.Type.TYPE_BYTES)
         TYPE_BYTES = 12,
+        // @@protoc_insertion_point(enum_value:google.protobuf.FieldDescriptorProto.Type.TYPE_UINT32)
         TYPE_UINT32 = 13,
+        // @@protoc_insertion_point(enum_value:google.protobuf.FieldDescriptorProto.Type.TYPE_ENUM)
         TYPE_ENUM = 14,
+        // @@protoc_insertion_point(enum_value:google.protobuf.FieldDescriptorProto.Type.TYPE_SFIXED32)
         TYPE_SFIXED32 = 15,
+        // @@protoc_insertion_point(enum_value:google.protobuf.FieldDescriptorProto.Type.TYPE_SFIXED64)
         TYPE_SFIXED64 = 16,
+        // @@protoc_insertion_point(enum_value:google.protobuf.FieldDescriptorProto.Type.TYPE_SINT32)
         TYPE_SINT32 = 17,
+        // @@protoc_insertion_point(enum_value:google.protobuf.FieldDescriptorProto.Type.TYPE_SINT64)
         TYPE_SINT64 = 18,
     }
 
@@ -2305,10 +2363,13 @@ pub mod field_descriptor_proto {
     }
 
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    // @@protoc_insertion_point(enum:google.protobuf.FieldDescriptorProto.Label)
     pub enum Label {
+        // @@protoc_insertion_point(enum_value:google.protobuf.FieldDescriptorProto.Label.LABEL_OPTIONAL)
         LABEL_OPTIONAL = 1,
+        // @@protoc_insertion_point(enum_value:google.protobuf.FieldDescriptorProto.Label.LABEL_REQUIRED)
         LABEL_REQUIRED = 2,
+        // @@protoc_insertion_point(enum_value:google.protobuf.FieldDescriptorProto.Label.LABEL_REPEATED)
         LABEL_REPEATED = 3,
     }
 
@@ -2360,15 +2421,17 @@ pub mod field_descriptor_proto {
 
 ///  Describes a oneof.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.OneofDescriptorProto)
 pub struct OneofDescriptorProto {
     // message fields
+    // @@protoc_insertion_point(field:google.protobuf.OneofDescriptorProto.name)
     name: ::std::option::Option<::std::string::String>,
+    // @@protoc_insertion_point(field:google.protobuf.OneofDescriptorProto.options)
     pub options: crate::MessageField<OneofOptions>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.OneofDescriptorProto.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.OneofDescriptorProto.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -2549,23 +2612,28 @@ impl crate::reflect::ProtobufValue for OneofDescriptorProto {
 
 ///  Describes an enum type.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.EnumDescriptorProto)
 pub struct EnumDescriptorProto {
     // message fields
+    // @@protoc_insertion_point(field:google.protobuf.EnumDescriptorProto.name)
     name: ::std::option::Option<::std::string::String>,
+    // @@protoc_insertion_point(field:google.protobuf.EnumDescriptorProto.value)
     pub value: ::std::vec::Vec<EnumValueDescriptorProto>,
+    // @@protoc_insertion_point(field:google.protobuf.EnumDescriptorProto.options)
     pub options: crate::MessageField<EnumOptions>,
     ///  Range of reserved numeric values. Reserved numeric values may not be used
     ///  by enum values in the same enum declaration. Reserved ranges may not
     ///  overlap.
+    // @@protoc_insertion_point(field:google.protobuf.EnumDescriptorProto.reserved_range)
     pub reserved_range: ::std::vec::Vec<enum_descriptor_proto::EnumReservedRange>,
     ///  Reserved enum value names, which may not be reused. A given name may only
     ///  be reserved once.
+    // @@protoc_insertion_point(field:google.protobuf.EnumDescriptorProto.reserved_name)
     pub reserved_name: ::std::vec::Vec<::std::string::String>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.EnumDescriptorProto.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.EnumDescriptorProto.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -2813,15 +2881,17 @@ pub mod enum_descriptor_proto {
     ///  is inclusive such that it can appropriately represent the entire int32
     ///  domain.
     #[derive(PartialEq,Clone,Default,Debug)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    // @@protoc_insertion_point(message:google.protobuf.EnumDescriptorProto.EnumReservedRange)
     pub struct EnumReservedRange {
         // message fields
+        // @@protoc_insertion_point(field:google.protobuf.EnumDescriptorProto.EnumReservedRange.start)
         start: ::std::option::Option<i32>,
+        // @@protoc_insertion_point(field:google.protobuf.EnumDescriptorProto.EnumReservedRange.end)
         end: ::std::option::Option<i32>,
         // special fields
-        #[cfg_attr(serde, serde(skip))]
+        // @@protoc_insertion_point(special_field:google.protobuf.EnumDescriptorProto.EnumReservedRange.unknown_fields)
         pub unknown_fields: crate::UnknownFields,
-        #[cfg_attr(serde, serde(skip))]
+        // @@protoc_insertion_point(special_field:google.protobuf.EnumDescriptorProto.EnumReservedRange.cached_size)
         pub cached_size: crate::rt::CachedSize,
     }
 
@@ -3003,16 +3073,19 @@ pub mod enum_descriptor_proto {
 
 ///  Describes a value within an enum.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.EnumValueDescriptorProto)
 pub struct EnumValueDescriptorProto {
     // message fields
+    // @@protoc_insertion_point(field:google.protobuf.EnumValueDescriptorProto.name)
     name: ::std::option::Option<::std::string::String>,
+    // @@protoc_insertion_point(field:google.protobuf.EnumValueDescriptorProto.number)
     number: ::std::option::Option<i32>,
+    // @@protoc_insertion_point(field:google.protobuf.EnumValueDescriptorProto.options)
     pub options: crate::MessageField<EnumValueOptions>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.EnumValueDescriptorProto.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.EnumValueDescriptorProto.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -3232,16 +3305,19 @@ impl crate::reflect::ProtobufValue for EnumValueDescriptorProto {
 
 ///  Describes a service.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.ServiceDescriptorProto)
 pub struct ServiceDescriptorProto {
     // message fields
+    // @@protoc_insertion_point(field:google.protobuf.ServiceDescriptorProto.name)
     name: ::std::option::Option<::std::string::String>,
+    // @@protoc_insertion_point(field:google.protobuf.ServiceDescriptorProto.method)
     pub method: ::std::vec::Vec<MethodDescriptorProto>,
+    // @@protoc_insertion_point(field:google.protobuf.ServiceDescriptorProto.options)
     pub options: crate::MessageField<ServiceOptions>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.ServiceDescriptorProto.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.ServiceDescriptorProto.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -3444,23 +3520,29 @@ impl crate::reflect::ProtobufValue for ServiceDescriptorProto {
 
 ///  Describes a method of a service.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.MethodDescriptorProto)
 pub struct MethodDescriptorProto {
     // message fields
+    // @@protoc_insertion_point(field:google.protobuf.MethodDescriptorProto.name)
     name: ::std::option::Option<::std::string::String>,
     ///  Input and output type names.  These are resolved in the same way as
     ///  FieldDescriptorProto.type_name, but must refer to a message type.
+    // @@protoc_insertion_point(field:google.protobuf.MethodDescriptorProto.input_type)
     input_type: ::std::option::Option<::std::string::String>,
+    // @@protoc_insertion_point(field:google.protobuf.MethodDescriptorProto.output_type)
     output_type: ::std::option::Option<::std::string::String>,
+    // @@protoc_insertion_point(field:google.protobuf.MethodDescriptorProto.options)
     pub options: crate::MessageField<MethodOptions>,
     ///  Identifies if client streams multiple client messages
+    // @@protoc_insertion_point(field:google.protobuf.MethodDescriptorProto.client_streaming)
     client_streaming: ::std::option::Option<bool>,
     ///  Identifies if server streams multiple server messages
+    // @@protoc_insertion_point(field:google.protobuf.MethodDescriptorProto.server_streaming)
     server_streaming: ::std::option::Option<bool>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.MethodDescriptorProto.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.MethodDescriptorProto.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -3830,19 +3912,21 @@ impl crate::reflect::ProtobufValue for MethodDescriptorProto {
 }
 
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.FileOptions)
 pub struct FileOptions {
     // message fields
     ///  Sets the Java package where classes generated from this .proto will be
     ///  placed.  By default, the proto package is used, but this is often
     ///  inappropriate because proto packages do not normally start with backwards
     ///  domain names.
+    // @@protoc_insertion_point(field:google.protobuf.FileOptions.java_package)
     java_package: ::std::option::Option<::std::string::String>,
     ///  If set, all the classes from the .proto file are wrapped in a single
     ///  outer class with the given name.  This applies to both Proto1
     ///  (equivalent to the old "--one_java_file" option) and Proto2 (where
     ///  a .proto always translates to a single class, but you may want to
     ///  explicitly choose the class name).
+    // @@protoc_insertion_point(field:google.protobuf.FileOptions.java_outer_classname)
     java_outer_classname: ::std::option::Option<::std::string::String>,
     ///  If set true, then the Java code generator will generate a separate .java
     ///  file for each top-level message, enum, and service defined in the .proto
@@ -3850,8 +3934,10 @@ pub struct FileOptions {
     ///  named by java_outer_classname.  However, the outer class will still be
     ///  generated to contain the file's getDescriptor() method as well as any
     ///  top-level extensions defined in the file.
+    // @@protoc_insertion_point(field:google.protobuf.FileOptions.java_multiple_files)
     java_multiple_files: ::std::option::Option<bool>,
     ///  This option does nothing.
+    // @@protoc_insertion_point(field:google.protobuf.FileOptions.java_generate_equals_and_hash)
     java_generate_equals_and_hash: ::std::option::Option<bool>,
     ///  If set true, then the Java2 code generator will generate code that
     ///  throws an exception whenever an attempt is made to assign a non-UTF-8
@@ -3859,13 +3945,16 @@ pub struct FileOptions {
     ///  Message reflection will do the same.
     ///  However, an extension field still accepts non-UTF-8 byte sequences.
     ///  This option has no effect on when used with the lite runtime.
+    // @@protoc_insertion_point(field:google.protobuf.FileOptions.java_string_check_utf8)
     java_string_check_utf8: ::std::option::Option<bool>,
+    // @@protoc_insertion_point(field:google.protobuf.FileOptions.optimize_for)
     optimize_for: ::std::option::Option<crate::ProtobufEnumOrUnknown<file_options::OptimizeMode>>,
     ///  Sets the Go package where structs generated from this .proto will be
     ///  placed. If omitted, the Go package will be derived from the following:
     ///    - The basename of the package import path, if provided.
     ///    - Otherwise, the package statement in the .proto file, if present.
     ///    - Otherwise, the basename of the .proto file, without extension.
+    // @@protoc_insertion_point(field:google.protobuf.FileOptions.go_package)
     go_package: ::std::option::Option<::std::string::String>,
     ///  Should generic services be generated in each language?  "Generic" services
     ///  are not specific to any particular RPC system.  They are generated by the
@@ -3877,50 +3966,64 @@ pub struct FileOptions {
     ///  that generate code specific to your particular RPC system.  Therefore,
     ///  these default to false.  Old code which depends on generic services should
     ///  explicitly set them to true.
+    // @@protoc_insertion_point(field:google.protobuf.FileOptions.cc_generic_services)
     cc_generic_services: ::std::option::Option<bool>,
+    // @@protoc_insertion_point(field:google.protobuf.FileOptions.java_generic_services)
     java_generic_services: ::std::option::Option<bool>,
+    // @@protoc_insertion_point(field:google.protobuf.FileOptions.py_generic_services)
     py_generic_services: ::std::option::Option<bool>,
+    // @@protoc_insertion_point(field:google.protobuf.FileOptions.php_generic_services)
     php_generic_services: ::std::option::Option<bool>,
     ///  Is this file deprecated?
     ///  Depending on the target platform, this can emit Deprecated annotations
     ///  for everything in the file, or it will be completely ignored; in the very
     ///  least, this is a formalization for deprecating files.
+    // @@protoc_insertion_point(field:google.protobuf.FileOptions.deprecated)
     deprecated: ::std::option::Option<bool>,
     ///  Enables the use of arenas for the proto messages in this file. This applies
     ///  only to generated classes for C++.
+    // @@protoc_insertion_point(field:google.protobuf.FileOptions.cc_enable_arenas)
     cc_enable_arenas: ::std::option::Option<bool>,
     ///  Sets the objective c class prefix which is prepended to all objective c
     ///  generated classes from this .proto. There is no default.
+    // @@protoc_insertion_point(field:google.protobuf.FileOptions.objc_class_prefix)
     objc_class_prefix: ::std::option::Option<::std::string::String>,
     ///  Namespace for generated classes; defaults to the package.
+    // @@protoc_insertion_point(field:google.protobuf.FileOptions.csharp_namespace)
     csharp_namespace: ::std::option::Option<::std::string::String>,
     ///  By default Swift generators will take the proto package and CamelCase it
     ///  replacing '.' with underscore and use that to prefix the types/symbols
     ///  defined. When this options is provided, they will use this value instead
     ///  to prefix the types/symbols defined.
+    // @@protoc_insertion_point(field:google.protobuf.FileOptions.swift_prefix)
     swift_prefix: ::std::option::Option<::std::string::String>,
     ///  Sets the php class prefix which is prepended to all php generated classes
     ///  from this .proto. Default is empty.
+    // @@protoc_insertion_point(field:google.protobuf.FileOptions.php_class_prefix)
     php_class_prefix: ::std::option::Option<::std::string::String>,
     ///  Use this option to change the namespace of php generated classes. Default
     ///  is empty. When this option is empty, the package name will be used for
     ///  determining the namespace.
+    // @@protoc_insertion_point(field:google.protobuf.FileOptions.php_namespace)
     php_namespace: ::std::option::Option<::std::string::String>,
     ///  Use this option to change the namespace of php generated metadata classes.
     ///  Default is empty. When this option is empty, the proto file name will be
     ///  used for determining the namespace.
+    // @@protoc_insertion_point(field:google.protobuf.FileOptions.php_metadata_namespace)
     php_metadata_namespace: ::std::option::Option<::std::string::String>,
     ///  Use this option to change the package of ruby generated classes. Default
     ///  is empty. When this option is not set, the package name will be used for
     ///  determining the ruby package.
+    // @@protoc_insertion_point(field:google.protobuf.FileOptions.ruby_package)
     ruby_package: ::std::option::Option<::std::string::String>,
     ///  The parser stores options it doesn't recognize here.
     ///  See the documentation for the "Options" section above.
+    // @@protoc_insertion_point(field:google.protobuf.FileOptions.uninterpreted_option)
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.FileOptions.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.FileOptions.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -5000,10 +5103,13 @@ impl crate::reflect::ProtobufValue for FileOptions {
 pub mod file_options {
     ///  Generated classes can be optimized for speed or code size.
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    // @@protoc_insertion_point(enum:google.protobuf.FileOptions.OptimizeMode)
     pub enum OptimizeMode {
+        // @@protoc_insertion_point(enum_value:google.protobuf.FileOptions.OptimizeMode.SPEED)
         SPEED = 1,
+        // @@protoc_insertion_point(enum_value:google.protobuf.FileOptions.OptimizeMode.CODE_SIZE)
         CODE_SIZE = 2,
+        // @@protoc_insertion_point(enum_value:google.protobuf.FileOptions.OptimizeMode.LITE_RUNTIME)
         LITE_RUNTIME = 3,
     }
 
@@ -5054,26 +5160,31 @@ pub mod file_options {
 }
 
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.MessageOptions)
 pub struct MessageOptions {
     // message fields
+    // @@protoc_insertion_point(field:google.protobuf.MessageOptions.message_set_wire_format)
     message_set_wire_format: ::std::option::Option<bool>,
     ///  Disables the generation of the standard "descriptor()" accessor, which can
     ///  conflict with a field of the same name.  This is meant to make migration
     ///  from proto1 easier; new code should avoid fields named "descriptor".
+    // @@protoc_insertion_point(field:google.protobuf.MessageOptions.no_standard_descriptor_accessor)
     no_standard_descriptor_accessor: ::std::option::Option<bool>,
     ///  Is this message deprecated?
     ///  Depending on the target platform, this can emit Deprecated annotations
     ///  for the message, or it will be completely ignored; in the very least,
     ///  this is a formalization for deprecating messages.
+    // @@protoc_insertion_point(field:google.protobuf.MessageOptions.deprecated)
     deprecated: ::std::option::Option<bool>,
+    // @@protoc_insertion_point(field:google.protobuf.MessageOptions.map_entry)
     map_entry: ::std::option::Option<bool>,
     ///  The parser stores options it doesn't recognize here. See above.
+    // @@protoc_insertion_point(field:google.protobuf.MessageOptions.uninterpreted_option)
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.MessageOptions.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.MessageOptions.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -5353,19 +5464,21 @@ impl crate::reflect::ProtobufValue for MessageOptions {
 }
 
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.FieldOptions)
 pub struct FieldOptions {
     // message fields
     ///  The ctype option instructs the C++ code generator to use a different
     ///  representation of the field than it normally would.  See the specific
     ///  options below.  This option is not yet implemented in the open source
     ///  release -- sorry, we'll try to include it in a future version!
+    // @@protoc_insertion_point(field:google.protobuf.FieldOptions.ctype)
     ctype: ::std::option::Option<crate::ProtobufEnumOrUnknown<field_options::CType>>,
     ///  The packed option can be enabled for repeated primitive fields to enable
     ///  a more efficient representation on the wire. Rather than repeatedly
     ///  writing the tag and type for each element, the entire array is encoded as
     ///  a single length-delimited blob. In proto3, only explicit setting it to
     ///  false will avoid using packed encoding.
+    // @@protoc_insertion_point(field:google.protobuf.FieldOptions.packed)
     packed: ::std::option::Option<bool>,
     ///  The jstype option determines the JavaScript type used for values of the
     ///  field.  The option is permitted only for 64 bit integral and fixed types
@@ -5378,6 +5491,7 @@ pub struct FieldOptions {
     ///
     ///  This option is an enum to permit additional types to be added, e.g.
     ///  goog.math.Integer.
+    // @@protoc_insertion_point(field:google.protobuf.FieldOptions.jstype)
     jstype: ::std::option::Option<crate::ProtobufEnumOrUnknown<field_options::JSType>>,
     ///  Should this field be parsed lazily?  Lazy applies only to message-type
     ///  fields.  It means that when the outer message is initially parsed, the
@@ -5407,20 +5521,24 @@ pub struct FieldOptions {
     ///  implementation must either *always* check its required fields, or *never*
     ///  check its required fields, regardless of whether or not the message has
     ///  been parsed.
+    // @@protoc_insertion_point(field:google.protobuf.FieldOptions.lazy)
     lazy: ::std::option::Option<bool>,
     ///  Is this field deprecated?
     ///  Depending on the target platform, this can emit Deprecated annotations
     ///  for accessors, or it will be completely ignored; in the very least, this
     ///  is a formalization for deprecating fields.
+    // @@protoc_insertion_point(field:google.protobuf.FieldOptions.deprecated)
     deprecated: ::std::option::Option<bool>,
     ///  For Google-internal migration only. Do not use.
+    // @@protoc_insertion_point(field:google.protobuf.FieldOptions.weak)
     weak: ::std::option::Option<bool>,
     ///  The parser stores options it doesn't recognize here. See above.
+    // @@protoc_insertion_point(field:google.protobuf.FieldOptions.uninterpreted_option)
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.FieldOptions.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.FieldOptions.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -5786,10 +5904,13 @@ impl crate::reflect::ProtobufValue for FieldOptions {
 /// Nested message and enums of message `FieldOptions`
 pub mod field_options {
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    // @@protoc_insertion_point(enum:google.protobuf.FieldOptions.CType)
     pub enum CType {
+        // @@protoc_insertion_point(enum_value:google.protobuf.FieldOptions.CType.STRING)
         STRING = 0,
+        // @@protoc_insertion_point(enum_value:google.protobuf.FieldOptions.CType.CORD)
         CORD = 1,
+        // @@protoc_insertion_point(enum_value:google.protobuf.FieldOptions.CType.STRING_PIECE)
         STRING_PIECE = 2,
     }
 
@@ -5838,10 +5959,13 @@ pub mod field_options {
     }
 
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    // @@protoc_insertion_point(enum:google.protobuf.FieldOptions.JSType)
     pub enum JSType {
+        // @@protoc_insertion_point(enum_value:google.protobuf.FieldOptions.JSType.JS_NORMAL)
         JS_NORMAL = 0,
+        // @@protoc_insertion_point(enum_value:google.protobuf.FieldOptions.JSType.JS_STRING)
         JS_STRING = 1,
+        // @@protoc_insertion_point(enum_value:google.protobuf.FieldOptions.JSType.JS_NUMBER)
         JS_NUMBER = 2,
     }
 
@@ -5891,15 +6015,16 @@ pub mod field_options {
 }
 
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.OneofOptions)
 pub struct OneofOptions {
     // message fields
     ///  The parser stores options it doesn't recognize here. See above.
+    // @@protoc_insertion_point(field:google.protobuf.OneofOptions.uninterpreted_option)
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.OneofOptions.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.OneofOptions.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -6023,23 +6148,26 @@ impl crate::reflect::ProtobufValue for OneofOptions {
 }
 
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.EnumOptions)
 pub struct EnumOptions {
     // message fields
     ///  Set this option to true to allow mapping different tag names to the same
     ///  value.
+    // @@protoc_insertion_point(field:google.protobuf.EnumOptions.allow_alias)
     allow_alias: ::std::option::Option<bool>,
     ///  Is this enum deprecated?
     ///  Depending on the target platform, this can emit Deprecated annotations
     ///  for the enum, or it will be completely ignored; in the very least, this
     ///  is a formalization for deprecating enums.
+    // @@protoc_insertion_point(field:google.protobuf.EnumOptions.deprecated)
     deprecated: ::std::option::Option<bool>,
     ///  The parser stores options it doesn't recognize here. See above.
+    // @@protoc_insertion_point(field:google.protobuf.EnumOptions.uninterpreted_option)
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.EnumOptions.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.EnumOptions.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -6241,20 +6369,22 @@ impl crate::reflect::ProtobufValue for EnumOptions {
 }
 
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.EnumValueOptions)
 pub struct EnumValueOptions {
     // message fields
     ///  Is this enum value deprecated?
     ///  Depending on the target platform, this can emit Deprecated annotations
     ///  for the enum value, or it will be completely ignored; in the very least,
     ///  this is a formalization for deprecating enum values.
+    // @@protoc_insertion_point(field:google.protobuf.EnumValueOptions.deprecated)
     deprecated: ::std::option::Option<bool>,
     ///  The parser stores options it doesn't recognize here. See above.
+    // @@protoc_insertion_point(field:google.protobuf.EnumValueOptions.uninterpreted_option)
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.EnumValueOptions.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.EnumValueOptions.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -6417,20 +6547,22 @@ impl crate::reflect::ProtobufValue for EnumValueOptions {
 }
 
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.ServiceOptions)
 pub struct ServiceOptions {
     // message fields
     ///  Is this service deprecated?
     ///  Depending on the target platform, this can emit Deprecated annotations
     ///  for the service, or it will be completely ignored; in the very least,
     ///  this is a formalization for deprecating services.
+    // @@protoc_insertion_point(field:google.protobuf.ServiceOptions.deprecated)
     deprecated: ::std::option::Option<bool>,
     ///  The parser stores options it doesn't recognize here. See above.
+    // @@protoc_insertion_point(field:google.protobuf.ServiceOptions.uninterpreted_option)
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.ServiceOptions.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.ServiceOptions.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -6593,21 +6725,24 @@ impl crate::reflect::ProtobufValue for ServiceOptions {
 }
 
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.MethodOptions)
 pub struct MethodOptions {
     // message fields
     ///  Is this method deprecated?
     ///  Depending on the target platform, this can emit Deprecated annotations
     ///  for the method, or it will be completely ignored; in the very least,
     ///  this is a formalization for deprecating methods.
+    // @@protoc_insertion_point(field:google.protobuf.MethodOptions.deprecated)
     deprecated: ::std::option::Option<bool>,
+    // @@protoc_insertion_point(field:google.protobuf.MethodOptions.idempotency_level)
     idempotency_level: ::std::option::Option<crate::ProtobufEnumOrUnknown<method_options::IdempotencyLevel>>,
     ///  The parser stores options it doesn't recognize here. See above.
+    // @@protoc_insertion_point(field:google.protobuf.MethodOptions.uninterpreted_option)
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.MethodOptions.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.MethodOptions.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -6817,10 +6952,13 @@ pub mod method_options {
     ///  or neither? HTTP based RPC implementation may choose GET verb for safe
     ///  methods, and PUT verb for idempotent methods instead of the default POST.
     #[derive(Clone,Copy,PartialEq,Eq,Debug,Hash)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    // @@protoc_insertion_point(enum:google.protobuf.MethodOptions.IdempotencyLevel)
     pub enum IdempotencyLevel {
+        // @@protoc_insertion_point(enum_value:google.protobuf.MethodOptions.IdempotencyLevel.IDEMPOTENCY_UNKNOWN)
         IDEMPOTENCY_UNKNOWN = 0,
+        // @@protoc_insertion_point(enum_value:google.protobuf.MethodOptions.IdempotencyLevel.NO_SIDE_EFFECTS)
         NO_SIDE_EFFECTS = 1,
+        // @@protoc_insertion_point(enum_value:google.protobuf.MethodOptions.IdempotencyLevel.IDEMPOTENT)
         IDEMPOTENT = 2,
     }
 
@@ -6876,22 +7014,29 @@ pub mod method_options {
 ///  or produced by Descriptor::CopyTo()) will never have UninterpretedOptions
 ///  in them.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.UninterpretedOption)
 pub struct UninterpretedOption {
     // message fields
+    // @@protoc_insertion_point(field:google.protobuf.UninterpretedOption.name)
     pub name: ::std::vec::Vec<uninterpreted_option::NamePart>,
     ///  The value of the uninterpreted option, in whatever type the tokenizer
     ///  identified it as during parsing. Exactly one of these should be set.
+    // @@protoc_insertion_point(field:google.protobuf.UninterpretedOption.identifier_value)
     identifier_value: ::std::option::Option<::std::string::String>,
+    // @@protoc_insertion_point(field:google.protobuf.UninterpretedOption.positive_int_value)
     positive_int_value: ::std::option::Option<u64>,
+    // @@protoc_insertion_point(field:google.protobuf.UninterpretedOption.negative_int_value)
     negative_int_value: ::std::option::Option<i64>,
+    // @@protoc_insertion_point(field:google.protobuf.UninterpretedOption.double_value)
     double_value: ::std::option::Option<f64>,
+    // @@protoc_insertion_point(field:google.protobuf.UninterpretedOption.string_value)
     string_value: ::std::option::Option<::std::vec::Vec<u8>>,
+    // @@protoc_insertion_point(field:google.protobuf.UninterpretedOption.aggregate_value)
     aggregate_value: ::std::option::Option<::std::string::String>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.UninterpretedOption.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.UninterpretedOption.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -7307,15 +7452,17 @@ pub mod uninterpreted_option {
     ///  E.g.,{ ["foo", false], ["bar.baz", true], ["qux", false] } represents
     ///  "foo.(bar.baz).qux".
     #[derive(PartialEq,Clone,Default,Debug)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    // @@protoc_insertion_point(message:google.protobuf.UninterpretedOption.NamePart)
     pub struct NamePart {
         // message fields
+        // @@protoc_insertion_point(field:google.protobuf.UninterpretedOption.NamePart.name_part)
         name_part: ::std::option::Option<::std::string::String>,
+        // @@protoc_insertion_point(field:google.protobuf.UninterpretedOption.NamePart.is_extension)
         is_extension: ::std::option::Option<bool>,
         // special fields
-        #[cfg_attr(serde, serde(skip))]
+        // @@protoc_insertion_point(special_field:google.protobuf.UninterpretedOption.NamePart.unknown_fields)
         pub unknown_fields: crate::UnknownFields,
-        #[cfg_attr(serde, serde(skip))]
+        // @@protoc_insertion_point(special_field:google.protobuf.UninterpretedOption.NamePart.cached_size)
         pub cached_size: crate::rt::CachedSize,
     }
 
@@ -7521,14 +7668,15 @@ pub mod uninterpreted_option {
 ///  Encapsulates information about the original source file from which a
 ///  FileDescriptorProto was generated.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.SourceCodeInfo)
 pub struct SourceCodeInfo {
     // message fields
+    // @@protoc_insertion_point(field:google.protobuf.SourceCodeInfo.location)
     pub location: ::std::vec::Vec<source_code_info::Location>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.SourceCodeInfo.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.SourceCodeInfo.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -7654,23 +7802,28 @@ impl crate::reflect::ProtobufValue for SourceCodeInfo {
 /// Nested message and enums of message `SourceCodeInfo`
 pub mod source_code_info {
     #[derive(PartialEq,Clone,Default,Debug)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    // @@protoc_insertion_point(message:google.protobuf.SourceCodeInfo.Location)
     pub struct Location {
         // message fields
+        // @@protoc_insertion_point(field:google.protobuf.SourceCodeInfo.Location.path)
         pub path: ::std::vec::Vec<i32>,
         ///  Always has exactly three or four elements: start line, start column,
         ///  end line (optional, otherwise assumed same as start line), end column.
         ///  These are packed into a single field for efficiency.  Note that line
         ///  and column numbers are zero-based -- typically you will want to add
         ///  1 to each before displaying to a user.
+        // @@protoc_insertion_point(field:google.protobuf.SourceCodeInfo.Location.span)
         pub span: ::std::vec::Vec<i32>,
+        // @@protoc_insertion_point(field:google.protobuf.SourceCodeInfo.Location.leading_comments)
         leading_comments: ::std::option::Option<::std::string::String>,
+        // @@protoc_insertion_point(field:google.protobuf.SourceCodeInfo.Location.trailing_comments)
         trailing_comments: ::std::option::Option<::std::string::String>,
+        // @@protoc_insertion_point(field:google.protobuf.SourceCodeInfo.Location.leading_detached_comments)
         pub leading_detached_comments: ::std::vec::Vec<::std::string::String>,
         // special fields
-        #[cfg_attr(serde, serde(skip))]
+        // @@protoc_insertion_point(special_field:google.protobuf.SourceCodeInfo.Location.unknown_fields)
         pub unknown_fields: crate::UnknownFields,
-        #[cfg_attr(serde, serde(skip))]
+        // @@protoc_insertion_point(special_field:google.protobuf.SourceCodeInfo.Location.cached_size)
         pub cached_size: crate::rt::CachedSize,
     }
 
@@ -7932,16 +8085,17 @@ pub mod source_code_info {
 ///  file. A GeneratedCodeInfo message is associated with only one generated
 ///  source file, but may contain references to different source .proto files.
 #[derive(PartialEq,Clone,Default,Debug)]
-#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+// @@protoc_insertion_point(message:google.protobuf.GeneratedCodeInfo)
 pub struct GeneratedCodeInfo {
     // message fields
     ///  An Annotation connects some span of text in generated code to an element
     ///  of its generating .proto file.
+    // @@protoc_insertion_point(field:google.protobuf.GeneratedCodeInfo.annotation)
     pub annotation: ::std::vec::Vec<generated_code_info::Annotation>,
     // special fields
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.GeneratedCodeInfo.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
-    #[cfg_attr(serde, serde(skip))]
+    // @@protoc_insertion_point(special_field:google.protobuf.GeneratedCodeInfo.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
@@ -8067,25 +8221,29 @@ impl crate::reflect::ProtobufValue for GeneratedCodeInfo {
 /// Nested message and enums of message `GeneratedCodeInfo`
 pub mod generated_code_info {
     #[derive(PartialEq,Clone,Default,Debug)]
-    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
+    // @@protoc_insertion_point(message:google.protobuf.GeneratedCodeInfo.Annotation)
     pub struct Annotation {
         // message fields
         ///  Identifies the element in the original source .proto file. This field
         ///  is formatted the same as SourceCodeInfo.Location.path.
+        // @@protoc_insertion_point(field:google.protobuf.GeneratedCodeInfo.Annotation.path)
         pub path: ::std::vec::Vec<i32>,
         ///  Identifies the filesystem path to the original source .proto.
+        // @@protoc_insertion_point(field:google.protobuf.GeneratedCodeInfo.Annotation.source_file)
         source_file: ::std::option::Option<::std::string::String>,
         ///  Identifies the starting offset in bytes in the generated code
         ///  that relates to the identified object.
+        // @@protoc_insertion_point(field:google.protobuf.GeneratedCodeInfo.Annotation.begin)
         begin: ::std::option::Option<i32>,
         ///  Identifies the ending offset in bytes in the generated code that
         ///  relates to the identified offset. The end offset should be one past
         ///  the last relevant byte (so the length of the text = end - begin).
+        // @@protoc_insertion_point(field:google.protobuf.GeneratedCodeInfo.Annotation.end)
         end: ::std::option::Option<i32>,
         // special fields
-        #[cfg_attr(serde, serde(skip))]
+        // @@protoc_insertion_point(special_field:google.protobuf.GeneratedCodeInfo.Annotation.unknown_fields)
         pub unknown_fields: crate::UnknownFields,
-        #[cfg_attr(serde, serde(skip))]
+        // @@protoc_insertion_point(special_field:google.protobuf.GeneratedCodeInfo.Annotation.cached_size)
         pub cached_size: crate::rt::CachedSize,
     }
 
