@@ -243,6 +243,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "protoc-bin"
+version = "0.0.0"
+dependencies = [
+ "protoc-bin-vendored",
+]
+
+[[package]]
 name = "protoc-bin-vendored"
 version = "2.27.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
