@@ -10,8 +10,8 @@ use crate::reflect::enums::index::EnumIndex;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
 use crate::reflect::name::compute_full_name;
+use crate::EnumOrUnknown;
 use crate::ProtobufEnum;
-use crate::ProtobufEnumOrUnknown;
 
 pub(crate) trait GetEnumDescriptor: Send + Sync + 'static {
     #[cfg(not(rustc_nightly))]
@@ -54,7 +54,7 @@ impl GeneratedEnumDescriptorData {
             get_descriptor: &GetEnumDescriptorImpl(marker::PhantomData::<E>),
             name_in_file,
             type_id: TypeId::of::<E>(),
-            enum_or_unknown_type_id: TypeId::of::<ProtobufEnumOrUnknown<E>>(),
+            enum_or_unknown_type_id: TypeId::of::<EnumOrUnknown<E>>(),
         }
     }
 }

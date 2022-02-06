@@ -84,7 +84,7 @@ impl RustType {
             RustType::Message(ref name) => format!("{}", name),
             RustType::Enum(ref name, ..) | RustType::Oneof(ref name) => format!("{}", name),
             RustType::EnumOrUnknown(ref name, ..) => format!(
-                "{}::ProtobufEnumOrUnknown<{}>",
+                "{}::EnumOrUnknown<{}>",
                 protobuf_crate_path(customize),
                 name
             ),
@@ -215,12 +215,12 @@ impl RustType {
             // Note: default value of enum type may not be equal to default value of field
             RustType::Enum(ref name, ref default, ..) => format!("{}::{}", name, default),
             RustType::EnumOrUnknown(_, _, number) if const_expr => format!(
-                "{}::ProtobufEnumOrUnknown::from_i32({})",
+                "{}::EnumOrUnknown::from_i32({})",
                 protobuf_crate_path(customize),
                 number,
             ),
             RustType::EnumOrUnknown(ref name, ref default, ..) if !const_expr => format!(
-                "{}::ProtobufEnumOrUnknown::new({}::{})",
+                "{}::EnumOrUnknown::new({}::{})",
                 protobuf_crate_path(customize),
                 name,
                 default
@@ -337,20 +337,20 @@ impl RustType {
                 return Ok(format!("{}::ProtobufEnum::value(&{})", protobuf_crate_path(customize), v))
             },
             (&RustType::EnumOrUnknown(..), &RustType::Int(true, 32)) => {
-                return Ok(format!("{}::ProtobufEnumOrUnknown::value(&{})", protobuf_crate_path(customize), v))
+                return Ok(format!("{}::EnumOrUnknown::value(&{})", protobuf_crate_path(customize), v))
             },
             (&RustType::Ref(ref t), &RustType::Int(true, 32)) if t.is_enum() => {
                 return Ok(format!("{}::ProtobufEnum::value({})", protobuf_crate_path(customize), v))
             }
             (&RustType::Ref(ref t), &RustType::Int(true, 32)) if t.is_enum_or_unknown() => {
-                return Ok(format!("{}::ProtobufEnumOrUnknown::value({})", protobuf_crate_path(customize), v))
+                return Ok(format!("{}::EnumOrUnknown::value({})", protobuf_crate_path(customize), v))
             },
             (&RustType::EnumOrUnknown(ref f, ..), &RustType::Enum(ref t, ..)) if f == t => {
                 // TODO: ignores default value
-                return Ok(format!("{}::ProtobufEnumOrUnknown::enum_value_or_default(&{})", protobuf_crate_path(customize), v))
+                return Ok(format!("{}::EnumOrUnknown::enum_value_or_default(&{})", protobuf_crate_path(customize), v))
             }
             (&RustType::Enum(ref f, ..), &RustType::EnumOrUnknown(ref t, ..)) if f == t => {
-                return Ok(format!("{}::ProtobufEnumOrUnknown::new({})", protobuf_crate_path(customize), v))
+                return Ok(format!("{}::EnumOrUnknown::new({})", protobuf_crate_path(customize), v))
             }
             _ => (),
         };

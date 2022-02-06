@@ -43,7 +43,7 @@ pub struct Type {
     pub source_context: crate::MessageField<crate::well_known_types::SourceContext>,
     ///  The source syntax.
     // @@protoc_insertion_point(field:google.protobuf.Type.syntax)
-    pub syntax: crate::ProtobufEnumOrUnknown<Syntax>,
+    pub syntax: crate::EnumOrUnknown<Syntax>,
     // special fields
     // @@protoc_insertion_point(special_field:google.protobuf.Type.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
@@ -180,7 +180,7 @@ impl crate::Message for Type {
             let len = v.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         }
-        if self.syntax != crate::ProtobufEnumOrUnknown::new(Syntax::SYNTAX_PROTO2) {
+        if self.syntax != crate::EnumOrUnknown::new(Syntax::SYNTAX_PROTO2) {
             my_size += crate::rt::enum_or_unknown_size(6, self.syntax);
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
@@ -204,8 +204,8 @@ impl crate::Message for Type {
         if let Some(v) = self.source_context.as_ref() {
             crate::rt::write_message_field_with_cached_size(5, v, os)?;
         }
-        if self.syntax != crate::ProtobufEnumOrUnknown::new(Syntax::SYNTAX_PROTO2) {
-            os.write_enum(6, crate::ProtobufEnumOrUnknown::value(&self.syntax))?;
+        if self.syntax != crate::EnumOrUnknown::new(Syntax::SYNTAX_PROTO2) {
+            os.write_enum(6, crate::EnumOrUnknown::value(&self.syntax))?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -238,7 +238,7 @@ impl crate::Message for Type {
             oneofs: ::std::vec::Vec::new(),
             options: ::std::vec::Vec::new(),
             source_context: crate::MessageField::none(),
-            syntax: crate::ProtobufEnumOrUnknown::from_i32(0),
+            syntax: crate::EnumOrUnknown::from_i32(0),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };
@@ -253,7 +253,7 @@ impl crate::Clear for Type {
         self.oneofs.clear();
         self.options.clear();
         self.source_context.clear();
-        self.syntax = crate::ProtobufEnumOrUnknown::new(Syntax::SYNTAX_PROTO2);
+        self.syntax = crate::EnumOrUnknown::new(Syntax::SYNTAX_PROTO2);
         self.unknown_fields.clear();
     }
 }
@@ -275,10 +275,10 @@ pub struct Field {
     // message fields
     ///  The field type.
     // @@protoc_insertion_point(field:google.protobuf.Field.kind)
-    pub kind: crate::ProtobufEnumOrUnknown<field::Kind>,
+    pub kind: crate::EnumOrUnknown<field::Kind>,
     ///  The field cardinality.
     // @@protoc_insertion_point(field:google.protobuf.Field.cardinality)
-    pub cardinality: crate::ProtobufEnumOrUnknown<field::Cardinality>,
+    pub cardinality: crate::EnumOrUnknown<field::Cardinality>,
     ///  The field number.
     // @@protoc_insertion_point(field:google.protobuf.Field.number)
     pub number: i32,
@@ -466,10 +466,10 @@ impl crate::Message for Field {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        if self.kind != crate::ProtobufEnumOrUnknown::new(field::Kind::TYPE_UNKNOWN) {
+        if self.kind != crate::EnumOrUnknown::new(field::Kind::TYPE_UNKNOWN) {
             my_size += crate::rt::enum_or_unknown_size(1, self.kind);
         }
-        if self.cardinality != crate::ProtobufEnumOrUnknown::new(field::Cardinality::CARDINALITY_UNKNOWN) {
+        if self.cardinality != crate::EnumOrUnknown::new(field::Cardinality::CARDINALITY_UNKNOWN) {
             my_size += crate::rt::enum_or_unknown_size(2, self.cardinality);
         }
         if self.number != 0 {
@@ -503,11 +503,11 @@ impl crate::Message for Field {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::Result<()> {
-        if self.kind != crate::ProtobufEnumOrUnknown::new(field::Kind::TYPE_UNKNOWN) {
-            os.write_enum(1, crate::ProtobufEnumOrUnknown::value(&self.kind))?;
+        if self.kind != crate::EnumOrUnknown::new(field::Kind::TYPE_UNKNOWN) {
+            os.write_enum(1, crate::EnumOrUnknown::value(&self.kind))?;
         }
-        if self.cardinality != crate::ProtobufEnumOrUnknown::new(field::Cardinality::CARDINALITY_UNKNOWN) {
-            os.write_enum(2, crate::ProtobufEnumOrUnknown::value(&self.cardinality))?;
+        if self.cardinality != crate::EnumOrUnknown::new(field::Cardinality::CARDINALITY_UNKNOWN) {
+            os.write_enum(2, crate::EnumOrUnknown::value(&self.cardinality))?;
         }
         if self.number != 0 {
             os.write_int32(3, self.number)?;
@@ -559,8 +559,8 @@ impl crate::Message for Field {
 
     fn default_instance() -> &'static Field {
         static instance: Field = Field {
-            kind: crate::ProtobufEnumOrUnknown::from_i32(0),
-            cardinality: crate::ProtobufEnumOrUnknown::from_i32(0),
+            kind: crate::EnumOrUnknown::from_i32(0),
+            cardinality: crate::EnumOrUnknown::from_i32(0),
             number: 0,
             name: ::std::string::String::new(),
             type_url: ::std::string::String::new(),
@@ -578,8 +578,8 @@ impl crate::Message for Field {
 
 impl crate::Clear for Field {
     fn clear(&mut self) {
-        self.kind = crate::ProtobufEnumOrUnknown::new(field::Kind::TYPE_UNKNOWN);
-        self.cardinality = crate::ProtobufEnumOrUnknown::new(field::Cardinality::CARDINALITY_UNKNOWN);
+        self.kind = crate::EnumOrUnknown::new(field::Kind::TYPE_UNKNOWN);
+        self.cardinality = crate::EnumOrUnknown::new(field::Cardinality::CARDINALITY_UNKNOWN);
         self.number = 0;
         self.name.clear();
         self.type_url.clear();
@@ -804,7 +804,7 @@ pub struct Enum {
     pub source_context: crate::MessageField<crate::well_known_types::SourceContext>,
     ///  The source syntax.
     // @@protoc_insertion_point(field:google.protobuf.Enum.syntax)
-    pub syntax: crate::ProtobufEnumOrUnknown<Syntax>,
+    pub syntax: crate::EnumOrUnknown<Syntax>,
     // special fields
     // @@protoc_insertion_point(special_field:google.protobuf.Enum.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
@@ -930,7 +930,7 @@ impl crate::Message for Enum {
             let len = v.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         }
-        if self.syntax != crate::ProtobufEnumOrUnknown::new(Syntax::SYNTAX_PROTO2) {
+        if self.syntax != crate::EnumOrUnknown::new(Syntax::SYNTAX_PROTO2) {
             my_size += crate::rt::enum_or_unknown_size(5, self.syntax);
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
@@ -951,8 +951,8 @@ impl crate::Message for Enum {
         if let Some(v) = self.source_context.as_ref() {
             crate::rt::write_message_field_with_cached_size(4, v, os)?;
         }
-        if self.syntax != crate::ProtobufEnumOrUnknown::new(Syntax::SYNTAX_PROTO2) {
-            os.write_enum(5, crate::ProtobufEnumOrUnknown::value(&self.syntax))?;
+        if self.syntax != crate::EnumOrUnknown::new(Syntax::SYNTAX_PROTO2) {
+            os.write_enum(5, crate::EnumOrUnknown::value(&self.syntax))?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -984,7 +984,7 @@ impl crate::Message for Enum {
             enumvalue: ::std::vec::Vec::new(),
             options: ::std::vec::Vec::new(),
             source_context: crate::MessageField::none(),
-            syntax: crate::ProtobufEnumOrUnknown::from_i32(0),
+            syntax: crate::EnumOrUnknown::from_i32(0),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };
@@ -998,7 +998,7 @@ impl crate::Clear for Enum {
         self.enumvalue.clear();
         self.options.clear();
         self.source_context.clear();
-        self.syntax = crate::ProtobufEnumOrUnknown::new(Syntax::SYNTAX_PROTO2);
+        self.syntax = crate::EnumOrUnknown::new(Syntax::SYNTAX_PROTO2);
         self.unknown_fields.clear();
     }
 }

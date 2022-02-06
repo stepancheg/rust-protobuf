@@ -181,7 +181,7 @@ impl Value {
 
     pub fn get_null_value(&self) -> NullValue {
         match self.kind {
-            ::std::option::Option::Some(value::Kind::null_value(v)) => crate::ProtobufEnumOrUnknown::enum_value_or_default(&v),
+            ::std::option::Option::Some(value::Kind::null_value(v)) => crate::EnumOrUnknown::enum_value_or_default(&v),
             _ => NullValue::NULL_VALUE,
         }
     }
@@ -199,7 +199,7 @@ impl Value {
 
     // Param is passed by value, moved
     pub fn set_null_value(&mut self, v: NullValue) {
-        self.kind = ::std::option::Option::Some(value::Kind::null_value(crate::ProtobufEnumOrUnknown::new(v)))
+        self.kind = ::std::option::Option::Some(value::Kind::null_value(crate::EnumOrUnknown::new(v)))
     }
 
     // double number_value = 2;
@@ -547,7 +547,7 @@ impl crate::Message for Value {
         if let ::std::option::Option::Some(ref v) = self.kind {
             match v {
                 &value::Kind::null_value(v) => {
-                    os.write_enum(1, crate::ProtobufEnumOrUnknown::value(&v))?;
+                    os.write_enum(1, crate::EnumOrUnknown::value(&v))?;
                 },
                 &value::Kind::number_value(v) => {
                     os.write_double(2, v)?;
@@ -629,7 +629,7 @@ pub mod value {
     // @@protoc_insertion_point(oneof:google.protobuf.Value.kind)
     pub enum Kind {
         // @@protoc_insertion_point(oneof_field:google.protobuf.Value.null_value)
-        null_value(crate::ProtobufEnumOrUnknown<super::NullValue>),
+        null_value(crate::EnumOrUnknown<super::NullValue>),
         // @@protoc_insertion_point(oneof_field:google.protobuf.Value.number_value)
         number_value(f64),
         // @@protoc_insertion_point(oneof_field:google.protobuf.Value.string_value)

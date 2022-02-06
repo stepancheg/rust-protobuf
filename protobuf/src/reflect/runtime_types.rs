@@ -10,8 +10,8 @@ use bytes::Bytes;
 
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;
+use crate::enums::EnumOrUnknown;
 use crate::enums::ProtobufEnum;
-use crate::enums::ProtobufEnumOrUnknown;
 use crate::message::Message;
 use crate::reflect::runtime_type_box::RuntimeTypeBox;
 use crate::reflect::value::value_ref::ReflectValueMut;
@@ -745,7 +745,7 @@ impl<E> RuntimeType for RuntimeTypeEnumOrUnknown<E>
 where
     E: ProtobufEnum + ProtobufValue + fmt::Debug,
 {
-    type Value = ProtobufEnumOrUnknown<E>;
+    type Value = EnumOrUnknown<E>;
 
     fn runtime_type_box() -> RuntimeTypeBox
     where
@@ -761,26 +761,24 @@ where
         )
     }
 
-    fn from_value_box(
-        value_box: ReflectValueBox,
-    ) -> Result<ProtobufEnumOrUnknown<E>, ReflectValueBox> {
+    fn from_value_box(value_box: ReflectValueBox) -> Result<EnumOrUnknown<E>, ReflectValueBox> {
         match value_box {
             ReflectValueBox::Enum(d, v) if d == E::enum_descriptor_static() => {
-                Ok(ProtobufEnumOrUnknown::from_i32(v))
+                Ok(EnumOrUnknown::from_i32(v))
             }
             b => Err(b),
         }
     }
 
-    fn into_value_box(value: ProtobufEnumOrUnknown<E>) -> ReflectValueBox {
+    fn into_value_box(value: EnumOrUnknown<E>) -> ReflectValueBox {
         ReflectValueBox::Enum(E::enum_descriptor_static(), value.value())
     }
 
-    fn into_static_value_ref(value: ProtobufEnumOrUnknown<E>) -> ReflectValueRef<'static> {
+    fn into_static_value_ref(value: EnumOrUnknown<E>) -> ReflectValueRef<'static> {
         ReflectValueRef::Enum(E::enum_descriptor_static(), value.value())
     }
 
-    fn as_ref(value: &ProtobufEnumOrUnknown<E>) -> ReflectValueRef {
+    fn as_ref(value: &EnumOrUnknown<E>) -> ReflectValueRef {
         ReflectValueRef::Enum(E::enum_descriptor_static(), value.value())
     }
 
@@ -788,15 +786,12 @@ where
         unimplemented!()
     }
 
-    fn is_non_zero(value: &ProtobufEnumOrUnknown<E>) -> bool {
+    fn is_non_zero(value: &EnumOrUnknown<E>) -> bool {
         value.value() != 0
     }
 
-    fn cast_to_enum_values(values: &[ProtobufEnumOrUnknown<E>]) -> &[i32] {
-        assert_eq!(
-            mem::size_of::<i32>(),
-            mem::size_of::<ProtobufEnumOrUnknown<E>>()
-        );
+    fn cast_to_enum_values(values: &[EnumOrUnknown<E>]) -> &[i32] {
+        assert_eq!(mem::size_of::<i32>(), mem::size_of::<EnumOrUnknown<E>>());
         // SAFETY: `ProtobufEnumOrUnknown<E>` is transparent as `i32`.
         unsafe { mem::transmute(values) }
     }

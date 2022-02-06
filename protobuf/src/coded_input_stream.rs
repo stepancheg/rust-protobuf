@@ -9,8 +9,8 @@ use crate::buf_read_iter::BufReadIter;
 use crate::bytes::Bytes;
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;
+use crate::enums::EnumOrUnknown;
 use crate::enums::ProtobufEnum;
-use crate::enums::ProtobufEnumOrUnknown;
 use crate::error::ProtobufError;
 use crate::error::Result;
 use crate::error::WireError;
@@ -365,8 +365,8 @@ impl<'a> CodedInputStream<'a> {
     }
 
     /// Read `enum` as `ProtobufEnumOrUnknown`
-    pub fn read_enum_or_unknown<E: ProtobufEnum>(&mut self) -> Result<ProtobufEnumOrUnknown<E>> {
-        Ok(ProtobufEnumOrUnknown::from_i32(self.read_int32()?))
+    pub fn read_enum_or_unknown<E: ProtobufEnum>(&mut self) -> Result<EnumOrUnknown<E>> {
+        Ok(EnumOrUnknown::from_i32(self.read_int32()?))
     }
 
     fn read_repeated_packed_fixed_into<T: ProtobufTypeFixed>(

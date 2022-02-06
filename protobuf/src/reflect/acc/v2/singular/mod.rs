@@ -1,8 +1,8 @@
 use std::fmt;
 use std::marker;
 
+use crate::enums::EnumOrUnknown;
 use crate::enums::ProtobufEnum;
-use crate::enums::ProtobufEnumOrUnknown;
 use crate::message::Message;
 use crate::message_dyn::MessageDyn;
 use crate::reflect::acc::v2::AccessorV2;
@@ -536,7 +536,7 @@ where
 }
 
 struct GetOrDefaultEnum<M, E: ProtobufEnum> {
-    get_field: for<'a> fn(&'a M) -> &'a Option<ProtobufEnumOrUnknown<E>>,
+    get_field: for<'a> fn(&'a M) -> &'a Option<EnumOrUnknown<E>>,
     default_value: E,
 }
 
@@ -555,8 +555,8 @@ impl<M: Message, E: ProtobufEnum> GetOrDefaultImpl<M> for GetOrDefaultEnum<M, E>
 /// Make accessor for enum field
 pub fn make_option_enum_accessor<M, E>(
     name: &'static str,
-    get_field: for<'a> fn(&'a M) -> &'a Option<ProtobufEnumOrUnknown<E>>,
-    mut_field: for<'a> fn(&'a mut M) -> &'a mut Option<ProtobufEnumOrUnknown<E>>,
+    get_field: for<'a> fn(&'a M) -> &'a Option<EnumOrUnknown<E>>,
+    mut_field: for<'a> fn(&'a mut M) -> &'a mut Option<EnumOrUnknown<E>>,
     default_value: E,
 ) -> FieldAccessor
 where
@@ -566,37 +566,32 @@ where
     FieldAccessor::new_v2(
         name,
         AccessorV2::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(SingularFieldAccessorImpl::<
-                M,
-                ProtobufEnumOrUnknown<E>,
-                _,
-                _,
-                _,
-                _,
-            > {
-                get_option_impl: GetOptionImplOptionFieldPointer::<
-                    M,
-                    ProtobufEnumOrUnknown<E>,
-                    Option<ProtobufEnumOrUnknown<E>>,
-                > {
-                    get_field,
+            accessor: Box::new(
+                SingularFieldAccessorImpl::<M, EnumOrUnknown<E>, _, _, _, _> {
+                    get_option_impl: GetOptionImplOptionFieldPointer::<
+                        M,
+                        EnumOrUnknown<E>,
+                        Option<EnumOrUnknown<E>>,
+                    > {
+                        get_field,
+                        _marker: marker::PhantomData,
+                    },
+                    get_or_default_impl: GetOrDefaultEnum::<M, E> {
+                        get_field,
+                        default_value,
+                    },
+                    mut_or_default_impl: MutOrDefaultUnmplemented::new(),
+                    set_impl: SetImplOptionFieldPointer::<
+                        M,
+                        EnumOrUnknown<E>,
+                        Option<EnumOrUnknown<E>>,
+                    > {
+                        mut_field,
+                        _marker: marker::PhantomData,
+                    },
                     _marker: marker::PhantomData,
                 },
-                get_or_default_impl: GetOrDefaultEnum::<M, E> {
-                    get_field,
-                    default_value,
-                },
-                mut_or_default_impl: MutOrDefaultUnmplemented::new(),
-                set_impl: SetImplOptionFieldPointer::<
-                    M,
-                    ProtobufEnumOrUnknown<E>,
-                    Option<ProtobufEnumOrUnknown<E>>,
-                > {
-                    mut_field,
-                    _marker: marker::PhantomData,
-                },
-                _marker: marker::PhantomData,
-            }),
+            ),
         }),
     )
 }

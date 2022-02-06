@@ -1579,11 +1579,11 @@ pub struct FieldDescriptorProto {
     // @@protoc_insertion_point(field:google.protobuf.FieldDescriptorProto.number)
     number: ::std::option::Option<i32>,
     // @@protoc_insertion_point(field:google.protobuf.FieldDescriptorProto.label)
-    label: ::std::option::Option<crate::ProtobufEnumOrUnknown<field_descriptor_proto::Label>>,
+    label: ::std::option::Option<crate::EnumOrUnknown<field_descriptor_proto::Label>>,
     ///  If type_name is set, this need not be set.  If both this and type_name
     ///  are set, this must be one of TYPE_ENUM, TYPE_MESSAGE or TYPE_GROUP.
     // @@protoc_insertion_point(field:google.protobuf.FieldDescriptorProto.type)
-    field_type: ::std::option::Option<crate::ProtobufEnumOrUnknown<field_descriptor_proto::Type>>,
+    field_type: ::std::option::Option<crate::EnumOrUnknown<field_descriptor_proto::Type>>,
     ///  For message and enum types, this is the name of the type.  If the name
     ///  starts with a '.', it is fully-qualified.  Otherwise, C++-like scoping
     ///  rules are used to find the type (i.e. first the nested types within this
@@ -1729,7 +1729,7 @@ impl FieldDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_label(&mut self, v: field_descriptor_proto::Label) {
-        self.label = ::std::option::Option::Some(crate::ProtobufEnumOrUnknown::new(v));
+        self.label = ::std::option::Option::Some(crate::EnumOrUnknown::new(v));
     }
 
     // optional .google.protobuf.FieldDescriptorProto.Type type = 5;
@@ -1751,7 +1751,7 @@ impl FieldDescriptorProto {
 
     // Param is passed by value, moved
     pub fn set_field_type(&mut self, v: field_descriptor_proto::Type) {
-        self.field_type = ::std::option::Option::Some(crate::ProtobufEnumOrUnknown::new(v));
+        self.field_type = ::std::option::Option::Some(crate::EnumOrUnknown::new(v));
     }
 
     // optional string type_name = 6;
@@ -2147,10 +2147,10 @@ impl crate::Message for FieldDescriptorProto {
             os.write_int32(3, v)?;
         }
         if let Some(v) = self.label {
-            os.write_enum(4, crate::ProtobufEnumOrUnknown::value(&v))?;
+            os.write_enum(4, crate::EnumOrUnknown::value(&v))?;
         }
         if let Some(v) = self.field_type {
-            os.write_enum(5, crate::ProtobufEnumOrUnknown::value(&v))?;
+            os.write_enum(5, crate::EnumOrUnknown::value(&v))?;
         }
         if let Some(v) = self.type_name.as_ref() {
             os.write_string(6, v)?;
@@ -3948,7 +3948,7 @@ pub struct FileOptions {
     // @@protoc_insertion_point(field:google.protobuf.FileOptions.java_string_check_utf8)
     java_string_check_utf8: ::std::option::Option<bool>,
     // @@protoc_insertion_point(field:google.protobuf.FileOptions.optimize_for)
-    optimize_for: ::std::option::Option<crate::ProtobufEnumOrUnknown<file_options::OptimizeMode>>,
+    optimize_for: ::std::option::Option<crate::EnumOrUnknown<file_options::OptimizeMode>>,
     ///  Sets the Go package where structs generated from this .proto will be
     ///  placed. If omitted, the Go package will be derived from the following:
     ///    - The basename of the package import path, if provided.
@@ -4186,7 +4186,7 @@ impl FileOptions {
 
     // Param is passed by value, moved
     pub fn set_optimize_for(&mut self, v: file_options::OptimizeMode) {
-        self.optimize_for = ::std::option::Option::Some(crate::ProtobufEnumOrUnknown::new(v));
+        self.optimize_for = ::std::option::Option::Some(crate::EnumOrUnknown::new(v));
     }
 
     // optional string go_package = 11;
@@ -4961,7 +4961,7 @@ impl crate::Message for FileOptions {
             os.write_bool(27, v)?;
         }
         if let Some(v) = self.optimize_for {
-            os.write_enum(9, crate::ProtobufEnumOrUnknown::value(&v))?;
+            os.write_enum(9, crate::EnumOrUnknown::value(&v))?;
         }
         if let Some(v) = self.go_package.as_ref() {
             os.write_string(11, v)?;
@@ -5472,7 +5472,7 @@ pub struct FieldOptions {
     ///  options below.  This option is not yet implemented in the open source
     ///  release -- sorry, we'll try to include it in a future version!
     // @@protoc_insertion_point(field:google.protobuf.FieldOptions.ctype)
-    ctype: ::std::option::Option<crate::ProtobufEnumOrUnknown<field_options::CType>>,
+    ctype: ::std::option::Option<crate::EnumOrUnknown<field_options::CType>>,
     ///  The packed option can be enabled for repeated primitive fields to enable
     ///  a more efficient representation on the wire. Rather than repeatedly
     ///  writing the tag and type for each element, the entire array is encoded as
@@ -5492,7 +5492,7 @@ pub struct FieldOptions {
     ///  This option is an enum to permit additional types to be added, e.g.
     ///  goog.math.Integer.
     // @@protoc_insertion_point(field:google.protobuf.FieldOptions.jstype)
-    jstype: ::std::option::Option<crate::ProtobufEnumOrUnknown<field_options::JSType>>,
+    jstype: ::std::option::Option<crate::EnumOrUnknown<field_options::JSType>>,
     ///  Should this field be parsed lazily?  Lazy applies only to message-type
     ///  fields.  It means that when the outer message is initially parsed, the
     ///  inner message's contents will not be parsed but instead stored in encoded
@@ -5572,7 +5572,7 @@ impl FieldOptions {
 
     // Param is passed by value, moved
     pub fn set_ctype(&mut self, v: field_options::CType) {
-        self.ctype = ::std::option::Option::Some(crate::ProtobufEnumOrUnknown::new(v));
+        self.ctype = ::std::option::Option::Some(crate::EnumOrUnknown::new(v));
     }
 
     // optional bool packed = 2;
@@ -5613,7 +5613,7 @@ impl FieldOptions {
 
     // Param is passed by value, moved
     pub fn set_jstype(&mut self, v: field_options::JSType) {
-        self.jstype = ::std::option::Option::Some(crate::ProtobufEnumOrUnknown::new(v));
+        self.jstype = ::std::option::Option::Some(crate::EnumOrUnknown::new(v));
     }
 
     // optional bool lazy = 5;
@@ -5818,13 +5818,13 @@ impl crate::Message for FieldOptions {
 
     fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::Result<()> {
         if let Some(v) = self.ctype {
-            os.write_enum(1, crate::ProtobufEnumOrUnknown::value(&v))?;
+            os.write_enum(1, crate::EnumOrUnknown::value(&v))?;
         }
         if let Some(v) = self.packed {
             os.write_bool(2, v)?;
         }
         if let Some(v) = self.jstype {
-            os.write_enum(6, crate::ProtobufEnumOrUnknown::value(&v))?;
+            os.write_enum(6, crate::EnumOrUnknown::value(&v))?;
         }
         if let Some(v) = self.lazy {
             os.write_bool(5, v)?;
@@ -6735,7 +6735,7 @@ pub struct MethodOptions {
     // @@protoc_insertion_point(field:google.protobuf.MethodOptions.deprecated)
     deprecated: ::std::option::Option<bool>,
     // @@protoc_insertion_point(field:google.protobuf.MethodOptions.idempotency_level)
-    idempotency_level: ::std::option::Option<crate::ProtobufEnumOrUnknown<method_options::IdempotencyLevel>>,
+    idempotency_level: ::std::option::Option<crate::EnumOrUnknown<method_options::IdempotencyLevel>>,
     ///  The parser stores options it doesn't recognize here. See above.
     // @@protoc_insertion_point(field:google.protobuf.MethodOptions.uninterpreted_option)
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
@@ -6795,7 +6795,7 @@ impl MethodOptions {
 
     // Param is passed by value, moved
     pub fn set_idempotency_level(&mut self, v: method_options::IdempotencyLevel) {
-        self.idempotency_level = ::std::option::Option::Some(crate::ProtobufEnumOrUnknown::new(v));
+        self.idempotency_level = ::std::option::Option::Some(crate::EnumOrUnknown::new(v));
     }
 
     fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
@@ -6886,7 +6886,7 @@ impl crate::Message for MethodOptions {
             os.write_bool(33, v)?;
         }
         if let Some(v) = self.idempotency_level {
-            os.write_enum(34, crate::ProtobufEnumOrUnknown::value(&v))?;
+            os.write_enum(34, crate::EnumOrUnknown::value(&v))?;
         }
         for v in &self.uninterpreted_option {
             crate::rt::write_message_field_with_cached_size(999, v, os)?;

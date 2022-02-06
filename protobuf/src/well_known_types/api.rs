@@ -76,7 +76,7 @@ pub struct Api {
     pub mixins: ::std::vec::Vec<Mixin>,
     ///  The source syntax of the service.
     // @@protoc_insertion_point(field:google.protobuf.Api.syntax)
-    pub syntax: crate::ProtobufEnumOrUnknown<crate::well_known_types::Syntax>,
+    pub syntax: crate::EnumOrUnknown<crate::well_known_types::Syntax>,
     // special fields
     // @@protoc_insertion_point(special_field:google.protobuf.Api.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
@@ -233,7 +233,7 @@ impl crate::Message for Api {
             let len = value.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
-        if self.syntax != crate::ProtobufEnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2) {
+        if self.syntax != crate::EnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2) {
             my_size += crate::rt::enum_or_unknown_size(7, self.syntax);
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
@@ -260,8 +260,8 @@ impl crate::Message for Api {
         for v in &self.mixins {
             crate::rt::write_message_field_with_cached_size(6, v, os)?;
         };
-        if self.syntax != crate::ProtobufEnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2) {
-            os.write_enum(7, crate::ProtobufEnumOrUnknown::value(&self.syntax))?;
+        if self.syntax != crate::EnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2) {
+            os.write_enum(7, crate::EnumOrUnknown::value(&self.syntax))?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -295,7 +295,7 @@ impl crate::Message for Api {
             version: ::std::string::String::new(),
             source_context: crate::MessageField::none(),
             mixins: ::std::vec::Vec::new(),
-            syntax: crate::ProtobufEnumOrUnknown::from_i32(0),
+            syntax: crate::EnumOrUnknown::from_i32(0),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };
@@ -311,7 +311,7 @@ impl crate::Clear for Api {
         self.version.clear();
         self.source_context.clear();
         self.mixins.clear();
-        self.syntax = crate::ProtobufEnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2);
+        self.syntax = crate::EnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2);
         self.unknown_fields.clear();
     }
 }
@@ -351,7 +351,7 @@ pub struct Method {
     pub options: ::std::vec::Vec<crate::well_known_types::Option>,
     ///  The source syntax of this method.
     // @@protoc_insertion_point(field:google.protobuf.Method.syntax)
-    pub syntax: crate::ProtobufEnumOrUnknown<crate::well_known_types::Syntax>,
+    pub syntax: crate::EnumOrUnknown<crate::well_known_types::Syntax>,
     // special fields
     // @@protoc_insertion_point(special_field:google.protobuf.Method.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
@@ -499,7 +499,7 @@ impl crate::Message for Method {
             let len = value.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
-        if self.syntax != crate::ProtobufEnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2) {
+        if self.syntax != crate::EnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2) {
             my_size += crate::rt::enum_or_unknown_size(7, self.syntax);
         }
         my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
@@ -526,8 +526,8 @@ impl crate::Message for Method {
         for v in &self.options {
             crate::rt::write_message_field_with_cached_size(6, v, os)?;
         };
-        if self.syntax != crate::ProtobufEnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2) {
-            os.write_enum(7, crate::ProtobufEnumOrUnknown::value(&self.syntax))?;
+        if self.syntax != crate::EnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2) {
+            os.write_enum(7, crate::EnumOrUnknown::value(&self.syntax))?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -561,7 +561,7 @@ impl crate::Message for Method {
             response_type_url: ::std::string::String::new(),
             response_streaming: false,
             options: ::std::vec::Vec::new(),
-            syntax: crate::ProtobufEnumOrUnknown::from_i32(0),
+            syntax: crate::EnumOrUnknown::from_i32(0),
             unknown_fields: crate::UnknownFields::new(),
             cached_size: crate::rt::CachedSize::new(),
         };
@@ -577,7 +577,7 @@ impl crate::Clear for Method {
         self.response_type_url.clear();
         self.response_streaming = false;
         self.options.clear();
-        self.syntax = crate::ProtobufEnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2);
+        self.syntax = crate::EnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2);
         self.unknown_fields.clear();
     }
 }

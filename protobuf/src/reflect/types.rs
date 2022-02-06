@@ -11,8 +11,8 @@ use crate::bytes::Bytes;
 use crate::chars::Chars;
 use crate::coded_input_stream::CodedInputStream;
 use crate::coded_output_stream::CodedOutputStream;
+use crate::enums::EnumOrUnknown;
 use crate::enums::ProtobufEnum;
-use crate::enums::ProtobufEnumOrUnknown;
 use crate::error::Result;
 use crate::message::Message;
 pub use crate::reflect::type_dynamic::ProtobufTypeDynamic;
@@ -671,26 +671,25 @@ impl<E: ProtobufEnum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufType
 }
 
 impl<E: ProtobufEnum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufTypeEnumOrUnknown<E> {
-    type ProtobufValue = ProtobufEnumOrUnknown<E>;
+    type ProtobufValue = EnumOrUnknown<E>;
 
     const WIRE_TYPE: WireType = WireType::Varint;
 
-    fn read(is: &mut CodedInputStream) -> Result<ProtobufEnumOrUnknown<E>> {
+    fn read(is: &mut CodedInputStream) -> Result<EnumOrUnknown<E>> {
         is.read_enum_or_unknown()
     }
 
-    fn get_from_unknown(unknown_values: &UnknownValues) -> Option<ProtobufEnumOrUnknown<E>> {
-        ProtobufTypeInt32::get_from_unknown(unknown_values)
-            .map(|i| ProtobufEnumOrUnknown::from_i32(i))
+    fn get_from_unknown(unknown_values: &UnknownValues) -> Option<EnumOrUnknown<E>> {
+        ProtobufTypeInt32::get_from_unknown(unknown_values).map(|i| EnumOrUnknown::from_i32(i))
     }
 
-    fn compute_size(value: &ProtobufEnumOrUnknown<E>) -> u32 {
+    fn compute_size(value: &EnumOrUnknown<E>) -> u32 {
         rt::compute_raw_varint32_size(value.value() as u32) // TODO: wrap
     }
 
     fn write_with_cached_size(
         field_number: u32,
-        value: &ProtobufEnumOrUnknown<E>,
+        value: &EnumOrUnknown<E>,
         os: &mut CodedOutputStream,
     ) -> Result<()> {
         os.write_enum_or_unknown(field_number, *value)
