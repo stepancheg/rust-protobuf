@@ -244,7 +244,9 @@ dependencies = [
 
 [[package]]
 name = "protoc-bin-vendored"
-version = "2.27.1"
+version = "2.27.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "68e1821cd48a880fe335a80ecb6af0efdd4820fe9cd79920a413d6e15ab39351"
 
 [[package]]
 name = "protoc-rust"
