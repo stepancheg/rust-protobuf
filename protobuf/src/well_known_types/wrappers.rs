@@ -69,7 +69,7 @@ impl crate::Message for DoubleValue {
         true
     }
 
-    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -99,7 +99,7 @@ impl crate::Message for DoubleValue {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::Result<()> {
         if self.value != 0. {
             os.write_double(1, self.value)?;
         }
@@ -202,7 +202,7 @@ impl crate::Message for FloatValue {
         true
     }
 
-    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -232,7 +232,7 @@ impl crate::Message for FloatValue {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::Result<()> {
         if self.value != 0. {
             os.write_float(1, self.value)?;
         }
@@ -335,7 +335,7 @@ impl crate::Message for Int64Value {
         true
     }
 
-    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -365,7 +365,7 @@ impl crate::Message for Int64Value {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::Result<()> {
         if self.value != 0 {
             os.write_int64(1, self.value)?;
         }
@@ -468,7 +468,7 @@ impl crate::Message for UInt64Value {
         true
     }
 
-    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -498,7 +498,7 @@ impl crate::Message for UInt64Value {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::Result<()> {
         if self.value != 0 {
             os.write_uint64(1, self.value)?;
         }
@@ -601,7 +601,7 @@ impl crate::Message for Int32Value {
         true
     }
 
-    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -631,7 +631,7 @@ impl crate::Message for Int32Value {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::Result<()> {
         if self.value != 0 {
             os.write_int32(1, self.value)?;
         }
@@ -734,7 +734,7 @@ impl crate::Message for UInt32Value {
         true
     }
 
-    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -764,7 +764,7 @@ impl crate::Message for UInt32Value {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::Result<()> {
         if self.value != 0 {
             os.write_uint32(1, self.value)?;
         }
@@ -867,7 +867,7 @@ impl crate::Message for BoolValue {
         true
     }
 
-    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -897,7 +897,7 @@ impl crate::Message for BoolValue {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::Result<()> {
         if self.value != false {
             os.write_bool(1, self.value)?;
         }
@@ -1000,7 +1000,7 @@ impl crate::Message for StringValue {
         true
     }
 
-    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -1030,7 +1030,7 @@ impl crate::Message for StringValue {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::Result<()> {
         if !self.value.is_empty() {
             os.write_string(1, &self.value)?;
         }
@@ -1133,7 +1133,7 @@ impl crate::Message for BytesValue {
         true
     }
 
-    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -1163,7 +1163,7 @@ impl crate::Message for BytesValue {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::Result<()> {
         if !self.value.is_empty() {
             os.write_bytes(1, &self.value)?;
         }

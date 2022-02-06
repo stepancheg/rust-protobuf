@@ -13,7 +13,7 @@ use crate::coded_input_stream::CodedInputStream;
 use crate::coded_output_stream::CodedOutputStream;
 use crate::enums::ProtobufEnum;
 use crate::enums::ProtobufEnumOrUnknown;
-use crate::error::ProtobufResult;
+use crate::error::Result;
 use crate::message::Message;
 pub use crate::reflect::type_dynamic::ProtobufTypeDynamic;
 use crate::reflect::type_dynamic::ProtobufTypeDynamicImpl;
@@ -41,7 +41,7 @@ pub trait ProtobufType: Send + Sync + Clone + 'static {
     const WIRE_TYPE: WireType;
 
     /// Read a value from `CodedInputStream`
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<Self::ProtobufValue>;
+    fn read(is: &mut CodedInputStream) -> Result<Self::ProtobufValue>;
 
     /// Take a value from `UnknownValues`
     fn get_from_unknown(_unknown_values: &UnknownValues) -> Option<Self::ProtobufValue>;
@@ -82,7 +82,7 @@ pub trait ProtobufType: Send + Sync + Clone + 'static {
         field_number: u32,
         value: &Self::ProtobufValue,
         os: &mut CodedOutputStream,
-    ) -> ProtobufResult<()>;
+    ) -> Result<()>;
 }
 
 /// All fixed size types
@@ -163,7 +163,7 @@ impl ProtobufType for ProtobufTypeFloat {
 
     const WIRE_TYPE: WireType = WireType::Fixed32;
 
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<f32> {
+    fn read(is: &mut CodedInputStream) -> Result<f32> {
         is.read_float()
     }
 
@@ -184,7 +184,7 @@ impl ProtobufType for ProtobufTypeFloat {
         field_number: u32,
         value: &f32,
         os: &mut CodedOutputStream,
-    ) -> ProtobufResult<()> {
+    ) -> Result<()> {
         os.write_float(field_number, *value)
     }
 }
@@ -198,7 +198,7 @@ impl ProtobufType for ProtobufTypeDouble {
 
     const WIRE_TYPE: WireType = WireType::Fixed64;
 
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<f64> {
+    fn read(is: &mut CodedInputStream) -> Result<f64> {
         is.read_double()
     }
 
@@ -219,7 +219,7 @@ impl ProtobufType for ProtobufTypeDouble {
         field_number: u32,
         value: &f64,
         os: &mut CodedOutputStream,
-    ) -> ProtobufResult<()> {
+    ) -> Result<()> {
         os.write_double(field_number, *value)
     }
 }
@@ -233,7 +233,7 @@ impl ProtobufType for ProtobufTypeInt32 {
 
     const WIRE_TYPE: WireType = WireType::Varint;
 
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<i32> {
+    fn read(is: &mut CodedInputStream) -> Result<i32> {
         is.read_int32()
     }
 
@@ -249,7 +249,7 @@ impl ProtobufType for ProtobufTypeInt32 {
         field_number: u32,
         value: &i32,
         os: &mut CodedOutputStream,
-    ) -> ProtobufResult<()> {
+    ) -> Result<()> {
         os.write_int32(field_number, *value)
     }
 
@@ -263,7 +263,7 @@ impl ProtobufType for ProtobufTypeInt64 {
 
     const WIRE_TYPE: WireType = WireType::Varint;
 
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<i64> {
+    fn read(is: &mut CodedInputStream) -> Result<i64> {
         is.read_int64()
     }
 
@@ -279,7 +279,7 @@ impl ProtobufType for ProtobufTypeInt64 {
         field_number: u32,
         value: &i64,
         os: &mut CodedOutputStream,
-    ) -> ProtobufResult<()> {
+    ) -> Result<()> {
         os.write_int64(field_number, *value)
     }
 }
@@ -289,7 +289,7 @@ impl ProtobufType for ProtobufTypeUint32 {
 
     const WIRE_TYPE: WireType = WireType::Varint;
 
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<u32> {
+    fn read(is: &mut CodedInputStream) -> Result<u32> {
         is.read_uint32()
     }
 
@@ -305,7 +305,7 @@ impl ProtobufType for ProtobufTypeUint32 {
         field_number: u32,
         value: &u32,
         os: &mut CodedOutputStream,
-    ) -> ProtobufResult<()> {
+    ) -> Result<()> {
         os.write_uint32(field_number, *value)
     }
 }
@@ -315,7 +315,7 @@ impl ProtobufType for ProtobufTypeUint64 {
 
     const WIRE_TYPE: WireType = WireType::Varint;
 
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<u64> {
+    fn read(is: &mut CodedInputStream) -> Result<u64> {
         is.read_uint64()
     }
 
@@ -331,7 +331,7 @@ impl ProtobufType for ProtobufTypeUint64 {
         field_number: u32,
         value: &u64,
         os: &mut CodedOutputStream,
-    ) -> ProtobufResult<()> {
+    ) -> Result<()> {
         os.write_uint64(field_number, *value)
     }
 }
@@ -341,7 +341,7 @@ impl ProtobufType for ProtobufTypeSint32 {
 
     const WIRE_TYPE: WireType = WireType::Varint;
 
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<i32> {
+    fn read(is: &mut CodedInputStream) -> Result<i32> {
         is.read_sint32()
     }
 
@@ -357,7 +357,7 @@ impl ProtobufType for ProtobufTypeSint32 {
         field_number: u32,
         value: &i32,
         os: &mut CodedOutputStream,
-    ) -> ProtobufResult<()> {
+    ) -> Result<()> {
         os.write_sint32(field_number, *value)
     }
 }
@@ -367,7 +367,7 @@ impl ProtobufType for ProtobufTypeSint64 {
 
     const WIRE_TYPE: WireType = WireType::Varint;
 
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<i64> {
+    fn read(is: &mut CodedInputStream) -> Result<i64> {
         is.read_sint64()
     }
 
@@ -383,7 +383,7 @@ impl ProtobufType for ProtobufTypeSint64 {
         field_number: u32,
         value: &i64,
         os: &mut CodedOutputStream,
-    ) -> ProtobufResult<()> {
+    ) -> Result<()> {
         os.write_sint64(field_number, *value)
     }
 }
@@ -393,7 +393,7 @@ impl ProtobufType for ProtobufTypeFixed32 {
 
     const WIRE_TYPE: WireType = WireType::Fixed32;
 
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<u32> {
+    fn read(is: &mut CodedInputStream) -> Result<u32> {
         is.read_fixed32()
     }
 
@@ -409,7 +409,7 @@ impl ProtobufType for ProtobufTypeFixed32 {
         field_number: u32,
         value: &u32,
         os: &mut CodedOutputStream,
-    ) -> ProtobufResult<()> {
+    ) -> Result<()> {
         os.write_fixed32(field_number, *value)
     }
 }
@@ -423,7 +423,7 @@ impl ProtobufType for ProtobufTypeFixed64 {
 
     const WIRE_TYPE: WireType = WireType::Fixed64;
 
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<u64> {
+    fn read(is: &mut CodedInputStream) -> Result<u64> {
         is.read_fixed64()
     }
 
@@ -439,7 +439,7 @@ impl ProtobufType for ProtobufTypeFixed64 {
         field_number: u32,
         value: &u64,
         os: &mut CodedOutputStream,
-    ) -> ProtobufResult<()> {
+    ) -> Result<()> {
         os.write_fixed64(field_number, *value)
     }
 }
@@ -453,7 +453,7 @@ impl ProtobufType for ProtobufTypeSfixed32 {
 
     const WIRE_TYPE: WireType = WireType::Fixed32;
 
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<i32> {
+    fn read(is: &mut CodedInputStream) -> Result<i32> {
         is.read_sfixed32()
     }
 
@@ -469,7 +469,7 @@ impl ProtobufType for ProtobufTypeSfixed32 {
         field_number: u32,
         value: &i32,
         os: &mut CodedOutputStream,
-    ) -> ProtobufResult<()> {
+    ) -> Result<()> {
         os.write_sfixed32(field_number, *value)
     }
 }
@@ -483,7 +483,7 @@ impl ProtobufType for ProtobufTypeSfixed64 {
 
     const WIRE_TYPE: WireType = WireType::Fixed64;
 
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<i64> {
+    fn read(is: &mut CodedInputStream) -> Result<i64> {
         is.read_sfixed64()
     }
 
@@ -499,7 +499,7 @@ impl ProtobufType for ProtobufTypeSfixed64 {
         field_number: u32,
         value: &i64,
         os: &mut CodedOutputStream,
-    ) -> ProtobufResult<()> {
+    ) -> Result<()> {
         os.write_sfixed64(field_number, *value)
     }
 }
@@ -513,7 +513,7 @@ impl ProtobufType for ProtobufTypeBool {
 
     const WIRE_TYPE: WireType = WireType::Varint;
 
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<bool> {
+    fn read(is: &mut CodedInputStream) -> Result<bool> {
         is.read_bool()
     }
 
@@ -529,7 +529,7 @@ impl ProtobufType for ProtobufTypeBool {
         field_number: u32,
         value: &bool,
         os: &mut CodedOutputStream,
-    ) -> ProtobufResult<()> {
+    ) -> Result<()> {
         os.write_bool(field_number, *value)
     }
 }
@@ -539,7 +539,7 @@ impl ProtobufType for ProtobufTypeString {
 
     const WIRE_TYPE: WireType = WireType::LengthDelimited;
 
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<String> {
+    fn read(is: &mut CodedInputStream) -> Result<String> {
         is.read_string()
     }
 
@@ -557,7 +557,7 @@ impl ProtobufType for ProtobufTypeString {
         field_number: u32,
         value: &String,
         os: &mut CodedOutputStream,
-    ) -> ProtobufResult<()> {
+    ) -> Result<()> {
         os.write_string(field_number, &value)
     }
 }
@@ -567,7 +567,7 @@ impl ProtobufType for ProtobufTypeBytes {
 
     const WIRE_TYPE: WireType = WireType::LengthDelimited;
 
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<Vec<u8>> {
+    fn read(is: &mut CodedInputStream) -> Result<Vec<u8>> {
         is.read_bytes()
     }
 
@@ -583,7 +583,7 @@ impl ProtobufType for ProtobufTypeBytes {
         field_number: u32,
         value: &Vec<u8>,
         os: &mut CodedOutputStream,
-    ) -> ProtobufResult<()> {
+    ) -> Result<()> {
         os.write_bytes(field_number, &value)
     }
 }
@@ -594,7 +594,7 @@ impl ProtobufType for ProtobufTypeCarllercheBytes {
 
     const WIRE_TYPE: WireType = ProtobufTypeBytes::WIRE_TYPE;
 
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<Bytes> {
+    fn read(is: &mut CodedInputStream) -> Result<Bytes> {
         is.read_carllerche_bytes()
     }
 
@@ -610,7 +610,7 @@ impl ProtobufType for ProtobufTypeCarllercheBytes {
         field_number: u32,
         value: &Bytes,
         os: &mut CodedOutputStream,
-    ) -> ProtobufResult<()> {
+    ) -> Result<()> {
         os.write_bytes(field_number, &value)
     }
 }
@@ -621,7 +621,7 @@ impl ProtobufType for ProtobufTypeCarllercheChars {
 
     const WIRE_TYPE: WireType = ProtobufTypeBytes::WIRE_TYPE;
 
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<Chars> {
+    fn read(is: &mut CodedInputStream) -> Result<Chars> {
         is.read_carllerche_chars()
     }
 
@@ -637,7 +637,7 @@ impl ProtobufType for ProtobufTypeCarllercheChars {
         field_number: u32,
         value: &Chars,
         os: &mut CodedOutputStream,
-    ) -> ProtobufResult<()> {
+    ) -> Result<()> {
         os.write_string(field_number, &value)
     }
 }
@@ -647,7 +647,7 @@ impl<E: ProtobufEnum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufType
 
     const WIRE_TYPE: WireType = WireType::Varint;
 
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<E> {
+    fn read(is: &mut CodedInputStream) -> Result<E> {
         is.read_enum()
     }
 
@@ -665,7 +665,7 @@ impl<E: ProtobufEnum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufType
         field_number: u32,
         value: &E,
         os: &mut CodedOutputStream,
-    ) -> ProtobufResult<()> {
+    ) -> Result<()> {
         os.write_enum_obj(field_number, *value)
     }
 }
@@ -675,7 +675,7 @@ impl<E: ProtobufEnum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufType
 
     const WIRE_TYPE: WireType = WireType::Varint;
 
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<ProtobufEnumOrUnknown<E>> {
+    fn read(is: &mut CodedInputStream) -> Result<ProtobufEnumOrUnknown<E>> {
         is.read_enum_or_unknown()
     }
 
@@ -692,7 +692,7 @@ impl<E: ProtobufEnum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufType
         field_number: u32,
         value: &ProtobufEnumOrUnknown<E>,
         os: &mut CodedOutputStream,
-    ) -> ProtobufResult<()> {
+    ) -> Result<()> {
         os.write_enum_or_unknown(field_number, *value)
     }
 }
@@ -702,7 +702,7 @@ impl<M: Message + Clone + ProtobufValue + Default> ProtobufType for ProtobufType
 
     const WIRE_TYPE: WireType = WireType::LengthDelimited;
 
-    fn read(is: &mut CodedInputStream) -> ProtobufResult<M> {
+    fn read(is: &mut CodedInputStream) -> Result<M> {
         is.read_message()
     }
 
@@ -728,7 +728,7 @@ impl<M: Message + Clone + ProtobufValue + Default> ProtobufType for ProtobufType
         field_number: u32,
         value: &Self::ProtobufValue,
         os: &mut CodedOutputStream,
-    ) -> ProtobufResult<()> {
+    ) -> Result<()> {
         os.write_tag(field_number, WireType::LengthDelimited)?;
         os.write_raw_varint32(value.get_cached_size())?;
         value.write_to_with_cached_sizes(os)?;

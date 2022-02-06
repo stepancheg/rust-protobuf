@@ -4,7 +4,7 @@ use std::str;
 use crate::wire_format::WireType;
 
 /// `Result` alias for `ProtobufError`
-pub type ProtobufResult<T> = Result<T, crate::Error>;
+pub type Result<T> = std::result::Result<T, crate::Error>;
 
 /// Enum values added here for diagnostic purposes.
 /// Users should not depend on specific values.

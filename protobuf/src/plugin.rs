@@ -186,7 +186,7 @@ impl crate::Message for Version {
         true
     }
 
-    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -243,7 +243,7 @@ impl crate::Message for Version {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::Result<()> {
         if let Some(v) = self.major {
             os.write_int32(1, v)?;
         }
@@ -445,7 +445,7 @@ impl crate::Message for CodeGeneratorRequest {
         true
     }
 
-    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -495,7 +495,7 @@ impl crate::Message for CodeGeneratorRequest {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::Result<()> {
         for v in &self.file_to_generate {
             os.write_string(1, &v)?;
         };
@@ -696,7 +696,7 @@ impl crate::Message for CodeGeneratorResponse {
         true
     }
 
-    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
+    fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -742,7 +742,7 @@ impl crate::Message for CodeGeneratorResponse {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::Result<()> {
         if let Some(v) = self.error.as_ref() {
             os.write_string(1, v)?;
         }
@@ -1043,7 +1043,7 @@ pub mod code_generator_response {
             true
         }
 
-        fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::ProtobufResult<()> {
+        fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
             while !is.eof()? {
                 let (field_number, wire_type) = is.read_tag_unpack()?;
                 match field_number {
@@ -1098,7 +1098,7 @@ pub mod code_generator_response {
             my_size
         }
 
-        fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::ProtobufResult<()> {
+        fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::Result<()> {
             if let Some(v) = self.name.as_ref() {
                 os.write_string(1, v)?;
             }

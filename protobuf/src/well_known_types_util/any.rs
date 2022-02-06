@@ -2,7 +2,7 @@ use crate::message_dyn::MessageDyn;
 use crate::reflect::MessageDescriptor;
 use crate::well_known_types::Any;
 use crate::Message;
-use crate::ProtobufResult;
+use crate::Result;
 
 impl Any {
     fn type_url(type_url_prefix: &str, descriptor: &MessageDescriptor) -> String {
@@ -22,17 +22,17 @@ impl Any {
     ///
     /// ```
     /// # use protobuf::Message;
-    /// # use protobuf::ProtobufResult;
+    /// # use protobuf::Result;
     /// use protobuf::well_known_types::Any;
     ///
-    /// # fn the_test<MyMessage: Message>(message: &MyMessage) -> ProtobufResult<()> {
+    /// # fn the_test<MyMessage: Message>(message: &MyMessage) -> Result<()> {
     /// let message: &MyMessage = message;
     /// let any = Any::pack(message)?;
     /// assert!(any.is::<MyMessage>());
     /// #   Ok(())
     /// # }
     /// ```
-    pub fn pack<M: Message>(message: &M) -> ProtobufResult<Any> {
+    pub fn pack<M: Message>(message: &M) -> Result<Any> {
         Any::pack_dyn(message)
     }
 
@@ -42,24 +42,21 @@ impl Any {
     ///
     /// ```
     /// use protobuf::{Message, MessageDyn};
-    /// # use protobuf::ProtobufResult;
+    /// # use protobuf::Result;
     /// use protobuf::well_known_types::Any;
     ///
-    /// # fn the_test(message: &dyn MessageDyn) -> ProtobufResult<()> {
+    /// # fn the_test(message: &dyn MessageDyn) -> Result<()> {
     /// let message: &dyn MessageDyn = message;
     /// let any = Any::pack_dyn(message)?;
     /// assert!(any.is_dyn(&message.descriptor_dyn()));
     /// #   Ok(())
     /// # }
     /// ```
-    pub fn pack_dyn(message: &dyn MessageDyn) -> ProtobufResult<Any> {
+    pub fn pack_dyn(message: &dyn MessageDyn) -> Result<Any> {
         Any::pack_with_type_url_prefix(message, "type.googleapis.com")
     }
 
-    fn pack_with_type_url_prefix(
-        message: &dyn MessageDyn,
-        type_url_prefix: &str,
-    ) -> ProtobufResult<Any> {
+    fn pack_with_type_url_prefix(message: &dyn MessageDyn, type_url_prefix: &str) -> Result<Any> {
         Ok(Any {
             type_url: Any::type_url(type_url_prefix, &message.descriptor_dyn()),
             value: message.write_to_bytes_dyn()?,
@@ -86,7 +83,7 @@ impl Any {
     ///
     /// * `Ok(None)` when message type mismatch
     /// * `Err` when parse failed
-    pub fn unpack<M: Message>(&self) -> ProtobufResult<Option<M>> {
+    pub fn unpack<M: Message>(&self) -> Result<Option<M>> {
         if !self.is::<M>() {
             return Ok(None);
         }
@@ -102,7 +99,7 @@ impl Any {
     pub fn unpack_dyn(
         &self,
         descriptor: &MessageDescriptor,
-    ) -> ProtobufResult<Option<Box<dyn MessageDyn>>> {
+    ) -> Result<Option<Box<dyn MessageDyn>>> {
         if !self.is_dyn(descriptor) {
             return Ok(None);
         }

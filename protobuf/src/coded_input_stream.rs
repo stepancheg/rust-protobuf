@@ -12,7 +12,7 @@ use crate::chars::Chars;
 use crate::enums::ProtobufEnum;
 use crate::enums::ProtobufEnumOrUnknown;
 use crate::error::ProtobufError;
-use crate::error::ProtobufResult;
+use crate::error::Result;
 use crate::error::WireError;
 use crate::message::Message;
 use crate::misc::maybe_ununit_array_assume_init;
@@ -98,7 +98,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     #[inline]
-    pub(crate) fn incr_recursion(&mut self) -> ProtobufResult<()> {
+    pub(crate) fn incr_recursion(&mut self) -> Result<()> {
         if self.recursion_level >= self.recursion_limit {
             return Err(ProtobufError::WireError(WireError::OverRecursionLimit).into());
         }
@@ -123,7 +123,7 @@ impl<'a> CodedInputStream<'a> {
 
     /// Read bytes into given `buf`.
     #[inline]
-    pub fn read_exact(&mut self, buf: &mut [MaybeUninit<u8>]) -> ProtobufResult<()> {
+    pub fn read_exact(&mut self, buf: &mut [MaybeUninit<u8>]) -> Result<()> {
         self.source.read_exact(buf)
     }
 
@@ -132,18 +132,18 @@ impl<'a> CodedInputStream<'a> {
     /// This operation returns a shared view if `CodedInputStream` is
     /// constructed with `Bytes` parameter.
     #[cfg(feature = "bytes")]
-    fn read_raw_callerche_bytes(&mut self, count: usize) -> ProtobufResult<Bytes> {
+    fn read_raw_callerche_bytes(&mut self, count: usize) -> Result<Bytes> {
         self.source.read_exact_bytes(count)
     }
 
     /// Read one byte
     #[inline(always)]
-    pub fn read_raw_byte(&mut self) -> ProtobufResult<u8> {
+    pub fn read_raw_byte(&mut self) -> Result<u8> {
         self.source.read_byte()
     }
 
     /// Push new limit, return previous limit.
-    pub fn push_limit(&mut self, limit: u64) -> ProtobufResult<u64> {
+    pub fn push_limit(&mut self, limit: u64) -> Result<u64> {
         self.source.push_limit(limit)
     }
 
@@ -154,14 +154,14 @@ impl<'a> CodedInputStream<'a> {
 
     /// Are we at EOF?
     #[inline(always)]
-    pub fn eof(&mut self) -> ProtobufResult<bool> {
+    pub fn eof(&mut self) -> Result<bool> {
         self.source.eof()
     }
 
     /// Check we are at EOF.
     ///
     /// Return error if we are not at EOF.
-    pub fn check_eof(&mut self) -> ProtobufResult<()> {
+    pub fn check_eof(&mut self) -> Result<()> {
         let eof = self.eof()?;
         if !eof {
             return Err(ProtobufError::WireError(WireError::UnexpectedEof).into());
@@ -169,7 +169,7 @@ impl<'a> CodedInputStream<'a> {
         Ok(())
     }
 
-    fn read_raw_varint64_slow(&mut self) -> ProtobufResult<u64> {
+    fn read_raw_varint64_slow(&mut self) -> Result<u64> {
         let mut r: u64 = 0;
         let mut i = 0;
         loop {
@@ -190,7 +190,7 @@ impl<'a> CodedInputStream<'a> {
 
     /// Read varint
     #[inline]
-    pub fn read_raw_varint64(&mut self) -> ProtobufResult<u64> {
+    pub fn read_raw_varint64(&mut self) -> Result<u64> {
         let ret;
         let consume;
 
@@ -246,12 +246,12 @@ impl<'a> CodedInputStream<'a> {
 
     /// Read varint
     #[inline(always)]
-    pub fn read_raw_varint32(&mut self) -> ProtobufResult<u32> {
+    pub fn read_raw_varint32(&mut self) -> Result<u32> {
         self.read_raw_varint64().map(|v| v as u32)
     }
 
     /// Read little-endian 32-bit integer
-    pub fn read_raw_little_endian32(&mut self) -> ProtobufResult<u32> {
+    pub fn read_raw_little_endian32(&mut self) -> Result<u32> {
         let mut bytes = [MaybeUninit::uninit(); 4];
         self.read_exact(&mut bytes)?;
         // SAFETY: `read_exact` guarantees that the buffer is filled.
@@ -260,7 +260,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     /// Read little-endian 64-bit integer
-    pub fn read_raw_little_endian64(&mut self) -> ProtobufResult<u64> {
+    pub fn read_raw_little_endian64(&mut self) -> Result<u64> {
         let mut bytes = [MaybeUninit::uninit(); 8];
         self.read_exact(&mut bytes)?;
         // SAFETY: `read_exact` guarantees that the buffer is filled.
@@ -270,7 +270,7 @@ impl<'a> CodedInputStream<'a> {
 
     /// Read tag
     #[inline]
-    pub fn read_tag(&mut self) -> ProtobufResult<wire_format::Tag> {
+    pub fn read_tag(&mut self) -> Result<wire_format::Tag> {
         let v = self.read_raw_varint32()?;
         match wire_format::Tag::new(v) {
             Some(tag) => Ok(tag),
@@ -280,83 +280,83 @@ impl<'a> CodedInputStream<'a> {
 
     /// Read tag, return it is pair (field number, wire type)
     #[inline]
-    pub fn read_tag_unpack(&mut self) -> ProtobufResult<(u32, WireType)> {
+    pub fn read_tag_unpack(&mut self) -> Result<(u32, WireType)> {
         self.read_tag().map(|t| t.unpack())
     }
 
     /// Read `double`
-    pub fn read_double(&mut self) -> ProtobufResult<f64> {
+    pub fn read_double(&mut self) -> Result<f64> {
         let bits = self.read_raw_little_endian64()?;
         Ok(f64::from_bits(bits))
     }
 
     /// Read `float`
-    pub fn read_float(&mut self) -> ProtobufResult<f32> {
+    pub fn read_float(&mut self) -> Result<f32> {
         let bits = self.read_raw_little_endian32()?;
         Ok(f32::from_bits(bits))
     }
 
     /// Read `int64`
-    pub fn read_int64(&mut self) -> ProtobufResult<i64> {
+    pub fn read_int64(&mut self) -> Result<i64> {
         self.read_raw_varint64().map(|v| v as i64)
     }
 
     /// Read `int32`
-    pub fn read_int32(&mut self) -> ProtobufResult<i32> {
+    pub fn read_int32(&mut self) -> Result<i32> {
         self.read_raw_varint32().map(|v| v as i32)
     }
 
     /// Read `uint64`
-    pub fn read_uint64(&mut self) -> ProtobufResult<u64> {
+    pub fn read_uint64(&mut self) -> Result<u64> {
         self.read_raw_varint64()
     }
 
     /// Read `uint32`
-    pub fn read_uint32(&mut self) -> ProtobufResult<u32> {
+    pub fn read_uint32(&mut self) -> Result<u32> {
         self.read_raw_varint32()
     }
 
     /// Read `sint64`
-    pub fn read_sint64(&mut self) -> ProtobufResult<i64> {
+    pub fn read_sint64(&mut self) -> Result<i64> {
         self.read_uint64().map(decode_zig_zag_64)
     }
 
     /// Read `sint32`
-    pub fn read_sint32(&mut self) -> ProtobufResult<i32> {
+    pub fn read_sint32(&mut self) -> Result<i32> {
         self.read_uint32().map(decode_zig_zag_32)
     }
 
     /// Read `fixed64`
-    pub fn read_fixed64(&mut self) -> ProtobufResult<u64> {
+    pub fn read_fixed64(&mut self) -> Result<u64> {
         self.read_raw_little_endian64()
     }
 
     /// Read `fixed32`
-    pub fn read_fixed32(&mut self) -> ProtobufResult<u32> {
+    pub fn read_fixed32(&mut self) -> Result<u32> {
         self.read_raw_little_endian32()
     }
 
     /// Read `sfixed64`
-    pub fn read_sfixed64(&mut self) -> ProtobufResult<i64> {
+    pub fn read_sfixed64(&mut self) -> Result<i64> {
         self.read_raw_little_endian64().map(|v| v as i64)
     }
 
     /// Read `sfixed32`
-    pub fn read_sfixed32(&mut self) -> ProtobufResult<i32> {
+    pub fn read_sfixed32(&mut self) -> Result<i32> {
         self.read_raw_little_endian32().map(|v| v as i32)
     }
 
     /// Read `bool`
-    pub fn read_bool(&mut self) -> ProtobufResult<bool> {
+    pub fn read_bool(&mut self) -> Result<bool> {
         self.read_raw_varint32().map(|v| v != 0)
     }
 
-    pub(crate) fn read_enum_value(&mut self) -> ProtobufResult<i32> {
+    pub(crate) fn read_enum_value(&mut self) -> Result<i32> {
         self.read_int32()
     }
 
     /// Read `enum` as `ProtobufEnum`
-    pub fn read_enum<E: ProtobufEnum>(&mut self) -> ProtobufResult<E> {
+    pub fn read_enum<E: ProtobufEnum>(&mut self) -> Result<E> {
         let i = self.read_enum_value()?;
         match ProtobufEnum::from_i32(i) {
             Some(e) => Ok(e),
@@ -365,16 +365,14 @@ impl<'a> CodedInputStream<'a> {
     }
 
     /// Read `enum` as `ProtobufEnumOrUnknown`
-    pub fn read_enum_or_unknown<E: ProtobufEnum>(
-        &mut self,
-    ) -> ProtobufResult<ProtobufEnumOrUnknown<E>> {
+    pub fn read_enum_or_unknown<E: ProtobufEnum>(&mut self) -> Result<ProtobufEnumOrUnknown<E>> {
         Ok(ProtobufEnumOrUnknown::from_i32(self.read_int32()?))
     }
 
     fn read_repeated_packed_fixed_into<T: ProtobufTypeFixed>(
         &mut self,
         target: &mut Vec<T::ProtobufValue>,
-    ) -> ProtobufResult<()> {
+    ) -> Result<()> {
         let len_bytes = self.read_raw_varint64()?;
 
         let reserve = if len_bytes <= READ_RAW_BYTES_MAX_ALLOC as u64 {
@@ -398,7 +396,7 @@ impl<'a> CodedInputStream<'a> {
     fn read_repeated_packed_into<T: ProtobufType>(
         &mut self,
         target: &mut Vec<T::ProtobufValue>,
-    ) -> ProtobufResult<()> {
+    ) -> Result<()> {
         let len_bytes = self.read_raw_varint64()?;
 
         // value is at least 1 bytes, so this is lower bound of element count
@@ -420,94 +418,67 @@ impl<'a> CodedInputStream<'a> {
     }
 
     /// Read repeated packed `double`
-    pub fn read_repeated_packed_double_into(
-        &mut self,
-        target: &mut Vec<f64>,
-    ) -> ProtobufResult<()> {
+    pub fn read_repeated_packed_double_into(&mut self, target: &mut Vec<f64>) -> Result<()> {
         self.read_repeated_packed_fixed_into::<ProtobufTypeDouble>(target)
     }
 
     /// Read repeated packed `float`
-    pub fn read_repeated_packed_float_into(&mut self, target: &mut Vec<f32>) -> ProtobufResult<()> {
+    pub fn read_repeated_packed_float_into(&mut self, target: &mut Vec<f32>) -> Result<()> {
         self.read_repeated_packed_fixed_into::<ProtobufTypeFloat>(target)
     }
 
     /// Read repeated packed `int64`
-    pub fn read_repeated_packed_int64_into(&mut self, target: &mut Vec<i64>) -> ProtobufResult<()> {
+    pub fn read_repeated_packed_int64_into(&mut self, target: &mut Vec<i64>) -> Result<()> {
         self.read_repeated_packed_into::<ProtobufTypeInt64>(target)
     }
 
     /// Read repeated packed `int32`
-    pub fn read_repeated_packed_int32_into(&mut self, target: &mut Vec<i32>) -> ProtobufResult<()> {
+    pub fn read_repeated_packed_int32_into(&mut self, target: &mut Vec<i32>) -> Result<()> {
         self.read_repeated_packed_into::<ProtobufTypeInt32>(target)
     }
 
     /// Read repeated packed `uint64`
-    pub fn read_repeated_packed_uint64_into(
-        &mut self,
-        target: &mut Vec<u64>,
-    ) -> ProtobufResult<()> {
+    pub fn read_repeated_packed_uint64_into(&mut self, target: &mut Vec<u64>) -> Result<()> {
         self.read_repeated_packed_into::<ProtobufTypeUint64>(target)
     }
 
     /// Read repeated packed `uint32`
-    pub fn read_repeated_packed_uint32_into(
-        &mut self,
-        target: &mut Vec<u32>,
-    ) -> ProtobufResult<()> {
+    pub fn read_repeated_packed_uint32_into(&mut self, target: &mut Vec<u32>) -> Result<()> {
         self.read_repeated_packed_into::<ProtobufTypeUint32>(target)
     }
 
     /// Read repeated packed `sint64`
-    pub fn read_repeated_packed_sint64_into(
-        &mut self,
-        target: &mut Vec<i64>,
-    ) -> ProtobufResult<()> {
+    pub fn read_repeated_packed_sint64_into(&mut self, target: &mut Vec<i64>) -> Result<()> {
         self.read_repeated_packed_into::<ProtobufTypeSint64>(target)
     }
 
     /// Read repeated packed `sint32`
-    pub fn read_repeated_packed_sint32_into(
-        &mut self,
-        target: &mut Vec<i32>,
-    ) -> ProtobufResult<()> {
+    pub fn read_repeated_packed_sint32_into(&mut self, target: &mut Vec<i32>) -> Result<()> {
         self.read_repeated_packed_into::<ProtobufTypeSint32>(target)
     }
 
     /// Read repeated packed `fixed64`
-    pub fn read_repeated_packed_fixed64_into(
-        &mut self,
-        target: &mut Vec<u64>,
-    ) -> ProtobufResult<()> {
+    pub fn read_repeated_packed_fixed64_into(&mut self, target: &mut Vec<u64>) -> Result<()> {
         self.read_repeated_packed_fixed_into::<ProtobufTypeFixed64>(target)
     }
 
     /// Read repeated packed `fixed32`
-    pub fn read_repeated_packed_fixed32_into(
-        &mut self,
-        target: &mut Vec<u32>,
-    ) -> ProtobufResult<()> {
+    pub fn read_repeated_packed_fixed32_into(&mut self, target: &mut Vec<u32>) -> Result<()> {
         self.read_repeated_packed_fixed_into::<ProtobufTypeFixed32>(target)
     }
 
     /// Read repeated packed `sfixed64`
-    pub fn read_repeated_packed_sfixed64_into(
-        &mut self,
-        target: &mut Vec<i64>,
-    ) -> ProtobufResult<()> {
+    pub fn read_repeated_packed_sfixed64_into(&mut self, target: &mut Vec<i64>) -> Result<()> {
         self.read_repeated_packed_fixed_into::<ProtobufTypeSfixed64>(target)
     }
 
     /// Read repeated packed `sfixed32`
-    pub fn read_repeated_packed_sfixed32_into(
-        &mut self,
-        target: &mut Vec<i32>,
-    ) -> ProtobufResult<()> {
+    pub fn read_repeated_packed_sfixed32_into(&mut self, target: &mut Vec<i32>) -> Result<()> {
         self.read_repeated_packed_fixed_into::<ProtobufTypeSfixed32>(target)
     }
 
     /// Read repeated packed `bool`
-    pub fn read_repeated_packed_bool_into(&mut self, target: &mut Vec<bool>) -> ProtobufResult<()> {
+    pub fn read_repeated_packed_bool_into(&mut self, target: &mut Vec<bool>) -> Result<()> {
         self.read_repeated_packed_into::<ProtobufTypeBool>(target)
     }
 
@@ -515,7 +486,7 @@ impl<'a> CodedInputStream<'a> {
     pub(crate) fn read_repeated_packed_enum_values_into(
         &mut self,
         target: &mut Vec<i32>,
-    ) -> ProtobufResult<()> {
+    ) -> Result<()> {
         self.read_repeated_packed_into::<ProtobufTypeInt32>(target)
     }
 
@@ -523,12 +494,12 @@ impl<'a> CodedInputStream<'a> {
     pub fn read_repeated_packed_enum_into<E: ProtobufEnum + ProtobufValue>(
         &mut self,
         target: &mut Vec<E>,
-    ) -> ProtobufResult<()> {
+    ) -> Result<()> {
         self.read_repeated_packed_into::<ProtobufTypeEnum<E>>(target)
     }
 
     /// Read `UnknownValue`
-    pub fn read_unknown(&mut self, wire_type: WireType) -> ProtobufResult<UnknownValue> {
+    pub fn read_unknown(&mut self, wire_type: WireType) -> Result<UnknownValue> {
         match wire_type {
             WireType::Varint => self.read_raw_varint64().map(|v| UnknownValue::Varint(v)),
             WireType::Fixed64 => self.read_fixed64().map(|v| UnknownValue::Fixed64(v)),
@@ -543,31 +514,31 @@ impl<'a> CodedInputStream<'a> {
     }
 
     /// Skip field
-    pub fn skip_field(&mut self, wire_type: WireType) -> ProtobufResult<()> {
+    pub fn skip_field(&mut self, wire_type: WireType) -> Result<()> {
         self.read_unknown(wire_type).map(|_| ())
     }
 
     /// Read raw bytes into the supplied vector.  The vector will be resized as needed and
     /// overwritten.
-    pub fn read_raw_bytes_into(&mut self, count: u32, target: &mut Vec<u8>) -> ProtobufResult<()> {
+    pub fn read_raw_bytes_into(&mut self, count: u32, target: &mut Vec<u8>) -> Result<()> {
         self.source.read_exact_to_vec(count as usize, target)
     }
 
     /// Read exact number of bytes
-    pub fn read_raw_bytes(&mut self, count: u32) -> ProtobufResult<Vec<u8>> {
+    pub fn read_raw_bytes(&mut self, count: u32) -> Result<Vec<u8>> {
         let mut r = Vec::new();
         self.read_raw_bytes_into(count, &mut r)?;
         Ok(r)
     }
 
     /// Skip exact number of bytes
-    pub fn skip_raw_bytes(&mut self, count: u32) -> ProtobufResult<()> {
+    pub fn skip_raw_bytes(&mut self, count: u32) -> Result<()> {
         // TODO: make it more efficient
         self.read_raw_bytes(count).map(|_| ())
     }
 
     /// Read `bytes` field, length delimited
-    pub fn read_bytes(&mut self) -> ProtobufResult<Vec<u8>> {
+    pub fn read_bytes(&mut self) -> Result<Vec<u8>> {
         let mut r = Vec::new();
         self.read_bytes_into(&mut r)?;
         Ok(r)
@@ -575,34 +546,34 @@ impl<'a> CodedInputStream<'a> {
 
     /// Read `bytes` field, length delimited
     #[cfg(feature = "bytes")]
-    pub fn read_carllerche_bytes(&mut self) -> ProtobufResult<Bytes> {
+    pub fn read_carllerche_bytes(&mut self) -> Result<Bytes> {
         let len = self.read_raw_varint32()?;
         self.read_raw_callerche_bytes(len as usize)
     }
 
     /// Read `string` field, length delimited
     #[cfg(feature = "bytes")]
-    pub fn read_carllerche_chars(&mut self) -> ProtobufResult<Chars> {
+    pub fn read_carllerche_chars(&mut self) -> Result<Chars> {
         let bytes = self.read_carllerche_bytes()?;
         Ok(Chars::from_bytes(bytes).map_err(ProtobufError::Utf8)?)
     }
 
     /// Read `bytes` field, length delimited
-    pub fn read_bytes_into(&mut self, target: &mut Vec<u8>) -> ProtobufResult<()> {
+    pub fn read_bytes_into(&mut self, target: &mut Vec<u8>) -> Result<()> {
         let len = self.read_raw_varint32()?;
         self.read_raw_bytes_into(len, target)?;
         Ok(())
     }
 
     /// Read `string` field, length delimited
-    pub fn read_string(&mut self) -> ProtobufResult<String> {
+    pub fn read_string(&mut self) -> Result<String> {
         let mut r = String::new();
         self.read_string_into(&mut r)?;
         Ok(r)
     }
 
     /// Read `string` field, length delimited
-    pub fn read_string_into(&mut self, target: &mut String) -> ProtobufResult<()> {
+    pub fn read_string_into(&mut self, target: &mut String) -> Result<()> {
         target.clear();
         // take target's buffer
         let mut vec = mem::replace(target, String::new()).into_bytes();
@@ -617,7 +588,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     /// Read message, do not check if message is initialized
-    pub fn merge_message<M: Message>(&mut self, message: &mut M) -> ProtobufResult<()> {
+    pub fn merge_message<M: Message>(&mut self, message: &mut M) -> Result<()> {
         let len = self.read_raw_varint64()?;
         let old_limit = self.push_limit(len)?;
         message.merge_from(self)?;
@@ -626,7 +597,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     /// Like `merge_message`, but for dynamic messages.
-    pub fn merge_message_dyn(&mut self, message: &mut dyn MessageDyn) -> ProtobufResult<()> {
+    pub fn merge_message_dyn(&mut self, message: &mut dyn MessageDyn) -> Result<()> {
         let len = self.read_raw_varint64()?;
         let old_limit = self.push_limit(len)?;
         message.merge_from_dyn(self)?;
@@ -635,7 +606,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     /// Read message
-    pub fn read_message<M: Message>(&mut self) -> ProtobufResult<M> {
+    pub fn read_message<M: Message>(&mut self) -> Result<M> {
         let mut r: M = Message::new();
         self.merge_message(&mut r)?;
         r.check_initialized()?;
@@ -646,7 +617,7 @@ impl<'a> CodedInputStream<'a> {
     pub fn read_message_dyn(
         &mut self,
         descriptor: &MessageDescriptor,
-    ) -> ProtobufResult<Box<dyn MessageDyn>> {
+    ) -> Result<Box<dyn MessageDyn>> {
         let mut r = descriptor.new_instance();
         self.merge_message_dyn(&mut *r)?;
         r.check_initialized_dyn()?;
@@ -681,7 +652,7 @@ mod test {
     use super::CodedInputStream;
     use super::READ_RAW_BYTES_MAX_ALLOC;
     use crate::error::ProtobufError;
-    use crate::error::ProtobufResult;
+    use crate::error::Result;
     use crate::hex::decode_hex;
     use crate::Error;
 
@@ -710,7 +681,7 @@ mod test {
 
     fn test_read_v<F, V>(hex: &str, v: V, mut callback: F)
     where
-        F: FnMut(&mut CodedInputStream) -> ProtobufResult<V>,
+        F: FnMut(&mut CodedInputStream) -> Result<V>,
         V: PartialEq + Debug,
     {
         test_read(hex, |reader| {

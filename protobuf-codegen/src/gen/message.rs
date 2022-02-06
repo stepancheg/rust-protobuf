@@ -243,7 +243,7 @@ impl<'a> MessageGen<'a> {
 
     fn write_write_to_with_cached_sizes(&self, w: &mut CodeWriter) {
         let sig = format!(
-            "write_to_with_cached_sizes(&self, os: &mut {}::CodedOutputStream<'_>) -> {}::ProtobufResult<()>",
+            "write_to_with_cached_sizes(&self, os: &mut {}::CodedOutputStream<'_>) -> {}::Result<()>",
             protobuf_crate_path(&self.customize.for_elem),
             protobuf_crate_path(&self.customize.for_elem),
         );
@@ -393,7 +393,7 @@ impl<'a> MessageGen<'a> {
 
     fn write_merge_from(&self, w: &mut CodeWriter) {
         let sig = format!(
-            "merge_from(&mut self, is: &mut {}::CodedInputStream<'_>) -> {}::ProtobufResult<()>",
+            "merge_from(&mut self, is: &mut {}::CodedInputStream<'_>) -> {}::Result<()>",
             protobuf_crate_path(&self.customize.for_elem),
             protobuf_crate_path(&self.customize.for_elem),
         );
