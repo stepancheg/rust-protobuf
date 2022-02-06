@@ -354,6 +354,7 @@ mod test {
     use crate::Message;
 
     #[test]
+    #[cfg_attr(miri, ignore)] // Too slow on Miri.
     fn nested_messages() {
         assert!(DescriptorProto::descriptor_static()
             .nested_messages()
@@ -361,6 +362,7 @@ mod test {
     }
 
     #[test]
+    #[cfg_attr(miri, ignore)] // Too slow on Miri.
     fn enclosing_message() {
         assert_eq!(
             Some(DescriptorProto::descriptor_static()),
