@@ -124,7 +124,7 @@ Which covers the most of serde use cases.
 If you still need serde, generic customization callback (see above) can be used
 to insert `#[serde(...)]` annotations.
 
-[Example project](https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-examples/customize)
+[Example project](https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-examples/customize-serde)
 in the rust-protobuf repository demonstrates how to do it.
 
 <!-- cargo-sync-readme end -->

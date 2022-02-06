@@ -1,3 +1,9 @@
+//! # How to use serde with rust-protobuf
+//!
+//! rust-protobuf 3 no longer directly supports serde.
+//!
+//! This crate `build.rs` patches generated code to emit serde annotations.
+
 include!(concat!(env!("OUT_DIR"), "/protos/mod.rs"));
 
 #[cfg(test)]

@@ -9,7 +9,7 @@ members = [
     "protobuf-codegen",
     "protobuf-codegen-pure-test",
     "protobuf-codegen-identical-test",
-    "protobuf-examples/customize",
+    "protobuf-examples/customize-serde",
     "protobuf-examples/dynamic",
     "protobuf-examples/pure-vs-protoc",
     "protobuf-parse",
