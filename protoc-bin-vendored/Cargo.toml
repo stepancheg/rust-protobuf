@@ -14,10 +14,5 @@ protoc binaries compiled by Google and bundled in this crate.
 doctest = false
 bench = false
 
-[dependencies]
-
-[dev-dependencies]
-protoc = { path = "../protoc", version = "=2.27.1" }
-
 [package.metadata.docs.rs]
 all-features = true

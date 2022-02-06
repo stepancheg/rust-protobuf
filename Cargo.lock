@@ -245,9 +245,6 @@ dependencies = [
 [[package]]
 name = "protoc-bin-vendored"
 version = "2.27.1"
-dependencies = [
- "protoc",
-]
 
 [[package]]
 name = "protoc-rust"
