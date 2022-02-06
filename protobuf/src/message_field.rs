@@ -220,6 +220,12 @@ impl<T> From<Option<T>> for MessageField<T> {
     }
 }
 
+impl<T> From<Option<Box<T>>> for MessageField<T> {
+    fn from(o: Option<Box<T>>) -> Self {
+        MessageField(o)
+    }
+}
+
 impl<'a, T> IntoIterator for &'a MessageField<T> {
     type Item = &'a T;
     type IntoIter = option::IntoIter<&'a T>;
