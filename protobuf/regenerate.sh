@@ -53,6 +53,7 @@ find tmp-generated -name '*.rs' | while read -r f; do
         s^// @@protoc_insertion_point(special_field:.*^#[cfg_attr(serde, serde(skip))]^;
         s^// @@protoc_insertion_point(message:.*^#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]^;
         s^// @@protoc_insertion_point(enum:.*^#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]^;
+        s^// @@protoc_insertion_point(oneof:.*^#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]^;
         /@@protoc_insertion_point/ d;
     ' "$f" > "$f.tmp"
     mv "$f.tmp" "$f"

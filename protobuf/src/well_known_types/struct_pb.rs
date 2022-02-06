@@ -625,6 +625,7 @@ impl crate::reflect::ProtobufValue for Value {
 pub mod value {
 
     #[derive(Clone,PartialEq,Debug)]
+    #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
     pub enum Kind {
         null_value(crate::ProtobufEnumOrUnknown<super::NullValue>),
         number_value(f64),
