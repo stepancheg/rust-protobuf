@@ -1,0 +1,12 @@
+[package]
+name = "protobuf-examples-customize"
+version = "0.0.0"
+authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
+edition = "2018"
+publish = false
+
+[dependencies]
+protobuf = { path = "../../protobuf" }
+
+[build-dependencies]
+protobuf-codegen = { path = "../../protobuf-codegen" }
