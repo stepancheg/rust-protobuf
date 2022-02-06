@@ -8,7 +8,7 @@ option (rustproto.tokio_bytes_for_bytes_all) = true;
 option (rustproto.tokio_bytes_for_string_all) = true;
 option (rustproto.generate_accessors_all) = true;
 
-message TestCarllercheBytesDefaultValues {
+message TestTokioBytesDefaultValues {
     optional string s = 1 [default = "sss"];
     optional bytes b = 2 [default = "bbb"];
 }
