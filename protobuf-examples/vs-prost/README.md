@@ -19,6 +19,8 @@ Feel free to submit more items here.
 The comparison is rust-protobuf from master and
 prost version 0.9.0, which is the latest released version at the moment of writing.
 
+The list is incomplete.
+
 ### Use of derives
 
 Prost relies on `#[derive(::prost::Message)]` in generated code.
