@@ -6,7 +6,7 @@ use protobuf::reflect::FileDescriptor;
 use protobuf_parse::ProtoPath;
 
 use crate::compiler_plugin;
-use crate::customize::customize_from_rustproto_for_file;
+use crate::customize::rustproto_proto::customize_from_rustproto_for_file;
 use crate::gen::code_writer::CodeWriter;
 use crate::gen::enums::EnumGen;
 use crate::gen::extensions::write_extensions;

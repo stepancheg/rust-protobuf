@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use protobuf::descriptor::*;
 
-use crate::customize::customize_from_rustproto_for_enum;
+use crate::customize::rustproto_proto::customize_from_rustproto_for_enum;
 use crate::gen::code_writer::*;
 use crate::gen::file_index::FileIndex;
 use crate::gen::inside::protobuf_crate_path;

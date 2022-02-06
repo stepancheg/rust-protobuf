@@ -6,7 +6,7 @@ use protobuf::rt;
 use protobuf::wire_format::WireType;
 use protobuf_parse::ProtobufAbsPath;
 
-use crate::customize::customize_from_rustproto_for_field;
+use crate::customize::rustproto_proto::customize_from_rustproto_for_field;
 use crate::customize::Customize;
 use crate::gen::code_writer::CodeWriter;
 use crate::gen::code_writer::Visibility;
