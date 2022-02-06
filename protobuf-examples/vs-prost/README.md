@@ -84,7 +84,8 @@ This is implemented similarly to C++ implementation of protobuf.
 The drawback is that generated code is quite large (which also affects binary size).
 
 However, for prost there's [prost-reflect](https://github.com/andrewhickman/prost-reflect)
-crate. I don't know what is it's status.
+crate. I don't know what is it's status, seems like it is not mature enough yet:
+the project started less than two months ago.
 
 ## Dynamic messages
 
