@@ -49,4 +49,5 @@ The future is foggy. Technically, I could release rust-protobuf 3. But:
 
 And if prost is considered superior to rust-protobuf, maybe it would be better to keep maintaining rust-protobuf at version 2 and never release version 3. And recommend using prost instead.
 
-Advice (in reddit comment, or in [email](mailto:stepan.koltsov@gmail.com)) would be appreciated.
+Advice (on [reddit](https://www.reddit.com/r/rust/comments/sls4uw/past_present_and_future_of_rustprotobuf/),
+or in [email](mailto:stepan.koltsov@gmail.com)) would be appreciated.
