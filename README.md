@@ -177,8 +177,7 @@ serde_json::to_string(&my_message).unwrap();
 
 ## Related projects
 
+* [prost](https://github.com/danburkert/prost) — another protobuf implementation in Rust, also has gRPC implementation
 * [quick-protobuf](https://github.com/tafia/quick-protobuf) — alternative protobuf implementation in Rust
-* [prost](https://github.com/danburkert/prost) — another protobuf implementation in Rust
-* [serde-protobuf](https://github.com/dflemstr/serde-protobuf)
-* [grpc-rust](https://github.com/stepancheg/grpc-rust) — implementation of gRPC based on this library
 * [grpc-rs](https://github.com/pingcap/grpc-rs/) — another gRPC implementation for Rust
+* [grpc-rust](https://github.com/stepancheg/grpc-rust) — incomplete implementation of gRPC based on this library
