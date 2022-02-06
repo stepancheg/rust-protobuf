@@ -589,14 +589,14 @@ impl ProtobufTypeGen {
                 field_descriptor_proto::Type::TYPE_BYTES,
                 PrimitiveTypeVariant::TokioBytes,
             ) => format!(
-                "{}::reflect::types::ProtobufTypeCarllercheBytes",
+                "{}::reflect::types::ProtobufTypeTokioBytes",
                 protobuf_crate_path(customize)
             ),
             &ProtobufTypeGen::Primitive(
                 field_descriptor_proto::Type::TYPE_STRING,
                 PrimitiveTypeVariant::TokioBytes,
             ) => format!(
-                "{}::reflect::types::ProtobufTypeCarllercheChars",
+                "{}::reflect::types::ProtobufTypeTokioChars",
                 protobuf_crate_path(customize)
             ),
             &ProtobufTypeGen::Primitive(.., PrimitiveTypeVariant::TokioBytes) => unreachable!(),

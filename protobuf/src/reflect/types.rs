@@ -142,11 +142,11 @@ pub struct ProtobufTypeBytes;
 /// `bytes` as [`Bytes`](bytes::Bytes)
 #[cfg(feature = "bytes")]
 #[derive(Copy, Clone)]
-pub struct ProtobufTypeCarllercheBytes;
+pub struct ProtobufTypeTokioBytes;
 /// `string` as [`Chars`](crate::Chars)
 #[cfg(feature = "bytes")]
 #[derive(Copy, Clone)]
-pub struct ProtobufTypeCarllercheChars;
+pub struct ProtobufTypeTokioChars;
 
 /// `enum` as `ProtobufEnum`
 #[derive(Copy, Clone)]
@@ -589,7 +589,7 @@ impl ProtobufType for ProtobufTypeBytes {
 }
 
 #[cfg(feature = "bytes")]
-impl ProtobufType for ProtobufTypeCarllercheBytes {
+impl ProtobufType for ProtobufTypeTokioBytes {
     type ProtobufValue = bytes::Bytes;
 
     const WIRE_TYPE: WireType = ProtobufTypeBytes::WIRE_TYPE;
@@ -616,7 +616,7 @@ impl ProtobufType for ProtobufTypeCarllercheBytes {
 }
 
 #[cfg(feature = "bytes")]
-impl ProtobufType for ProtobufTypeCarllercheChars {
+impl ProtobufType for ProtobufTypeTokioChars {
     type ProtobufValue = Chars;
 
     const WIRE_TYPE: WireType = ProtobufTypeBytes::WIRE_TYPE;
