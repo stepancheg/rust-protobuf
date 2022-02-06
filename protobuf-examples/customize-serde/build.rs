@@ -20,7 +20,6 @@ fn main() {
         .cargo_out_dir("protos")
         .include("src")
         .inputs(&["src/customize_example.proto"])
-        .customize(Customize::default().gen_mod_rs(true))
         .customize_callback(GenSerde)
         .run_from_script();
 }

@@ -1,5 +1,4 @@
 use protobuf_codegen::Codegen;
-use protobuf_codegen::Customize;
 
 fn main() {
     // We generate descriptors twice: with pure rust codegen
@@ -13,7 +12,6 @@ fn main() {
 
     Codegen::new()
         .protoc()
-        .customize(Customize::default().gen_mod_rs(true))
         .cargo_out_dir("generated_with_native")
         .input("src/protos/example.proto")
         .include("src/protos")
@@ -21,7 +19,6 @@ fn main() {
 
     Codegen::new()
         .pure()
-        .customize(Customize::default().gen_mod_rs(true))
         .cargo_out_dir("generated_with_pure")
         .input("src/protos/example.proto")
         .include("src/protos")

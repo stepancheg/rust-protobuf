@@ -56,7 +56,7 @@ pub(crate) fn gen_all(
         results.push(gen_well_known_types_mod(&file_descriptors));
     }
 
-    if customize.for_elem.gen_mod_rs.unwrap_or(false) {
+    if customize.for_elem.gen_mod_rs.unwrap_or(true) {
         results.push(gen_mod_rs(&mods));
     }
 

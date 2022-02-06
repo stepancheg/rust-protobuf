@@ -209,7 +209,7 @@ where
         dir, protos
     );
 
-    let customize = Customize::default();
+    let customize = Customize::default().gen_mod_rs(false);
 
     gen(GenInDirArgs {
         out_dir: dir,
