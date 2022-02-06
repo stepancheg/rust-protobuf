@@ -1,5 +1,13 @@
 syntax = "proto3";
 
+enum Color {
+    UNKNOWN = 0;
+    RED = 1;
+    GREEN = 2;
+    BLUE = 3;
+}
+
 message Triangle {
-  string color = 1;
+  string description = 1;
+  Color color = 2;
 }

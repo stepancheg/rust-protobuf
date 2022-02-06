@@ -6,5 +6,7 @@ fn main() {
         .customize(protobuf_codegen::Customize::default().gen_mod_rs(true))
         .run_from_script();
 
-    prost_build::compile_protos(&["src/segment.proto", "src/triangle.proto"], &["src"]).unwrap();
+    prost_build::Config::new()
+        .compile_protos(&["src/segment.proto", "src/triangle.proto"], &["src"])
+        .unwrap();
 }
