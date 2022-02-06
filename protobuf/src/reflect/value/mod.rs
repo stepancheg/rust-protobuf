@@ -7,15 +7,15 @@ use crate::bytes::Bytes;
 use crate::chars::Chars;
 use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::runtime_types::RuntimeTypeBool;
-#[cfg(feature = "bytes")]
-use crate::reflect::runtime_types::RuntimeTypeCarllercheBytes;
-#[cfg(feature = "bytes")]
-use crate::reflect::runtime_types::RuntimeTypeCarllercheChars;
 use crate::reflect::runtime_types::RuntimeTypeF32;
 use crate::reflect::runtime_types::RuntimeTypeF64;
 use crate::reflect::runtime_types::RuntimeTypeI32;
 use crate::reflect::runtime_types::RuntimeTypeI64;
 use crate::reflect::runtime_types::RuntimeTypeString;
+#[cfg(feature = "bytes")]
+use crate::reflect::runtime_types::RuntimeTypeTokioBytes;
+#[cfg(feature = "bytes")]
+use crate::reflect::runtime_types::RuntimeTypeTokioChars;
 use crate::reflect::runtime_types::RuntimeTypeU32;
 use crate::reflect::runtime_types::RuntimeTypeU64;
 use crate::reflect::runtime_types::RuntimeTypeVecU8;
@@ -135,12 +135,12 @@ impl ProtobufValue for Vec<u8> {
 
 #[cfg(feature = "bytes")]
 impl ProtobufValue for Bytes {
-    type RuntimeType = RuntimeTypeCarllercheBytes;
+    type RuntimeType = RuntimeTypeTokioBytes;
 }
 
 #[cfg(feature = "bytes")]
 impl ProtobufValue for Chars {
-    type RuntimeType = RuntimeTypeCarllercheChars;
+    type RuntimeType = RuntimeTypeTokioChars;
 }
 
 // conflicting implementations, so generated code is used instead

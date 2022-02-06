@@ -140,11 +140,11 @@ pub struct RuntimeTypeVecU8;
 /// Implementation for [`Bytes`].
 #[cfg(feature = "bytes")]
 #[derive(Debug, Copy, Clone)]
-pub struct RuntimeTypeCarllercheBytes;
+pub struct RuntimeTypeTokioBytes;
 /// Implementation for [`Chars`].
 #[cfg(feature = "bytes")]
 #[derive(Debug, Copy, Clone)]
-pub struct RuntimeTypeCarllercheChars;
+pub struct RuntimeTypeTokioChars;
 
 /// Implementation for enum.
 #[derive(Debug, Copy, Clone)]
@@ -587,7 +587,7 @@ impl RuntimeTypeWithDeref for RuntimeTypeVecU8 {
 }
 
 #[cfg(feature = "bytes")]
-impl RuntimeType for RuntimeTypeCarllercheBytes {
+impl RuntimeType for RuntimeTypeTokioBytes {
     type Value = Bytes;
 
     fn default_value_ref() -> ReflectValueRef<'static> {
@@ -626,7 +626,7 @@ impl RuntimeType for RuntimeTypeCarllercheBytes {
     }
 }
 #[cfg(feature = "bytes")]
-impl RuntimeTypeWithDeref for RuntimeTypeCarllercheBytes {
+impl RuntimeTypeWithDeref for RuntimeTypeTokioBytes {
     type DerefTarget = [u8];
 
     fn defef_as_ref(value: &[u8]) -> ReflectValueRef {
@@ -635,7 +635,7 @@ impl RuntimeTypeWithDeref for RuntimeTypeCarllercheBytes {
 }
 
 #[cfg(feature = "bytes")]
-impl RuntimeType for RuntimeTypeCarllercheChars {
+impl RuntimeType for RuntimeTypeTokioChars {
     type Value = Chars;
 
     fn default_value_ref() -> ReflectValueRef<'static> {
@@ -673,7 +673,7 @@ impl RuntimeType for RuntimeTypeCarllercheChars {
     }
 }
 #[cfg(feature = "bytes")]
-impl RuntimeTypeWithDeref for RuntimeTypeCarllercheChars {
+impl RuntimeTypeWithDeref for RuntimeTypeTokioChars {
     type DerefTarget = str;
 
     fn defef_as_ref(value: &str) -> ReflectValueRef {
@@ -681,7 +681,7 @@ impl RuntimeTypeWithDeref for RuntimeTypeCarllercheChars {
     }
 }
 #[cfg(feature = "bytes")]
-impl RuntimeTypeHashable for RuntimeTypeCarllercheChars {
+impl RuntimeTypeHashable for RuntimeTypeTokioChars {
     fn hash_map_get<'a, V>(map: &'a HashMap<Chars, V>, key: ReflectValueRef) -> Option<&'a V> {
         match key {
             ReflectValueRef::String(s) => map.get(&*s),
