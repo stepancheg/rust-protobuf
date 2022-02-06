@@ -152,13 +152,13 @@ impl Customize {
         self
     }
 
-    pub fn tokio_bytes_for_bytes(mut self, carllerche_bytes_for_bytes: bool) -> Self {
-        self.tokio_bytes_for_bytes = Some(carllerche_bytes_for_bytes);
+    pub fn tokio_bytes_for_bytes(mut self, tokio_bytes_for_bytes: bool) -> Self {
+        self.tokio_bytes_for_bytes = Some(tokio_bytes_for_bytes);
         self
     }
 
-    pub fn tokio_bytes_for_string(mut self, carllerche_bytes_for_string: bool) -> Self {
-        self.tokio_bytes_for_string = Some(carllerche_bytes_for_string);
+    pub fn tokio_bytes_for_string(mut self, tokio_bytes_for_string: bool) -> Self {
+        self.tokio_bytes_for_string = Some(tokio_bytes_for_string);
         self
     }
 
@@ -243,9 +243,9 @@ impl Customize {
                 r.generate_accessors = Some(parse_bool(v)?);
             } else if n == "generate_getter" {
                 r.generate_getter = Some(parse_bool(v)?);
-            } else if n == "carllerche_bytes_for_bytes" {
+            } else if n == "tokio_bytes_for_bytes" {
                 r.tokio_bytes_for_bytes = Some(parse_bool(v)?);
-            } else if n == "carllerche_bytes_for_string" {
+            } else if n == "tokio_bytes_for_string" {
                 r.tokio_bytes_for_string = Some(parse_bool(v)?);
             } else if n == "lite_runtime" {
                 r.lite_runtime = Some(parse_bool(v)?);

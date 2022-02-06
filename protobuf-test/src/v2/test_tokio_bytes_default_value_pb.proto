@@ -1,6 +1,6 @@
 syntax = "proto2";
 
-package test_carllerche_bytes_default_value;
+package test_tokio_bytes_default_value;
 
 import "rustproto.proto";
 

@@ -12,8 +12,8 @@ pub(crate) fn customize_from_rustproto_for_message(source: &MessageOptions) -> C
     let expose_fields = rustproto::exts::expose_fields.get(source);
     let generate_accessors = rustproto::exts::generate_accessors.get(source);
     let generate_getter = rustproto::exts::generate_getter.get(source);
-    let carllerche_bytes_for_bytes = rustproto::exts::tokio_bytes_for_bytes.get(source);
-    let carllerche_bytes_for_string = rustproto::exts::tokio_bytes_for_string.get(source);
+    let tokio_bytes_for_bytes = rustproto::exts::tokio_bytes_for_bytes.get(source);
+    let tokio_bytes_for_string = rustproto::exts::tokio_bytes_for_string.get(source);
     let lite_runtime = None;
     let gen_mod_rs = None;
     let inside_protobuf = None;
@@ -23,8 +23,8 @@ pub(crate) fn customize_from_rustproto_for_message(source: &MessageOptions) -> C
         expose_fields,
         generate_accessors,
         generate_getter,
-        tokio_bytes_for_bytes: carllerche_bytes_for_bytes,
-        tokio_bytes_for_string: carllerche_bytes_for_string,
+        tokio_bytes_for_bytes,
+        tokio_bytes_for_string,
         lite_runtime,
         gen_mod_rs,
         inside_protobuf,
@@ -41,8 +41,8 @@ pub(crate) fn customize_from_rustproto_for_field(source: &FieldOptions) -> Custo
     let expose_fields = rustproto::exts::expose_fields_field.get(source);
     let generate_accessors = rustproto::exts::generate_accessors_field.get(source);
     let generate_getter = rustproto::exts::generate_getter_field.get(source);
-    let carllerche_bytes_for_bytes = rustproto::exts::tokio_bytes_for_bytes_field.get(source);
-    let carllerche_bytes_for_string = rustproto::exts::tokio_bytes_for_string_field.get(source);
+    let tokio_bytes_for_bytes = rustproto::exts::tokio_bytes_for_bytes_field.get(source);
+    let tokio_bytes_for_string = rustproto::exts::tokio_bytes_for_string_field.get(source);
     let lite_runtime = None;
     let gen_mod_rs = None;
     let inside_protobuf = None;
@@ -52,8 +52,8 @@ pub(crate) fn customize_from_rustproto_for_field(source: &FieldOptions) -> Custo
         expose_fields,
         generate_accessors,
         generate_getter,
-        tokio_bytes_for_bytes: carllerche_bytes_for_bytes,
-        tokio_bytes_for_string: carllerche_bytes_for_string,
+        tokio_bytes_for_bytes,
+        tokio_bytes_for_string,
         lite_runtime,
         gen_mod_rs,
         inside_protobuf,
@@ -66,8 +66,8 @@ pub(crate) fn customize_from_rustproto_for_file(source: &FileOptions) -> Customi
     let expose_fields = rustproto::exts::expose_fields_all.get(source);
     let generate_accessors = rustproto::exts::generate_accessors_all.get(source);
     let generate_getter = rustproto::exts::generate_getter_all.get(source);
-    let carllerche_bytes_for_bytes = rustproto::exts::tokio_bytes_for_bytes_all.get(source);
-    let carllerche_bytes_for_string = rustproto::exts::tokio_bytes_for_string_all.get(source);
+    let tokio_bytes_for_bytes = rustproto::exts::tokio_bytes_for_bytes_all.get(source);
+    let tokio_bytes_for_string = rustproto::exts::tokio_bytes_for_string_all.get(source);
     let lite_runtime = rustproto::exts::lite_runtime_all.get(source);
     let gen_mod_rs = None;
     let inside_protobuf = None;
@@ -77,8 +77,8 @@ pub(crate) fn customize_from_rustproto_for_file(source: &FileOptions) -> Customi
         expose_fields,
         generate_accessors,
         generate_getter,
-        tokio_bytes_for_bytes: carllerche_bytes_for_bytes,
-        tokio_bytes_for_string: carllerche_bytes_for_string,
+        tokio_bytes_for_bytes,
+        tokio_bytes_for_string,
         lite_runtime,
         inside_protobuf,
         gen_mod_rs,

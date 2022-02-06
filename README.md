@@ -85,8 +85,8 @@ With stable rust-protobuf:
 protoc_rust::run(protoc_rust::Args {
     ...
     customize: Customize {
-        carllerche_bytes_for_bytes: Some(true),
-        carllerche_bytes_for_string: Some(true),
+        tokio_bytes_for_bytes: Some(true),
+        tokio_bytes_for_string: Some(true),
         ..Default::default()
     },
  });
@@ -98,8 +98,8 @@ With rust-protobuf from master:
 protoc_rust::Args::new()
     ...
     .customize(Customize {
-        carllerche_bytes_for_bytes: Some(true),
-        carllerche_bytes_for_string: Some(true),
+        tokio_bytes_for_bytes: Some(true),
+        tokio_bytes_for_string: Some(true),
         ..Default::default()
     })
     .run()?;
@@ -110,8 +110,8 @@ or in `.proto` file:
 ```proto
 import "rustproto.proto";
 
-option (rustproto.carllerche_bytes_for_bytes_all) = true;
-option (rustproto.carllerche_bytes_for_string_all) = true;
+option (rustproto.tokio_bytes_for_bytes_all) = true;
+option (rustproto.tokio_bytes_for_string_all) = true;
 ```
 
 With these options enabled, fields of type `bytes` or `string` are

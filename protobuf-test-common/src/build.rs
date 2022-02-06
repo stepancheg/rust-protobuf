@@ -119,7 +119,7 @@ pub fn gen_mod_rs_in_dir(dir: &str) {
         let mod_name = &file_name[..file_name.len() - ".rs".len()];
 
         if mod_name.contains("tokio") {
-            writeln!(mod_rs, r#"#[cfg(feature = "with-bytes")]"#).expect("write carllerche");
+            writeln!(mod_rs, r#"#[cfg(feature = "with-bytes")]"#).expect("write tokio");
         }
         writeln!(mod_rs, "mod {};", mod_name).expect("write");
     }
