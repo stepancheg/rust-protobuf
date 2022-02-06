@@ -6,6 +6,7 @@ use protobuf::descriptor::field_descriptor_proto;
 use protobuf::reflect::FieldDescriptor;
 use protobuf_parse::ProtobufAbsPath;
 
+use crate::customize::ctx::CustomizeElemCtx;
 use crate::customize::Customize;
 use crate::gen::code_writer::CodeWriter;
 use crate::gen::field::rust_field_name_for_protobuf_field_name;
@@ -164,24 +165,24 @@ impl<'a> OneofVariantGen<'a> {
     }
 }
 
-#[derive(Clone)]
 pub(crate) struct OneofGen<'a> {
     // Message containing this oneof
     message: &'a MessageGen<'a>,
     pub oneof: OneofWithContext<'a>,
-    customize: Customize,
+    customize: CustomizeElemCtx<'a>,
 }
 
 impl<'a> OneofGen<'a> {
     pub fn parse(
         message: &'a MessageGen,
         oneof: OneofWithContext<'a>,
-        customize: &Customize,
+        parent_customize: &CustomizeElemCtx<'a>,
     ) -> OneofGen<'a> {
+        let customize = parent_customize.child(&Customize::default(), &oneof.oneof);
         OneofGen {
             message,
             oneof,
-            customize: customize.clone(),
+            customize,
         }
     }
 
@@ -221,7 +222,7 @@ impl<'a> OneofGen<'a> {
                     .oneof
                     .message
                     .scope
-                    .get_file_and_mod(self.customize.clone())
+                    .get_file_and_mod(self.customize.for_elem.clone())
                     .relative_mod
                     .into_path(),
             )
@@ -234,7 +235,7 @@ impl<'a> OneofGen<'a> {
             .message
             .message
             .scope
-            .get_file_and_mod(self.customize.clone());
+            .get_file_and_mod(self.customize.for_elem.clone());
         file_and_mod
             .relative_mod
             .push_ident(self.message.message.mod_name());
@@ -246,7 +247,7 @@ impl<'a> OneofGen<'a> {
         w.derive(&derive);
         serde::write_serde_attr(
             w,
-            &self.customize,
+            &self.customize.for_elem,
             "derive(::serde::Serialize, ::serde::Deserialize)",
         );
         write_protoc_insertion_point_for_oneof(w, &self.oneof.oneof);
@@ -258,7 +259,7 @@ impl<'a> OneofGen<'a> {
                     variant.field.rust_name,
                     &variant
                         .rust_type(&self.get_file_and_mod())
-                        .to_code(&self.customize)
+                        .to_code(&self.customize.for_elem)
                 ));
             }
         });
@@ -266,7 +267,7 @@ impl<'a> OneofGen<'a> {
 
     fn write_impl_oneof(&self, w: &mut CodeWriter) {
         w.impl_for_block(
-            &format!("{}::Oneof", protobuf_crate_path(&self.customize)),
+            &format!("{}::Oneof", protobuf_crate_path(&self.customize.for_elem)),
             self.oneof.rust_name().ident.to_string(),
             |_w| {
                 // nothing here yet

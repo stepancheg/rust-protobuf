@@ -2,6 +2,7 @@ use protobuf::descriptor::*;
 use protobuf::reflect::FileDescriptor;
 use protobuf_parse::ProtobufAbsPath;
 
+use crate::customize::ctx::CustomizeElemCtx;
 use crate::customize::Customize;
 use crate::gen::code_writer::CodeWriter;
 use crate::gen::field::rust_field_name_for_protobuf_field_name;
@@ -96,7 +97,7 @@ pub(crate) fn write_extensions(
     file: &FileDescriptor,
     root_scope: &RootScope,
     w: &mut CodeWriter,
-    customize: &Customize,
+    customize: &CustomizeElemCtx,
 ) {
     if file.proto().extension.is_empty() {
         return;
@@ -112,10 +113,10 @@ pub(crate) fn write_extensions(
 
             w.write_line("");
             ExtGen {
-                file: file,
-                root_scope: root_scope,
-                field: field,
-                customize: customize.clone(),
+                file,
+                root_scope,
+                field,
+                customize: customize.for_elem.clone(),
             }
             .write(w);
         }

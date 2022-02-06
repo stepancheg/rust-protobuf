@@ -6,6 +6,8 @@ use protobuf_parse::ProtoPath;
 use protobuf_parse::ProtoPathBuf;
 
 use crate::compiler_plugin;
+use crate::customize::ctx::CustomizeElemCtx;
+use crate::customize::CustomizeCallbackDefault;
 use crate::gen::file::gen_file;
 use crate::gen::mod_rs::gen_mod_rs;
 use crate::gen::scope::RootScope;
@@ -32,22 +34,28 @@ pub(crate) fn gen_all(
 
     let mut mods = Vec::new();
 
+    let customize = CustomizeElemCtx {
+        for_elem: customize.clone(),
+        for_children: customize.clone(),
+        callback: &CustomizeCallbackDefault,
+    };
+
     for file_name in files_to_generate {
         let file = files_map.get(file_name.as_path()).expect(&format!(
             "file not found in file descriptors: {:?}, files: {:?}",
             file_name,
             files_map.keys()
         ));
-        let gen_file_result = gen_file(file, &files_map, &root_scope, customize, parser);
+        let gen_file_result = gen_file(file, &files_map, &root_scope, &customize, parser);
         results.push(gen_file_result.compiler_plugin_result);
         mods.push(gen_file_result.mod_name);
     }
 
-    if customize.inside_protobuf.unwrap_or(false) {
+    if customize.for_elem.inside_protobuf.unwrap_or(false) {
         results.push(gen_well_known_types_mod(&file_descriptors));
     }
 
-    if customize.gen_mod_rs.unwrap_or(false) {
+    if customize.for_elem.gen_mod_rs.unwrap_or(false) {
         results.push(gen_mod_rs(&mods));
     }
 

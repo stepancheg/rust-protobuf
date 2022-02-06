@@ -1,4 +1,5 @@
 pub(crate) mod by_path;
+pub(crate) mod ctx;
 pub(crate) mod custom_attr;
 pub(crate) mod rustproto_proto;
 
@@ -7,36 +8,45 @@ use std::rc::Rc;
 
 use protobuf::reflect::EnumDescriptor;
 use protobuf::reflect::FieldDescriptor;
+use protobuf::reflect::FileDescriptor;
 use protobuf::reflect::MessageDescriptor;
 use protobuf::reflect::OneofDescriptor;
 
 /// Dynamic callback to customize code generation.
 pub trait CustomizeCallback: 'static {
-    fn customize_message(&self, message: &MessageDescriptor) -> String {
+    fn file(&self, file: &FileDescriptor) -> Customize {
+        let _ = file;
+        Customize::default()
+    }
+
+    fn message(&self, message: &MessageDescriptor) -> Customize {
         let _ = message;
-        String::new()
+        Customize::default()
     }
 
-    fn customize_field(&self, field: &FieldDescriptor) -> String {
+    fn field(&self, field: &FieldDescriptor) -> Customize {
         let _ = field;
-        String::new()
+        Customize::default()
     }
 
-    fn customize_special_field(&self, message: &MessageDescriptor, field: &str) -> String {
+    fn special_field(&self, message: &MessageDescriptor, field: &str) -> Customize {
         let _ = (message, field);
-        String::new()
+        Customize::default()
     }
 
-    fn customize_enum(&self, enum_type: &EnumDescriptor) -> String {
+    fn enumeration(&self, enum_type: &EnumDescriptor) -> Customize {
         let _ = enum_type;
-        String::new()
+        Customize::default()
     }
 
-    fn customize_oneof(&self, oneof: &OneofDescriptor) -> String {
+    fn oneof(&self, oneof: &OneofDescriptor) -> Customize {
         let _ = oneof;
-        String::new()
+        Customize::default()
     }
 }
+
+pub(crate) struct CustomizeCallbackDefault;
+impl CustomizeCallback for CustomizeCallbackDefault {}
 
 #[derive(Clone)]
 pub(crate) struct CustomizeCallbackHolder(pub(crate) Rc<dyn CustomizeCallback>);

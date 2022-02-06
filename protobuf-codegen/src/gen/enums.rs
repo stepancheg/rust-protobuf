@@ -2,6 +2,7 @@ use std::collections::HashSet;
 
 use protobuf::descriptor::*;
 
+use crate::customize::ctx::CustomizeElemCtx;
 use crate::customize::rustproto_proto::customize_from_rustproto_for_enum;
 use crate::gen::code_writer::*;
 use crate::gen::file_index::FileIndex;
@@ -16,7 +17,6 @@ use crate::gen::scope::EnumWithScope;
 use crate::gen::scope::RootScope;
 use crate::gen::scope::WithScope;
 use crate::gen::serde;
-use crate::Customize;
 
 #[derive(Clone)]
 pub(crate) struct EnumValueGen<'a> {
@@ -58,7 +58,7 @@ pub(crate) struct EnumGen<'a> {
     file_index: &'a FileIndex,
     type_name: RustIdentWithPath,
     lite_runtime: bool,
-    customize: Customize,
+    customize: CustomizeElemCtx<'a>,
     path: &'a [i32],
     info: Option<&'a SourceCodeInfo>,
 }
@@ -67,12 +67,18 @@ impl<'a> EnumGen<'a> {
     pub fn new(
         enum_with_scope: &'a EnumWithScope<'a>,
         file_index: &'a FileIndex,
-        customize: &Customize,
+        customize: &CustomizeElemCtx<'a>,
         _root_scope: &RootScope,
         path: &'a [i32],
         info: Option<&'a SourceCodeInfo>,
     ) -> EnumGen<'a> {
-        let lite_runtime = customize.lite_runtime.unwrap_or_else(|| {
+        let customize = customize.child(
+            &customize_from_rustproto_for_enum(
+                enum_with_scope.en.get_proto().options.get_or_default(),
+            ),
+            &enum_with_scope.en,
+        );
+        let lite_runtime = customize.for_elem.lite_runtime.unwrap_or_else(|| {
             enum_with_scope
                 .get_scope()
                 .get_file_descriptor()
@@ -82,16 +88,11 @@ impl<'a> EnumGen<'a> {
                 == file_options::OptimizeMode::LITE_RUNTIME
         });
 
-        let mut customize = customize.clone();
-        customize.update_with(&customize_from_rustproto_for_enum(
-            enum_with_scope.en.get_proto().options.get_or_default(),
-        ));
-
         EnumGen {
             enum_with_scope,
             type_name: enum_with_scope.rust_name().to_path(),
             lite_runtime,
-            customize: customize,
+            customize,
             path,
             info,
             file_index,
@@ -176,12 +177,12 @@ impl<'a> EnumGen<'a> {
         w.derive(&derive);
         serde::write_serde_attr(
             w,
-            &self.customize,
+            &self.customize.for_elem,
             "derive(::serde::Serialize, ::serde::Deserialize)",
         );
-        if let Some(ref ren) = self.customize.serde_rename_all {
+        if let Some(ref ren) = self.customize.for_elem.serde_rename_all {
             let attr = format!("serde(rename_all = \"{}\")", ren);
-            serde::write_serde_attr(w, &self.customize, &attr);
+            serde::write_serde_attr(w, &self.customize.for_elem, &attr);
         }
         let ref type_name = self.type_name;
         write_protoc_insertion_point_for_enum(w, &self.enum_with_scope.en);
@@ -225,7 +226,10 @@ impl<'a> EnumGen<'a> {
     fn write_impl_enum(&self, w: &mut CodeWriter) {
         let ref type_name = self.type_name;
         w.impl_for_block(
-            &format!("{}::ProtobufEnum", protobuf_crate_path(&self.customize)),
+            &format!(
+                "{}::ProtobufEnum",
+                protobuf_crate_path(&self.customize.for_elem)
+            ),
             &format!("{}", type_name),
             |w| {
                 self.write_fn_value(w);
@@ -275,12 +279,12 @@ impl<'a> EnumGen<'a> {
     fn write_enum_descriptor_static(&self, w: &mut CodeWriter) {
         let sig = format!(
             "enum_descriptor_static() -> {}::reflect::EnumDescriptor",
-            protobuf_crate_path(&self.customize)
+            protobuf_crate_path(&self.customize.for_elem)
         );
         w.def_fn(&sig, |w| {
             w.write_line(&format!(
                 "{}::reflect::EnumDescriptor::new_generated_2({}(), {})",
-                protobuf_crate_path(&self.customize),
+                protobuf_crate_path(&self.customize.for_elem),
                 self.enum_with_scope
                     .get_scope()
                     .rust_path_to_file()
@@ -294,7 +298,7 @@ impl<'a> EnumGen<'a> {
     fn write_generated_enum_descriptor_data(&self, w: &mut CodeWriter) {
         let sig = format!(
             "generated_enum_descriptor_data() -> {}::reflect::GeneratedEnumDescriptorData",
-            protobuf_crate_path(&self.customize)
+            protobuf_crate_path(&self.customize.for_elem)
         );
         w.fn_block(
             Visibility::Path(
@@ -307,7 +311,7 @@ impl<'a> EnumGen<'a> {
             |w| {
                 w.write_line(&format!(
                     "{}::reflect::GeneratedEnumDescriptorData::new_2::<{}>(\"{}\", {})",
-                    protobuf_crate_path(&self.customize),
+                    protobuf_crate_path(&self.customize.for_elem),
                     self.type_name,
                     self.enum_with_scope.name_to_package(),
                     self.index_in_file(),
@@ -320,13 +324,13 @@ impl<'a> EnumGen<'a> {
         w.impl_for_block(
             &format!(
                 "{}::reflect::ProtobufValue",
-                protobuf_crate_path(&self.customize)
+                protobuf_crate_path(&self.customize.for_elem)
             ),
             &format!("{}", self.type_name),
             |w| {
                 w.write_line(&format!(
                     "type RuntimeType = {}::reflect::runtime_types::RuntimeTypeEnum<Self>;",
-                    protobuf_crate_path(&self.customize)
+                    protobuf_crate_path(&self.customize.for_elem)
                 ));
             },
         )
@@ -341,8 +345,8 @@ impl<'a> EnumGen<'a> {
                 w.def_fn("eq(&self, other: &Self) -> bool", |w| {
                     w.write_line(&format!(
                         "{}::ProtobufEnum::value(self) == {}::ProtobufEnum::value(other)",
-                        protobuf_crate_path(&self.customize),
-                        protobuf_crate_path(&self.customize)
+                        protobuf_crate_path(&self.customize.for_elem),
+                        protobuf_crate_path(&self.customize.for_elem)
                     ));
                 });
             },
@@ -355,7 +359,7 @@ impl<'a> EnumGen<'a> {
             w.def_fn("hash<H : ::std::hash::Hasher>(&self, state: &mut H)", |w| {
                 w.write_line(&format!(
                     "state.write_i32({}::ProtobufEnum::value(self))",
-                    protobuf_crate_path(&self.customize)
+                    protobuf_crate_path(&self.customize.for_elem)
                 ));
             });
         });

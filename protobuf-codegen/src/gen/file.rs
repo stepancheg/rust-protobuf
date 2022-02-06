@@ -6,6 +6,7 @@ use protobuf::reflect::FileDescriptor;
 use protobuf_parse::ProtoPath;
 
 use crate::compiler_plugin;
+use crate::customize::ctx::CustomizeElemCtx;
 use crate::customize::rustproto_proto::customize_from_rustproto_for_file;
 use crate::gen::code_writer::CodeWriter;
 use crate::gen::enums::EnumGen;
@@ -18,7 +19,6 @@ use crate::gen::paths::proto_path_to_rust_mod;
 use crate::gen::scope::FileScope;
 use crate::gen::scope::RootScope;
 use crate::proto_name_to_rs;
-use crate::Customize;
 
 pub(crate) struct GenFileResult {
     pub(crate) compiler_plugin_result: compiler_plugin::GenResult,
@@ -29,19 +29,17 @@ pub(crate) fn gen_file(
     file_descriptor: &FileDescriptor,
     _files_map: &HashMap<&ProtoPath, &FileDescriptor>,
     root_scope: &RootScope,
-    customize: &Customize,
+    parent_customize: &CustomizeElemCtx,
     parser: &str,
 ) -> GenFileResult {
-    // TODO: use it
-    let mut customize = customize.clone();
-    // options specified in invocation have precedence over options specified in file
-    customize.update_with(&customize_from_rustproto_for_file(
-        file_descriptor.proto().options.get_or_default(),
-    ));
+    let customize = parent_customize.child(
+        &customize_from_rustproto_for_file(file_descriptor.proto().options.get_or_default()),
+        file_descriptor,
+    );
 
     let file_scope = FileScope { file_descriptor };
     let scope = file_scope.to_scope();
-    let lite_runtime = customize.lite_runtime.unwrap_or_else(|| {
+    let lite_runtime = customize.for_elem.lite_runtime.unwrap_or_else(|| {
         file_descriptor
             .proto()
             .options
@@ -64,13 +62,13 @@ pub(crate) fn gen_file(
             "//! Generated file from `{}`",
             file_descriptor.proto().get_name()
         ));
-        if customize.inside_protobuf != Some(true) {
+        if customize.for_elem.inside_protobuf != Some(true) {
             w.write_line("");
             w.write_line("/// Generated files are compatible only with the same version");
             w.write_line("/// of protobuf runtime.");
             w.write_line(&format!(
                 "const _PROTOBUF_VERSION_CHECK: () = {}::{};",
-                protobuf_crate_path(&customize),
+                protobuf_crate_path(&customize.for_elem),
                 protobuf::VERSION_IDENT
             ));
         }
@@ -133,7 +131,7 @@ pub(crate) fn gen_file(
 
         if !lite_runtime {
             w.write_line("");
-            write_file_descriptor_data(file_descriptor, &customize, &mut w);
+            write_file_descriptor_data(file_descriptor, &customize.for_elem, &mut w);
         }
     }
 

@@ -6,6 +6,7 @@ use protobuf::rt;
 use protobuf::wire_format::WireType;
 use protobuf_parse::ProtobufAbsPath;
 
+use crate::customize::ctx::CustomizeElemCtx;
 use crate::customize::rustproto_proto::customize_from_rustproto_for_field;
 use crate::customize::Customize;
 use crate::gen::code_writer::CodeWriter;
@@ -537,14 +538,18 @@ impl<'a> FieldGen<'a> {
     pub fn parse(
         field: FieldWithContext<'a>,
         root_scope: &'a RootScope<'a>,
-        customize: &Customize,
+        parent_customize: &CustomizeElemCtx<'a>,
         path: Vec<i32>,
         info: Option<&'a SourceCodeInfo>,
     ) -> FieldGen<'a> {
-        let mut customize = customize.clone();
-        customize.update_with(&customize_from_rustproto_for_field(
-            field.field.get_proto().options.get_or_default(),
-        ));
+        let customize = parent_customize
+            .child(
+                &customize_from_rustproto_for_field(
+                    field.field.get_proto().options.get_or_default(),
+                ),
+                &field.field,
+            )
+            .for_elem;
 
         let syntax = field.message.scope.file_scope.syntax();
 
