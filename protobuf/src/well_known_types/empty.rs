@@ -23,14 +23,11 @@
 
 #[derive(PartialEq,Clone,Default,Debug)]
 #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
-// @@protoc_insertion_point(message:google.protobuf.Empty)
 pub struct Empty {
     // special fields
     #[cfg_attr(serde, serde(skip))]
-    // @@protoc_insertion_point(special_field:google.protobuf.Empty.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    // @@protoc_insertion_point(special_field:google.protobuf.Empty.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 

@@ -40,13 +40,22 @@ esac
 "$PROTOC" \
     --plugin=protoc-gen-rust="$where_am_i/target/debug/protoc-gen-rust$exe_suffix" \
     --rust_out tmp-generated \
-    --rust_opt 'serde_derive=true serde_derive_cfg=serde inside_protobuf=true' \
+    --rust_opt 'inside_protobuf=true' \
     -I../proto \
     -I../protoc-bin-vendored/include \
     ../protoc-bin-vendored/include/google/protobuf/*.proto \
     ../protoc-bin-vendored/include/google/protobuf/compiler/* \
     ../proto/rustproto.proto \
     ../proto/doctest_pb.proto
+
+find tmp-generated -name '*.rs' | while read -r f; do
+    sed -e '
+        s^// @@protoc_insertion_point(special_field:.*^#[cfg_attr(serde, serde(skip))]^;
+        s^// @@protoc_insertion_point(message:.*^#[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]^;
+        /@@protoc_insertion_point/ d;
+    ' "$f" > "$f.tmp"
+    mv "$f.tmp" "$f"
+done
 
 mv \
     tmp-generated/descriptor.rs \

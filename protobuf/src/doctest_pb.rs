@@ -23,14 +23,11 @@
 
 #[derive(PartialEq,Clone,Default,Debug)]
 #[cfg_attr(serde, derive(::serde::Serialize, ::serde::Deserialize))]
-// @@protoc_insertion_point(message:MyMessage)
 pub struct MyMessage {
     // special fields
     #[cfg_attr(serde, serde(skip))]
-    // @@protoc_insertion_point(special_field:MyMessage.unknown_fields)
     pub unknown_fields: crate::UnknownFields,
     #[cfg_attr(serde, serde(skip))]
-    // @@protoc_insertion_point(special_field:MyMessage.cached_size)
     pub cached_size: crate::rt::CachedSize,
 }
 
