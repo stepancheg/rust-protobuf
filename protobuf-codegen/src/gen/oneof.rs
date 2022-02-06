@@ -250,10 +250,14 @@ impl<'a> OneofGen<'a> {
             &self.customize.for_elem,
             "derive(::serde::Serialize, ::serde::Deserialize)",
         );
-        write_protoc_insertion_point_for_oneof(w, &self.oneof.oneof);
+        write_protoc_insertion_point_for_oneof(w, &self.customize.for_elem, &self.oneof.oneof);
         w.pub_enum(&self.oneof.rust_name().ident.to_string(), |w| {
             for variant in self.variants_except_group() {
-                write_protoc_insertion_point_for_oneof_field(w, &variant.field.proto_field.field);
+                write_protoc_insertion_point_for_oneof_field(
+                    w,
+                    &self.customize.for_children,
+                    &variant.field.proto_field.field,
+                );
                 w.write_line(&format!(
                     "{}({}),",
                     variant.field.rust_name,

@@ -1146,7 +1146,7 @@ impl<'a> FieldGen<'a> {
             w.all_documentation(self.info, &self.path);
 
             self.write_serde_attr(w);
-            write_protoc_insertion_point_for_field(w, &self.proto_field.field);
+            write_protoc_insertion_point_for_field(w, &self.customize, &self.proto_field.field);
             let vis = self.visibility();
             w.field_decl_vis(
                 vis,

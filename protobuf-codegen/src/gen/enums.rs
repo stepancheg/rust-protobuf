@@ -185,10 +185,18 @@ impl<'a> EnumGen<'a> {
             serde::write_serde_attr(w, &self.customize.for_elem, &attr);
         }
         let ref type_name = self.type_name;
-        write_protoc_insertion_point_for_enum(w, &self.enum_with_scope.en);
+        write_protoc_insertion_point_for_enum(
+            w,
+            &self.customize.for_elem,
+            &self.enum_with_scope.en,
+        );
         w.expr_block(&format!("pub enum {}", type_name), |w| {
             for value in self.values_all() {
-                write_protoc_insertion_point_for_enum_value(w, &value.value.proto);
+                write_protoc_insertion_point_for_enum_value(
+                    w,
+                    &self.customize.for_children,
+                    &value.value.proto,
+                );
                 if self.allow_alias() {
                     w.write_line(&format!(
                         "{}, // {}",

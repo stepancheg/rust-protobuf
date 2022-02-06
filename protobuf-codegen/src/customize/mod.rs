@@ -90,6 +90,8 @@ impl fmt::Debug for CustomizeCallbackHolder {
 /// or using `rustproto.proto` options.
 #[derive(Default, Debug, Clone, PartialEq)]
 pub struct Customize {
+    /// Code to insert before the element in the generated file.
+    pub(crate) before: Option<String>,
     /// Make oneof enum public.
     pub(crate) expose_oneof: Option<bool>,
     /// When true all fields are public, and accessors are not generated
@@ -131,6 +133,11 @@ pub enum CustomizeParseParameterError {
 pub type CustomizeParseParameterResult<T> = Result<T, CustomizeParseParameterError>;
 
 impl Customize {
+    pub fn before(mut self, before: &str) -> Self {
+        self.before = Some(before.to_owned());
+        self
+    }
+
     pub fn expose_oneof(mut self, expose_oneof: bool) -> Self {
         self.expose_oneof = Some(expose_oneof);
         self
@@ -193,6 +200,9 @@ impl Customize {
 
     /// Update fields of self with fields defined in other customize
     pub fn update_with(&mut self, that: &Customize) {
+        if let Some(v) = &that.before {
+            self.before = Some(v.clone());
+        }
         if let Some(v) = that.expose_oneof {
             self.expose_oneof = Some(v);
         }

@@ -589,7 +589,11 @@ impl<'a> MessageGen<'a> {
             &self.customize.for_elem,
             "derive(::serde::Serialize, ::serde::Deserialize)",
         );
-        write_protoc_insertion_point_for_message(w, &self.message_descriptor);
+        write_protoc_insertion_point_for_message(
+            w,
+            &self.customize.for_elem,
+            &self.message_descriptor,
+        );
         w.pub_struct(&format!("{}", self.type_name), |w| {
             if !self.fields_except_oneof().is_empty() {
                 w.comment("message fields");
@@ -616,6 +620,7 @@ impl<'a> MessageGen<'a> {
             serde::write_serde_attr(w, &self.customize.for_elem, "serde(skip)");
             write_protoc_insertion_point_for_special_field(
                 w,
+                &self.customize.for_elem,
                 &self.message_descriptor,
                 "unknown_fields",
             );
@@ -629,6 +634,7 @@ impl<'a> MessageGen<'a> {
             serde::write_serde_attr(w, &self.customize.for_elem, "serde(skip)");
             write_protoc_insertion_point_for_special_field(
                 w,
+                &self.customize.for_elem,
                 &self.message_descriptor,
                 "cached_size",
             );
