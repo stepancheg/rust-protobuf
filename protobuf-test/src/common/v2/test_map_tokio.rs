@@ -2,7 +2,7 @@ use bytes::Bytes;
 use protobuf::*;
 use protobuf_test_common::*;
 
-use super::test_map_carllerche_pb::*;
+use super::test_map_tokio_pb::*;
 
 #[test]
 fn test_string_to_int32() {
