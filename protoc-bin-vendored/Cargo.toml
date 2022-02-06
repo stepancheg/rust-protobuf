@@ -11,10 +11,7 @@ protoc binaries compiled by Google and bundled in this crate.
 """
 
 [lib]
-doctest = false
 bench = false
-
-[dependencies]
 
 [dev-dependencies]
 protoc = { path = "../protoc", version = "=3.0.0-alpha.5" }
