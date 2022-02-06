@@ -4,6 +4,7 @@ use std::mem::MaybeUninit;
 use std::ptr;
 use std::slice;
 
+use crate::error::ProtobufError;
 use crate::misc::maybe_uninit_write_slice;
 use crate::misc::vec_spare_capacity_mut;
 use crate::rt::vec_packed_enum_or_unknown_data_size;
@@ -19,7 +20,6 @@ use crate::Message;
 use crate::MessageDyn;
 use crate::ProtobufEnum;
 use crate::ProtobufEnumOrUnknown;
-use crate::ProtobufError;
 use crate::ProtobufResult;
 use crate::UnknownFields;
 use crate::UnknownValueRef;
@@ -178,7 +178,8 @@ impl<'a> CodedOutputStream<'a> {
                 return Err(ProtobufError::IoError(io::Error::new(
                     io::ErrorKind::Other,
                     "given slice is too small to serialize the message",
-                )));
+                ))
+                .into());
             }
         }
         Ok(())

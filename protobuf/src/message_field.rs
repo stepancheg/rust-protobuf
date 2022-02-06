@@ -214,15 +214,11 @@ impl<T> Default for MessageField<T> {
     }
 }
 
+/// We don't have `From<Option<Box<T>>> for MessageField<T>` because
+/// it would make type inference worse.
 impl<T> From<Option<T>> for MessageField<T> {
     fn from(o: Option<T>) -> Self {
         MessageField::from_option(o)
-    }
-}
-
-impl<T> From<Option<Box<T>>> for MessageField<T> {
-    fn from(o: Option<Box<T>>) -> Self {
-        MessageField(o)
     }
 }
 

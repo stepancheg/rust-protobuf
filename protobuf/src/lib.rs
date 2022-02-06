@@ -46,7 +46,7 @@ pub use crate::unknown::UnknownValuesIter;
 pub mod wire_format;
 #[cfg(feature = "bytes")]
 pub use crate::chars::Chars;
-pub use crate::error::ProtobufError;
+pub use crate::error::Error;
 pub use crate::error::ProtobufResult;
 
 // generated

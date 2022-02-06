@@ -169,7 +169,8 @@ pub trait Message:
         if !self.is_initialized() {
             Err(ProtobufError::MessageNotInitialized(
                 self.descriptor_by_instance().name().to_owned(),
-            ))
+            )
+            .into())
         } else {
             Ok(())
         }

@@ -4,21 +4,18 @@ use std::str;
 use crate::wire_format::WireType;
 
 /// `Result` alias for `ProtobufError`
-pub type ProtobufResult<T> = Result<T, ProtobufError>;
+pub type ProtobufResult<T> = Result<T, crate::Error>;
 
 /// Enum values added here for diagnostic purposes.
 /// Users should not depend on specific values.
 #[derive(Debug, thiserror::Error)]
-pub enum WireError {
+pub(crate) enum WireError {
     #[error("Unexpected EOF")]
     UnexpectedEof,
     #[error("Unexpected wire type")]
     UnexpectedWireType(WireType),
     #[error("Incorrect tag")]
     IncorrectTag(u32),
-    // unused since https://github.com/stepancheg/rust-protobuf/issues/318
-    #[error("Incomplete map")]
-    IncompleteMap,
     #[error("Incorrect varint")]
     IncorrectVarint,
     #[error("Invalid UTF-8 sequence")]
@@ -38,7 +35,7 @@ pub enum WireError {
 
 /// Generic protobuf error
 #[derive(Debug, thiserror::Error)]
-pub enum ProtobufError {
+pub(crate) enum ProtobufError {
     /// I/O error when reading or writing
     #[error(transparent)]
     IoError(#[from] io::Error),
@@ -63,9 +60,15 @@ pub enum ProtobufError {
     GroupIsNotImplemented,
 }
 
-impl From<ProtobufError> for io::Error {
-    fn from(err: ProtobufError) -> Self {
-        match err {
+/// Error type for protobuf operations.
+#[derive(Debug, thiserror::Error)]
+#[error(transparent)]
+pub struct Error(#[from] pub(crate) ProtobufError);
+
+impl From<Error> for io::Error {
+    #[cold]
+    fn from(err: Error) -> Self {
+        match err.0 {
             ProtobufError::IoError(e) => e,
             ProtobufError::WireError(e) => {
                 io::Error::new(io::ErrorKind::InvalidData, ProtobufError::WireError(e))
@@ -76,5 +79,12 @@ impl From<ProtobufError> for io::Error {
             ),
             e => io::Error::new(io::ErrorKind::Other, Box::new(e)),
         }
+    }
+}
+
+impl From<io::Error> for Error {
+    #[cold]
+    fn from(err: io::Error) -> Self {
+        Error(ProtobufError::IoError(err))
     }
 }

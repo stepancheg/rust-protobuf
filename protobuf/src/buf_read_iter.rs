@@ -147,11 +147,11 @@ impl<'ignore> BufReadIter<'ignore> {
     pub(crate) fn push_limit(&mut self, limit: u64) -> ProtobufResult<u64> {
         let new_limit = match self.pos().checked_add(limit) {
             Some(new_limit) => new_limit,
-            None => return Err(ProtobufError::WireError(WireError::LimitOverflow)),
+            None => return Err(ProtobufError::WireError(WireError::LimitOverflow).into()),
         };
 
         if new_limit > self.limit {
-            return Err(ProtobufError::WireError(WireError::LimitIncrease));
+            return Err(ProtobufError::WireError(WireError::LimitIncrease).into());
         }
 
         let prev_limit = mem::replace(&mut self.limit, new_limit);
@@ -211,7 +211,7 @@ impl<'ignore> BufReadIter<'ignore> {
         if self.pos_within_buf == self.limit_within_buf {
             self.do_fill_buf()?;
             if self.remaining_in_buf_len() == 0 {
-                return Err(ProtobufError::WireError(WireError::UnexpectedEof));
+                return Err(ProtobufError::WireError(WireError::UnexpectedEof).into());
             }
         }
 
@@ -229,11 +229,11 @@ impl<'ignore> BufReadIter<'ignore> {
         if let InputSource::Bytes(bytes) = self.input_source {
             let end = match self.pos_within_buf.checked_add(len) {
                 Some(end) => end,
-                None => return Err(ProtobufError::WireError(WireError::UnexpectedEof)),
+                None => return Err(ProtobufError::WireError(WireError::UnexpectedEof).into()),
             };
 
             if end > self.limit_within_buf {
-                return Err(ProtobufError::WireError(WireError::UnexpectedEof));
+                return Err(ProtobufError::WireError(WireError::UnexpectedEof).into());
             }
 
             let r = bytes.slice(self.pos_within_buf..end);
@@ -288,7 +288,7 @@ impl<'ignore> BufReadIter<'ignore> {
 
     fn read_exact_slow(&mut self, buf: &mut [MaybeUninit<u8>]) -> ProtobufResult<()> {
         if self.bytes_until_limit() < buf.len() as u64 {
-            return Err(ProtobufError::WireError(WireError::UnexpectedEof));
+            return Err(ProtobufError::WireError(WireError::UnexpectedEof).into());
         }
 
         let consume = self.pos_within_buf;
@@ -303,7 +303,7 @@ impl<'ignore> BufReadIter<'ignore> {
                 buf_read.read_exact_uninit(buf)?;
             }
             _ => {
-                return Err(ProtobufError::WireError(WireError::UnexpectedEof));
+                return Err(ProtobufError::WireError(WireError::UnexpectedEof).into());
             }
         }
 
@@ -338,7 +338,7 @@ impl<'ignore> BufReadIter<'ignore> {
     ) -> ProtobufResult<()> {
         // TODO: also do some limits when reading from unlimited source
         if count as u64 > self.bytes_until_limit() {
-            return Err(ProtobufError::WireError(WireError::TruncatedMessage));
+            return Err(ProtobufError::WireError(WireError::TruncatedMessage).into());
         }
 
         target.clear();
@@ -358,7 +358,7 @@ impl<'ignore> BufReadIter<'ignore> {
                 let max = cmp::min(target.capacity() - target.len(), count - target.len());
                 let read = self.read_to_vec(target, max)?;
                 if read == 0 {
-                    return Err(ProtobufError::WireError(WireError::TruncatedMessage));
+                    return Err(ProtobufError::WireError(WireError::TruncatedMessage).into());
                 }
             }
         } else {

@@ -1,4 +1,5 @@
 use crate::descriptor::field_descriptor_proto::Type;
+use crate::error::ProtobufError;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectRepeatedMut;
@@ -7,7 +8,6 @@ use crate::reflect::RuntimeTypeBox;
 use crate::rt;
 use crate::wire_format::WireType;
 use crate::CodedInputStream;
-use crate::ProtobufError;
 use crate::ProtobufResult;
 
 /// Runtime type and protobuf type.
@@ -63,8 +63,8 @@ impl ProtobufTypeBox {
             (Type::TYPE_BYTES, RuntimeTypeBox::VecU8) => {}
             (Type::TYPE_MESSAGE, RuntimeTypeBox::Message(..)) => {}
             (Type::TYPE_ENUM, RuntimeTypeBox::Enum(..)) => {}
-            (Type::TYPE_GROUP, ..) => return Err(ProtobufError::GroupIsNotImplemented),
-            _ => return Err(ProtobufError::IncompatibleProtobufTypeAndRuntimeType),
+            (Type::TYPE_GROUP, ..) => return Err(ProtobufError::GroupIsNotImplemented.into()),
+            _ => return Err(ProtobufError::IncompatibleProtobufTypeAndRuntimeType.into()),
         }
         Ok(ProtobufTypeBox { runtime, t })
     }
@@ -100,7 +100,7 @@ impl ProtobufTypeBox {
                 }
                 _ => unreachable!(),
             },
-            Type::TYPE_GROUP => return Err(ProtobufError::GroupIsNotImplemented),
+            Type::TYPE_GROUP => return Err(ProtobufError::GroupIsNotImplemented.into()),
             Type::TYPE_MESSAGE => match &self.runtime {
                 RuntimeTypeBox::Message(m) => ReflectValueBox::Message(is.read_message_dyn(m)?),
                 _ => unreachable!(),
@@ -216,7 +216,7 @@ impl ProtobufTypeBox {
                     }
                     _ => unreachable!(),
                 },
-                Type::TYPE_GROUP => Err(ProtobufError::GroupIsNotImplemented),
+                Type::TYPE_GROUP => Err(ProtobufError::GroupIsNotImplemented.into()),
                 Type::TYPE_MESSAGE | Type::TYPE_STRING | Type::TYPE_BYTES => {
                     Err(rt::unexpected_wire_type(wire_type))
                 }

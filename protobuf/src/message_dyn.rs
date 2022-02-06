@@ -4,12 +4,12 @@ use std::fmt;
 use std::io::Write;
 
 use crate::coded_output_stream::WithCodedOutputStream;
+use crate::error::ProtobufError;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectEqMode;
 use crate::CodedInputStream;
 use crate::CodedOutputStream;
 use crate::Message;
-use crate::ProtobufError;
 use crate::ProtobufResult;
 use crate::UnknownFields;
 
@@ -71,9 +71,10 @@ impl dyn MessageDyn {
     /// Check if all required fields of this object are initialized.
     pub fn check_initialized_dyn(&self) -> ProtobufResult<()> {
         if !self.is_initialized_dyn() {
-            Err(ProtobufError::MessageNotInitialized(
-                self.descriptor_dyn().name().to_owned(),
-            ))
+            Err(
+                ProtobufError::MessageNotInitialized(self.descriptor_dyn().name().to_owned())
+                    .into(),
+            )
         } else {
             Ok(())
         }

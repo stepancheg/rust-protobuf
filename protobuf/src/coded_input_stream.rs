@@ -100,7 +100,7 @@ impl<'a> CodedInputStream<'a> {
     #[inline]
     pub(crate) fn incr_recursion(&mut self) -> ProtobufResult<()> {
         if self.recursion_level >= self.recursion_limit {
-            return Err(ProtobufError::WireError(WireError::OverRecursionLimit));
+            return Err(ProtobufError::WireError(WireError::OverRecursionLimit).into());
         }
         self.recursion_level += 1;
         Ok(())
@@ -164,7 +164,7 @@ impl<'a> CodedInputStream<'a> {
     pub fn check_eof(&mut self) -> ProtobufResult<()> {
         let eof = self.eof()?;
         if !eof {
-            return Err(ProtobufError::WireError(WireError::UnexpectedEof));
+            return Err(ProtobufError::WireError(WireError::UnexpectedEof).into());
         }
         Ok(())
     }
@@ -174,11 +174,11 @@ impl<'a> CodedInputStream<'a> {
         let mut i = 0;
         loop {
             if i == 10 {
-                return Err(ProtobufError::WireError(WireError::IncorrectVarint));
+                return Err(ProtobufError::WireError(WireError::IncorrectVarint).into());
             }
             let b = self.read_raw_byte()?;
             if i == 9 && (b & 0x7f) > 1 {
-                return Err(ProtobufError::WireError(WireError::IncorrectVarint));
+                return Err(ProtobufError::WireError(WireError::IncorrectVarint).into());
             }
             r = r | (((b & 0x7f) as u64) << (i * 7));
             i += 1;
@@ -215,7 +215,7 @@ impl<'a> CodedInputStream<'a> {
             let mut i: usize = 0;
             loop {
                 if i == 10 {
-                    return Err(ProtobufError::WireError(WireError::IncorrectVarint));
+                    return Err(ProtobufError::WireError(WireError::IncorrectVarint).into());
                 }
 
                 let b = if true {
@@ -226,7 +226,7 @@ impl<'a> CodedInputStream<'a> {
                 };
 
                 if i == 9 && (b & 0x7f) > 1 {
-                    return Err(ProtobufError::WireError(WireError::IncorrectVarint));
+                    return Err(ProtobufError::WireError(WireError::IncorrectVarint).into());
                 }
                 r = r | (((b & 0x7f) as u64) << (i as u64 * 7));
                 i += 1;
@@ -274,7 +274,7 @@ impl<'a> CodedInputStream<'a> {
         let v = self.read_raw_varint32()?;
         match wire_format::Tag::new(v) {
             Some(tag) => Ok(tag),
-            None => Err(ProtobufError::WireError(WireError::IncorrectTag(v))),
+            None => Err(ProtobufError::WireError(WireError::IncorrectTag(v)).into()),
         }
     }
 
@@ -360,7 +360,7 @@ impl<'a> CodedInputStream<'a> {
         let i = self.read_enum_value()?;
         match ProtobufEnum::from_i32(i) {
             Some(e) => Ok(e),
-            None => Err(ProtobufError::WireError(WireError::InvalidEnumValue(i))),
+            None => Err(ProtobufError::WireError(WireError::InvalidEnumValue(i)).into()),
         }
     }
 
@@ -538,9 +538,7 @@ impl<'a> CodedInputStream<'a> {
                 self.read_raw_bytes(len)
                     .map(|v| UnknownValue::LengthDelimited(v))
             }
-            _ => Err(ProtobufError::WireError(WireError::UnexpectedWireType(
-                wire_type,
-            ))),
+            _ => Err(ProtobufError::WireError(WireError::UnexpectedWireType(wire_type)).into()),
         }
     }
 
@@ -586,7 +584,7 @@ impl<'a> CodedInputStream<'a> {
     #[cfg(feature = "bytes")]
     pub fn read_carllerche_chars(&mut self) -> ProtobufResult<Chars> {
         let bytes = self.read_carllerche_bytes()?;
-        Ok(Chars::from_bytes(bytes)?)
+        Ok(Chars::from_bytes(bytes).map_err(ProtobufError::Utf8)?)
     }
 
     /// Read `bytes` field, length delimited
@@ -612,7 +610,7 @@ impl<'a> CodedInputStream<'a> {
 
         let s = match String::from_utf8(vec) {
             Ok(t) => t,
-            Err(_) => return Err(ProtobufError::WireError(WireError::Utf8Error)),
+            Err(_) => return Err(ProtobufError::WireError(WireError::Utf8Error).into()),
         };
         *target = s;
         Ok(())
@@ -685,6 +683,7 @@ mod test {
     use crate::error::ProtobufError;
     use crate::error::ProtobufResult;
     use crate::hex::decode_hex;
+    use crate::Error;
 
     fn test_read_partial<F>(hex: &str, mut callback: F)
     where
@@ -758,16 +757,14 @@ mod test {
         test_read_partial("ff ff ff ff ff ff ff ff ff ff 01", |reader| {
             let result = reader.read_raw_varint64();
             match result {
-                // TODO: make an enum variant
-                Err(ProtobufError::WireError(..)) => (),
+                Err(Error(ProtobufError::WireError(..))) => (),
                 _ => panic!(),
             }
         });
         test_read_partial("ff ff ff ff ff ff ff ff ff ff 01", |reader| {
             let result = reader.read_raw_varint32();
             match result {
-                // TODO: make an enum variant
-                Err(ProtobufError::WireError(..)) => (),
+                Err(Error(ProtobufError::WireError(..))) => (),
                 _ => panic!(),
             }
         });
@@ -778,7 +775,7 @@ mod test {
         test_read_partial("96 97", |reader| {
             let result = reader.read_raw_varint32();
             match result {
-                Err(ProtobufError::WireError(..)) => (),
+                Err(Error(ProtobufError::WireError(..))) => (),
                 _ => panic!(),
             }
         });
