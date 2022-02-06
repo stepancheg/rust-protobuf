@@ -2,7 +2,7 @@ use bytes::Bytes;
 use protobuf::Chars;
 use protobuf_test_common::*;
 
-use super::test_carllerche_bytes_pb::*;
+use super::test_tokio_bytes_pb::*;
 
 #[test]
 fn test() {
