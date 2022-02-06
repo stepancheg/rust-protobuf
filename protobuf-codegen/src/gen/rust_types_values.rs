@@ -561,10 +561,10 @@ pub(crate) fn type_name_to_rust_relative(
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum PrimitiveTypeVariant {
     Default,
-    Carllerche,
+    TokioBytes,
 }
 
-pub enum _CarllercheBytesType {
+pub enum _TokioBytesType {
     Bytes,
     Chars,
 }
@@ -587,19 +587,19 @@ impl ProtobufTypeGen {
             ),
             &ProtobufTypeGen::Primitive(
                 field_descriptor_proto::Type::TYPE_BYTES,
-                PrimitiveTypeVariant::Carllerche,
+                PrimitiveTypeVariant::TokioBytes,
             ) => format!(
                 "{}::reflect::types::ProtobufTypeCarllercheBytes",
                 protobuf_crate_path(customize)
             ),
             &ProtobufTypeGen::Primitive(
                 field_descriptor_proto::Type::TYPE_STRING,
-                PrimitiveTypeVariant::Carllerche,
+                PrimitiveTypeVariant::TokioBytes,
             ) => format!(
                 "{}::reflect::types::ProtobufTypeCarllercheChars",
                 protobuf_crate_path(customize)
             ),
-            &ProtobufTypeGen::Primitive(.., PrimitiveTypeVariant::Carllerche) => unreachable!(),
+            &ProtobufTypeGen::Primitive(.., PrimitiveTypeVariant::TokioBytes) => unreachable!(),
             &ProtobufTypeGen::Message(ref name) => format!(
                 "{}::reflect::types::ProtobufTypeMessage<{}>",
                 protobuf_crate_path(customize),

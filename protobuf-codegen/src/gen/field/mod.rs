@@ -52,7 +52,7 @@ impl FieldDescriptorProtoTypeExt for field_descriptor_proto::Type {
             field_descriptor_proto::Type::TYPE_ENUM => format!("{}.read_enum_or_unknown()", is),
             _ => match primitive_type_variant {
                 PrimitiveTypeVariant::Default => format!("{}.read_{}()", is, protobuf_name(*self)),
-                PrimitiveTypeVariant::Carllerche => {
+                PrimitiveTypeVariant::TokioBytes => {
                     let protobuf_name = match self {
                         field_descriptor_proto::Type::TYPE_STRING => "chars",
                         _ => protobuf_name(*self),
@@ -400,13 +400,13 @@ impl<'a> FieldElem<'a> {
             FieldElem::Primitive(t, PrimitiveTypeVariant::Default) => rust_name(t),
             FieldElem::Primitive(
                 field_descriptor_proto::Type::TYPE_STRING,
-                PrimitiveTypeVariant::Carllerche,
+                PrimitiveTypeVariant::TokioBytes,
             ) => RustType::Chars,
             FieldElem::Primitive(
                 field_descriptor_proto::Type::TYPE_BYTES,
-                PrimitiveTypeVariant::Carllerche,
+                PrimitiveTypeVariant::TokioBytes,
             ) => RustType::Bytes,
-            FieldElem::Primitive(.., PrimitiveTypeVariant::Carllerche) => unreachable!(),
+            FieldElem::Primitive(.., PrimitiveTypeVariant::TokioBytes) => unreachable!(),
             FieldElem::Group => RustType::Group,
             FieldElem::Message(ref m) => m.rust_type(reference),
             FieldElem::Enum(ref en) => en.enum_or_unknown_rust_type(reference),
@@ -486,20 +486,20 @@ fn field_elem<'a>(
             ),
         }
     } else if field.field.get_proto().has_field_type() {
-        let carllerche_for_bytes = customize.carllerche_bytes_for_bytes.unwrap_or(false);
-        let carllerche_for_string = customize.carllerche_bytes_for_string.unwrap_or(false);
+        let carllerche_for_bytes = customize.tokio_bytes_for_bytes.unwrap_or(false);
+        let carllerche_for_string = customize.tokio_bytes_for_string.unwrap_or(false);
 
         let elem = match field.field.get_proto().get_field_type() {
             field_descriptor_proto::Type::TYPE_STRING if carllerche_for_string => {
                 FieldElem::Primitive(
                     field_descriptor_proto::Type::TYPE_STRING,
-                    PrimitiveTypeVariant::Carllerche,
+                    PrimitiveTypeVariant::TokioBytes,
                 )
             }
             field_descriptor_proto::Type::TYPE_BYTES if carllerche_for_bytes => {
                 FieldElem::Primitive(
                     field_descriptor_proto::Type::TYPE_BYTES,
-                    PrimitiveTypeVariant::Carllerche,
+                    PrimitiveTypeVariant::TokioBytes,
                 )
             }
             t => FieldElem::Primitive(t, PrimitiveTypeVariant::Default),
@@ -1486,7 +1486,7 @@ impl<'a> FieldGen<'a> {
         w: &mut CodeWriter,
     ) {
         let carllerche = match r.elem.primitive_type_variant() {
-            PrimitiveTypeVariant::Carllerche => "carllerche_",
+            PrimitiveTypeVariant::TokioBytes => "carllerche_",
             PrimitiveTypeVariant::Default => "",
         };
         let type_name_for_fn = protobuf_name(self.proto_type);
@@ -1527,7 +1527,7 @@ impl<'a> FieldGen<'a> {
             _ => "into",
         };
         let carllerche = match s.elem.primitive_type_variant() {
-            PrimitiveTypeVariant::Carllerche => "carllerche_",
+            PrimitiveTypeVariant::TokioBytes => "carllerche_",
             PrimitiveTypeVariant::Default => "",
         };
         let type_name_for_fn = protobuf_name(self.proto_type);

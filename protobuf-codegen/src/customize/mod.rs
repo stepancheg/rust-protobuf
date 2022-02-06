@@ -101,9 +101,9 @@ pub struct Customize {
     /// When false, `get_` is not generated even if `syntax = "proto2"`
     pub(crate) generate_getter: Option<bool>,
     /// Use `bytes::Bytes` for `bytes` fields
-    pub(crate) carllerche_bytes_for_bytes: Option<bool>,
+    pub(crate) tokio_bytes_for_bytes: Option<bool>,
     /// Use `bytes::Bytes` for `string` fields
-    pub(crate) carllerche_bytes_for_string: Option<bool>,
+    pub(crate) tokio_bytes_for_string: Option<bool>,
     /// Enable lite runtime
     pub(crate) lite_runtime: Option<bool>,
     /// Generate `mod.rs` in the output directory.
@@ -152,13 +152,13 @@ impl Customize {
         self
     }
 
-    pub fn carllerche_bytes_for_bytes(mut self, carllerche_bytes_for_bytes: bool) -> Self {
-        self.carllerche_bytes_for_bytes = Some(carllerche_bytes_for_bytes);
+    pub fn tokio_bytes_for_bytes(mut self, carllerche_bytes_for_bytes: bool) -> Self {
+        self.tokio_bytes_for_bytes = Some(carllerche_bytes_for_bytes);
         self
     }
 
-    pub fn carllerche_bytes_for_string(mut self, carllerche_bytes_for_string: bool) -> Self {
-        self.carllerche_bytes_for_string = Some(carllerche_bytes_for_string);
+    pub fn tokio_bytes_for_string(mut self, carllerche_bytes_for_string: bool) -> Self {
+        self.tokio_bytes_for_string = Some(carllerche_bytes_for_string);
         self
     }
 
@@ -194,11 +194,11 @@ impl Customize {
         if let Some(v) = that.generate_getter {
             self.generate_getter = Some(v);
         }
-        if let Some(v) = that.carllerche_bytes_for_bytes {
-            self.carllerche_bytes_for_bytes = Some(v);
+        if let Some(v) = that.tokio_bytes_for_bytes {
+            self.tokio_bytes_for_bytes = Some(v);
         }
-        if let Some(v) = that.carllerche_bytes_for_string {
-            self.carllerche_bytes_for_string = Some(v);
+        if let Some(v) = that.tokio_bytes_for_string {
+            self.tokio_bytes_for_string = Some(v);
         }
         if let Some(v) = that.lite_runtime {
             self.lite_runtime = Some(v);
@@ -244,9 +244,9 @@ impl Customize {
             } else if n == "generate_getter" {
                 r.generate_getter = Some(parse_bool(v)?);
             } else if n == "carllerche_bytes_for_bytes" {
-                r.carllerche_bytes_for_bytes = Some(parse_bool(v)?);
+                r.tokio_bytes_for_bytes = Some(parse_bool(v)?);
             } else if n == "carllerche_bytes_for_string" {
-                r.carllerche_bytes_for_string = Some(parse_bool(v)?);
+                r.tokio_bytes_for_string = Some(parse_bool(v)?);
             } else if n == "lite_runtime" {
                 r.lite_runtime = Some(parse_bool(v)?);
             } else if n == "gen_mod_rs" {
