@@ -490,18 +490,14 @@ fn field_elem<'a>(
         let tokio_for_string = customize.tokio_bytes_for_string.unwrap_or(false);
 
         let elem = match field.field.get_proto().get_field_type() {
-            field_descriptor_proto::Type::TYPE_STRING if tokio_for_string => {
-                FieldElem::Primitive(
-                    field_descriptor_proto::Type::TYPE_STRING,
-                    PrimitiveTypeVariant::TokioBytes,
-                )
-            }
-            field_descriptor_proto::Type::TYPE_BYTES if tokio_for_bytes => {
-                FieldElem::Primitive(
-                    field_descriptor_proto::Type::TYPE_BYTES,
-                    PrimitiveTypeVariant::TokioBytes,
-                )
-            }
+            field_descriptor_proto::Type::TYPE_STRING if tokio_for_string => FieldElem::Primitive(
+                field_descriptor_proto::Type::TYPE_STRING,
+                PrimitiveTypeVariant::TokioBytes,
+            ),
+            field_descriptor_proto::Type::TYPE_BYTES if tokio_for_bytes => FieldElem::Primitive(
+                field_descriptor_proto::Type::TYPE_BYTES,
+                PrimitiveTypeVariant::TokioBytes,
+            ),
             t => FieldElem::Primitive(t, PrimitiveTypeVariant::Default),
         };
 
