@@ -92,8 +92,6 @@ pub struct Customize {
     /// Used internally to generate protos bundled in protobuf crate
     /// like `descriptor.proto`
     pub(crate) inside_protobuf: Option<bool>,
-    /// Dynamically alter generated code.
-    pub(crate) callback: Option<CustomizeCallbackHolder>,
 }
 
 #[derive(Debug)]
@@ -163,11 +161,6 @@ impl Customize {
 
     pub fn inside_protobuf(mut self, inside_protobuf: bool) -> Self {
         self.inside_protobuf = Some(inside_protobuf);
-        self
-    }
-
-    pub fn callback(mut self, callback: impl CustomizeCallback) -> Self {
-        self.callback = Some(CustomizeCallbackHolder(Rc::new(callback)));
         self
     }
 
@@ -282,7 +275,6 @@ pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customiz
     let gen_mod_rs = None;
     let inside_protobuf = None;
     let serde_rename_all = None;
-    let callback = None;
     Customize {
         expose_oneof,
         expose_fields,
@@ -296,7 +288,6 @@ pub fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customiz
         lite_runtime,
         gen_mod_rs,
         inside_protobuf,
-        callback,
     }
 }
 
@@ -321,7 +312,6 @@ pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
     let lite_runtime = None;
     let gen_mod_rs = None;
     let inside_protobuf = None;
-    let callback = None;
     Customize {
         expose_oneof,
         expose_fields,
@@ -335,7 +325,6 @@ pub fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
         lite_runtime,
         gen_mod_rs,
         inside_protobuf,
-        callback,
     }
 }
 
@@ -352,7 +341,6 @@ pub fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
     let gen_mod_rs = None;
     let inside_protobuf = None;
     let serde_rename_all = None;
-    let callback = None;
     Customize {
         expose_oneof,
         expose_fields,
@@ -366,6 +354,5 @@ pub fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
         lite_runtime,
         inside_protobuf,
         gen_mod_rs,
-        callback,
     }
 }
