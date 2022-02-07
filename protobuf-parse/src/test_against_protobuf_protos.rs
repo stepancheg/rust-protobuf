@@ -4,8 +4,9 @@ use std::fs;
 use std::io::Read;
 use std::path::Path;
 
-use crate::model;
 use anyhow::Context;
+
+use crate::model;
 
 fn parse_recursively(path: &Path) {
     assert!(path.exists());
@@ -21,7 +22,9 @@ fn parse_recursively(path: &Path) {
         }
     } else if file_name.ends_with(".proto") {
         // TODO
-        if file_name == "unittest_selfreferential_options.proto" || file_name == "unittest_custom_options.proto" {
+        if file_name == "unittest_selfreferential_options.proto"
+            || file_name == "unittest_custom_options.proto"
+        {
             return;
         }
 
