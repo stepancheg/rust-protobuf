@@ -10,8 +10,9 @@ use crate::ParsedAndTypechecked;
 #[derive(Default, Debug)]
 pub struct Parser {
     which_parser: WhichParser,
-    includes: Vec<PathBuf>,
-    inputs: Vec<PathBuf>,
+    pub(crate) includes: Vec<PathBuf>,
+    pub(crate) inputs: Vec<PathBuf>,
+    pub(crate) protoc: Option<PathBuf>,
 }
 
 impl Parser {
@@ -60,15 +61,19 @@ impl Parser {
         self
     }
 
+    /// Specify `protoc` path used for parsing. Ignored if `protoc` parser is used.
+    pub fn protoc_path(&mut self, protoc: &Path) -> &mut Self {
+        self.protoc = Some(protoc.to_owned());
+        self
+    }
+
     /// Parse `.proto` files and typecheck them using pure Rust parser of `protoc` command.
     pub fn parse_and_typecheck(&self) -> anyhow::Result<ParsedAndTypechecked> {
         match &self.which_parser {
             WhichParser::Pure => {
                 pure::parse_and_typecheck::parse_and_typecheck(&self.includes, &self.inputs)
             }
-            WhichParser::Protoc => {
-                protoc::parse_and_typecheck::parse_and_typecheck(&self.includes, &self.inputs)
-            }
+            WhichParser::Protoc => protoc::parse_and_typecheck::parse_and_typecheck(&self),
         }
     }
 }
