@@ -32,8 +32,8 @@ use crate::pure::model::ProtobufConstant;
 use crate::pure::model::ProtobufConstantMessage;
 use crate::pure::model::ProtobufOption;
 use crate::pure::model::ProtobufOptionName;
-use crate::pure::model::ProtobufOptionNameComponent;
 use crate::pure::model::ProtobufOptionNameExt;
+use crate::pure::model::ProtobufOptionNamePart;
 use crate::pure::model::Rule;
 use crate::pure::model::Service;
 use crate::pure::model::Syntax;
@@ -501,14 +501,14 @@ impl<'a> Parser<'a> {
         Ok(ProtobufIdent::from(self.tokenizer.next_ident()?))
     }
 
-    fn next_option_name_component(&mut self) -> anyhow::Result<ProtobufOptionNameComponent> {
+    fn next_option_name_component(&mut self) -> anyhow::Result<ProtobufOptionNamePart> {
         if self.tokenizer.next_symbol_if_eq('(')? {
             let comp = self.next_full_ident()?;
             self.tokenizer
                 .next_symbol_expect_eq(')', "option name component")?;
-            Ok(ProtobufOptionNameComponent::Ext(comp))
+            Ok(ProtobufOptionNamePart::Ext(comp))
         } else {
-            Ok(ProtobufOptionNameComponent::Direct(self.next_ident()?))
+            Ok(ProtobufOptionNamePart::Direct(self.next_ident()?))
         }
     }
 
@@ -521,7 +521,7 @@ impl<'a> Parser<'a> {
             components.push(self.next_option_name_component()?);
         }
         if components.len() == 1 {
-            if let ProtobufOptionNameComponent::Direct(n) = &components[0] {
+            if let ProtobufOptionNamePart::Direct(n) = &components[0] {
                 return Ok(ProtobufOptionName::Builtin(n.clone()));
             }
         }
