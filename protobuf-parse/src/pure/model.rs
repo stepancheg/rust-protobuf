@@ -343,10 +343,24 @@ pub(crate) struct Service {
     pub options: Vec<ProtobufOption>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub(crate) enum ProtobufConstantMessageFieldName {
+    Regular(String),
+    Extension(ProtobufPath),
+}
+
+impl fmt::Display for ProtobufConstantMessageFieldName {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            ProtobufConstantMessageFieldName::Regular(s) => write!(f, "{}", s),
+            ProtobufConstantMessageFieldName::Extension(p) => write!(f, "[{}]", p),
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Default)]
 pub(crate) struct ProtobufConstantMessage {
-    pub fields: LinkedHashMap<String, ProtobufConstant>,
-    pub extensions: LinkedHashMap<ProtobufPath, ProtobufConstant>,
+    pub(crate) fields: LinkedHashMap<ProtobufConstantMessageFieldName, ProtobufConstant>,
 }
 
 /// constant = fullIdent | ( [ "-" | "+" ] intLit ) | ( [ "-" | "+" ] floatLit ) |

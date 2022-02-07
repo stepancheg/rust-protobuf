@@ -9,6 +9,7 @@ use protobuf::text_format::lexer::Token;
 use protobuf::text_format::lexer::Tokenizer;
 use protobuf::text_format::lexer::TokenizerError;
 
+use crate::model::ProtobufConstantMessageFieldName;
 use crate::proto_path::ProtoPathBuf;
 use crate::protobuf_abs_path::ProtobufAbsPath;
 use crate::protobuf_ident::ProtobufIdent;
@@ -376,11 +377,13 @@ impl<'a> Parser<'a> {
                 self.tokenizer
                     .next_symbol_expect_eq(']', "message constant")?;
                 let v = self.next_field_value()?;
-                r.extensions.insert(n, v);
+                r.fields
+                    .insert(ProtobufConstantMessageFieldName::Extension(n), v);
             } else {
                 let n = self.tokenizer.next_ident()?;
                 let v = self.next_field_value()?;
-                r.fields.insert(n, v);
+                r.fields
+                    .insert(ProtobufConstantMessageFieldName::Regular(n), v);
             }
         }
         self.tokenizer

@@ -17,6 +17,7 @@ use protobuf::UnknownFields;
 use protobuf::UnknownValue;
 
 use crate::case_convert::camel_case;
+use crate::model::ProtobufConstantMessageFieldName;
 use crate::path::fs_path_to_proto_path;
 use crate::proto_path::ProtoPath;
 use crate::protobuf_abs_path::ProtobufAbsPath;
@@ -1284,21 +1285,25 @@ impl<'a> Resolver<'a> {
                     let m = self.find_message_by_abs_name(ma)?.t;
                     let mut unknown_fields = UnknownFields::new();
                     for (n, v) in &mo.fields {
-                        let f = match m.field_by_name(n.as_str()) {
-                            Some(f) => f,
-                            None => return Err(ConvertError::UnknownFieldName(n.clone())),
-                        };
-                        let u = self.option_value_field_to_unknown_value(
-                            ma,
-                            v,
-                            n,
-                            &f.typ,
-                            option_name_for_diag,
-                        )?;
-                        unknown_fields.add_value(f.number as u32, u);
-                    }
-                    for (_n, _v) in &mo.extensions {
-                        // TODO
+                        match n {
+                            ProtobufConstantMessageFieldName::Regular(n) => {
+                                let f = match m.field_by_name(n.as_str()) {
+                                    Some(f) => f,
+                                    None => return Err(ConvertError::UnknownFieldName(n.clone())),
+                                };
+                                let u = self.option_value_field_to_unknown_value(
+                                    ma,
+                                    v,
+                                    n,
+                                    &f.typ,
+                                    option_name_for_diag,
+                                )?;
+                                unknown_fields.add_value(f.number as u32, u);
+                            }
+                            ProtobufConstantMessageFieldName::Extension(..) => {
+                                // TODO: implement extension fields in constants
+                            }
+                        }
                     }
                     return Ok(UnknownValue::LengthDelimited(
                         unknown_fields.write_to_bytes(),
