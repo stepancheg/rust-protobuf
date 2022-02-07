@@ -1,0 +1,13 @@
+syntax = "proto2";
+
+package bug.repro;
+
+import "google/protobuf/descriptor.proto";
+
+extend google.protobuf.EnumValueOptions {
+    optional google.protobuf.FieldDescriptorProto.Type foo = 50000;
+}
+
+enum Demo {
+    Fizz = 1 [(foo) = TYPE_UINT64];
+}
