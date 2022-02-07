@@ -425,23 +425,24 @@ impl ProtobufConstant {
     }
 }
 
+/// Equivalent of `UninterpretedOption.NamePart`.
 #[derive(Debug, Clone, PartialEq)]
-pub(crate) enum ProtobufOptionNameComponent {
+pub(crate) enum ProtobufOptionNamePart {
     Direct(ProtobufIdent),
     Ext(ProtobufPath),
 }
 
-impl fmt::Display for ProtobufOptionNameComponent {
+impl fmt::Display for ProtobufOptionNamePart {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            ProtobufOptionNameComponent::Direct(n) => write!(f, "{}", n),
-            ProtobufOptionNameComponent::Ext(n) => write!(f, "({})", n),
+            ProtobufOptionNamePart::Direct(n) => write!(f, "{}", n),
+            ProtobufOptionNamePart::Ext(n) => write!(f, "({})", n),
         }
     }
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub(crate) struct ProtobufOptionNameExt(pub Vec<ProtobufOptionNameComponent>);
+pub(crate) struct ProtobufOptionNameExt(pub Vec<ProtobufOptionNamePart>);
 
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) enum ProtobufOptionName {

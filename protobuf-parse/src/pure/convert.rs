@@ -26,8 +26,8 @@ use crate::protobuf_rel_path::ProtobufRelPath;
 use crate::pure::model;
 use crate::pure::model::ProtobufConstant;
 use crate::pure::model::ProtobufOptionName;
-use crate::pure::model::ProtobufOptionNameComponent;
 use crate::pure::model::ProtobufOptionNameExt;
+use crate::pure::model::ProtobufOptionNamePart;
 use crate::FileDescriptorPair;
 use crate::ProtobufAbsPathRef;
 use crate::ProtobufIdentRef;
@@ -695,18 +695,16 @@ impl<'a> Resolver<'a> {
         &self,
         scope: &ProtobufAbsPathRef,
         message: &WithFullName<&DescriptorProto>,
-        field: &ProtobufOptionNameComponent,
+        field: &ProtobufOptionNamePart,
     ) -> ConvertResult<FieldDescriptorProto> {
         match field {
-            ProtobufOptionNameComponent::Direct(field) => {
+            ProtobufOptionNamePart::Direct(field) => {
                 match message.t.field.iter().find(|f| f.get_name() == field.get()) {
                     Some(field) => Ok(field.clone()),
                     None => Err(ConvertError::UnknownFieldName(field.to_string())),
                 }
             }
-            ProtobufOptionNameComponent::Ext(field) => {
-                self.ext_resolve_field_ext(scope, message, field)
-            }
+            ProtobufOptionNamePart::Ext(field) => self.ext_resolve_field_ext(scope, message, field),
         }
     }
 
@@ -715,8 +713,8 @@ impl<'a> Resolver<'a> {
         scope: &ProtobufAbsPathRef,
         options_type: &WithFullName<&DescriptorProto>,
         options: &mut UnknownFields,
-        option_name: &ProtobufOptionNameComponent,
-        option_name_rem: &[ProtobufOptionNameComponent],
+        option_name: &ProtobufOptionNamePart,
+        option_name_rem: &[ProtobufOptionNamePart],
         option_value: &ProtobufConstant,
     ) -> ConvertResult<()> {
         let field = self.ext_resolve_field(scope, options_type, option_name)?;
