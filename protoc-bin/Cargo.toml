@@ -14,7 +14,7 @@ doctest = false
 bench = false
 
 [dependencies]
-protoc-bin-vendored = "2.27.3"
+protoc-bin-vendored = "3.0.0"
 
 [package.metadata.docs.rs]
 all-features = true
