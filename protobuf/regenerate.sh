@@ -37,22 +37,6 @@ MSYS_NT*)
     ;;
 esac
 
-rm -rf ../proto/google
-mkdir -p ../proto/google/protobuf/compiler
-
-cp ../google-protobuf/src/google/protobuf/any.proto ../proto/google/protobuf/
-cp ../google-protobuf/src/google/protobuf/api.proto ../proto/google/protobuf/
-cp ../google-protobuf/src/google/protobuf/descriptor.proto ../proto/google/protobuf/
-cp ../google-protobuf/src/google/protobuf/duration.proto ../proto/google/protobuf/
-cp ../google-protobuf/src/google/protobuf/empty.proto ../proto/google/protobuf/
-cp ../google-protobuf/src/google/protobuf/field_mask.proto ../proto/google/protobuf/
-cp ../google-protobuf/src/google/protobuf/source_context.proto ../proto/google/protobuf/
-cp ../google-protobuf/src/google/protobuf/struct.proto ../proto/google/protobuf/
-cp ../google-protobuf/src/google/protobuf/timestamp.proto ../proto/google/protobuf/
-cp ../google-protobuf/src/google/protobuf/type.proto ../proto/google/protobuf/
-cp ../google-protobuf/src/google/protobuf/wrappers.proto ../proto/google/protobuf/
-cp ../google-protobuf/src/google/protobuf/compiler/plugin.proto ../proto/google/protobuf/compiler/
-
 "$PROTOC" \
     --plugin=protoc-gen-rust="$where_am_i/target/debug/protoc-gen-rust$exe_suffix" \
     --rust_out tmp-generated \
