@@ -43,7 +43,7 @@ fn assert_equal_recursively(a: &Path, b: &Path) {
 
 #[test]
 fn test_bundled_google_proto_files_consistent() {
-    let source = "../protoc-bin-vendored/include/google";
+    let source = "../proto/google";
     let our_copy = "src/proto/google";
     assert_equal_recursively(Path::new(source), Path::new(our_copy));
 }
