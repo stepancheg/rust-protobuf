@@ -376,7 +376,7 @@ impl<'a> Parser<'a> {
                 self.tokenizer
                     .next_symbol_expect_eq(']', "message constant")?;
                 let v = self.next_message_constant()?;
-                r.extensions.insert(format!("{}", n), v);
+                r.extensions.insert(n, v);
             } else {
                 let n = self.tokenizer.next_ident()?;
                 let v = if self.tokenizer.next_symbol_if_eq(':')? {

@@ -346,7 +346,7 @@ pub(crate) struct Service {
 #[derive(Debug, Clone, PartialEq, Default)]
 pub(crate) struct ProtobufConstantMessage {
     pub fields: LinkedHashMap<String, ProtobufConstant>,
-    pub extensions: LinkedHashMap<String, ProtobufConstantMessage>,
+    pub extensions: LinkedHashMap<ProtobufPath, ProtobufConstantMessage>,
 }
 
 /// constant = fullIdent | ( [ "-" | "+" ] intLit ) | ( [ "-" | "+" ] floatLit ) |
