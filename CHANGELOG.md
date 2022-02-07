@@ -72,6 +72,8 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 ## [2.27] - Unreleased
 
+- `protoc-bin-vendored` now lives in a [separate repository](https://github.com/stepancheg/rust-protoc-bin-vendored)
+
 ## [2.27.1] - 2022-02-05
 
 - Min rust version bumped back to 1.52.1
