@@ -1,8 +1,3 @@
-use std::path::PathBuf;
-
-use crate::protoc;
-use crate::pure;
-use crate::which_parser::WhichParser;
 use crate::ProtoPathBuf;
 
 /// Result of parsing `.proto` files.
@@ -14,24 +9,12 @@ pub struct ParsedAndTypechecked {
     pub file_descriptors: Vec<protobuf::descriptor::FileDescriptorProto>,
 }
 
-/// Parse `.proto` files and typecheck them using pure Rust parser of `protoc` command.
-pub(crate) fn parse_and_typecheck(
-    which_parser: WhichParser,
-    includes: &[PathBuf],
-    input: &[PathBuf],
-) -> anyhow::Result<ParsedAndTypechecked> {
-    match which_parser {
-        WhichParser::Pure => pure::parse_and_typecheck::parse_and_typecheck(includes, input),
-        WhichParser::Protoc => protoc::parse_and_typecheck::parse_and_typecheck(includes, input),
-    }
-}
-
 #[cfg(test)]
 mod test {
     use std::collections::HashSet;
     use std::fs;
 
-    use crate::which_parser::WhichParser;
+    use crate::Parser;
 
     #[test]
     fn parse_and_typecheck() {
@@ -45,18 +28,18 @@ mod test {
         )
         .unwrap();
 
-        let pure = super::parse_and_typecheck(
-            WhichParser::Pure,
-            &[dir.path().to_path_buf()],
-            &[b_proto.clone()],
-        )
-        .unwrap();
-        let protoc = super::parse_and_typecheck(
-            WhichParser::Protoc,
-            &[dir.path().to_path_buf()],
-            &[b_proto.clone()],
-        )
-        .unwrap();
+        let pure = Parser::new()
+            .pure()
+            .include(dir.path())
+            .input(&b_proto)
+            .parse_and_typecheck()
+            .unwrap();
+        let protoc = Parser::new()
+            .protoc()
+            .include(dir.path())
+            .input(&b_proto)
+            .parse_and_typecheck()
+            .unwrap();
 
         assert_eq!(pure.relative_paths, protoc.relative_paths);
         assert_eq!(2, pure.file_descriptors.len());

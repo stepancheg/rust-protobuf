@@ -1,7 +1,8 @@
 use std::path::Path;
 use std::path::PathBuf;
 
-use crate::parse_and_typecheck;
+use crate::protoc;
+use crate::pure;
 use crate::which_parser::WhichParser;
 use crate::ParsedAndTypechecked;
 
@@ -59,8 +60,15 @@ impl Parser {
         self
     }
 
-    /// Do the parsing.
+    /// Parse `.proto` files and typecheck them using pure Rust parser of `protoc` command.
     pub fn parse_and_typecheck(&self) -> anyhow::Result<ParsedAndTypechecked> {
-        parse_and_typecheck(self.which_parser, &self.includes, &self.inputs)
+        match &self.which_parser {
+            WhichParser::Pure => {
+                pure::parse_and_typecheck::parse_and_typecheck(&self.includes, &self.inputs)
+            }
+            WhichParser::Protoc => {
+                protoc::parse_and_typecheck::parse_and_typecheck(&self.includes, &self.inputs)
+            }
+        }
     }
 }
