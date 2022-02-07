@@ -201,11 +201,15 @@ impl MessageBodyParseMode {
                 | MessageBodyParseMode::ExtendProto3 => true,
                 MessageBodyParseMode::Oneof => false,
             },
-            Rule::Optional | Rule::Required => match *self {
+            Rule::Optional => match *self {
                 MessageBodyParseMode::MessageProto2 | MessageBodyParseMode::ExtendProto2 => true,
-                MessageBodyParseMode::MessageProto3
-                | MessageBodyParseMode::ExtendProto3
-                | MessageBodyParseMode::Oneof => false,
+                MessageBodyParseMode::MessageProto3 | MessageBodyParseMode::ExtendProto3 => true,
+                MessageBodyParseMode::Oneof => false,
+            },
+            Rule::Required => match *self {
+                MessageBodyParseMode::MessageProto2 | MessageBodyParseMode::ExtendProto2 => true,
+                MessageBodyParseMode::MessageProto3 | MessageBodyParseMode::ExtendProto3 => false,
+                MessageBodyParseMode::Oneof => false,
             },
         }
     }

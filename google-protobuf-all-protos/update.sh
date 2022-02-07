@@ -8,7 +8,7 @@ rm -rf protobuf protobuf-git
 
 mkdir protobuf
 
-git clone --branch v3.5.2 --depth 1 https://github.com/google/protobuf/ protobuf-git
+git clone --branch v3.19.4 --depth 1 https://github.com/google/protobuf/ protobuf-git
 
 rsync -r --include='*.proto' --include='*/' --exclude='*' --prune-empty-dirs protobuf-git protobuf
 
