@@ -3,6 +3,7 @@ use std::io::Read;
 use std::process;
 
 use protobuf_codegen::Codegen;
+use protobuf_codegen::Customize;
 
 fn generate_protos() {
     Codegen::new()
@@ -10,6 +11,7 @@ fn generate_protos() {
         .out_dir("src")
         .input("src/messages.proto")
         .includes(&["src", "../../proto"])
+        .customize(Customize::default().gen_mod_rs(false))
         .run_from_script();
 }
 
