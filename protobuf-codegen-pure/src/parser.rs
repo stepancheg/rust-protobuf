@@ -726,9 +726,9 @@ impl MessageBodyParseMode {
             },
             Rule::Optional | Rule::Required => match *self {
                 MessageBodyParseMode::MessageProto2 | MessageBodyParseMode::ExtendProto2 => true,
-                MessageBodyParseMode::MessageProto3
-                | MessageBodyParseMode::ExtendProto3
-                | MessageBodyParseMode::Oneof => false,
+                // TODO: actually use them, not just ignore
+                MessageBodyParseMode::MessageProto3 | MessageBodyParseMode::ExtendProto3 => true,
+                MessageBodyParseMode::Oneof => false,
             },
         }
     }
