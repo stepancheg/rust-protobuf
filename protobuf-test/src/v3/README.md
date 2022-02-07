@@ -1,1 +1,1 @@
-Tests for codegen with `syntax = "proto2"`.
+Tests for codegen with `syntax = "proto3"`.
