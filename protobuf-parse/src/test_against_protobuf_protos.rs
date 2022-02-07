@@ -21,11 +21,6 @@ fn parse_recursively(path: &Path) {
             parse_recursively(&entry.expect("entry").path());
         }
     } else if file_name.ends_with(".proto") {
-        // TODO
-        if file_name == "unittest_custom_options.proto" {
-            return;
-        }
-
         println!("checking {}", path.display());
         let mut content = String::new();
         fs::File::open(path)

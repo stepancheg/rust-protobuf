@@ -9,6 +9,7 @@ use protobuf::text_format::lexer::Token;
 use protobuf::text_format::lexer::Tokenizer;
 use protobuf::text_format::lexer::TokenizerError;
 
+use crate::model::AnyTypeUrl;
 use crate::model::ProtobufConstantMessageFieldName;
 use crate::proto_path::ProtoPathBuf;
 use crate::protobuf_abs_path::ProtobufAbsPath;
@@ -372,9 +373,20 @@ impl<'a> Parser<'a> {
     ) -> anyhow::Result<ProtobufConstantMessageFieldName> {
         if self.tokenizer.next_symbol_if_eq('[')? {
             let n = self.next_full_ident()?;
-            self.tokenizer
-                .next_symbol_expect_eq(']', "message constant")?;
-            Ok(ProtobufConstantMessageFieldName::Extension(n))
+            if self.tokenizer.next_symbol_if_eq('/')? {
+                let prefix = format!("{}", n);
+                let full_type_name = self.next_full_ident()?;
+                self.tokenizer
+                    .next_symbol_expect_eq(']', "message constant")?;
+                Ok(ProtobufConstantMessageFieldName::AnyTypeUrl(AnyTypeUrl {
+                    prefix,
+                    full_type_name,
+                }))
+            } else {
+                self.tokenizer
+                    .next_symbol_expect_eq(']', "message constant")?;
+                Ok(ProtobufConstantMessageFieldName::Extension(n))
+            }
         } else {
             let n = self.tokenizer.next_ident()?;
             Ok(ProtobufConstantMessageFieldName::Regular(n))

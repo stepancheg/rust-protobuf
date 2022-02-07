@@ -344,9 +344,22 @@ pub(crate) struct Service {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub(crate) struct AnyTypeUrl {
+    pub(crate) prefix: String,
+    pub(crate) full_type_name: ProtobufPath,
+}
+
+impl fmt::Display for AnyTypeUrl {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}/{}", self.prefix, self.full_type_name)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub(crate) enum ProtobufConstantMessageFieldName {
     Regular(String),
     Extension(ProtobufPath),
+    AnyTypeUrl(AnyTypeUrl),
 }
 
 impl fmt::Display for ProtobufConstantMessageFieldName {
@@ -354,6 +367,7 @@ impl fmt::Display for ProtobufConstantMessageFieldName {
         match self {
             ProtobufConstantMessageFieldName::Regular(s) => write!(f, "{}", s),
             ProtobufConstantMessageFieldName::Extension(p) => write!(f, "[{}]", p),
+            ProtobufConstantMessageFieldName::AnyTypeUrl(a) => write!(f, "[{}]", a),
         }
     }
 }

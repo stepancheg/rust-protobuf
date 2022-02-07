@@ -1303,6 +1303,9 @@ impl<'a> Resolver<'a> {
                             ProtobufConstantMessageFieldName::Extension(..) => {
                                 // TODO: implement extension fields in constants
                             }
+                            ProtobufConstantMessageFieldName::AnyTypeUrl(..) => {
+                                // TODO: implement any type url in constants
+                            }
                         }
                     }
                     return Ok(UnknownValue::LengthDelimited(
