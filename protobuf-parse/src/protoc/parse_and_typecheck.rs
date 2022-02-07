@@ -5,12 +5,12 @@ use protobuf::descriptor::FileDescriptorSet;
 use protobuf::Message;
 use protoc::Protoc;
 
-use crate::pure::path_to_proto_path;
 use crate::ParsedAndTypechecked;
 use crate::ProtoPathBuf;
+use crate::pure::parse_and_typecheck::path_to_proto_path;
 
 /// Parse `.proto` files using `protoc` command.
-pub fn parse_and_typecheck(
+pub(crate) fn parse_and_typecheck(
     includes: &[PathBuf],
     input: &[PathBuf],
 ) -> anyhow::Result<ParsedAndTypechecked> {

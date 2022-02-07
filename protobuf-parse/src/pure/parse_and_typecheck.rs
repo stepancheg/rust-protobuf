@@ -274,7 +274,7 @@ pub fn parse_and_typecheck(
     })
 }
 
-#[doc(hidden)]
+/// TODO: this API is to be refactored.
 pub fn parse_and_typecheck_custom(
     input: &[ProtoPathBuf],
     resolver: impl ProtoPathResolver,

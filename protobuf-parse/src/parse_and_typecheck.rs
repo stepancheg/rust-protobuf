@@ -21,8 +21,8 @@ pub(crate) fn parse_and_typecheck(
     input: &[PathBuf],
 ) -> anyhow::Result<ParsedAndTypechecked> {
     match which_parser {
-        WhichParser::Pure => pure::parse_and_typecheck(includes, input),
-        WhichParser::Protoc => protoc::parse_and_typecheck(includes, input),
+        WhichParser::Pure => pure::parse_and_typecheck::parse_and_typecheck(includes, input),
+        WhichParser::Protoc => protoc::parse_and_typecheck::parse_and_typecheck(includes, input),
     }
 }
 
