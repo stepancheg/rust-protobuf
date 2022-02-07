@@ -375,15 +375,11 @@ impl<'a> Parser<'a> {
                 let n = self.next_full_ident()?;
                 self.tokenizer
                     .next_symbol_expect_eq(']', "message constant")?;
-                let v = self.next_message_constant()?;
+                let v = self.next_field_value()?;
                 r.extensions.insert(n, v);
             } else {
                 let n = self.tokenizer.next_ident()?;
-                let v = if self.tokenizer.next_symbol_if_eq(':')? {
-                    self.next_constant()?
-                } else {
-                    ProtobufConstant::Message(self.next_message_constant()?)
-                };
+                let v = self.next_field_value()?;
                 r.fields.insert(n, v);
             }
         }
@@ -430,6 +426,15 @@ impl<'a> Parser<'a> {
         }
 
         Err(ParserError::ExpectConstant.into())
+    }
+
+    fn next_field_value(&mut self) -> anyhow::Result<ProtobufConstant> {
+        if self.tokenizer.next_symbol_if_eq(':')? {
+            // Colon is optional when reading message constant.
+            self.next_constant()
+        } else {
+            Ok(ProtobufConstant::Message(self.next_message_constant()?))
+        }
     }
 
     fn next_int_lit(&mut self) -> anyhow::Result<u64> {

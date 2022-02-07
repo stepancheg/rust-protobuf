@@ -22,9 +22,7 @@ fn parse_recursively(path: &Path) {
         }
     } else if file_name.ends_with(".proto") {
         // TODO
-        if file_name == "unittest_selfreferential_options.proto"
-            || file_name == "unittest_custom_options.proto"
-        {
+        if file_name == "unittest_custom_options.proto" {
             return;
         }
 
