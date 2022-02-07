@@ -2,7 +2,7 @@
 
 # Update bundled .proto files
 
-cd $(pwd)
+cd "$(pwd)"
 
 rm -rf google
 mkdir -p google/protobuf/compiler
