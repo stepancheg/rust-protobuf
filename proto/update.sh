@@ -17,4 +17,7 @@ test -n "$PROTOBUF_INCLUDE"
 rm -rf google
 cp -r "$PROTOBUF_INCLUDE/google" google
 
+cp -r "$PROTOBUF_INCLUDE/google" ../protobuf-parse/src/proto/
+cp -r "rustproto.proto" ../protobuf-parse/src/proto/
+
 # vim: set ts=4 sw=4 et:
