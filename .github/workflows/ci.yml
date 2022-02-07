@@ -379,9 +379,6 @@ jobs:
             - name: sync-readme protoc
               run: cd protoc && cargo sync-readme --check
               shell: bash
-            - name: sync-readme protoc-bin-vendored
-              run: cd protoc-bin-vendored && cargo sync-readme --check
-              shell: bash
             - name: sync-readme protoc-rust
               run: cd protoc-rust && cargo sync-readme --check
               shell: bash
