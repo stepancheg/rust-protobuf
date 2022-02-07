@@ -16,9 +16,11 @@ case "$protoc_ver" in
 esac
 
 cargo build --manifest-path=../protobuf-codegen/Cargo.toml
-cargo build --manifest-path=../protoc-bin/Cargo.toml --bin protoc-bin-which
+cargo build --manifest-path=../protoc-bin/Cargo.toml --bin protoc-bin-print-paths
 
-PROTOC=$(cargo run --manifest-path=../protoc-bin/Cargo.toml --bin protoc-bin-which)
+eval "$(cargo run --manifest-path=../protoc-bin/Cargo.toml --bin protoc-bin-print-paths)"
+
+test -n "$PROTOC"
 
 where_am_i=$(
     cd ..
