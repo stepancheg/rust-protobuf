@@ -1,11 +1,5 @@
 # Contributing to rust-protobuf
 
-## Code of conduct
-
-You are welcome to contribute code of conduct.
-
-Meanwhile, please be polite to everyone.
-
 ## I just want to ask a question
 
 Feel free to open an issue to ask a question, the volume of questions is low,
@@ -41,14 +35,6 @@ This can be done by invoking a script `protobuf/regenerate.sh`.
 ## Performance improvements
 
 Are always welcome, especially if they are backward-compatible.
-
-## API changes, generated code changes
-
-There are tons 
-
-## What if I just want to do something useful
-
-Some issues in the tracker are marked with 
 
 ## Help wanted
 
