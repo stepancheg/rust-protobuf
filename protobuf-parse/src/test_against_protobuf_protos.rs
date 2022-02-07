@@ -7,6 +7,8 @@ use std::path::Path;
 use crate::model;
 
 fn parse_recursively(path: &Path) {
+    assert!(path.exists());
+
     let file_name = path
         .file_name()
         .expect("file_name")
