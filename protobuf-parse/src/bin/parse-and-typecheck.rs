@@ -25,7 +25,12 @@ fn main() {
 
     assert!(args.len() >= 2);
     let (input, includes) = args.split_at(1);
-    let t = Parser::new().pure().includes(includes).inputs(input).parse_and_typecheck().expect("parse_and_typecheck");
+    let t = Parser::new()
+        .pure()
+        .includes(includes)
+        .inputs(input)
+        .parse_and_typecheck()
+        .expect("parse_and_typecheck");
     for fd in t.file_descriptors {
         println!("{:#?}", fd);
     }

@@ -1,5 +1,5 @@
-use protobuf_parse::Parser;
 use protobuf_parse::ParsedAndTypechecked;
+use protobuf_parse::Parser;
 
 use crate::codegen::Codegen;
 
