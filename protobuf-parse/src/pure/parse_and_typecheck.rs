@@ -15,6 +15,7 @@ use crate::proto_path::ProtoPathBuf;
 use crate::pure::convert;
 use crate::pure::model;
 use crate::FileDescriptorPair;
+use crate::Parser;
 
 #[derive(Debug, thiserror::Error)]
 enum ParseAndTypeckError {
@@ -236,18 +237,16 @@ fn fs_resolver(includes: &[PathBuf]) -> impl ProtoPathResolver {
 }
 
 /// Parse `.proto` files using pure Rust implementation.
-pub fn parse_and_typecheck(
-    includes: &[PathBuf],
-    input: &[PathBuf],
-) -> anyhow::Result<ParsedAndTypechecked> {
+pub fn parse_and_typecheck(parser: &Parser) -> anyhow::Result<ParsedAndTypechecked> {
     let mut run = Run {
         parsed_files: LinkedHashMap::new(),
-        resolver: fs_resolver(includes),
+        resolver: fs_resolver(&parser.includes),
     };
 
-    let relative_paths = input
+    let relative_paths = parser
+        .inputs
         .iter()
-        .map(|input| Ok((path_to_proto_path(input, includes)?, input)))
+        .map(|input| Ok((path_to_proto_path(input, &parser.includes)?, input)))
         .collect::<anyhow::Result<Vec<_>>>()?;
 
     for (proto_path, path) in &relative_paths {
