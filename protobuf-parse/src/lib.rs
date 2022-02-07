@@ -13,6 +13,7 @@
 mod case_convert;
 mod linked_hash_map;
 mod parse_and_typecheck;
+mod parser;
 mod path;
 mod proto;
 mod proto_path;
@@ -30,11 +31,11 @@ mod which_parser;
 // Non-public API used by codegen crate.
 pub use case_convert::*;
 pub use parse_and_typecheck::*;
+pub use parser::Parser;
 pub use proto_path::*;
 pub use protobuf_abs_path::*;
 pub use protobuf_ident::*;
 pub use protobuf_rel_path::*;
-pub use which_parser::*;
 
 use crate::pure::model;
 

@@ -21,9 +21,6 @@ use protobuf::descriptor::ServiceDescriptorProto;
 use protobuf::text_format::lexer::float::parse_protobuf_float;
 use protobuf::Message;
 use protobuf_codegen::Codegen;
-use protobuf_parse::parse_and_typecheck;
-use protobuf_parse::pure;
-use protobuf_parse::WhichParser;
 use protobuf_test_common::build::copy_tests_v2_v3;
 use protobuf_test_common::build::glob_simple;
 use regex::Regex;
@@ -122,7 +119,12 @@ fn protoc_descriptor_set(includes: &[PathBuf], inputs: &[PathBuf]) -> FileDescri
 
 // TODO: expose this utility from protobuf-codegen-pure crate.
 fn pure_descriptor_set(includes: &[PathBuf], inputs: &[PathBuf]) -> FileDescriptorSet {
-    let mut codegen = parse_and_typecheck(WhichParser::Pure, includes, inputs).unwrap();
+    let mut codegen = protobuf_parse::Parser::new()
+        .pure()
+        .includes(includes)
+        .inputs(inputs)
+        .parse_and_typecheck()
+        .unwrap();
     let relative_paths: HashSet<_> = codegen
         .relative_paths
         .iter()

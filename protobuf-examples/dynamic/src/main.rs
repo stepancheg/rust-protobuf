@@ -3,7 +3,6 @@ use std::fs;
 use protobuf::descriptor::FileDescriptorProto;
 use protobuf::reflect::FileDescriptor;
 use protobuf::reflect::ReflectValueBox;
-use protobuf_parse::WhichParser;
 
 fn main() {
     // Here we define `.proto` file source, we are not generating rust sources for it.
@@ -17,13 +16,13 @@ fn main() {
     // Parse text `.proto` file to `FileDescriptorProto` message.
     // Note this API is not stable and subject to change.
     // But binary protos can always be generated manually with `protoc` command.
-    let mut file_descriptor_protos = protobuf_parse::parse_and_typecheck(
-        WhichParser::Pure,
-        &[temp_dir.path().to_path_buf()],
-        &[tempfile],
-    )
-    .unwrap()
-    .file_descriptors;
+    let mut file_descriptor_protos = protobuf_parse::Parser::new()
+        .pure()
+        .includes(&[temp_dir.path().to_path_buf()])
+        .input(&tempfile)
+        .parse_and_typecheck()
+        .unwrap()
+        .file_descriptors;
     assert_eq!(1, file_descriptor_protos.len());
 
     // This is our .proto file converted to `FileDescriptorProto` from `descriptor.proto`.

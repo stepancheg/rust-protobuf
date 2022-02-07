@@ -2,8 +2,8 @@ use std::path::PathBuf;
 
 use crate::protoc;
 use crate::pure;
+use crate::which_parser::WhichParser;
 use crate::ProtoPathBuf;
-use crate::WhichParser;
 
 /// Result of parsing `.proto` files.
 #[doc(hidden)]
@@ -15,7 +15,7 @@ pub struct ParsedAndTypechecked {
 }
 
 /// Parse `.proto` files and typecheck them using pure Rust parser of `protoc` command.
-pub fn parse_and_typecheck(
+pub(crate) fn parse_and_typecheck(
     which_parser: WhichParser,
     includes: &[PathBuf],
     input: &[PathBuf],
@@ -31,7 +31,7 @@ mod test {
     use std::collections::HashSet;
     use std::fs;
 
-    use crate::WhichParser;
+    use crate::which_parser::WhichParser;
 
     #[test]
     fn parse_and_typecheck() {
