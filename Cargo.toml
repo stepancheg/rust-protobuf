@@ -1,7 +1,7 @@
 [workspace]
 members = [
     "protoc",
-    "protoc-bin-vendored",
+    "protoc-bin",
     # Exclude test-protoc from the project, because it depends on binary
     #"protoc/test-protoc",
     "protobuf",

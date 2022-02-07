@@ -15,13 +15,15 @@ proto3 = []
 with-bytes = ["bytes", "protobuf/with-bytes", "protobuf-test-common/with-bytes"]
 
 [build-dependencies]
-protoc      = { path = "../protoc" }
-protobuf-codegen = { path = "../protobuf-codegen" }
-protobuf-test-common = { path = "../protobuf-test-common" }
 glob        = "0.2"
 log         = "0.*"
 env_logger  = "0.5.*"
-protoc-bin-vendored = { path = "../protoc-bin-vendored" }
+
+protoc-bin-vendored = "2.27.3"
+
+protoc      = { path = "../protoc" }
+protobuf-codegen = { path = "../protobuf-codegen" }
+protobuf-test-common = { path = "../protobuf-test-common" }
 
 [dependencies]
 protobuf-test-common = { path = "../protobuf-test-common" }

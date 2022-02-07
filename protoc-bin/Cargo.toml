@@ -1,0 +1,20 @@
+[package]
+name = "protoc-bin"
+version = "0.0.0"
+authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
+license = "MIT"
+homepage = "https://github.com/stepancheg/rust-protobuf/"
+repository = "https://github.com/stepancheg/rust-protobuf/"
+description = """
+Internal crate to rust-protobuf
+"""
+
+[lib]
+doctest = false
+bench = false
+
+[dependencies]
+protoc-bin-vendored = "2.27.3"
+
+[package.metadata.docs.rs]
+all-features = true

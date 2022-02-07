@@ -1,6 +1,6 @@
 #!/bin/sh -ex
 
-cd $(dirname $0)
+cd "$(dirname "$0")"
 
 die() {
     echo "$@" >&2
@@ -16,9 +16,9 @@ case "$protoc_ver" in
 esac
 
 cargo build --manifest-path=../protobuf-codegen/Cargo.toml
-cargo build --manifest-path=../protoc-bin-vendored/Cargo.toml --bin protoc-bin-which
+cargo build --manifest-path=../protoc-bin/Cargo.toml --bin protoc-bin-which
 
-PROTOC=$(cargo run --manifest-path=../protoc-bin-vendored/Cargo.toml --bin protoc-bin-which)
+PROTOC=$(cargo run --manifest-path=../protoc-bin/Cargo.toml --bin protoc-bin-which)
 
 where_am_i=$(
     cd ..
@@ -42,9 +42,8 @@ esac
     --rust_out tmp-generated \
     --rust_opt 'inside_protobuf=true gen_mod_rs=false' \
     -I../proto \
-    -I../protoc-bin-vendored/include \
-    ../protoc-bin-vendored/include/google/protobuf/*.proto \
-    ../protoc-bin-vendored/include/google/protobuf/compiler/* \
+    ../proto/google/protobuf/*.proto \
+    ../proto/google/protobuf/compiler/*.proto \
     ../proto/rustproto.proto \
     ../proto/doctest_pb.proto
 

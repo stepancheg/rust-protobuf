@@ -14,9 +14,10 @@ doctest = false
 tempfile = "3"
 regex = "1.3.9"
 
+protoc-bin-vendored = "2.27.3"
+
 protobuf = { path = "../protobuf" }
 protobuf-codegen = { path = "../protobuf-codegen" }
 protobuf-test-common = { path = "../protobuf-test-common" }
 protoc = { path = "../protoc" }
-protoc-bin-vendored = { path = "../protoc-bin-vendored" }
 protobuf-parse = { path = "../protobuf-parse" }
