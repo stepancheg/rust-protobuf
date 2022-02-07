@@ -367,24 +367,28 @@ impl<'a> Parser<'a> {
             .next_token_check_map(|token| Ok(token.to_num_lit()?))
     }
 
+    fn next_message_constant_field_name(
+        &mut self,
+    ) -> anyhow::Result<ProtobufConstantMessageFieldName> {
+        if self.tokenizer.next_symbol_if_eq('[')? {
+            let n = self.next_full_ident()?;
+            self.tokenizer
+                .next_symbol_expect_eq(']', "message constant")?;
+            Ok(ProtobufConstantMessageFieldName::Extension(n))
+        } else {
+            let n = self.tokenizer.next_ident()?;
+            Ok(ProtobufConstantMessageFieldName::Regular(n))
+        }
+    }
+
     fn next_message_constant(&mut self) -> anyhow::Result<ProtobufConstantMessage> {
         let mut r = ProtobufConstantMessage::default();
         self.tokenizer
             .next_symbol_expect_eq('{', "message constant")?;
         while !self.tokenizer.lookahead_is_symbol('}')? {
-            if self.tokenizer.next_symbol_if_eq('[')? {
-                let n = self.next_full_ident()?;
-                self.tokenizer
-                    .next_symbol_expect_eq(']', "message constant")?;
-                let v = self.next_field_value()?;
-                r.fields
-                    .insert(ProtobufConstantMessageFieldName::Extension(n), v);
-            } else {
-                let n = self.tokenizer.next_ident()?;
-                let v = self.next_field_value()?;
-                r.fields
-                    .insert(ProtobufConstantMessageFieldName::Regular(n), v);
-            }
+            let n = self.next_message_constant_field_name()?;
+            let v = self.next_field_value()?;
+            r.fields.insert(n, v);
         }
         self.tokenizer
             .next_symbol_expect_eq('}', "message constant")?;
