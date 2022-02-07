@@ -1,8 +1,8 @@
 use protobuf::descriptor::FileDescriptorProto;
 
-use crate::parser::ParserErrorWithLocation;
 use crate::pure::convert::populate_dependencies;
 use crate::pure::model;
+use crate::pure::parser::ParserErrorWithLocation;
 
 /// Parse imports from a `.proto` file.
 ///

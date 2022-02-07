@@ -13,7 +13,6 @@
 mod case_convert;
 mod linked_hash_map;
 mod parse_and_typecheck;
-mod parser;
 mod path;
 mod proto;
 mod proto_path;

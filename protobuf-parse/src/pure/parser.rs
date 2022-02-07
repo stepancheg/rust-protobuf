@@ -284,7 +284,7 @@ impl NumLitEx for NumLit {
 }
 
 impl<'a> Parser<'a> {
-    pub fn new(input: &'a str) -> Parser<'a> {
+    pub(crate) fn new(input: &'a str) -> Parser<'a> {
         Parser {
             tokenizer: Tokenizer::new(input, ParserLanguage::Proto),
             syntax: Syntax::Proto2,

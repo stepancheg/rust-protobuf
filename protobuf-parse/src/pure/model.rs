@@ -14,14 +14,14 @@ use protobuf::text_format::lexer::Loc;
 use protobuf::text_format::lexer::StrLit;
 
 use crate::linked_hash_map::LinkedHashMap;
-use crate::parser::Parser;
-pub use crate::parser::ParserErrorWithLocation;
 use crate::proto_path::ProtoPathBuf;
 use crate::protobuf_abs_path::ProtobufAbsPath;
 use crate::protobuf_ident::ProtobufIdent;
 use crate::protobuf_path::ProtobufPath;
 use crate::pure::convert::ConvertError;
 use crate::pure::convert::ConvertResult;
+use crate::pure::parser::Parser;
+pub use crate::pure::parser::ParserErrorWithLocation;
 
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) struct WithLoc<T> {
