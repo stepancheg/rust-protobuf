@@ -30,8 +30,8 @@ pub enum TokenizerError {
     ExpectIdent,
     #[error("Expecting identifier `{}`", .0)]
     ExpectNamedIdent(String),
-    #[error("Expecting char `{}`", .0)]
-    ExpectChar(char),
+    #[error("While parsing {}, expecting char `{}`", .1, .0)]
+    ExpectChar(char, &'static str),
     #[error("Expecting any char of: {}", .0.iter().map(|c| format!("`{}`", c)).collect::<Vec<_>>().join(", "))]
     ExpectAnyChar(Vec<char>),
 }
@@ -198,18 +198,22 @@ impl<'a> Tokenizer<'a> {
         })? != None)
     }
 
-    pub fn next_symbol_expect_eq(&mut self, symbol: char) -> TokenizerResult<()> {
+    pub fn next_symbol_expect_eq(
+        &mut self,
+        symbol: char,
+        desc: &'static str,
+    ) -> TokenizerResult<()> {
         if self.lookahead_is_symbol(symbol)? {
             self.advance()?;
             Ok(())
         } else {
-            Err(TokenizerError::ExpectChar(symbol))
+            Err(TokenizerError::ExpectChar(symbol, desc))
         }
     }
 
     pub fn next_symbol_expect_eq_oneof(&mut self, symbols: &[char]) -> TokenizerResult<char> {
         for symbol in symbols {
-            if let Ok(()) = self.next_symbol_expect_eq(*symbol) {
+            if let Ok(()) = self.next_symbol_expect_eq(*symbol, "ignored") {
                 return Ok(*symbol);
             }
         }

@@ -451,11 +451,11 @@ impl<'a> Parser<'a> {
         }
 
         // TODO: better error reporting on wrong field type
-        self.tokenizer.next_symbol_expect_eq('[')?;
+        self.tokenizer.next_symbol_expect_eq('[', "list")?;
         let mut first = true;
         while !self.tokenizer.next_symbol_if_eq(']')? {
             if !first {
-                self.tokenizer.next_symbol_expect_eq(',')?;
+                self.tokenizer.next_symbol_expect_eq(',', "list")?;
             }
             first = false;
 
@@ -502,18 +502,18 @@ impl<'a> Parser<'a> {
             return Ok(());
         }
 
-        self.tokenizer.next_symbol_expect_eq('{')?;
+        self.tokenizer.next_symbol_expect_eq('{', "map")?;
         let mut first = true;
         while !self.tokenizer.next_symbol_if_eq('}')? {
             if !first {
-                self.tokenizer.next_symbol_expect_eq(',')?;
+                self.tokenizer.next_symbol_expect_eq(',', "map")?;
             }
             first = false;
 
             let key_string = self.read_string()?;
             let k = parse_key(self, key_string)?;
 
-            self.tokenizer.next_symbol_expect_eq(':')?;
+            self.tokenizer.next_symbol_expect_eq(':', "map")?;
             read_value_and_insert(self, k)?;
         }
 
@@ -670,11 +670,11 @@ impl<'a> Parser<'a> {
 
         let descriptor = message.descriptor_dyn();
 
-        self.tokenizer.next_symbol_expect_eq('{')?;
+        self.tokenizer.next_symbol_expect_eq('{', "object")?;
         let mut first = true;
         while !self.tokenizer.next_symbol_if_eq('}')? {
             if !first {
-                self.tokenizer.next_symbol_expect_eq(',')?;
+                self.tokenizer.next_symbol_expect_eq(',', "object")?;
             }
             first = false;
 
@@ -683,11 +683,11 @@ impl<'a> Parser<'a> {
             // the converted `lowerCamelCase` name and the proto field name.
             match descriptor.get_field_by_name_or_json_name(&field_name) {
                 Some(field) => {
-                    self.tokenizer.next_symbol_expect_eq(':')?;
+                    self.tokenizer.next_symbol_expect_eq(':', "object")?;
                     self.merge_field(message, &field)?;
                 }
                 None if self.parse_options.ignore_unknown_fields => {
-                    self.tokenizer.next_symbol_expect_eq(':')?;
+                    self.tokenizer.next_symbol_expect_eq(':', "object")?;
                     self.skip_json_value()?;
                 }
                 None => {

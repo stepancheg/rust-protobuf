@@ -368,11 +368,13 @@ impl<'a> Parser<'a> {
 
     fn next_message_constant(&mut self) -> anyhow::Result<ProtobufConstantMessage> {
         let mut r = ProtobufConstantMessage::default();
-        self.tokenizer.next_symbol_expect_eq('{')?;
+        self.tokenizer
+            .next_symbol_expect_eq('{', "message constant")?;
         while !self.tokenizer.lookahead_is_symbol('}')? {
             if self.tokenizer.next_symbol_if_eq('[')? {
                 let n = self.next_full_ident()?;
-                self.tokenizer.next_symbol_expect_eq(']')?;
+                self.tokenizer
+                    .next_symbol_expect_eq(']', "message constant")?;
                 let v = self.next_message_constant()?;
                 r.extensions.insert(format!("{}", n), v);
             } else {
@@ -385,7 +387,8 @@ impl<'a> Parser<'a> {
                 r.fields.insert(n, v);
             }
         }
-        self.tokenizer.next_symbol_expect_eq('}')?;
+        self.tokenizer
+            .next_symbol_expect_eq('}', "message constant")?;
         Ok(r)
     }
 
@@ -442,7 +445,7 @@ impl<'a> Parser<'a> {
     // syntax = "syntax" "=" quote "proto3" quote ";"
     fn next_syntax(&mut self) -> anyhow::Result<Option<Syntax>> {
         if self.tokenizer.next_ident_if_eq("syntax")? {
-            self.tokenizer.next_symbol_expect_eq('=')?;
+            self.tokenizer.next_symbol_expect_eq('=', "syntax")?;
             let syntax_str = self.tokenizer.next_str_lit()?.decode_utf8()?;
             let syntax = if syntax_str == "proto2" {
                 Syntax::Proto2
@@ -451,7 +454,7 @@ impl<'a> Parser<'a> {
             } else {
                 return Err(ParserError::UnknownSyntax.into());
             };
-            self.tokenizer.next_symbol_expect_eq(';')?;
+            self.tokenizer.next_symbol_expect_eq(';', "syntax")?;
             Ok(Some(syntax))
         } else {
             Ok(None)
@@ -471,7 +474,7 @@ impl<'a> Parser<'a> {
                 ImportVis::Default
             };
             let path = self.tokenizer.next_str_lit()?.decode_utf8()?;
-            self.tokenizer.next_symbol_expect_eq(';')?;
+            self.tokenizer.next_symbol_expect_eq(';', "import")?;
             let path = ProtoPathBuf::new(path)?;
             Ok(Some(model::Import { path, vis }))
         } else {
@@ -485,7 +488,7 @@ impl<'a> Parser<'a> {
     fn next_package_opt(&mut self) -> anyhow::Result<Option<ProtobufAbsPath>> {
         if self.tokenizer.next_ident_if_eq("package")? {
             let package = self.next_full_ident_rel()?;
-            self.tokenizer.next_symbol_expect_eq(';')?;
+            self.tokenizer.next_symbol_expect_eq(';', "package")?;
             Ok(Some(package.into_absolute()))
         } else {
             Ok(None)
@@ -501,7 +504,8 @@ impl<'a> Parser<'a> {
     fn next_option_name_component(&mut self) -> anyhow::Result<ProtobufOptionNameComponent> {
         if self.tokenizer.next_symbol_if_eq('(')? {
             let comp = self.next_full_ident()?;
-            self.tokenizer.next_symbol_expect_eq(')')?;
+            self.tokenizer
+                .next_symbol_expect_eq(')', "option name component")?;
             Ok(ProtobufOptionNameComponent::Ext(comp))
         } else {
             Ok(ProtobufOptionNameComponent::Direct(self.next_ident()?))
@@ -528,9 +532,9 @@ impl<'a> Parser<'a> {
     fn next_option_opt(&mut self) -> anyhow::Result<Option<ProtobufOption>> {
         if self.tokenizer.next_ident_if_eq("option")? {
             let name = self.next_option_name()?;
-            self.tokenizer.next_symbol_expect_eq('=')?;
+            self.tokenizer.next_symbol_expect_eq('=', "option")?;
             let value = self.next_constant()?;
-            self.tokenizer.next_symbol_expect_eq(';')?;
+            self.tokenizer.next_symbol_expect_eq(';', "option")?;
             Ok(Some(ProtobufOption { name, value }))
         } else {
             Ok(None)
@@ -608,7 +612,7 @@ impl<'a> Parser<'a> {
     // fieldOption = optionName "=" constant
     fn next_field_option(&mut self) -> anyhow::Result<ProtobufOption> {
         let name = self.next_option_name()?;
-        self.tokenizer.next_symbol_expect_eq('=')?;
+        self.tokenizer.next_symbol_expect_eq('=', "field option")?;
         let value = self.next_constant()?;
         Ok(ProtobufOption { name, value })
     }
@@ -640,7 +644,7 @@ impl<'a> Parser<'a> {
         };
         if self.tokenizer.next_ident_if_eq("group")? {
             let name = self.next_group_name()?.to_owned();
-            self.tokenizer.next_symbol_expect_eq('=')?;
+            self.tokenizer.next_symbol_expect_eq('=', "group")?;
             let number = self.next_field_number()?;
 
             let mode = match self.syntax {
@@ -672,7 +676,7 @@ impl<'a> Parser<'a> {
         } else {
             let typ = self.next_field_type()?;
             let name = self.tokenizer.next_ident()?.to_owned();
-            self.tokenizer.next_symbol_expect_eq('=')?;
+            self.tokenizer.next_symbol_expect_eq('=', "field")?;
             let number = self.next_field_number()?;
 
             let mut options = Vec::new();
@@ -681,9 +685,9 @@ impl<'a> Parser<'a> {
                 for o in self.next_field_options()? {
                     options.push(o);
                 }
-                self.tokenizer.next_symbol_expect_eq(']')?;
+                self.tokenizer.next_symbol_expect_eq(']', "field")?;
             }
-            self.tokenizer.next_symbol_expect_eq(';')?;
+            self.tokenizer.next_symbol_expect_eq(';', "field")?;
             let field = Field {
                 name,
                 rule,
@@ -725,12 +729,15 @@ impl<'a> Parser<'a> {
     //           "fixed32" | "fixed64" | "sfixed32" | "sfixed64" | "bool" | "string"
     fn next_map_field_type_opt(&mut self) -> anyhow::Result<Option<FieldType>> {
         if self.tokenizer.next_ident_if_eq("map")? {
-            self.tokenizer.next_symbol_expect_eq('<')?;
+            self.tokenizer
+                .next_symbol_expect_eq('<', "map field type")?;
             // TODO: restrict key types
             let key = self.next_field_type()?;
-            self.tokenizer.next_symbol_expect_eq(',')?;
+            self.tokenizer
+                .next_symbol_expect_eq(',', "map field type")?;
             let value = self.next_field_type()?;
-            self.tokenizer.next_symbol_expect_eq('>')?;
+            self.tokenizer
+                .next_symbol_expect_eq('>', "map field type")?;
             Ok(Some(FieldType::Map(Box::new((key, value)))))
         } else {
             Ok(None)
@@ -795,7 +802,7 @@ impl<'a> Parser<'a> {
                 (self.next_ranges()?, Vec::new())
             };
 
-            self.tokenizer.next_symbol_expect_eq(';')?;
+            self.tokenizer.next_symbol_expect_eq(';', "reserved")?;
 
             Ok(Some((ranges, names)))
         } else {
@@ -810,7 +817,8 @@ impl<'a> Parser<'a> {
     // enumValueOption = optionName "=" constant
     fn next_enum_value_option(&mut self) -> anyhow::Result<ProtobufOption> {
         let name = self.next_option_name()?;
-        self.tokenizer.next_symbol_expect_eq('=')?;
+        self.tokenizer
+            .next_symbol_expect_eq('=', "enum value option")?;
         let value = self.next_constant()?;
         Ok(ProtobufOption { name, value })
     }
@@ -833,7 +841,7 @@ impl<'a> Parser<'a> {
     // enumField = ident "=" intLit [ "[" enumValueOption { ","  enumValueOption } "]" ]";"
     fn next_enum_field(&mut self) -> anyhow::Result<EnumValue> {
         let name = self.tokenizer.next_ident()?.to_owned();
-        self.tokenizer.next_symbol_expect_eq('=')?;
+        self.tokenizer.next_symbol_expect_eq('=', "enum field")?;
         let number = self.next_enum_value()?;
         let mut options = Vec::new();
         if self.tokenizer.next_symbol_if_eq('[')? {
@@ -841,7 +849,7 @@ impl<'a> Parser<'a> {
             while self.tokenizer.next_symbol_if_eq(',')? {
                 options.push(self.next_enum_value_option()?);
             }
-            self.tokenizer.next_symbol_expect_eq(']')?;
+            self.tokenizer.next_symbol_expect_eq(']', "enum field")?;
         }
 
         Ok(EnumValue {
@@ -860,7 +868,7 @@ impl<'a> Parser<'a> {
             let mut values = Vec::new();
             let mut options = Vec::new();
 
-            self.tokenizer.next_symbol_expect_eq('{')?;
+            self.tokenizer.next_symbol_expect_eq('{', "enum")?;
             while self.tokenizer.lookahead_if_symbol()? != Some('}') {
                 // emptyStatement
                 if self.tokenizer.next_symbol_if_eq(';')? {
@@ -874,7 +882,7 @@ impl<'a> Parser<'a> {
 
                 values.push(self.next_enum_field()?);
             }
-            self.tokenizer.next_symbol_expect_eq('}')?;
+            self.tokenizer.next_symbol_expect_eq('}', "enum")?;
             Ok(Some(Enumeration {
                 name,
                 values,
@@ -890,7 +898,7 @@ impl<'a> Parser<'a> {
     // messageBody = "{" { field | enum | message | extend | extensions | group |
     //               option | oneof | mapField | reserved | emptyStatement } "}"
     fn next_message_body(&mut self, mode: MessageBodyParseMode) -> anyhow::Result<MessageBody> {
-        self.tokenizer.next_symbol_expect_eq('{')?;
+        self.tokenizer.next_symbol_expect_eq('{', "message body")?;
 
         let mut r = MessageBody::default();
 
@@ -956,7 +964,7 @@ impl<'a> Parser<'a> {
             r.fields.push(WithLoc { t: field, loc });
         }
 
-        self.tokenizer.next_symbol_expect_eq('}')?;
+        self.tokenizer.next_symbol_expect_eq('}', "message body")?;
 
         Ok(r)
     }
@@ -1063,9 +1071,9 @@ impl<'a> Parser<'a> {
 
                 return Err(ParserError::IncorrectInput.into());
             }
-            self.tokenizer.next_symbol_expect_eq('}')?;
+            self.tokenizer.next_symbol_expect_eq('}', "option")?;
         } else {
-            self.tokenizer.next_symbol_expect_eq(';')?;
+            self.tokenizer.next_symbol_expect_eq(';', "option")?;
         }
 
         Ok(options)
@@ -1077,11 +1085,11 @@ impl<'a> Parser<'a> {
         assert_eq!(Syntax::Proto2, self.syntax);
         if self.tokenizer.next_ident_if_eq("stream")? {
             let name = self.tokenizer.next_ident()?;
-            self.tokenizer.next_symbol_expect_eq('(')?;
+            self.tokenizer.next_symbol_expect_eq('(', "stream")?;
             let input_type = self.next_message_or_enum_type()?;
-            self.tokenizer.next_symbol_expect_eq(',')?;
+            self.tokenizer.next_symbol_expect_eq(',', "stream")?;
             let output_type = self.next_message_or_enum_type()?;
-            self.tokenizer.next_symbol_expect_eq(')')?;
+            self.tokenizer.next_symbol_expect_eq(')', "stream")?;
             let options = self.next_options_or_colon()?;
             Ok(Some(Method {
                 name,
@@ -1102,15 +1110,15 @@ impl<'a> Parser<'a> {
     fn next_rpc_opt(&mut self) -> anyhow::Result<Option<Method>> {
         if self.tokenizer.next_ident_if_eq("rpc")? {
             let name = self.tokenizer.next_ident()?;
-            self.tokenizer.next_symbol_expect_eq('(')?;
+            self.tokenizer.next_symbol_expect_eq('(', "rpc")?;
             let client_streaming = self.tokenizer.next_ident_if_eq("stream")?;
             let input_type = self.next_message_or_enum_type()?;
-            self.tokenizer.next_symbol_expect_eq(')')?;
+            self.tokenizer.next_symbol_expect_eq(')', "rpc")?;
             self.tokenizer.next_ident_expect_eq("returns")?;
-            self.tokenizer.next_symbol_expect_eq('(')?;
+            self.tokenizer.next_symbol_expect_eq('(', "rpc")?;
             let server_streaming = self.tokenizer.next_ident_if_eq("stream")?;
             let output_type = self.next_message_or_enum_type()?;
-            self.tokenizer.next_symbol_expect_eq(')')?;
+            self.tokenizer.next_symbol_expect_eq(')', "rpc")?;
             let options = self.next_options_or_colon()?;
             Ok(Some(Method {
                 name,
@@ -1137,7 +1145,7 @@ impl<'a> Parser<'a> {
             let name = self.tokenizer.next_ident()?;
             let mut methods = Vec::new();
             let mut options = Vec::new();
-            self.tokenizer.next_symbol_expect_eq('{')?;
+            self.tokenizer.next_symbol_expect_eq('{', "service")?;
             while self.tokenizer.lookahead_if_symbol()? != Some('}') {
                 if let Some(method) = self.next_rpc_opt()? {
                     methods.push(method);
@@ -1162,7 +1170,7 @@ impl<'a> Parser<'a> {
 
                 return Err(ParserError::IncorrectInput.into());
             }
-            self.tokenizer.next_symbol_expect_eq('}')?;
+            self.tokenizer.next_symbol_expect_eq('}', "service")?;
             Ok(Some(WithLoc {
                 loc,
                 t: Service {

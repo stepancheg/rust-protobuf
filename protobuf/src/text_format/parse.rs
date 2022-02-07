@@ -64,12 +64,12 @@ impl<'a> Parser<'a> {
         Ok(self.tokenizer.next_ident()?)
     }
 
-    fn read_colon(&mut self) -> ParseResult<()> {
-        Ok(self.tokenizer.next_symbol_expect_eq(':')?)
+    fn read_colon(&mut self, desc: &'static str) -> ParseResult<()> {
+        Ok(self.tokenizer.next_symbol_expect_eq(':', desc)?)
     }
 
     fn read_enum<'e>(&mut self, e: &'e EnumDescriptor) -> ParseResult<EnumValueDescriptor> {
-        self.read_colon()?;
+        self.read_colon("enum")?;
 
         // TODO: read integer?
         let ident = self.tokenizer.next_ident()?;
@@ -81,13 +81,13 @@ impl<'a> Parser<'a> {
     }
 
     fn read_u64(&mut self) -> ParseResult<u64> {
-        self.read_colon()?;
+        self.read_colon("u64")?;
 
         Ok(self.tokenizer.next_int_lit()?)
     }
 
     fn read_u32(&mut self) -> ParseResult<u32> {
-        self.read_colon()?;
+        self.read_colon("int value")?;
 
         let int_lit = self.tokenizer.next_int_lit()?;
         let value_u32 = int_lit as u32;
@@ -98,7 +98,7 @@ impl<'a> Parser<'a> {
     }
 
     fn read_i64(&mut self) -> ParseResult<i64> {
-        self.read_colon()?;
+        self.read_colon("int value")?;
 
         if self.tokenizer.next_symbol_if_eq('-')? {
             let int_lit = self.tokenizer.next_int_lit()?;
@@ -121,7 +121,7 @@ impl<'a> Parser<'a> {
     }
 
     fn read_f64(&mut self) -> ParseResult<f64> {
-        self.read_colon()?;
+        self.read_colon("float value")?;
 
         let minus = self.tokenizer.next_symbol_if_eq('-')?;
 
@@ -139,7 +139,7 @@ impl<'a> Parser<'a> {
     }
 
     fn read_bool(&mut self) -> ParseResult<bool> {
-        self.read_colon()?;
+        self.read_colon("bool value")?;
 
         if self.tokenizer.next_ident_if_eq("true")? {
             Ok(true)
@@ -151,7 +151,7 @@ impl<'a> Parser<'a> {
     }
 
     fn read_string(&mut self) -> ParseResult<String> {
-        self.read_colon()?;
+        self.read_colon("string value")?;
 
         Ok(self
             .tokenizer
@@ -160,7 +160,7 @@ impl<'a> Parser<'a> {
     }
 
     fn read_bytes(&mut self) -> ParseResult<Vec<u8>> {
-        self.read_colon()?;
+        self.read_colon("bytes value")?;
 
         Ok(self
             .tokenizer
@@ -176,7 +176,8 @@ impl<'a> Parser<'a> {
         while !self.tokenizer.lookahead_is_symbol(terminator)? {
             self.merge_field(&mut *message, descriptor)?;
         }
-        self.tokenizer.next_symbol_expect_eq(terminator)?;
+        self.tokenizer
+            .next_symbol_expect_eq(terminator, "message")?;
         Ok(message)
     }
 
@@ -190,7 +191,7 @@ impl<'a> Parser<'a> {
 
         let mut key = None;
         let mut value = None;
-        self.tokenizer.next_symbol_expect_eq('{')?;
+        self.tokenizer.next_symbol_expect_eq('{', "map entry")?;
         while !self.tokenizer.lookahead_is_symbol('}')? {
             let ident = self.next_field_name()?;
             let (field, field_type) = if ident == key_field_name {
@@ -209,7 +210,7 @@ impl<'a> Parser<'a> {
 
             *field = Some(field_value);
         }
-        self.tokenizer.next_symbol_expect_eq('}')?;
+        self.tokenizer.next_symbol_expect_eq('}', "map entry")?;
         let key = match key {
             Some(key) => key,
             None => k.default_value_ref().to_box(),
