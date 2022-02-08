@@ -15,12 +15,13 @@ Files are parsed into a `protobuf::descriptor::FileDescriptorSet` object using e
 """
 
 [dependencies]
-thiserror = "1.0.30"
-anyhow    = "1.0.44"
 tempfile  = "3.2.0"
+log       = "0.*"
+which     = "4.0"
+anyhow    = "1.0.44"
+thiserror = "1.0.30"
 
 protobuf = { path = "../protobuf", version = "=3.0.0-alpha.5" }
-protoc = { path = "../protoc", version = "=3.0.0-alpha.5" }
 
 [lib]
 # TODO: figure out what to do with bundled linked_hash_map

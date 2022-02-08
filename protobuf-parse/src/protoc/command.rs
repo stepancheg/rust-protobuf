@@ -16,9 +16,7 @@ use std::path::Path;
 use std::path::PathBuf;
 use std::process;
 
-#[macro_use]
-extern crate log;
-extern crate which;
+use log::info;
 
 #[derive(Debug, thiserror::Error)]
 enum Error {
@@ -32,10 +30,6 @@ enum Error {
     OutputIsEmpty,
     #[error("output does not start with prefix")]
     OutputDoesNotStartWithPrefix,
-    #[error("out_dir is empty")]
-    OutDirIsEmpty,
-    #[error("lang is empty")]
-    LangIsEmpty,
     #[error("version is empty")]
     VersionIsEmpty,
     #[error("version does not start with digit")]
@@ -44,135 +38,6 @@ enum Error {
     FailedToSpawnCommand(String, #[source] io::Error),
     #[error("protoc output is not UTF-8")]
     ProtocOutputIsNotUtf8,
-}
-
-/// `protoc --lang_out=... ...` command builder and spawner.
-///
-/// # Examples
-///
-/// ```no_run
-/// use protoc::ProtocLangOut;
-/// ProtocLangOut::new()
-///     .lang("go")
-///     .include("protos")
-///     .include("more-protos")
-///     .out_dir("generated-protos")
-///     .run()
-///     .unwrap();
-/// ```
-#[derive(Default)]
-pub struct ProtocLangOut {
-    protoc: Option<Protoc>,
-    /// `LANG` part in `--LANG_out=...`
-    lang: Option<String>,
-    /// `--LANG_out=...` param
-    out_dir: Option<PathBuf>,
-    /// `--plugin` param. Not needed if plugin is in `$PATH`
-    plugin: Option<OsString>,
-    /// `-I` args
-    includes: Vec<PathBuf>,
-    /// List of `.proto` files to compile
-    inputs: Vec<PathBuf>,
-}
-
-impl ProtocLangOut {
-    /// Arguments to the `protoc` found in `$PATH`
-    pub fn new() -> Self {
-        Self::default()
-    }
-
-    /// Set `LANG` part in `--LANG_out=...`
-    pub fn lang(&mut self, lang: &str) -> &mut Self {
-        self.lang = Some(lang.to_owned());
-        self
-    }
-
-    /// Set `--LANG_out=...` param
-    pub fn out_dir(&mut self, out_dir: impl AsRef<Path>) -> &mut Self {
-        self.out_dir = Some(out_dir.as_ref().to_owned());
-        self
-    }
-
-    /// Set `--plugin` param. Not needed if plugin is in `$PATH`
-    pub fn plugin(&mut self, plugin: impl AsRef<OsStr>) -> &mut Self {
-        self.plugin = Some(plugin.as_ref().to_owned());
-        self
-    }
-
-    /// Append a path to `-I` args
-    pub fn include(&mut self, include: impl AsRef<Path>) -> &mut Self {
-        self.includes.push(include.as_ref().to_owned());
-        self
-    }
-
-    /// Append multiple paths to `-I` args
-    pub fn includes(&mut self, includes: impl IntoIterator<Item = impl AsRef<Path>>) -> &mut Self {
-        for include in includes {
-            self.include(include);
-        }
-        self
-    }
-
-    /// Append a `.proto` file path to compile
-    pub fn input(&mut self, input: impl AsRef<Path>) -> &mut Self {
-        self.inputs.push(input.as_ref().to_owned());
-        self
-    }
-
-    /// Append multiple `.proto` file paths to compile
-    pub fn inputs(&mut self, inputs: impl IntoIterator<Item = impl AsRef<Path>>) -> &mut Self {
-        for input in inputs {
-            self.input(input);
-        }
-        self
-    }
-
-    /// Execute `protoc` with given args
-    pub fn run(&self) -> anyhow::Result<()> {
-        let protoc = match &self.protoc {
-            Some(protoc) => protoc.clone(),
-            None => {
-                let protoc = Protoc::from_env_path();
-                // Check with have good `protoc`
-                protoc.check()?;
-                protoc
-            }
-        };
-
-        if self.inputs.is_empty() {
-            return Err(Error::InputIsEmpty.into());
-        }
-
-        let out_dir = self.out_dir.as_ref().ok_or_else(|| Error::OutDirIsEmpty)?;
-        let lang = self.lang.as_ref().ok_or_else(|| Error::LangIsEmpty)?;
-
-        // --{lang}_out={out_dir}
-        let mut lang_out_flag = OsString::from("--");
-        lang_out_flag.push(lang);
-        lang_out_flag.push("_out=");
-        lang_out_flag.push(out_dir);
-
-        // --plugin={plugin}
-        let plugin_flag = self.plugin.as_ref().map(|plugin| {
-            let mut flag = OsString::from("--plugin=");
-            flag.push(plugin);
-            flag
-        });
-
-        // -I{include}
-        let include_flags = self.includes.iter().map(|include| {
-            let mut flag = OsString::from("-I");
-            flag.push(include);
-            flag
-        });
-
-        let mut cmd_args = Vec::new();
-        cmd_args.push(lang_out_flag);
-        cmd_args.extend(self.inputs.iter().map(|path| path.as_os_str().to_owned()));
-        cmd_args.extend(plugin_flag);
-        cmd_args.extend(include_flags);
-        protoc.run_with_args(cmd_args)
-    }
 }
 
 /// `Protoc --descriptor_set_out...` args
@@ -283,7 +148,7 @@ impl DescriptorSetOutArgs {
 
 /// Protoc command.
 #[derive(Clone, Debug)]
-pub struct Protoc {
+pub(crate) struct Protoc {
     exec: OsString,
 }
 
@@ -322,7 +187,7 @@ impl Protoc {
     }
 
     /// Check `protoc` command found and valid
-    pub fn check(&self) -> anyhow::Result<()> {
+    pub fn _check(&self) -> anyhow::Result<()> {
         self.version()?;
         Ok(())
     }
@@ -385,14 +250,6 @@ impl Protoc {
         Ok(())
     }
 
-    /// Get default Args for this command.
-    pub fn args(&self) -> ProtocLangOut {
-        ProtocLangOut {
-            protoc: Some(self.clone()),
-            ..ProtocLangOut::new()
-        }
-    }
-
     /// Get default DescriptorSetOutArgs for this command.
     pub fn descriptor_set_out_args(&self) -> DescriptorSetOutArgs {
         DescriptorSetOutArgs {
@@ -407,13 +264,13 @@ impl Protoc {
 }
 
 /// Protobuf (protoc) version.
-pub struct Version {
+pub(crate) struct Version {
     version: String,
 }
 
 impl Version {
     /// `true` if the protoc major version is 3.
-    pub fn is_3(&self) -> bool {
+    pub fn _is_3(&self) -> bool {
         self.version.starts_with("3")
     }
 }

@@ -19,5 +19,4 @@ protoc-bin-vendored = "=3.0.0"
 protobuf = { path = "../protobuf" }
 protobuf-codegen = { path = "../protobuf-codegen" }
 protobuf-test-common = { path = "../protobuf-test-common" }
-protoc = { path = "../protoc" }
 protobuf-parse = { path = "../protobuf-parse" }

@@ -1,5 +1,10 @@
+use std::collections::HashSet;
+use std::ffi::OsStr;
+use std::ffi::OsString;
 use std::path::Path;
 use std::path::PathBuf;
+
+use protobuf::descriptor::FileDescriptorSet;
 
 use crate::protoc;
 use crate::pure;
@@ -13,6 +18,7 @@ pub struct Parser {
     pub(crate) includes: Vec<PathBuf>,
     pub(crate) inputs: Vec<PathBuf>,
     pub(crate) protoc: Option<PathBuf>,
+    pub(crate) protoc_extra_args: Vec<OsString>,
 }
 
 impl Parser {
@@ -67,11 +73,36 @@ impl Parser {
         self
     }
 
+    /// Extra arguments to pass to `protoc` command (like experimental options).
+    pub fn protoc_extra_args(
+        &mut self,
+        args: impl IntoIterator<Item = impl AsRef<OsStr>>,
+    ) -> &mut Self {
+        self.protoc_extra_args = args.into_iter().map(|s| s.as_ref().to_owned()).collect();
+        self
+    }
+
     /// Parse `.proto` files and typecheck them using pure Rust parser of `protoc` command.
     pub fn parse_and_typecheck(&self) -> anyhow::Result<ParsedAndTypechecked> {
         match &self.which_parser {
             WhichParser::Pure => pure::parse_and_typecheck::parse_and_typecheck(&self),
             WhichParser::Protoc => protoc::parse_and_typecheck::parse_and_typecheck(&self),
         }
+    }
+
+    /// Parse and convert result to `FileDescriptorSet`.
+    pub fn file_descriptor_set(&self) -> anyhow::Result<FileDescriptorSet> {
+        let mut generated = self.parse_and_typecheck()?;
+        let relative_paths: HashSet<_> = generated
+            .relative_paths
+            .iter()
+            .map(|path| path.to_string())
+            .collect();
+        generated
+            .file_descriptors
+            .retain(|fd| relative_paths.contains(fd.get_name()));
+        let mut fds = FileDescriptorSet::new();
+        fds.file = generated.file_descriptors;
+        Ok(fds)
     }
 }

@@ -47,7 +47,7 @@ pub struct Codegen {
     /// Protoc command path
     protoc: Option<PathBuf>,
     /// Extra `protoc` args
-    extra_args: Vec<OsString>,
+    protoc_extra_args: Vec<OsString>,
 }
 
 impl Codegen {
@@ -169,6 +169,16 @@ impl Codegen {
         self
     }
 
+    /// Extra command line flags for `protoc` invocation.
+    ///
+    /// For example, `--experimental_allow_proto3_optional` option.
+    ///
+    /// This option is ignored when pure Rust parser is used.
+    pub fn protoc_extra_arg(&mut self, arg: impl Into<OsString>) -> &mut Self {
+        self.protoc_extra_args.push(arg.into());
+        self
+    }
+
     /// Set options to customize code generation
     pub fn customize(&mut self, customize: Customize) -> &mut Self {
         self.customize.update_with(&customize);
@@ -178,16 +188,6 @@ impl Codegen {
     /// Callback for dynamic per-element customization.
     pub fn customize_callback(&mut self, callback: impl CustomizeCallback) -> &mut Self {
         self.customize_callback = CustomizeCallbackHolder::new(callback);
-        self
-    }
-
-    /// Extra command line flags for `protoc` invocation.
-    ///
-    /// For example, `--experimental_allow_proto3_optional` option.
-    ///
-    /// This option is ignored when pure Rust parser is used.
-    pub fn extra_arg(&mut self, arg: impl Into<OsString>) -> &mut Self {
-        self.extra_args.push(arg.into());
         self
     }
 

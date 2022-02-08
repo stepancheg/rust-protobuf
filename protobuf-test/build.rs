@@ -2,8 +2,6 @@ extern crate env_logger;
 extern crate glob;
 extern crate log;
 
-extern crate protoc;
-
 extern crate protobuf_test_common;
 
 use std::env;
@@ -13,19 +11,16 @@ use std::path::PathBuf;
 
 use protobuf_codegen::Codegen;
 use protobuf_test_common::build::*;
-use protoc::Protoc;
 
 fn test_protoc_bin_path() -> PathBuf {
-    let path = protoc_bin_vendored::protoc_bin_path().unwrap();
-    assert!(Protoc::from_path(&path).version().unwrap().is_3());
-    path
+    protoc_bin_vendored::protoc_bin_path().unwrap()
 }
 
 fn codegen() -> Codegen {
     let mut codegen = Codegen::new();
     codegen.protoc();
     codegen.protoc_path(&test_protoc_bin_path());
-    codegen.extra_arg("--experimental_allow_proto3_optional");
+    codegen.protoc_extra_arg("--experimental_allow_proto3_optional");
     codegen
 }
 

@@ -11,11 +11,9 @@ bench = false
 
 [features]
 default = []
-proto3 = []
 with-bytes = ["bytes", "protobuf/with-bytes", "protobuf-test-common/with-bytes"]
 
 [build-dependencies]
-protoc      = { path = "../protoc" }
 protobuf-codegen = { path = "../protobuf-codegen" }
 protobuf-test-common = { path = "../protobuf-test-common" }
 glob        = "0.2"

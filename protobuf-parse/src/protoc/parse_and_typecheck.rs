@@ -2,8 +2,8 @@ use std::fs;
 
 use protobuf::descriptor::FileDescriptorSet;
 use protobuf::Message;
-use protoc::Protoc;
 
+use crate::protoc::command::Protoc;
 use crate::pure::parse_and_typecheck::path_to_proto_path;
 use crate::ParsedAndTypechecked;
 use crate::Parser;
@@ -33,6 +33,7 @@ pub(crate) fn parse_and_typecheck(parser: &Parser) -> anyhow::Result<ParsedAndTy
         .includes(&parser.includes)
         .out(&temp_file)
         .include_imports(true)
+        .extra_args(&parser.protoc_extra_args)
         .write_descriptor_set()?;
 
     let version = protoc.version()?;

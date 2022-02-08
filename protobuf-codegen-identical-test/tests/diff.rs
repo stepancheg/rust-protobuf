@@ -1,4 +1,3 @@
-use std::collections::HashSet;
 use std::fmt;
 use std::fmt::Write as _;
 use std::fs;
@@ -19,12 +18,11 @@ use protobuf::descriptor::MethodDescriptorProto;
 use protobuf::descriptor::OneofDescriptorProto;
 use protobuf::descriptor::ServiceDescriptorProto;
 use protobuf::text_format::lexer::float::parse_protobuf_float;
-use protobuf::Message;
 use protobuf_codegen::Codegen;
+use protobuf_parse::Parser;
 use protobuf_test_common::build::copy_tests_v2_v3;
 use protobuf_test_common::build::glob_simple;
 use regex::Regex;
-use tempfile::NamedTempFile;
 
 fn to_paths(iter: impl IntoIterator<Item = impl Into<String>>) -> Vec<PathBuf> {
     iter.into_iter()
@@ -103,39 +101,6 @@ fn print_diff(dir: &Path, a: &Path, b: &Path) {
 
     print!("{}", str::from_utf8(&output.stdout).unwrap());
     print!("{}", str::from_utf8(&output.stderr).unwrap());
-}
-
-fn protoc_descriptor_set(includes: &[PathBuf], inputs: &[PathBuf]) -> FileDescriptorSet {
-    let mut temp_file = NamedTempFile::new().unwrap();
-    protoc::Protoc::from_path(protoc_bin_vendored::protoc_bin_path().unwrap())
-        .descriptor_set_out_args()
-        .out(temp_file.path())
-        .includes(includes)
-        .inputs(inputs)
-        .write_descriptor_set()
-        .unwrap();
-    FileDescriptorSet::parse_from_reader(&mut temp_file).unwrap()
-}
-
-// TODO: expose this utility from protobuf-codegen-pure crate.
-fn pure_descriptor_set(includes: &[PathBuf], inputs: &[PathBuf]) -> FileDescriptorSet {
-    let mut codegen = protobuf_parse::Parser::new()
-        .pure()
-        .includes(includes)
-        .inputs(inputs)
-        .parse_and_typecheck()
-        .unwrap();
-    let relative_paths: HashSet<_> = codegen
-        .relative_paths
-        .iter()
-        .map(|path| path.to_string())
-        .collect();
-    codegen
-        .file_descriptors
-        .retain(|fd| relative_paths.contains(fd.get_name()));
-    let mut fds = FileDescriptorSet::new();
-    fds.file = codegen.file_descriptors;
-    fds
 }
 
 fn normalize_descriptor_set(fds: &mut FileDescriptorSet) {
@@ -326,8 +291,18 @@ where
         .run()
         .unwrap();
 
-    let mut protoc_descriptors = protoc_descriptor_set(&includes, &inputs);
-    let mut pure_descriptors = pure_descriptor_set(&includes, &inputs);
+    let mut protoc_descriptors = Parser::new()
+        .protoc()
+        .includes(&includes)
+        .inputs(&inputs)
+        .file_descriptor_set()
+        .unwrap();
+    let mut pure_descriptors = Parser::new()
+        .pure()
+        .includes(&includes)
+        .inputs(&inputs)
+        .file_descriptor_set()
+        .unwrap();
     normalize_descriptor_set(&mut protoc_descriptors);
     normalize_descriptor_set(&mut pure_descriptors);
 

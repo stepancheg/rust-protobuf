@@ -21,7 +21,6 @@ env_logger  = "0.5.*"
 
 protoc-bin-vendored = "=3.0.0"
 
-protoc      = { path = "../protoc" }
 protobuf-codegen = { path = "../protobuf-codegen" }
 protobuf-test-common = { path = "../protobuf-test-common" }
 

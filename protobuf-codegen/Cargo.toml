@@ -22,7 +22,6 @@ tempfile  = "3"
 
 protobuf = { path = "../protobuf", version = "=3.0.0-alpha.5" }
 protobuf-parse = { path = "../protobuf-parse", version = "=3.0.0-alpha.5" }
-protoc = { path = "../protoc", version = "=3.0.0-alpha.5" }
 
 [[bin]]
 
