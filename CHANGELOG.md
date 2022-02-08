@@ -14,7 +14,8 @@ Stable versions are 2.xx still supported.
 - `gen_mod_rs` option is `true` by default now: code generator now generates `mod.rs` with modules
 - `carllerche` options renamed to `tokio` (since `bytes` crate now lives in `tokio` org)
 - `protobuf-parse` API cleanup (API used to parse `.proto` files, not protocol buffers data files)
-- remove `protoc` crate, most of it is incorprotated into `protobuf-parse` crate, and the rest is not very useful
+- Remove `protoc` crate, most of it is incorprotated into `protobuf-parse` crate, and the rest is not very useful
+- Generated enums for `oneof` are marked `#[non_exhaustive]`
 
 ## [3.0.0-alpha.5] - 2022-02-02
 
