@@ -32,6 +32,7 @@ pub use case_convert::*;
 pub use parse_and_typecheck::*;
 pub use parser::Parser;
 pub use proto_path::*;
+use protobuf::reflect::FileDescriptor;
 pub use protobuf_abs_path::*;
 pub use protobuf_ident::*;
 pub use protobuf_rel_path::*;
@@ -40,6 +41,7 @@ use crate::pure::model;
 
 #[derive(Clone)]
 pub(crate) struct FileDescriptorPair {
-    parsed: model::FileDescriptor,
-    descriptor: protobuf::descriptor::FileDescriptorProto,
+    pub(crate) parsed: model::FileDescriptor,
+    pub(crate) descriptor_proto: protobuf::descriptor::FileDescriptorProto,
+    pub(crate) descriptor: FileDescriptor,
 }

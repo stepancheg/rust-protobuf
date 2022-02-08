@@ -7,6 +7,7 @@ use std::str;
 
 use indexmap::IndexMap;
 use protobuf::descriptor::FileDescriptorProto;
+use protobuf::reflect::FileDescriptor;
 
 use crate::parse_and_typecheck::ParsedAndTypechecked;
 use crate::proto;
@@ -108,15 +109,26 @@ where
 
         let this_file_deps: Vec<_> = this_file_deps.into_iter().map(|(_, v)| v).collect();
 
-        let descriptor = convert::file_descriptor(protobuf_path, &parsed, &this_file_deps)
+        let descriptor_proto = convert::file_descriptor(protobuf_path, &parsed, &this_file_deps)
             .map_err(|e| WithFileError {
                 file: resolved.path.clone(),
                 error: e.into(),
             })?;
 
+        let deps = self
+            .parsed_files
+            .values()
+            .map(|v| v.descriptor.clone())
+            .collect();
+        let descriptor = FileDescriptor::new_dynamic(descriptor_proto.clone(), deps);
+
         self.parsed_files.insert(
             protobuf_path.to_proto_path_buf(),
-            FileDescriptorPair { parsed, descriptor },
+            FileDescriptorPair {
+                parsed,
+                descriptor_proto,
+                descriptor,
+            },
         );
 
         Ok(())
@@ -264,7 +276,7 @@ pub fn parse_and_typecheck(parser: &Parser) -> anyhow::Result<ParsedAndTypecheck
     let file_descriptors: Vec<_> = run
         .parsed_files
         .into_iter()
-        .map(|(_, v)| v.descriptor)
+        .map(|(_, v)| v.descriptor_proto)
         .collect();
 
     Ok(ParsedAndTypechecked {
@@ -291,7 +303,7 @@ pub fn parse_and_typecheck_custom(
     Ok(run
         .parsed_files
         .into_iter()
-        .map(|(_, v)| v.descriptor)
+        .map(|(_, v)| v.descriptor_proto)
         .collect())
 }
 
