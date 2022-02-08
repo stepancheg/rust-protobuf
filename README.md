@@ -9,179 +9,54 @@ rust-protobuf
 [Protobuf](https://developers.google.com/protocol-buffers/docs/overview) implementation in [Rust](https://www.rust-lang.org/).
 
 * Written in pure rust
-* Generate rust code
-* Has runtime library for generated code
+* Generates rust code
+* Has runtime library support for generated code
   (Coded{Input|Output}Stream impl)
 * Supports both Protobuf versions 2 and 3
+* and more
 
-# This documentation is outdated
+## Where is documentation
 
-rust-protobuf 3 is on the way (see [the post](https://github.com/stepancheg/rust-protobuf/blob/master/doc/past-present-future.md)),
-a lot of documentation migrated to crates documentation on docs.rs, and this page contains a mix of documentation
-for version 2, older version 2, and version 3. This need to be cleaned up.
+Documentation is moved to the crates.
 
-# This documentation is outdated
+* [protobuf=2](https://docs.rs/protobuf/=2)
+* [protobuf=3](https://docs.rs/protobuf/>=3.0.0-alpha)
 
-## List of crates
-
-`rust-protobuf` — repository provides multiple crates:
-
-* `protobuf` — protobuf runtime
-* `protobuf-codegen` — protobuf codegen engine and `protoc-gen-rust` plugin for `protoc` command
-* `protoc` — programmatically work with `protoc` command
-* `protoc-rust` — codegen which can be invoked programmatically using `protoc` binary (e. g. from `build.rs`)
-* `protobuf-codegen-pure` — pure rust codegen
-* `protoc-bin-vendored` — `protoc` binary packaged as crate, can be used with `protoc` or `protoc-rust` crates
+(Note both versions 2 and 3 or rust-protobuf support both `proto2` and `proto3`
+syntax of `.proto` files.)
 
 ## About versions and branches
 
-- `2.*.*` is the latest stable version. `2.*.*` versions follow semver conventions
-- versions below `2` are no longer supported
+### Version 2
+
+`2.*.*` is the latest stable version. `2.*.*` versions follow semver conventions,
+including generated code: code generated with `2.*.*` is compatible with newer `2.*.*`.
+
+### Version 3
+
+Compared to version 2, it has:
+* runtime reflection support
+* JSON and text format parsing and printing (based on reflection)
+* dynamic messages (messages which can be created using schema but without generated code)
+
+Version 3 of rust-protobuf is mostly feature-complete, but to release it:
+* more testing needed
+* API need to be polished since breaking API is not semver-friendly
+
+[Tracking issue for rust-protobuf=3](https://github.com/stepancheg/rust-protobuf/issues/518).
+
+The crate **needs help**:
+* testing
+* documentation
+* examples to be used as documentation
+* feedback on API design
+* feedback on implementation
+* pull requests
+* maybe even a new maintainer
+
+## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md) for a list of changes and compatility issues between versions.
-
-## How to generate rust code
-
-There are several ways to generate rust code from `.proto` files:
-
-* [Invoke protoc programmatically with protoc-rust crate
-  (`protoc-rust` crate)](https://github.com/stepancheg/rust-protobuf/tree/master/protoc).
-  Reliable, but depends on `protoc` binary.
-* [Use pure rust protobuf parser and code generator
-  (`protobuf-codegen-pure` crate)](https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen-pure).
-  Convenient, but may generate incorrect code or fail in complex definitions.
-* [Use `protoc-gen-rust` plugin for Google's `protoc` command](https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen).
-  This is useful to generate code manually or when using external build system.
-
-## Generated code
-
-Have a look at generated files, used internally in rust-protobuf:
-
-* [descriptor.rs](https://github.com/stepancheg/rust-protobuf/blob/master/protobuf/src/descriptor.rs)
-  for [descriptor.proto](https://github.com/stepancheg/rust-protobuf/blob/master/proto/google/protobuf/descriptor.proto)
-  (that is part of Google protobuf)
-
-## Rustdoc
-
-docs.rs hosts [rustdoc for protobuf](https://docs.rs/protobuf/*/protobuf/).
-
-## Getting help
-
-Feel free to [open an issue](https://github.com/stepancheg/rust-protobuf/issues/new)
-if you need help with rust-protobuf.
-
-## Copy-on-write
-
-Rust-protobuf can be used with [bytes crate](https://github.com/tokio-rs/bytes).
-
-To enable `Bytes` you need to:
-
-1. Enable `with-bytes` feature in rust-protobuf:
-
-```toml
-[dependencies]
-protobuf = { version = "2", features = ["with-bytes"] }
-```
-
-2. Enable bytes option
-
-with `Customize` when codegen is invoked programmatically:
-
-With stable rust-protobuf:
-
-```rust
-protoc_rust::run(protoc_rust::Args {
-    ...
-    customize: Customize {
-        tokio_bytes_for_bytes: Some(true),
-        tokio_bytes_for_string: Some(true),
-        ..Default::default()
-    },
- });
-```
-
-With rust-protobuf from master:
-
-```rust
-protoc_rust::Args::new()
-    ...
-    .customize(Customize {
-        tokio_bytes_for_bytes: Some(true),
-        tokio_bytes_for_string: Some(true),
-        ..Default::default()
-    })
-    .run()?;
-```
-
-or in `.proto` file:
-
-```proto
-import "rustproto.proto";
-
-option (rustproto.tokio_bytes_for_bytes_all) = true;
-option (rustproto.tokio_bytes_for_string_all) = true;
-```
-
-With these options enabled, fields of type `bytes` or `string` are
-generated as `Bytes` or `Chars` respectively. When `CodedInputStream` is constructed
-from `Bytes` object, fields of these types get subslices of original `Bytes` object,
-instead of being allocated on heap.
-
-## serde_derive support
-Rust-protobuf can be used with [serde](https://github.com/serde-rs/serde).
-
-To enable `serde` you need to:
-
-1. Enable serde option
-
-with `Customize` when codegen is invoked programmatically:
-
-with stable rust-protobuf:
-
-```rust
-protoc_rust::run(protoc_rust::Args {
-    ...
-    customize: Customize {
-        serde_derive: Some(true),
-        ..Default::default()
-    },
-});
-```
- 
-with rust-protobuf from master:
-
-```rust
-protoc_rust::Args::new()
-    ...
-    .customize(Customize {
-        serde_derive: Some(true),
-        ..Default::default()
-    })
-    .run()?;
-```
-
-or in `.proto` file:
-
-```proto
-import "rustproto.proto";
-
-option (rustproto.serde_derive_all) = true;
-```
-
-2. Make sure to enable the `with-serde` feature in your Cargo.toml
-
-```toml
-[features]
-default = ["with-serde"]
-with-serde = ["protobuf/with-serde"]
-```
-
-You may now `Serialize` and `Deserialize` messages:
-
-```rust
-let my_message = MyMessage::new();
-serde_json::to_string(&my_message).unwrap();
-```
 
 ## Related projects
 
