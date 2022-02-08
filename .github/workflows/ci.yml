@@ -50,9 +50,6 @@ jobs:
               uses: actions-rs/cargo@v1
               with:
                   command: doc
-            - name: test protoc
-              run: protoc/test.sh
-              shell: bash
     linux-beta-default-features:
         name: linux beta (default features)
         runs-on: ubuntu-latest
@@ -98,9 +95,6 @@ jobs:
               uses: actions-rs/cargo@v1
               with:
                   command: doc
-            - name: test protoc
-              run: protoc/test.sh
-              shell: bash
     linux-stable-with-bytes:
         name: linux stable (with-bytes)
         runs-on: ubuntu-latest
@@ -143,9 +137,6 @@ jobs:
               with:
                   command: test
                   args: --manifest-path=protobuf-codegen-pure-test/Cargo.toml --features=with-bytes
-            - name: test protoc
-              run: protoc/test.sh
-              shell: bash
     linux-nightly-all-features:
         name: linux nightly (all features)
         runs-on: ubuntu-latest
@@ -189,9 +180,6 @@ jobs:
               with:
                   command: doc
                   args: --all-features
-            - name: test protoc
-              run: protoc/test.sh
-              shell: bash
     windows-stable-default-features:
         name: windows stable (default features)
         runs-on: windows-latest
