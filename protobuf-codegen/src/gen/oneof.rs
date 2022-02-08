@@ -244,6 +244,7 @@ impl<'a> OneofGen<'a> {
     fn write_enum(&self, w: &mut CodeWriter) {
         let derive = vec!["Clone", "PartialEq", "Debug"];
         w.derive(&derive);
+        w.write_line("#[non_exhaustive]");
         write_protoc_insertion_point_for_oneof(w, &self.customize.for_elem, &self.oneof.oneof);
         w.pub_enum(&self.oneof.rust_name().ident.to_string(), |w| {
             for variant in self.variants_except_group() {
