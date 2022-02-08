@@ -1,4 +1,3 @@
-use std::fmt;
 use std::fmt::Write as _;
 use std::fs;
 use std::path::Path;
@@ -210,16 +209,7 @@ fn normalize_field(field: &mut FieldDescriptorProto) {
 }
 
 fn pretty_message<M: protobuf::Message>(message: &M) -> String {
-    // TODO: pull this handy utility into the protobuf crate.
-    struct FormatMessage<'a, M>(&'a M);
-
-    impl<M: protobuf::Message> fmt::Display for FormatMessage<'_, M> {
-        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-            protobuf::text_format::fmt(self.0, f)
-        }
-    }
-
-    format!("{:#}", FormatMessage(message))
+    format!("{:#}", message)
 }
 
 fn descriptor_for_file<'a>(fds: &'a FileDescriptorSet, file_name: &str) -> &'a FileDescriptorProto {
