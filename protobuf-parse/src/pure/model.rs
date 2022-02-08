@@ -19,7 +19,6 @@ use crate::protobuf_abs_path::ProtobufAbsPath;
 use crate::protobuf_ident::ProtobufIdent;
 use crate::protobuf_path::ProtobufPath;
 use crate::pure::convert::ConvertError;
-use crate::pure::convert::ConvertResult;
 use crate::pure::parser::Parser;
 pub use crate::pure::parser::ParserErrorWithLocation;
 
@@ -434,7 +433,7 @@ impl ProtobufConstant {
     }
 
     /** Interpret .proto constant as an reflection value. */
-    pub fn as_type(&self, ty: RuntimeTypeBox) -> ConvertResult<ReflectValueBox> {
+    pub fn as_type(&self, ty: RuntimeTypeBox) -> anyhow::Result<ReflectValueBox> {
         match (self, &ty) {
             (ProtobufConstant::Ident(ident), RuntimeTypeBox::Enum(e)) => {
                 if let Some(v) = e.get_value_by_name(&ident.to_string()) {
@@ -449,7 +448,7 @@ impl ProtobufConstant {
             }
             _ => {}
         }
-        Err(ConvertError::InconvertibleValue(ty.clone(), self.clone()))
+        Err(ConvertError::InconvertibleValue(ty.clone(), self.clone()).into())
     }
 }
 
