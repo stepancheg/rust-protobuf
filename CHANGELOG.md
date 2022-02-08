@@ -5,6 +5,8 @@ Stable versions are 2.xx still supported.
 
 ## [3] - Unreleased
 
+## [3.0.0-alpha.6] - 2022-02-08
+
 - [Fixed invalid aliasing and uninitialized memory access](https://github.com/stepancheg/rust-protobuf/pull/592)
 - `MessageField` now implements `Deref` and `DerefMut`
 - Slightly more compact generated code
