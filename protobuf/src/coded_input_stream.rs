@@ -270,7 +270,7 @@ impl<'a> CodedInputStream<'a> {
 
     /// Read tag
     #[inline]
-    pub fn read_tag(&mut self) -> Result<wire_format::Tag> {
+    pub(crate) fn read_tag(&mut self) -> Result<wire_format::Tag> {
         let v = self.read_raw_varint32()?;
         match wire_format::Tag::new(v) {
             Some(tag) => Ok(tag),
