@@ -203,7 +203,7 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 
 - Rename `protoc_rust::Args` to `protoc_rust::Codegen`
 - Rename `protobuf_codegen_pure::Args` to `protobuf_codegen_pure::Codegen`
-- [`protoc-bin-vendored` crate](https://github.com/stepancheg/rust-protobuf/tree/master/protoc-bin-vendored) introduced
+- [`protoc-bin-vendored` crate](https://docs.rs/protoc-bin-vendored) introduced
 
 ## [2.13.0] - 2020-04-09
 
@@ -265,7 +265,7 @@ Changes in 2.9 branch are not included in 2.10.
 - Generated code by protobuf compiler is now compatible
   only with exactly the same version of protobuf library.
   Note you can use
-  [pure rust protobuf compiler](https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen-pure)
+  [pure rust protobuf compiler](https://docs.rs/protobuf-codegen-pure)
   to avoid dependency on `protoc` binary.
 - `UnknownFields::fields` field is
   [no longer public](https://github.com/stepancheg/rust-protobuf/commit/8ad35ecaa0accaa251f9f29708e4ed3b96f2351b)
