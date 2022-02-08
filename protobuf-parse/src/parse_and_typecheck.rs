@@ -7,6 +7,8 @@ pub struct ParsedAndTypechecked {
     pub relative_paths: Vec<ProtoPathBuf>,
     /// All parsed `.proto` files including dependencies of input files.
     pub file_descriptors: Vec<protobuf::descriptor::FileDescriptorProto>,
+    /// Description of the parser (e.g. to include in generated files).
+    pub parser: String,
 }
 
 #[cfg(test)]

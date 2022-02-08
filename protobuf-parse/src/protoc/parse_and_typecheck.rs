@@ -35,6 +35,8 @@ pub(crate) fn parse_and_typecheck(parser: &Parser) -> anyhow::Result<ParsedAndTy
         .include_imports(true)
         .write_descriptor_set()?;
 
+    let version = protoc.version()?;
+
     let fds = fs::read(temp_file)?;
     drop(temp_dir);
 
@@ -43,5 +45,6 @@ pub(crate) fn parse_and_typecheck(parser: &Parser) -> anyhow::Result<ParsedAndTy
     Ok(ParsedAndTypechecked {
         relative_paths,
         file_descriptors: fds.file,
+        parser: format!("protoc {}", version),
     })
 }

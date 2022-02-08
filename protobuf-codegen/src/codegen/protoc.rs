@@ -17,9 +17,7 @@ enum Error {
     NotFound(String, String),
 }
 
-pub(crate) fn parse_and_typecheck(
-    codegen: &Codegen,
-) -> anyhow::Result<(ParsedAndTypechecked, String)> {
+pub(crate) fn parse_and_typecheck(codegen: &Codegen) -> anyhow::Result<ParsedAndTypechecked> {
     let protoc = match codegen.protoc.clone() {
         Some(protoc) => protoc,
         None => Protoc::from_env_path(),
@@ -63,11 +61,9 @@ pub(crate) fn parse_and_typecheck(
         return Err(Error::NotFound(file.display().to_string(), format!("{:?}", includes)).into());
     }
 
-    Ok((
-        ParsedAndTypechecked {
-            relative_paths: files_to_generate,
-            file_descriptors: fds.file,
-        },
-        format!("protoc {}", protoc.version()?),
-    ))
+    Ok(ParsedAndTypechecked {
+        relative_paths: files_to_generate,
+        file_descriptors: fds.file,
+        parser: format!("protoc {}", protoc.version()?),
+    })
 }

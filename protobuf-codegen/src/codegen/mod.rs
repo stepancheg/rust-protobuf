@@ -209,13 +209,13 @@ impl Codegen {
             fs::create_dir(&self.out_dir)?;
         }
 
-        let (parsed_and_typechecked, parser) = match self.which_parser {
+        let parsed_and_typechecked = match self.which_parser {
             WhichParser::Protoc => protoc::parse_and_typecheck(self)?,
             WhichParser::Pure => pure::parse_and_typecheck(self)?,
         };
         gen_and_write(
             &parsed_and_typechecked.file_descriptors,
-            &parser,
+            &parsed_and_typechecked.parser,
             &parsed_and_typechecked.relative_paths,
             &self.out_dir,
             &self.customize,

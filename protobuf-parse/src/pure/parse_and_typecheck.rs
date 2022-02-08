@@ -270,6 +270,7 @@ pub fn parse_and_typecheck(parser: &Parser) -> anyhow::Result<ParsedAndTypecheck
     Ok(ParsedAndTypechecked {
         relative_paths: relative_paths.into_iter().map(|(p, _)| p).collect(),
         file_descriptors,
+        parser: "pure".to_owned(),
     })
 }
 
