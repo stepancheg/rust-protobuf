@@ -84,13 +84,13 @@ impl crate::Message for Timestamp {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    if wire_type != crate::wire_format::WireType::Varint {
+                    if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.seconds = is.read_int64()?;
                 },
                 2 => {
-                    if wire_type != crate::wire_format::WireType::Varint {
+                    if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.nanos = is.read_int32()?;

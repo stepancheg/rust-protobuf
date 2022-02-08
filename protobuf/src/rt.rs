@@ -23,7 +23,7 @@ use crate::reflect::types::*;
 use crate::reflect::ProtobufValue;
 use crate::unknown::UnknownFields;
 use crate::wire_format;
-use crate::wire_format::WireType;
+pub use crate::wire_format::WireType;
 use crate::zigzag::*;
 use crate::EnumOrUnknown;
 use crate::MessageField;

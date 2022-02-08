@@ -3,7 +3,7 @@ use protobuf::reflect::ReflectValueRef;
 use protobuf::reflect::RuntimeFieldType;
 use protobuf::reflect::Syntax;
 use protobuf::rt;
-use protobuf::wire_format::WireType;
+use protobuf::rt::WireType;
 use protobuf_parse::ProtobufAbsPath;
 
 use crate::customize::ctx::CustomizeElemCtx;
@@ -1007,7 +1007,7 @@ impl<'a> FieldGen<'a> {
                         )
                     } else {
                         format!(
-                            "{}::rt::value_size({}, {}, {}::wire_format::WireType::{:?})",
+                            "{}::rt::value_size({}, {}, {}::rt::WireType::{:?})",
                             protobuf_crate_path(&self.customize),
                             self.proto_field.number(),
                             var_type.into_target(&param_type, var, &self.customize),
@@ -1563,7 +1563,7 @@ impl<'a> FieldGen<'a> {
     fn write_assert_wire_type(&self, wire_type_var: &str, w: &mut CodeWriter) {
         w.if_stmt(
             &format!(
-                "{} != {}::wire_format::WireType::{:?}",
+                "{} != {}::rt::WireType::{:?}",
                 wire_type_var,
                 protobuf_crate_path(&self.customize),
                 self.wire_type,
