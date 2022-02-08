@@ -52,7 +52,7 @@ The crate **needs help**:
 * feedback on API design
 * feedback on implementation
 * pull requests
-* maybe even a new maintainer
+* a new maintainer
 
 ## Changelog
 
