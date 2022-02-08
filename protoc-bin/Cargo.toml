@@ -8,6 +8,7 @@ repository = "https://github.com/stepancheg/rust-protobuf/"
 description = """
 Internal crate to rust-protobuf
 """
+publish = false
 
 [lib]
 doctest = false
