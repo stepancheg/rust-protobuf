@@ -5,9 +5,9 @@ use std::path::Path;
 use std::path::PathBuf;
 use std::str;
 
+use indexmap::IndexMap;
 use protobuf::descriptor::FileDescriptorProto;
 
-use crate::linked_hash_map::LinkedHashMap;
 use crate::parse_and_typecheck::ParsedAndTypechecked;
 use crate::proto;
 use crate::proto_path::ProtoPath;
@@ -50,7 +50,7 @@ struct Run<R>
 where
     R: ProtoPathResolver,
 {
-    parsed_files: LinkedHashMap<ProtoPathBuf, FileDescriptorPair>,
+    parsed_files: IndexMap<ProtoPathBuf, FileDescriptorPair>,
     resolver: R,
 }
 
@@ -61,7 +61,7 @@ where
     fn get_file_and_all_deps_already_parsed(
         &self,
         protobuf_path: &ProtoPath,
-        result: &mut LinkedHashMap<ProtoPathBuf, FileDescriptorPair>,
+        result: &mut IndexMap<ProtoPathBuf, FileDescriptorPair>,
     ) {
         if let Some(_) = result.get(protobuf_path) {
             return;
@@ -79,7 +79,7 @@ where
     fn get_all_deps_already_parsed(
         &self,
         parsed: &model::FileDescriptor,
-        result: &mut LinkedHashMap<ProtoPathBuf, FileDescriptorPair>,
+        result: &mut IndexMap<ProtoPathBuf, FileDescriptorPair>,
     ) {
         for import in &parsed.imports {
             self.get_file_and_all_deps_already_parsed(&import.path, result);
@@ -103,7 +103,7 @@ where
             self.add_imported_file(&import.path)?;
         }
 
-        let mut this_file_deps = LinkedHashMap::new();
+        let mut this_file_deps = IndexMap::new();
         self.get_all_deps_already_parsed(&parsed, &mut this_file_deps);
 
         let this_file_deps: Vec<_> = this_file_deps.into_iter().map(|(_, v)| v).collect();
@@ -239,7 +239,7 @@ fn fs_resolver(includes: &[PathBuf]) -> impl ProtoPathResolver {
 /// Parse `.proto` files using pure Rust implementation.
 pub fn parse_and_typecheck(parser: &Parser) -> anyhow::Result<ParsedAndTypechecked> {
     let mut run = Run {
-        parsed_files: LinkedHashMap::new(),
+        parsed_files: IndexMap::new(),
         resolver: fs_resolver(&parser.includes),
     };
 
@@ -280,7 +280,7 @@ pub fn parse_and_typecheck_custom(
     resolver: impl ProtoPathResolver,
 ) -> anyhow::Result<Vec<FileDescriptorProto>> {
     let mut run = Run {
-        parsed_files: LinkedHashMap::new(),
+        parsed_files: IndexMap::new(),
         resolver,
     };
 

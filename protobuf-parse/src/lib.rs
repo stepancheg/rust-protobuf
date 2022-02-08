@@ -11,7 +11,6 @@
 //! until that this crate is considered to have **no stable API**.
 
 mod case_convert;
-mod linked_hash_map;
 mod parse_and_typecheck;
 mod parser;
 mod path;

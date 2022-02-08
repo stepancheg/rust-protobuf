@@ -6,6 +6,7 @@
 use std::fmt;
 use std::fmt::Write;
 
+use indexmap::IndexMap;
 use protobuf::reflect::ReflectValueBox;
 use protobuf::reflect::RuntimeTypeBox;
 use protobuf::text_format::lexer::float;
@@ -13,7 +14,6 @@ use protobuf::text_format::lexer::float::format_protobuf_float;
 use protobuf::text_format::lexer::Loc;
 use protobuf::text_format::lexer::StrLit;
 
-use crate::linked_hash_map::LinkedHashMap;
 use crate::proto_path::ProtoPathBuf;
 use crate::protobuf_abs_path::ProtobufAbsPath;
 use crate::protobuf_ident::ProtobufIdent;
@@ -374,7 +374,7 @@ impl fmt::Display for ProtobufConstantMessageFieldName {
 
 #[derive(Debug, Clone, PartialEq, Default)]
 pub(crate) struct ProtobufConstantMessage {
-    pub(crate) fields: LinkedHashMap<ProtobufConstantMessageFieldName, ProtobufConstant>,
+    pub(crate) fields: IndexMap<ProtobufConstantMessageFieldName, ProtobufConstant>,
 }
 
 /// constant = fullIdent | ( [ "-" | "+" ] intLit ) | ( [ "-" | "+" ] floatLit ) |
