@@ -24,7 +24,7 @@ fn test_protoc_bin_path() -> PathBuf {
 fn codegen() -> Codegen {
     let mut codegen = Codegen::new();
     codegen.protoc();
-    codegen.protoc_path(test_protoc_bin_path());
+    codegen.protoc_path(&test_protoc_bin_path());
     codegen.extra_arg("--experimental_allow_proto3_optional");
     codegen
 }

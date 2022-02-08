@@ -311,7 +311,7 @@ where
 
     Codegen::new()
         .protoc()
-        .protoc_path(protoc_bin_vendored::protoc_bin_path().unwrap())
+        .protoc_path(&protoc_bin_vendored::protoc_bin_path().unwrap())
         .inputs(&inputs)
         .includes(&includes)
         .out_dir(&protoc_dir)

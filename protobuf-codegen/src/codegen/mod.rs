@@ -6,15 +6,12 @@ use std::path::Path;
 use std::path::PathBuf;
 use std::process;
 
-use ::protoc::Protoc;
+use protobuf_parse::Parser;
 
 use crate::customize::CustomizeCallback;
 use crate::customize::CustomizeCallbackHolder;
 use crate::gen_and_write::gen_and_write;
 use crate::Customize;
-
-mod protoc;
-mod pure;
 
 #[derive(Debug)]
 enum WhichParser {
@@ -34,7 +31,7 @@ impl Default for WhichParser {
 #[derive(Debug, Default)]
 pub struct Codegen {
     /// What parser to use to parse `.proto` files.
-    which_parser: WhichParser,
+    which_parser: Option<WhichParser>,
     /// Create out directory.
     create_out_dir: bool,
     /// --lang_out= param
@@ -48,7 +45,7 @@ pub struct Codegen {
     /// Customize code generation
     customize_callback: CustomizeCallbackHolder,
     /// Protoc command path
-    protoc: Option<Protoc>,
+    protoc: Option<PathBuf>,
     /// Extra `protoc` args
     extra_args: Vec<OsString>,
 }
@@ -65,13 +62,13 @@ impl Codegen {
 
     /// Switch to pure Rust parser of `.proto` files.
     pub fn pure(&mut self) -> &mut Self {
-        self.which_parser = WhichParser::Pure;
+        self.which_parser = Some(WhichParser::Pure);
         self
     }
 
     /// Switch to `protoc` parser of `.proto` files.
     pub fn protoc(&mut self) -> &mut Self {
-        self.which_parser = WhichParser::Protoc;
+        self.which_parser = Some(WhichParser::Protoc);
         self
     }
 
@@ -160,15 +157,15 @@ impl Codegen {
     ///
     /// Codegen::new()
     ///     .protoc()
-    ///     .protoc_path(protoc_bin_vendored::protoc_bin_path().unwrap())
+    ///     .protoc_path(&protoc_bin_vendored::protoc_bin_path().unwrap())
     ///     // ...
     ///     .run()
     ///     .unwrap();
     /// ```
     ///
     /// This option is ignored when pure Rust parser is used.
-    pub fn protoc_path(&mut self, protoc: impl Into<PathBuf>) -> &mut Self {
-        self.protoc = Some(Protoc::from_path(&protoc.into()));
+    pub fn protoc_path(&mut self, protoc: &Path) -> &mut Self {
+        self.protoc = Some(protoc.to_owned());
         self
     }
 
@@ -209,10 +206,25 @@ impl Codegen {
             fs::create_dir(&self.out_dir)?;
         }
 
-        let parsed_and_typechecked = match self.which_parser {
-            WhichParser::Protoc => protoc::parse_and_typecheck(self)?,
-            WhichParser::Pure => pure::parse_and_typecheck(self)?,
-        };
+        let mut parser = Parser::new();
+        parser.protoc();
+        if let Some(protoc) = &self.protoc {
+            parser.protoc_path(protoc);
+        }
+        match &self.which_parser {
+            Some(WhichParser::Protoc) => {
+                parser.protoc();
+            }
+            Some(WhichParser::Pure) => {
+                parser.pure();
+            }
+            None => {}
+        }
+
+        parser.inputs(&self.inputs);
+        parser.includes(&self.includes);
+        let parsed_and_typechecked = parser.parse_and_typecheck()?;
+
         gen_and_write(
             &parsed_and_typechecked.file_descriptors,
             &parsed_and_typechecked.parser,
@@ -230,42 +242,4 @@ impl Codegen {
             process::exit(1);
         }
     }
-}
-
-fn remove_path_prefix<'a>(mut path: &'a Path, mut prefix: &Path) -> Option<&'a Path> {
-    path = path.strip_prefix(".").unwrap_or(path);
-    prefix = prefix.strip_prefix(".").unwrap_or(prefix);
-    path.strip_prefix(prefix).ok()
-}
-
-#[test]
-fn test_remove_path_prefix() {
-    assert_eq!(
-        Some(Path::new("abc.proto")),
-        remove_path_prefix(Path::new("xxx/abc.proto"), Path::new("xxx"))
-    );
-    assert_eq!(
-        Some(Path::new("abc.proto")),
-        remove_path_prefix(Path::new("xxx/abc.proto"), Path::new("xxx/"))
-    );
-    assert_eq!(
-        Some(Path::new("abc.proto")),
-        remove_path_prefix(Path::new("../xxx/abc.proto"), Path::new("../xxx/"))
-    );
-    assert_eq!(
-        Some(Path::new("abc.proto")),
-        remove_path_prefix(Path::new("abc.proto"), Path::new("."))
-    );
-    assert_eq!(
-        Some(Path::new("abc.proto")),
-        remove_path_prefix(Path::new("abc.proto"), Path::new("./"))
-    );
-    assert_eq!(
-        None,
-        remove_path_prefix(Path::new("xxx/abc.proto"), Path::new("yyy"))
-    );
-    assert_eq!(
-        None,
-        remove_path_prefix(Path::new("xxx/abc.proto"), Path::new("yyy/"))
-    );
 }
