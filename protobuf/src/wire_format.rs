@@ -3,11 +3,11 @@
 use crate::descriptor::field_descriptor_proto;
 
 /// Tag occupies three bits.
-pub const TAG_TYPE_BITS: u32 = 3;
+pub(crate) const TAG_TYPE_BITS: u32 = 3;
 /// Apply this mask to varint value to obtain a tag.
-pub const TAG_TYPE_MASK: u32 = (1u32 << TAG_TYPE_BITS as usize) - 1;
+pub(crate) const TAG_TYPE_MASK: u32 = (1u32 << TAG_TYPE_BITS as usize) - 1;
 /// Max possible field number
-pub const FIELD_NUMBER_MAX: u32 = 0x1fffffff;
+pub(crate) const FIELD_NUMBER_MAX: u32 = 0x1fffffff;
 
 /// All supported "wire types" are listed in this enum.
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
