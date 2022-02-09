@@ -1,6 +1,3 @@
-use std::f32;
-use std::f64;
-
 use protobuf::reflect::FieldDescriptor;
 use protobuf::reflect::MessageDescriptor;
 use protobuf::reflect::ReflectValueBox;
