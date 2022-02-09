@@ -2,6 +2,9 @@
 #![cfg(rustc_nightly)]
 #![cfg(feature = "bytes")]
 #![feature(test)]
+
+extern crate test;
+
 use std::fmt::Write;
 
 use bytes::Bytes;
