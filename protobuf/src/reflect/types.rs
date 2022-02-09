@@ -6,7 +6,8 @@ use std::fmt;
 use std::marker;
 
 #[cfg(feature = "bytes")]
-use crate::bytes::Bytes;
+use ::bytes::Bytes;
+
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;
 use crate::coded_input_stream::CodedInputStream;

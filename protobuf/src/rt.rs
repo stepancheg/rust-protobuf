@@ -7,7 +7,8 @@ use std::default::Default;
 use std::hash::Hash;
 
 #[cfg(feature = "bytes")]
-use crate::bytes::Bytes;
+use ::bytes::Bytes;
+
 pub use crate::cached_size::CachedSize;
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;

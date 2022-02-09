@@ -8,6 +8,7 @@ use std::io::Write;
 use std::path::Path;
 
 use glob;
+use log::debug;
 pub use protobuf_codegen::Customize;
 
 pub fn glob_simple(pattern: &str) -> Vec<String> {
@@ -191,7 +192,7 @@ pub fn gen_in_dir_impl<F>(dir: &str, gen: F)
 where
     F: for<'a> Fn(GenInDirArgs<'a>),
 {
-    info!("generating protos in {}", dir);
+    log::info!("generating protos in {}", dir);
 
     let mut protos = Vec::new();
     for suffix in &[".proto", ".proto3"] {

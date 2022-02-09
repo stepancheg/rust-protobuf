@@ -1,13 +1,5 @@
 //! Functions used in protobuf tests
 
-extern crate glob;
-extern crate protobuf;
-extern crate protobuf_codegen;
-#[macro_use]
-extern crate log;
-extern crate core;
-extern crate tempfile;
-
 pub mod build;
 pub mod hex;
 

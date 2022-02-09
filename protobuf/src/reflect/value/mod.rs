@@ -2,7 +2,8 @@ use std::any::Any;
 use std::fmt;
 
 #[cfg(feature = "bytes")]
-use crate::bytes::Bytes;
+use ::bytes::Bytes;
+
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;
 use crate::reflect::runtime_types::RuntimeType;

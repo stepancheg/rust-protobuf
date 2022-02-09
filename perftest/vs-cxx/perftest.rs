@@ -1,6 +1,3 @@
-extern crate protobuf;
-extern crate rand;
-
 use std::fs::File;
 use std::path::Path;
 use std::time::Instant;

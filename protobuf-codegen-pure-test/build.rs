@@ -1,9 +1,3 @@
-extern crate env_logger;
-extern crate glob;
-extern crate log;
-
-extern crate protobuf_test_common;
-
 use std::env;
 use std::fs;
 use std::io::Read;

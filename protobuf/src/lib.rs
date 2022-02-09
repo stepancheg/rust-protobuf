@@ -41,8 +41,6 @@
 #![deny(missing_docs)]
 #![deny(rustdoc::broken_intra_doc_links)]
 
-#[cfg(feature = "bytes")]
-extern crate bytes;
 pub use crate::clear::Clear;
 pub use crate::coded_input_stream::CodedInputStream;
 pub use crate::coded_output_stream::CodedOutputStream;

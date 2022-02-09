@@ -2,14 +2,6 @@
 #![cfg(rustc_nightly)]
 #![cfg(feature = "bytes")]
 #![feature(test)]
-
-extern crate bytes;
-extern crate test;
-
-extern crate protobuf;
-
-extern crate perftest_bytes;
-
 use std::fmt::Write;
 
 use bytes::Bytes;

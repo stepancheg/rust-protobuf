@@ -4,9 +4,10 @@ use std::io::Read;
 use std::mem;
 use std::mem::MaybeUninit;
 
-use crate::buf_read_iter::BufReadIter;
 #[cfg(feature = "bytes")]
-use crate::bytes::Bytes;
+use ::bytes::Bytes;
+
+use crate::buf_read_iter::BufReadIter;
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;
 use crate::enums::Enum;
