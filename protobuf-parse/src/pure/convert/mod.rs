@@ -2,8 +2,6 @@
 
 mod type_resolver;
 
-use std::iter;
-
 use protobuf;
 use protobuf::descriptor::descriptor_proto::ReservedRange;
 use protobuf::descriptor::field_descriptor_proto;
@@ -25,10 +23,9 @@ use crate::proto_path::ProtoPath;
 use crate::protobuf_abs_path::ProtobufAbsPath;
 use crate::protobuf_ident::ProtobufIdent;
 use crate::protobuf_path::ProtobufPath;
-use crate::protobuf_rel_path::ProtobufRelPath;
-use crate::pure::convert::type_resolver::LookupScope;
 use crate::pure::convert::type_resolver::LookupScopeUnion;
 use crate::pure::convert::type_resolver::MessageOrEnum;
+use crate::pure::convert::type_resolver::TypeResolver;
 use crate::pure::model;
 use crate::pure::model::ProtobufConstant;
 use crate::pure::model::ProtobufOptionName;
@@ -67,11 +64,6 @@ pub(crate) enum ConvertError {
     InconvertibleValue(RuntimeTypeBox, model::ProtobufConstant),
     #[error("constants of this type are not implemented")]
     ConstantsOfTypeMessageEnumGroupNotImplemented,
-    #[error("object is not found by path: {0}")]
-    NotFoundByAbsPath(ProtobufAbsPath),
-    // TODO: explain what are the arguments
-    #[error("object is not found by path: {0} {1}")]
-    NotFoundByRelPath(ProtobufRelPath, ProtobufAbsPath),
     #[error("expecting a message for name {0}")]
     ExpectingMessage(ProtobufAbsPath),
     #[error("expecting an enum for name {0}")]
@@ -215,8 +207,8 @@ impl TypeResolved {
 }
 
 struct Resolver<'a> {
+    type_resolver: TypeResolver<'a>,
     current_file: &'a model::FileDescriptor,
-    deps: &'a [FileDescriptorPair],
 }
 
 impl<'a> Resolver<'a> {
@@ -390,7 +382,8 @@ impl<'a> Resolver<'a> {
         for ext in &input.extensions {
             let mut extension = self.field(scope, &ext.t.field, None)?;
             extension.set_extendee(
-                self.resolve_message_or_enum(scope, &ext.t.extendee)?
+                self.type_resolver
+                    .resolve_message_or_enum(scope, &ext.t.extendee)?
                     .full_name
                     .path,
             );
@@ -431,12 +424,14 @@ impl<'a> Resolver<'a> {
         output.set_name(input.name.clone());
         output.options = Some(self.service_method_options(&input.options)?).into();
         output.set_input_type(
-            self.resolve_message_or_enum(scope, &input.input_type)?
+            self.type_resolver
+                .resolve_message_or_enum(scope, &input.input_type)?
                 .full_name
                 .to_string(),
         );
         output.set_output_type(
-            self.resolve_message_or_enum(scope, &input.output_type)?
+            self.type_resolver
+                .resolve_message_or_enum(scope, &input.output_type)?
                 .full_name
                 .to_string(),
         );
@@ -730,65 +725,21 @@ impl<'a> Resolver<'a> {
         Ok(output)
     }
 
-    fn all_files(&self) -> Vec<&'a model::FileDescriptor> {
-        iter::once(self.current_file)
-            .chain(self.deps.iter().map(|p| &p.parsed))
-            .collect()
-    }
-
-    fn _package_files(&self, package: &ProtobufAbsPath) -> Vec<&model::FileDescriptor> {
-        self.all_files()
-            .into_iter()
-            .filter(|f| &f.package == package)
-            .collect()
-    }
-
-    fn _package_files_for_prefix<'s>(
-        &'s self,
-        path: &ProtobufAbsPath,
-    ) -> Vec<(&model::FileDescriptor, &'s ProtobufRelPathRef)> {
-        self.all_files()
-            .into_iter()
-            .flat_map(|f| f.package.remove_prefix(path).map(|rel| (f, rel)))
-            .collect()
-    }
-
     fn root_scope(&self) -> LookupScopeUnion {
-        let (scopes, partial_scopes) = self
-            .all_files()
-            .into_iter()
-            .partition::<Vec<_>, _>(|f| f.package.is_root());
-        LookupScopeUnion {
-            path: ProtobufAbsPath::root(),
-            scopes: scopes.into_iter().map(LookupScope::File).collect(),
-            partial_scopes,
-        }
+        self.type_resolver.root_scope()
     }
 
     fn lookup(&self, path: &ProtobufAbsPath) -> LookupScopeUnion {
         self.root_scope().lookup(&path.to_root_rel())
     }
 
-    fn find_message_or_enum_by_abs_name(
-        &self,
-        absolute_path: &ProtobufAbsPath,
-    ) -> anyhow::Result<WithFullName<MessageOrEnum<'a>>> {
-        for file in self.all_files() {
-            if let Some(relative) = absolute_path.remove_prefix(&file.package) {
-                if let Some(w) = LookupScope::File(file).find_message_or_enum(&relative) {
-                    return Ok(w);
-                }
-            }
-        }
-
-        return Err(ConvertError::NotFoundByAbsPath(absolute_path.clone()).into());
-    }
-
     fn find_message_by_abs_name(
         &self,
         abs_path: &ProtobufAbsPath,
     ) -> anyhow::Result<WithFullName<&'a model::Message>> {
-        let with_full_name = self.find_message_or_enum_by_abs_name(abs_path)?;
+        let with_full_name = self
+            .type_resolver
+            .find_message_or_enum_by_abs_name(abs_path)?;
         match with_full_name.t {
             MessageOrEnum::Message(m) => Ok(WithFullName {
                 t: m,
@@ -802,7 +753,11 @@ impl<'a> Resolver<'a> {
         &self,
         abs_path: &ProtobufAbsPath,
     ) -> anyhow::Result<&'a model::Enumeration> {
-        match self.find_message_or_enum_by_abs_name(abs_path)?.t {
+        match self
+            .type_resolver
+            .find_message_or_enum_by_abs_name(abs_path)?
+            .t
+        {
             MessageOrEnum::Enum(e) => Ok(e),
             MessageOrEnum::Message(..) => Err(ConvertError::ExpectingEnum(abs_path.clone()).into()),
         }
@@ -833,28 +788,6 @@ impl<'a> Resolver<'a> {
         }
     }
 
-    fn resolve_message_or_enum(
-        &self,
-        scope: &ProtobufAbsPathRef,
-        name: &ProtobufPath,
-    ) -> anyhow::Result<WithFullName<MessageOrEnum>> {
-        match name {
-            ProtobufPath::Abs(name) => Ok(self.find_message_or_enum_by_abs_name(&name)?),
-            ProtobufPath::Rel(name) => {
-                // find message or enum in current package
-                for p in scope.self_and_parents() {
-                    let mut fq = p.to_owned();
-                    fq.push_relative(&name);
-                    if let Ok(me) = self.find_message_or_enum_by_abs_name(&fq) {
-                        return Ok(me);
-                    }
-                }
-
-                Err(ConvertError::NotFoundByRelPath(name.clone(), scope.to_owned()).into())
-            }
-        }
-    }
-
     fn field_type(
         &self,
         scope: &ProtobufAbsPathRef,
@@ -878,7 +811,7 @@ impl<'a> Resolver<'a> {
             model::FieldType::String => TypeResolved::String,
             model::FieldType::Bytes => TypeResolved::Bytes,
             model::FieldType::MessageOrEnum(ref name) => {
-                let t = self.resolve_message_or_enum(scope, &name)?;
+                let t = self.type_resolver.resolve_message_or_enum(scope, &name)?;
                 match t.t {
                     MessageOrEnum::Message(..) => TypeResolved::Message(t.full_name),
                     MessageOrEnum::Enum(..) => TypeResolved::Enum(t.full_name),
@@ -1191,7 +1124,8 @@ impl<'a> Resolver<'a> {
     )> {
         let mut field = self.field(scope, &input.field, None)?;
         field.set_extendee(
-            self.resolve_message_or_enum(scope, &input.extendee)?
+            self.type_resolver
+                .resolve_message_or_enum(scope, &input.extendee)?
                 .full_name
                 .to_string(),
         );
@@ -1248,7 +1182,10 @@ pub(crate) fn file_descriptor(
 ) -> anyhow::Result<protobuf::descriptor::FileDescriptorProto> {
     let resolver = Resolver {
         current_file: &input,
-        deps,
+        type_resolver: TypeResolver {
+            current_file: &input,
+            deps,
+        },
     };
 
     let mut output = protobuf::descriptor::FileDescriptorProto::new();

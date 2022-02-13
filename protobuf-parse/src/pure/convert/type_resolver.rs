@@ -1,10 +1,23 @@
+use std::iter;
+
 use crate::model;
+use crate::protobuf_path::ProtobufPath;
 use crate::pure::convert::WithFullName;
+use crate::FileDescriptorPair;
 use crate::ProtobufAbsPath;
+use crate::ProtobufAbsPathRef;
 use crate::ProtobufIdent;
 use crate::ProtobufIdentRef;
 use crate::ProtobufRelPath;
 use crate::ProtobufRelPathRef;
+
+#[derive(thiserror::Error, Debug)]
+enum TypeResolverError {
+    #[error("object is not found by path: {0}")]
+    NotFoundByAbsPath(ProtobufAbsPath),
+    #[error("object is not found by path `{0}` in scope `{1}`")]
+    NotFoundByRelPath(ProtobufRelPath, ProtobufAbsPath),
+}
 
 pub(crate) enum MessageOrEnum<'a> {
     Message(&'a model::Message),
@@ -25,7 +38,7 @@ impl MessageOrEnum<'_> {
 }
 
 #[derive(Clone)]
-pub(crate) enum LookupScope<'a> {
+enum LookupScope<'a> {
     File(&'a model::FileDescriptor),
     Message(&'a model::Message, ProtobufAbsPath),
 }
@@ -144,9 +157,9 @@ impl<'a> LookupScope<'a> {
 
 #[derive(Clone)]
 pub(crate) struct LookupScopeUnion<'a> {
-    pub(crate) path: ProtobufAbsPath,
-    pub(crate) scopes: Vec<LookupScope<'a>>,
-    pub(crate) partial_scopes: Vec<&'a model::FileDescriptor>,
+    path: ProtobufAbsPath,
+    scopes: Vec<LookupScope<'a>>,
+    partial_scopes: Vec<&'a model::FileDescriptor>,
 }
 
 impl<'a> LookupScopeUnion<'a> {
@@ -181,5 +194,67 @@ impl<'a> LookupScopeUnion<'a> {
 
     pub(crate) fn extensions(&self) -> Vec<&'a model::Extension> {
         self.scopes.iter().flat_map(|s| s.extensions()).collect()
+    }
+}
+
+pub(crate) struct TypeResolver<'a> {
+    pub(crate) current_file: &'a model::FileDescriptor,
+    pub(crate) deps: &'a [FileDescriptorPair],
+}
+
+impl<'a> TypeResolver<'a> {
+    pub(crate) fn all_files(&self) -> Vec<&'a model::FileDescriptor> {
+        iter::once(self.current_file)
+            .chain(self.deps.iter().map(|p| &p.parsed))
+            .collect()
+    }
+
+    pub(crate) fn root_scope(&self) -> LookupScopeUnion<'a> {
+        let (scopes, partial_scopes) = self
+            .all_files()
+            .into_iter()
+            .partition::<Vec<_>, _>(|f| f.package.is_root());
+        LookupScopeUnion {
+            path: ProtobufAbsPath::root(),
+            scopes: scopes.into_iter().map(LookupScope::File).collect(),
+            partial_scopes,
+        }
+    }
+
+    pub(crate) fn find_message_or_enum_by_abs_name(
+        &self,
+        absolute_path: &ProtobufAbsPath,
+    ) -> anyhow::Result<WithFullName<MessageOrEnum<'a>>> {
+        for file in self.all_files() {
+            if let Some(relative) = absolute_path.remove_prefix(&file.package) {
+                if let Some(w) = LookupScope::File(file).find_message_or_enum(&relative) {
+                    return Ok(w);
+                }
+            }
+        }
+
+        return Err(TypeResolverError::NotFoundByAbsPath(absolute_path.clone()).into());
+    }
+
+    pub(crate) fn resolve_message_or_enum(
+        &self,
+        scope: &ProtobufAbsPathRef,
+        name: &ProtobufPath,
+    ) -> anyhow::Result<WithFullName<MessageOrEnum>> {
+        match name {
+            ProtobufPath::Abs(name) => Ok(self.find_message_or_enum_by_abs_name(&name)?),
+            ProtobufPath::Rel(name) => {
+                // find message or enum in current package
+                for p in scope.self_and_parents() {
+                    let mut fq = p.to_owned();
+                    fq.push_relative(&name);
+                    if let Ok(me) = self.find_message_or_enum_by_abs_name(&fq) {
+                        return Ok(me);
+                    }
+                }
+
+                Err(TypeResolverError::NotFoundByRelPath(name.clone(), scope.to_owned()).into())
+            }
+        }
     }
 }
