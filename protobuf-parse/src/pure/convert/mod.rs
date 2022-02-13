@@ -288,7 +288,7 @@ impl<'a> Resolver<'a> {
         &self,
         scope: &ProtobufAbsPathRef,
         input: &[model::ProtobufOption],
-    ) -> anyhow::Result<protobuf::descriptor::MessageOptions> {
+    ) -> anyhow::Result<Option<protobuf::descriptor::MessageOptions>> {
         self.custom_options(scope, input)
     }
 
@@ -371,7 +371,7 @@ impl<'a> Resolver<'a> {
             output.field = fields;
         }
 
-        output.options = Some(self.message_options(scope, &input.options)?).into();
+        output.options = self.message_options(scope, &input.options)?.into();
 
         for ext in &input.extension_ranges {
             let mut extension_range = protobuf::descriptor::descriptor_proto::ExtensionRange::new();
@@ -404,14 +404,14 @@ impl<'a> Resolver<'a> {
     fn service_options(
         &self,
         input: &[model::ProtobufOption],
-    ) -> anyhow::Result<protobuf::descriptor::ServiceOptions> {
+    ) -> anyhow::Result<Option<protobuf::descriptor::ServiceOptions>> {
         self.custom_options(&self.current_file.package, input)
     }
 
     fn service_method_options(
         &self,
         input: &[model::ProtobufOption],
-    ) -> anyhow::Result<protobuf::descriptor::MethodOptions> {
+    ) -> anyhow::Result<Option<protobuf::descriptor::MethodOptions>> {
         self.custom_options(&self.current_file.package, input)
     }
 
@@ -422,7 +422,7 @@ impl<'a> Resolver<'a> {
         let scope = &self.current_file.package;
         let mut output = protobuf::descriptor::MethodDescriptorProto::new();
         output.set_name(input.name.clone());
-        output.options = Some(self.service_method_options(&input.options)?).into();
+        output.options = self.service_method_options(&input.options)?.into();
         output.set_input_type(
             self.type_resolver
                 .resolve_message_or_enum(scope, &input.input_type)?
@@ -444,7 +444,7 @@ impl<'a> Resolver<'a> {
     ) -> anyhow::Result<protobuf::descriptor::ServiceDescriptorProto> {
         let mut output = protobuf::descriptor::ServiceDescriptorProto::new();
         output.set_name(input.name.clone());
-        output.options = Some(self.service_options(&input.options)?).into();
+        output.options = self.service_options(&input.options)?.into();
 
         output.method = input
             .methods
@@ -645,23 +645,29 @@ impl<'a> Resolver<'a> {
         &self,
         scope: &ProtobufAbsPathRef,
         input: &[model::ProtobufOption],
-    ) -> anyhow::Result<M>
+    ) -> anyhow::Result<Option<M>>
     where
         M: Message,
     {
+        if input.is_empty() {
+            // Empty options do not have to represented to unset message field,
+            // but this is what Google's parser does.
+            return Ok(None);
+        }
+
         let mut options = M::new();
 
         for option in input {
             self.custom_option(scope, &mut options, option)?;
         }
-        Ok(options)
+        Ok(Some(options))
     }
 
     fn field_options(
         &self,
         scope: &ProtobufAbsPathRef,
         input: &[model::ProtobufOption],
-    ) -> anyhow::Result<protobuf::descriptor::FieldOptions> {
+    ) -> anyhow::Result<Option<protobuf::descriptor::FieldOptions>> {
         self.custom_options(scope, input)
     }
 
@@ -710,7 +716,7 @@ impl<'a> Resolver<'a> {
             output.set_default_value(default);
         }
 
-        output.options = Some(self.field_options(scope, &input.t.options)?).into();
+        output.options = self.field_options(scope, &input.t.options)?.into();
 
         if let Some(oneof_index) = oneof_index {
             output.set_oneof_index(oneof_index);
@@ -862,7 +868,7 @@ impl<'a> Resolver<'a> {
         let mut output = protobuf::descriptor::EnumValueDescriptorProto::new();
         output.set_name(input.name.clone());
         output.set_number(input.number);
-        output.options = Some(self.enum_value_options(scope, &input.options)?).into();
+        output.options = self.enum_value_options(scope, &input.options)?.into();
         Ok(output)
     }
 
@@ -870,7 +876,7 @@ impl<'a> Resolver<'a> {
         &self,
         scope: &ProtobufAbsPathRef,
         input: &[model::ProtobufOption],
-    ) -> anyhow::Result<protobuf::descriptor::EnumOptions> {
+    ) -> anyhow::Result<Option<protobuf::descriptor::EnumOptions>> {
         self.custom_options(scope, input)
     }
 
@@ -878,7 +884,7 @@ impl<'a> Resolver<'a> {
         &self,
         scope: &ProtobufAbsPathRef,
         input: &[model::ProtobufOption],
-    ) -> anyhow::Result<protobuf::descriptor::EnumValueOptions> {
+    ) -> anyhow::Result<Option<protobuf::descriptor::EnumValueOptions>> {
         self.custom_options(scope, input)
     }
 
@@ -894,7 +900,7 @@ impl<'a> Resolver<'a> {
             .iter()
             .map(|v| self.enum_value(scope, &v))
             .collect::<Result<_, _>>()?;
-        output.options = Some(self.enum_options(scope, &input.options)?).into();
+        output.options = self.enum_options(scope, &input.options)?.into();
         Ok(output)
     }
 
@@ -902,7 +908,7 @@ impl<'a> Resolver<'a> {
         &self,
         scope: &ProtobufAbsPathRef,
         input: &[model::ProtobufOption],
-    ) -> anyhow::Result<protobuf::descriptor::OneofOptions> {
+    ) -> anyhow::Result<Option<protobuf::descriptor::OneofOptions>> {
         self.custom_options(scope, input)
     }
 
@@ -913,7 +919,7 @@ impl<'a> Resolver<'a> {
     ) -> anyhow::Result<protobuf::descriptor::OneofDescriptorProto> {
         let mut output = protobuf::descriptor::OneofDescriptorProto::new();
         output.set_name(input.name.clone());
-        output.options = Some(self.oneof_options(scope, &input.options)?).into();
+        output.options = self.oneof_options(scope, &input.options)?.into();
         Ok(output)
     }
 
@@ -1110,7 +1116,7 @@ impl<'a> Resolver<'a> {
         &self,
         scope: &ProtobufAbsPath,
         input: &[model::ProtobufOption],
-    ) -> anyhow::Result<protobuf::descriptor::FileOptions> {
+    ) -> anyhow::Result<Option<protobuf::descriptor::FileOptions>> {
         self.custom_options(scope, input)
     }
 
@@ -1243,8 +1249,9 @@ pub(crate) fn file_descriptor(
         .map(|model::WithLoc { t, .. }| t)
         .collect();
 
-    output.options =
-        Some(resolver.file_options(&resolver.current_file.package, &input.options)?).into();
+    output.options = resolver
+        .file_options(&resolver.current_file.package, &input.options)?
+        .into();
 
     Ok(output)
 }
