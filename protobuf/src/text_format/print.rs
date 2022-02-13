@@ -203,6 +203,11 @@ pub fn print_to_string(m: &dyn MessageDyn) -> String {
     print_to_string_internal(m, false)
 }
 
+/// Text-format
+pub fn print_to_string_pretty(m: &dyn MessageDyn) -> String {
+    print_to_string_internal(m, true)
+}
+
 /// Text-format to `fmt::Formatter`.
 pub fn fmt(m: &dyn MessageDyn, f: &mut fmt::Formatter) -> fmt::Result {
     let pretty = f.alternate();

@@ -34,6 +34,7 @@ pub use self::parse::ParseError;
 pub use self::print::fmt;
 pub use self::print::print_to;
 pub use self::print::print_to_string;
+pub use self::print::print_to_string_pretty;
 #[doc(hidden)]
 pub use self::print::quote_bytes_to;
 #[doc(hidden)]
