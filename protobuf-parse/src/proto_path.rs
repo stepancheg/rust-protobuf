@@ -140,6 +140,7 @@ impl ProtoPathBuf {
             match component {
                 Component::Prefix(..) => return Err(Error::Absolute(path.to_owned()).into()),
                 Component::RootDir => return Err(Error::Absolute(path.to_owned()).into()),
+                Component::CurDir if path_str.is_empty() => {}
                 Component::CurDir => return Err(Error::Dot(path.display().to_string()).into()),
                 Component::ParentDir => {
                     return Err(Error::DotDot(path.display().to_string()).into())
