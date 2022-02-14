@@ -1,6 +1,7 @@
 use std::iter;
 
 use crate::model;
+use crate::model::WithLoc;
 use crate::protobuf_path::ProtobufPath;
 use crate::pure::convert::WithFullName;
 use crate::FileDescriptorPair;
@@ -65,7 +66,7 @@ impl<'a> LookupScope<'a> {
             .map(|m| &m.t)
     }
 
-    fn enums(&self) -> &'a [model::Enumeration] {
+    fn enums(&self) -> &'a [WithLoc<model::Enumeration>] {
         match self {
             &LookupScope::File(file) => &file.enums,
             &LookupScope::Message(messasge, _) => &messasge.enums,

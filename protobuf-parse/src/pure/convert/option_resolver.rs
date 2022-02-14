@@ -1,4 +1,5 @@
 use protobuf::descriptor::DescriptorProto;
+use protobuf::descriptor::EnumDescriptorProto;
 use protobuf::descriptor::FileDescriptorProto;
 use protobuf::descriptor::ServiceDescriptorProto;
 use protobuf::reflect::FileDescriptor;
@@ -23,6 +24,19 @@ impl<'a> OptionResoler<'a> {
         service_proto.options = self
             .resolver
             .service_options(&service_model.options)?
+            .into();
+        Ok(())
+    }
+
+    fn enumeration(
+        &self,
+        scope: &ProtobufAbsPathRef,
+        enum_proto: &mut EnumDescriptorProto,
+        enum_model: &WithLoc<model::Enumeration>,
+    ) -> anyhow::Result<()> {
+        enum_proto.options = self
+            .resolver
+            .enum_options(scope, &enum_model.options)?
             .into();
         Ok(())
     }
@@ -52,6 +66,15 @@ impl<'a> OptionResoler<'a> {
             self.message(&nested_scope, nested_message_proto, nested_message_model)?;
         }
 
+        for nested_enum_model in &message_model.enums {
+            let nested_enum_proto = message_proto
+                .enum_type
+                .iter_mut()
+                .find(|nested_enum_proto| nested_enum_proto.get_name() == nested_enum_model.name)
+                .unwrap();
+            self.enumeration(&nested_scope, nested_enum_proto, nested_enum_model)?;
+        }
+
         Ok(())
     }
 
@@ -70,6 +93,15 @@ impl<'a> OptionResoler<'a> {
                 message_proto,
                 message_model,
             )?;
+        }
+
+        for enum_model in &self.resolver.current_file.enums {
+            let enum_proto = output
+                .enum_type
+                .iter_mut()
+                .find(|e| e.get_name() == enum_model.name)
+                .unwrap();
+            self.enumeration(&self.resolver.current_file.package, enum_proto, enum_model)?;
         }
 
         for service_proto in &mut output.service {

@@ -221,7 +221,7 @@ pub(crate) struct Message {
     /// Nested messages
     pub messages: Vec<WithLoc<Message>>,
     /// Nested enums
-    pub enums: Vec<Enumeration>,
+    pub enums: Vec<WithLoc<Enumeration>>,
     /// Non-builtin options
     pub options: Vec<ProtobufOption>,
     /// Extension field numbers
@@ -552,7 +552,7 @@ pub(crate) struct FileDescriptor {
     /// Top level messages
     pub messages: Vec<WithLoc<Message>>,
     /// Enums
-    pub enums: Vec<Enumeration>,
+    pub enums: Vec<WithLoc<Enumeration>>,
     /// Extensions
     pub extensions: Vec<WithLoc<Extension>>,
     /// Services

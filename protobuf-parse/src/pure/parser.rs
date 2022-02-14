@@ -260,7 +260,7 @@ pub(crate) struct MessageBody {
     pub reserved_nums: Vec<FieldNumberRange>,
     pub reserved_names: Vec<String>,
     pub messages: Vec<WithLoc<Message>>,
-    pub enums: Vec<Enumeration>,
+    pub enums: Vec<WithLoc<Enumeration>>,
     pub options: Vec<ProtobufOption>,
     pub extension_ranges: Vec<FieldNumberRange>,
     pub extensions: Vec<WithLoc<Extension>>,
@@ -885,7 +885,9 @@ impl<'a> Parser<'a> {
 
     // enum = "enum" enumName enumBody
     // enumBody = "{" { option | enumField | emptyStatement } "}"
-    fn next_enum_opt(&mut self) -> anyhow::Result<Option<Enumeration>> {
+    fn next_enum_opt(&mut self) -> anyhow::Result<Option<WithLoc<Enumeration>>> {
+        let loc = self.tokenizer.lookahead_loc();
+
         if self.tokenizer.next_ident_if_eq("enum")? {
             let name = self.tokenizer.next_ident()?.to_owned();
 
@@ -907,10 +909,14 @@ impl<'a> Parser<'a> {
                 values.push(self.next_enum_field()?);
             }
             self.tokenizer.next_symbol_expect_eq('}', "enum")?;
-            Ok(Some(Enumeration {
+            let enumeration = Enumeration {
                 name,
                 values,
                 options,
+            };
+            Ok(Some(WithLoc {
+                loc,
+                t: enumeration,
             }))
         } else {
             Ok(None)

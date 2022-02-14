@@ -910,7 +910,6 @@ impl<'a> Resolver<'a> {
             .iter()
             .map(|v| self.enum_value(scope, &v))
             .collect::<Result<_, _>>()?;
-        output.options = self.enum_options(scope, &input.options)?.into();
         Ok(output)
     }
 
