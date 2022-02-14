@@ -58,8 +58,8 @@ pub(crate) enum ConvertError {
     #[error("default value is not a string literal")]
     DefaultValueIsNotStringLiteral,
     // TODO: explain
-    #[error("wrong option type")]
-    WrongOptionType,
+    #[error("wrong option type, expecting {0}, got `{1}`")]
+    WrongOptionType(&'static str, String),
     #[error("cannot convert value {1} to type {0}")]
     InconvertibleValue(RuntimeTypeBox, model::ProtobufConstant),
     #[error("constants of this type are not implemented")]
@@ -86,7 +86,7 @@ trait ProtobufOptions {
     fn by_name_bool(&self, name: &str) -> anyhow::Result<Option<bool>> {
         match self.by_name(name) {
             Some(model::ProtobufConstant::Bool(b)) => Ok(Some(*b)),
-            Some(_) => Err(ConvertError::WrongOptionType.into()),
+            Some(c) => Err(ConvertError::WrongOptionType("bool", c.to_string()).into()),
             None => Ok(None),
         }
     }
@@ -97,7 +97,7 @@ trait ProtobufOptions {
                 .decode_utf8()
                 .map(Some)
                 .map_err(|e| ConvertError::StrLitDecodeError(e).into()),
-            Some(_) => Err(ConvertError::WrongOptionType.into()),
+            Some(c) => Err(ConvertError::WrongOptionType("string", c.to_string()).into()),
             None => Ok(None),
         }
     }
