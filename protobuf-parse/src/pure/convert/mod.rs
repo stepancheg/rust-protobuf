@@ -10,6 +10,7 @@ use protobuf::descriptor::field_descriptor_proto::Type;
 use protobuf::descriptor::DescriptorProto;
 use protobuf::descriptor::FieldDescriptorProto;
 use protobuf::json::json_name;
+use protobuf::reflect::FileDescriptor;
 use protobuf::reflect::RuntimeTypeBox;
 use protobuf::text_format::lexer::StrLitDecodeError;
 use protobuf::text_format::quote_bytes_to;
@@ -1324,6 +1325,11 @@ pub(crate) fn file_descriptor(
     output.options = resolver
         .file_options(&resolver.current_file.package, &input.options)?
         .into();
+
+    let _decsriptor = FileDescriptor::new_dynamic(
+        output.clone(),
+        deps.iter().map(|d| d.descriptor.clone()).collect(),
+    );
 
     Ok(output)
 }
