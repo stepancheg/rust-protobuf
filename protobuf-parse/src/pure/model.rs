@@ -270,8 +270,7 @@ impl Message {
             .collect()
     }
 
-    #[cfg(test)]
-    pub fn oneofs_for_test(&self) -> Vec<&OneOf> {
+    pub(crate) fn oneofs(&self) -> Vec<&OneOf> {
         self.fields
             .iter()
             .flat_map(|fo| match &fo.t {

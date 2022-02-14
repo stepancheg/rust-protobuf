@@ -921,12 +921,11 @@ impl<'a> Resolver<'a> {
 
     fn oneof(
         &self,
-        scope: &ProtobufAbsPathRef,
+        _scope: &ProtobufAbsPathRef,
         input: &model::OneOf,
     ) -> anyhow::Result<protobuf::descriptor::OneofDescriptorProto> {
         let mut output = protobuf::descriptor::OneofDescriptorProto::new();
         output.set_name(input.name.clone());
-        output.options = self.oneof_options(scope, &input.options)?.into();
         Ok(output)
     }
 

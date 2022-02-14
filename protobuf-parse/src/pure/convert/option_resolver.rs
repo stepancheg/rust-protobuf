@@ -3,6 +3,7 @@ use protobuf::descriptor::EnumDescriptorProto;
 use protobuf::descriptor::EnumValueDescriptorProto;
 use protobuf::descriptor::FileDescriptorProto;
 use protobuf::descriptor::MethodDescriptorProto;
+use protobuf::descriptor::OneofDescriptorProto;
 use protobuf::descriptor::ServiceDescriptorProto;
 use protobuf::reflect::FileDescriptor;
 
@@ -88,6 +89,19 @@ impl<'a> OptionResoler<'a> {
         Ok(())
     }
 
+    fn oneof(
+        &self,
+        scope: &ProtobufAbsPathRef,
+        oneof_proto: &mut OneofDescriptorProto,
+        oneof_model: &model::OneOf,
+    ) -> anyhow::Result<()> {
+        oneof_proto.options = self
+            .resolver
+            .oneof_options(scope, &oneof_model.options)?
+            .into();
+        Ok(())
+    }
+
     fn message(
         &self,
         scope: &ProtobufAbsPathRef,
@@ -120,6 +134,15 @@ impl<'a> OptionResoler<'a> {
                 .find(|nested_enum_proto| nested_enum_proto.get_name() == nested_enum_model.name)
                 .unwrap();
             self.enumeration(&nested_scope, nested_enum_proto, nested_enum_model)?;
+        }
+
+        for oneof_model in &message_model.oneofs() {
+            let oneof_proto = message_proto
+                .oneof_decl
+                .iter_mut()
+                .find(|oneof_proto| oneof_proto.get_name() == oneof_model.name)
+                .unwrap();
+            self.oneof(&nested_scope, oneof_proto, oneof_model)?;
         }
 
         Ok(())

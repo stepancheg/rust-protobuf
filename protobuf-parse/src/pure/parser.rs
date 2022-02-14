@@ -1460,8 +1460,8 @@ mod test {
     }"#;
 
         let mess = parse_opt(msg, |p| p.next_message_opt());
-        assert_eq!(1, mess.t.oneofs_for_test().len());
-        assert_eq!(3, mess.t.oneofs_for_test()[0].fields.len());
+        assert_eq!(1, mess.t.oneofs().len());
+        assert_eq!(3, mess.t.oneofs()[0].fields.len());
     }
 
     #[test]
