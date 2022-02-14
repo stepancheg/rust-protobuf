@@ -89,7 +89,7 @@ fn print_diff(dir: &Path, a: &Path, b: &Path) {
     // Not using difference crate because it's slow for large files
     let output = Command::new("diff")
         .current_dir(dir)
-        .arg("-u")
+        .arg("-U10")
         .arg(a)
         .arg(b)
         .stdin(Stdio::null())
