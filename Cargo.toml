@@ -1,4 +1,5 @@
 [workspace]
+resolver = "2"
 members = [
     "protoc-bin",
     # Exclude test-protoc from the project, because it depends on binary
