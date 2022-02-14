@@ -10,7 +10,6 @@ use protobuf::descriptor::field_descriptor_proto::Type;
 use protobuf::descriptor::FieldDescriptorProto;
 use protobuf::json::json_name;
 use protobuf::reflect::FileDescriptor;
-use protobuf::reflect::RuntimeTypeBox;
 use protobuf::text_format::quote_bytes_to;
 
 use crate::case_convert::camel_case;
@@ -29,11 +28,9 @@ use crate::ProtobufAbsPathRef;
 use crate::ProtobufIdentRef;
 
 #[derive(Debug, thiserror::Error)]
-pub(crate) enum ConvertError {
+enum ConvertError {
     #[error("default value is not a string literal")]
     DefaultValueIsNotStringLiteral,
-    #[error("cannot convert value {1} to type {0}")]
-    InconvertibleValue(RuntimeTypeBox, model::ProtobufConstant),
     #[error("expecting a message for name {0}")]
     ExpectingMessage(ProtobufAbsPath),
     #[error("expecting an enum for name {0}")]

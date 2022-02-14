@@ -15,13 +15,19 @@ use protobuf::text_format::lexer::float::format_protobuf_float;
 use protobuf::text_format::lexer::Loc;
 use protobuf::text_format::lexer::StrLit;
 
+use crate::model;
 use crate::proto_path::ProtoPathBuf;
 use crate::protobuf_abs_path::ProtobufAbsPath;
 use crate::protobuf_ident::ProtobufIdent;
 use crate::protobuf_path::ProtobufPath;
-use crate::pure::convert::ConvertError;
 use crate::pure::parser::Parser;
 pub use crate::pure::parser::ParserErrorWithLocation;
+
+#[derive(thiserror::Error, Debug)]
+enum ModelError {
+    #[error("cannot convert value `{1}` to type `{0}`")]
+    InconvertibleValue(RuntimeTypeBox, model::ProtobufConstant),
+}
 
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) struct WithLoc<T> {
@@ -456,7 +462,7 @@ impl ProtobufConstant {
             }
             _ => {}
         }
-        Err(ConvertError::InconvertibleValue(ty.clone(), self.clone()).into())
+        Err(ModelError::InconvertibleValue(ty.clone(), self.clone()).into())
     }
 }
 
