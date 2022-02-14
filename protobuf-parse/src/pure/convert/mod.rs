@@ -57,7 +57,6 @@ pub(crate) enum ConvertError {
     StrLitDecodeError(#[source] StrLitDecodeError),
     #[error("default value is not a string literal")]
     DefaultValueIsNotStringLiteral,
-    // TODO: explain
     #[error("wrong option type, expecting {0}, got `{1}`")]
     WrongOptionType(&'static str, String),
     #[error("cannot convert value {1} to type {0}")]
