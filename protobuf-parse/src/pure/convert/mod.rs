@@ -1326,7 +1326,7 @@ pub(crate) fn file_descriptor(
         .file_options(&resolver.current_file.package, &input.options)?
         .into();
 
-    let _decsriptor = FileDescriptor::new_dynamic(
+    let _descriptor = FileDescriptor::new_dynamic(
         output.clone(),
         deps.iter().map(|d| d.descriptor.clone()).collect(),
     );
