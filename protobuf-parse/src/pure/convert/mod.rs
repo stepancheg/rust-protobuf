@@ -872,13 +872,12 @@ impl<'a> Resolver<'a> {
 
     fn enum_value(
         &self,
-        scope: &ProtobufAbsPathRef,
+        _scope: &ProtobufAbsPathRef,
         input: &model::EnumValue,
     ) -> anyhow::Result<protobuf::descriptor::EnumValueDescriptorProto> {
         let mut output = protobuf::descriptor::EnumValueDescriptorProto::new();
         output.set_name(input.name.clone());
         output.set_number(input.number);
-        output.options = self.enum_value_options(scope, &input.options)?.into();
         Ok(output)
     }
 

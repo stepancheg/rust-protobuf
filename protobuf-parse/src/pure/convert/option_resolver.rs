@@ -1,5 +1,6 @@
 use protobuf::descriptor::DescriptorProto;
 use protobuf::descriptor::EnumDescriptorProto;
+use protobuf::descriptor::EnumValueDescriptorProto;
 use protobuf::descriptor::FileDescriptorProto;
 use protobuf::descriptor::ServiceDescriptorProto;
 use protobuf::reflect::FileDescriptor;
@@ -28,6 +29,19 @@ impl<'a> OptionResoler<'a> {
         Ok(())
     }
 
+    fn enum_value(
+        &self,
+        scope: &ProtobufAbsPathRef,
+        enum_value_proto: &mut EnumValueDescriptorProto,
+        enum_value_model: &model::EnumValue,
+    ) -> anyhow::Result<()> {
+        enum_value_proto.options = self
+            .resolver
+            .enum_value_options(scope, &enum_value_model.options)?
+            .into();
+        Ok(())
+    }
+
     fn enumeration(
         &self,
         scope: &ProtobufAbsPathRef,
@@ -38,6 +52,16 @@ impl<'a> OptionResoler<'a> {
             .resolver
             .enum_options(scope, &enum_model.options)?
             .into();
+
+        for enum_value_model in &enum_model.values {
+            let mut enum_value_proto = enum_proto
+                .value
+                .iter_mut()
+                .find(|v| v.get_name() == enum_value_model.name)
+                .unwrap();
+            self.enum_value(scope, &mut enum_value_proto, enum_value_model)?;
+        }
+
         Ok(())
     }
 
