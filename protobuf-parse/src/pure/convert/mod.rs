@@ -2,6 +2,7 @@
 
 mod type_resolver;
 
+use anyhow::Context;
 use protobuf;
 use protobuf::descriptor::descriptor_proto::ReservedRange;
 use protobuf::descriptor::field_descriptor_proto;
@@ -574,9 +575,11 @@ impl<'a> Resolver<'a> {
                     return Ok(());
                 }
                 _ => {
-                    return Err(
-                        ConvertError::ExtensionIsNotMessage(format!("{}", option_name)).into(),
-                    )
+                    return Err(ConvertError::ExtensionIsNotMessage(format!(
+                        "scope: {}, option name: {}",
+                        scope, option_name
+                    ))
+                    .into())
                 }
             }
         }
@@ -587,11 +590,19 @@ impl<'a> Resolver<'a> {
             &format!("{}", option_name),
         ) {
             Ok(value) => value,
-            Err(ConvertError::ConstantsOfTypeMessageEnumGroupNotImplemented) => {
-                // TODO: return error
-                return Ok(());
+            Err(e) => {
+                if let Some(ConvertError::ConstantsOfTypeMessageEnumGroupNotImplemented) =
+                    e.downcast_ref()
+                {
+                    // TODO: return error
+                    return Ok(());
+                }
+                let e = e.context(format!(
+                    "parsing custom option `{}` value `{}` at `{}`",
+                    option_name, option_value, scope
+                ));
+                return Err(e.into());
             }
-            Err(e) => return Err(e.into()),
         };
 
         options.add_value(field.get_number() as u32, value);
@@ -955,12 +966,72 @@ impl<'a> Resolver<'a> {
         Err(ConvertError::ExtensionNotFound(path.to_string()).into())
     }
 
+    fn fixed32(
+        v: impl TryInto<u32, Error = impl std::error::Error + Send + Sync + 'static>,
+    ) -> anyhow::Result<UnknownValue> {
+        Ok(UnknownValue::Fixed32(v.try_into()?))
+    }
+
+    fn sfixed32(
+        v: impl TryInto<i32, Error = impl std::error::Error + Send + Sync + 'static>,
+    ) -> anyhow::Result<UnknownValue> {
+        Ok(UnknownValue::sfixed32(v.try_into()?))
+    }
+
+    fn fixed64(
+        v: impl TryInto<u64, Error = impl std::error::Error + Send + Sync + 'static>,
+    ) -> anyhow::Result<UnknownValue> {
+        Ok(UnknownValue::Fixed64(v.try_into()?))
+    }
+
+    fn sfixed64(
+        v: impl TryInto<i64, Error = impl std::error::Error + Send + Sync + 'static>,
+    ) -> anyhow::Result<UnknownValue> {
+        Ok(UnknownValue::sfixed64(v.try_into()?))
+    }
+
+    fn int32(
+        v: impl TryInto<i32, Error = impl std::error::Error + Send + Sync + 'static>,
+    ) -> anyhow::Result<UnknownValue> {
+        Ok(UnknownValue::int32(v.try_into()?))
+    }
+
+    fn int64(
+        v: impl TryInto<i64, Error = impl std::error::Error + Send + Sync + 'static>,
+    ) -> anyhow::Result<UnknownValue> {
+        Ok(UnknownValue::int64(v.try_into()?))
+    }
+
+    fn uint32(
+        v: impl TryInto<u32, Error = impl std::error::Error + Send + Sync + 'static>,
+    ) -> anyhow::Result<UnknownValue> {
+        Ok(UnknownValue::Varint(v.try_into()? as u64))
+    }
+
+    fn uint64(
+        v: impl TryInto<u64, Error = impl std::error::Error + Send + Sync + 'static>,
+    ) -> anyhow::Result<UnknownValue> {
+        Ok(UnknownValue::Varint(v.try_into()?))
+    }
+
+    fn sint32(
+        v: impl TryInto<i32, Error = impl std::error::Error + Send + Sync + 'static>,
+    ) -> anyhow::Result<UnknownValue> {
+        Ok(UnknownValue::sint32(v.try_into()?))
+    }
+
+    fn sint64(
+        v: impl TryInto<i64, Error = impl std::error::Error + Send + Sync + 'static>,
+    ) -> anyhow::Result<UnknownValue> {
+        Ok(UnknownValue::sint64(v.try_into()?))
+    }
+
     fn option_value_to_unknown_value(
         &self,
         field_type: &TypeResolved,
         value: &model::ProtobufConstant,
         option_name_for_diag: &str,
-    ) -> Result<UnknownValue, ConvertError> {
+    ) -> anyhow::Result<UnknownValue> {
         match value {
             &model::ProtobufConstant::Bool(b) => {
                 if field_type != &TypeResolved::Bool {
@@ -969,37 +1040,32 @@ impl<'a> Resolver<'a> {
                     return Ok(UnknownValue::Varint(if b { 1 } else { 0 }));
                 }
             }
-            // TODO: check overflow
             &model::ProtobufConstant::U64(v) => match field_type {
-                TypeResolved::Fixed64 | TypeResolved::Sfixed64 => {
-                    return Ok(UnknownValue::Fixed64(v))
-                }
-                TypeResolved::Fixed32 | TypeResolved::Sfixed32 => {
-                    return Ok(UnknownValue::Fixed32(v as u32))
-                }
-                TypeResolved::Int64
-                | TypeResolved::Int32
-                | TypeResolved::Uint64
-                | TypeResolved::Uint32 => return Ok(UnknownValue::Varint(v)),
-                TypeResolved::Sint64 => return Ok(UnknownValue::sint64(v as i64)),
-                TypeResolved::Sint32 => return Ok(UnknownValue::sint32(v as i32)),
+                TypeResolved::Fixed64 => return Self::fixed64(v),
+                TypeResolved::Sfixed64 => return Self::sfixed64(v),
+                TypeResolved::Fixed32 => return Self::fixed32(v),
+                TypeResolved::Sfixed32 => return Self::sfixed32(v),
+                TypeResolved::Int32 => return Self::int32(v),
+                TypeResolved::Int64 => return Self::int64(v),
+                TypeResolved::Uint64 => return Self::uint64(v),
+                TypeResolved::Uint32 => return Self::uint32(v),
+                TypeResolved::Sint64 => return Self::sint64(v),
+                TypeResolved::Sint32 => return Self::sint32(v),
                 TypeResolved::Float => return Ok(UnknownValue::float(v as f32)),
                 TypeResolved::Double => return Ok(UnknownValue::double(v as f64)),
                 _ => {}
             },
             &model::ProtobufConstant::I64(v) => match field_type {
-                TypeResolved::Fixed64 | TypeResolved::Sfixed64 => {
-                    return Ok(UnknownValue::Fixed64(v as u64))
-                }
-                TypeResolved::Fixed32 | TypeResolved::Sfixed32 => {
-                    return Ok(UnknownValue::Fixed32(v as u32))
-                }
-                TypeResolved::Int64
-                | TypeResolved::Int32
-                | TypeResolved::Uint64
-                | TypeResolved::Uint32 => return Ok(UnknownValue::Varint(v as u64)),
-                TypeResolved::Sint64 => return Ok(UnknownValue::sint64(v as i64)),
-                TypeResolved::Sint32 => return Ok(UnknownValue::sint32(v as i32)),
+                TypeResolved::Fixed64 => return Self::fixed64(v),
+                TypeResolved::Sfixed64 => return Self::sfixed64(v),
+                TypeResolved::Fixed32 => return Self::fixed32(v),
+                TypeResolved::Sfixed32 => return Self::sfixed32(v),
+                TypeResolved::Int64 => return Self::int64(v),
+                TypeResolved::Int32 => return Self::int32(v),
+                TypeResolved::Uint64 => return Self::uint64(v),
+                TypeResolved::Uint32 => return Self::uint32(v),
+                TypeResolved::Sint64 => return Self::sint64(v),
+                TypeResolved::Sint32 => return Self::sint32(v),
                 TypeResolved::Float => return Ok(UnknownValue::float(v as f32)),
                 TypeResolved::Double => return Ok(UnknownValue::double(v as f64)),
                 _ => {}
@@ -1040,7 +1106,9 @@ impl<'a> Resolver<'a> {
                         .map(|v| v.number)
                     {
                         Some(n) => n,
-                        None => return Err(ConvertError::UnknownEnumValue(ident.to_string())),
+                        None => {
+                            return Err(ConvertError::UnknownEnumValue(ident.to_string()).into())
+                        }
                     };
                     return Ok(UnknownValue::int32(n));
                 }
@@ -1058,7 +1126,9 @@ impl<'a> Resolver<'a> {
                             ProtobufConstantMessageFieldName::Regular(n) => {
                                 let f = match m.field_by_name(n.as_str()) {
                                     Some(f) => f,
-                                    None => return Err(ConvertError::UnknownFieldName(n.clone())),
+                                    None => {
+                                        return Err(ConvertError::UnknownFieldName(n.clone()).into())
+                                    }
                                 };
                                 let u = self
                                     .option_value_field_to_unknown_value(
@@ -1089,13 +1159,14 @@ impl<'a> Resolver<'a> {
 
         Err(match field_type {
             TypeResolved::Message(..) | TypeResolved::Enum(..) | TypeResolved::Group(..) => {
-                ConvertError::ConstantsOfTypeMessageEnumGroupNotImplemented
+                ConvertError::ConstantsOfTypeMessageEnumGroupNotImplemented.into()
             }
             _ => ConvertError::UnsupportedExtensionType(
                 option_name_for_diag.to_owned(),
                 format!("{:?}", field_type),
                 value.clone(),
-            ),
+            )
+            .into(),
         })
     }
 
@@ -1108,7 +1179,9 @@ impl<'a> Resolver<'a> {
         option_name_for_diag: &str,
     ) -> anyhow::Result<UnknownValue> {
         let field_type = self.field_type(&scope, name, field_type)?;
-        Ok(self.option_value_to_unknown_value(&field_type, value, option_name_for_diag)?)
+        Ok(self
+            .option_value_to_unknown_value(&field_type, value, option_name_for_diag)
+            .context("parsing custom option value")?)
     }
 
     fn file_options(

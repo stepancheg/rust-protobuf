@@ -225,9 +225,15 @@ impl From<String> for ProtobufAbsPath {
     }
 }
 
+impl fmt::Display for ProtobufAbsPathRef {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", &self.0)
+    }
+}
+
 impl fmt::Display for ProtobufAbsPath {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Display::fmt(&self.path, f)
+        write!(f, "{}", ProtobufAbsPathRef::new(&self.0))
     }
 }
 
