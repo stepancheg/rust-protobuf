@@ -18,7 +18,7 @@ Files are parsed into a `protobuf::descriptor::FileDescriptorSet` object using e
 tempfile  = "3.2.0"
 log       = "0.*"
 which     = "4.0"
-anyhow    = "1.0.44"
+anyhow    = "1.0.53"
 thiserror = "1.0.30"
 indexmap  = "1.8.0"
 
