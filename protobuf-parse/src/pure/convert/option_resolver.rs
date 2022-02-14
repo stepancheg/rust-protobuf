@@ -2,6 +2,7 @@ use protobuf::descriptor::DescriptorProto;
 use protobuf::descriptor::EnumDescriptorProto;
 use protobuf::descriptor::EnumValueDescriptorProto;
 use protobuf::descriptor::FileDescriptorProto;
+use protobuf::descriptor::MethodDescriptorProto;
 use protobuf::descriptor::ServiceDescriptorProto;
 use protobuf::reflect::FileDescriptor;
 
@@ -17,6 +18,18 @@ pub(crate) struct OptionResoler<'a> {
 }
 
 impl<'a> OptionResoler<'a> {
+    fn method(
+        &self,
+        method_proto: &mut MethodDescriptorProto,
+        method_model: &model::Method,
+    ) -> anyhow::Result<()> {
+        method_proto.options = self
+            .resolver
+            .service_method_options(&method_model.options)?
+            .into();
+        Ok(())
+    }
+
     fn service(
         &self,
         service_proto: &mut ServiceDescriptorProto,
@@ -26,6 +39,16 @@ impl<'a> OptionResoler<'a> {
             .resolver
             .service_options(&service_model.options)?
             .into();
+
+        for service_method_model in &service_model.methods {
+            let mut method_proto = service_proto
+                .method
+                .iter_mut()
+                .find(|method| method.get_name() == service_method_model.name)
+                .unwrap();
+            self.method(&mut method_proto, service_method_model)?;
+        }
+
         Ok(())
     }
 

@@ -423,7 +423,6 @@ impl<'a> Resolver<'a> {
         let scope = &self.current_file.package;
         let mut output = protobuf::descriptor::MethodDescriptorProto::new();
         output.set_name(input.name.clone());
-        output.options = self.service_method_options(&input.options)?.into();
         output.set_input_type(
             self.type_resolver
                 .resolve_message_or_enum(scope, &input.input_type)?
