@@ -1,7 +1,7 @@
 [package]
 name = "protobuf-parse"
 version = "3.0.0-alpha.6"
-edition = "2018"
+edition = "2021"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 license = "MIT"
 homepage = "https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-parse/"

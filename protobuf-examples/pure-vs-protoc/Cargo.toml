@@ -2,7 +2,7 @@
 name = "protobuf-examples-pure-vs-protoc"
 version = "0.0.0"
 authors = ["Jeff Garzik <jeff@bloq.com>"]
-edition = "2018"
+edition = "2021"
 publish = false
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

@@ -3,7 +3,7 @@ name = "protobuf-codegen-identical-test"
 version = "0.0.0"
 authors = ["Nikhil Benesch <nikhil.benesch@gmail.com>"]
 publish = false
-edition = "2018"
+edition = "2021"
 description = "Test protoc-based and pure rust codegen produce identical output"
 
 [lib]

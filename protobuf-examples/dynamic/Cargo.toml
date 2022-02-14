@@ -2,7 +2,7 @@
 name = "protobuf-examples-dynamic"
 version = "0.0.0"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
-edition = "2018"
+edition = "2021"
 publish = false
 
 [dependencies]

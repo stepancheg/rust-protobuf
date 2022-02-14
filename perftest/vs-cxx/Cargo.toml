@@ -3,7 +3,7 @@ name = "rust-protobuf-perftest"
 version = "0.0.0"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 publish = false
-edition = "2018"
+edition = "2021"
 
 [features]
 default = []

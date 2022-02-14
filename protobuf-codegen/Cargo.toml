@@ -2,7 +2,7 @@
 name = "protobuf-codegen"
 version = "3.0.0-alpha.6"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
-edition = "2018"
+edition = "2021"
 license = "MIT"
 homepage = "https://github.com/stepancheg/rust-protobuf/"
 repository = "https://github.com/stepancheg/rust-protobuf/"
