@@ -1,3 +1,4 @@
+use anyhow::Context;
 use protobuf::descriptor::DescriptorProto;
 use protobuf::descriptor::EnumDescriptorProto;
 use protobuf::descriptor::EnumValueDescriptorProto;
@@ -7,12 +8,91 @@ use protobuf::descriptor::MethodDescriptorProto;
 use protobuf::descriptor::OneofDescriptorProto;
 use protobuf::descriptor::ServiceDescriptorProto;
 use protobuf::reflect::FileDescriptor;
+use protobuf::text_format::lexer::StrLitDecodeError;
+use protobuf::Message;
+use protobuf::UnknownFields;
+use protobuf::UnknownValue;
 
 use crate::model;
+use crate::model::ProtobufConstant;
+use crate::model::ProtobufConstantMessageFieldName;
+use crate::model::ProtobufOptionName;
+use crate::model::ProtobufOptionNameExt;
+use crate::model::ProtobufOptionNamePart;
 use crate::model::WithLoc;
+use crate::protobuf_path::ProtobufPath;
 use crate::pure::convert::Resolver;
+use crate::pure::convert::TypeResolved;
+use crate::pure::convert::WithFullName;
+use crate::ProtobufAbsPath;
 use crate::ProtobufAbsPathRef;
+use crate::ProtobufIdent;
 use crate::ProtobufIdentRef;
+use crate::ProtobufRelPathRef;
+
+#[derive(Debug, thiserror::Error)]
+enum OptionResolverError {
+    #[error(transparent)]
+    OtherError(anyhow::Error),
+    #[error("extension is not a message: {0}")]
+    ExtensionIsNotMessage(String),
+    #[error("unknown field name: {0}")]
+    UnknownFieldName(String),
+    // TODO: what are a, b?
+    #[error("wrong extension type: option {0} extendee {1} expected extendee {2}")]
+    WrongExtensionType(String, String, String),
+    #[error("extension not found: {0}")]
+    ExtensionNotFound(String),
+    #[error("unknown enum value: {0}")]
+    UnknownEnumValue(String),
+    #[error("unsupported extension type: {0} {1} {2}")]
+    UnsupportedExtensionType(String, String, model::ProtobufConstant),
+    #[error("builtin option {0} not found for options {1}")]
+    BuiltinOptionNotFound(String, String),
+    #[error("builtin option {0} points to a non-singular field of {1}")]
+    BuiltinOptionPointsToNonSingularField(String, String),
+    #[error("incorrect string literal: {0}")]
+    StrLitDecodeError(#[source] StrLitDecodeError),
+    #[error("wrong option type, expecting {0}, got `{1}`")]
+    WrongOptionType(&'static str, String),
+    #[error("constants of this type are not implemented")]
+    ConstantsOfTypeMessageEnumGroupNotImplemented,
+}
+
+pub(crate) trait ProtobufOptions {
+    fn by_name(&self, name: &str) -> Option<&model::ProtobufConstant>;
+
+    fn by_name_bool(&self, name: &str) -> anyhow::Result<Option<bool>> {
+        match self.by_name(name) {
+            Some(model::ProtobufConstant::Bool(b)) => Ok(Some(*b)),
+            Some(c) => Err(OptionResolverError::WrongOptionType("bool", c.to_string()).into()),
+            None => Ok(None),
+        }
+    }
+
+    fn by_name_string(&self, name: &str) -> anyhow::Result<Option<String>> {
+        match self.by_name(name) {
+            Some(model::ProtobufConstant::String(s)) => s
+                .decode_utf8()
+                .map(Some)
+                .map_err(|e| OptionResolverError::StrLitDecodeError(e).into()),
+            Some(c) => Err(OptionResolverError::WrongOptionType("string", c.to_string()).into()),
+            None => Ok(None),
+        }
+    }
+}
+
+impl<'a> ProtobufOptions for &'a [model::ProtobufOption] {
+    fn by_name(&self, name: &str) -> Option<&model::ProtobufConstant> {
+        let option_name = ProtobufOptionName::simple(name);
+        for model::ProtobufOption { name, value } in *self {
+            if name == &option_name {
+                return Some(&value);
+            }
+        }
+        None
+    }
+}
 
 pub(crate) struct OptionResoler<'a> {
     pub(crate) resolver: &'a Resolver<'a>,
@@ -20,16 +100,578 @@ pub(crate) struct OptionResoler<'a> {
 }
 
 impl<'a> OptionResoler<'a> {
+    fn scope_resolved_candidates_rel(
+        scope: &ProtobufAbsPathRef,
+        rel: &ProtobufRelPathRef,
+    ) -> Vec<ProtobufAbsPath> {
+        scope
+            .self_and_parents()
+            .into_iter()
+            .map(|a| {
+                let mut a = a.to_owned();
+                a.push_relative(rel);
+                a
+            })
+            .collect()
+    }
+
+    fn scope_resolved_candidates(
+        scope: &ProtobufAbsPathRef,
+        path: &ProtobufPath,
+    ) -> Vec<ProtobufAbsPath> {
+        match path {
+            ProtobufPath::Abs(p) => vec![p.clone()],
+            ProtobufPath::Rel(p) => Self::scope_resolved_candidates_rel(scope, p),
+        }
+    }
+
+    fn find_extension_by_abs_path(
+        &self,
+        path: &ProtobufAbsPathRef,
+    ) -> anyhow::Result<Option<(&model::Extension, FieldDescriptorProto)>> {
+        let mut path = path.to_owned();
+        let extension = path.pop().unwrap();
+
+        let scope = self.resolver.lookup(&path);
+
+        for ext in scope.extensions() {
+            if ext.field.t.name == extension.get() {
+                let (resolved_ext, _) = self.resolver.extension(&path, &ext)?;
+                return Ok(Some((&ext, resolved_ext)));
+            }
+        }
+
+        Ok(None)
+    }
+
+    fn find_extension_by_path(
+        &self,
+        scope: &ProtobufAbsPathRef,
+        path: &ProtobufPath,
+    ) -> anyhow::Result<(&model::Extension, FieldDescriptorProto)> {
+        for candidate in Self::scope_resolved_candidates(scope, path) {
+            if let Some(e) = self.find_extension_by_abs_path(&candidate)? {
+                return Ok(e);
+            }
+        }
+
+        Err(OptionResolverError::ExtensionNotFound(path.to_string()).into())
+    }
+
+    fn ext_resolve_field_ext(
+        &self,
+        scope: &ProtobufAbsPathRef,
+        message: &WithFullName<&DescriptorProto>,
+        field_name: &ProtobufPath,
+    ) -> anyhow::Result<FieldDescriptorProto> {
+        let expected_extendee = &message.full_name;
+        let (_extension, field) = self.find_extension_by_path(scope, field_name)?;
+        if &ProtobufAbsPath::new(field.get_extendee()) != expected_extendee {
+            return Err(OptionResolverError::WrongExtensionType(
+                format!("{}", field_name),
+                format!("{}", field.get_extendee()),
+                format!("{}", expected_extendee),
+            )
+            .into());
+        }
+
+        Ok(field)
+    }
+
+    fn ext_resolve_field(
+        &self,
+        scope: &ProtobufAbsPathRef,
+        message: &WithFullName<&DescriptorProto>,
+        field: &ProtobufOptionNamePart,
+    ) -> anyhow::Result<FieldDescriptorProto> {
+        match field {
+            ProtobufOptionNamePart::Direct(field) => {
+                match message.t.field.iter().find(|f| f.get_name() == field.get()) {
+                    Some(field) => Ok(field.clone()),
+                    None => Err(OptionResolverError::UnknownFieldName(field.to_string()).into()),
+                }
+            }
+            ProtobufOptionNamePart::Ext(field) => self.ext_resolve_field_ext(scope, message, field),
+        }
+    }
+
+    fn custom_option_ext_step(
+        &self,
+        scope: &ProtobufAbsPathRef,
+        options_type: &WithFullName<&DescriptorProto>,
+        options: &mut UnknownFields,
+        option_name: &ProtobufOptionNamePart,
+        option_name_rem: &[ProtobufOptionNamePart],
+        option_value: &ProtobufConstant,
+    ) -> anyhow::Result<()> {
+        let field = self.ext_resolve_field(scope, options_type, option_name)?;
+
+        let field_type = TypeResolved::from_field(&field);
+
+        if !option_name_rem.is_empty() {
+            match field_type {
+                TypeResolved::Message(message_name) => {
+                    let m = self.resolver.find_message_by_abs_name(&message_name)?;
+                    let message_proto = self
+                        .resolver
+                        .message(&message_name.parent().unwrap(), m.t)?;
+                    let mut unknown_fields = UnknownFields::new();
+                    self.custom_option_ext_step(
+                        scope,
+                        &WithFullName {
+                            full_name: message_name.clone(),
+                            t: &message_proto,
+                        },
+                        &mut unknown_fields,
+                        &option_name_rem[0],
+                        &option_name_rem[1..],
+                        option_value,
+                    )?;
+                    options.add_length_delimited(
+                        field.get_number() as u32,
+                        unknown_fields.write_to_bytes(),
+                    );
+                    return Ok(());
+                }
+                TypeResolved::Group(..) => {
+                    // TODO: implement
+                    return Ok(());
+                }
+                _ => {
+                    return Err(OptionResolverError::ExtensionIsNotMessage(format!(
+                        "scope: {}, option name: {}",
+                        scope, option_name
+                    ))
+                    .into())
+                }
+            }
+        }
+
+        let value = match self.option_value_to_unknown_value(
+            &field_type,
+            option_value,
+            &format!("{}", option_name),
+        ) {
+            Ok(value) => value,
+            Err(e) => {
+                if let Some(OptionResolverError::ConstantsOfTypeMessageEnumGroupNotImplemented) =
+                    e.downcast_ref()
+                {
+                    // TODO: return error
+                    return Ok(());
+                }
+                let e = e.context(format!(
+                    "parsing custom option `{}` value `{}` at `{}`",
+                    option_name, option_value, scope
+                ));
+                return Err(e.into());
+            }
+        };
+
+        options.add_value(field.get_number() as u32, value);
+        Ok(())
+    }
+
+    fn custom_option_ext<M>(
+        &self,
+        scope: &ProtobufAbsPathRef,
+        options: &mut M,
+        option_name: &ProtobufOptionNameExt,
+        option_value: &ProtobufConstant,
+    ) -> anyhow::Result<()>
+    where
+        M: Message,
+    {
+        self.custom_option_ext_step(
+            scope,
+            &WithFullName {
+                full_name: ProtobufAbsPath::from_path_without_dot(
+                    M::descriptor_static().full_name(),
+                ),
+                t: M::descriptor_static().get_proto(),
+            },
+            options.mut_unknown_fields(),
+            &option_name.0[0],
+            &option_name.0[1..],
+            option_value,
+        )
+    }
+
+    fn fixed32(
+        v: impl TryInto<u32, Error = impl std::error::Error + Send + Sync + 'static>,
+    ) -> anyhow::Result<UnknownValue> {
+        Ok(UnknownValue::Fixed32(v.try_into()?))
+    }
+
+    fn sfixed32(
+        v: impl TryInto<i32, Error = impl std::error::Error + Send + Sync + 'static>,
+    ) -> anyhow::Result<UnknownValue> {
+        Ok(UnknownValue::sfixed32(v.try_into()?))
+    }
+
+    fn fixed64(
+        v: impl TryInto<u64, Error = impl std::error::Error + Send + Sync + 'static>,
+    ) -> anyhow::Result<UnknownValue> {
+        Ok(UnknownValue::Fixed64(v.try_into()?))
+    }
+
+    fn sfixed64(
+        v: impl TryInto<i64, Error = impl std::error::Error + Send + Sync + 'static>,
+    ) -> anyhow::Result<UnknownValue> {
+        Ok(UnknownValue::sfixed64(v.try_into()?))
+    }
+
+    fn int32(
+        v: impl TryInto<i32, Error = impl std::error::Error + Send + Sync + 'static>,
+    ) -> anyhow::Result<UnknownValue> {
+        Ok(UnknownValue::int32(v.try_into()?))
+    }
+
+    fn int64(
+        v: impl TryInto<i64, Error = impl std::error::Error + Send + Sync + 'static>,
+    ) -> anyhow::Result<UnknownValue> {
+        Ok(UnknownValue::int64(v.try_into()?))
+    }
+
+    fn uint32(
+        v: impl TryInto<u32, Error = impl std::error::Error + Send + Sync + 'static>,
+    ) -> anyhow::Result<UnknownValue> {
+        Ok(UnknownValue::Varint(v.try_into()? as u64))
+    }
+
+    fn uint64(
+        v: impl TryInto<u64, Error = impl std::error::Error + Send + Sync + 'static>,
+    ) -> anyhow::Result<UnknownValue> {
+        Ok(UnknownValue::Varint(v.try_into()?))
+    }
+
+    fn sint32(
+        v: impl TryInto<i32, Error = impl std::error::Error + Send + Sync + 'static>,
+    ) -> anyhow::Result<UnknownValue> {
+        Ok(UnknownValue::sint32(v.try_into()?))
+    }
+
+    fn sint64(
+        v: impl TryInto<i64, Error = impl std::error::Error + Send + Sync + 'static>,
+    ) -> anyhow::Result<UnknownValue> {
+        Ok(UnknownValue::sint64(v.try_into()?))
+    }
+
+    fn option_value_to_unknown_value(
+        &self,
+        field_type: &TypeResolved,
+        value: &model::ProtobufConstant,
+        option_name_for_diag: &str,
+    ) -> anyhow::Result<UnknownValue> {
+        match value {
+            &model::ProtobufConstant::Bool(b) => {
+                if field_type != &TypeResolved::Bool {
+                    {}
+                } else {
+                    return Ok(UnknownValue::Varint(if b { 1 } else { 0 }));
+                }
+            }
+            &model::ProtobufConstant::U64(v) => match field_type {
+                TypeResolved::Fixed64 => return Self::fixed64(v),
+                TypeResolved::Sfixed64 => return Self::sfixed64(v),
+                TypeResolved::Fixed32 => return Self::fixed32(v),
+                TypeResolved::Sfixed32 => return Self::sfixed32(v),
+                TypeResolved::Int32 => return Self::int32(v),
+                TypeResolved::Int64 => return Self::int64(v),
+                TypeResolved::Uint64 => return Self::uint64(v),
+                TypeResolved::Uint32 => return Self::uint32(v),
+                TypeResolved::Sint64 => return Self::sint64(v),
+                TypeResolved::Sint32 => return Self::sint32(v),
+                TypeResolved::Float => return Ok(UnknownValue::float(v as f32)),
+                TypeResolved::Double => return Ok(UnknownValue::double(v as f64)),
+                _ => {}
+            },
+            &model::ProtobufConstant::I64(v) => match field_type {
+                TypeResolved::Fixed64 => return Self::fixed64(v),
+                TypeResolved::Sfixed64 => return Self::sfixed64(v),
+                TypeResolved::Fixed32 => return Self::fixed32(v),
+                TypeResolved::Sfixed32 => return Self::sfixed32(v),
+                TypeResolved::Int64 => return Self::int64(v),
+                TypeResolved::Int32 => return Self::int32(v),
+                TypeResolved::Uint64 => return Self::uint64(v),
+                TypeResolved::Uint32 => return Self::uint32(v),
+                TypeResolved::Sint64 => return Self::sint64(v),
+                TypeResolved::Sint32 => return Self::sint32(v),
+                TypeResolved::Float => return Ok(UnknownValue::float(v as f32)),
+                TypeResolved::Double => return Ok(UnknownValue::double(v as f64)),
+                _ => {}
+            },
+            &model::ProtobufConstant::F64(f) => match field_type {
+                TypeResolved::Float => return Ok(UnknownValue::float(f as f32)),
+                TypeResolved::Double => return Ok(UnknownValue::double(f)),
+                TypeResolved::Fixed32 => return Ok(UnknownValue::Fixed32(f as u32)),
+                TypeResolved::Fixed64 => return Ok(UnknownValue::Fixed64(f as u64)),
+                TypeResolved::Sfixed32 => return Ok(UnknownValue::sfixed32(f as i32)),
+                TypeResolved::Sfixed64 => return Ok(UnknownValue::sfixed64(f as i64)),
+                TypeResolved::Int32 | TypeResolved::Int64 => {
+                    return Ok(UnknownValue::int64(f as i64))
+                }
+                TypeResolved::Uint32 | TypeResolved::Uint64 => {
+                    return Ok(UnknownValue::Varint(f as u64))
+                }
+                TypeResolved::Sint64 => return Ok(UnknownValue::sint64(f as i64)),
+                TypeResolved::Sint32 => return Ok(UnknownValue::sint32(f as i32)),
+                _ => {}
+            },
+            &model::ProtobufConstant::String(ref s) => match field_type {
+                TypeResolved::String => {
+                    return Ok(UnknownValue::LengthDelimited(s.decode_utf8()?.into_bytes()))
+                }
+                TypeResolved::Bytes => return Ok(UnknownValue::LengthDelimited(s.decode_bytes()?)),
+                _ => {}
+            },
+            model::ProtobufConstant::Ident(ident) => match &field_type {
+                TypeResolved::Enum(e) => {
+                    let e = self
+                        .resolver
+                        .find_enum_by_abs_name(e)
+                        .map_err(OptionResolverError::OtherError)?;
+                    let n = match e
+                        .values
+                        .iter()
+                        .find(|v| v.name == format!("{}", ident))
+                        .map(|v| v.number)
+                    {
+                        Some(n) => n,
+                        None => {
+                            return Err(
+                                OptionResolverError::UnknownEnumValue(ident.to_string()).into()
+                            )
+                        }
+                    };
+                    return Ok(UnknownValue::int32(n));
+                }
+                _ => {}
+            },
+            model::ProtobufConstant::Message(mo) => match &field_type {
+                TypeResolved::Message(ma) => {
+                    let m = self
+                        .resolver
+                        .find_message_by_abs_name(ma)
+                        .map_err(OptionResolverError::OtherError)?
+                        .t;
+                    let mut unknown_fields = UnknownFields::new();
+                    for (n, v) in &mo.fields {
+                        match n {
+                            ProtobufConstantMessageFieldName::Regular(n) => {
+                                let f = match m.field_by_name(n.as_str()) {
+                                    Some(f) => f,
+                                    None => {
+                                        return Err(OptionResolverError::UnknownFieldName(
+                                            n.clone(),
+                                        )
+                                        .into())
+                                    }
+                                };
+                                let u = self
+                                    .option_value_field_to_unknown_value(
+                                        ma,
+                                        v,
+                                        n,
+                                        &f.typ,
+                                        option_name_for_diag,
+                                    )
+                                    .map_err(OptionResolverError::OtherError)?;
+                                unknown_fields.add_value(f.number as u32, u);
+                            }
+                            ProtobufConstantMessageFieldName::Extension(..) => {
+                                // TODO: implement extension fields in constants
+                            }
+                            ProtobufConstantMessageFieldName::AnyTypeUrl(..) => {
+                                // TODO: implement any type url in constants
+                            }
+                        }
+                    }
+                    return Ok(UnknownValue::LengthDelimited(
+                        unknown_fields.write_to_bytes(),
+                    ));
+                }
+                _ => {}
+            },
+        };
+
+        Err(match field_type {
+            TypeResolved::Message(..) | TypeResolved::Enum(..) | TypeResolved::Group(..) => {
+                OptionResolverError::ConstantsOfTypeMessageEnumGroupNotImplemented.into()
+            }
+            _ => OptionResolverError::UnsupportedExtensionType(
+                option_name_for_diag.to_owned(),
+                format!("{:?}", field_type),
+                value.clone(),
+            )
+            .into(),
+        })
+    }
+
+    fn option_value_field_to_unknown_value(
+        &self,
+        scope: &ProtobufAbsPath,
+        value: &model::ProtobufConstant,
+        name: &str,
+        field_type: &model::FieldType,
+        option_name_for_diag: &str,
+    ) -> anyhow::Result<UnknownValue> {
+        let field_type = self.resolver.field_type(&scope, name, field_type)?;
+        Ok(self
+            .option_value_to_unknown_value(&field_type, value, option_name_for_diag)
+            .context("parsing custom option value")?)
+    }
+
+    fn custom_option_builtin<M>(
+        &self,
+        _scope: &ProtobufAbsPathRef,
+        options: &mut M,
+        option: &ProtobufIdent,
+        option_value: &ProtobufConstant,
+    ) -> anyhow::Result<()>
+    where
+        M: Message,
+    {
+        if M::descriptor_static().full_name() == "google.protobuf.FieldOptions" {
+            if option.get() == "default" || option.get() == "json_name" {
+                // some options are written to non-options message and handled outside
+                return Ok(());
+            }
+        }
+        match M::descriptor_static().get_field_by_name(option.get()) {
+            Some(field) => {
+                if field.is_repeated_or_map() {
+                    return Err(OptionResolverError::BuiltinOptionPointsToNonSingularField(
+                        M::descriptor_static().full_name().to_owned(),
+                        option.get().to_owned(),
+                    )
+                    .into());
+                }
+
+                field.set_singular_field(
+                    options,
+                    option_value.as_type(field.singular_runtime_type())?,
+                );
+                return Ok(());
+            }
+            None => {
+                return Err(OptionResolverError::BuiltinOptionNotFound(
+                    M::descriptor_static().full_name().to_owned(),
+                    option.get().to_owned(),
+                )
+                .into())
+            }
+        }
+    }
+
+    fn custom_option<M>(
+        &self,
+        scope: &ProtobufAbsPathRef,
+        options: &mut M,
+        option: &model::ProtobufOption,
+    ) -> anyhow::Result<()>
+    where
+        M: Message,
+    {
+        match &option.name {
+            ProtobufOptionName::Builtin(simple) => {
+                self.custom_option_builtin(scope, options, simple, &option.value)
+            }
+            ProtobufOptionName::Ext(e) => self.custom_option_ext(scope, options, e, &option.value),
+        }
+    }
+
+    fn custom_options<M>(
+        &self,
+        scope: &ProtobufAbsPathRef,
+        input: &[model::ProtobufOption],
+    ) -> anyhow::Result<Option<M>>
+    where
+        M: Message,
+    {
+        if input.is_empty() {
+            // Empty options do not have to represented to unset message field,
+            // but this is what Google's parser does.
+            return Ok(None);
+        }
+
+        let mut options = M::new();
+
+        for option in input {
+            self.custom_option(scope, &mut options, option)?;
+        }
+        Ok(Some(options))
+    }
+
+    fn file_options(
+        &self,
+        scope: &ProtobufAbsPath,
+        input: &[model::ProtobufOption],
+    ) -> anyhow::Result<Option<protobuf::descriptor::FileOptions>> {
+        self.custom_options(scope, input)
+    }
+
+    fn enum_options(
+        &self,
+        scope: &ProtobufAbsPathRef,
+        input: &[model::ProtobufOption],
+    ) -> anyhow::Result<Option<protobuf::descriptor::EnumOptions>> {
+        self.custom_options(scope, input)
+    }
+
+    fn enum_value_options(
+        &self,
+        scope: &ProtobufAbsPathRef,
+        input: &[model::ProtobufOption],
+    ) -> anyhow::Result<Option<protobuf::descriptor::EnumValueOptions>> {
+        self.custom_options(scope, input)
+    }
+
+    fn field_options(
+        &self,
+        scope: &ProtobufAbsPathRef,
+        input: &[model::ProtobufOption],
+    ) -> anyhow::Result<Option<protobuf::descriptor::FieldOptions>> {
+        self.custom_options(scope, input)
+    }
+
+    fn message_options(
+        &self,
+        scope: &ProtobufAbsPathRef,
+        input: &[model::ProtobufOption],
+    ) -> anyhow::Result<Option<protobuf::descriptor::MessageOptions>> {
+        self.custom_options(scope, input)
+    }
+
+    fn oneof_options(
+        &self,
+        scope: &ProtobufAbsPathRef,
+        input: &[model::ProtobufOption],
+    ) -> anyhow::Result<Option<protobuf::descriptor::OneofOptions>> {
+        self.custom_options(scope, input)
+    }
+
     fn method(
         &self,
         method_proto: &mut MethodDescriptorProto,
         method_model: &model::Method,
     ) -> anyhow::Result<()> {
-        method_proto.options = self
-            .resolver
-            .service_method_options(&method_model.options)?
-            .into();
+        method_proto.options = self.service_method_options(&method_model.options)?.into();
         Ok(())
+    }
+
+    fn service_options(
+        &self,
+        input: &[model::ProtobufOption],
+    ) -> anyhow::Result<Option<protobuf::descriptor::ServiceOptions>> {
+        self.custom_options(&self.resolver.current_file.package, input)
+    }
+
+    fn service_method_options(
+        &self,
+        input: &[model::ProtobufOption],
+    ) -> anyhow::Result<Option<protobuf::descriptor::MethodOptions>> {
+        self.custom_options(&self.resolver.current_file.package, input)
     }
 
     fn service(
@@ -37,10 +679,7 @@ impl<'a> OptionResoler<'a> {
         service_proto: &mut ServiceDescriptorProto,
         service_model: &WithLoc<model::Service>,
     ) -> anyhow::Result<()> {
-        service_proto.options = self
-            .resolver
-            .service_options(&service_model.options)?
-            .into();
+        service_proto.options = self.service_options(&service_model.options)?.into();
 
         for service_method_model in &service_model.methods {
             let mut method_proto = service_proto
@@ -61,7 +700,6 @@ impl<'a> OptionResoler<'a> {
         enum_value_model: &model::EnumValue,
     ) -> anyhow::Result<()> {
         enum_value_proto.options = self
-            .resolver
             .enum_value_options(scope, &enum_value_model.options)?
             .into();
         Ok(())
@@ -73,10 +711,7 @@ impl<'a> OptionResoler<'a> {
         enum_proto: &mut EnumDescriptorProto,
         enum_model: &WithLoc<model::Enumeration>,
     ) -> anyhow::Result<()> {
-        enum_proto.options = self
-            .resolver
-            .enum_options(scope, &enum_model.options)?
-            .into();
+        enum_proto.options = self.enum_options(scope, &enum_model.options)?.into();
 
         for enum_value_model in &enum_model.values {
             let mut enum_value_proto = enum_proto
@@ -96,10 +731,7 @@ impl<'a> OptionResoler<'a> {
         oneof_proto: &mut OneofDescriptorProto,
         oneof_model: &model::OneOf,
     ) -> anyhow::Result<()> {
-        oneof_proto.options = self
-            .resolver
-            .oneof_options(scope, &oneof_model.options)?
-            .into();
+        oneof_proto.options = self.oneof_options(scope, &oneof_model.options)?.into();
         Ok(())
     }
 
@@ -109,10 +741,7 @@ impl<'a> OptionResoler<'a> {
         field_proto: &mut FieldDescriptorProto,
         field_model: &model::Field,
     ) -> anyhow::Result<()> {
-        field_proto.options = self
-            .resolver
-            .field_options(scope, &field_model.options)?
-            .into();
+        field_proto.options = self.field_options(scope, &field_model.options)?.into();
         Ok(())
     }
 
@@ -122,10 +751,7 @@ impl<'a> OptionResoler<'a> {
         message_proto: &mut DescriptorProto,
         message_model: &WithLoc<model::Message>,
     ) -> anyhow::Result<()> {
-        message_proto.options = self
-            .resolver
-            .message_options(scope, &message_model.options)?
-            .into();
+        message_proto.options = self.message_options(scope, &message_model.options)?.into();
 
         let mut nested_scope = scope.to_owned();
         nested_scope.push_simple(ProtobufIdentRef::new(&message_proto.get_name()));
@@ -230,7 +856,6 @@ impl<'a> OptionResoler<'a> {
         }
 
         output.options = self
-            .resolver
             .file_options(
                 &self.resolver.current_file.package,
                 &self.resolver.current_file.options,
