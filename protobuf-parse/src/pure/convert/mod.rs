@@ -725,8 +725,6 @@ impl<'a> Resolver<'a> {
             output.set_default_value(default);
         }
 
-        output.options = self.field_options(scope, &input.t.options)?.into();
-
         if let Some(oneof_index) = oneof_index {
             output.set_oneof_index(oneof_index);
         }

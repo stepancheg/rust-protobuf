@@ -1,6 +1,7 @@
 use protobuf::descriptor::DescriptorProto;
 use protobuf::descriptor::EnumDescriptorProto;
 use protobuf::descriptor::EnumValueDescriptorProto;
+use protobuf::descriptor::FieldDescriptorProto;
 use protobuf::descriptor::FileDescriptorProto;
 use protobuf::descriptor::MethodDescriptorProto;
 use protobuf::descriptor::OneofDescriptorProto;
@@ -102,6 +103,19 @@ impl<'a> OptionResoler<'a> {
         Ok(())
     }
 
+    fn field(
+        &self,
+        scope: &ProtobufAbsPathRef,
+        field_proto: &mut FieldDescriptorProto,
+        field_model: &model::Field,
+    ) -> anyhow::Result<()> {
+        field_proto.options = self
+            .resolver
+            .field_options(scope, &field_model.options)?
+            .into();
+        Ok(())
+    }
+
     fn message(
         &self,
         scope: &ProtobufAbsPathRef,
@@ -115,6 +129,23 @@ impl<'a> OptionResoler<'a> {
 
         let mut nested_scope = scope.to_owned();
         nested_scope.push_simple(ProtobufIdentRef::new(&message_proto.get_name()));
+
+        for field_model in &message_model.regular_fields_including_in_oneofs() {
+            let mut field_proto = message_proto
+                .field
+                .iter_mut()
+                .find(|field| field.get_name() == field_model.name)
+                .unwrap();
+            self.field(&nested_scope, &mut field_proto, field_model)?;
+        }
+        for field_model in &message_model.extensions {
+            let field_proto = message_proto
+                .extension
+                .iter_mut()
+                .find(|field| field.get_name() == field_model.field.name)
+                .unwrap();
+            self.field(&nested_scope, field_proto, &field_model.field)?;
+        }
 
         for nested_message_model in &message_model.messages {
             let nested_message_proto = message_proto
@@ -183,6 +214,19 @@ impl<'a> OptionResoler<'a> {
                 .find(|s| s.name == service_proto.get_name())
                 .unwrap();
             self.service(service_proto, service_model)?;
+        }
+
+        for extension_model in &self.resolver.current_file.extensions {
+            let extension_proto = output
+                .extension
+                .iter_mut()
+                .find(|e| e.get_name() == extension_model.field.name)
+                .unwrap();
+            self.field(
+                &self.resolver.current_file.package,
+                extension_proto,
+                &extension_model.field,
+            )?;
         }
 
         output.options = self
