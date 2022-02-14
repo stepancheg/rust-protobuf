@@ -1,5 +1,6 @@
 //! Convert parser model to rust-protobuf model
 
+mod option_resolver;
 mod type_resolver;
 
 use anyhow::Context;
@@ -25,6 +26,7 @@ use crate::proto_path::ProtoPath;
 use crate::protobuf_abs_path::ProtobufAbsPath;
 use crate::protobuf_ident::ProtobufIdent;
 use crate::protobuf_path::ProtobufPath;
+use crate::pure::convert::option_resolver::OptionResoler;
 use crate::pure::convert::type_resolver::LookupScopeUnion;
 use crate::pure::convert::type_resolver::MessageOrEnum;
 use crate::pure::convert::type_resolver::TypeResolver;
@@ -207,7 +209,7 @@ impl TypeResolved {
     }
 }
 
-struct Resolver<'a> {
+pub(crate) struct Resolver<'a> {
     type_resolver: TypeResolver<'a>,
     current_file: &'a model::FileDescriptor,
 }
@@ -372,8 +374,6 @@ impl<'a> Resolver<'a> {
             output.field = fields;
         }
 
-        output.options = self.message_options(scope, &input.options)?.into();
-
         for ext in &input.extension_ranges {
             let mut extension_range = protobuf::descriptor::descriptor_proto::ExtensionRange::new();
             extension_range.set_start(ext.from);
@@ -445,7 +445,6 @@ impl<'a> Resolver<'a> {
     ) -> anyhow::Result<protobuf::descriptor::ServiceDescriptorProto> {
         let mut output = protobuf::descriptor::ServiceDescriptorProto::new();
         output.set_name(input.name.clone());
-        output.options = self.service_options(&input.options)?.into();
 
         output.method = input
             .methods
@@ -1322,14 +1321,17 @@ pub(crate) fn file_descriptor(
         .map(|model::WithLoc { t, .. }| t)
         .collect();
 
-    output.options = resolver
-        .file_options(&resolver.current_file.package, &input.options)?
-        .into();
-
-    let _descriptor = FileDescriptor::new_dynamic(
+    let descriptor_without_options = FileDescriptor::new_dynamic(
         output.clone(),
         deps.iter().map(|d| d.descriptor.clone()).collect(),
     );
+
+    let option_resolver = OptionResoler {
+        resolver: &resolver,
+        descriptor_without_options,
+    };
+
+    option_resolver.file(&mut output)?;
 
     Ok(output)
 }

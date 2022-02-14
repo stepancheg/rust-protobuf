@@ -5,6 +5,7 @@
 
 use std::fmt;
 use std::fmt::Write;
+use std::ops::Deref;
 
 use indexmap::IndexMap;
 use protobuf::reflect::ReflectValueBox;
@@ -26,6 +27,14 @@ pub use crate::pure::parser::ParserErrorWithLocation;
 pub(crate) struct WithLoc<T> {
     pub loc: Loc,
     pub t: T,
+}
+
+impl<T> Deref for WithLoc<T> {
+    type Target = T;
+
+    fn deref(&self) -> &Self::Target {
+        &self.t
+    }
 }
 
 impl<T> WithLoc<T> {
