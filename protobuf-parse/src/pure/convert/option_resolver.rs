@@ -38,7 +38,6 @@ enum OptionResolverError {
     ExtensionIsNotMessage(String),
     #[error("unknown field name: {0}")]
     UnknownFieldName(String),
-    // TODO: what are a, b?
     #[error("wrong extension type: option {0} extendee {1} expected extendee {2}")]
     WrongExtensionType(String, String, String),
     #[error("extension not found: {0}")]
