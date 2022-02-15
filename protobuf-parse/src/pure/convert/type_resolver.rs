@@ -102,17 +102,6 @@ impl<'a> LookupScope<'a> {
             .next()
     }
 
-    fn down(&self, name: &ProtobufIdentRef) -> Option<LookupScope<'a>> {
-        match self.find_member(name)? {
-            MessageOrEnum::Enum(_) => return None,
-            MessageOrEnum::Message(m) => {
-                let mut path = self.current_path();
-                path.push_simple(name.clone());
-                Some(LookupScope::Message(m, path))
-            }
-        }
-    }
-
     pub(crate) fn find_message_or_enum(
         &self,
         path: &ProtobufRelPathRef,
@@ -147,55 +136,6 @@ impl<'a> LookupScope<'a> {
             }
         }
     }
-
-    fn extensions(&self) -> Vec<&'a model::Extension> {
-        match self {
-            LookupScope::File(f) => f.extensions.iter().map(|e| &e.t).collect(),
-            LookupScope::Message(m, _) => m.extensions.iter().map(|e| &e.t).collect(),
-        }
-    }
-}
-
-#[derive(Clone)]
-pub(crate) struct LookupScopeUnion<'a> {
-    path: ProtobufAbsPath,
-    scopes: Vec<LookupScope<'a>>,
-    partial_scopes: Vec<&'a model::FileDescriptor>,
-}
-
-impl<'a> LookupScopeUnion<'a> {
-    fn down(&self, name: &ProtobufIdentRef) -> LookupScopeUnion<'a> {
-        let mut path: ProtobufAbsPath = self.path.clone();
-        path.push_simple(name);
-
-        let mut scopes: Vec<_> = self.scopes.iter().flat_map(|f| f.down(name)).collect();
-        let mut partial_scopes = Vec::new();
-
-        for &partial_scope in &self.partial_scopes {
-            if partial_scope.package == path {
-                scopes.push(LookupScope::File(partial_scope));
-            } else if partial_scope.package.starts_with(&path) {
-                partial_scopes.push(partial_scope);
-            }
-        }
-        LookupScopeUnion {
-            path,
-            scopes,
-            partial_scopes,
-        }
-    }
-
-    pub(crate) fn lookup(&self, path: &ProtobufRelPath) -> LookupScopeUnion<'a> {
-        let mut scope = self.clone();
-        for c in path.components() {
-            scope = scope.down(c);
-        }
-        scope
-    }
-
-    pub(crate) fn extensions(&self) -> Vec<&'a model::Extension> {
-        self.scopes.iter().flat_map(|s| s.extensions()).collect()
-    }
 }
 
 pub(crate) struct TypeResolver<'a> {
@@ -208,18 +148,6 @@ impl<'a> TypeResolver<'a> {
         iter::once(self.current_file)
             .chain(self.deps.iter().map(|p| &p.parsed))
             .collect()
-    }
-
-    pub(crate) fn root_scope(&self) -> LookupScopeUnion<'a> {
-        let (scopes, partial_scopes) = self
-            .all_files()
-            .into_iter()
-            .partition::<Vec<_>, _>(|f| f.package.is_root());
-        LookupScopeUnion {
-            path: ProtobufAbsPath::root(),
-            scopes: scopes.into_iter().map(LookupScope::File).collect(),
-            partial_scopes,
-        }
     }
 
     pub(crate) fn find_message_or_enum_by_abs_name(

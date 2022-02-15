@@ -19,7 +19,6 @@ use crate::protobuf_abs_path::ProtobufAbsPath;
 use crate::protobuf_ident::ProtobufIdent;
 use crate::pure::convert::option_resolver::OptionResoler;
 use crate::pure::convert::option_resolver::ProtobufOptions;
-use crate::pure::convert::type_resolver::LookupScopeUnion;
 use crate::pure::convert::type_resolver::MessageOrEnum;
 use crate::pure::convert::type_resolver::TypeResolver;
 use crate::pure::model;
@@ -408,14 +407,6 @@ impl<'a> Resolver<'a> {
         }
 
         Ok(output)
-    }
-
-    fn root_scope(&self) -> LookupScopeUnion {
-        self.type_resolver.root_scope()
-    }
-
-    fn lookup(&self, path: &ProtobufAbsPath) -> LookupScopeUnion {
-        self.root_scope().lookup(&path.to_root_rel())
     }
 
     fn find_message_by_abs_name(

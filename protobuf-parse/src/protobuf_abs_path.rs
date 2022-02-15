@@ -4,6 +4,9 @@ use std::fmt;
 use std::mem;
 use std::ops::Deref;
 
+use protobuf::descriptor::FileDescriptorProto;
+use protobuf::reflect::FileDescriptor;
+
 use crate::protobuf_ident::ProtobufIdent;
 use crate::protobuf_rel_path::ProtobufRelPath;
 use crate::ProtobufIdentRef;
@@ -53,9 +56,30 @@ impl ProtobufAbsPathRef {
     }
 
     pub fn new(path: &str) -> &ProtobufAbsPathRef {
-        assert!(ProtobufAbsPath::is_abs(path));
+        assert!(ProtobufAbsPath::is_abs(path), "{:?} is not absolute", path);
         // SAFETY: repr(transparent)
         unsafe { mem::transmute(path) }
+    }
+
+    pub fn remove_prefix(&self, prefix: &ProtobufAbsPathRef) -> Option<&ProtobufRelPathRef> {
+        if self.0.starts_with(&prefix.0) {
+            let rem = &self.0[prefix.0.len()..];
+            if rem.is_empty() {
+                return Some(ProtobufRelPathRef::empty());
+            }
+            if rem.starts_with('.') {
+                return Some(ProtobufRelPathRef::new(&rem[1..]));
+            }
+        }
+        None
+    }
+
+    pub fn starts_with(&self, that: &ProtobufAbsPathRef) -> bool {
+        self.remove_prefix(that).is_some()
+    }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
     }
 
     pub fn to_owned(&self) -> ProtobufAbsPath {
@@ -98,6 +122,10 @@ impl ProtobufAbsPath {
         ProtobufAbsPathRef::root().to_owned()
     }
 
+    pub fn as_ref(&self) -> &ProtobufAbsPathRef {
+        ProtobufAbsPathRef::new(&self.path)
+    }
+
     /// If given name is an fully quialified protobuf name.
     pub fn is_abs(path: &str) -> bool {
         path.is_empty() || (path.starts_with(".") && path != ".")
@@ -120,6 +148,29 @@ impl ProtobufAbsPath {
         );
         assert!(!path.ends_with("."), "{}", path);
         ProtobufAbsPath { path }
+    }
+
+    pub fn new_from_rel(path: &str) -> ProtobufAbsPath {
+        assert!(
+            !path.starts_with("."),
+            "rel path must not start with dot: {:?}",
+            path
+        );
+        ProtobufAbsPath {
+            path: if path.is_empty() {
+                String::new()
+            } else {
+                format!(".{}", path)
+            },
+        }
+    }
+
+    pub fn package_from_file_proto(file: &FileDescriptorProto) -> ProtobufAbsPath {
+        Self::new_from_rel(file.get_package())
+    }
+
+    pub fn package_from_file_descriptor(file: &FileDescriptor) -> ProtobufAbsPath {
+        Self::package_from_file_proto(file.proto())
     }
 
     pub fn concat(a: &ProtobufAbsPathRef, b: &ProtobufRelPathRef) -> ProtobufAbsPath {
@@ -152,19 +203,6 @@ impl ProtobufAbsPath {
         if !relative.is_empty() {
             self.path.push_str(&format!(".{}", relative));
         }
-    }
-
-    pub fn remove_prefix(&self, prefix: &ProtobufAbsPathRef) -> Option<&ProtobufRelPathRef> {
-        if self.path.starts_with(&prefix.0) {
-            let rem = &self.path[prefix.0.len()..];
-            if rem.is_empty() {
-                return Some(ProtobufRelPathRef::empty());
-            }
-            if rem.starts_with('.') {
-                return Some(ProtobufRelPathRef::new(&rem[1..]));
-            }
-        }
-        None
     }
 
     pub fn remove_suffix(&self, suffix: &ProtobufRelPathRef) -> Option<&ProtobufAbsPathRef> {
@@ -202,10 +240,6 @@ impl ProtobufAbsPath {
         } else {
             ProtobufRelPath::new(&self.path[1..])
         }
-    }
-
-    pub fn starts_with(&self, that: &ProtobufAbsPath) -> bool {
-        self.remove_prefix(that).is_some()
     }
 
     pub fn ends_with(&self, that: &ProtobufRelPath) -> bool {

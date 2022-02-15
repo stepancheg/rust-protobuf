@@ -8,6 +8,7 @@ use protobuf::descriptor::MethodDescriptorProto;
 use protobuf::descriptor::OneofDescriptorProto;
 use protobuf::descriptor::ServiceDescriptorProto;
 use protobuf::reflect::FileDescriptor;
+use protobuf::reflect::MessageDescriptor;
 use protobuf::text_format::lexer::StrLitDecodeError;
 use protobuf::Message;
 use protobuf::UnknownFields;
@@ -28,6 +29,7 @@ use crate::ProtobufAbsPath;
 use crate::ProtobufAbsPathRef;
 use crate::ProtobufIdent;
 use crate::ProtobufIdentRef;
+use crate::ProtobufRelPath;
 use crate::ProtobufRelPathRef;
 
 #[derive(Debug, thiserror::Error)]
@@ -56,6 +58,91 @@ enum OptionResolverError {
     WrongOptionType(&'static str, String),
     #[error("constants of this type are not implemented")]
     ConstantsOfTypeMessageEnumGroupNotImplemented,
+}
+
+#[derive(Clone)]
+enum LookupScope2 {
+    File(FileDescriptor),
+    Message(MessageDescriptor, ProtobufAbsPath),
+}
+
+impl LookupScope2 {
+    fn current_path(&self) -> ProtobufAbsPath {
+        match self {
+            LookupScope2::File(f) => ProtobufAbsPath::package_from_file_descriptor(f),
+            LookupScope2::Message(_, p) => p.clone(),
+        }
+    }
+
+    fn messages(&self) -> Vec<MessageDescriptor> {
+        match self {
+            LookupScope2::File(file) => file.messages(),
+            LookupScope2::Message(message, _) => message.nested_messages(),
+        }
+    }
+
+    fn down(&self, name: &ProtobufIdentRef) -> Option<LookupScope2> {
+        match self.messages().iter().find(|m| m.name() == name.as_str()) {
+            Some(m) => {
+                let mut path = self.current_path();
+                path.push_simple(name.clone());
+                Some(LookupScope2::Message(m.clone(), path))
+            }
+            None => None,
+        }
+    }
+
+    fn extensions(&self) -> &[FieldDescriptorProto] {
+        match self {
+            // TODO: unify `proto` and `get_proto` names
+            // TODO: work with descriptors, not with protos
+            LookupScope2::File(f) => &f.proto().extension,
+            LookupScope2::Message(m, _) => &m.get_proto().extension,
+        }
+    }
+}
+
+#[derive(Clone)]
+pub(crate) struct LookupScopeUnion2 {
+    path: ProtobufAbsPath,
+    scopes: Vec<LookupScope2>,
+    partial_scopes: Vec<FileDescriptor>,
+}
+
+impl LookupScopeUnion2 {
+    fn down(&self, name: &ProtobufIdentRef) -> LookupScopeUnion2 {
+        let mut path: ProtobufAbsPath = self.path.clone();
+        path.push_simple(name);
+
+        let mut scopes: Vec<_> = self.scopes.iter().flat_map(|f| f.down(name)).collect();
+        let mut partial_scopes = Vec::new();
+
+        for partial_scope in &self.partial_scopes {
+            let package = ProtobufAbsPath::package_from_file_descriptor(partial_scope);
+            if package.as_ref() == path.as_ref() {
+                scopes.push(LookupScope2::File(partial_scope.clone()));
+            } else if package.starts_with(&path) {
+                partial_scopes.push(partial_scope.clone());
+            }
+        }
+        LookupScopeUnion2 {
+            path,
+            scopes,
+            partial_scopes,
+        }
+    }
+
+    fn lookup(&self, path: &ProtobufRelPath) -> LookupScopeUnion2 {
+        let mut scope = self.clone();
+        for c in path.components() {
+            scope = scope.down(c);
+        }
+        scope
+    }
+
+    fn extensions(&self) -> Vec<&FieldDescriptorProto> {
+        self.scopes.iter().flat_map(|s| s.extensions()).collect()
+    }
 }
 
 pub(crate) trait ProtobufOptions {
@@ -99,6 +186,35 @@ pub(crate) struct OptionResoler<'a> {
 }
 
 impl<'a> OptionResoler<'a> {
+    fn all_files(&self) -> Vec<FileDescriptor> {
+        let mut files = Vec::new();
+        files.push(self.descriptor_without_options.clone());
+        files.extend(
+            self.resolver
+                .type_resolver
+                .deps
+                .iter()
+                .map(|p| p.descriptor.clone()),
+        );
+        files
+    }
+
+    fn root_scope(&self) -> LookupScopeUnion2 {
+        let (scopes, partial_scopes) = self
+            .all_files()
+            .into_iter()
+            .partition::<Vec<_>, _>(|f| ProtobufAbsPath::package_from_file_descriptor(f).is_root());
+        LookupScopeUnion2 {
+            path: ProtobufAbsPath::root(),
+            scopes: scopes.into_iter().map(LookupScope2::File).collect(),
+            partial_scopes,
+        }
+    }
+
+    fn lookup(&self, path: &ProtobufAbsPath) -> LookupScopeUnion2 {
+        self.root_scope().lookup(&path.to_root_rel())
+    }
+
     fn scope_resolved_candidates_rel(
         scope: &ProtobufAbsPathRef,
         rel: &ProtobufRelPathRef,
@@ -127,16 +243,15 @@ impl<'a> OptionResoler<'a> {
     fn find_extension_by_abs_path(
         &self,
         path: &ProtobufAbsPathRef,
-    ) -> anyhow::Result<Option<(&model::Extension, FieldDescriptorProto)>> {
+    ) -> anyhow::Result<Option<FieldDescriptorProto>> {
         let mut path = path.to_owned();
         let extension = path.pop().unwrap();
 
-        let scope = self.resolver.lookup(&path);
+        let scope = self.lookup(&path);
 
         for ext in scope.extensions() {
-            if ext.field.t.name == extension.get() {
-                let (resolved_ext, _) = self.resolver.extension(&path, &ext)?;
-                return Ok(Some((&ext, resolved_ext)));
+            if ext.get_name() == extension.get() {
+                return Ok(Some(ext.clone()));
             }
         }
 
@@ -147,7 +262,7 @@ impl<'a> OptionResoler<'a> {
         &self,
         scope: &ProtobufAbsPathRef,
         path: &ProtobufPath,
-    ) -> anyhow::Result<(&model::Extension, FieldDescriptorProto)> {
+    ) -> anyhow::Result<FieldDescriptorProto> {
         for candidate in Self::scope_resolved_candidates(scope, path) {
             if let Some(e) = self.find_extension_by_abs_path(&candidate)? {
                 return Ok(e);
@@ -164,7 +279,7 @@ impl<'a> OptionResoler<'a> {
         field_name: &ProtobufPath,
     ) -> anyhow::Result<FieldDescriptorProto> {
         let expected_extendee = &message.full_name;
-        let (_extension, field) = self.find_extension_by_path(scope, field_name)?;
+        let field = self.find_extension_by_path(scope, field_name)?;
         if &ProtobufAbsPath::new(field.get_extendee()) != expected_extendee {
             return Err(OptionResolverError::WrongExtensionType(
                 format!("{}", field_name),
