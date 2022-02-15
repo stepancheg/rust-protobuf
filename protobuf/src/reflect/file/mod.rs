@@ -6,18 +6,21 @@ use std::sync::Arc;
 
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
+use crate::reflect::field::FieldDescriptorImpl;
+use crate::reflect::file::common::FileDescriptorCommon;
 use crate::reflect::file::dynamic::DynamicFileDescriptor;
 use crate::reflect::file::fds::FdsBuilder;
-use crate::reflect::file::index::FileIndex;
 use crate::reflect::file::index::FileIndexMessageEntry;
 use crate::reflect::name::protobuf_name_starts_with_package;
 use crate::reflect::service::ServiceDescriptor;
 use crate::reflect::EnumDescriptor;
+use crate::reflect::FieldDescriptor;
 use crate::reflect::GeneratedFileDescriptor;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::Syntax;
 
 pub(crate) mod building;
+pub(crate) mod common;
 pub(crate) mod dynamic;
 pub(crate) mod fds;
 pub(crate) mod generated;
@@ -70,15 +73,15 @@ pub struct FileDescriptor {
 }
 
 impl FileDescriptor {
-    fn index(&self) -> &FileIndex {
+    pub(crate) fn index(&self) -> &FileDescriptorCommon {
         match &self.imp {
-            FileDescriptorImpl::Generated(g) => &g.index,
-            FileDescriptorImpl::Dynamic(d) => &d.index,
+            FileDescriptorImpl::Generated(g) => &g.common,
+            FileDescriptorImpl::Dynamic(d) => &d.common,
         }
     }
 
     pub(crate) fn message_index_entry(&self, index: usize) -> &FileIndexMessageEntry {
-        &self.index().messages[index]
+        &self.index().index.messages[index]
     }
 
     pub(crate) fn message_proto(&self, index: usize) -> &DescriptorProto {
@@ -96,6 +99,7 @@ impl FileDescriptor {
     /// Get top-level messages.
     pub fn messages(&self) -> Vec<MessageDescriptor> {
         self.index()
+            .index
             .top_level_messages
             .iter()
             .map(|i| MessageDescriptor::new(self.clone(), *i))
@@ -122,11 +126,21 @@ impl FileDescriptor {
             .collect()
     }
 
+    /// Extension fields.
+    pub fn extensions(&self) -> Vec<FieldDescriptor> {
+        (0..self.index().extensions.len())
+            .map(move |index| FieldDescriptor {
+                imp: FieldDescriptorImpl::ExtensionInFile(self.clone(), index),
+            })
+            .collect()
+    }
+
     /// Find message by name relative to the package.
     ///
     /// Only search in the current file, not in any dependencies.
     pub fn message_by_package_relative_name(&self, name: &str) -> Option<MessageDescriptor> {
         self.index()
+            .index
             .message_by_name_to_package
             .get(name)
             .map(|&index| MessageDescriptor::new(self.clone(), index))
@@ -137,6 +151,7 @@ impl FileDescriptor {
     /// Only search in the current file, not in any dependencies.
     pub fn enum_by_package_relative_name(&self, name: &str) -> Option<EnumDescriptor> {
         self.index()
+            .index
             .enums_by_name_to_package
             .get(name)
             .map(|&index| EnumDescriptor::new(self.clone(), index))
@@ -225,8 +240,8 @@ impl FileDescriptor {
     /// Direct dependencies of this file.
     pub fn deps(&self) -> &[FileDescriptor] {
         match &self.imp {
-            FileDescriptorImpl::Generated(g) => &g.dependencies,
-            FileDescriptorImpl::Dynamic(d) => &d.dependencies,
+            FileDescriptorImpl::Generated(g) => &g.common.dependencies,
+            FileDescriptorImpl::Dynamic(d) => &d.common.dependencies,
         }
     }
 

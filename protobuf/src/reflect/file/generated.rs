@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::enums::generated::GeneratedEnumDescriptor;
 use crate::reflect::file::building::FileDescriptorBuilding;
+use crate::reflect::file::common::FileDescriptorCommon;
 use crate::reflect::file::fds::fds_extend_with_public;
 use crate::reflect::file::index::FileIndex;
 use crate::reflect::message::generated::GeneratedMessageDescriptor;
@@ -15,10 +16,9 @@ use crate::reflect::GeneratedMessageDescriptorData;
 #[derive(Debug)]
 pub struct GeneratedFileDescriptor {
     pub(crate) proto: &'static FileDescriptorProto,
-    pub(crate) dependencies: Vec<FileDescriptor>,
     pub(crate) messages: Vec<GeneratedMessageDescriptor>,
     pub(crate) enums: Vec<GeneratedEnumDescriptor>,
-    pub(crate) index: FileIndex,
+    pub(crate) common: FileDescriptorCommon,
 }
 
 impl GeneratedFileDescriptor {
@@ -36,6 +36,12 @@ impl GeneratedFileDescriptor {
             .map(|m| (m.protobuf_name_to_package, m))
             .collect();
 
+        let file_descriptor_building = FileDescriptorBuilding {
+            current_file_index: &index,
+            current_file_descriptor: file_descriptor_proto,
+            deps_with_public: &fds_extend_with_public(dependencies.clone()),
+        };
+
         let messages = index
             .messages
             .iter()
@@ -50,11 +56,7 @@ impl GeneratedFileDescriptor {
                         message,
                         file_descriptor_proto,
                         &index,
-                        &FileDescriptorBuilding {
-                            current_file_index: &index,
-                            current_file_descriptor: file_descriptor_proto,
-                            deps_with_public: &fds_extend_with_public(dependencies.clone()),
-                        },
+                        &file_descriptor_building,
                     )
                 }
             })
@@ -66,12 +68,13 @@ impl GeneratedFileDescriptor {
             .map(|(i, e)| GeneratedEnumDescriptor::new(e, i, file_descriptor_proto))
             .collect();
 
+        let common = FileDescriptorCommon::new(index, dependencies, file_descriptor_proto);
+
         GeneratedFileDescriptor {
             proto: file_descriptor_proto,
-            dependencies,
             messages,
             enums,
-            index,
+            common,
         }
     }
 }

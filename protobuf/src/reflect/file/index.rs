@@ -34,7 +34,7 @@ pub(crate) struct FileIndex {
 }
 
 impl FileIndex {
-    pub fn index(file: &FileDescriptorProto) -> FileIndex {
+    pub(crate) fn index(file: &FileDescriptorProto) -> FileIndex {
         let mut index = FileIndex {
             messages: Vec::new(),
             message_by_name_to_package: HashMap::new(),

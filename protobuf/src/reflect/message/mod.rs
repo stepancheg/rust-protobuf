@@ -6,6 +6,7 @@ use crate::descriptor::FileDescriptorProto;
 use crate::message::Message;
 use crate::message_dyn::MessageDyn;
 use crate::reflect::dynamic::DynamicMessage;
+use crate::reflect::field::FieldDescriptorImpl;
 use crate::reflect::file::index::FileIndexMessageEntry;
 use crate::reflect::file::FileDescriptorImpl;
 use crate::reflect::message::dynamic::DynamicMessageDescriptor;
@@ -252,14 +253,6 @@ impl MessageDescriptor {
         &self.get_index_entry().name_to_package
     }
 
-    /// Message field descriptors.
-    pub fn fields<'a>(&'a self) -> impl ExactSizeIterator<Item = FieldDescriptor> + 'a {
-        (0..self.get_index().fields.len()).map(move |index| FieldDescriptor {
-            message_descriptor: self.clone(),
-            index,
-        })
-    }
-
     /// Nested oneofs
     pub fn oneofs<'a>(&'a self) -> impl ExactSizeIterator<Item = OneofDescriptor> + 'a {
         self.get_proto()
@@ -272,7 +265,23 @@ impl MessageDescriptor {
             })
     }
 
-    pub(crate) fn get_index(&self) -> &MessageIndex {
+    /// Message field descriptors.
+    pub fn fields<'a>(&'a self) -> impl ExactSizeIterator<Item = FieldDescriptor> + 'a {
+        (0..self.index().fields.len()).map(move |index| FieldDescriptor {
+            imp: FieldDescriptorImpl::Field(self.clone(), index),
+        })
+    }
+
+    /// Extension fields.
+    pub fn extensions(&self) -> Vec<FieldDescriptor> {
+        (0..self.index().extensions.len())
+            .map(move |index| FieldDescriptor {
+                imp: FieldDescriptorImpl::ExtensionInMessage(self.clone(), index),
+            })
+            .collect()
+    }
+
+    pub(crate) fn index(&self) -> &MessageIndex {
         match self.get_impl() {
             MessageDescriptorImplRef::Generated(g) => &g.non_map().index,
             MessageDescriptorImplRef::Dynamic(d) => &d.indices,
@@ -291,28 +300,25 @@ impl MessageDescriptor {
     /// Note: protobuf field name might be different for Rust field name.
     // TODO: return value, not pointer, pointer is not compatible with dynamic message
     pub fn get_field_by_name<'a>(&'a self, name: &str) -> Option<FieldDescriptor> {
-        let &index = self.get_index().index_by_name.get(name)?;
+        let &index = self.index().field_index_by_name.get(name)?;
         Some(FieldDescriptor {
-            message_descriptor: self.clone(),
-            index,
+            imp: FieldDescriptorImpl::Field(self.clone(), index),
         })
     }
 
     /// Find message field by field name or field JSON name
     pub fn get_field_by_name_or_json_name<'a>(&'a self, name: &str) -> Option<FieldDescriptor> {
-        let &index = self.get_index().index_by_name_or_json_name.get(name)?;
+        let &index = self.index().field_index_by_name_or_json_name.get(name)?;
         Some(FieldDescriptor {
-            message_descriptor: self.clone(),
-            index,
+            imp: FieldDescriptorImpl::Field(self.clone(), index),
         })
     }
 
     /// Find message field by field name
     pub fn get_field_by_number(&self, number: u32) -> Option<FieldDescriptor> {
-        let &index = self.get_index().index_by_number.get(&number)?;
+        let &index = self.index().field_index_by_number.get(&number)?;
         Some(FieldDescriptor {
-            message_descriptor: self.clone(),
-            index,
+            imp: FieldDescriptorImpl::Field(self.clone(), index),
         })
     }
 

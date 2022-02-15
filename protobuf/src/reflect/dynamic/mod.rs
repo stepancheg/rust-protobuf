@@ -112,21 +112,23 @@ impl DynamicMessage {
     }
 
     pub(crate) fn get_reflect<'a>(&'a self, field: &FieldDescriptor) -> ReflectFieldRef<'a> {
-        assert_eq!(self.descriptor, field.message_descriptor);
+        let (descriptor, index) = field.regular();
+        assert_eq!(&self.descriptor, descriptor);
         if self.fields.is_empty() {
             ReflectFieldRef::default_for_field(field)
         } else {
-            self.fields[field.index].as_ref()
+            self.fields[index].as_ref()
         }
     }
 
     pub fn clear_field(&mut self, field: &FieldDescriptor) {
-        assert_eq!(field.message_descriptor, self.descriptor);
+        let (descriptor, index) = field.regular();
+        assert_eq!(&self.descriptor, descriptor);
         if self.fields.is_empty() {
             return;
         }
 
-        self.fields[field.index].clear();
+        self.fields[index].clear();
     }
 
     fn clear_oneof_group_fields_except(&mut self, field: &FieldDescriptor) {
@@ -144,11 +146,12 @@ impl DynamicMessage {
         &'a mut self,
         field: &FieldDescriptor,
     ) -> ReflectValueMut<'a> {
-        assert_eq!(field.message_descriptor, self.descriptor);
+        let (descriptor, index) = field.regular();
+        assert_eq!(&self.descriptor, descriptor);
         self.init_fields();
         self.clear_oneof_group_fields_except(field);
         // TODO: reset oneof group fields
-        match &mut self.fields[field.index] {
+        match &mut self.fields[index] {
             DynamicFieldValue::Singular(f) => f.mut_or_default(),
             _ => panic!("Not a singular field"),
         }
@@ -158,30 +161,33 @@ impl DynamicMessage {
         &'a mut self,
         field: &FieldDescriptor,
     ) -> ReflectRepeatedMut<'a> {
-        assert_eq!(self.descriptor, field.message_descriptor);
+        let (descriptor, index) = field.regular();
+        assert_eq!(&self.descriptor, descriptor);
         self.init_fields();
         // TODO: reset oneof group fields
-        match &mut self.fields[field.index] {
+        match &mut self.fields[index] {
             DynamicFieldValue::Repeated(r) => ReflectRepeatedMut::new(r),
             _ => panic!("Not a repeated field: {}", field),
         }
     }
 
     pub(crate) fn mut_map<'a>(&'a mut self, field: &FieldDescriptor) -> ReflectMapMut<'a> {
-        assert_eq!(field.message_descriptor, self.descriptor);
+        let (descriptor, index) = field.regular();
+        assert_eq!(&self.descriptor, descriptor);
         self.init_fields();
         // TODO: reset oneof group fields
-        match &mut self.fields[field.index] {
+        match &mut self.fields[index] {
             DynamicFieldValue::Map(m) => ReflectMapMut::new(m),
             _ => panic!("Not a map field: {}", field),
         }
     }
 
     pub(crate) fn set_field(&mut self, field: &FieldDescriptor, value: ReflectValueBox) {
-        assert_eq!(field.message_descriptor, self.descriptor);
+        let (descriptor, index) = field.regular();
+        assert_eq!(&self.descriptor, descriptor);
         self.init_fields();
         // TODO: reset oneof group fields
-        match &mut self.fields[field.index] {
+        match &mut self.fields[index] {
             DynamicFieldValue::Singular(s) => s.set(value),
             _ => panic!("Not a singular field: {}", field),
         }

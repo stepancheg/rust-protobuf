@@ -4,6 +4,7 @@ use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::enums::dynamic::DynamicEnumDescriptor;
 use crate::reflect::file::building::FileDescriptorBuilding;
+use crate::reflect::file::common::FileDescriptorCommon;
 use crate::reflect::file::fds::fds_extend_with_public;
 use crate::reflect::file::index::FileIndex;
 use crate::reflect::message::dynamic::DynamicMessageDescriptor;
@@ -13,10 +14,9 @@ use crate::reflect::FileDescriptor;
 #[derive(Debug)]
 pub(crate) struct DynamicFileDescriptor {
     pub proto: Arc<FileDescriptorProto>,
-    pub dependencies: Vec<FileDescriptor>,
     pub messages: Vec<DynamicMessageDescriptor>,
     pub enums: Vec<DynamicEnumDescriptor>,
-    pub index: FileIndex,
+    pub common: FileDescriptorCommon,
 }
 
 impl DynamicFileDescriptor {
@@ -28,6 +28,12 @@ impl DynamicFileDescriptor {
 
         let index = FileIndex::index(&*proto);
 
+        let file_descriptor_building = FileDescriptorBuilding {
+            current_file_index: &index,
+            current_file_descriptor: &proto,
+            deps_with_public: &fds_extend_with_public(dependencies.clone()),
+        };
+
         let messages = index
             .messages
             .iter()
@@ -35,21 +41,18 @@ impl DynamicFileDescriptor {
                 DynamicMessageDescriptor::new(
                     &*proto,
                     &message_index_entry.path,
-                    &FileDescriptorBuilding {
-                        current_file_index: &index,
-                        current_file_descriptor: &proto,
-                        deps_with_public: &fds_extend_with_public(dependencies.clone()),
-                    },
+                    &file_descriptor_building,
                 )
             })
             .collect();
+
+        let common = FileDescriptorCommon::new(index, dependencies, &proto);
 
         DynamicFileDescriptor {
             messages,
             enums: Self::enums(&proto),
             proto,
-            dependencies,
-            index,
+            common,
         }
     }
 

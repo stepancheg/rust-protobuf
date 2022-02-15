@@ -24,6 +24,7 @@ use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::repeated::ReflectRepeatedMut;
 use crate::reflect::repeated::ReflectRepeatedRef;
 use crate::reflect::value::value_ref::ReflectValueMut;
+use crate::reflect::FileDescriptor;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
@@ -77,25 +78,65 @@ fn _assert_sync<'a>() {
     _assert_send_sync::<ReflectFieldRef<'a>>();
 }
 
+#[derive(Eq, PartialEq, Clone)]
+pub(crate) enum FieldDescriptorImpl {
+    // Index of field in the message descriptor proto.
+    Field(MessageDescriptor, usize),
+    // Index of extension in the file descriptor proto.
+    ExtensionInMessage(MessageDescriptor, usize),
+    // Index of extension in the file descriptor proto.
+    ExtensionInFile(FileDescriptor, usize),
+}
+
 /// Field descriptor.
 ///
 /// Can be used for runtime reflection.
 #[derive(Eq, PartialEq, Clone)]
 pub struct FieldDescriptor {
-    pub(crate) message_descriptor: MessageDescriptor,
-    pub(crate) index: usize,
+    pub(crate) imp: FieldDescriptorImpl,
 }
 
 impl fmt::Display for FieldDescriptor {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}.{}", self.message_descriptor, self.get_name())
+        match &self.imp {
+            FieldDescriptorImpl::Field(m, ..) | FieldDescriptorImpl::ExtensionInMessage(m, ..) => {
+                write!(f, "{}.{}", m.name(), self.get_name())
+            }
+            FieldDescriptorImpl::ExtensionInFile(file, ..) => {
+                if file.proto().get_package().is_empty() {
+                    write!(f, "{}", self.get_name())
+                } else {
+                    write!(f, "{}.{}", file.proto().get_package(), self.get_name())
+                }
+            }
+        }
     }
 }
 
 impl FieldDescriptor {
+    pub(crate) fn regular(&self) -> (&MessageDescriptor, usize) {
+        match &self.imp {
+            FieldDescriptorImpl::Field(m, i) => (m, *i),
+            // TODO: implement and remove this function
+            _ => unimplemented!("extension fields are not fully supported yet"),
+        }
+    }
+
+    pub(crate) fn file_descriptor(&self) -> &FileDescriptor {
+        match &self.imp {
+            FieldDescriptorImpl::Field(m, _) => m.file_descriptor(),
+            FieldDescriptorImpl::ExtensionInMessage(m, _) => m.file_descriptor(),
+            FieldDescriptorImpl::ExtensionInFile(file, _) => file,
+        }
+    }
+
     /// Get `.proto` description of field
     pub fn get_proto(&self) -> &FieldDescriptorProto {
-        &self.message_descriptor.get_proto().field[self.index]
+        match &self.imp {
+            FieldDescriptorImpl::Field(m, i) => &m.get_proto().field[*i],
+            FieldDescriptorImpl::ExtensionInMessage(m, i) => &m.get_proto().extension[*i],
+            FieldDescriptorImpl::ExtensionInFile(file, i) => &file.proto().extension[*i],
+        }
     }
 
     /// Field name as specified in `.proto` file
@@ -104,31 +145,57 @@ impl FieldDescriptor {
         self.get_proto().get_name()
     }
 
-    /// Fully qualified name of the field: fully qualified name of the message
+    /// Fully qualified name of the field: fully qualified name of the declaring type
     /// followed by the field name.
+    ///
+    /// Declaring type is a message (for regular field or extensions) or a package
+    /// (for top-level extensions).
     pub fn full_name(&self) -> String {
-        format!(
-            "{}.{}",
-            self.message_descriptor.full_name(),
-            self.get_name()
-        )
+        self.to_string()
     }
 
     /// Oneof descriptor containing this field.
     pub fn containing_oneof(&self) -> Option<OneofDescriptor> {
-        let proto = self.get_proto();
-        if proto.has_oneof_index() {
-            Some(OneofDescriptor {
-                message_descriptor: self.message_descriptor.clone(),
-                index: proto.get_oneof_index() as usize,
-            })
+        if let FieldDescriptorImpl::Field(m, _) = &self.imp {
+            let proto = self.get_proto();
+            if proto.has_oneof_index() {
+                Some(OneofDescriptor {
+                    message_descriptor: m.clone(),
+                    index: proto.get_oneof_index() as usize,
+                })
+            } else {
+                None
+            }
         } else {
             None
         }
     }
 
+    /// Message which contains this field.
+    ///
+    /// For extension fields, this is the message being extended (**not implemented**).
+    pub fn containing_message(&self) -> MessageDescriptor {
+        match &self.imp {
+            FieldDescriptorImpl::Field(m, _) => m.clone(),
+            FieldDescriptorImpl::ExtensionInMessage(m, i) => m.index().extensions[*i]
+                .extendee
+                .as_ref()
+                .unwrap()
+                .resolve_message(self),
+            FieldDescriptorImpl::ExtensionInFile(file, i) => file.index().extensions[*i]
+                .extendee
+                .as_ref()
+                .unwrap()
+                .resolve_message(self),
+        }
+    }
+
     fn get_index(&self) -> &FieldIndex {
-        &self.message_descriptor.get_index().fields[self.index]
+        match &self.imp {
+            FieldDescriptorImpl::Field(m, i) => &m.index().fields[*i],
+            FieldDescriptorImpl::ExtensionInMessage(m, i) => &m.index().extensions[*i],
+            FieldDescriptorImpl::ExtensionInFile(f, i) => &f.index().extensions[*i],
+        }
     }
 
     /// JSON field name.
@@ -170,9 +237,10 @@ impl FieldDescriptor {
     }
 
     fn get_impl(&self) -> FieldDescriptorImplRef {
-        match self.message_descriptor.get_impl() {
+        let (descriptor, index) = self.regular();
+        match descriptor.get_impl() {
             MessageDescriptorImplRef::Generated(g) => {
-                FieldDescriptorImplRef::Generated(&g.non_map().fields[self.index].accessor)
+                FieldDescriptorImplRef::Generated(&g.non_map().fields[index].accessor)
             }
             MessageDescriptorImplRef::Dynamic(_) => {
                 FieldDescriptorImplRef::Dynamic(DynamicFieldDescriptorRef { field: self })
@@ -293,18 +361,17 @@ impl FieldDescriptor {
     ///
     /// If this field belongs to a different message type or fields is not singular.
     pub fn get_singular_field_or_default<'a>(&self, m: &'a dyn MessageDyn) -> ReflectValueRef<'a> {
+        let (descriptor, index) = self.regular();
         match self.get_singular(m) {
             Some(m) => m,
             None => {
                 let message_index = match self.singular() {
-                    SingularFieldAccessorRef::Generated(..) => {
-                        self.message_descriptor.get_generated_index()
-                    }
+                    SingularFieldAccessorRef::Generated(..) => descriptor.get_generated_index(),
                     SingularFieldAccessorRef::Dynamic(..) => {
-                        DynamicMessage::downcast_ref(m).descriptor.get_index()
+                        DynamicMessage::downcast_ref(m).descriptor.index()
                     }
                 };
-                message_index.fields[self.index].default_value(self)
+                message_index.fields[index].default_value(self)
             }
         }
     }

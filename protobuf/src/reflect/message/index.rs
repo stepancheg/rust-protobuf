@@ -6,10 +6,11 @@ use crate::reflect::file::building::FileDescriptorBuilding;
 
 #[derive(Debug)]
 pub(crate) struct MessageIndex {
-    pub fields: Vec<FieldIndex>,
-    pub index_by_name: HashMap<String, usize>,
-    pub index_by_name_or_json_name: HashMap<String, usize>,
-    pub index_by_number: HashMap<u32, usize>,
+    pub(crate) fields: Vec<FieldIndex>,
+    pub(crate) field_index_by_name: HashMap<String, usize>,
+    pub(crate) field_index_by_name_or_json_name: HashMap<String, usize>,
+    pub(crate) field_index_by_number: HashMap<u32, usize>,
+    pub(crate) extensions: Vec<FieldIndex>,
 }
 
 impl MessageIndex {
@@ -39,11 +40,18 @@ impl MessageIndex {
             }
         }
 
+        let extensions: Vec<FieldIndex> = proto
+            .extension
+            .iter()
+            .map(|f| FieldIndex::index(f, building))
+            .collect();
+
         MessageIndex {
             fields,
-            index_by_name,
-            index_by_name_or_json_name,
-            index_by_number,
+            field_index_by_name: index_by_name,
+            field_index_by_name_or_json_name: index_by_name_or_json_name,
+            field_index_by_number: index_by_number,
+            extensions,
         }
     }
 }

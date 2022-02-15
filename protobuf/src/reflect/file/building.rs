@@ -15,9 +15,9 @@ use crate::reflect::runtime_type_box::RuntimeTypeBox;
 use crate::reflect::FileDescriptor;
 
 pub(crate) struct FileDescriptorBuilding<'a> {
-    pub current_file_descriptor: &'a FileDescriptorProto,
-    pub current_file_index: &'a FileIndex,
-    pub deps_with_public: &'a [FileDescriptor],
+    pub(crate) current_file_descriptor: &'a FileDescriptorProto,
+    pub(crate) current_file_index: &'a FileIndex,
+    pub(crate) deps_with_public: &'a [FileDescriptor],
 }
 
 impl<'a> FileDescriptorBuilding<'a> {
@@ -56,7 +56,10 @@ impl<'a> FileDescriptorBuilding<'a> {
             .join(", ")
     }
 
-    pub fn resolve_field_type(&self, field: &FieldDescriptorProto) -> ForwardProtobufFieldType {
+    pub(crate) fn resolve_field_type(
+        &self,
+        field: &FieldDescriptorProto,
+    ) -> ForwardProtobufFieldType {
         match field.get_label() {
             field_descriptor_proto::Label::LABEL_OPTIONAL
             | field_descriptor_proto::Label::LABEL_REQUIRED => {
@@ -89,28 +92,7 @@ impl<'a> FileDescriptorBuilding<'a> {
         match field.get_field_type() {
             field_descriptor_proto::Type::TYPE_MESSAGE
             | field_descriptor_proto::Type::TYPE_GROUP => {
-                if let Some(name_to_package) = protobuf_name_starts_with_package(
-                    field.get_type_name(),
-                    self.current_file_descriptor.get_package(),
-                ) {
-                    if let Some(index) = self
-                        .current_file_index
-                        .message_by_name_to_package
-                        .get(name_to_package)
-                    {
-                        return ForwardProtobufTypeBox::CurrentFileMessage(*index);
-                    }
-                }
-                for dep in self.deps_with_public {
-                    if let Some(m) = dep.message_by_full_name(field.get_type_name()) {
-                        return ForwardProtobufTypeBox::message(m);
-                    }
-                }
-                panic!(
-                    "message not found: {}; files: {}",
-                    field.get_type_name(),
-                    self.all_files_str()
-                );
+                self.resolve_message(field.get_type_name())
             }
             field_descriptor_proto::Type::TYPE_ENUM => {
                 if let Some(name_to_package) = protobuf_name_starts_with_package(
@@ -138,6 +120,31 @@ impl<'a> FileDescriptorBuilding<'a> {
             }
             t => ForwardProtobufTypeBox::from_proto_type(t),
         }
+    }
+
+    pub(crate) fn resolve_message(&self, type_name: &str) -> ForwardProtobufTypeBox {
+        if let Some(name_to_package) =
+            protobuf_name_starts_with_package(type_name, self.current_file_descriptor.get_package())
+        {
+            if let Some(index) = self
+                .current_file_index
+                .message_by_name_to_package
+                .get(name_to_package)
+            {
+                return ForwardProtobufTypeBox::CurrentFileMessage(*index);
+            }
+        }
+        for dep in self.deps_with_public {
+            if let Some(m) = dep.message_by_full_name(type_name) {
+                return ForwardProtobufTypeBox::message(m);
+            }
+        }
+        // TODO: error, not panic
+        panic!(
+            "message not found: {}; files: {}",
+            type_name,
+            self.all_files_str()
+        );
     }
 
     fn map_field(&self, type_proto: &DescriptorProto) -> ForwardProtobufFieldType {

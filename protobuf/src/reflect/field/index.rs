@@ -33,15 +33,22 @@ impl ForwardProtobufTypeBox {
         ForwardProtobufTypeBox::ProtobufTypeBox(ProtobufTypeBox::from_proto_type(t))
     }
 
-    fn resolve(&self, field: &FieldDescriptor) -> ProtobufTypeBox {
+    pub(crate) fn resolve(&self, field: &FieldDescriptor) -> ProtobufTypeBox {
         match self {
             ForwardProtobufTypeBox::ProtobufTypeBox(t) => t.clone(),
             ForwardProtobufTypeBox::CurrentFileMessage(m) => ProtobufTypeBox::message(
-                MessageDescriptor::new(field.message_descriptor.file_descriptor().clone(), *m),
+                MessageDescriptor::new(field.file_descriptor().clone(), *m),
             ),
             ForwardProtobufTypeBox::CurrentFileEnum(m) => ProtobufTypeBox::enumeration(
-                EnumDescriptor::new(field.message_descriptor.file_descriptor().clone(), *m),
+                EnumDescriptor::new(field.file_descriptor().clone(), *m),
             ),
+        }
+    }
+
+    pub(crate) fn resolve_message(&self, field: &FieldDescriptor) -> MessageDescriptor {
+        match self.resolve(field).runtime() {
+            RuntimeTypeBox::Message(m) => m.clone(),
+            _ => panic!("not message"),
         }
     }
 }
@@ -76,6 +83,8 @@ pub(crate) struct FieldIndex {
     pub(crate) json_name: String,
     pub(crate) field_type: ForwardProtobufFieldType,
     pub(crate) default_value: Option<FieldDefaultValue>,
+    /// `Some` for extensions, `None` for regular fields.
+    pub(crate) extendee: Option<ForwardProtobufTypeBox>,
 }
 
 impl FieldIndex {
@@ -129,9 +138,16 @@ impl FieldIndex {
             json_name(field.get_name())
         };
 
+        let extendee = if field.has_extendee() {
+            Some(building.resolve_message(field.get_extendee()))
+        } else {
+            None
+        };
+
         FieldIndex {
             default_value,
             json_name,
+            extendee,
             field_type: building.resolve_field_type(field),
         }
     }
