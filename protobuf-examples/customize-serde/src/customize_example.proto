@@ -3,4 +3,11 @@ syntax = "proto2";
 message Fruit {
     optional string name = 1;
     optional float weight = 2;
+    optional Shape shape = 3;
+}
+
+enum Shape {
+    UNKNOWN = 0;
+    CIRCLE = 1;
+    SQUARE = 2;
 }
