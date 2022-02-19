@@ -351,62 +351,64 @@ impl<'a> OptionResoler<'a> {
 
         let field_type = TypeResolved::from_field(field.get_proto());
 
-        if !option_name_rem.is_empty() {
-            match field_type {
-                TypeResolved::Message(message_name) => {
-                    let m = self.find_message_by_abs_name(&message_name)?;
-                    let mut unknown_fields = UnknownFields::new();
-                    self.custom_option_ext_step(
-                        scope,
-                        &m,
-                        &mut unknown_fields,
-                        &option_name_rem[0],
-                        &option_name_rem[1..],
-                        option_value,
-                    )?;
-                    options.add_length_delimited(
-                        field.get_proto().get_number() as u32,
-                        unknown_fields.write_to_bytes(),
-                    );
-                    return Ok(());
-                }
-                TypeResolved::Group(..) => {
-                    // TODO: implement
-                    return Ok(());
-                }
-                _ => {
-                    return Err(OptionResolverError::ExtensionIsNotMessage(format!(
+        match option_name_rem.split_first() {
+            Some((first, rem)) => {
+                match field_type {
+                    TypeResolved::Message(message_name) => {
+                        let m = self.find_message_by_abs_name(&message_name)?;
+                        let mut unknown_fields = UnknownFields::new();
+                        self.custom_option_ext_step(
+                            scope,
+                            &m,
+                            &mut unknown_fields,
+                            first,
+                            rem,
+                            option_value,
+                        )?;
+                        options.add_length_delimited(
+                            field.get_proto().get_number() as u32,
+                            unknown_fields.write_to_bytes(),
+                        );
+                        Ok(())
+                    }
+                    TypeResolved::Group(..) => {
+                        // TODO: implement
+                        Ok(())
+                    }
+                    _ => Err(OptionResolverError::ExtensionIsNotMessage(format!(
                         "scope: {}, option name: {}",
                         scope, option_name
                     ))
-                    .into())
+                    .into()),
                 }
+            }
+            None => {
+                let value = match self.option_value_to_unknown_value(
+                    &field_type,
+                    option_value,
+                    &format!("{}", option_name),
+                ) {
+                    Ok(value) => value,
+                    Err(e) => {
+                        if let Some(
+                            OptionResolverError::ConstantsOfTypeMessageEnumGroupNotImplemented,
+                        ) = e.downcast_ref()
+                        {
+                            // TODO: return error
+                            return Ok(());
+                        }
+                        let e = e.context(format!(
+                            "parsing custom option `{}` value `{}` at `{}`",
+                            option_name, option_value, scope
+                        ));
+                        return Err(e.into());
+                    }
+                };
+
+                options.add_value(field.get_proto().get_number() as u32, value);
+                Ok(())
             }
         }
-
-        let value = match self.option_value_to_unknown_value(
-            &field_type,
-            option_value,
-            &format!("{}", option_name),
-        ) {
-            Ok(value) => value,
-            Err(e) => {
-                if let Some(OptionResolverError::ConstantsOfTypeMessageEnumGroupNotImplemented) =
-                    e.downcast_ref()
-                {
-                    // TODO: return error
-                    return Ok(());
-                }
-                let e = e.context(format!(
-                    "parsing custom option `{}` value `{}` at `{}`",
-                    option_name, option_value, scope
-                ));
-                return Err(e.into());
-            }
-        };
-
-        options.add_value(field.get_proto().get_number() as u32, value);
-        Ok(())
     }
 
     fn custom_option_ext<M>(
