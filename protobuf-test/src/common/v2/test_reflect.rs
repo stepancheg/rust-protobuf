@@ -202,7 +202,7 @@ fn test_mut_message() {
         n_field.set_singular_field(sub_m, ReflectValueBox::I32(10));
         // TODO: test `mut_message` works for oneof fields
     }
-    assert_eq!(10, m.get_message_field().get_n());
+    assert_eq!(10, m.message_field().n());
 }
 
 #[test]

@@ -1997,7 +1997,7 @@ impl<'a> FieldGen<'a> {
     fn write_message_field_get(&self, w: &mut CodeWriter) {
         let get_xxx_return_type = self.get_xxx_return_type();
         let fn_def = format!(
-            "get_{}(&self) -> {}",
+            "{}(&self) -> {}",
             self.rust_name,
             get_xxx_return_type.to_code(&self.customize)
         );

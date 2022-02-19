@@ -49,7 +49,7 @@ impl FieldGen<'_> {
         vec![
             format!("|m: &{}| {{ &m.{} }}", message, self.rust_name),
             format!("|m: &mut {}| {{ &mut m.{} }}", message, self.rust_name),
-            format!("{}::get_{}", message, self.rust_name),
+            format!("{}::{}", message, self.rust_name),
         ]
     }
 
@@ -66,7 +66,7 @@ impl FieldGen<'_> {
         let message = self.proto_field.message.rust_name();
         vec![
             format!("{}::has_{}", message, self.rust_name),
-            format!("{}::get_{}", message, self.rust_name),
+            format!("{}::{}", message, self.rust_name),
         ]
     }
 
@@ -74,7 +74,7 @@ impl FieldGen<'_> {
         let message = self.proto_field.message.rust_name();
         vec![
             format!("{}::has_{}", message, self.rust_name),
-            format!("{}::get_{}", message, self.rust_name),
+            format!("{}::{}", message, self.rust_name),
             format!("{}::set_{}", message, self.rust_name),
         ]
     }
@@ -83,7 +83,7 @@ impl FieldGen<'_> {
         let message = self.proto_field.message.rust_name();
         vec![
             format!("{}::has_{}", message, self.rust_name),
-            format!("{}::get_{}", message, self.rust_name),
+            format!("{}::{}", message, self.rust_name),
             format!("{}::mut_{}", message, self.rust_name),
             format!("{}::set_{}", message, self.rust_name),
         ]

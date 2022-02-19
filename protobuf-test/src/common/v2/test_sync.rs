@@ -25,7 +25,7 @@ fn test_sync() {
                 // API is not very convenient here
                 read.merge_from(&mut is).unwrap();
                 read.check_initialized().unwrap();
-                read.get_int32_field()
+                read.int32_field()
             })
         })
         .collect();
