@@ -100,7 +100,7 @@ impl fmt::Display for FieldDescriptor {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match &self.imp {
             FieldDescriptorImpl::Field(m, ..) | FieldDescriptorImpl::ExtensionInMessage(m, ..) => {
-                write!(f, "{}.{}", m.name(), self.get_name())
+                write!(f, "{}.{}", m.full_name(), self.get_name())
             }
             FieldDescriptorImpl::ExtensionInFile(file, ..) => {
                 if file.proto().get_package().is_empty() {
@@ -518,4 +518,21 @@ enum MapFieldAccessorRef<'a> {
 pub(crate) enum FieldDescriptorImplRef<'a> {
     Generated(&'static GeneratedFieldAccessor),
     Dynamic(DynamicFieldDescriptorRef<'a>),
+}
+
+#[cfg(test)]
+mod test {
+    use crate::descriptor::DescriptorProto;
+    use crate::Message;
+
+    #[test]
+    fn display() {
+        let field = DescriptorProto::descriptor_static()
+            .get_field_by_name("enum_type")
+            .unwrap();
+        assert_eq!(
+            "google.protobuf.DescriptorProto.enum_type",
+            field.to_string()
+        );
+    }
 }
