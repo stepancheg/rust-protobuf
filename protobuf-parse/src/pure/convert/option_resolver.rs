@@ -17,6 +17,7 @@ use protobuf::UnknownValue;
 
 use crate::model;
 use crate::model::ProtobufConstant;
+use crate::model::ProtobufConstantMessage;
 use crate::model::ProtobufConstantMessageFieldName;
 use crate::model::ProtobufOptionName;
 use crate::model::ProtobufOptionNameExt;
@@ -58,6 +59,8 @@ enum OptionResolverError {
     WrongOptionType(&'static str, String),
     #[error("constants of this type are not implemented")]
     ConstantsOfTypeMessageEnumGroupNotImplemented,
+    #[error("Message field requires a message constant")]
+    MessageFieldRequiresMessageConstant,
     #[error("message not found by name {0}")]
     MessageNotFound(ProtobufAbsPath),
     #[error("message not found by name {0}")]
@@ -491,6 +494,58 @@ impl<'a> OptionResoler<'a> {
         Ok(UnknownValue::sint64(v.try_into()?))
     }
 
+    fn option_value_message_to_unknown_value(
+        &self,
+        field_type: &TypeResolved,
+        value: &ProtobufConstantMessage,
+        option_name_for_diag: &str,
+    ) -> anyhow::Result<UnknownValue> {
+        match &field_type {
+            TypeResolved::Message(ma) => {
+                let m = self
+                    .resolver
+                    .find_message_by_abs_name(ma)
+                    .map_err(OptionResolverError::OtherError)?
+                    .t;
+                let mut unknown_fields = UnknownFields::new();
+                for (n, v) in &value.fields {
+                    match n {
+                        ProtobufConstantMessageFieldName::Regular(n) => {
+                            let f = match m.field_by_name(n.as_str()) {
+                                Some(f) => f,
+                                None => {
+                                    return Err(
+                                        OptionResolverError::UnknownFieldName(n.clone()).into()
+                                    )
+                                }
+                            };
+                            let u = self
+                                .option_value_field_to_unknown_value(
+                                    ma,
+                                    v,
+                                    n,
+                                    &f.typ,
+                                    option_name_for_diag,
+                                )
+                                .map_err(OptionResolverError::OtherError)?;
+                            unknown_fields.add_value(f.number as u32, u);
+                        }
+                        ProtobufConstantMessageFieldName::Extension(..) => {
+                            // TODO: implement extension fields in constants
+                        }
+                        ProtobufConstantMessageFieldName::AnyTypeUrl(..) => {
+                            // TODO: implement any type url in constants
+                        }
+                    }
+                }
+                Ok(UnknownValue::LengthDelimited(
+                    unknown_fields.write_to_bytes(),
+                ))
+            }
+            _ => Err(OptionResolverError::MessageFieldRequiresMessageConstant.into()),
+        }
+    }
+
     fn option_value_to_unknown_value(
         &self,
         field_type: &TypeResolved,
@@ -582,51 +637,13 @@ impl<'a> OptionResoler<'a> {
                 }
                 _ => {}
             },
-            model::ProtobufConstant::Message(mo) => match &field_type {
-                TypeResolved::Message(ma) => {
-                    let m = self
-                        .resolver
-                        .find_message_by_abs_name(ma)
-                        .map_err(OptionResolverError::OtherError)?
-                        .t;
-                    let mut unknown_fields = UnknownFields::new();
-                    for (n, v) in &mo.fields {
-                        match n {
-                            ProtobufConstantMessageFieldName::Regular(n) => {
-                                let f = match m.field_by_name(n.as_str()) {
-                                    Some(f) => f,
-                                    None => {
-                                        return Err(OptionResolverError::UnknownFieldName(
-                                            n.clone(),
-                                        )
-                                        .into())
-                                    }
-                                };
-                                let u = self
-                                    .option_value_field_to_unknown_value(
-                                        ma,
-                                        v,
-                                        n,
-                                        &f.typ,
-                                        option_name_for_diag,
-                                    )
-                                    .map_err(OptionResolverError::OtherError)?;
-                                unknown_fields.add_value(f.number as u32, u);
-                            }
-                            ProtobufConstantMessageFieldName::Extension(..) => {
-                                // TODO: implement extension fields in constants
-                            }
-                            ProtobufConstantMessageFieldName::AnyTypeUrl(..) => {
-                                // TODO: implement any type url in constants
-                            }
-                        }
-                    }
-                    return Ok(UnknownValue::LengthDelimited(
-                        unknown_fields.write_to_bytes(),
-                    ));
-                }
-                _ => {}
-            },
+            model::ProtobufConstant::Message(mo) => {
+                return self.option_value_message_to_unknown_value(
+                    &field_type,
+                    mo,
+                    option_name_for_diag,
+                );
+            }
         };
 
         Err(match field_type {
