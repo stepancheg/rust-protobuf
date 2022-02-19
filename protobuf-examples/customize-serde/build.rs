@@ -15,7 +15,7 @@ fn main() {
 
         fn field(&self, field: &FieldDescriptor) -> Customize {
             if field.get_proto().get_field_type() == Type::TYPE_ENUM {
-                /// `EnumOrUnknown` is not a part of rust-protobuf, so external serializer is needed.
+                // `EnumOrUnknown` is not a part of rust-protobuf, so external serializer is needed.
                 Customize::default().before(
                     "#[serde(serialize_with = \"crate::serialize_enum_or_unknown\", deserialize_with = \"crate::deserialize_enum_or_unknown\")]")
             } else {
