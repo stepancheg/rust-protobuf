@@ -36,7 +36,7 @@ impl<'a> EnumValueGen<'a> {
 
     // enum value
     fn number(&self) -> i32 {
-        self.value.proto.get_proto().get_number()
+        self.value.proto.get_proto().number()
     }
 
     // name of enum variant in generated rust code
@@ -83,7 +83,7 @@ impl<'a> EnumGen<'a> {
                 .get_file_descriptor()
                 .options
                 .get_or_default()
-                .get_optimize_for()
+                .optimize_for()
                 == file_options::OptimizeMode::LITE_RUNTIME
         });
 
@@ -108,7 +108,7 @@ impl<'a> EnumGen<'a> {
             .get_proto()
             .options
             .get_or_default()
-            .get_allow_alias()
+            .allow_alias()
     }
 
     fn values_all(&self) -> Vec<EnumValueGen> {
@@ -125,7 +125,7 @@ impl<'a> EnumGen<'a> {
         for p in self.enum_with_scope.values() {
             // skipping non-unique enums
             // TODO: should support it
-            if !used.insert(p.proto.get_proto().get_number()) {
+            if !used.insert(p.proto.get_proto().number()) {
                 continue;
             }
             r.push(EnumValueGen::parse(p, &self.type_name));
@@ -362,7 +362,7 @@ impl<'a> EnumGen<'a> {
 
     fn write_impl_default(&self, w: &mut CodeWriter) {
         let first_value = &self.enum_with_scope.values()[0];
-        if first_value.proto.get_proto().get_number() != 0 {
+        if first_value.proto.get_proto().number() != 0 {
             // This warning is emitted only for proto2
             // (because in proto3 first enum variant number is always 0).
             // `Default` implemented unconditionally to simplify certain

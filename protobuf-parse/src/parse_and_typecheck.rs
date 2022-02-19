@@ -49,15 +49,11 @@ mod test {
         // TODO: make result more deterministic
         assert_eq!(
             HashSet::from(["a.proto", "b.proto"]),
-            pure.file_descriptors.iter().map(|d| d.get_name()).collect()
+            pure.file_descriptors.iter().map(|d| d.name()).collect()
         );
         assert_eq!(
             HashSet::from(["a.proto", "b.proto"]),
-            protoc
-                .file_descriptors
-                .iter()
-                .map(|d| d.get_name())
-                .collect()
+            protoc.file_descriptors.iter().map(|d| d.name()).collect()
         );
         assert_eq!(1, protoc.file_descriptors[0].message_type.len());
         assert_eq!(1, pure.file_descriptors[0].message_type.len());
@@ -65,20 +61,20 @@ mod test {
             "Banana",
             pure.file_descriptors
                 .iter()
-                .find(|d| d.get_name() == "b.proto")
+                .find(|d| d.name() == "b.proto")
                 .unwrap()
                 .message_type[0]
-                .get_name()
+                .name()
         );
         assert_eq!(
             "Banana",
             protoc
                 .file_descriptors
                 .iter()
-                .find(|d| d.get_name() == "b.proto")
+                .find(|d| d.name() == "b.proto")
                 .unwrap()
                 .message_type[0]
-                .get_name()
+                .name()
         );
     }
 }

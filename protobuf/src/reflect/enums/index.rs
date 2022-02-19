@@ -14,8 +14,8 @@ impl<S: Hash + Eq> EnumIndex<S> {
         let mut index_by_name = HashMap::new();
         let mut index_by_number = HashMap::new();
         for (i, v) in proto.value.iter().enumerate() {
-            index_by_number.insert(v.get_number(), i);
-            index_by_name.insert(T::from(v.get_name()), i);
+            index_by_number.insert(v.number(), i);
+            index_by_name.insert(T::from(v.name()), i);
         }
 
         EnumIndex {

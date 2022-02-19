@@ -73,7 +73,7 @@ pub(crate) struct FileScope<'a> {
 
 impl<'a> FileScope<'a> {
     fn get_package(&self) -> ProtobufAbsPath {
-        ProtobufRelPath::from(self.file_descriptor.proto().get_package()).into_absolute()
+        ProtobufRelPath::from(self.file_descriptor.proto().package()).into_absolute()
     }
 
     pub fn syntax(&self) -> Syntax {
@@ -280,12 +280,7 @@ impl<'a> Scope<'a> {
 
     pub fn get_file_and_mod(&self, customize: Customize) -> FileAndMod {
         FileAndMod {
-            file: self
-                .file_scope
-                .file_descriptor
-                .proto()
-                .get_name()
-                .to_owned(),
+            file: self.file_scope.file_descriptor.proto().name().to_owned(),
             relative_mod: self.rust_path_to_file(),
             customize,
         }
@@ -344,7 +339,7 @@ pub(crate) trait WithScope<'a> {
     fn rust_name_with_file(&self) -> RustIdentWithPath {
         let mut r = self.rust_name_to_file();
         r.prepend_ident(proto_path_to_rust_mod(
-            self.get_scope().get_file_descriptor().get_name(),
+            self.get_scope().get_file_descriptor().name(),
         ));
         r
     }
@@ -451,7 +446,7 @@ impl<'a> EnumWithScope<'a> {
     pub fn value_by_name(&self, name: &str) -> EnumValueWithContext<'a> {
         self.values()
             .into_iter()
-            .find(|v| v.proto.get_proto().get_name() == name)
+            .find(|v| v.proto.get_proto().name() == name)
             .unwrap()
     }
 }
@@ -465,10 +460,10 @@ pub(crate) struct EnumValueWithContext<'a> {
 impl<'a> EnumValueWithContext<'a> {
     pub fn rust_name(&self) -> RustIdent {
         let mut r = String::new();
-        if rust::is_rust_keyword(self.proto.get_proto().get_name()) {
+        if rust::is_rust_keyword(self.proto.get_proto().name()) {
             r.push_str("value_");
         }
-        r.push_str(self.proto.get_name());
+        r.push_str(self.proto.name());
         RustIdent::new(&r)
     }
 }
@@ -479,7 +474,7 @@ impl<'a> WithScope<'a> for EnumWithScope<'a> {
     }
 
     fn get_name(&self) -> &ProtobufIdentRef {
-        ProtobufIdentRef::new(self.en.get_name())
+        ProtobufIdentRef::new(self.en.name())
     }
 
     fn escape_prefix(&self) -> &'static str {
@@ -537,12 +532,12 @@ impl<'a> FieldWithContext<'a> {
     }
 
     pub fn number(&self) -> u32 {
-        self.field.get_proto().get_number() as u32
+        self.field.get_proto().number() as u32
     }
 
     /// Shortcut
     pub fn name(&self) -> &str {
-        self.field.get_name()
+        self.field.name()
     }
 }
 

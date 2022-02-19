@@ -25,7 +25,7 @@ fn serialize_enum_or_unknown<E: Enum, S: serde::Serializer>(
 ) -> Result<S::Ok, S::Error> {
     if let Some(e) = e {
         match e.enum_value() {
-            Ok(v) => s.serialize_str(v.descriptor().get_name()),
+            Ok(v) => s.serialize_str(v.descriptor().name()),
             Err(v) => s.serialize_i32(v),
         }
     } else {

@@ -125,7 +125,7 @@ impl GeneratedMessageDescriptor {
 
         let mut field_proto_by_name = HashMap::new();
         for field_proto in &proto.field {
-            field_proto_by_name.insert(field_proto.get_name(), field_proto);
+            field_proto_by_name.insert(field_proto.name(), field_proto);
         }
 
         let index = MessageIndex::index(proto, building);

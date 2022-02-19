@@ -407,7 +407,7 @@ impl Printer {
             if self.print_options.enum_values_int {
                 self.print_printable(&value.value())
             } else {
-                Ok(write!(self.buf, "\"{}\"", value.get_name())?)
+                Ok(write!(self.buf, "\"{}\"", value.name())?)
             }
         }
     }
@@ -468,7 +468,7 @@ impl Printer {
         let mut first = true;
         for field in descriptor.fields() {
             let json_field_name = if self.print_options.proto_field_name {
-                field.get_name()
+                field.name()
             } else {
                 field.json_name()
             };

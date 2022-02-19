@@ -97,9 +97,9 @@ fn type_protobuf_name(field_type: field_descriptor_proto::Type) -> &'static str 
 
 fn field_type_protobuf_name<'a>(field: &'a FieldDescriptorProto) -> &'a str {
     if field.has_type_name() {
-        field.get_type_name()
+        field.type_name()
     } else {
-        type_protobuf_name(field.get_field_type())
+        type_protobuf_name(field.field_type())
     }
 }
 
@@ -339,7 +339,7 @@ impl<'a> FieldElemEnum<'a> {
         RustType::Enum(
             self.rust_name_relative(reference),
             self.default_value.rust_name(),
-            self.default_value.proto.get_proto().get_number(),
+            self.default_value.proto.get_proto().number(),
         )
     }
 
@@ -347,7 +347,7 @@ impl<'a> FieldElemEnum<'a> {
         RustType::EnumOrUnknown(
             self.rust_name_relative(reference),
             self.default_value.rust_name(),
-            self.default_value.proto.get_proto().get_number(),
+            self.default_value.proto.get_proto().number(),
         )
     }
 
@@ -456,13 +456,12 @@ fn field_elem<'a>(
         unreachable!();
     }
 
-    if field.field.get_proto().get_field_type() == field_descriptor_proto::Type::TYPE_GROUP {
+    if field.field.get_proto().field_type() == field_descriptor_proto::Type::TYPE_GROUP {
         FieldElem::Group
     } else if field.field.get_proto().has_type_name() {
-        let message_or_enum = root_scope.find_message_or_enum(&ProtobufAbsPath::from(
-            field.field.get_proto().get_type_name(),
-        ));
-        match (field.field.get_proto().get_field_type(), message_or_enum) {
+        let message_or_enum = root_scope
+            .find_message_or_enum(&ProtobufAbsPath::from(field.field.get_proto().type_name()));
+        match (field.field.get_proto().field_type(), message_or_enum) {
             (
                 field_descriptor_proto::Type::TYPE_MESSAGE,
                 MessageOrEnumWithScope::Message(message),
@@ -474,7 +473,7 @@ fn field_elem<'a>(
                 MessageOrEnumWithScope::Enum(enum_with_scope),
             ) => {
                 let default_value = if field.field.get_proto().has_default_value() {
-                    enum_with_scope.value_by_name(field.field.get_proto().get_default_value())
+                    enum_with_scope.value_by_name(field.field.get_proto().default_value())
                 } else {
                     enum_with_scope.values()[0].clone()
                 };
@@ -482,14 +481,14 @@ fn field_elem<'a>(
             }
             _ => panic!(
                 "unknown named type: {:?}",
-                field.field.get_proto().get_field_type()
+                field.field.get_proto().field_type()
             ),
         }
     } else if field.field.get_proto().has_field_type() {
         let tokio_for_bytes = customize.tokio_bytes_for_bytes.unwrap_or(false);
         let tokio_for_string = customize.tokio_bytes_for_string.unwrap_or(false);
 
-        let elem = match field.field.get_proto().get_field_type() {
+        let elem = match field.field.get_proto().field_type() {
             field_descriptor_proto::Type::TYPE_STRING if tokio_for_string => FieldElem::Primitive(
                 field_descriptor_proto::Type::TYPE_STRING,
                 PrimitiveTypeVariant::TokioBytes,
@@ -505,7 +504,7 @@ fn field_elem<'a>(
     } else {
         panic!(
             "neither type_name, nor field_type specified for field: {}",
-            field.field.get_name()
+            field.field.name()
         );
     }
 }
@@ -548,9 +547,8 @@ impl<'a> FieldGen<'a> {
         let syntax = field.message.scope.file_scope.syntax();
 
         let field_may_have_custom_default_value = syntax == Syntax::Proto2
-            && field.field.get_proto().get_label() != field_descriptor_proto::Label::LABEL_REPEATED
-            && field.field.get_proto().get_field_type()
-                != field_descriptor_proto::Type::TYPE_MESSAGE;
+            && field.field.get_proto().label() != field_descriptor_proto::Label::LABEL_REPEATED
+            && field.field.get_proto().field_type() != field_descriptor_proto::Type::TYPE_MESSAGE;
 
         let default_expose_field = !field_may_have_custom_default_value;
         let expose_field = customize.expose_fields.unwrap_or(default_expose_field);
@@ -567,9 +565,8 @@ impl<'a> FieldGen<'a> {
 
         let kind = match field.field.runtime_field_type() {
             RuntimeFieldType::Map(..) => {
-                let message = root_scope.find_message(&ProtobufAbsPath::from(
-                    field.field.get_proto().get_type_name(),
-                ));
+                let message = root_scope
+                    .find_message(&ProtobufAbsPath::from(field.field.get_proto().type_name()));
 
                 let (key, value) = map_entry(&message).unwrap();
 
@@ -587,12 +584,7 @@ impl<'a> FieldGen<'a> {
 
                 FieldKind::Repeated(RepeatedField {
                     elem,
-                    packed: field
-                        .field
-                        .get_proto()
-                        .options
-                        .get_or_default()
-                        .get_packed(),
+                    packed: field.field.get_proto().options.get_or_default().packed(),
                 })
             }
             RuntimeFieldType::Singular(..) => {
@@ -602,14 +594,14 @@ impl<'a> FieldGen<'a> {
                     FieldKind::Oneof(OneofField::parse(&oneof, &field.field, elem, root_scope))
                 } else {
                     let flag = if field.message.scope.file_scope.syntax() == Syntax::Proto3
-                        && field.field.get_proto().get_field_type()
+                        && field.field.get_proto().field_type()
                             != field_descriptor_proto::Type::TYPE_MESSAGE
                     {
                         SingularFieldFlag::WithoutFlag
                     } else {
-                        let required = field.field.get_proto().get_label()
+                        let required = field.field.get_proto().label()
                             == field_descriptor_proto::Label::LABEL_REQUIRED;
-                        let option_kind = match field.field.get_proto().get_field_type() {
+                        let option_kind = match field.field.get_proto().field_type() {
                             field_descriptor_proto::Type::TYPE_MESSAGE => OptionKind::MessageField,
                             _ => OptionKind::Option,
                         };
@@ -627,9 +619,9 @@ impl<'a> FieldGen<'a> {
         FieldGen {
             _root_scope: root_scope,
             syntax: field.message.get_scope().file_scope.syntax(),
-            rust_name: rust_field_name_for_protobuf_field_name(&field.field.get_name()),
-            proto_type: field.field.get_proto().get_field_type(),
-            wire_type: WireType::for_type(field.field.get_proto().get_field_type()),
+            rust_name: rust_field_name_for_protobuf_field_name(&field.field.name()),
+            proto_type: field.field.get_proto().field_type(),
+            wire_type: WireType::for_type(field.field.get_proto().field_type()),
             proto_field: field,
             kind,
             expose_field,
@@ -923,7 +915,7 @@ impl<'a> FieldGen<'a> {
     }
 
     pub fn reconstruct_def(&self) -> String {
-        let prefix = match (self.proto_field.field.get_proto().get_label(), self.syntax) {
+        let prefix = match (self.proto_field.field.get_proto().label(), self.syntax) {
             (field_descriptor_proto::Label::LABEL_REPEATED, _) => "repeated ",
             (_, Syntax::Proto3) => "",
             (field_descriptor_proto::Label::LABEL_OPTIONAL, _) => "optional ",

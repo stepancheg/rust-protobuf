@@ -269,7 +269,7 @@ impl<'a> CodeWriter<'a> {
     ///     .get_field_by_name("message_type")
     ///     .expect("`message_type` must exist")
     ///     .get_proto()
-    ///     .get_number();
+    ///     .number();
     ///
     /// assert_eq!(id, 4);
     /// ```
@@ -290,7 +290,7 @@ impl<'a> CodeWriter<'a> {
         let doc = info
             .map(|v| &v.location)
             .and_then(|ls| ls.iter().find(|l| l.path == path))
-            .map(|l| l.get_leading_comments());
+            .map(|l| l.leading_comments());
 
         let lines = doc
             .iter()

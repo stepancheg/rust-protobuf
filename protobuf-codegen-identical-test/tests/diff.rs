@@ -177,7 +177,7 @@ fn normalize_descriptor(desc: &mut DescriptorProto) {
         // the actual upper limit does not matter.
         // protoc is not consistent in behavior thus flush
         // the value to some arbitrary compatible value.
-        if ext.has_end() && ext.get_end() >= 0x20000000 {
+        if ext.has_end() && ext.end() >= 0x20000000 {
             ext.set_end(0x20000000);
         }
     }
@@ -199,10 +199,10 @@ fn normalize_field(field: &mut FieldDescriptorProto) {
     field.options.mut_or_default();
 
     if field.has_default_value() {
-        if field.get_field_type() == field_descriptor_proto::Type::TYPE_FLOAT {
+        if field.field_type() == field_descriptor_proto::Type::TYPE_FLOAT {
             field.set_default_value(format!(
                 "{}",
-                parse_protobuf_float(field.get_default_value()).unwrap()
+                parse_protobuf_float(field.default_value()).unwrap()
             ));
         }
     }
@@ -214,8 +214,7 @@ fn pretty_message<M: protobuf::Message>(message: &M) -> String {
 
 fn descriptor_for_file<'a>(fds: &'a FileDescriptorSet, file_name: &str) -> &'a FileDescriptorProto {
     for file in &fds.file {
-        if Path::new(file.get_name()).file_name().unwrap()
-            == Path::new(file_name).file_name().unwrap()
+        if Path::new(file.name()).file_name().unwrap() == Path::new(file_name).file_name().unwrap()
         {
             return file;
         }
@@ -225,7 +224,7 @@ fn descriptor_for_file<'a>(fds: &'a FileDescriptorSet, file_name: &str) -> &'a F
         file_name,
         fds.file
             .iter()
-            .map(|f| f.get_name())
+            .map(|f| f.name())
             .collect::<Vec<_>>()
             .join(", ")
     );

@@ -488,8 +488,7 @@ fn test_file_last_component() {
 }
 
 fn is_descriptor_proto(file: &FileDescriptorProto) -> bool {
-    file.get_package() == "google.protobuf"
-        && file_last_component(file.get_name()) == "descriptor.proto"
+    file.package() == "google.protobuf" && file_last_component(file.name()) == "descriptor.proto"
 }
 
 fn make_path_to_path(source: &RustPath, dest: &RustPath) -> RustPath {
@@ -516,7 +515,7 @@ pub(crate) fn message_or_enum_to_rust_relative(
     message_or_enum: &dyn WithScope,
     current: &FileAndMod,
 ) -> RustIdentWithPath {
-    let same_file = message_or_enum.get_scope().get_file_descriptor().get_name() == current.file;
+    let same_file = message_or_enum.get_scope().get_file_descriptor().name() == current.file;
     if same_file {
         // field type is a message or enum declared in the same file
         make_path(

@@ -167,7 +167,7 @@ impl ProtobufAbsPath {
     }
 
     pub fn package_from_file_proto(file: &FileDescriptorProto) -> ProtobufAbsPath {
-        Self::new_from_rel(file.get_package())
+        Self::new_from_rel(file.package())
     }
 
     pub fn package_from_file_descriptor(file: &FileDescriptor) -> ProtobufAbsPath {

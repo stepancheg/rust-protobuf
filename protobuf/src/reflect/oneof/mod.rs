@@ -17,7 +17,7 @@ impl OneofDescriptor {
 
     /// Oneof name as specified in `.proto` file.
     pub fn get_name(&self) -> &str {
-        self.get_proto().get_name()
+        self.get_proto().name()
     }
 
     /// Fully qualified name of oneof (fully qualified name of enclosing message

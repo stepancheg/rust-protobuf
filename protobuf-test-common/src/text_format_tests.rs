@@ -53,7 +53,7 @@ fn parse_using_protoc(text: &str, message_descriptor: &MessageDescriptor) -> Box
                 temp_file.to_str().expect("to_str")
             ),
             &format!("--encode={}", message_descriptor.full_name()),
-            message_descriptor.file_descriptor_proto().get_name(),
+            message_descriptor.file_descriptor_proto().name(),
         ])
         .stdin(process::Stdio::piped())
         .stdout(process::Stdio::piped())
@@ -120,7 +120,7 @@ fn print_using_protoc(message: &dyn MessageDyn) -> String {
                 temp_file.to_str().expect("to_str")
             ),
             &format!("--decode={}", message_descriptor.full_name()),
-            message_descriptor.file_descriptor_proto().get_name(),
+            message_descriptor.file_descriptor_proto().name(),
         ])
         .stdin(process::Stdio::piped())
         .stdout(process::Stdio::piped())

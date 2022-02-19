@@ -30,8 +30,8 @@ pub(crate) fn find_message_or_enum<'a>(
 
     let mut path = name_to_package.split('.');
     let first = path.next().unwrap();
-    let child_message = file.message_type.iter().find(|m| m.get_name() == first);
-    let child_enum = file.enum_type.iter().find(|e| e.get_name() == first);
+    let child_message = file.message_type.iter().find(|m| m.name() == first);
+    let child_enum = file.enum_type.iter().find(|e| e.name() == first);
 
     let mut package_to_name = String::new();
     let mut me = MessageOrEnum::from_two_options(child_message, child_enum)?;
@@ -45,10 +45,10 @@ pub(crate) fn find_message_or_enum<'a>(
         if !package_to_name.is_empty() {
             package_to_name.push_str(".");
         }
-        package_to_name.push_str(message.get_name());
+        package_to_name.push_str(message.name());
 
-        let child_message = message.nested_type.iter().find(|m| m.get_name() == name);
-        let child_enum = message.enum_type.iter().find(|e| e.get_name() == name);
+        let child_message = message.nested_type.iter().find(|m| m.name() == name);
+        let child_enum = message.enum_type.iter().find(|e| e.name() == name);
         me = MessageOrEnum::from_two_options(child_message, child_enum)?;
     }
 

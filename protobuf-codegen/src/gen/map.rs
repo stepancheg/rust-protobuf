@@ -11,7 +11,8 @@ pub(crate) fn map_entry<'a>(
         // Must be consistent with
         // DescriptorBuilder::ValidateMapEntry
 
-        assert!(d.message.get_proto().get_name().ends_with("Entry"));
+        // TODO: error, not panic
+        assert!(d.message.get_proto().name().ends_with("Entry"));
 
         assert_eq!(0, d.message.get_proto().extension.len());
         assert_eq!(0, d.message.get_proto().extension_range.len());
@@ -30,11 +31,11 @@ pub(crate) fn map_entry<'a>(
 
         assert_eq!(
             field_descriptor_proto::Label::LABEL_OPTIONAL,
-            key.field.get_proto().get_label()
+            key.field.get_proto().label()
         );
         assert_eq!(
             field_descriptor_proto::Label::LABEL_OPTIONAL,
-            value.field.get_proto().get_label()
+            value.field.get_proto().label()
         );
 
         Some((key, value))

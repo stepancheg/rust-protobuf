@@ -48,7 +48,7 @@ impl FileIndex {
             index.enums.push(FileIndexEnumEntry {
                 _message_path: MessagePath(Vec::new()),
                 _enum_index: index.enums.len(),
-                name_to_package: e.get_name().to_owned(),
+                name_to_package: e.name().to_owned(),
             });
         }
 
@@ -72,7 +72,7 @@ impl FileIndex {
         parent: Option<usize>,
         parent_name_to_package: &str,
     ) -> usize {
-        let name_to_package = concat_paths(parent_name_to_package, message.get_name());
+        let name_to_package = concat_paths(parent_name_to_package, message.name());
 
         let message_index = self.messages.len();
         self.messages.push(FileIndexMessageEntry {
@@ -82,7 +82,7 @@ impl FileIndex {
             enclosing_message: parent,
             nested_messages: Vec::with_capacity(message.nested_type.len()),
             _nested_enums: Vec::with_capacity(message.enum_type.len()), // TODO
-            map_entry: message.options.get_or_default().get_map_entry(),
+            map_entry: message.options.get_or_default().map_entry(),
             first_enum_index: self.enums.len(),
         });
 
@@ -90,7 +90,7 @@ impl FileIndex {
             self.enums.push(FileIndexEnumEntry {
                 _message_path: path.clone(),
                 _enum_index: self.enums.len(),
-                name_to_package: concat_paths(&name_to_package, e.get_name()),
+                name_to_package: concat_paths(&name_to_package, e.name()),
             });
         }
 
@@ -109,7 +109,7 @@ impl FileIndex {
                 .push(nested_index);
         }
 
-        self.messages[message_index].full_name = concat_paths(file.get_package(), &name_to_package);
+        self.messages[message_index].full_name = concat_paths(file.package(), &name_to_package);
         self.messages[message_index].name_to_package = name_to_package;
 
         message_index

@@ -345,6 +345,6 @@ mod test {
         )
         .unwrap();
         assert_eq!(1, resolved.len());
-        assert_eq!("Foo", resolved[0].message_type[0].get_name());
+        assert_eq!("Foo", resolved[0].message_type[0].name());
     }
 }

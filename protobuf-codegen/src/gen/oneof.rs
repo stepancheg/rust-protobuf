@@ -49,8 +49,8 @@ impl<'a> OneofField<'a> {
         let mut visited_messages = HashSet::new();
         let mut fields = vec![field.clone()];
         while let Some(field) = fields.pop() {
-            if field.get_proto().get_field_type() == field_descriptor_proto::Type::TYPE_MESSAGE {
-                let message_name = ProtobufAbsPath::from(field.get_proto().get_type_name());
+            if field.get_proto().field_type() == field_descriptor_proto::Type::TYPE_MESSAGE {
+                let message_name = ProtobufAbsPath::from(field.get_proto().type_name());
                 if !visited_messages.insert(message_name.clone()) {
                     continue;
                 }
@@ -82,7 +82,7 @@ impl<'a> OneofField<'a> {
             elem,
             type_name: oneof.rust_name(),
             boxed,
-            oneof_variant_rust_name: rust_field_name_for_protobuf_field_name(field.get_name()),
+            oneof_variant_rust_name: rust_field_name_for_protobuf_field_name(field.name()),
             oneof_field_name: oneof.field_name(),
         }
     }
@@ -198,9 +198,9 @@ impl<'a> OneofGen<'a> {
                     .message
                     .fields
                     .iter()
-                    .filter(|f| f.proto_field.name() == v.field.get_name())
+                    .filter(|f| f.proto_field.name() == v.field.name())
                     .next()
-                    .expect(&format!("field not found by name: {}", v.field.get_name()));
+                    .expect(&format!("field not found by name: {}", v.field.name()));
                 match field.proto_type {
                     field_descriptor_proto::Type::TYPE_GROUP => None,
                     _ => Some(OneofVariantGen::parse(

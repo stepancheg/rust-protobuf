@@ -65,7 +65,7 @@ enum TypeResolved {
 
 impl TypeResolved {
     fn from_field(field: &FieldDescriptorProto) -> TypeResolved {
-        match field.get_field_type() {
+        match field.field_type() {
             Type::TYPE_DOUBLE => TypeResolved::Double,
             Type::TYPE_FLOAT => TypeResolved::Float,
             Type::TYPE_INT64 => TypeResolved::Int64,
@@ -82,16 +82,16 @@ impl TypeResolved {
             Type::TYPE_STRING => TypeResolved::String,
             Type::TYPE_BYTES => TypeResolved::Bytes,
             Type::TYPE_GROUP => {
-                assert!(!field.get_type_name().is_empty());
-                TypeResolved::Group(ProtobufAbsPath::new(field.get_type_name()))
+                assert!(!field.type_name().is_empty());
+                TypeResolved::Group(ProtobufAbsPath::new(field.type_name()))
             }
             Type::TYPE_ENUM => {
-                assert!(!field.get_type_name().is_empty());
-                TypeResolved::Enum(ProtobufAbsPath::new(field.get_type_name()))
+                assert!(!field.type_name().is_empty());
+                TypeResolved::Enum(ProtobufAbsPath::new(field.type_name()))
             }
             Type::TYPE_MESSAGE => {
-                assert!(!field.get_type_name().is_empty());
-                TypeResolved::Message(ProtobufAbsPath::new(field.get_type_name()))
+                assert!(!field.type_name().is_empty());
+                TypeResolved::Message(ProtobufAbsPath::new(field.type_name()))
             }
         }
     }
@@ -374,7 +374,7 @@ impl<'a> Resolver<'a> {
         output.set_number(input.t.number);
         // TODO: move default to option parser
         if let Some(ref default) = input.t.options.as_slice().by_name("default") {
-            let default = match output.get_field_type() {
+            let default = match output.field_type() {
                 protobuf::descriptor::field_descriptor_proto::Type::TYPE_STRING => {
                     if let &model::ProtobufConstant::String(ref s) = default {
                         s.decode_utf8()?

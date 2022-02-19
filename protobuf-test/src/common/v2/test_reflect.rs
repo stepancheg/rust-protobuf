@@ -19,7 +19,7 @@ fn test_get_sub_message_via_reflection() {
     let descriptor = m.descriptor_dyn();
 
     let field_descriptor = descriptor.get_field_by_name("sub_m").unwrap();
-    assert_eq!("sub_m", field_descriptor.get_name());
+    assert_eq!("sub_m", field_descriptor.name());
 
     let sub_m = field_descriptor.get_message(&m);
     assert_eq!("test_reflect.SubM", sub_m.descriptor_dyn().full_name());
@@ -263,5 +263,5 @@ fn test_json_name() {
     // that will compute a JSON name if one is not already present in the proto.
     // We want to verify that the compiler has encoded the correct JSON name in
     // the descriptor itself.
-    assert_eq!("subM", field_descriptor.get_proto().get_json_name());
+    assert_eq!("subM", field_descriptor.get_proto().json_name());
 }

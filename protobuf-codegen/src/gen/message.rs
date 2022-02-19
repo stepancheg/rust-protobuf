@@ -99,7 +99,7 @@ impl<'a> MessageGen<'a> {
                 .get_field_by_name("field")
                 .expect("`field` must exist")
                 .get_proto()
-                .get_number()
+                .number()
         });
 
         let fields: Vec<_> = message
@@ -117,7 +117,7 @@ impl<'a> MessageGen<'a> {
                 .get_file_descriptor()
                 .options
                 .get_or_default()
-                .get_optimize_for()
+                .optimize_for()
                 == file_options::OptimizeMode::LITE_RUNTIME
         });
         MessageGen {
@@ -750,7 +750,7 @@ impl<'a> MessageGen<'a> {
                         .get_field_by_name("nested_type")
                         .expect("`nested_type` must exist")
                         .get_proto()
-                        .get_number()
+                        .number()
                 });
 
                 let mut path = self.path.to_vec();
@@ -781,7 +781,7 @@ impl<'a> MessageGen<'a> {
                         .get_field_by_name("enum_type")
                         .expect("`enum_type` must exist")
                         .get_proto()
-                        .get_number()
+                        .number()
                 });
 
                 let len = path.len() - 2;

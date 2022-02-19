@@ -27,13 +27,13 @@ impl MessageIndex {
         for (i, f) in proto.field.iter().enumerate() {
             let field_index = &fields[i];
 
-            assert!(index_by_number.insert(f.get_number() as u32, i).is_none());
-            assert!(index_by_name.insert(f.get_name().to_owned(), i).is_none());
+            assert!(index_by_number.insert(f.number() as u32, i).is_none());
+            assert!(index_by_name.insert(f.name().to_owned(), i).is_none());
             assert!(index_by_name_or_json_name
-                .insert(f.get_name().to_owned(), i)
+                .insert(f.name().to_owned(), i)
                 .is_none());
 
-            if field_index.json_name != f.get_name() {
+            if field_index.json_name != f.name() {
                 assert!(index_by_name_or_json_name
                     .insert(field_index.json_name.clone(), i)
                     .is_none());

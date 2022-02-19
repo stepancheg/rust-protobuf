@@ -92,17 +92,17 @@ impl FieldIndex {
         field: &FieldDescriptorProto,
         building: &FileDescriptorBuilding,
     ) -> FieldDefaultValue {
-        let en = building.find_enum(field.get_type_name());
+        let en = building.find_enum(field.type_name());
         let (n, _) = match en
             .value
             .iter()
             .enumerate()
-            .find(|(_n, v)| v.get_name() == field.get_default_value())
+            .find(|(_n, v)| v.name() == field.default_value())
         {
             Some(v) => v,
             None => panic!(
                 "enum value not found a default value: {}",
-                field.get_default_value()
+                field.default_value()
             ),
         };
         FieldDefaultValue::Enum(n)
@@ -112,7 +112,7 @@ impl FieldIndex {
         field: &FieldDescriptorProto,
         building: &FileDescriptorBuilding,
     ) -> FieldDefaultValue {
-        FieldDefaultValue::ReflectValueBox(match field.get_field_type() {
+        FieldDefaultValue::ReflectValueBox(match field.field_type() {
             t @ field_descriptor_proto::Type::TYPE_GROUP
             | t @ field_descriptor_proto::Type::TYPE_MESSAGE => {
                 panic!("{:?} cannot have a default value", t)
@@ -120,8 +120,9 @@ impl FieldIndex {
             field_descriptor_proto::Type::TYPE_ENUM => {
                 return Self::enum_default_value(field, building)
             }
-            t => RuntimeTypeBox::from_proto_type(t)
-                .parse_proto_default_value(field.get_default_value()),
+            t => {
+                RuntimeTypeBox::from_proto_type(t).parse_proto_default_value(field.default_value())
+            }
         })
     }
 
@@ -132,14 +133,14 @@ impl FieldIndex {
             None
         };
 
-        let json_name = if !field.get_json_name().is_empty() {
-            field.get_json_name().to_owned()
+        let json_name = if !field.json_name().is_empty() {
+            field.json_name().to_owned()
         } else {
-            json_name(field.get_name())
+            json_name(field.name())
         };
 
         let extendee = if field.has_extendee() {
-            Some(building.resolve_message(field.get_extendee()))
+            Some(building.resolve_message(field.extendee()))
         } else {
             None
         };

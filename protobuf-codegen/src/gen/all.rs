@@ -30,7 +30,7 @@ pub(crate) fn gen_all(
     let mut results: Vec<compiler_plugin::GenResult> = Vec::new();
     let files_map: HashMap<&ProtoPath, &FileDescriptor> = file_descriptors
         .iter()
-        .map(|f| Ok((ProtoPath::new(f.proto().get_name())?, f)))
+        .map(|f| Ok((ProtoPath::new(f.proto().name())?, f)))
         .collect::<Result<_, anyhow::Error>>()?;
 
     let mut mods = Vec::new();

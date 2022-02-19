@@ -26,17 +26,17 @@ impl DynamicEnumDescriptor {
         path: &MessagePath,
         enum_index: usize,
     ) -> DynamicEnumDescriptor {
-        let mut full_name = proto.get_package().to_owned();
+        let mut full_name = proto.package().to_owned();
         let e = if path.len() == 0 {
             &proto.enum_type[enum_index]
         } else {
             let messages = path.eval_path(&*proto);
             for m in &messages {
-                append_path(&mut full_name, m.get_name());
+                append_path(&mut full_name, m.name());
             }
             &messages.last().cloned().unwrap().enum_type[enum_index]
         };
-        append_path(&mut full_name, e.get_name());
+        append_path(&mut full_name, e.name());
 
         let indices = EnumIndex::<String>::index(e);
 

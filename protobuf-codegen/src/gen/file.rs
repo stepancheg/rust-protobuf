@@ -44,7 +44,7 @@ pub(crate) fn gen_file(
             .proto()
             .options
             .get_or_default()
-            .get_optimize_for()
+            .optimize_for()
             == file_options::OptimizeMode::LITE_RUNTIME
     });
 
@@ -60,7 +60,7 @@ pub(crate) fn gen_file(
         w.write_line("");
         w.write_line(&format!(
             "//! Generated file from `{}`",
-            file_descriptor.proto().get_name()
+            file_descriptor.proto().name()
         ));
         if customize.for_elem.inside_protobuf != Some(true) {
             w.write_line("");
@@ -79,7 +79,7 @@ pub(crate) fn gen_file(
                 .get_field_by_name("message_type")
                 .expect("`message_type` must exist")
                 .get_proto()
-                .get_number()
+                .number()
         });
 
         let mut path = vec![message_type_number, 0];
@@ -108,7 +108,7 @@ pub(crate) fn gen_file(
                 .get_field_by_name("enum_type")
                 .expect("`enum_type` must exist")
                 .get_proto()
-                .get_number()
+                .number()
         });
 
         let mut path = vec![enum_type_number, 0];
@@ -137,9 +137,9 @@ pub(crate) fn gen_file(
 
     GenFileResult {
         compiler_plugin_result: compiler_plugin::GenResult {
-            name: proto_name_to_rs(file_descriptor.proto().get_name()),
+            name: proto_name_to_rs(file_descriptor.proto().name()),
             content: v,
         },
-        mod_name: proto_path_to_rust_mod(file_descriptor.proto().get_name()).into_string(),
+        mod_name: proto_path_to_rust_mod(file_descriptor.proto().name()).into_string(),
     }
 }

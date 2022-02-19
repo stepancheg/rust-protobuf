@@ -91,7 +91,7 @@ fn find_file_descriptor<'a>(
 ) -> &'a FileDescriptor {
     match file_descriptors
         .iter()
-        .find(|f| f.proto().get_name() == file_name)
+        .find(|f| f.proto().name() == file_name)
     {
         Some(f) => f,
         None => panic!(
@@ -99,7 +99,7 @@ fn find_file_descriptor<'a>(
             file_name,
             file_descriptors
                 .iter()
-                .map(|f| f.proto().get_name().to_owned())
+                .map(|f| f.proto().name().to_owned())
                 .collect::<Vec<_>>()
                 .join(", ")
         ),

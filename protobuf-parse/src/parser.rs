@@ -100,7 +100,7 @@ impl Parser {
             .collect();
         generated
             .file_descriptors
-            .retain(|fd| relative_paths.contains(fd.get_name()));
+            .retain(|fd| relative_paths.contains(fd.name()));
         let mut fds = FileDescriptorSet::new();
         fds.file = generated.file_descriptors;
         Ok(fds)

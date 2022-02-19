@@ -100,9 +100,9 @@ impl GeneratedEnumDescriptor {
 
         GeneratedEnumDescriptor {
             full_name: compute_full_name(
-                file_descriptor_proto.get_package(),
+                file_descriptor_proto.package(),
                 &path_to_package,
-                proto.get_name(),
+                proto.name(),
             ),
             proto,
             type_id,

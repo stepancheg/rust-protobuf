@@ -31,7 +31,7 @@ impl<'a> FileDescriptorBuilding<'a> {
 
         for file in self.all_descriptors() {
             if let Some(name_to_package) =
-                protobuf_name_starts_with_package(full_name, file.get_package())
+                protobuf_name_starts_with_package(full_name, file.package())
             {
                 if let Some((_, me)) = find_message_or_enum(file, name_to_package) {
                     match me {
@@ -51,7 +51,7 @@ impl<'a> FileDescriptorBuilding<'a> {
 
     fn all_files_str(&self) -> String {
         self.all_descriptors()
-            .map(|d| d.get_name())
+            .map(|d| d.name())
             .collect::<Vec<_>>()
             .join(", ")
     }
@@ -60,7 +60,7 @@ impl<'a> FileDescriptorBuilding<'a> {
         &self,
         field: &FieldDescriptorProto,
     ) -> ForwardProtobufFieldType {
-        match field.get_label() {
+        match field.label() {
             field_descriptor_proto::Label::LABEL_OPTIONAL
             | field_descriptor_proto::Label::LABEL_REQUIRED => {
                 ForwardProtobufFieldType::Singular(self.resolve_field_element_type(field))
@@ -81,7 +81,7 @@ impl<'a> FileDescriptorBuilding<'a> {
                     _ => None,
                 };
                 match type_proto {
-                    Some(m) if m.options.get_or_default().get_map_entry() => self.map_field(m),
+                    Some(m) if m.options.get_or_default().map_entry() => self.map_field(m),
                     _ => ForwardProtobufFieldType::Repeated(element),
                 }
             }
@@ -89,15 +89,13 @@ impl<'a> FileDescriptorBuilding<'a> {
     }
 
     fn resolve_field_element_type(&self, field: &FieldDescriptorProto) -> ForwardProtobufTypeBox {
-        match field.get_field_type() {
+        match field.field_type() {
             field_descriptor_proto::Type::TYPE_MESSAGE
-            | field_descriptor_proto::Type::TYPE_GROUP => {
-                self.resolve_message(field.get_type_name())
-            }
+            | field_descriptor_proto::Type::TYPE_GROUP => self.resolve_message(field.type_name()),
             field_descriptor_proto::Type::TYPE_ENUM => {
                 if let Some(name_to_package) = protobuf_name_starts_with_package(
-                    field.get_type_name(),
-                    self.current_file_descriptor.get_package(),
+                    field.type_name(),
+                    self.current_file_descriptor.package(),
                 ) {
                     if let Some(index) = self
                         .current_file_index
@@ -108,13 +106,13 @@ impl<'a> FileDescriptorBuilding<'a> {
                     }
                 }
                 for dep in self.deps_with_public {
-                    if let Some(m) = dep.enum_by_full_name(field.get_type_name()) {
+                    if let Some(m) = dep.enum_by_full_name(field.type_name()) {
                         return ForwardProtobufTypeBox::enumeration(m);
                     }
                 }
                 panic!(
                     "enum not found: {}; files: {}",
-                    field.get_type_name(),
+                    field.type_name(),
                     self.all_files_str()
                 );
             }
@@ -124,7 +122,7 @@ impl<'a> FileDescriptorBuilding<'a> {
 
     pub(crate) fn resolve_message(&self, type_name: &str) -> ForwardProtobufTypeBox {
         if let Some(name_to_package) =
-            protobuf_name_starts_with_package(type_name, self.current_file_descriptor.get_package())
+            protobuf_name_starts_with_package(type_name, self.current_file_descriptor.package())
         {
             if let Some(index) = self
                 .current_file_index
@@ -148,7 +146,7 @@ impl<'a> FileDescriptorBuilding<'a> {
     }
 
     fn map_field(&self, type_proto: &DescriptorProto) -> ForwardProtobufFieldType {
-        assert!(type_proto.get_name().ends_with("Entry"));
+        assert!(type_proto.name().ends_with("Entry"));
 
         assert_eq!(0, type_proto.extension.len());
         assert_eq!(0, type_proto.extension_range.len());
@@ -159,20 +157,14 @@ impl<'a> FileDescriptorBuilding<'a> {
         let key = &type_proto.field[0];
         let value = &type_proto.field[1];
 
-        assert_eq!("key", key.get_name());
-        assert_eq!("value", value.get_name());
+        assert_eq!("key", key.name());
+        assert_eq!("value", value.name());
 
-        assert_eq!(1, key.get_number());
-        assert_eq!(2, value.get_number());
+        assert_eq!(1, key.number());
+        assert_eq!(2, value.number());
 
-        assert_eq!(
-            field_descriptor_proto::Label::LABEL_OPTIONAL,
-            key.get_label()
-        );
-        assert_eq!(
-            field_descriptor_proto::Label::LABEL_OPTIONAL,
-            value.get_label()
-        );
+        assert_eq!(field_descriptor_proto::Label::LABEL_OPTIONAL, key.label());
+        assert_eq!(field_descriptor_proto::Label::LABEL_OPTIONAL, value.label());
 
         // It is OK to resolve using current descriptor because map field
         // should always point to the same file.

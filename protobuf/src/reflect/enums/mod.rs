@@ -58,18 +58,18 @@ impl EnumValueDescriptor {
     }
 
     /// Name of enum variant as specified in proto file
-    pub fn get_name(&self) -> &str {
-        self.get_proto().get_name()
+    pub fn name(&self) -> &str {
+        self.get_proto().name()
     }
 
     /// Fully qualified enum value name: fully qualified enum name followed by value name.
     pub fn full_name(&self) -> String {
-        format!("{}.{}", self.enum_descriptor.full_name(), self.get_name())
+        format!("{}.{}", self.enum_descriptor.full_name(), self.name())
     }
 
     /// `i32` value of the enum variant
     pub fn value(&self) -> i32 {
-        self.get_proto().get_number()
+        self.get_proto().number()
     }
 
     /// Get descriptor of enum holding this value.
@@ -144,9 +144,8 @@ impl EnumDescriptor {
     }
 
     /// Enum name as given in `.proto` file
-    pub fn get_name(&self) -> &str {
-        // TODO: get_proto is inefficient
-        self.get_proto().get_name()
+    pub fn name(&self) -> &str {
+        self.get_proto().name()
     }
 
     /// Fully qualified protobuf name of enum

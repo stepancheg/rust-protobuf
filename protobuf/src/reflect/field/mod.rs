@@ -100,13 +100,13 @@ impl fmt::Display for FieldDescriptor {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match &self.imp {
             FieldDescriptorImpl::Field(m, ..) | FieldDescriptorImpl::ExtensionInMessage(m, ..) => {
-                write!(f, "{}.{}", m.full_name(), self.get_name())
+                write!(f, "{}.{}", m.full_name(), self.name())
             }
             FieldDescriptorImpl::ExtensionInFile(file, ..) => {
-                if file.proto().get_package().is_empty() {
-                    write!(f, "{}", self.get_name())
+                if file.proto().package().is_empty() {
+                    write!(f, "{}", self.name())
                 } else {
-                    write!(f, "{}.{}", file.proto().get_package(), self.get_name())
+                    write!(f, "{}.{}", file.proto().package(), self.name())
                 }
             }
         }
@@ -140,9 +140,8 @@ impl FieldDescriptor {
     }
 
     /// Field name as specified in `.proto` file
-    pub fn get_name(&self) -> &str {
-        // TODO: slow for dynamic
-        self.get_proto().get_name()
+    pub fn name(&self) -> &str {
+        self.get_proto().name()
     }
 
     /// Fully qualified name of the field: fully qualified name of the declaring type
@@ -161,7 +160,7 @@ impl FieldDescriptor {
             if proto.has_oneof_index() {
                 Some(OneofDescriptor {
                     message_descriptor: m.clone(),
-                    index: proto.get_oneof_index() as usize,
+                    index: proto.oneof_index() as usize,
                 })
             } else {
                 None
@@ -211,7 +210,7 @@ impl FieldDescriptor {
 
     /// If this field is optional or required.
     pub fn is_singular(&self) -> bool {
-        match self.get_proto().get_label() {
+        match self.get_proto().label() {
             field_descriptor_proto::Label::LABEL_REQUIRED => true,
             field_descriptor_proto::Label::LABEL_OPTIONAL => true,
             field_descriptor_proto::Label::LABEL_REPEATED => false,
@@ -220,12 +219,12 @@ impl FieldDescriptor {
 
     /// Is this field required.
     pub fn is_required(&self) -> bool {
-        self.get_proto().get_label() == field_descriptor_proto::Label::LABEL_REQUIRED
+        self.get_proto().label() == field_descriptor_proto::Label::LABEL_REQUIRED
     }
 
     /// If this field repeated or map?
     pub fn is_repeated_or_map(&self) -> bool {
-        self.get_proto().get_label() == field_descriptor_proto::Label::LABEL_REPEATED
+        self.get_proto().label() == field_descriptor_proto::Label::LABEL_REPEATED
     }
 
     /// Is this field repeated, but not map field?

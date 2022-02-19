@@ -101,7 +101,7 @@ fn print_field<F: FieldName>(
         ReflectValueRef::Enum(d, v) => {
             buf.push_str(": ");
             match d.get_value_by_number(v) {
-                Some(e) => buf.push_str(e.get_name()),
+                Some(e) => buf.push_str(e.name()),
                 None => write!(buf, ": {}", v).unwrap(),
             }
         }
@@ -146,7 +146,7 @@ fn print_to_internal(m: &MessageRef, buf: &mut String, pretty: bool, indent: usi
         match f.get_reflect(&**m) {
             ReflectFieldRef::Map(map) => {
                 for (k, v) in &map {
-                    print_start_field(buf, pretty, indent, &mut first, f.get_name());
+                    print_start_field(buf, pretty, indent, &mut first, f.name());
                     buf.push_str(" {");
                     if pretty {
                         buf.push_str("\n");
@@ -164,12 +164,12 @@ fn print_to_internal(m: &MessageRef, buf: &mut String, pretty: bool, indent: usi
             ReflectFieldRef::Repeated(repeated) => {
                 // TODO: do not print zeros for v3
                 for v in repeated {
-                    print_field(buf, pretty, indent, &mut first, f.get_name(), v);
+                    print_field(buf, pretty, indent, &mut first, f.name(), v);
                 }
             }
             ReflectFieldRef::Optional(optional) => {
                 if let Some(v) = optional {
-                    print_field(buf, pretty, indent, &mut first, f.get_name(), v);
+                    print_field(buf, pretty, indent, &mut first, f.name(), v);
                 }
             }
         }

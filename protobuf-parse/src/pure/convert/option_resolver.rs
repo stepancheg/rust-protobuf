@@ -280,7 +280,7 @@ impl<'a> OptionResoler<'a> {
         let scope = self.lookup(&path);
 
         for ext in scope.extensions() {
-            if ext.get_name() == extension.get() {
+            if ext.name() == extension.get() {
                 return Ok(Some(ext.clone()));
             }
         }
@@ -310,10 +310,10 @@ impl<'a> OptionResoler<'a> {
     ) -> anyhow::Result<FieldDescriptor> {
         let expected_extendee = ProtobufAbsPath::from_message(message);
         let field = self.find_extension_by_path(scope, field_name)?;
-        if ProtobufAbsPath::new(field.get_proto().get_extendee()) != expected_extendee {
+        if ProtobufAbsPath::new(field.get_proto().extendee()) != expected_extendee {
             return Err(OptionResolverError::WrongExtensionType(
                 format!("{}", field_name),
-                format!("{}", field.get_proto().get_extendee()),
+                format!("{}", field.get_proto().extendee()),
                 format!("{}", expected_extendee),
             )
             .into());
@@ -367,7 +367,7 @@ impl<'a> OptionResoler<'a> {
                             option_value,
                         )?;
                         options.add_length_delimited(
-                            field.get_proto().get_number() as u32,
+                            field.get_proto().number() as u32,
                             unknown_fields.write_to_bytes(),
                         );
                         Ok(())
@@ -399,7 +399,7 @@ impl<'a> OptionResoler<'a> {
                     }
                 };
 
-                options.add_value(field.get_proto().get_number() as u32, value);
+                options.add_value(field.get_proto().number() as u32, value);
                 Ok(())
             }
         }
@@ -824,7 +824,7 @@ impl<'a> OptionResoler<'a> {
             let mut method_proto = service_proto
                 .method
                 .iter_mut()
-                .find(|method| method.get_name() == service_method_model.name)
+                .find(|method| method.name() == service_method_model.name)
                 .unwrap();
             self.method(&mut method_proto, service_method_model)?;
         }
@@ -856,7 +856,7 @@ impl<'a> OptionResoler<'a> {
             let mut enum_value_proto = enum_proto
                 .value
                 .iter_mut()
-                .find(|v| v.get_name() == enum_value_model.name)
+                .find(|v| v.name() == enum_value_model.name)
                 .unwrap();
             self.enum_value(scope, &mut enum_value_proto, enum_value_model)?;
         }
@@ -893,13 +893,13 @@ impl<'a> OptionResoler<'a> {
         message_proto.options = self.message_options(scope, &message_model.options)?.into();
 
         let mut nested_scope = scope.to_owned();
-        nested_scope.push_simple(ProtobufIdentRef::new(&message_proto.get_name()));
+        nested_scope.push_simple(ProtobufIdentRef::new(&message_proto.name()));
 
         for field_model in &message_model.regular_fields_including_in_oneofs() {
             let mut field_proto = message_proto
                 .field
                 .iter_mut()
-                .find(|field| field.get_name() == field_model.name)
+                .find(|field| field.name() == field_model.name)
                 .unwrap();
             self.field(&nested_scope, &mut field_proto, field_model)?;
         }
@@ -907,7 +907,7 @@ impl<'a> OptionResoler<'a> {
             let field_proto = message_proto
                 .extension
                 .iter_mut()
-                .find(|field| field.get_name() == field_model.field.name)
+                .find(|field| field.name() == field_model.field.name)
                 .unwrap();
             self.field(&nested_scope, field_proto, &field_model.field)?;
         }
@@ -917,7 +917,7 @@ impl<'a> OptionResoler<'a> {
                 .nested_type
                 .iter_mut()
                 .find(|nested_message_proto| {
-                    nested_message_proto.get_name() == nested_message_model.name
+                    nested_message_proto.name() == nested_message_model.name
                 })
                 .unwrap();
             self.message(&nested_scope, nested_message_proto, nested_message_model)?;
@@ -927,7 +927,7 @@ impl<'a> OptionResoler<'a> {
             let nested_enum_proto = message_proto
                 .enum_type
                 .iter_mut()
-                .find(|nested_enum_proto| nested_enum_proto.get_name() == nested_enum_model.name)
+                .find(|nested_enum_proto| nested_enum_proto.name() == nested_enum_model.name)
                 .unwrap();
             self.enumeration(&nested_scope, nested_enum_proto, nested_enum_model)?;
         }
@@ -936,7 +936,7 @@ impl<'a> OptionResoler<'a> {
             let oneof_proto = message_proto
                 .oneof_decl
                 .iter_mut()
-                .find(|oneof_proto| oneof_proto.get_name() == oneof_model.name)
+                .find(|oneof_proto| oneof_proto.name() == oneof_model.name)
                 .unwrap();
             self.oneof(&nested_scope, oneof_proto, oneof_model)?;
         }
@@ -952,7 +952,7 @@ impl<'a> OptionResoler<'a> {
             let message_proto = output
                 .message_type
                 .iter_mut()
-                .find(|m| m.get_name() == message_model.name)
+                .find(|m| m.name() == message_model.name)
                 .unwrap();
             self.message(
                 &self.resolver.current_file.package,
@@ -965,7 +965,7 @@ impl<'a> OptionResoler<'a> {
             let enum_proto = output
                 .enum_type
                 .iter_mut()
-                .find(|e| e.get_name() == enum_model.name)
+                .find(|e| e.name() == enum_model.name)
                 .unwrap();
             self.enumeration(&self.resolver.current_file.package, enum_proto, enum_model)?;
         }
@@ -976,7 +976,7 @@ impl<'a> OptionResoler<'a> {
                 .current_file
                 .services
                 .iter()
-                .find(|s| s.name == service_proto.get_name())
+                .find(|s| s.name == service_proto.name())
                 .unwrap();
             self.service(service_proto, service_model)?;
         }
@@ -985,7 +985,7 @@ impl<'a> OptionResoler<'a> {
             let extension_proto = output
                 .extension
                 .iter_mut()
-                .find(|e| e.get_name() == extension_model.field.name)
+                .find(|e| e.name() == extension_model.field.name)
                 .unwrap();
             self.field(
                 &self.resolver.current_file.package,

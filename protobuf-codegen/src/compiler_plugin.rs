@@ -30,7 +30,7 @@ where
             .iter()
             .map(|n| ProtoPathBuf::new(n.to_owned()))
             .collect::<anyhow::Result<Vec<_>>>()?,
-        parameter: req.get_parameter(),
+        parameter: req.parameter(),
     })?;
     let mut resp = CodeGeneratorResponse::new();
     resp.file = result

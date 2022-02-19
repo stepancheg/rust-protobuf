@@ -24,9 +24,9 @@ struct ExtGen<'a> {
 impl<'a> ExtGen<'a> {
     fn extendee_rust_name(&self) -> RustIdentWithPath {
         type_name_to_rust_relative(
-            &ProtobufAbsPath::from(self.field.get_extendee()),
+            &ProtobufAbsPath::from(self.field.extendee()),
             &FileAndMod {
-                file: self.file.proto().get_name().to_owned(),
+                file: self.file.proto().name().to_owned(),
                 relative_mod: RustRelativePath::from("exts"),
                 customize: self.customize.clone(),
             },
@@ -35,11 +35,11 @@ impl<'a> ExtGen<'a> {
     }
 
     fn repeated(&self) -> bool {
-        match self.field.get_label() {
+        match self.field.label() {
             field_descriptor_proto::Label::LABEL_REPEATED => true,
             field_descriptor_proto::Label::LABEL_OPTIONAL => false,
             field_descriptor_proto::Label::LABEL_REQUIRED => {
-                panic!("required ext field: {}", self.field.get_name())
+                panic!("required ext field: {}", self.field.name())
             }
         }
     }
@@ -47,15 +47,15 @@ impl<'a> ExtGen<'a> {
     fn return_type_gen(&self) -> ProtobufTypeGen {
         if self.field.has_type_name() {
             let rust_name_relative = type_name_to_rust_relative(
-                &ProtobufAbsPath::from(self.field.get_type_name()),
+                &ProtobufAbsPath::from(self.field.type_name()),
                 &FileAndMod {
-                    file: self.file.proto().get_name().to_owned(),
+                    file: self.file.proto().name().to_owned(),
                     relative_mod: RustRelativePath::from("exts"),
                     customize: self.customize.clone(),
                 },
                 self.root_scope,
             );
-            match self.field.get_field_type() {
+            match self.field.field_type() {
                 field_descriptor_proto::Type::TYPE_MESSAGE => {
                     ProtobufTypeGen::Message(RustTypeMessage(rust_name_relative))
                 }
@@ -65,7 +65,7 @@ impl<'a> ExtGen<'a> {
                 t => panic!("unknown type: {:?}", t),
             }
         } else {
-            ProtobufTypeGen::Primitive(self.field.get_field_type(), PrimitiveTypeVariant::Default)
+            ProtobufTypeGen::Primitive(self.field.field_type(), PrimitiveTypeVariant::Default)
         }
     }
 
@@ -77,7 +77,7 @@ impl<'a> ExtGen<'a> {
         };
         let field_type = format!("{}::ext::{}", protobuf_crate_path(&self.customize), suffix);
         w.pub_const(
-            rust_field_name_for_protobuf_field_name(self.field.get_name()).get(),
+            rust_field_name_for_protobuf_field_name(self.field.name()).get(),
             &format!(
                 "{}<{}, {}>",
                 field_type,
@@ -87,7 +87,7 @@ impl<'a> ExtGen<'a> {
             &format!(
                 "{} {{ field_number: {}, phantom: ::std::marker::PhantomData }}",
                 field_type,
-                self.field.get_number()
+                self.field.number()
             ),
         );
     }
@@ -107,7 +107,7 @@ pub(crate) fn write_extensions(
     w.write_line("/// Extension fields");
     w.pub_mod("exts", |w| {
         for field in &file.proto().extension {
-            if field.get_field_type() == field_descriptor_proto::Type::TYPE_GROUP {
+            if field.field_type() == field_descriptor_proto::Type::TYPE_GROUP {
                 continue;
             }
 

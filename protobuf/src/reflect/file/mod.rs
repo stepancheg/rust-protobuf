@@ -93,7 +93,7 @@ impl FileDescriptor {
 
     /// Syntax of current file.
     pub fn syntax(&self) -> Syntax {
-        Syntax::parse(self.proto().get_syntax()).unwrap_or(Syntax::Proto2)
+        Syntax::parse(self.proto().syntax()).unwrap_or(Syntax::Proto2)
     }
 
     /// Get top-level messages.
@@ -162,7 +162,7 @@ impl FileDescriptor {
     /// Only search in the current file, not in any dependencies.
     pub fn message_by_full_name(&self, name: &str) -> Option<MessageDescriptor> {
         if let Some(name_to_package) =
-            protobuf_name_starts_with_package(name, self.proto().get_package())
+            protobuf_name_starts_with_package(name, self.proto().package())
         {
             self.message_by_package_relative_name(name_to_package)
         } else {
@@ -175,7 +175,7 @@ impl FileDescriptor {
     /// Only search in the current file, not in any dependencies.
     pub fn enum_by_full_name(&self, name: &str) -> Option<EnumDescriptor> {
         if let Some(name_to_package) =
-            protobuf_name_starts_with_package(name, self.proto().get_package())
+            protobuf_name_starts_with_package(name, self.proto().package())
         {
             self.enum_by_package_relative_name(name_to_package)
         } else {
@@ -200,10 +200,8 @@ impl FileDescriptor {
     ) -> FileDescriptor {
         // TODO: make it return `Result` on unsatisfied dependencies.
         // remove undeclared dependencies
-        let dependencies: HashMap<_, &FileDescriptor> = dependencies
-            .iter()
-            .map(|d| (d.proto().get_name(), d))
-            .collect();
+        let dependencies: HashMap<_, &FileDescriptor> =
+            dependencies.iter().map(|d| (d.proto().name(), d)).collect();
         let dependencies: Vec<FileDescriptor> = proto
             .dependency
             .iter()

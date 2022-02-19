@@ -73,7 +73,7 @@ impl MessageDescriptor {
 
     /// Message name as specified in `.proto` file.
     pub fn get_name(&self) -> &str {
-        self.get_proto().get_name()
+        self.get_proto().name()
     }
 
     /// Get enums declared in this message.
@@ -140,7 +140,7 @@ impl MessageDescriptor {
 
     /// This message descriptor is a map entry.
     pub fn is_map_entry(&self) -> bool {
-        self.get_proto().options.get_or_default().get_map_entry()
+        self.get_proto().options.get_or_default().map_entry()
     }
 
     fn assert_not_map_entry(&self) {
@@ -240,7 +240,7 @@ impl MessageDescriptor {
 
     /// Message name as given in `.proto` file
     pub fn name(&self) -> &str {
-        self.get_proto().get_name()
+        self.get_proto().name()
     }
 
     /// Fully qualified protobuf message name

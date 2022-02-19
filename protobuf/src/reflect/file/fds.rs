@@ -42,10 +42,10 @@ impl FdsBuilder {
 
     pub fn build(protos: Vec<FileDescriptorProto>) -> Vec<FileDescriptor> {
         let mut builder = FdsBuilder {
-            names: protos.iter().map(|p| p.get_name().to_owned()).collect(),
+            names: protos.iter().map(|p| p.name().to_owned()).collect(),
             unprocessed: protos
                 .into_iter()
-                .map(|p| (p.get_name().to_owned(), p))
+                .map(|p| (p.name().to_owned(), p))
                 .collect(),
             processed: HashMap::new(),
         };
@@ -71,7 +71,7 @@ pub(crate) fn fds_extend_with_public(file_descriptors: Vec<FileDescriptor>) -> V
     stack.reverse();
 
     while let Some(f) = stack.pop() {
-        if !visited.insert(f.proto().get_name().to_owned()) {
+        if !visited.insert(f.proto().name().to_owned()) {
             continue;
         }
 
