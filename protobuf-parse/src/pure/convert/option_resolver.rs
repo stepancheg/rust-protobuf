@@ -59,6 +59,10 @@ enum OptionResolverError {
     WrongOptionType(&'static str, String),
     #[error("constants of this type are not implemented")]
     ConstantsOfTypeMessageEnumGroupNotImplemented,
+    #[error("message not found by name {0}")]
+    MessageNotFound(ProtobufAbsPath),
+    #[error("message not found by name {0}")]
+    MessageFoundMoreThanOnce(ProtobufAbsPath),
 }
 
 #[derive(Clone)]
@@ -142,6 +146,25 @@ impl LookupScopeUnion2 {
     fn extensions(&self) -> Vec<FieldDescriptor> {
         self.scopes.iter().flat_map(|s| s.extensions()).collect()
     }
+
+    fn as_message(&self) -> anyhow::Result<MessageDescriptor> {
+        let mut messages: Vec<MessageDescriptor> = self
+            .scopes
+            .iter()
+            .filter_map(|s| match s {
+                LookupScope2::Message(m, _) => Some(m.clone()),
+                _ => None,
+            })
+            .collect();
+        let message = match messages.pop() {
+            Some(m) => m,
+            None => return Err(OptionResolverError::MessageNotFound(self.path.clone()).into()),
+        };
+        if !messages.is_empty() {
+            return Err(OptionResolverError::MessageFoundMoreThanOnce(self.path.clone()).into());
+        }
+        Ok(message)
+    }
 }
 
 pub(crate) trait ProtobufOptions {
@@ -212,6 +235,14 @@ impl<'a> OptionResoler<'a> {
 
     fn lookup(&self, path: &ProtobufAbsPath) -> LookupScopeUnion2 {
         self.root_scope().lookup(&path.to_root_rel())
+    }
+
+    fn find_message_by_abs_name(
+        &self,
+        path: &ProtobufAbsPath,
+    ) -> anyhow::Result<MessageDescriptor> {
+        let scope = self.lookup(path);
+        scope.as_message()
     }
 
     fn scope_resolved_candidates_rel(
@@ -327,16 +358,13 @@ impl<'a> OptionResoler<'a> {
         if !option_name_rem.is_empty() {
             match field_type {
                 TypeResolved::Message(message_name) => {
-                    let m = self.resolver.find_message_by_abs_name(&message_name)?;
-                    let message_proto = self
-                        .resolver
-                        .message(&message_name.parent().unwrap(), m.t)?;
+                    let m = self.find_message_by_abs_name(&message_name)?;
                     let mut unknown_fields = UnknownFields::new();
                     self.custom_option_ext_step(
                         scope,
                         &WithFullName {
                             full_name: message_name.clone(),
-                            t: &message_proto,
+                            t: m.get_proto(),
                         },
                         &mut unknown_fields,
                         &option_name_rem[0],
