@@ -57,8 +57,6 @@ enum OptionResolverError {
     StrLitDecodeError(#[source] StrLitDecodeError),
     #[error("wrong option type, expecting {0}, got `{1}`")]
     WrongOptionType(&'static str, String),
-    #[error("constants of type group are not implemented")]
-    ConstantsOfTypeGroupNotImplemented,
     #[error("Message field requires a message constant")]
     MessageFieldRequiresMessageConstant,
     #[error("message not found by name {0}")]
@@ -393,12 +391,6 @@ impl<'a> OptionResoler<'a> {
                 ) {
                     Ok(value) => value,
                     Err(e) => {
-                        if let Some(OptionResolverError::ConstantsOfTypeGroupNotImplemented) =
-                            e.downcast_ref()
-                        {
-                            // TODO: return error
-                            return Ok(());
-                        }
                         let e = e.context(format!(
                             "parsing custom option `{}` value `{}` at `{}`",
                             option_name, option_value, scope
@@ -646,9 +638,6 @@ impl<'a> OptionResoler<'a> {
         };
 
         Err(match field_type {
-            TypeResolved::Group(..) => {
-                OptionResolverError::ConstantsOfTypeGroupNotImplemented.into()
-            }
             _ => OptionResolverError::UnsupportedExtensionType(
                 option_name_for_diag.to_owned(),
                 format!("{:?}", field_type),
