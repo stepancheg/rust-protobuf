@@ -5,6 +5,8 @@ Stable versions are 2.xx still supported.
 
 ## [3] - Unreleased
 
+- Getters are now generated without `get_` prefix. `get_` prefix also removed from public API functions.
+
 ## [3.0.0-alpha.6] - 2022-02-08
 
 - [Fixed invalid aliasing and uninitialized memory access](https://github.com/stepancheg/rust-protobuf/pull/592)
