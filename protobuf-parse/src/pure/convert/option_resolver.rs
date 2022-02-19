@@ -326,23 +326,15 @@ impl<'a> OptionResoler<'a> {
         scope: &ProtobufAbsPathRef,
         message: &MessageDescriptor,
         field: &ProtobufOptionNamePart,
-    ) -> anyhow::Result<FieldDescriptorProto> {
+    ) -> anyhow::Result<FieldDescriptor> {
         match field {
-            ProtobufOptionNamePart::Direct(field) => {
-                match message
-                    .get_proto()
-                    .field
-                    .iter()
-                    .find(|f| f.get_name() == field.get())
-                {
-                    Some(field) => Ok(field.clone()),
-                    None => Err(OptionResolverError::UnknownFieldName(field.to_string()).into()),
-                }
+            ProtobufOptionNamePart::Direct(field) => match message.get_field_by_name(field.get()) {
+                Some(field) => Ok(field),
+                None => Err(OptionResolverError::UnknownFieldName(field.to_string()).into()),
+            },
+            ProtobufOptionNamePart::Ext(field) => {
+                Ok(self.ext_resolve_field_ext(scope, message, field)?)
             }
-            ProtobufOptionNamePart::Ext(field) => Ok(self
-                .ext_resolve_field_ext(scope, message, field)?
-                .get_proto()
-                .clone()),
         }
     }
 
@@ -357,7 +349,7 @@ impl<'a> OptionResoler<'a> {
     ) -> anyhow::Result<()> {
         let field = self.ext_resolve_field(scope, options_type, option_name)?;
 
-        let field_type = TypeResolved::from_field(&field);
+        let field_type = TypeResolved::from_field(field.get_proto());
 
         if !option_name_rem.is_empty() {
             match field_type {
@@ -373,7 +365,7 @@ impl<'a> OptionResoler<'a> {
                         option_value,
                     )?;
                     options.add_length_delimited(
-                        field.get_number() as u32,
+                        field.get_proto().get_number() as u32,
                         unknown_fields.write_to_bytes(),
                     );
                     return Ok(());
@@ -413,7 +405,7 @@ impl<'a> OptionResoler<'a> {
             }
         };
 
-        options.add_value(field.get_number() as u32, value);
+        options.add_value(field.get_proto().get_number() as u32, value);
         Ok(())
     }
 
