@@ -25,7 +25,6 @@ use crate::model::WithLoc;
 use crate::protobuf_path::ProtobufPath;
 use crate::pure::convert::Resolver;
 use crate::pure::convert::TypeResolved;
-use crate::pure::convert::WithFullName;
 use crate::ProtobufAbsPath;
 use crate::ProtobufAbsPathRef;
 use crate::ProtobufIdent;
@@ -305,12 +304,12 @@ impl<'a> OptionResoler<'a> {
     fn ext_resolve_field_ext(
         &self,
         scope: &ProtobufAbsPathRef,
-        message: &WithFullName<&DescriptorProto>,
+        message: &MessageDescriptor,
         field_name: &ProtobufPath,
     ) -> anyhow::Result<FieldDescriptor> {
-        let expected_extendee = &message.full_name;
+        let expected_extendee = ProtobufAbsPath::from_message(message);
         let field = self.find_extension_by_path(scope, field_name)?;
-        if &ProtobufAbsPath::new(field.get_proto().get_extendee()) != expected_extendee {
+        if ProtobufAbsPath::new(field.get_proto().get_extendee()) != expected_extendee {
             return Err(OptionResolverError::WrongExtensionType(
                 format!("{}", field_name),
                 format!("{}", field.get_proto().get_extendee()),
@@ -325,12 +324,17 @@ impl<'a> OptionResoler<'a> {
     fn ext_resolve_field(
         &self,
         scope: &ProtobufAbsPathRef,
-        message: &WithFullName<&DescriptorProto>,
+        message: &MessageDescriptor,
         field: &ProtobufOptionNamePart,
     ) -> anyhow::Result<FieldDescriptorProto> {
         match field {
             ProtobufOptionNamePart::Direct(field) => {
-                match message.t.field.iter().find(|f| f.get_name() == field.get()) {
+                match message
+                    .get_proto()
+                    .field
+                    .iter()
+                    .find(|f| f.get_name() == field.get())
+                {
                     Some(field) => Ok(field.clone()),
                     None => Err(OptionResolverError::UnknownFieldName(field.to_string()).into()),
                 }
@@ -345,7 +349,7 @@ impl<'a> OptionResoler<'a> {
     fn custom_option_ext_step(
         &self,
         scope: &ProtobufAbsPathRef,
-        options_type: &WithFullName<&DescriptorProto>,
+        options_type: &MessageDescriptor,
         options: &mut UnknownFields,
         option_name: &ProtobufOptionNamePart,
         option_name_rem: &[ProtobufOptionNamePart],
@@ -362,10 +366,7 @@ impl<'a> OptionResoler<'a> {
                     let mut unknown_fields = UnknownFields::new();
                     self.custom_option_ext_step(
                         scope,
-                        &WithFullName {
-                            full_name: message_name.clone(),
-                            t: m.get_proto(),
-                        },
+                        &m,
                         &mut unknown_fields,
                         &option_name_rem[0],
                         &option_name_rem[1..],
@@ -428,12 +429,7 @@ impl<'a> OptionResoler<'a> {
     {
         self.custom_option_ext_step(
             scope,
-            &WithFullName {
-                full_name: ProtobufAbsPath::from_path_without_dot(
-                    M::descriptor_static().full_name(),
-                ),
-                t: M::descriptor_static().get_proto(),
-            },
+            &M::descriptor_static(),
             options.mut_unknown_fields(),
             &option_name.0[0],
             &option_name.0[1..],

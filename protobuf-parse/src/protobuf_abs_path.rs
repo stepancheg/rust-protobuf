@@ -6,6 +6,7 @@ use std::ops::Deref;
 
 use protobuf::descriptor::FileDescriptorProto;
 use protobuf::reflect::FileDescriptor;
+use protobuf::reflect::MessageDescriptor;
 
 use crate::protobuf_ident::ProtobufIdent;
 use crate::protobuf_rel_path::ProtobufRelPath;
@@ -171,6 +172,10 @@ impl ProtobufAbsPath {
 
     pub fn package_from_file_descriptor(file: &FileDescriptor) -> ProtobufAbsPath {
         Self::package_from_file_proto(file.proto())
+    }
+
+    pub fn from_message(message: &MessageDescriptor) -> ProtobufAbsPath {
+        Self::new_from_rel(&message.full_name())
     }
 
     pub fn concat(a: &ProtobufAbsPathRef, b: &ProtobufRelPathRef) -> ProtobufAbsPath {
