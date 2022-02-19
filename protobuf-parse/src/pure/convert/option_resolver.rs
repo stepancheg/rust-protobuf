@@ -7,6 +7,7 @@ use protobuf::descriptor::FileDescriptorProto;
 use protobuf::descriptor::MethodDescriptorProto;
 use protobuf::descriptor::OneofDescriptorProto;
 use protobuf::descriptor::ServiceDescriptorProto;
+use protobuf::reflect::FieldDescriptor;
 use protobuf::reflect::FileDescriptor;
 use protobuf::reflect::MessageDescriptor;
 use protobuf::text_format::lexer::StrLitDecodeError;
@@ -92,12 +93,10 @@ impl LookupScope2 {
         }
     }
 
-    fn extensions(&self) -> &[FieldDescriptorProto] {
+    fn extensions(&self) -> Vec<FieldDescriptor> {
         match self {
-            // TODO: unify `proto` and `get_proto` names
-            // TODO: work with descriptors, not with protos
-            LookupScope2::File(f) => &f.proto().extension,
-            LookupScope2::Message(m, _) => &m.get_proto().extension,
+            LookupScope2::File(f) => f.extensions(),
+            LookupScope2::Message(m, _) => m.extensions(),
         }
     }
 }
@@ -140,7 +139,7 @@ impl LookupScopeUnion2 {
         scope
     }
 
-    fn extensions(&self) -> Vec<&FieldDescriptorProto> {
+    fn extensions(&self) -> Vec<FieldDescriptor> {
         self.scopes.iter().flat_map(|s| s.extensions()).collect()
     }
 }
@@ -243,7 +242,7 @@ impl<'a> OptionResoler<'a> {
     fn find_extension_by_abs_path(
         &self,
         path: &ProtobufAbsPathRef,
-    ) -> anyhow::Result<Option<FieldDescriptorProto>> {
+    ) -> anyhow::Result<Option<FieldDescriptor>> {
         let mut path = path.to_owned();
         let extension = path.pop().unwrap();
 
@@ -262,7 +261,7 @@ impl<'a> OptionResoler<'a> {
         &self,
         scope: &ProtobufAbsPathRef,
         path: &ProtobufPath,
-    ) -> anyhow::Result<FieldDescriptorProto> {
+    ) -> anyhow::Result<FieldDescriptor> {
         for candidate in Self::scope_resolved_candidates(scope, path) {
             if let Some(e) = self.find_extension_by_abs_path(&candidate)? {
                 return Ok(e);
@@ -277,13 +276,13 @@ impl<'a> OptionResoler<'a> {
         scope: &ProtobufAbsPathRef,
         message: &WithFullName<&DescriptorProto>,
         field_name: &ProtobufPath,
-    ) -> anyhow::Result<FieldDescriptorProto> {
+    ) -> anyhow::Result<FieldDescriptor> {
         let expected_extendee = &message.full_name;
         let field = self.find_extension_by_path(scope, field_name)?;
-        if &ProtobufAbsPath::new(field.get_extendee()) != expected_extendee {
+        if &ProtobufAbsPath::new(field.get_proto().get_extendee()) != expected_extendee {
             return Err(OptionResolverError::WrongExtensionType(
                 format!("{}", field_name),
-                format!("{}", field.get_extendee()),
+                format!("{}", field.get_proto().get_extendee()),
                 format!("{}", expected_extendee),
             )
             .into());
@@ -305,7 +304,10 @@ impl<'a> OptionResoler<'a> {
                     None => Err(OptionResolverError::UnknownFieldName(field.to_string()).into()),
                 }
             }
-            ProtobufOptionNamePart::Ext(field) => self.ext_resolve_field_ext(scope, message, field),
+            ProtobufOptionNamePart::Ext(field) => Ok(self
+                .ext_resolve_field_ext(scope, message, field)?
+                .get_proto()
+                .clone()),
         }
     }
 
