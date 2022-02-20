@@ -1493,8 +1493,12 @@ impl<'a> FieldGen<'a> {
         ));
     }
 
+    fn tag_with_wire_type(&self, wire_type: WireType) -> u32 {
+        (self.proto_field.number() << 3) + (wire_type as u32)
+    }
+
     fn tag(&self) -> u32 {
-        (self.proto_field.number() << 3) | (self.wire_type as u32)
+        self.tag_with_wire_type(self.wire_type)
     }
 
     // Write `merge_from` part for this oneof field
@@ -1589,14 +1593,28 @@ impl<'a> FieldGen<'a> {
                 })
             }
             FieldElem::Enum(..) => {
-                w.case_block(&format!("({}, _)", self.proto_field.number()), |w| {
-                    w.write_line(&format!(
-                        "{}::rt::read_repeated_enum_or_unknown_into({}, is, &mut self.{})?",
-                        protobuf_crate_path(&self.customize),
-                        wire_type_var,
-                        self.rust_name,
-                    ));
-                })
+                w.case_block(
+                    &format!("(_, {})", self.tag_with_wire_type(WireType::Varint)),
+                    |w| {
+                        w.write_line(&format!(
+                            "self.{}.push(is.read_enum_or_unknown()?);",
+                            self.rust_name,
+                        ));
+                    },
+                );
+                w.case_block(
+                    &format!(
+                        "(_, {})",
+                        self.tag_with_wire_type(WireType::LengthDelimited)
+                    ),
+                    |w| {
+                        w.write_line(&format!(
+                            "{}::rt::read_repeated_packed_enum_or_unknown_into(is, &mut self.{})?",
+                            protobuf_crate_path(&self.customize),
+                            self.rust_name,
+                        ));
+                    },
+                );
             }
             _ => w.case_block(&format!("({}, _)", self.proto_field.number()), |w| {
                 w.write_line(&format!(

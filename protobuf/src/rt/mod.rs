@@ -29,7 +29,7 @@ pub(crate) mod unsorted;
 pub use map::compute_map_size;
 pub use map::read_map_into;
 pub use map::write_map_with_cached_sizes;
-pub use repeated::read_repeated_enum_or_unknown_into;
+pub use repeated::read_repeated_packed_enum_or_unknown_into;
 pub use unsorted::read_unknown_or_skip_group;
 
 /// Given `u64` value compute varint encoded length.
