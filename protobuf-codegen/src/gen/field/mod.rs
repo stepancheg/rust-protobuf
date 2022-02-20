@@ -1,3 +1,4 @@
+use protobuf::descriptor::field_descriptor_proto::Type;
 use protobuf::descriptor::*;
 use protobuf::reflect::ReflectValueRef;
 use protobuf::reflect::RuntimeFieldType;
@@ -74,7 +75,6 @@ impl FieldDescriptorProtoTypeExt for field_descriptor_proto::Type {
 }
 
 fn type_protobuf_name(field_type: field_descriptor_proto::Type) -> &'static str {
-    use field_descriptor_proto::Type;
     match field_type {
         Type::TYPE_INT32 => "int32",
         Type::TYPE_INT64 => "int64",
@@ -1471,26 +1471,19 @@ impl<'a> FieldGen<'a> {
         r: &RepeatedField,
         w: &mut CodeWriter,
     ) {
-        let tokio = match r.elem.primitive_type_variant() {
-            PrimitiveTypeVariant::TokioBytes => "tokio_",
-            PrimitiveTypeVariant::Default => "",
+        let read_fn = match &r.elem {
+            FieldElem::Message(..) => "read_message",
+            FieldElem::Primitive(Type::TYPE_STRING, PrimitiveTypeVariant::Default) => "read_string",
+            FieldElem::Primitive(Type::TYPE_STRING, PrimitiveTypeVariant::TokioBytes) => {
+                "read_tokio_chars"
+            }
+            FieldElem::Primitive(Type::TYPE_BYTES, PrimitiveTypeVariant::Default) => "read_bytes",
+            FieldElem::Primitive(Type::TYPE_BYTES, PrimitiveTypeVariant::TokioBytes) => {
+                "read_tokio_bytes"
+            }
+            _ => unreachable!("for field {}", self.proto_field.field),
         };
-        let type_name_for_fn = protobuf_name(self.proto_type);
-        let into_what_suffix = match *r {
-            RepeatedField {
-                elem: FieldElem::Message(..),
-                ..
-            } => "_vec",
-            _ => "",
-        };
-        w.write_line(&format!(
-            "{}::rt::read_repeated_{}{}_into{}(wire_type, is, &mut self.{})?;",
-            protobuf_crate_path(&self.customize),
-            tokio,
-            type_name_for_fn,
-            into_what_suffix,
-            self.rust_name,
-        ));
+        w.write_line(&format!("self.{}.push(is.{}()?);", self.rust_name, read_fn,));
     }
 
     fn tag_with_wire_type(&self, wire_type: WireType) -> u32 {
@@ -1588,7 +1581,7 @@ impl<'a> FieldGen<'a> {
             FieldElem::Message(..)
             | FieldElem::Primitive(field_descriptor_proto::Type::TYPE_STRING, ..)
             | FieldElem::Primitive(field_descriptor_proto::Type::TYPE_BYTES, ..) => {
-                w.case_block(&format!("({}, _)", self.proto_field.number()), |w| {
+                w.case_block(&format!("(_, {})", self.tag()), |w| {
                     self.write_merge_from_field_message_string_bytes_repeated(field, w);
                 })
             }

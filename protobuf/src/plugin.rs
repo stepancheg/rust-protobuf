@@ -441,14 +441,14 @@ impl crate::Message for CodeGeneratorRequest {
             // TODO: tag is temporary for migration
             let tag = (field_number << 3) + wire_type as u32;
             match (field_number, tag) {
-                (1, _) => {
-                    crate::rt::read_repeated_string_into(wire_type, is, &mut self.file_to_generate)?;
+                (_, 10) => {
+                    self.file_to_generate.push(is.read_string()?);
                 },
                 (_, 18) => {
                     self.parameter = ::std::option::Option::Some(is.read_string()?);
                 },
-                (15, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.proto_file)?;
+                (_, 122) => {
+                    self.proto_file.push(is.read_message()?);
                 },
                 (_, 26) => {
                     crate::rt::read_singular_message_into_field(is, &mut self.compiler_version)?;
@@ -697,8 +697,8 @@ impl crate::Message for CodeGeneratorResponse {
                 (_, 16) => {
                     self.supported_features = ::std::option::Option::Some(is.read_uint64()?);
                 },
-                (15, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.file)?;
+                (_, 122) => {
+                    self.file.push(is.read_message()?);
                 },
                 (_, tag) => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;

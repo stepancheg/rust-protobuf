@@ -72,8 +72,8 @@ impl crate::Message for FieldMask {
             // TODO: tag is temporary for migration
             let tag = (field_number << 3) + wire_type as u32;
             match (field_number, tag) {
-                (1, _) => {
-                    crate::rt::read_repeated_string_into(wire_type, is, &mut self.paths)?;
+                (_, 10) => {
+                    self.paths.push(is.read_string()?);
                 },
                 (_, tag) => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;

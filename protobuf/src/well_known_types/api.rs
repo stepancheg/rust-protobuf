@@ -174,11 +174,11 @@ impl crate::Message for Api {
                 (_, 10) => {
                     self.name = is.read_string()?;
                 },
-                (2, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.methods)?;
+                (_, 18) => {
+                    self.methods.push(is.read_message()?);
                 },
-                (3, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.options)?;
+                (_, 26) => {
+                    self.options.push(is.read_message()?);
                 },
                 (_, 34) => {
                     self.version = is.read_string()?;
@@ -186,8 +186,8 @@ impl crate::Message for Api {
                 (_, 42) => {
                     crate::rt::read_singular_message_into_field(is, &mut self.source_context)?;
                 },
-                (6, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.mixins)?;
+                (_, 50) => {
+                    self.mixins.push(is.read_message()?);
                 },
                 (_, 56) => {
                     self.syntax = is.read_enum_or_unknown()?;
@@ -439,8 +439,8 @@ impl crate::Message for Method {
                 (_, 40) => {
                     self.response_streaming = is.read_bool()?;
                 },
-                (6, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.options)?;
+                (_, 50) => {
+                    self.options.push(is.read_message()?);
                 },
                 (_, 56) => {
                     self.syntax = is.read_enum_or_unknown()?;

@@ -78,8 +78,8 @@ impl crate::Message for FileDescriptorSet {
             // TODO: tag is temporary for migration
             let tag = (field_number << 3) + wire_type as u32;
             match (field_number, tag) {
-                (1, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.file)?;
+                (_, 10) => {
+                    self.file.push(is.read_message()?);
                 },
                 (_, tag) => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
@@ -443,8 +443,8 @@ impl crate::Message for FileDescriptorProto {
                 (_, 18) => {
                     self.package = ::std::option::Option::Some(is.read_string()?);
                 },
-                (3, _) => {
-                    crate::rt::read_repeated_string_into(wire_type, is, &mut self.dependency)?;
+                (_, 26) => {
+                    self.dependency.push(is.read_string()?);
                 },
                 (10, _) => {
                     crate::rt::read_repeated_int32_into(wire_type, is, &mut self.public_dependency)?;
@@ -452,17 +452,17 @@ impl crate::Message for FileDescriptorProto {
                 (11, _) => {
                     crate::rt::read_repeated_int32_into(wire_type, is, &mut self.weak_dependency)?;
                 },
-                (4, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.message_type)?;
+                (_, 34) => {
+                    self.message_type.push(is.read_message()?);
                 },
-                (5, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.enum_type)?;
+                (_, 42) => {
+                    self.enum_type.push(is.read_message()?);
                 },
-                (6, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.service)?;
+                (_, 50) => {
+                    self.service.push(is.read_message()?);
                 },
-                (7, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.extension)?;
+                (_, 58) => {
+                    self.extension.push(is.read_message()?);
                 },
                 (_, 66) => {
                     crate::rt::read_singular_message_into_field(is, &mut self.options)?;
@@ -838,32 +838,32 @@ impl crate::Message for DescriptorProto {
                 (_, 10) => {
                     self.name = ::std::option::Option::Some(is.read_string()?);
                 },
-                (2, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.field)?;
+                (_, 18) => {
+                    self.field.push(is.read_message()?);
                 },
-                (6, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.extension)?;
+                (_, 50) => {
+                    self.extension.push(is.read_message()?);
                 },
-                (3, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.nested_type)?;
+                (_, 26) => {
+                    self.nested_type.push(is.read_message()?);
                 },
-                (4, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.enum_type)?;
+                (_, 34) => {
+                    self.enum_type.push(is.read_message()?);
                 },
-                (5, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.extension_range)?;
+                (_, 42) => {
+                    self.extension_range.push(is.read_message()?);
                 },
-                (8, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.oneof_decl)?;
+                (_, 66) => {
+                    self.oneof_decl.push(is.read_message()?);
                 },
                 (_, 58) => {
                     crate::rt::read_singular_message_into_field(is, &mut self.options)?;
                 },
-                (9, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.reserved_range)?;
+                (_, 74) => {
+                    self.reserved_range.push(is.read_message()?);
                 },
-                (10, _) => {
-                    crate::rt::read_repeated_string_into(wire_type, is, &mut self.reserved_name)?;
+                (_, 82) => {
+                    self.reserved_name.push(is.read_string()?);
                 },
                 (_, tag) => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
@@ -1478,8 +1478,8 @@ impl crate::Message for ExtensionRangeOptions {
             // TODO: tag is temporary for migration
             let tag = (field_number << 3) + wire_type as u32;
             match (field_number, tag) {
-                (999, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
+                (_, 7994) => {
+                    self.uninterpreted_option.push(is.read_message()?);
                 },
                 (_, tag) => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
@@ -2708,17 +2708,17 @@ impl crate::Message for EnumDescriptorProto {
                 (_, 10) => {
                     self.name = ::std::option::Option::Some(is.read_string()?);
                 },
-                (2, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.value)?;
+                (_, 18) => {
+                    self.value.push(is.read_message()?);
                 },
                 (_, 26) => {
                     crate::rt::read_singular_message_into_field(is, &mut self.options)?;
                 },
-                (4, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.reserved_range)?;
+                (_, 34) => {
+                    self.reserved_range.push(is.read_message()?);
                 },
-                (5, _) => {
-                    crate::rt::read_repeated_string_into(wire_type, is, &mut self.reserved_name)?;
+                (_, 42) => {
+                    self.reserved_name.push(is.read_string()?);
                 },
                 (_, tag) => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
@@ -3368,8 +3368,8 @@ impl crate::Message for ServiceDescriptorProto {
                 (_, 10) => {
                     self.name = ::std::option::Option::Some(is.read_string()?);
                 },
-                (2, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.method)?;
+                (_, 18) => {
+                    self.method.push(is.read_message()?);
                 },
                 (_, 26) => {
                     crate::rt::read_singular_message_into_field(is, &mut self.options)?;
@@ -4738,8 +4738,8 @@ impl crate::Message for FileOptions {
                 (_, 362) => {
                     self.ruby_package = ::std::option::Option::Some(is.read_string()?);
                 },
-                (999, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
+                (_, 7994) => {
+                    self.uninterpreted_option.push(is.read_message()?);
                 },
                 (_, tag) => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
@@ -5220,8 +5220,8 @@ impl crate::Message for MessageOptions {
                 (_, 56) => {
                     self.map_entry = ::std::option::Option::Some(is.read_bool()?);
                 },
-                (999, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
+                (_, 7994) => {
+                    self.uninterpreted_option.push(is.read_message()?);
                 },
                 (_, tag) => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
@@ -5626,8 +5626,8 @@ impl crate::Message for FieldOptions {
                 (_, 80) => {
                     self.weak = ::std::option::Option::Some(is.read_bool()?);
                 },
-                (999, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
+                (_, 7994) => {
+                    self.uninterpreted_option.push(is.read_message()?);
                 },
                 (_, tag) => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
@@ -5922,8 +5922,8 @@ impl crate::Message for OneofOptions {
             // TODO: tag is temporary for migration
             let tag = (field_number << 3) + wire_type as u32;
             match (field_number, tag) {
-                (999, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
+                (_, 7994) => {
+                    self.uninterpreted_option.push(is.read_message()?);
                 },
                 (_, tag) => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
@@ -6123,8 +6123,8 @@ impl crate::Message for EnumOptions {
                 (_, 24) => {
                     self.deprecated = ::std::option::Option::Some(is.read_bool()?);
                 },
-                (999, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
+                (_, 7994) => {
+                    self.uninterpreted_option.push(is.read_message()?);
                 },
                 (_, tag) => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
@@ -6308,8 +6308,8 @@ impl crate::Message for EnumValueOptions {
                 (_, 8) => {
                     self.deprecated = ::std::option::Option::Some(is.read_bool()?);
                 },
-                (999, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
+                (_, 7994) => {
+                    self.uninterpreted_option.push(is.read_message()?);
                 },
                 (_, tag) => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
@@ -6485,8 +6485,8 @@ impl crate::Message for ServiceOptions {
                 (_, 264) => {
                     self.deprecated = ::std::option::Option::Some(is.read_bool()?);
                 },
-                (999, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
+                (_, 7994) => {
+                    self.uninterpreted_option.push(is.read_message()?);
                 },
                 (_, tag) => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
@@ -6695,8 +6695,8 @@ impl crate::Message for MethodOptions {
                 (_, 272) => {
                     self.idempotency_level = ::std::option::Option::Some(is.read_enum_or_unknown()?);
                 },
-                (999, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
+                (_, 7994) => {
+                    self.uninterpreted_option.push(is.read_message()?);
                 },
                 (_, tag) => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
@@ -7127,8 +7127,8 @@ impl crate::Message for UninterpretedOption {
             // TODO: tag is temporary for migration
             let tag = (field_number << 3) + wire_type as u32;
             match (field_number, tag) {
-                (2, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.name)?;
+                (_, 18) => {
+                    self.name.push(is.read_message()?);
                 },
                 (_, 26) => {
                     self.identifier_value = ::std::option::Option::Some(is.read_string()?);
@@ -7546,8 +7546,8 @@ impl crate::Message for SourceCodeInfo {
             // TODO: tag is temporary for migration
             let tag = (field_number << 3) + wire_type as u32;
             match (field_number, tag) {
-                (1, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.location)?;
+                (_, 10) => {
+                    self.location.push(is.read_message()?);
                 },
                 (_, tag) => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
@@ -7796,8 +7796,8 @@ pub mod source_code_info {
                     (_, 34) => {
                         self.trailing_comments = ::std::option::Option::Some(is.read_string()?);
                     },
-                    (6, _) => {
-                        crate::rt::read_repeated_string_into(wire_type, is, &mut self.leading_detached_comments)?;
+                    (_, 50) => {
+                        self.leading_detached_comments.push(is.read_string()?);
                     },
                     (_, tag) => {
                         crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
@@ -7963,8 +7963,8 @@ impl crate::Message for GeneratedCodeInfo {
             // TODO: tag is temporary for migration
             let tag = (field_number << 3) + wire_type as u32;
             match (field_number, tag) {
-                (1, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.annotation)?;
+                (_, 10) => {
+                    self.annotation.push(is.read_message()?);
                 },
                 (_, tag) => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;

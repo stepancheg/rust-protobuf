@@ -131,14 +131,14 @@ impl crate::Message for Type {
                 (_, 10) => {
                     self.name = is.read_string()?;
                 },
-                (2, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.fields)?;
+                (_, 18) => {
+                    self.fields.push(is.read_message()?);
                 },
-                (3, _) => {
-                    crate::rt::read_repeated_string_into(wire_type, is, &mut self.oneofs)?;
+                (_, 26) => {
+                    self.oneofs.push(is.read_string()?);
                 },
-                (4, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.options)?;
+                (_, 34) => {
+                    self.options.push(is.read_message()?);
                 },
                 (_, 42) => {
                     crate::rt::read_singular_message_into_field(is, &mut self.source_context)?;
@@ -416,8 +416,8 @@ impl crate::Message for Field {
                 (_, 64) => {
                     self.packed = is.read_bool()?;
                 },
-                (9, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.options)?;
+                (_, 74) => {
+                    self.options.push(is.read_message()?);
                 },
                 (_, 82) => {
                     self.json_name = is.read_string()?;
@@ -858,11 +858,11 @@ impl crate::Message for Enum {
                 (_, 10) => {
                     self.name = is.read_string()?;
                 },
-                (2, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.enumvalue)?;
+                (_, 18) => {
+                    self.enumvalue.push(is.read_message()?);
                 },
-                (3, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.options)?;
+                (_, 26) => {
+                    self.options.push(is.read_message()?);
                 },
                 (_, 34) => {
                     crate::rt::read_singular_message_into_field(is, &mut self.source_context)?;
@@ -1059,8 +1059,8 @@ impl crate::Message for EnumValue {
                 (_, 16) => {
                     self.number = is.read_int32()?;
                 },
-                (3, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.options)?;
+                (_, 26) => {
+                    self.options.push(is.read_message()?);
                 },
                 (_, tag) => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;

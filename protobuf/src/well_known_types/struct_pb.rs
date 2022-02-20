@@ -692,8 +692,8 @@ impl crate::Message for ListValue {
             // TODO: tag is temporary for migration
             let tag = (field_number << 3) + wire_type as u32;
             match (field_number, tag) {
-                (1, _) => {
-                    crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.values)?;
+                (_, 10) => {
+                    self.values.push(is.read_message()?);
                 },
                 (_, tag) => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
