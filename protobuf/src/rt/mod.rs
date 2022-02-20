@@ -138,14 +138,6 @@ impl ProtobufFixed for bool {
     const LEN: u32 = 1;
 }
 
-/* Commented out due to https://github.com/mozilla/rust/issues/8075
-impl<E:ProtobufEnum> ProtobufVarint for E {
-    fn len_varint(&self) -> u32 {
-        self.value().len_varint()
-    }
-}
-*/
-
 /// Size of serialized repeated packed field, excluding length and tag.
 pub fn vec_packed_varint_data_size<T: ProtobufVarint>(vec: &[T]) -> u64 {
     vec.iter()
