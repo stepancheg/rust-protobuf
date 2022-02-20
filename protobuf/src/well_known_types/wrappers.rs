@@ -71,14 +71,12 @@ impl crate::Message for DoubleValue {
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
-            let (field_number, wire_type) = is.read_tag_unpack()?;
-            // TODO: tag is temporary for migration
-            let tag = (field_number << 3) + wire_type as u32;
-            match (field_number, tag) {
-                (_, 9) => {
+            let tag = is.read_raw_varint32()?;
+            match tag {
+                9 => {
                     self.value = is.read_double()?;
                 },
-                (_, tag) => {
+                tag => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
@@ -203,14 +201,12 @@ impl crate::Message for FloatValue {
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
-            let (field_number, wire_type) = is.read_tag_unpack()?;
-            // TODO: tag is temporary for migration
-            let tag = (field_number << 3) + wire_type as u32;
-            match (field_number, tag) {
-                (_, 13) => {
+            let tag = is.read_raw_varint32()?;
+            match tag {
+                13 => {
                     self.value = is.read_float()?;
                 },
-                (_, tag) => {
+                tag => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
@@ -335,14 +331,12 @@ impl crate::Message for Int64Value {
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
-            let (field_number, wire_type) = is.read_tag_unpack()?;
-            // TODO: tag is temporary for migration
-            let tag = (field_number << 3) + wire_type as u32;
-            match (field_number, tag) {
-                (_, 8) => {
+            let tag = is.read_raw_varint32()?;
+            match tag {
+                8 => {
                     self.value = is.read_int64()?;
                 },
-                (_, tag) => {
+                tag => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
@@ -467,14 +461,12 @@ impl crate::Message for UInt64Value {
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
-            let (field_number, wire_type) = is.read_tag_unpack()?;
-            // TODO: tag is temporary for migration
-            let tag = (field_number << 3) + wire_type as u32;
-            match (field_number, tag) {
-                (_, 8) => {
+            let tag = is.read_raw_varint32()?;
+            match tag {
+                8 => {
                     self.value = is.read_uint64()?;
                 },
-                (_, tag) => {
+                tag => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
@@ -599,14 +591,12 @@ impl crate::Message for Int32Value {
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
-            let (field_number, wire_type) = is.read_tag_unpack()?;
-            // TODO: tag is temporary for migration
-            let tag = (field_number << 3) + wire_type as u32;
-            match (field_number, tag) {
-                (_, 8) => {
+            let tag = is.read_raw_varint32()?;
+            match tag {
+                8 => {
                     self.value = is.read_int32()?;
                 },
-                (_, tag) => {
+                tag => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
@@ -731,14 +721,12 @@ impl crate::Message for UInt32Value {
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
-            let (field_number, wire_type) = is.read_tag_unpack()?;
-            // TODO: tag is temporary for migration
-            let tag = (field_number << 3) + wire_type as u32;
-            match (field_number, tag) {
-                (_, 8) => {
+            let tag = is.read_raw_varint32()?;
+            match tag {
+                8 => {
                     self.value = is.read_uint32()?;
                 },
-                (_, tag) => {
+                tag => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
@@ -863,14 +851,12 @@ impl crate::Message for BoolValue {
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
-            let (field_number, wire_type) = is.read_tag_unpack()?;
-            // TODO: tag is temporary for migration
-            let tag = (field_number << 3) + wire_type as u32;
-            match (field_number, tag) {
-                (_, 8) => {
+            let tag = is.read_raw_varint32()?;
+            match tag {
+                8 => {
                     self.value = is.read_bool()?;
                 },
-                (_, tag) => {
+                tag => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
@@ -995,14 +981,12 @@ impl crate::Message for StringValue {
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
-            let (field_number, wire_type) = is.read_tag_unpack()?;
-            // TODO: tag is temporary for migration
-            let tag = (field_number << 3) + wire_type as u32;
-            match (field_number, tag) {
-                (_, 10) => {
+            let tag = is.read_raw_varint32()?;
+            match tag {
+                10 => {
                     self.value = is.read_string()?;
                 },
-                (_, tag) => {
+                tag => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
@@ -1127,14 +1111,12 @@ impl crate::Message for BytesValue {
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
-            let (field_number, wire_type) = is.read_tag_unpack()?;
-            // TODO: tag is temporary for migration
-            let tag = (field_number << 3) + wire_type as u32;
-            match (field_number, tag) {
-                (_, 10) => {
+            let tag = is.read_raw_varint32()?;
+            match tag {
+                10 => {
                     self.value = is.read_bytes()?;
                 },
-                (_, tag) => {
+                tag => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };

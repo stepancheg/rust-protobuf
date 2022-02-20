@@ -124,29 +124,27 @@ impl crate::Message for Type {
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
-            let (field_number, wire_type) = is.read_tag_unpack()?;
-            // TODO: tag is temporary for migration
-            let tag = (field_number << 3) + wire_type as u32;
-            match (field_number, tag) {
-                (_, 10) => {
+            let tag = is.read_raw_varint32()?;
+            match tag {
+                10 => {
                     self.name = is.read_string()?;
                 },
-                (_, 18) => {
+                18 => {
                     self.fields.push(is.read_message()?);
                 },
-                (_, 26) => {
+                26 => {
                     self.oneofs.push(is.read_string()?);
                 },
-                (_, 34) => {
+                34 => {
                     self.options.push(is.read_message()?);
                 },
-                (_, 42) => {
+                42 => {
                     crate::rt::read_singular_message_into_field(is, &mut self.source_context)?;
                 },
-                (_, 48) => {
+                48 => {
                     self.syntax = is.read_enum_or_unknown()?;
                 },
-                (_, tag) => {
+                tag => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
@@ -391,41 +389,39 @@ impl crate::Message for Field {
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
-            let (field_number, wire_type) = is.read_tag_unpack()?;
-            // TODO: tag is temporary for migration
-            let tag = (field_number << 3) + wire_type as u32;
-            match (field_number, tag) {
-                (_, 8) => {
+            let tag = is.read_raw_varint32()?;
+            match tag {
+                8 => {
                     self.kind = is.read_enum_or_unknown()?;
                 },
-                (_, 16) => {
+                16 => {
                     self.cardinality = is.read_enum_or_unknown()?;
                 },
-                (_, 24) => {
+                24 => {
                     self.number = is.read_int32()?;
                 },
-                (_, 34) => {
+                34 => {
                     self.name = is.read_string()?;
                 },
-                (_, 50) => {
+                50 => {
                     self.type_url = is.read_string()?;
                 },
-                (_, 56) => {
+                56 => {
                     self.oneof_index = is.read_int32()?;
                 },
-                (_, 64) => {
+                64 => {
                     self.packed = is.read_bool()?;
                 },
-                (_, 74) => {
+                74 => {
                     self.options.push(is.read_message()?);
                 },
-                (_, 82) => {
+                82 => {
                     self.json_name = is.read_string()?;
                 },
-                (_, 90) => {
+                90 => {
                     self.default_value = is.read_string()?;
                 },
-                (_, tag) => {
+                tag => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
@@ -851,26 +847,24 @@ impl crate::Message for Enum {
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
-            let (field_number, wire_type) = is.read_tag_unpack()?;
-            // TODO: tag is temporary for migration
-            let tag = (field_number << 3) + wire_type as u32;
-            match (field_number, tag) {
-                (_, 10) => {
+            let tag = is.read_raw_varint32()?;
+            match tag {
+                10 => {
                     self.name = is.read_string()?;
                 },
-                (_, 18) => {
+                18 => {
                     self.enumvalue.push(is.read_message()?);
                 },
-                (_, 26) => {
+                26 => {
                     self.options.push(is.read_message()?);
                 },
-                (_, 34) => {
+                34 => {
                     crate::rt::read_singular_message_into_field(is, &mut self.source_context)?;
                 },
-                (_, 40) => {
+                40 => {
                     self.syntax = is.read_enum_or_unknown()?;
                 },
-                (_, tag) => {
+                tag => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
@@ -1049,20 +1043,18 @@ impl crate::Message for EnumValue {
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
-            let (field_number, wire_type) = is.read_tag_unpack()?;
-            // TODO: tag is temporary for migration
-            let tag = (field_number << 3) + wire_type as u32;
-            match (field_number, tag) {
-                (_, 10) => {
+            let tag = is.read_raw_varint32()?;
+            match tag {
+                10 => {
                     self.name = is.read_string()?;
                 },
-                (_, 16) => {
+                16 => {
                     self.number = is.read_int32()?;
                 },
-                (_, 26) => {
+                26 => {
                     self.options.push(is.read_message()?);
                 },
-                (_, tag) => {
+                tag => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
@@ -1222,17 +1214,15 @@ impl crate::Message for Option {
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
-            let (field_number, wire_type) = is.read_tag_unpack()?;
-            // TODO: tag is temporary for migration
-            let tag = (field_number << 3) + wire_type as u32;
-            match (field_number, tag) {
-                (_, 10) => {
+            let tag = is.read_raw_varint32()?;
+            match tag {
+                10 => {
                     self.name = is.read_string()?;
                 },
-                (_, 18) => {
+                18 => {
                     crate::rt::read_singular_message_into_field(is, &mut self.value)?;
                 },
-                (_, tag) => {
+                tag => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };

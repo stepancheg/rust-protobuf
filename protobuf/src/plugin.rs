@@ -188,23 +188,21 @@ impl crate::Message for Version {
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
-            let (field_number, wire_type) = is.read_tag_unpack()?;
-            // TODO: tag is temporary for migration
-            let tag = (field_number << 3) + wire_type as u32;
-            match (field_number, tag) {
-                (_, 8) => {
+            let tag = is.read_raw_varint32()?;
+            match tag {
+                8 => {
                     self.major = ::std::option::Option::Some(is.read_int32()?);
                 },
-                (_, 16) => {
+                16 => {
                     self.minor = ::std::option::Option::Some(is.read_int32()?);
                 },
-                (_, 24) => {
+                24 => {
                     self.patch = ::std::option::Option::Some(is.read_int32()?);
                 },
-                (_, 34) => {
+                34 => {
                     self.suffix = ::std::option::Option::Some(is.read_string()?);
                 },
-                (_, tag) => {
+                tag => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
@@ -437,23 +435,21 @@ impl crate::Message for CodeGeneratorRequest {
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
-            let (field_number, wire_type) = is.read_tag_unpack()?;
-            // TODO: tag is temporary for migration
-            let tag = (field_number << 3) + wire_type as u32;
-            match (field_number, tag) {
-                (_, 10) => {
+            let tag = is.read_raw_varint32()?;
+            match tag {
+                10 => {
                     self.file_to_generate.push(is.read_string()?);
                 },
-                (_, 18) => {
+                18 => {
                     self.parameter = ::std::option::Option::Some(is.read_string()?);
                 },
-                (_, 122) => {
+                122 => {
                     self.proto_file.push(is.read_message()?);
                 },
-                (_, 26) => {
+                26 => {
                     crate::rt::read_singular_message_into_field(is, &mut self.compiler_version)?;
                 },
-                (_, tag) => {
+                tag => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
@@ -687,20 +683,18 @@ impl crate::Message for CodeGeneratorResponse {
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
-            let (field_number, wire_type) = is.read_tag_unpack()?;
-            // TODO: tag is temporary for migration
-            let tag = (field_number << 3) + wire_type as u32;
-            match (field_number, tag) {
-                (_, 10) => {
+            let tag = is.read_raw_varint32()?;
+            match tag {
+                10 => {
                     self.error = ::std::option::Option::Some(is.read_string()?);
                 },
-                (_, 16) => {
+                16 => {
                     self.supported_features = ::std::option::Option::Some(is.read_uint64()?);
                 },
-                (_, 122) => {
+                122 => {
                     self.file.push(is.read_message()?);
                 },
-                (_, tag) => {
+                tag => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
@@ -1030,23 +1024,21 @@ pub mod code_generator_response {
 
         fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
             while !is.eof()? {
-                let (field_number, wire_type) = is.read_tag_unpack()?;
-                // TODO: tag is temporary for migration
-                let tag = (field_number << 3) + wire_type as u32;
-                match (field_number, tag) {
-                    (_, 10) => {
+                let tag = is.read_raw_varint32()?;
+                match tag {
+                    10 => {
                         self.name = ::std::option::Option::Some(is.read_string()?);
                     },
-                    (_, 18) => {
+                    18 => {
                         self.insertion_point = ::std::option::Option::Some(is.read_string()?);
                     },
-                    (_, 122) => {
+                    122 => {
                         self.content = ::std::option::Option::Some(is.read_string()?);
                     },
-                    (_, 130) => {
+                    130 => {
                         crate::rt::read_singular_message_into_field(is, &mut self.generated_code_info)?;
                     },
-                    (_, tag) => {
+                    tag => {
                         crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                     },
                 };

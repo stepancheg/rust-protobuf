@@ -167,32 +167,30 @@ impl crate::Message for Api {
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
-            let (field_number, wire_type) = is.read_tag_unpack()?;
-            // TODO: tag is temporary for migration
-            let tag = (field_number << 3) + wire_type as u32;
-            match (field_number, tag) {
-                (_, 10) => {
+            let tag = is.read_raw_varint32()?;
+            match tag {
+                10 => {
                     self.name = is.read_string()?;
                 },
-                (_, 18) => {
+                18 => {
                     self.methods.push(is.read_message()?);
                 },
-                (_, 26) => {
+                26 => {
                     self.options.push(is.read_message()?);
                 },
-                (_, 34) => {
+                34 => {
                     self.version = is.read_string()?;
                 },
-                (_, 42) => {
+                42 => {
                     crate::rt::read_singular_message_into_field(is, &mut self.source_context)?;
                 },
-                (_, 50) => {
+                50 => {
                     self.mixins.push(is.read_message()?);
                 },
-                (_, 56) => {
+                56 => {
                     self.syntax = is.read_enum_or_unknown()?;
                 },
-                (_, tag) => {
+                tag => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
@@ -420,32 +418,30 @@ impl crate::Message for Method {
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
-            let (field_number, wire_type) = is.read_tag_unpack()?;
-            // TODO: tag is temporary for migration
-            let tag = (field_number << 3) + wire_type as u32;
-            match (field_number, tag) {
-                (_, 10) => {
+            let tag = is.read_raw_varint32()?;
+            match tag {
+                10 => {
                     self.name = is.read_string()?;
                 },
-                (_, 18) => {
+                18 => {
                     self.request_type_url = is.read_string()?;
                 },
-                (_, 24) => {
+                24 => {
                     self.request_streaming = is.read_bool()?;
                 },
-                (_, 34) => {
+                34 => {
                     self.response_type_url = is.read_string()?;
                 },
-                (_, 40) => {
+                40 => {
                     self.response_streaming = is.read_bool()?;
                 },
-                (_, 50) => {
+                50 => {
                     self.options.push(is.read_message()?);
                 },
-                (_, 56) => {
+                56 => {
                     self.syntax = is.read_enum_or_unknown()?;
                 },
-                (_, tag) => {
+                tag => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
@@ -625,17 +621,15 @@ impl crate::Message for Mixin {
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
-            let (field_number, wire_type) = is.read_tag_unpack()?;
-            // TODO: tag is temporary for migration
-            let tag = (field_number << 3) + wire_type as u32;
-            match (field_number, tag) {
-                (_, 10) => {
+            let tag = is.read_raw_varint32()?;
+            match tag {
+                10 => {
                     self.name = is.read_string()?;
                 },
-                (_, 18) => {
+                18 => {
                     self.root = is.read_string()?;
                 },
-                (_, tag) => {
+                tag => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
