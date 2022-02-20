@@ -527,40 +527,6 @@ pub fn read_repeated_enum_into<E: Enum + ProtobufValue>(
     }
 }
 
-/// Helper function to read single enum value.
-#[inline]
-fn read_enum_with_unknown_fields_into<E: Enum, C>(
-    is: &mut CodedInputStream,
-    target: C,
-    field_number: u32,
-    unknown_fields: &mut UnknownFields,
-) -> Result<()>
-where
-    C: FnOnce(E),
-{
-    let i = is.read_int32()?;
-    match Enum::from_i32(i) {
-        Some(e) => target(e),
-        None => unknown_fields.add_varint(field_number, i as i64 as u64),
-    }
-    Ok(())
-}
-
-fn read_repeated_packed_enum_with_unknown_fields_into<E: Enum>(
-    is: &mut CodedInputStream,
-    target: &mut Vec<E>,
-    field_number: u32,
-    unknown_fields: &mut UnknownFields,
-) -> Result<()> {
-    let len = is.read_raw_varint64()?;
-    let old_limit = is.push_limit(len)?;
-    while !is.eof()? {
-        read_enum_with_unknown_fields_into(is, |e| target.push(e), field_number, unknown_fields)?;
-    }
-    is.pop_limit(old_limit);
-    Ok(())
-}
-
 fn read_repeated_packed_enum_or_unknown_into<E: Enum>(
     is: &mut CodedInputStream,
     target: &mut Vec<EnumOrUnknown<E>>,
@@ -572,33 +538,6 @@ fn read_repeated_packed_enum_or_unknown_into<E: Enum>(
     }
     is.pop_limit(old_limit);
     Ok(())
-}
-
-/// Read repeated `enum` field into given vec,
-/// and when value is unknown store it in unknown fields
-/// which matches proto2 spec.
-///
-/// See explanation
-/// [here](https://github.com/stepancheg/rust-protobuf/issues/233#issuecomment-375142710)
-pub fn read_repeated_enum_with_unknown_fields_into<E: Enum>(
-    wire_type: WireType,
-    is: &mut CodedInputStream,
-    target: &mut Vec<E>,
-    field_number: u32,
-    unknown_fields: &mut UnknownFields,
-) -> Result<()> {
-    match wire_type {
-        WireType::LengthDelimited => read_repeated_packed_enum_with_unknown_fields_into(
-            is,
-            target,
-            field_number,
-            unknown_fields,
-        ),
-        WireType::Varint => {
-            read_enum_with_unknown_fields_into(is, |e| target.push(e), field_number, unknown_fields)
-        }
-        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
-    }
 }
 
 /// Read repeated `enum` field into given vec,
