@@ -2,8 +2,11 @@ use std::collections::HashMap;
 
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
+use crate::reflect::file::building::FileDescriptorBuilding;
 use crate::reflect::message::path::MessagePath;
 use crate::reflect::name::concat_paths;
+use crate::reflect::service::index::ServiceIndex;
+use crate::reflect::FileDescriptor;
 
 #[derive(Debug)]
 pub(crate) struct FileIndexMessageEntry {
@@ -31,16 +34,18 @@ pub(crate) struct FileIndex {
     pub(crate) top_level_messages: Vec<usize>,
     pub(crate) enums: Vec<FileIndexEnumEntry>,
     pub(crate) enums_by_name_to_package: HashMap<String, usize>,
+    pub(crate) services: Vec<ServiceIndex>,
 }
 
 impl FileIndex {
-    pub(crate) fn index(file: &FileDescriptorProto) -> FileIndex {
+    pub(crate) fn index(file: &FileDescriptorProto, deps: &[FileDescriptor]) -> FileIndex {
         let mut index = FileIndex {
             messages: Vec::new(),
             message_by_name_to_package: HashMap::new(),
             enums: Vec::new(),
             top_level_messages: Vec::with_capacity(file.message_type.len()),
             enums_by_name_to_package: HashMap::new(),
+            services: Vec::new(),
         };
 
         // Top-level enums start with zero
@@ -60,6 +65,18 @@ impl FileIndex {
 
         index.build_message_by_name_to_package();
         index.build_enum_by_name_to_package();
+
+        for service in &file.service {
+            let service_index = ServiceIndex::index(
+                service,
+                &FileDescriptorBuilding {
+                    current_file_descriptor: file,
+                    current_file_index: &index,
+                    deps_with_public: deps,
+                },
+            );
+            index.services.push(service_index);
+        }
 
         index
     }

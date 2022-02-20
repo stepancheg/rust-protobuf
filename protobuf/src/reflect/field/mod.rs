@@ -180,12 +180,12 @@ impl FieldDescriptor {
                 .extendee
                 .as_ref()
                 .unwrap()
-                .resolve_message(self),
+                .resolve_message(self.file_descriptor()),
             FieldDescriptorImpl::ExtensionInFile(file, i) => file.index().extensions[*i]
                 .extendee
                 .as_ref()
                 .unwrap()
-                .resolve_message(self),
+                .resolve_message(self.file_descriptor()),
         }
     }
 
@@ -412,7 +412,7 @@ impl FieldDescriptor {
 
     /// Dynamic representation of field type with wire type.
     pub(crate) fn protobuf_field_type(&self) -> ProtobufFieldType {
-        self.index().field_type.resolve(self)
+        self.index().field_type.resolve(self.file_descriptor())
     }
 
     /// Dynamic representation of field type.

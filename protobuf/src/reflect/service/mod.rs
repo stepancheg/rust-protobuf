@@ -1,7 +1,11 @@
 use crate::descriptor::MethodDescriptorProto;
 use crate::descriptor::ServiceDescriptorProto;
+use crate::reflect::service::index::MethodIndex;
+use crate::reflect::service::index::ServiceIndex;
 use crate::reflect::FileDescriptor;
 use crate::reflect::MessageDescriptor;
+
+pub(crate) mod index;
 
 /// Dynamic representation of service type.
 ///
@@ -21,6 +25,10 @@ impl ServiceDescriptor {
             file_descriptor,
             index,
         }
+    }
+
+    fn index(&self) -> &ServiceIndex {
+        &self.file_descriptor.index().index.services[self.index]
     }
 
     /// Proto snippet describing this service.
@@ -47,6 +55,10 @@ pub struct MethodDescriptor {
 }
 
 impl MethodDescriptor {
+    fn index(&self) -> &MethodIndex {
+        &self.service_descriptor.index().methods[self.index]
+    }
+
     /// Proto snippet describing this method.
     pub fn proto(&self) -> &MethodDescriptorProto {
         &self.service_descriptor.proto().method[self.index]
@@ -54,13 +66,15 @@ impl MethodDescriptor {
 
     /// Method input type.
     pub fn input_type(&self) -> MessageDescriptor {
-        // TODO
-        unimplemented!()
+        self.index()
+            .input_type
+            .resolve_message(&self.service_descriptor.file_descriptor)
     }
 
     /// Method output type.
     pub fn output_type(&self) -> MessageDescriptor {
-        // TODO
-        unimplemented!()
+        self.index()
+            .output_type
+            .resolve_message(&self.service_descriptor.file_descriptor)
     }
 }

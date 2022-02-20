@@ -26,7 +26,7 @@ impl DynamicFileDescriptor {
     ) -> DynamicFileDescriptor {
         let proto = Arc::new(proto);
 
-        let index = FileIndex::index(&*proto);
+        let index = FileIndex::index(&*proto, &dependencies);
 
         let file_descriptor_building = FileDescriptorBuilding {
             current_file_index: &index,

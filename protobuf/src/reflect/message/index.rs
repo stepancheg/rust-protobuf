@@ -14,7 +14,10 @@ pub(crate) struct MessageIndex {
 }
 
 impl MessageIndex {
-    pub fn index(proto: &DescriptorProto, building: &FileDescriptorBuilding) -> MessageIndex {
+    pub(crate) fn index(
+        proto: &DescriptorProto,
+        building: &FileDescriptorBuilding,
+    ) -> MessageIndex {
         let mut index_by_name = HashMap::new();
         let mut index_by_name_or_json_name = HashMap::new();
         let mut index_by_number = HashMap::new();

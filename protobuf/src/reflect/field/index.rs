@@ -8,6 +8,7 @@ use crate::reflect::protobuf_type_box::ProtobufTypeBox;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::EnumValueDescriptor;
 use crate::reflect::FieldDescriptor;
+use crate::reflect::FileDescriptor;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
@@ -33,20 +34,20 @@ impl ForwardProtobufTypeBox {
         ForwardProtobufTypeBox::ProtobufTypeBox(ProtobufTypeBox::from_proto_type(t))
     }
 
-    pub(crate) fn resolve(&self, field: &FieldDescriptor) -> ProtobufTypeBox {
+    pub(crate) fn resolve(&self, file: &FileDescriptor) -> ProtobufTypeBox {
         match self {
             ForwardProtobufTypeBox::ProtobufTypeBox(t) => t.clone(),
-            ForwardProtobufTypeBox::CurrentFileMessage(m) => ProtobufTypeBox::message(
-                MessageDescriptor::new(field.file_descriptor().clone(), *m),
-            ),
-            ForwardProtobufTypeBox::CurrentFileEnum(m) => ProtobufTypeBox::enumeration(
-                EnumDescriptor::new(field.file_descriptor().clone(), *m),
-            ),
+            ForwardProtobufTypeBox::CurrentFileMessage(m) => {
+                ProtobufTypeBox::message(MessageDescriptor::new(file.clone(), *m))
+            }
+            ForwardProtobufTypeBox::CurrentFileEnum(m) => {
+                ProtobufTypeBox::enumeration(EnumDescriptor::new(file.clone(), *m))
+            }
         }
     }
 
-    pub(crate) fn resolve_message(&self, field: &FieldDescriptor) -> MessageDescriptor {
-        match self.resolve(field).runtime() {
+    pub(crate) fn resolve_message(&self, file: &FileDescriptor) -> MessageDescriptor {
+        match self.resolve(file).runtime() {
             RuntimeTypeBox::Message(m) => m.clone(),
             _ => panic!("not message"),
         }
@@ -61,12 +62,12 @@ pub(crate) enum ForwardProtobufFieldType {
 }
 
 impl ForwardProtobufFieldType {
-    pub(crate) fn resolve(&self, field: &FieldDescriptor) -> ProtobufFieldType {
+    pub(crate) fn resolve(&self, file: &FileDescriptor) -> ProtobufFieldType {
         match self {
-            ForwardProtobufFieldType::Singular(t) => ProtobufFieldType::Singular(t.resolve(field)),
-            ForwardProtobufFieldType::Repeated(t) => ProtobufFieldType::Repeated(t.resolve(field)),
+            ForwardProtobufFieldType::Singular(t) => ProtobufFieldType::Singular(t.resolve(file)),
+            ForwardProtobufFieldType::Repeated(t) => ProtobufFieldType::Repeated(t.resolve(file)),
             ForwardProtobufFieldType::Map(k, v) => {
-                ProtobufFieldType::Map(k.resolve(field), v.resolve(field))
+                ProtobufFieldType::Map(k.resolve(file), v.resolve(file))
             }
         }
     }
