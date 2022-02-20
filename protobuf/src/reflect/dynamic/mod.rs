@@ -1,3 +1,5 @@
+use std::any::Any;
+use std::any::TypeId;
 use std::fmt;
 
 use crate::cached_size::CachedSize;
@@ -39,7 +41,6 @@ use crate::wire_format::WireType;
 use crate::Clear;
 use crate::CodedInputStream;
 use crate::CodedOutputStream;
-use crate::Message;
 use crate::Result;
 use crate::UnknownFields;
 
@@ -89,7 +90,7 @@ pub(crate) struct DynamicMessage {
     /// This field is lazy-init: it is empty when created.
     fields: Box<[DynamicFieldValue]>,
     unknown_fields: UnknownFields,
-    cached_size: CachedSize,
+    _cached_size: CachedSize,
 }
 
 impl DynamicMessage {
@@ -98,7 +99,7 @@ impl DynamicMessage {
             descriptor,
             fields: Vec::new().into_boxed_slice(),
             unknown_fields: UnknownFields::new(),
-            cached_size: CachedSize::new(),
+            _cached_size: CachedSize::new(),
         }
     }
 
@@ -194,12 +195,14 @@ impl DynamicMessage {
         }
     }
 
-    pub fn downcast_ref(message: &dyn MessageDyn) -> &DynamicMessage {
-        <dyn MessageDyn>::downcast_ref(message).unwrap()
+    pub(crate) fn downcast_ref(message: &dyn MessageDyn) -> &DynamicMessage {
+        assert!(Any::type_id(&*message) == TypeId::of::<DynamicMessage>());
+        unsafe { &*(message as *const dyn MessageDyn as *const DynamicMessage) }
     }
 
-    pub fn downcast_mut(message: &mut dyn MessageDyn) -> &mut DynamicMessage {
-        <dyn MessageDyn>::downcast_mut(message).unwrap()
+    pub(crate) fn downcast_mut(message: &mut dyn MessageDyn) -> &mut DynamicMessage {
+        assert!(Any::type_id(&*message) == TypeId::of::<DynamicMessage>());
+        unsafe { &mut *(message as *mut dyn MessageDyn as *mut DynamicMessage) }
     }
 
     fn for_each_field_to_write(
@@ -281,12 +284,12 @@ impl fmt::Display for DynamicMessage {
 }
 
 // TODO: implement PartialEq, Default
-impl Message for DynamicMessage {
-    fn descriptor_by_instance(&self) -> MessageDescriptor {
+impl MessageDyn for DynamicMessage {
+    fn descriptor_dyn(&self) -> MessageDescriptor {
         self.descriptor.clone()
     }
 
-    fn is_initialized(&self) -> bool {
+    fn is_initialized_dyn(&self) -> bool {
         // TODO: this check can be much faster for proto3 without contained proto2 messages.
         for f in self.descriptor.fields() {
             let fv = self.get_reflect(&f);
@@ -323,7 +326,7 @@ impl Message for DynamicMessage {
         true
     }
 
-    fn merge_from(&mut self, is: &mut CodedInputStream) -> Result<()> {
+    fn merge_from_dyn(&mut self, is: &mut CodedInputStream) -> Result<()> {
         while !is.eof()? {
             let (field, wire_type) = is.read_tag_unpack()?;
             let field_desc = match self.descriptor.field_by_number(field) {
@@ -373,7 +376,7 @@ impl Message for DynamicMessage {
         Ok(())
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut CodedOutputStream) -> Result<()> {
+    fn write_to_with_cached_sizes_dyn(&self, os: &mut CodedOutputStream) -> Result<()> {
         struct Handler<'a, 'o> {
             os: &'a mut CodedOutputStream<'o>,
         }
@@ -418,7 +421,7 @@ impl Message for DynamicMessage {
         self.for_each_field_to_write(&mut handler)
     }
 
-    fn compute_size(&self) -> u64 {
+    fn compute_size_dyn(&self) -> u64 {
         struct Handler {
             m_size: u64,
         }
@@ -468,30 +471,12 @@ impl Message for DynamicMessage {
         handler.m_size
     }
 
-    fn cached_size(&self) -> u32 {
-        self.cached_size.get()
-    }
-
-    fn unknown_fields(&self) -> &UnknownFields {
+    fn unknown_fields_dyn(&self) -> &UnknownFields {
         &self.unknown_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut UnknownFields {
+    fn mut_unknown_fields_dyn(&mut self) -> &mut UnknownFields {
         &mut self.unknown_fields
-    }
-
-    fn new() -> Self
-    where
-        Self: Sized,
-    {
-        panic!("DynamicMessage cannot be constructed directly")
-    }
-
-    fn default_instance() -> &'static Self
-    where
-        Self: Sized,
-    {
-        panic!("There's no default instance for dynamic message")
     }
 }
 
