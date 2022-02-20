@@ -20,7 +20,7 @@ mod protobuf_abs_path;
 mod protobuf_ident;
 mod protobuf_path;
 mod protobuf_rel_path;
-pub mod protoc;
+pub(crate) mod protoc;
 pub mod pure;
 mod rel_path;
 mod test_against_protobuf_protos;
