@@ -669,16 +669,8 @@ pub fn read_repeated_message_into_vec<M: Message + Default>(
 ) -> Result<()> {
     match wire_type {
         WireType::LengthDelimited => {
-            is.incr_recursion()?;
-            let res = match is.read_message() {
-                Ok(m) => {
-                    target.push(m);
-                    Ok(())
-                }
-                Err(e) => Err(e),
-            };
-            is.decr_recursion();
-            res
+            target.push(is.read_message()?);
+            Ok(())
         }
         _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
