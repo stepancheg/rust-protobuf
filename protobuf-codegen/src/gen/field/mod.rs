@@ -1571,7 +1571,7 @@ impl<'a> FieldGen<'a> {
     }
 
     // Write `merge_from` part for this repeated field
-    fn write_merge_from_repeated_case_block(&self, wire_type_var: &str, w: &mut CodeWriter) {
+    fn write_merge_from_repeated_case_block(&self, w: &mut CodeWriter) {
         let field = match self.kind {
             FieldKind::Repeated(ref field) => field,
             _ => panic!(),
@@ -1609,29 +1609,39 @@ impl<'a> FieldGen<'a> {
                     },
                 );
             }
-            _ => w.case_block(&format!("({}, _)", self.proto_field.number()), |w| {
-                w.write_line(&format!(
-                    "{}::rt::read_repeated_{}_into({}, is, &mut self.{})?;",
-                    protobuf_crate_path(&self.customize),
-                    protobuf_name(self.proto_type),
-                    wire_type_var,
-                    self.rust_name
-                ));
-            }),
+            _ => {
+                assert_ne!(self.wire_type, WireType::LengthDelimited);
+                w.case_block(
+                    &format!(
+                        "(_, {})",
+                        self.tag_with_wire_type(WireType::LengthDelimited)
+                    ),
+                    |w| {
+                        w.write_line(&format!(
+                            "is.read_repeated_packed_{}_into(&mut self.{})?;",
+                            protobuf_name(self.proto_type),
+                            self.rust_name
+                        ));
+                    },
+                );
+                w.case_block(&format!("(_, {})", self.tag()), |w| {
+                    w.write_line(&format!(
+                        "self.{}.push(is.read_{}()?);",
+                        self.rust_name,
+                        protobuf_name(self.proto_type),
+                    ));
+                });
+            }
         }
     }
 
     /// Write `merge_from` part for this field
-    pub(crate) fn write_merge_from_field_case_block(
-        &self,
-        wire_type_var: &str,
-        w: &mut CodeWriter,
-    ) {
+    pub(crate) fn write_merge_from_field_case_block(&self, w: &mut CodeWriter) {
         match self.kind {
             FieldKind::Oneof(ref f) => self.write_merge_from_oneof_case_block(&f, w),
             FieldKind::Map(..) => self.write_merge_from_map_case_block(w),
             FieldKind::Singular(ref s) => self.write_merge_from_singular_case_block(s, w),
-            FieldKind::Repeated(..) => self.write_merge_from_repeated_case_block(wire_type_var, w),
+            FieldKind::Repeated(..) => self.write_merge_from_repeated_case_block(w),
         }
     }
 

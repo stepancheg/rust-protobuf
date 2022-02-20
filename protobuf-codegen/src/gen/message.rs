@@ -399,7 +399,7 @@ impl<'a> MessageGen<'a> {
                 w.write_line(&format!("let tag = (field_number << 3) + wire_type as u32;"));
                 w.match_block("(field_number, tag)", |w| {
                     for f in &self.fields_except_group() {
-                        f.write_merge_from_field_case_block("wire_type", w);
+                        f.write_merge_from_field_case_block(w);
                     }
                     w.case_block("(_, tag)", |w| {
                         w.write_line(&format!("{}::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;", protobuf_crate_path(&self.customize.for_elem)));
