@@ -525,6 +525,7 @@ mod test {
     use crate::Message;
 
     #[test]
+    #[cfg_attr(miri, ignore)]
     fn display() {
         let field = DescriptorProto::descriptor_static()
             .field_by_name("enum_type")
