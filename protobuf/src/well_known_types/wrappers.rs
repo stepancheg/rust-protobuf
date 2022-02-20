@@ -1023,7 +1023,7 @@ impl crate::Message for StringValue {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if !self.value.is_empty() {
-            my_size += 1 + crate::rt::string_size_no_tag(&self.value);
+            my_size += crate::rt::string_size(1, &self.value);
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size as u32);
@@ -1156,7 +1156,7 @@ impl crate::Message for BytesValue {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if !self.value.is_empty() {
-            my_size += 1 + crate::rt::bytes_size_no_tag(&self.value);
+            my_size += crate::rt::bytes_size(1, &self.value);
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size as u32);

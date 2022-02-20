@@ -284,7 +284,7 @@ pub fn bytes_size_no_tag(bytes: &[u8]) -> u64 {
 }
 
 /// Size of encoded bytes field.
-pub(crate) fn bytes_size(field_number: u32, bytes: &[u8]) -> u64 {
+pub fn bytes_size(field_number: u32, bytes: &[u8]) -> u64 {
     tag_size(field_number) + bytes_size_no_tag(bytes)
 }
 
@@ -294,7 +294,7 @@ pub fn string_size_no_tag(s: &str) -> u64 {
 }
 
 /// Size of encoded string field.
-pub(crate) fn string_size(field_number: u32, s: &str) -> u64 {
+pub fn string_size(field_number: u32, s: &str) -> u64 {
     tag_size(field_number) + string_size_no_tag(s)
 }
 

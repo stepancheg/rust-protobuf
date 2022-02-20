@@ -956,16 +956,19 @@ impl<'a> FieldGen<'a> {
             Some(data_size) => format!("{}", data_size + self.tag_size()),
             None => match self.proto_type {
                 field_descriptor_proto::Type::TYPE_MESSAGE => panic!("not a single-liner"),
+                // We are not inlining `bytes_size` here,
+                // assuming the compiler is smart enough to do it for us.
+                // https://rust.godbolt.org/z/GrKa5zxq6
                 field_descriptor_proto::Type::TYPE_BYTES => format!(
-                    "{} + {}::rt::bytes_size_no_tag(&{})",
-                    protobuf::rt::tag_size(self.proto_field.number()),
+                    "{}::rt::bytes_size({}, &{})",
                     protobuf_crate_path(&self.customize),
+                    self.proto_field.number(),
                     var
                 ),
                 field_descriptor_proto::Type::TYPE_STRING => format!(
-                    "{} + {}::rt::string_size_no_tag(&{})",
-                    protobuf::rt::tag_size(self.proto_field.number()),
+                    "{}::rt::string_size({}, &{})",
                     protobuf_crate_path(&self.customize),
+                    self.proto_field.number(),
                     var
                 ),
                 field_descriptor_proto::Type::TYPE_ENUM => {

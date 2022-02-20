@@ -86,7 +86,7 @@ impl crate::Message for FieldMask {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         for value in &self.paths {
-            my_size += 1 + crate::rt::string_size_no_tag(&value);
+            my_size += crate::rt::string_size(1, &value);
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size as u32);
