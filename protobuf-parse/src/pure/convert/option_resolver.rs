@@ -310,10 +310,10 @@ impl<'a> OptionResoler<'a> {
     ) -> anyhow::Result<FieldDescriptor> {
         let expected_extendee = ProtobufAbsPath::from_message(message);
         let field = self.find_extension_by_path(scope, field_name)?;
-        if ProtobufAbsPath::new(field.get_proto().extendee()) != expected_extendee {
+        if ProtobufAbsPath::new(field.proto().extendee()) != expected_extendee {
             return Err(OptionResolverError::WrongExtensionType(
                 format!("{}", field_name),
-                format!("{}", field.get_proto().extendee()),
+                format!("{}", field.proto().extendee()),
                 format!("{}", expected_extendee),
             )
             .into());
@@ -329,7 +329,7 @@ impl<'a> OptionResoler<'a> {
         field: &ProtobufOptionNamePart,
     ) -> anyhow::Result<FieldDescriptor> {
         match field {
-            ProtobufOptionNamePart::Direct(field) => match message.get_field_by_name(field.get()) {
+            ProtobufOptionNamePart::Direct(field) => match message.field_by_name(field.get()) {
                 Some(field) => Ok(field),
                 None => Err(OptionResolverError::UnknownFieldName(field.to_string()).into()),
             },
@@ -350,7 +350,7 @@ impl<'a> OptionResoler<'a> {
     ) -> anyhow::Result<()> {
         let field = self.ext_resolve_field(scope, options_type, option_name)?;
 
-        let field_type = TypeResolved::from_field(field.get_proto());
+        let field_type = TypeResolved::from_field(field.proto());
 
         match option_name_rem.split_first() {
             Some((first, rem)) => {
@@ -367,7 +367,7 @@ impl<'a> OptionResoler<'a> {
                             option_value,
                         )?;
                         options.add_length_delimited(
-                            field.get_proto().number() as u32,
+                            field.proto().number() as u32,
                             unknown_fields.write_to_bytes(),
                         );
                         Ok(())
@@ -399,7 +399,7 @@ impl<'a> OptionResoler<'a> {
                     }
                 };
 
-                options.add_value(field.get_proto().number() as u32, value);
+                options.add_value(field.proto().number() as u32, value);
                 Ok(())
             }
         }
@@ -677,7 +677,7 @@ impl<'a> OptionResoler<'a> {
                 return Ok(());
             }
         }
-        match M::descriptor_static().get_field_by_name(option.get()) {
+        match M::descriptor_static().field_by_name(option.get()) {
             Some(field) => {
                 if field.is_repeated_or_map() {
                     return Err(OptionResolverError::BuiltinOptionPointsToNonSingularField(

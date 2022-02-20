@@ -374,7 +374,7 @@ impl<'a> Parser<'a> {
             self.parse_enum(name, descriptor)
         } else if self.tokenizer.lookahead_is_json_number()? {
             let number = self.read_i32()?;
-            match descriptor.get_value_by_number(number) {
+            match descriptor.value_by_number(number) {
                 Some(v) => Ok(v),
                 // TODO: EnumValueOrUnknown
                 None => Err(ParseErrorWithoutLoc(
@@ -394,7 +394,7 @@ impl<'a> Parser<'a> {
         descriptor: &EnumDescriptor,
     ) -> ParseResultWithoutLoc<EnumValueDescriptor> {
         // TODO: can map key be int
-        match descriptor.get_value_by_name(&name) {
+        match descriptor.value_by_name(&name) {
             Some(v) => Ok(v),
             None => Err(ParseErrorWithoutLoc(
                 ParseErrorWithoutLocInner::UnknownEnumVariantName(name),
@@ -681,7 +681,7 @@ impl<'a> Parser<'a> {
             let field_name = self.read_string()?;
             // Proto3 JSON parsers are required to accept both
             // the converted `lowerCamelCase` name and the proto field name.
-            match descriptor.get_field_by_name_or_json_name(&field_name) {
+            match descriptor.field_by_name_or_json_name(&field_name) {
                 Some(field) => {
                     self.tokenizer.next_symbol_expect_eq(':', "object")?;
                     self.merge_field(message, &field)?;

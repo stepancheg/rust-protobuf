@@ -62,24 +62,24 @@ impl MessageDescriptor {
     ///
     /// Only needed for codegen.
     #[doc(hidden)]
-    pub fn get_index_in_file_for_codegen(&self) -> usize {
+    pub fn index_in_file_for_codegen(&self) -> usize {
         self.index
     }
 
     /// Get underlying `DescriptorProto` object.
-    pub fn get_proto(&self) -> &DescriptorProto {
+    pub fn proto(&self) -> &DescriptorProto {
         self.file_descriptor.message_proto(self.index)
     }
 
     /// Message name as specified in `.proto` file.
-    pub fn get_name(&self) -> &str {
-        self.get_proto().name()
+    pub fn name(&self) -> &str {
+        self.proto().name()
     }
 
     /// Get enums declared in this message.
-    pub fn get_enums(&self) -> Vec<EnumDescriptor> {
-        let first_enum_index = self.get_index_entry().first_enum_index;
-        self.get_proto()
+    pub fn enums(&self) -> Vec<EnumDescriptor> {
+        let first_enum_index = self.index_entry().first_enum_index;
+        self.proto()
             .enum_type
             .iter()
             .enumerate()
@@ -87,7 +87,7 @@ impl MessageDescriptor {
             .collect()
     }
 
-    fn get_index_entry(&self) -> &FileIndexMessageEntry {
+    fn index_entry(&self) -> &FileIndexMessageEntry {
         self.file_descriptor.message_index_entry(self.index)
     }
 
@@ -103,7 +103,7 @@ impl MessageDescriptor {
 
     /// Messages declared in this messages.
     pub fn nested_messages(&self) -> Vec<MessageDescriptor> {
-        self.get_index_entry()
+        self.index_entry()
             .nested_messages
             .iter()
             .map(|i| MessageDescriptor::new(self.file_descriptor.clone(), *i))
@@ -112,7 +112,7 @@ impl MessageDescriptor {
 
     /// Get a message containing this message, or `None` if this message is declared at file level.
     pub fn enclosing_message(&self) -> Option<MessageDescriptor> {
-        self.get_index_entry()
+        self.index_entry()
             .enclosing_message
             .map(|i| MessageDescriptor::new(self.file_descriptor.clone(), i))
     }
@@ -140,7 +140,7 @@ impl MessageDescriptor {
 
     /// This message descriptor is a map entry.
     pub fn is_map_entry(&self) -> bool {
-        self.get_proto().options.get_or_default().map_entry()
+        self.proto().options.get_or_default().map_entry()
     }
 
     fn assert_not_map_entry(&self) {
@@ -238,24 +238,19 @@ impl MessageDescriptor {
         ad == bd && ad.reflect_eq(a, b, mode)
     }
 
-    /// Message name as given in `.proto` file
-    pub fn name(&self) -> &str {
-        self.get_proto().name()
-    }
-
     /// Fully qualified protobuf message name
     pub fn full_name(&self) -> &str {
-        &self.get_index_entry().full_name
+        &self.index_entry().full_name
     }
 
     /// Name relative to the package where the message is declared.
     pub fn name_to_package(&self) -> &str {
-        &self.get_index_entry().name_to_package
+        &self.index_entry().name_to_package
     }
 
     /// Nested oneofs
     pub fn oneofs<'a>(&'a self) -> impl ExactSizeIterator<Item = OneofDescriptor> + 'a {
-        self.get_proto()
+        self.proto()
             .oneof_decl
             .iter()
             .enumerate()
@@ -288,7 +283,7 @@ impl MessageDescriptor {
         }
     }
 
-    pub(crate) fn get_generated_index(&self) -> &'static MessageIndex {
+    pub(crate) fn generated_index(&self) -> &'static MessageIndex {
         match self.get_impl() {
             MessageDescriptorImplRef::Generated(g) => &g.non_map().index,
             MessageDescriptorImplRef::Dynamic(_) => panic!("dynamic message: {}", self),
@@ -299,7 +294,7 @@ impl MessageDescriptor {
     ///
     /// Note: protobuf field name might be different for Rust field name.
     // TODO: return value, not pointer, pointer is not compatible with dynamic message
-    pub fn get_field_by_name<'a>(&'a self, name: &str) -> Option<FieldDescriptor> {
+    pub fn field_by_name(&self, name: &str) -> Option<FieldDescriptor> {
         let &index = self.index().field_index_by_name.get(name)?;
         Some(FieldDescriptor {
             imp: FieldDescriptorImpl::Field(self.clone(), index),
@@ -307,7 +302,7 @@ impl MessageDescriptor {
     }
 
     /// Find message field by field name or field JSON name
-    pub fn get_field_by_name_or_json_name<'a>(&'a self, name: &str) -> Option<FieldDescriptor> {
+    pub fn field_by_name_or_json_name<'a>(&'a self, name: &str) -> Option<FieldDescriptor> {
         let &index = self.index().field_index_by_name_or_json_name.get(name)?;
         Some(FieldDescriptor {
             imp: FieldDescriptorImpl::Field(self.clone(), index),
@@ -315,7 +310,7 @@ impl MessageDescriptor {
     }
 
     /// Find message field by field name
-    pub fn get_field_by_number(&self, number: u32) -> Option<FieldDescriptor> {
+    pub fn field_by_number(&self, number: u32) -> Option<FieldDescriptor> {
         let &index = self.index().field_index_by_number.get(&number)?;
         Some(FieldDescriptor {
             imp: FieldDescriptorImpl::Field(self.clone(), index),

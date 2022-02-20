@@ -450,7 +450,7 @@ impl ProtobufConstant {
     pub fn as_type(&self, ty: RuntimeTypeBox) -> anyhow::Result<ReflectValueBox> {
         match (self, &ty) {
             (ProtobufConstant::Ident(ident), RuntimeTypeBox::Enum(e)) => {
-                if let Some(v) = e.get_value_by_name(&ident.to_string()) {
+                if let Some(v) = e.value_by_name(&ident.to_string()) {
                     return Ok(ReflectValueBox::Enum(e.clone(), v.value()));
                 }
             }

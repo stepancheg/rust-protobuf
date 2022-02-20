@@ -100,7 +100,7 @@ fn print_field<F: FieldName>(
         }
         ReflectValueRef::Enum(d, v) => {
             buf.push_str(": ");
-            match d.get_value_by_number(v) {
+            match d.value_by_number(v) {
                 Some(e) => buf.push_str(e.name()),
                 None => write!(buf, ": {}", v).unwrap(),
             }

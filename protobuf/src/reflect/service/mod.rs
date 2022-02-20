@@ -24,13 +24,13 @@ impl ServiceDescriptor {
     }
 
     /// Proto snippet describing this service.
-    pub fn get_proto(&self) -> &ServiceDescriptorProto {
+    pub fn proto(&self) -> &ServiceDescriptorProto {
         &self.file_descriptor.proto().service[self.index]
     }
 
     /// Method descriptors of this service.
     pub fn methods(&self) -> Vec<MethodDescriptor> {
-        let value_len = self.get_proto().method.len();
+        let value_len = self.proto().method.len();
         (0..value_len)
             .map(move |index| MethodDescriptor {
                 service_descriptor: self.clone(),
@@ -48,8 +48,8 @@ pub struct MethodDescriptor {
 
 impl MethodDescriptor {
     /// Proto snippet describing this method.
-    pub fn get_proto(&self) -> &MethodDescriptorProto {
-        &self.service_descriptor.get_proto().method[self.index]
+    pub fn proto(&self) -> &MethodDescriptorProto {
+        &self.service_descriptor.proto().method[self.index]
     }
 
     /// Method input type.

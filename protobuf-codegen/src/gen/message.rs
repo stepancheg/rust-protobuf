@@ -87,18 +87,16 @@ impl<'a> MessageGen<'a> {
             .unwrap();
 
         let customize = parent_customize.child(
-            &customize_from_rustproto_for_message(
-                message.message.get_proto().options.get_or_default(),
-            ),
+            &customize_from_rustproto_for_message(message.message.proto().options.get_or_default()),
             &message.message,
         );
 
         static FIELD_NUMBER: protobuf::rt::LazyV2<i32> = protobuf::rt::LazyV2::INIT;
         let field_number = *FIELD_NUMBER.get(|| {
             protobuf::reflect::MessageDescriptor::for_type::<DescriptorProto>()
-                .get_field_by_name("field")
+                .field_by_name("field")
                 .expect("`field` must exist")
-                .get_proto()
+                .proto()
                 .number()
         });
 
@@ -427,7 +425,7 @@ impl<'a> MessageGen<'a> {
                     .rust_path_to_file()
                     .to_reverse()
                     .append_ident("file_descriptor".into()),
-                self.message_descriptor.get_index_in_file_for_codegen(),
+                self.message_descriptor.index_in_file_for_codegen(),
             ));
         });
     }
@@ -712,7 +710,7 @@ impl<'a> MessageGen<'a> {
         w.write_line("");
         self.write_impl_value(w);
 
-        let mod_name = message_name_to_nested_mod_name(&self.message.message.get_name());
+        let mod_name = message_name_to_nested_mod_name(&self.message.message.name());
 
         let oneofs = self.oneofs();
         let nested_messages: Vec<_> = self
@@ -731,7 +729,7 @@ impl<'a> MessageGen<'a> {
             w.write_line("");
             w.write_line(&format!(
                 "/// Nested message and enums of message `{}`",
-                self.message.message.get_name()
+                self.message.message.name()
             ));
             w.pub_mod(mod_name.get(), |w| {
                 let mut first = true;
@@ -744,9 +742,9 @@ impl<'a> MessageGen<'a> {
                 static NESTED_TYPE_NUMBER: protobuf::rt::LazyV2<i32> = protobuf::rt::LazyV2::INIT;
                 let nested_type_number = *NESTED_TYPE_NUMBER.get(|| {
                     protobuf::reflect::MessageDescriptor::for_type::<DescriptorProto>()
-                        .get_field_by_name("nested_type")
+                        .field_by_name("nested_type")
                         .expect("`nested_type` must exist")
-                        .get_proto()
+                        .proto()
                         .number()
                 });
 
@@ -775,9 +773,9 @@ impl<'a> MessageGen<'a> {
                 static ENUM_TYPE_NUMBER: protobuf::rt::LazyV2<i32> = protobuf::rt::LazyV2::INIT;
                 let enum_type_number = *ENUM_TYPE_NUMBER.get(|| {
                     protobuf::reflect::MessageDescriptor::for_type::<DescriptorProto>()
-                        .get_field_by_name("enum_type")
+                        .field_by_name("enum_type")
                         .expect("`enum_type` must exist")
-                        .get_proto()
+                        .proto()
                         .number()
                 });
 

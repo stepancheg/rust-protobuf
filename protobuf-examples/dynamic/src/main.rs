@@ -37,7 +37,7 @@ fn main() {
     // Create an empty message.
     let mut mmm = mmm_descriptor.new_instance();
     // Find the field.
-    let aaa_field = mmm_descriptor.get_field_by_name("aaa").unwrap();
+    let aaa_field = mmm_descriptor.field_by_name("aaa").unwrap();
     // Set field.
     aaa_field.set_singular_field(&mut *mmm, ReflectValueBox::I32(42));
 

@@ -14,7 +14,7 @@ fn file_descriptor_dynamic() -> FileDescriptor {
 
 fn test_is_initialized(message: &mut dyn MessageDyn) {
     assert!(!message.is_initialized_dyn());
-    let field = message.descriptor_dyn().get_field_by_name("a").unwrap();
+    let field = message.descriptor_dyn().field_by_name("a").unwrap();
     field.set_singular_field(message, ReflectValueBox::I32(10));
     assert!(message.is_initialized_dyn());
 }

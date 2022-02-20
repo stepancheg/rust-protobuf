@@ -17,7 +17,7 @@ fn do_test_get_set(file_descriptor: &FileDescriptor) {
     let m = file_descriptor
         .message_by_package_relative_name("ForDynamicTest")
         .unwrap();
-    let f = m.get_field_by_name("ff").unwrap();
+    let f = m.field_by_name("ff").unwrap();
 
     let mut m = m.new_instance();
     let m = &mut *m;
@@ -41,7 +41,7 @@ fn do_test_set_panic_on_wrong_field_type(file_descriptor: &FileDescriptor) {
     let m = file_descriptor
         .message_by_package_relative_name("ForDynamicTest")
         .unwrap();
-    let f = m.get_field_by_name("ff").unwrap();
+    let f = m.field_by_name("ff").unwrap();
     let mut m = m.new_instance();
     let m = &mut *m;
     f.set_singular_field(m, ReflectValueBox::from(10i64));

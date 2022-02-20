@@ -16,7 +16,7 @@ fn do_test_repeated(file_descriptor: &FileDescriptor) {
     let m = file_descriptor
         .message_by_package_relative_name("ForDynamicRepeatedTest")
         .unwrap();
-    let f = m.get_field_by_name("ii").unwrap();
+    let f = m.field_by_name("ii").unwrap();
     let mut m = m.new_instance();
     assert!(f.get_repeated(&*m).is_empty());
     assert!(f.mut_repeated(&mut *m).is_empty());

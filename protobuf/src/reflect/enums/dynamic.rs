@@ -56,7 +56,8 @@ impl DynamicEnumDescriptor {
         }
     }
 
-    pub fn get_proto(&self) -> &EnumDescriptorProto {
+    pub fn proto(&self) -> &EnumDescriptorProto {
+        // TODO: this `eval` is not free.
         match self.path.eval(&self.file_descriptor_proto) {
             None => &self.file_descriptor_proto.enum_type[self.enum_index],
             Some(m) => &m.enum_type[self.enum_index],

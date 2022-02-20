@@ -48,9 +48,7 @@ impl RuntimeTypeBox {
             RuntimeTypeBox::Bool => ReflectValueRef::Bool(false),
             RuntimeTypeBox::String => ReflectValueRef::String(""),
             RuntimeTypeBox::VecU8 => ReflectValueRef::Bytes(b""),
-            RuntimeTypeBox::Enum(e) => {
-                ReflectValueRef::Enum(e.clone(), e.get_default_value().value())
-            }
+            RuntimeTypeBox::Enum(e) => ReflectValueRef::Enum(e.clone(), e.default_value().value()),
             RuntimeTypeBox::Message(m) => ReflectValueRef::Message(MessageRef::default_instance(m)),
         }
     }

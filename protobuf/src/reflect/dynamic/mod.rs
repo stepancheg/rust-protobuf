@@ -207,28 +207,28 @@ impl DynamicMessage {
     ) -> Result<()> {
         let is_proto3 = self.descriptor.file_descriptor().syntax() == Syntax::Proto3;
         for field_desc in self.descriptor.fields() {
-            let field_number = field_desc.get_proto().number() as u32;
+            let field_number = field_desc.proto().number() as u32;
             match field_desc.runtime_field_type() {
                 RuntimeFieldType::Singular(..) => {
                     if let Some(v) = field_desc.get_singular(self) {
                         // Ignore default value for proto3.
                         if !is_proto3 || v.is_non_zero() {
-                            handler.field(field_desc.get_proto().field_type(), field_number, &v)?;
+                            handler.field(field_desc.proto().field_type(), field_number, &v)?;
                         }
                     }
                 }
                 RuntimeFieldType::Repeated(..) => {
                     let repeated = field_desc.get_repeated(self);
-                    if field_desc.get_proto().options.get_or_default().packed() {
+                    if field_desc.proto().options.get_or_default().packed() {
                         handler.repeated_packed(
-                            field_desc.get_proto().field_type(),
+                            field_desc.proto().field_type(),
                             field_number,
                             &repeated,
                         )?;
                     } else {
                         for i in 0..repeated.len() {
                             let v = repeated.get(i);
-                            handler.field(field_desc.get_proto().field_type(), field_number, &v)?;
+                            handler.field(field_desc.proto().field_type(), field_number, &v)?;
                         }
                     }
                 }
@@ -325,7 +325,7 @@ impl Message for DynamicMessage {
     fn merge_from(&mut self, is: &mut CodedInputStream) -> Result<()> {
         while !is.eof()? {
             let (field, wire_type) = is.read_tag_unpack()?;
-            let field_desc = match self.descriptor.get_field_by_number(field) {
+            let field_desc = match self.descriptor.field_by_number(field) {
                 Some(f) => f,
                 None => {
                     read_unknown_or_skip_group(field, wire_type, is, &mut self.unknown_fields)?;
@@ -334,12 +334,12 @@ impl Message for DynamicMessage {
             };
             match field_desc.runtime_field_type() {
                 RuntimeFieldType::Singular(rtb) => {
-                    let pt = ProtobufTypeBox::new(rtb, field_desc.get_proto().field_type())?;
+                    let pt = ProtobufTypeBox::new(rtb, field_desc.proto().field_type())?;
                     let value = pt.read(is, wire_type)?;
                     self.set_field(&field_desc, value);
                 }
                 RuntimeFieldType::Repeated(rtb) => {
-                    let pt = ProtobufTypeBox::new(rtb, field_desc.get_proto().field_type())?;
+                    let pt = ProtobufTypeBox::new(rtb, field_desc.proto().field_type())?;
                     let mut repeated = self.mut_repeated(&field_desc);
                     pt.read_repeated_into(is, wire_type, &mut repeated)?;
                 }

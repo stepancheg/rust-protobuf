@@ -59,7 +59,7 @@ impl<R> Run<R>
 where
     R: ProtoPathResolver,
 {
-    fn get_file_and_all_deps_already_parsed(
+    fn file_and_all_deps_already_parsed(
         &self,
         protobuf_path: &ProtoPath,
         result: &mut IndexMap<ProtoPathBuf, FileDescriptorPair>,
@@ -74,16 +74,16 @@ where
             .expect("must be already parsed");
         result.insert(protobuf_path.to_proto_path_buf(), pair.clone());
 
-        self.get_all_deps_already_parsed(&pair.parsed, result);
+        self.all_deps_already_parsed(&pair.parsed, result);
     }
 
-    fn get_all_deps_already_parsed(
+    fn all_deps_already_parsed(
         &self,
         parsed: &model::FileDescriptor,
         result: &mut IndexMap<ProtoPathBuf, FileDescriptorPair>,
     ) {
         for import in &parsed.imports {
-            self.get_file_and_all_deps_already_parsed(&import.path, result);
+            self.file_and_all_deps_already_parsed(&import.path, result);
         }
     }
 
@@ -105,7 +105,7 @@ where
         }
 
         let mut this_file_deps = IndexMap::new();
-        self.get_all_deps_already_parsed(&parsed, &mut this_file_deps);
+        self.all_deps_already_parsed(&parsed, &mut this_file_deps);
 
         let this_file_deps: Vec<_> = this_file_deps.into_iter().map(|(_, v)| v).collect();
 

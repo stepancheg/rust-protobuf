@@ -53,13 +53,13 @@ impl EnumValueDescriptor {
     }
 
     /// `.proto` object which declared this value.
-    pub fn get_proto(&self) -> &EnumValueDescriptorProto {
-        &self.enum_descriptor.get_proto().value[self.index as usize]
+    pub fn proto(&self) -> &EnumValueDescriptorProto {
+        &self.enum_descriptor.proto().value[self.index as usize]
     }
 
     /// Name of enum variant as specified in proto file
     pub fn name(&self) -> &str {
-        self.get_proto().name()
+        self.proto().name()
     }
 
     /// Fully qualified enum value name: fully qualified enum name followed by value name.
@@ -69,7 +69,7 @@ impl EnumValueDescriptor {
 
     /// `i32` value of the enum variant
     pub fn value(&self) -> i32 {
-        self.get_proto().number()
+        self.proto().number()
     }
 
     /// Get descriptor of enum holding this value.
@@ -136,16 +136,16 @@ impl EnumDescriptor {
     }
 
     /// Descriptor objects which defined this enum.
-    pub fn get_proto(&self) -> &EnumDescriptorProto {
+    pub fn proto(&self) -> &EnumDescriptorProto {
         match self.get_impl() {
             EnumDescriptorImplRef::Generated(g) => &g.proto,
-            EnumDescriptorImplRef::Dynamic(d) => d.get_proto(),
+            EnumDescriptorImplRef::Dynamic(d) => d.proto(),
         }
     }
 
     /// Enum name as given in `.proto` file
     pub fn name(&self) -> &str {
-        self.get_proto().name()
+        self.proto().name()
     }
 
     /// Fully qualified protobuf name of enum
@@ -171,7 +171,7 @@ impl EnumDescriptor {
 
     /// This enum values
     pub fn values<'a>(&'a self) -> impl Iterator<Item = EnumValueDescriptor> + 'a {
-        let value_len = self.get_proto().value.len();
+        let value_len = self.proto().value.len();
         (0..value_len).map(move |index| EnumValueDescriptor {
             enum_descriptor: self.clone(),
             index,
@@ -184,7 +184,7 @@ impl EnumDescriptor {
     }
 
     /// Find enum variant by name
-    pub fn get_value_by_name<'a>(&'a self, name: &str) -> Option<EnumValueDescriptor> {
+    pub fn value_by_name(&self, name: &str) -> Option<EnumValueDescriptor> {
         let index = match self.get_impl() {
             EnumDescriptorImplRef::Generated(g) => *g.indices.index_by_name.get(name)?,
             EnumDescriptorImplRef::Dynamic(d) => *d.indices.index_by_name.get(name)?,
@@ -196,7 +196,7 @@ impl EnumDescriptor {
     }
 
     /// Find enum variant by number
-    pub fn get_value_by_number(&self, number: i32) -> Option<EnumValueDescriptor> {
+    pub fn value_by_number(&self, number: i32) -> Option<EnumValueDescriptor> {
         let index = match self.get_impl() {
             EnumDescriptorImplRef::Generated(g) => *g.indices.index_by_number.get(&number)?,
             EnumDescriptorImplRef::Dynamic(d) => *d.indices.index_by_number.get(&number)?,
@@ -208,7 +208,7 @@ impl EnumDescriptor {
     }
 
     /// Default enum value (first variant)
-    pub fn get_default_value(&self) -> EnumValueDescriptor {
+    pub fn default_value(&self) -> EnumValueDescriptor {
         EnumValueDescriptor {
             enum_descriptor: self.clone(),
             index: 0,
@@ -216,10 +216,10 @@ impl EnumDescriptor {
     }
 
     /// Find enum variant by number or return default (first) enum value
-    pub fn get_value_by_number_or_default(&self, number: i32) -> EnumValueDescriptor {
-        match self.get_value_by_number(number) {
+    pub fn value_by_number_or_default(&self, number: i32) -> EnumValueDescriptor {
+        match self.value_by_number(number) {
             Some(v) => v,
-            None => self.get_default_value(),
+            None => self.default_value(),
         }
     }
 

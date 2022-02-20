@@ -9,7 +9,7 @@ impl Any {
         format!("{}/{}", type_url_prefix, descriptor.full_name())
     }
 
-    fn get_type_name_from_type_url(type_url: &str) -> Option<&str> {
+    fn type_name_from_type_url(type_url: &str) -> Option<&str> {
         match type_url.rfind('/') {
             Some(i) => Some(&type_url[i + 1..]),
             None => None,
@@ -71,7 +71,7 @@ impl Any {
 
     /// Check if `Any` contains a message of given type.
     pub fn is_dyn(&self, descriptor: &MessageDescriptor) -> bool {
-        match Any::get_type_name_from_type_url(&self.type_url) {
+        match Any::type_name_from_type_url(&self.type_url) {
             Some(type_name) => type_name == descriptor.full_name(),
             None => false,
         }

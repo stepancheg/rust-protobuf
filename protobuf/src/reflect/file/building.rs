@@ -75,7 +75,7 @@ impl<'a> FileDescriptorBuilding<'a> {
                             .unwrap(),
                     ),
                     ForwardProtobufTypeBox::ProtobufTypeBox(t) => match t.runtime() {
-                        RuntimeTypeBox::Message(m) => Some(m.get_proto()),
+                        RuntimeTypeBox::Message(m) => Some(m.proto()),
                         _ => None,
                     },
                     _ => None,

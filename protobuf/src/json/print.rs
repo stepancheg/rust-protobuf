@@ -416,7 +416,7 @@ impl Printer {
         if self.print_options.enum_values_int {
             self.print_printable(&v)
         } else {
-            match descriptor.get_value_by_number(v) {
+            match descriptor.value_by_number(v) {
                 Some(value) => self.print_enum_known(&value),
                 None => self.print_printable(&v),
             }
@@ -486,7 +486,7 @@ impl Printer {
                             _ => unreachable!(),
                         };
 
-                        let is_oneof = field.get_proto().has_oneof_index();
+                        let is_oneof = field.proto().has_oneof_index();
 
                         if !is_message && !is_oneof {
                             let v = field.get_singular_field_or_default(&**message);

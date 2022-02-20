@@ -12,12 +12,12 @@ pub(crate) fn map_entry<'a>(
         // DescriptorBuilder::ValidateMapEntry
 
         // TODO: error, not panic
-        assert!(d.message.get_proto().name().ends_with("Entry"));
+        assert!(d.message.proto().name().ends_with("Entry"));
 
-        assert_eq!(0, d.message.get_proto().extension.len());
-        assert_eq!(0, d.message.get_proto().extension_range.len());
-        assert_eq!(0, d.message.get_proto().nested_type.len());
-        assert_eq!(0, d.message.get_proto().enum_type.len());
+        assert_eq!(0, d.message.proto().extension.len());
+        assert_eq!(0, d.message.proto().extension_range.len());
+        assert_eq!(0, d.message.proto().nested_type.len());
+        assert_eq!(0, d.message.proto().enum_type.len());
 
         assert_eq!(2, d.message.fields().count());
         let key = d.fields()[0].clone();
@@ -31,11 +31,11 @@ pub(crate) fn map_entry<'a>(
 
         assert_eq!(
             field_descriptor_proto::Label::LABEL_OPTIONAL,
-            key.field.get_proto().label()
+            key.field.proto().label()
         );
         assert_eq!(
             field_descriptor_proto::Label::LABEL_OPTIONAL,
-            value.field.get_proto().label()
+            value.field.proto().label()
         );
 
         Some((key, value))

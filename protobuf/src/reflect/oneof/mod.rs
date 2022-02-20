@@ -11,23 +11,19 @@ pub struct OneofDescriptor {
 
 impl OneofDescriptor {
     /// `.proto` part associated with this descriptor
-    pub fn get_proto(&self) -> &OneofDescriptorProto {
-        &self.message_descriptor.get_proto().oneof_decl[self.index]
+    pub fn proto(&self) -> &OneofDescriptorProto {
+        &self.message_descriptor.proto().oneof_decl[self.index]
     }
 
     /// Oneof name as specified in `.proto` file.
-    pub fn get_name(&self) -> &str {
-        self.get_proto().name()
+    pub fn name(&self) -> &str {
+        self.proto().name()
     }
 
     /// Fully qualified name of oneof (fully qualified name of enclosing message
     /// followed by oneof name).
     pub fn full_name(&self) -> String {
-        format!(
-            "{}.{}",
-            self.message_descriptor.full_name(),
-            self.get_name()
-        )
+        format!("{}.{}", self.message_descriptor.full_name(), self.name())
     }
 
     /// Fields in this oneof.

@@ -76,9 +76,9 @@ pub(crate) fn gen_file(
         static NESTED_TYPE_NUMBER: protobuf::rt::LazyV2<i32> = protobuf::rt::LazyV2::INIT;
         let message_type_number = *NESTED_TYPE_NUMBER.get(|| {
             protobuf::reflect::MessageDescriptor::for_type::<FileDescriptorProto>()
-                .get_field_by_name("message_type")
+                .field_by_name("message_type")
                 .expect("`message_type` must exist")
-                .get_proto()
+                .proto()
                 .number()
         });
 
@@ -105,9 +105,9 @@ pub(crate) fn gen_file(
         static ENUM_TYPE_NUMBER: protobuf::rt::LazyV2<i32> = protobuf::rt::LazyV2::INIT;
         let enum_type_number = *ENUM_TYPE_NUMBER.get(|| {
             protobuf::reflect::MessageDescriptor::for_type::<FileDescriptorProto>()
-                .get_field_by_name("enum_type")
+                .field_by_name("enum_type")
                 .expect("`enum_type` must exist")
-                .get_proto()
+                .proto()
                 .number()
         });
 

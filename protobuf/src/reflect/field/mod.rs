@@ -131,17 +131,17 @@ impl FieldDescriptor {
     }
 
     /// Get `.proto` description of field
-    pub fn get_proto(&self) -> &FieldDescriptorProto {
+    pub fn proto(&self) -> &FieldDescriptorProto {
         match &self.imp {
-            FieldDescriptorImpl::Field(m, i) => &m.get_proto().field[*i],
-            FieldDescriptorImpl::ExtensionInMessage(m, i) => &m.get_proto().extension[*i],
+            FieldDescriptorImpl::Field(m, i) => &m.proto().field[*i],
+            FieldDescriptorImpl::ExtensionInMessage(m, i) => &m.proto().extension[*i],
             FieldDescriptorImpl::ExtensionInFile(file, i) => &file.proto().extension[*i],
         }
     }
 
     /// Field name as specified in `.proto` file
     pub fn name(&self) -> &str {
-        self.get_proto().name()
+        self.proto().name()
     }
 
     /// Fully qualified name of the field: fully qualified name of the declaring type
@@ -156,7 +156,7 @@ impl FieldDescriptor {
     /// Oneof descriptor containing this field.
     pub fn containing_oneof(&self) -> Option<OneofDescriptor> {
         if let FieldDescriptorImpl::Field(m, _) = &self.imp {
-            let proto = self.get_proto();
+            let proto = self.proto();
             if proto.has_oneof_index() {
                 Some(OneofDescriptor {
                     message_descriptor: m.clone(),
@@ -189,7 +189,7 @@ impl FieldDescriptor {
         }
     }
 
-    fn get_index(&self) -> &FieldIndex {
+    fn index(&self) -> &FieldIndex {
         match &self.imp {
             FieldDescriptorImpl::Field(m, i) => &m.index().fields[*i],
             FieldDescriptorImpl::ExtensionInMessage(m, i) => &m.index().extensions[*i],
@@ -205,12 +205,12 @@ impl FieldDescriptor {
     ///
     /// [json]: https://developers.google.com/protocol-buffers/docs/proto3#json
     pub fn json_name(&self) -> &str {
-        &self.get_index().json_name
+        &self.index().json_name
     }
 
     /// If this field is optional or required.
     pub fn is_singular(&self) -> bool {
-        match self.get_proto().label() {
+        match self.proto().label() {
             field_descriptor_proto::Label::LABEL_REQUIRED => true,
             field_descriptor_proto::Label::LABEL_OPTIONAL => true,
             field_descriptor_proto::Label::LABEL_REPEATED => false,
@@ -219,12 +219,12 @@ impl FieldDescriptor {
 
     /// Is this field required.
     pub fn is_required(&self) -> bool {
-        self.get_proto().label() == field_descriptor_proto::Label::LABEL_REQUIRED
+        self.proto().label() == field_descriptor_proto::Label::LABEL_REQUIRED
     }
 
     /// If this field repeated or map?
     pub fn is_repeated_or_map(&self) -> bool {
-        self.get_proto().label() == field_descriptor_proto::Label::LABEL_REPEATED
+        self.proto().label() == field_descriptor_proto::Label::LABEL_REPEATED
     }
 
     /// Is this field repeated, but not map field?
@@ -349,7 +349,7 @@ impl FieldDescriptor {
     ///
     /// If field is not singular.
     pub fn singular_default_value(&self) -> ReflectValueRef {
-        self.get_index().default_value(self)
+        self.index().default_value(self)
     }
 
     /// Get singular field value.
@@ -365,7 +365,7 @@ impl FieldDescriptor {
             Some(m) => m,
             None => {
                 let message_index = match self.singular() {
-                    SingularFieldAccessorRef::Generated(..) => descriptor.get_generated_index(),
+                    SingularFieldAccessorRef::Generated(..) => descriptor.generated_index(),
                     SingularFieldAccessorRef::Dynamic(..) => {
                         DynamicMessage::downcast_ref(m).descriptor.index()
                     }
@@ -412,7 +412,7 @@ impl FieldDescriptor {
 
     /// Dynamic representation of field type with wire type.
     pub(crate) fn protobuf_field_type(&self) -> ProtobufFieldType {
-        self.get_index().field_type.resolve(self)
+        self.index().field_type.resolve(self)
     }
 
     /// Dynamic representation of field type.
@@ -527,7 +527,7 @@ mod test {
     #[test]
     fn display() {
         let field = DescriptorProto::descriptor_static()
-            .get_field_by_name("enum_type")
+            .field_by_name("enum_type")
             .unwrap();
         assert_eq!(
             "google.protobuf.DescriptorProto.enum_type",
