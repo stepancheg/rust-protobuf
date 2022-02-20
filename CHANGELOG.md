@@ -478,7 +478,7 @@ Republished as 2.0.0
 
 ### New features
 
-- [Pure rust codegen](https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-codegen-pure)
+- Pure rust codegen
 - Generated code can now be customized not only with `rustproto.proto`
   but also when invoked programmatically with
   [`protoc-rust`](https://github.com/stepancheg/rust-protobuf/blob/b8573bd53cf5a9611598abbf02b71c49e59a8891/protobuf-codegen/src/customize.rs#L9)
