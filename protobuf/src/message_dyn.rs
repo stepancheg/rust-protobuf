@@ -11,7 +11,6 @@ use crate::wire_format::check_message_size;
 use crate::CodedInputStream;
 use crate::CodedOutputStream;
 use crate::Message;
-use crate::Result;
 use crate::UnknownFields;
 
 /// Dynamic-dispatch version of [`Message`].
@@ -20,10 +19,10 @@ pub trait MessageDyn: Any + fmt::Debug + fmt::Display + Send + Sync + 'static {
     fn descriptor_dyn(&self) -> MessageDescriptor;
 
     /// Update this message fields with contents of given stream.
-    fn merge_from_dyn(&mut self, is: &mut CodedInputStream) -> Result<()>;
+    fn merge_from_dyn(&mut self, is: &mut CodedInputStream) -> crate::Result<()>;
 
     /// Write the message.
-    fn write_to_with_cached_sizes_dyn(&self, os: &mut CodedOutputStream) -> Result<()>;
+    fn write_to_with_cached_sizes_dyn(&self, os: &mut CodedOutputStream) -> crate::Result<()>;
 
     /// Compute (and cache) the message size.
     fn compute_size_dyn(&self) -> u64;
@@ -43,11 +42,11 @@ impl<M: Message> MessageDyn for M {
         self.descriptor_by_instance()
     }
 
-    fn merge_from_dyn(&mut self, is: &mut CodedInputStream) -> Result<()> {
+    fn merge_from_dyn(&mut self, is: &mut CodedInputStream) -> crate::Result<()> {
         self.merge_from(is)
     }
 
-    fn write_to_with_cached_sizes_dyn(&self, os: &mut CodedOutputStream) -> Result<()> {
+    fn write_to_with_cached_sizes_dyn(&self, os: &mut CodedOutputStream) -> crate::Result<()> {
         self.write_to_with_cached_sizes(os)
     }
 
@@ -70,7 +69,7 @@ impl<M: Message> MessageDyn for M {
 
 impl dyn MessageDyn {
     /// Check if all required fields of this object are initialized.
-    pub fn check_initialized_dyn(&self) -> Result<()> {
+    pub fn check_initialized_dyn(&self) -> crate::Result<()> {
         if !self.is_initialized_dyn() {
             Err(
                 ProtobufError::MessageNotInitialized(self.descriptor_dyn().name().to_owned())
@@ -82,19 +81,19 @@ impl dyn MessageDyn {
     }
 
     /// Write the message to the writer.
-    pub fn write_to_writer_dyn(&self, w: &mut dyn Write) -> Result<()> {
+    pub fn write_to_writer_dyn(&self, w: &mut dyn Write) -> crate::Result<()> {
         w.with_coded_output_stream(|os| self.write_to_dyn(os))
     }
 
     /// Write the message to bytes vec.
-    pub fn write_to_vec_dyn(&self, v: &mut Vec<u8>) -> Result<()> {
+    pub fn write_to_vec_dyn(&self, v: &mut Vec<u8>) -> crate::Result<()> {
         v.with_coded_output_stream(|os| self.write_to_dyn(os))
     }
 
     /// Write the message to the stream.
     ///
     /// Results in error if message is not fully initialized.
-    pub fn write_to_dyn(&self, os: &mut CodedOutputStream) -> Result<()> {
+    pub fn write_to_dyn(&self, os: &mut CodedOutputStream) -> crate::Result<()> {
         self.check_initialized_dyn()?;
 
         // cache sizes
@@ -107,7 +106,7 @@ impl dyn MessageDyn {
 
     /// Write the message to the vec, prepend the message with message length
     /// encoded as varint.
-    pub fn write_length_delimited_to_vec_dyn(&self, vec: &mut Vec<u8>) -> Result<()> {
+    pub fn write_length_delimited_to_vec_dyn(&self, vec: &mut Vec<u8>) -> crate::Result<()> {
         let mut os = CodedOutputStream::vec(vec);
         self.write_length_delimited_to_dyn(&mut os)?;
         os.flush()?;
@@ -115,7 +114,7 @@ impl dyn MessageDyn {
     }
 
     /// Update this message object with fields read from given stream.
-    pub fn merge_from_bytes_dyn(&mut self, bytes: &[u8]) -> Result<()> {
+    pub fn merge_from_bytes_dyn(&mut self, bytes: &[u8]) -> crate::Result<()> {
         let mut is = CodedInputStream::from_bytes(bytes);
         self.merge_from_dyn(&mut is)
     }
@@ -124,7 +123,7 @@ impl dyn MessageDyn {
     ///
     /// > **Note**: You can use [`Message::parse_from_bytes`]
     /// to do the reverse.
-    pub fn write_to_bytes_dyn(&self) -> Result<Vec<u8>> {
+    pub fn write_to_bytes_dyn(&self) -> crate::Result<Vec<u8>> {
         self.check_initialized_dyn()?;
 
         let size = self.compute_size_dyn() as usize;
@@ -143,7 +142,7 @@ impl dyn MessageDyn {
 
     /// Write the message to the stream prepending the message with message length
     /// encoded as varint.
-    pub fn write_length_delimited_to_dyn(&self, os: &mut CodedOutputStream) -> Result<()> {
+    pub fn write_length_delimited_to_dyn(&self, os: &mut CodedOutputStream) -> crate::Result<()> {
         let size = self.compute_size_dyn();
         let size = check_message_size(size)?;
         os.write_raw_varint32(size)?;
@@ -156,13 +155,13 @@ impl dyn MessageDyn {
 
     /// Write the message to the writer, prepend the message with message length
     /// encoded as varint.
-    pub fn write_length_delimited_to_writer_dyn(&self, w: &mut dyn Write) -> Result<()> {
+    pub fn write_length_delimited_to_writer_dyn(&self, w: &mut dyn Write) -> crate::Result<()> {
         w.with_coded_output_stream(|os| self.write_length_delimited_to_dyn(os))
     }
 
     /// Write the message to the bytes vec, prepend the message with message length
     /// encoded as varint.
-    pub fn write_length_delimited_to_bytes_dyn(&self) -> Result<Vec<u8>> {
+    pub fn write_length_delimited_to_bytes_dyn(&self) -> crate::Result<Vec<u8>> {
         let mut v = Vec::new();
         v.with_coded_output_stream(|os| self.write_length_delimited_to_dyn(os))?;
         Ok(v)
