@@ -1674,13 +1674,24 @@ impl<'a> FieldGen<'a> {
     }
 
     // Write `merge_from` part for this field
-    pub fn write_merge_from_field(&self, wire_type_var: &str, w: &mut CodeWriter) {
+    fn write_merge_from_field(&self, wire_type_var: &str, w: &mut CodeWriter) {
         match self.kind {
             FieldKind::Oneof(ref f) => self.write_merge_from_oneof(&f, wire_type_var, w),
             FieldKind::Map(..) => self.write_merge_from_map(w),
             FieldKind::Singular(ref s) => self.write_merge_from_singular(s, wire_type_var, w),
             FieldKind::Repeated(..) => self.write_merge_from_repeated(wire_type_var, w),
         }
+    }
+
+    pub(crate) fn write_merge_from_field_case_block(
+        &self,
+        wire_type_var: &str,
+        w: &mut CodeWriter,
+    ) {
+        let number = self.proto_field.number();
+        w.case_block(number.to_string(), |w| {
+            self.write_merge_from_field(wire_type_var, w);
+        });
     }
 
     fn self_field_vec_packed_size(&self) -> String {
