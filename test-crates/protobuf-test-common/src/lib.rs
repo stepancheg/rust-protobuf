@@ -1,4 +1,4 @@
-//! Functions used in protobuf tests
+//! Random code uses in protobuf test crates.
 
 pub mod build;
 pub mod hex;
