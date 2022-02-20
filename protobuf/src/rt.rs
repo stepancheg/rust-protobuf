@@ -24,6 +24,7 @@ use crate::reflect::types::*;
 use crate::reflect::ProtobufValue;
 use crate::unknown::UnknownFields;
 use crate::varint::encoded_varint64_len;
+use crate::wire_format::Tag;
 pub use crate::wire_format::WireType;
 use crate::zigzag::*;
 use crate::EnumOrUnknown;
@@ -890,7 +891,7 @@ pub fn read_unknown_or_skip_group(
     wire_type: WireType,
     is: &mut CodedInputStream,
     unknown_fields: &mut UnknownFields,
-) -> Result<()> {
+) -> crate::Result<()> {
     match wire_type {
         WireType::StartGroup => skip_group(is),
         _ => {
@@ -899,6 +900,18 @@ pub fn read_unknown_or_skip_group(
             Ok(())
         }
     }
+}
+
+/// Handle unknown field in generated code.
+/// Either store a value in unknown, or skip a group.
+/// Return error if tag is incorrect.
+pub fn read_unknown_or_skip_group_new(
+    tag: u32,
+    is: &mut CodedInputStream,
+    unknown_fields: &mut UnknownFields,
+) -> crate::Result<()> {
+    let (field_humber, wire_type) = Tag::new(tag)?.unpack();
+    read_unknown_or_skip_group(field_humber, wire_type, is, unknown_fields)
 }
 
 /// Create an error for unexpected wire type.
