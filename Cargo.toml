@@ -1,6 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
+    "ci-gen",
     "protoc-bin",
     # Exclude test-protoc from the project, because it depends on binary
     #"protoc/test-protoc",
@@ -8,16 +9,15 @@ members = [
     "protobuf-fuzz",
     "protobuf-codegen",
     "protobuf-codegen-pure-test",
-    "protobuf-codegen-identical-test",
     "protobuf-examples/customize-serde",
     "protobuf-examples/dynamic",
     "protobuf-examples/pure-vs-protoc",
     "protobuf-examples/vs-prost",
     "protobuf-parse",
     "protobuf-test",
-    "test-crates/protobuf-test-common",
     "perftest/vs-cxx",
     "perftest/bytes",
     "perftest/misc",
-    "ci-gen",
+    "test-crates/protobuf-test-common",
+    "test-crates/protobuf-codegen-identical-test",
 ]
