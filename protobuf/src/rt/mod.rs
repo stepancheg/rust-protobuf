@@ -12,7 +12,6 @@ use crate::chars::Chars;
 use crate::coded_input_stream::CodedInputStream;
 use crate::coded_output_stream::CodedOutputStream;
 use crate::enums::Enum;
-use crate::error::ProtobufError;
 use crate::error::Result;
 use crate::error::WireError;
 pub use crate::lazy_v2::LazyV2;
@@ -20,16 +19,17 @@ use crate::message::*;
 use crate::reflect::ProtobufValue;
 use crate::unknown::UnknownFields;
 use crate::varint::encoded_varint64_len;
-use crate::wire_format::Tag;
 pub use crate::wire_format::WireType;
 use crate::zigzag::*;
 use crate::EnumOrUnknown;
 use crate::MessageField;
 
 pub(crate) mod map;
+pub(crate) mod unsorted;
 pub use map::compute_map_size;
 pub use map::read_map_into;
 pub use map::write_map_with_cached_sizes;
+pub use unsorted::read_unknown_or_skip_group;
 
 /// Given `u64` value compute varint encoded length.
 pub fn compute_raw_varint64_size(value: u64) -> u64 {
@@ -322,7 +322,7 @@ pub fn read_repeated_int32_into(
             target.push(is.read_int32()?);
             Ok(())
         }
-        _ => Err(unexpected_wire_type(wire_type)),
+        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
 }
 
@@ -338,7 +338,7 @@ pub fn read_repeated_int64_into(
             target.push(is.read_int64()?);
             Ok(())
         }
-        _ => Err(unexpected_wire_type(wire_type)),
+        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
 }
 
@@ -354,7 +354,7 @@ pub fn read_repeated_uint32_into(
             target.push(is.read_uint32()?);
             Ok(())
         }
-        _ => Err(unexpected_wire_type(wire_type)),
+        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
 }
 
@@ -370,7 +370,7 @@ pub fn read_repeated_uint64_into(
             target.push(is.read_uint64()?);
             Ok(())
         }
-        _ => Err(unexpected_wire_type(wire_type)),
+        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
 }
 
@@ -386,7 +386,7 @@ pub fn read_repeated_sint32_into(
             target.push(is.read_sint32()?);
             Ok(())
         }
-        _ => Err(unexpected_wire_type(wire_type)),
+        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
 }
 
@@ -402,7 +402,7 @@ pub fn read_repeated_sint64_into(
             target.push(is.read_sint64()?);
             Ok(())
         }
-        _ => Err(unexpected_wire_type(wire_type)),
+        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
 }
 
@@ -418,7 +418,7 @@ pub fn read_repeated_fixed32_into(
             target.push(is.read_fixed32()?);
             Ok(())
         }
-        _ => Err(unexpected_wire_type(wire_type)),
+        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
 }
 
@@ -434,7 +434,7 @@ pub fn read_repeated_fixed64_into(
             target.push(is.read_fixed64()?);
             Ok(())
         }
-        _ => Err(unexpected_wire_type(wire_type)),
+        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
 }
 
@@ -450,7 +450,7 @@ pub fn read_repeated_sfixed32_into(
             target.push(is.read_sfixed32()?);
             Ok(())
         }
-        _ => Err(unexpected_wire_type(wire_type)),
+        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
 }
 
@@ -466,7 +466,7 @@ pub fn read_repeated_sfixed64_into(
             target.push(is.read_sfixed64()?);
             Ok(())
         }
-        _ => Err(unexpected_wire_type(wire_type)),
+        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
 }
 
@@ -482,7 +482,7 @@ pub fn read_repeated_double_into(
             target.push(is.read_double()?);
             Ok(())
         }
-        _ => Err(unexpected_wire_type(wire_type)),
+        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
 }
 
@@ -498,7 +498,7 @@ pub fn read_repeated_float_into(
             target.push(is.read_float()?);
             Ok(())
         }
-        _ => Err(unexpected_wire_type(wire_type)),
+        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
 }
 
@@ -514,7 +514,7 @@ pub fn read_repeated_bool_into(
             target.push(is.read_bool()?);
             Ok(())
         }
-        _ => Err(unexpected_wire_type(wire_type)),
+        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
 }
 
@@ -531,7 +531,7 @@ pub fn read_repeated_enum_into<E: Enum + ProtobufValue>(
             target.push(is.read_enum()?);
             Ok(())
         }
-        _ => Err(unexpected_wire_type(wire_type)),
+        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
 }
 
@@ -605,7 +605,7 @@ pub fn read_repeated_enum_with_unknown_fields_into<E: Enum>(
         WireType::Varint => {
             read_enum_with_unknown_fields_into(is, |e| target.push(e), field_number, unknown_fields)
         }
-        _ => Err(unexpected_wire_type(wire_type)),
+        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
 }
 
@@ -626,7 +626,7 @@ pub fn read_repeated_enum_or_unknown_into<E: Enum>(
             target.push(is.read_enum_or_unknown()?);
             Ok(())
         }
-        _ => Err(unexpected_wire_type(wire_type)),
+        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
 }
 
@@ -644,7 +644,7 @@ pub fn read_proto3_enum_with_unknown_fields_into<E: Enum>(
     unknown_fields: &mut UnknownFields,
 ) -> Result<()> {
     if wire_type != WireType::Varint {
-        return Err(unexpected_wire_type(wire_type));
+        return Err(WireError::UnexpectedWireType(wire_type).into());
     }
 
     read_enum_with_unknown_fields_into(is, |e| *target = e, field_number, unknown_fields)
@@ -664,7 +664,7 @@ pub fn read_proto2_enum_with_unknown_fields_into<E: Enum>(
     unknown_fields: &mut UnknownFields,
 ) -> Result<()> {
     if wire_type != WireType::Varint {
-        return Err(unexpected_wire_type(wire_type));
+        return Err(WireError::UnexpectedWireType(wire_type).into());
     }
 
     read_enum_with_unknown_fields_into(is, |e| *target = Some(e), field_number, unknown_fields)
@@ -681,7 +681,7 @@ pub fn read_repeated_string_into(
             target.push(is.read_string()?);
             Ok(())
         }
-        _ => Err(unexpected_wire_type(wire_type)),
+        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
 }
 
@@ -697,7 +697,7 @@ pub fn read_repeated_tokio_string_into(
             target.push(is.read_tokio_chars()?);
             Ok(())
         }
-        _ => Err(unexpected_wire_type(wire_type)),
+        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
 }
 
@@ -713,7 +713,7 @@ pub fn read_singular_tokio_string_into(
             *target = Some(is.read_tokio_chars()?);
             Ok(())
         }
-        _ => Err(unexpected_wire_type(wire_type)),
+        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
 }
 
@@ -725,7 +725,7 @@ pub fn read_singular_proto3_string_into(
 ) -> Result<()> {
     match wire_type {
         WireType::LengthDelimited => is.read_string_into(target),
-        _ => Err(unexpected_wire_type(wire_type)),
+        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
 }
 
@@ -741,7 +741,7 @@ pub fn read_singular_proto3_tokio_string_into(
             *target = is.read_tokio_chars()?;
             Ok(())
         }
-        _ => Err(unexpected_wire_type(wire_type)),
+        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
 }
 
@@ -756,7 +756,7 @@ pub fn read_repeated_bytes_into(
             target.push(is.read_bytes()?);
             Ok(())
         }
-        _ => Err(unexpected_wire_type(wire_type)),
+        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
 }
 
@@ -772,7 +772,7 @@ pub fn read_repeated_tokio_bytes_into(
             target.push(is.read_tokio_bytes()?);
             Ok(())
         }
-        _ => Err(unexpected_wire_type(wire_type)),
+        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
 }
 
@@ -788,7 +788,7 @@ pub fn read_singular_tokio_bytes_into(
             *target = Some(is.read_tokio_bytes()?);
             Ok(())
         }
-        _ => Err(unexpected_wire_type(wire_type)),
+        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
 }
 
@@ -800,7 +800,7 @@ pub fn read_singular_proto3_bytes_into(
 ) -> Result<()> {
     match wire_type {
         WireType::LengthDelimited => is.read_bytes_into(target),
-        _ => Err(unexpected_wire_type(wire_type)),
+        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
 }
 
@@ -816,7 +816,7 @@ pub fn read_singular_proto3_tokio_bytes_into(
             *target = is.read_tokio_bytes()?;
             Ok(())
         }
-        _ => Err(unexpected_wire_type(wire_type)),
+        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
 }
 
@@ -839,7 +839,7 @@ pub fn read_repeated_message_into_vec<M: Message + Default>(
             is.decr_recursion();
             res
         }
-        _ => Err(unexpected_wire_type(wire_type)),
+        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
     }
 }
 
@@ -885,26 +885,6 @@ pub(crate) fn read_unknown_or_skip_group_with_tag_unpacked(
             Ok(())
         }
     }
-}
-
-/// Handle unknown field in generated code.
-/// Either store a value in unknown, or skip a group.
-/// Return error if tag is incorrect.
-pub fn read_unknown_or_skip_group(
-    tag: u32,
-    is: &mut CodedInputStream,
-    unknown_fields: &mut UnknownFields,
-) -> crate::Result<()> {
-    let (field_humber, wire_type) = Tag::new(tag)?.unpack();
-    read_unknown_or_skip_group_with_tag_unpacked(field_humber, wire_type, is, unknown_fields)
-}
-
-/// Create an error for unexpected wire type.
-///
-/// Function is used in generated code, so error types can be changed,
-/// but this function remains unchanged.
-pub(crate) fn unexpected_wire_type(wire_type: WireType) -> crate::Error {
-    ProtobufError::WireError(WireError::UnexpectedWireType(wire_type)).into()
 }
 
 /// Write message with field number and length to the stream.

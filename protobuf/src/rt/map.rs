@@ -4,10 +4,10 @@ use std::hash::Hash;
 use crate::reflect::types::ProtobufType;
 use crate::rt::compute_raw_varint64_size;
 use crate::rt::tag_size;
-use crate::rt::unexpected_wire_type;
 use crate::wire_format::WireType;
 use crate::CodedInputStream;
 use crate::CodedOutputStream;
+use crate::error::WireError;
 
 /// Compute serialized size of `map` field and cache nested field sizes.
 pub fn compute_map_size<K, V>(
@@ -87,7 +87,7 @@ pub(crate) fn read_map_template(
     value: impl FnMut(WireType, &mut CodedInputStream) -> crate::Result<()>,
 ) -> crate::Result<()> {
     if wire_type != WireType::LengthDelimited {
-        return Err(unexpected_wire_type(wire_type));
+        return Err(WireError::UnexpectedWireType(wire_type).into());
     }
 
     read_map_template_new(is, key, value)
@@ -110,14 +110,14 @@ where
         is,
         |wire_type, is| {
             if wire_type != K::WIRE_TYPE {
-                return Err(unexpected_wire_type(wire_type));
+                return Err(WireError::UnexpectedWireType(wire_type).into());
             }
             key = K::read(is)?;
             Ok(())
         },
         |wire_type, is| {
             if wire_type != V::WIRE_TYPE {
-                return Err(unexpected_wire_type(wire_type));
+                return Err(WireError::UnexpectedWireType(wire_type).into());
             }
             value = V::read(is)?;
             Ok(())

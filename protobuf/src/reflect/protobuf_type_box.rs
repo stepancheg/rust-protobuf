@@ -1,11 +1,11 @@
 use crate::descriptor::field_descriptor_proto::Type;
 use crate::error::ProtobufError;
+use crate::error::WireError;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectRepeatedMut;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::RuntimeTypeBox;
-use crate::rt;
 use crate::wire_format::WireType;
 use crate::CodedInputStream;
 use crate::Result;
@@ -75,7 +75,7 @@ impl ProtobufTypeBox {
         wire_type: WireType,
     ) -> Result<ReflectValueBox> {
         if wire_type != WireType::for_type(self.t) {
-            return Err(rt::unexpected_wire_type(wire_type));
+            return Err(WireError::UnexpectedWireType(wire_type).into());
         }
         Ok(match self.t {
             Type::TYPE_DOUBLE => ReflectValueBox::F64(is.read_double()?),
@@ -218,11 +218,11 @@ impl ProtobufTypeBox {
                 },
                 Type::TYPE_GROUP => Err(ProtobufError::GroupIsNotImplemented.into()),
                 Type::TYPE_MESSAGE | Type::TYPE_STRING | Type::TYPE_BYTES => {
-                    Err(rt::unexpected_wire_type(wire_type))
+                    Err(WireError::UnexpectedWireType(wire_type).into())
                 }
             }
         } else {
-            Err(rt::unexpected_wire_type(wire_type))
+            Err(WireError::UnexpectedWireType(wire_type).into())
         }
     }
 }
