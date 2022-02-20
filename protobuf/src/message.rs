@@ -112,7 +112,13 @@ pub trait Message:
         self.write_to_with_cached_sizes(os)?;
 
         // Self-check.
-        assert_eq!(written + size as u64, os.total_bytes_written());
+        assert_eq!(
+            written + size as u64,
+            os.total_bytes_written(),
+            "Expected to write {}, actually wrote {}",
+            size,
+            os.total_bytes_written() - written
+        );
 
         Ok(())
     }

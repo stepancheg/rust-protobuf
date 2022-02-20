@@ -1,3 +1,4 @@
+use std::fmt;
 use std::io;
 use std::io::Write;
 use std::mem::MaybeUninit;
@@ -70,7 +71,26 @@ enum OutputTarget<'a> {
     Bytes,
 }
 
+impl<'a> fmt::Debug for OutputTarget<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            OutputTarget::Write(_w, vec) => f
+                .debug_struct("Write")
+                .field("buf_len", &vec.len())
+                .field("buf_cap", &vec.capacity())
+                .finish_non_exhaustive(),
+            OutputTarget::Vec(vec) => f
+                .debug_struct("Vec")
+                .field("len", &vec.len())
+                .field("cap", &vec.capacity())
+                .finish_non_exhaustive(),
+            OutputTarget::Bytes => f.debug_tuple("Bytes").finish(),
+        }
+    }
+}
+
 /// Buffered write with handy utilities
+#[derive(Debug)]
 pub struct CodedOutputStream<'a> {
     target: OutputTarget<'a>,
     // Actual buffer is owned by `OutputTarget`,
@@ -262,8 +282,10 @@ impl<'a> CodedOutputStream<'a> {
                 write.write_all(bytes)?;
             }
             OutputTarget::Vec(ref mut vec) => {
+                assert!(self.pos_within_buf == 0);
                 vec.extend(bytes);
-                self.buffer = vec_spare_capacity_mut(vec)
+                self.buffer = vec_spare_capacity_mut(vec);
+                self.pos_of_buffer_start += bytes.len() as u64;
             }
         }
         Ok(())
@@ -1138,6 +1160,27 @@ mod test {
                 Write::flush(&mut os).expect("io::Write::flush");
             }
             assert_eq!(expected, *v);
+        }
+    }
+
+    #[test]
+    fn total_bytes_written_to_bytes() {
+        let mut buf = vec![0; 10];
+        let mut stream = CodedOutputStream::bytes(&mut buf);
+        assert_eq!(0, stream.total_bytes_written());
+        stream.write_raw_bytes(&[11, 22]).unwrap();
+        assert_eq!(2, stream.total_bytes_written());
+        stream.write_raw_bytes(&[33, 44, 55]).unwrap();
+        assert_eq!(5, stream.total_bytes_written());
+    }
+
+    #[test]
+    fn total_bytes_written_to_vec() {
+        let mut buf = Vec::new();
+        let mut stream = CodedOutputStream::vec(&mut buf);
+        for i in 0..100 {
+            stream.write_raw_bytes(&[0, 1, 2]).unwrap();
+            assert_eq!((i + 1) * 3, stream.total_bytes_written());
         }
     }
 }
