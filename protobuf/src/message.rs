@@ -37,14 +37,6 @@ use crate::wire_format::check_message_size;
 pub trait Message:
     fmt::Debug + fmt::Display + Clear + Clone + Send + Sync + Sized + 'static
 {
-    /// Message descriptor for this message, used for reflection.
-    ///
-    /// This function is rarely needed to be called directly, use
-    /// [`Message::descriptor_static()`] instead.
-    fn descriptor_by_instance(&self) -> MessageDescriptor {
-        Self::descriptor_static()
-    }
-
     /// Get message descriptor for message type.
     ///
     /// ```
