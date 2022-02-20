@@ -1528,20 +1528,6 @@ impl<'a> FieldGen<'a> {
         ));
     }
 
-    // Write `merge_from` part for this singular or repeated field
-    // of type message, string or bytes
-    fn write_merge_from_field_message_string_bytes(&self, w: &mut CodeWriter) {
-        match self.kind {
-            FieldKind::Repeated(ref r) => {
-                self.write_merge_from_field_message_string_bytes_repeated(r, w)
-            }
-            FieldKind::Singular(ref s) => {
-                self.write_merge_from_field_message_string_bytes_singular(s, w)
-            }
-            FieldKind::Map(..) | FieldKind::Oneof(..) => unreachable!(),
-        };
-    }
-
     fn write_error_unexpected_wire_type(&self, wire_type_var: &str, w: &mut CodeWriter) {
         w.write_line(&format!(
             "return ::std::result::Result::Err({}::rt::unexpected_wire_type({}));",
@@ -1625,25 +1611,28 @@ impl<'a> FieldGen<'a> {
     }
 
     // Write `merge_from` part for this singular field
-    fn write_merge_from_singular(
+    fn write_merge_from_singular_case_block(
         &self,
         s: &SingularField,
         wire_type_var: &str,
         w: &mut CodeWriter,
     ) {
-        match s.elem {
-            FieldElem::Message(..) => {
-                self.write_merge_from_field_message_string_bytes(w);
-            }
-            _ => {
-                self.write_assert_wire_type(wire_type_var, w);
-                let read_proc = format!(
-                    "{}?",
-                    self.proto_type.read("is", s.elem.primitive_type_variant())
-                );
-                self.write_self_field_assign_some(w, s, &read_proc);
-            }
-        }
+        w.case_block(
+            &format!("({}, _)", self.proto_field.number()),
+            |w| match s.elem {
+                FieldElem::Message(..) => {
+                    self.write_merge_from_field_message_string_bytes_singular(s, w);
+                }
+                _ => {
+                    self.write_assert_wire_type(wire_type_var, w);
+                    let read_proc = format!(
+                        "{}?",
+                        self.proto_type.read("is", s.elem.primitive_type_variant())
+                    );
+                    self.write_self_field_assign_some(w, s, &read_proc);
+                }
+            },
+        )
     }
 
     // Write `merge_from` part for this repeated field
@@ -1657,7 +1646,7 @@ impl<'a> FieldGen<'a> {
             FieldElem::Message(..)
             | FieldElem::Primitive(field_descriptor_proto::Type::TYPE_STRING, ..)
             | FieldElem::Primitive(field_descriptor_proto::Type::TYPE_BYTES, ..) => {
-                self.write_merge_from_field_message_string_bytes(w);
+                self.write_merge_from_field_message_string_bytes_repeated(field, w);
             }
             FieldElem::Enum(..) => {
                 w.write_line(&format!(
@@ -1689,9 +1678,9 @@ impl<'a> FieldGen<'a> {
         match self.kind {
             FieldKind::Oneof(ref f) => self.write_merge_from_oneof_case_block(&f, w),
             FieldKind::Map(..) => self.write_merge_from_map_case_block(w),
-            FieldKind::Singular(ref s) => w.case_block(&format!("({}, _)", number), |w| {
-                self.write_merge_from_singular(s, wire_type_var, w)
-            }),
+            FieldKind::Singular(ref s) => {
+                self.write_merge_from_singular_case_block(s, wire_type_var, w)
+            }
             FieldKind::Repeated(..) => w.case_block(&format!("({}, _)", number), |w| {
                 self.write_merge_from_repeated(wire_type_var, w)
             }),
