@@ -7,6 +7,7 @@ Stable versions are 2.xx still supported.
 
 - Getters are now generated without `get_` prefix. `get_` prefix also removed from public API functions.
 - Reflection API now supports `ServiceDescriptor`. Which can be used to generate code for gRPC for example.
+- Message size computation uses u64 now. It is explicit error now on attempt to serialize a message larger than 2GiB.
 
 ## [3.0.0-alpha.6] - 2022-02-08
 
