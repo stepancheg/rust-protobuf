@@ -75,10 +75,7 @@ impl crate::Message for SourceContext {
             // TODO: tag is temporary for migration
             let tag = (field_number << 3) + wire_type as u32;
             match (field_number, tag) {
-                (1, _) => {
-                    if wire_type != crate::rt::WireType::LengthDelimited {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 10) => {
                     self.file_name = is.read_string()?;
                 },
                 (_, tag) => {

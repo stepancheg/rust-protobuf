@@ -75,10 +75,7 @@ impl crate::Message for DoubleValue {
             // TODO: tag is temporary for migration
             let tag = (field_number << 3) + wire_type as u32;
             match (field_number, tag) {
-                (1, _) => {
-                    if wire_type != crate::rt::WireType::Fixed64 {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 9) => {
                     self.value = is.read_double()?;
                 },
                 (_, tag) => {
@@ -210,10 +207,7 @@ impl crate::Message for FloatValue {
             // TODO: tag is temporary for migration
             let tag = (field_number << 3) + wire_type as u32;
             match (field_number, tag) {
-                (1, _) => {
-                    if wire_type != crate::rt::WireType::Fixed32 {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 13) => {
                     self.value = is.read_float()?;
                 },
                 (_, tag) => {
@@ -345,10 +339,7 @@ impl crate::Message for Int64Value {
             // TODO: tag is temporary for migration
             let tag = (field_number << 3) + wire_type as u32;
             match (field_number, tag) {
-                (1, _) => {
-                    if wire_type != crate::rt::WireType::Varint {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 8) => {
                     self.value = is.read_int64()?;
                 },
                 (_, tag) => {
@@ -480,10 +471,7 @@ impl crate::Message for UInt64Value {
             // TODO: tag is temporary for migration
             let tag = (field_number << 3) + wire_type as u32;
             match (field_number, tag) {
-                (1, _) => {
-                    if wire_type != crate::rt::WireType::Varint {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 8) => {
                     self.value = is.read_uint64()?;
                 },
                 (_, tag) => {
@@ -615,10 +603,7 @@ impl crate::Message for Int32Value {
             // TODO: tag is temporary for migration
             let tag = (field_number << 3) + wire_type as u32;
             match (field_number, tag) {
-                (1, _) => {
-                    if wire_type != crate::rt::WireType::Varint {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 8) => {
                     self.value = is.read_int32()?;
                 },
                 (_, tag) => {
@@ -750,10 +735,7 @@ impl crate::Message for UInt32Value {
             // TODO: tag is temporary for migration
             let tag = (field_number << 3) + wire_type as u32;
             match (field_number, tag) {
-                (1, _) => {
-                    if wire_type != crate::rt::WireType::Varint {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 8) => {
                     self.value = is.read_uint32()?;
                 },
                 (_, tag) => {
@@ -885,10 +867,7 @@ impl crate::Message for BoolValue {
             // TODO: tag is temporary for migration
             let tag = (field_number << 3) + wire_type as u32;
             match (field_number, tag) {
-                (1, _) => {
-                    if wire_type != crate::rt::WireType::Varint {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 8) => {
                     self.value = is.read_bool()?;
                 },
                 (_, tag) => {
@@ -1020,10 +999,7 @@ impl crate::Message for StringValue {
             // TODO: tag is temporary for migration
             let tag = (field_number << 3) + wire_type as u32;
             match (field_number, tag) {
-                (1, _) => {
-                    if wire_type != crate::rt::WireType::LengthDelimited {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 10) => {
                     self.value = is.read_string()?;
                 },
                 (_, tag) => {
@@ -1155,10 +1131,7 @@ impl crate::Message for BytesValue {
             // TODO: tag is temporary for migration
             let tag = (field_number << 3) + wire_type as u32;
             match (field_number, tag) {
-                (1, _) => {
-                    if wire_type != crate::rt::WireType::LengthDelimited {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 10) => {
                     self.value = is.read_bytes()?;
                 },
                 (_, tag) => {

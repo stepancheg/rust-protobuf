@@ -858,24 +858,18 @@ pub fn read_repeated_message_into_vec<M: Message + Default>(
 
 /// Read singular `message` field.
 pub fn read_singular_message_into_field<M>(
-    wire_type: WireType,
     is: &mut CodedInputStream,
     target: &mut MessageField<M>,
 ) -> Result<()>
 where
     M: Message + Default,
 {
-    match wire_type {
-        WireType::LengthDelimited => {
-            is.incr_recursion()?;
-            let mut m = M::new();
-            let res = is.merge_message(&mut m);
-            *target = MessageField::some(m);
-            is.decr_recursion();
-            res
-        }
-        _ => Err(unexpected_wire_type(wire_type)),
-    }
+    is.incr_recursion()?;
+    let mut m = M::new();
+    let res = is.merge_message(&mut m);
+    *target = MessageField::some(m);
+    is.decr_recursion();
+    res
 }
 
 fn skip_group(is: &mut CodedInputStream) -> Result<()> {

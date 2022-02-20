@@ -87,16 +87,10 @@ impl crate::Message for Duration {
             // TODO: tag is temporary for migration
             let tag = (field_number << 3) + wire_type as u32;
             match (field_number, tag) {
-                (1, _) => {
-                    if wire_type != crate::rt::WireType::Varint {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 8) => {
                     self.seconds = is.read_int64()?;
                 },
-                (2, _) => {
-                    if wire_type != crate::rt::WireType::Varint {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 16) => {
                     self.nanos = is.read_int32()?;
                 },
                 (_, tag) => {

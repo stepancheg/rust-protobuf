@@ -1493,28 +1493,6 @@ impl<'a> FieldGen<'a> {
         ));
     }
 
-    fn write_error_unexpected_wire_type(&self, wire_type_var: &str, w: &mut CodeWriter) {
-        w.write_line(&format!(
-            "return ::std::result::Result::Err({}::rt::unexpected_wire_type({}));",
-            protobuf_crate_path(&self.customize),
-            wire_type_var
-        ));
-    }
-
-    fn write_assert_wire_type(&self, wire_type_var: &str, w: &mut CodeWriter) {
-        w.if_stmt(
-            &format!(
-                "{} != {}::rt::WireType::{:?}",
-                wire_type_var,
-                protobuf_crate_path(&self.customize),
-                self.wire_type,
-            ),
-            |w| {
-                self.write_error_unexpected_wire_type(wire_type_var, w);
-            },
-        );
-    }
-
     fn tag(&self) -> u32 {
         (self.proto_field.number() << 3) | (self.wire_type as u32)
     }
@@ -1576,32 +1554,23 @@ impl<'a> FieldGen<'a> {
     }
 
     // Write `merge_from` part for this singular field
-    fn write_merge_from_singular_case_block(
-        &self,
-        s: &SingularField,
-        wire_type_var: &str,
-        w: &mut CodeWriter,
-    ) {
-        w.case_block(
-            &format!("({}, _)", self.proto_field.number()),
-            |w| match s.elem {
-                FieldElem::Message(..) => {
-                    w.write_line(&format!(
-                        "{}::rt::read_singular_message_into_field(wire_type, is, &mut self.{})?;",
-                        protobuf_crate_path(&self.customize),
-                        self.rust_name,
-                    ));
-                }
-                _ => {
-                    self.write_assert_wire_type(wire_type_var, w);
-                    let read_proc = format!(
-                        "{}?",
-                        self.proto_type.read("is", s.elem.primitive_type_variant())
-                    );
-                    self.write_self_field_assign_some(w, s, &read_proc);
-                }
-            },
-        )
+    fn write_merge_from_singular_case_block(&self, s: &SingularField, w: &mut CodeWriter) {
+        w.case_block(&format!("(_, {})", self.tag()), |w| match s.elem {
+            FieldElem::Message(..) => {
+                w.write_line(&format!(
+                    "{}::rt::read_singular_message_into_field(is, &mut self.{})?;",
+                    protobuf_crate_path(&self.customize),
+                    self.rust_name,
+                ));
+            }
+            _ => {
+                let read_proc = format!(
+                    "{}?",
+                    self.proto_type.read("is", s.elem.primitive_type_variant())
+                );
+                self.write_self_field_assign_some(w, s, &read_proc);
+            }
+        })
     }
 
     // Write `merge_from` part for this repeated field
@@ -1647,9 +1616,7 @@ impl<'a> FieldGen<'a> {
         match self.kind {
             FieldKind::Oneof(ref f) => self.write_merge_from_oneof_case_block(&f, w),
             FieldKind::Map(..) => self.write_merge_from_map_case_block(w),
-            FieldKind::Singular(ref s) => {
-                self.write_merge_from_singular_case_block(s, wire_type_var, w)
-            }
+            FieldKind::Singular(ref s) => self.write_merge_from_singular_case_block(s, w),
             FieldKind::Repeated(..) => w.case_block(&format!("({}, _)", number), |w| {
                 self.write_merge_from_repeated(wire_type_var, w)
             }),

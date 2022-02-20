@@ -171,10 +171,7 @@ impl crate::Message for Api {
             // TODO: tag is temporary for migration
             let tag = (field_number << 3) + wire_type as u32;
             match (field_number, tag) {
-                (1, _) => {
-                    if wire_type != crate::rt::WireType::LengthDelimited {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 10) => {
                     self.name = is.read_string()?;
                 },
                 (2, _) => {
@@ -183,22 +180,16 @@ impl crate::Message for Api {
                 (3, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.options)?;
                 },
-                (4, _) => {
-                    if wire_type != crate::rt::WireType::LengthDelimited {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 34) => {
                     self.version = is.read_string()?;
                 },
-                (5, _) => {
-                    crate::rt::read_singular_message_into_field(wire_type, is, &mut self.source_context)?;
+                (_, 42) => {
+                    crate::rt::read_singular_message_into_field(is, &mut self.source_context)?;
                 },
                 (6, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.mixins)?;
                 },
-                (7, _) => {
-                    if wire_type != crate::rt::WireType::Varint {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 56) => {
                     self.syntax = is.read_enum_or_unknown()?;
                 },
                 (_, tag) => {
@@ -433,43 +424,25 @@ impl crate::Message for Method {
             // TODO: tag is temporary for migration
             let tag = (field_number << 3) + wire_type as u32;
             match (field_number, tag) {
-                (1, _) => {
-                    if wire_type != crate::rt::WireType::LengthDelimited {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 10) => {
                     self.name = is.read_string()?;
                 },
-                (2, _) => {
-                    if wire_type != crate::rt::WireType::LengthDelimited {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 18) => {
                     self.request_type_url = is.read_string()?;
                 },
-                (3, _) => {
-                    if wire_type != crate::rt::WireType::Varint {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 24) => {
                     self.request_streaming = is.read_bool()?;
                 },
-                (4, _) => {
-                    if wire_type != crate::rt::WireType::LengthDelimited {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 34) => {
                     self.response_type_url = is.read_string()?;
                 },
-                (5, _) => {
-                    if wire_type != crate::rt::WireType::Varint {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 40) => {
                     self.response_streaming = is.read_bool()?;
                 },
                 (6, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.options)?;
                 },
-                (7, _) => {
-                    if wire_type != crate::rt::WireType::Varint {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 56) => {
                     self.syntax = is.read_enum_or_unknown()?;
                 },
                 (_, tag) => {
@@ -656,16 +629,10 @@ impl crate::Message for Mixin {
             // TODO: tag is temporary for migration
             let tag = (field_number << 3) + wire_type as u32;
             match (field_number, tag) {
-                (1, _) => {
-                    if wire_type != crate::rt::WireType::LengthDelimited {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 10) => {
                     self.name = is.read_string()?;
                 },
-                (2, _) => {
-                    if wire_type != crate::rt::WireType::LengthDelimited {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 18) => {
                     self.root = is.read_string()?;
                 },
                 (_, tag) => {
