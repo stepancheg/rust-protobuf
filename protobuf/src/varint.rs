@@ -86,3 +86,60 @@ pub fn encode_varint32(mut value: u32, buf: &mut [MaybeUninit<u8>]) -> usize {
     buf[4].write(value as u8);
     5
 }
+
+/// Encoded size of u64 value.
+pub(crate) fn encoded_varint64_len(value: u64) -> usize {
+    if value == 0 {
+        1
+    } else {
+        let significant_bits = 64 - value.leading_zeros();
+        (significant_bits + 6) as usize / 7
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use std::mem::MaybeUninit;
+
+    use crate::varint::encode_varint64;
+    use crate::varint::encoded_varint64_len;
+
+    #[test]
+    fn test_encoded_varint64_len() {
+        fn test(n: u64) {
+            let mut buf = [MaybeUninit::uninit(); 10];
+            let expected = encode_varint64(n, &mut buf);
+            assert_eq!(expected, encoded_varint64_len(n), "n={}", n);
+        }
+
+        for n in 0..1000 {
+            test(n);
+        }
+
+        for p in 0.. {
+            match 2u64.checked_pow(p) {
+                Some(n) => test(n),
+                None => break,
+            }
+        }
+
+        for p in 0.. {
+            match 3u64.checked_pow(p) {
+                Some(n) => test(n),
+                None => break,
+            }
+        }
+
+        test(u64::MAX);
+        test(u64::MAX - 1);
+        test((i64::MAX as u64) + 1);
+        test(i64::MAX as u64);
+        test((i64::MAX as u64) - 1);
+        test((u32::MAX as u64) + 1);
+        test(u32::MAX as u64);
+        test((u32::MAX as u64) - 1);
+        test((i32::MAX as u64) + 1);
+        test(i32::MAX as u64);
+        test((i32::MAX as u64) - 1);
+    }
+}

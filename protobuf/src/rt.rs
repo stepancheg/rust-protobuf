@@ -23,7 +23,7 @@ use crate::message::*;
 use crate::reflect::types::*;
 use crate::reflect::ProtobufValue;
 use crate::unknown::UnknownFields;
-use crate::wire_format;
+use crate::varint::encoded_varint64_len;
 pub use crate::wire_format::WireType;
 use crate::zigzag::*;
 use crate::EnumOrUnknown;
@@ -31,34 +31,7 @@ use crate::MessageField;
 
 /// Given `u64` value compute varint encoded length.
 pub fn compute_raw_varint64_size(value: u64) -> u64 {
-    if (value & (0xffffffffffffffffu64 << 7)) == 0 {
-        return 1;
-    }
-    if (value & (0xffffffffffffffffu64 << 14)) == 0 {
-        return 2;
-    }
-    if (value & (0xffffffffffffffffu64 << 21)) == 0 {
-        return 3;
-    }
-    if (value & (0xffffffffffffffffu64 << 28)) == 0 {
-        return 4;
-    }
-    if (value & (0xffffffffffffffffu64 << 35)) == 0 {
-        return 5;
-    }
-    if (value & (0xffffffffffffffffu64 << 42)) == 0 {
-        return 6;
-    }
-    if (value & (0xffffffffffffffffu64 << 49)) == 0 {
-        return 7;
-    }
-    if (value & (0xffffffffffffffffu64 << 56)) == 0 {
-        return 8;
-    }
-    if (value & (0xffffffffffffffffu64 << 63)) == 0 {
-        return 9;
-    }
-    10
+    encoded_varint64_len(value) as u64
 }
 
 /// Given `u32` value compute varint encoded length.
@@ -259,9 +232,7 @@ pub fn vec_packed_fixed_size<V: ProtobufFixed>(field_number: u32, vec: &[V]) -> 
 
 /// Compute tag size. Size of tag does not depend on wire type.
 pub fn tag_size(field_number: u32) -> u64 {
-    wire_format::Tag::make(field_number, WireType::Fixed64)
-        .value()
-        .len_varint()
+    encoded_varint64_len((field_number as u64) << 3) as u64
 }
 
 fn value_size_no_tag<T: ProtobufVarint>(value: T, wt: WireType) -> u64 {
