@@ -137,7 +137,7 @@ pub(crate) fn gen_well_known_types_mod(
 
             let file_scope = FileScope { file_descriptor };
 
-            for m in file_scope.to_scope().get_messages() {
+            for m in file_scope.to_scope().messages() {
                 w.write_line(&format!("pub use self::{}::{};", rust_mod, m.rust_name()));
                 if m.need_mod() {
                     // Does not correctly export oneofs,
@@ -145,7 +145,7 @@ pub(crate) fn gen_well_known_types_mod(
                     w.write_line(&format!("pub use self::{}::{};", rust_mod, m.mod_name()));
                 }
             }
-            for e in file_scope.to_scope().get_enums() {
+            for e in file_scope.to_scope().enums() {
                 w.write_line(&format!("pub use self::{}::{};", rust_mod, e.rust_name()));
             }
         }

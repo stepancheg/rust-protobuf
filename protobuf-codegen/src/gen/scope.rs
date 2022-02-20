@@ -72,8 +72,8 @@ pub(crate) struct FileScope<'a> {
 }
 
 impl<'a> FileScope<'a> {
-    fn get_package(&self) -> ProtobufAbsPath {
-        ProtobufRelPath::from(self.file_descriptor.proto().package()).into_absolute()
+    fn package(&self) -> ProtobufAbsPath {
+        ProtobufAbsPath::package_from_file_descriptor(self.file_descriptor)
     }
 
     pub fn syntax(&self) -> Syntax {
@@ -102,7 +102,7 @@ impl<'a> FileScope<'a> {
         name: &ProtobufAbsPathRef,
     ) -> Option<MessageOrEnumWithScope<'a>> {
         let name = name.to_owned();
-        match name.remove_prefix(&self.get_package()) {
+        match name.remove_prefix(&self.package()) {
             Some(rem) => self.find_message_or_enum(&rem),
             None => None,
         }
@@ -113,7 +113,7 @@ impl<'a> FileScope<'a> {
         let mut r = Vec::new();
 
         self.to_scope().walk_scopes(|scope| {
-            r.extend(scope.get_enums());
+            r.extend(scope.enums());
         });
 
         r
@@ -124,7 +124,7 @@ impl<'a> FileScope<'a> {
         let mut r = Vec::new();
 
         self.to_scope().walk_scopes(|scope| {
-            r.extend(scope.get_messages());
+            r.extend(scope.messages());
         });
 
         r
@@ -143,7 +143,7 @@ impl<'a> FileScope<'a> {
         let mut r = Vec::new();
 
         self.to_scope().walk_scopes(|scope| {
-            r.extend(scope.get_messages_and_enums());
+            r.extend(scope.messages_and_enums());
         });
 
         r
@@ -157,12 +157,12 @@ pub(crate) struct Scope<'a> {
 }
 
 impl<'a> Scope<'a> {
-    pub fn get_file_descriptor(&self) -> &'a FileDescriptorProto {
+    pub fn file_descriptor(&self) -> &'a FileDescriptorProto {
         self.file_scope.file_descriptor.proto()
     }
 
     // get message descriptors in this scope
-    fn get_message_descriptors(&self) -> Vec<MessageDescriptor> {
+    fn message_descriptors(&self) -> Vec<MessageDescriptor> {
         if self.path.is_empty() {
             self.file_scope.file_descriptor.messages()
         } else {
@@ -171,7 +171,7 @@ impl<'a> Scope<'a> {
     }
 
     // get enum descriptors in this scope
-    fn get_enum_descriptors(&self) -> Vec<EnumDescriptor> {
+    fn enum_descriptors(&self) -> Vec<EnumDescriptor> {
         if self.path.is_empty() {
             self.file_scope.file_descriptor.enums()
         } else {
@@ -180,8 +180,8 @@ impl<'a> Scope<'a> {
     }
 
     // get messages with attached scopes in this scope
-    pub fn get_messages(&self) -> Vec<MessageWithScope<'a>> {
-        self.get_message_descriptors()
+    pub fn messages(&self) -> Vec<MessageWithScope<'a>> {
+        self.message_descriptors()
             .into_iter()
             .map(|message| MessageWithScope {
                 scope: self.clone(),
@@ -191,8 +191,8 @@ impl<'a> Scope<'a> {
     }
 
     // get enums with attached scopes in this scope
-    pub fn get_enums(&self) -> Vec<EnumWithScope<'a>> {
-        self.get_enum_descriptors()
+    pub fn enums(&self) -> Vec<EnumWithScope<'a>> {
+        self.enum_descriptors()
             .into_iter()
             .map(|en| EnumWithScope {
                 scope: self.clone(),
@@ -202,12 +202,12 @@ impl<'a> Scope<'a> {
     }
 
     // get messages and enums with attached scopes in this scope
-    pub fn get_messages_and_enums(&self) -> Vec<MessageOrEnumWithScope<'a>> {
-        self.get_messages()
+    pub fn messages_and_enums(&self) -> Vec<MessageOrEnumWithScope<'a>> {
+        self.messages()
             .into_iter()
             .map(|m| MessageOrEnumWithScope::Message(m))
             .chain(
-                self.get_enums()
+                self.enums()
                     .into_iter()
                     .map(|m| MessageOrEnumWithScope::Enum(m)),
             )
@@ -216,7 +216,7 @@ impl<'a> Scope<'a> {
 
     // nested scopes, i. e. scopes of nested messages
     fn nested_scopes(&self) -> Vec<Scope<'a>> {
-        self.get_message_descriptors()
+        self.message_descriptors()
             .into_iter()
             .map(|m| {
                 let mut nested = self.clone();
@@ -273,12 +273,12 @@ impl<'a> Scope<'a> {
     }
 
     pub fn protobuf_absolute_path(&self) -> ProtobufAbsPath {
-        let mut r = self.file_scope.get_package();
+        let mut r = self.file_scope.package();
         r.push_relative(&self.protobuf_path_to_file());
         r
     }
 
-    pub fn get_file_and_mod(&self, customize: Customize) -> FileAndMod {
+    pub fn file_and_mod(&self, customize: Customize) -> FileAndMod {
         FileAndMod {
             file: self.file_scope.file_descriptor.proto().name().to_owned(),
             relative_mod: self.rust_path_to_file(),
@@ -288,38 +288,38 @@ impl<'a> Scope<'a> {
 }
 
 pub(crate) trait WithScope<'a> {
-    fn get_scope(&self) -> &Scope<'a>;
+    fn scope(&self) -> &Scope<'a>;
 
-    fn get_file_descriptor(&self) -> &'a FileDescriptorProto {
-        self.get_scope().get_file_descriptor()
+    fn file_descriptor(&self) -> &'a FileDescriptorProto {
+        self.scope().file_descriptor()
     }
 
     // message or enum name
-    fn get_name(&self) -> &ProtobufIdentRef;
+    fn name(&self) -> &ProtobufIdentRef;
 
     fn escape_prefix(&self) -> &'static str;
 
     fn name_to_package(&self) -> String {
-        let mut r = self.get_scope().prefix();
-        r.push_str(&self.get_name());
+        let mut r = self.scope().prefix();
+        r.push_str(&self.name());
         r
     }
 
     fn protobuf_name_to_package(&self) -> ProtobufRelPath {
-        let r = self.get_scope().protobuf_path_to_file();
-        r.append_ident(ProtobufIdentRef::new(self.get_name()))
+        let r = self.scope().protobuf_path_to_file();
+        r.append_ident(ProtobufIdentRef::new(self.name()))
     }
 
     /// Return absolute name starting with dot
     fn name_absolute(&self) -> ProtobufAbsPath {
-        let mut path = self.get_scope().protobuf_absolute_path();
-        path.push_simple(self.get_name());
+        let mut path = self.scope().protobuf_absolute_path();
+        path.push_simple(self.name());
         path
     }
 
     // rust type name of this descriptor
     fn rust_name(&self) -> RustIdent {
-        let mut rust_name = capitalize(&self.get_name());
+        let mut rust_name = capitalize(&self.name());
 
         if is_rust_keyword(&rust_name) {
             rust_name.insert_str(0, self.escape_prefix());
@@ -329,7 +329,7 @@ pub(crate) trait WithScope<'a> {
     }
 
     fn rust_name_to_file(&self) -> RustIdentWithPath {
-        self.get_scope()
+        self.scope()
             .rust_path_to_file()
             .into_path()
             .with_ident(self.rust_name())
@@ -339,7 +339,7 @@ pub(crate) trait WithScope<'a> {
     fn rust_name_with_file(&self) -> RustIdentWithPath {
         let mut r = self.rust_name_to_file();
         r.prepend_ident(proto_path_to_rust_mod(
-            self.get_scope().get_file_descriptor().name(),
+            self.scope().file_descriptor().name(),
         ));
         r
     }
@@ -352,7 +352,7 @@ pub(crate) struct MessageWithScope<'a> {
 }
 
 impl<'a> WithScope<'a> for MessageWithScope<'a> {
-    fn get_scope(&self) -> &Scope<'a> {
+    fn scope(&self) -> &Scope<'a> {
         &self.scope
     }
 
@@ -360,7 +360,7 @@ impl<'a> WithScope<'a> for MessageWithScope<'a> {
         "message_"
     }
 
-    fn get_name(&self) -> &ProtobufIdentRef {
+    fn name(&self) -> &ProtobufIdentRef {
         ProtobufIdentRef::new(self.message.get_name())
     }
 }
@@ -403,13 +403,13 @@ impl<'a> MessageWithScope<'a> {
 
     /** Need to generate a mod for message nested objects. */
     pub fn need_mod(&self) -> bool {
-        for nested in self.to_scope().get_messages() {
+        for nested in self.to_scope().messages() {
             if nested.is_map() {
                 continue;
             }
             return true;
         }
-        if !self.to_scope().get_enums().is_empty() {
+        if !self.to_scope().enums().is_empty() {
             return true;
         }
         if self.message.oneofs().len() != 0 {
@@ -469,11 +469,11 @@ impl<'a> EnumValueWithContext<'a> {
 }
 
 impl<'a> WithScope<'a> for EnumWithScope<'a> {
-    fn get_scope(&self) -> &Scope<'a> {
+    fn scope(&self) -> &Scope<'a> {
         &self.scope
     }
 
-    fn get_name(&self) -> &ProtobufIdentRef {
+    fn name(&self) -> &ProtobufIdentRef {
         ProtobufIdentRef::new(self.en.name())
     }
 
@@ -488,10 +488,10 @@ pub(crate) enum MessageOrEnumWithScope<'a> {
 }
 
 impl<'a> WithScope<'a> for MessageOrEnumWithScope<'a> {
-    fn get_scope(&self) -> &Scope<'a> {
+    fn scope(&self) -> &Scope<'a> {
         match self {
-            &MessageOrEnumWithScope::Message(ref m) => m.get_scope(),
-            &MessageOrEnumWithScope::Enum(ref e) => e.get_scope(),
+            &MessageOrEnumWithScope::Message(ref m) => m.scope(),
+            &MessageOrEnumWithScope::Enum(ref e) => e.scope(),
         }
     }
 
@@ -502,10 +502,10 @@ impl<'a> WithScope<'a> for MessageOrEnumWithScope<'a> {
         }
     }
 
-    fn get_name(&self) -> &ProtobufIdentRef {
+    fn name(&self) -> &ProtobufIdentRef {
         match self {
-            &MessageOrEnumWithScope::Message(ref m) => m.get_name(),
-            &MessageOrEnumWithScope::Enum(ref e) => e.get_name(),
+            &MessageOrEnumWithScope::Message(ref m) => m.name(),
+            &MessageOrEnumWithScope::Enum(ref e) => e.name(),
         }
     }
 }

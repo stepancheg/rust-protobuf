@@ -79,8 +79,8 @@ impl<'a> EnumGen<'a> {
         );
         let lite_runtime = customize.for_elem.lite_runtime.unwrap_or_else(|| {
             enum_with_scope
-                .get_scope()
-                .get_file_descriptor()
+                .scope()
+                .file_descriptor()
                 .options
                 .get_or_default()
                 .optimize_for()
@@ -281,7 +281,7 @@ impl<'a> EnumGen<'a> {
                 "{}::reflect::EnumDescriptor::new_generated_2({}(), {})",
                 protobuf_crate_path(&self.customize.for_elem),
                 self.enum_with_scope
-                    .get_scope()
+                    .scope()
                     .rust_path_to_file()
                     .to_reverse()
                     .append_ident("file_descriptor".into()),
@@ -298,7 +298,7 @@ impl<'a> EnumGen<'a> {
         w.fn_block(
             Visibility::Path(
                 self.enum_with_scope
-                    .get_scope()
+                    .scope()
                     .rust_path_to_file()
                     .to_reverse(),
             ),

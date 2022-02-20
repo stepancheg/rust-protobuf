@@ -58,7 +58,7 @@ impl FieldGen<'_> {
         vec![
             format!("|m: &{}| {{ &m.{} }}", message, self.rust_name),
             format!("|m: &mut {}| {{ &mut m.{} }}", message, self.rust_name),
-            format!("{}", self.get_xxx_default_value_rust()),
+            format!("{}", self.xxx_default_value_rust()),
         ]
     }
 
@@ -118,7 +118,7 @@ impl FieldGen<'_> {
                 name: "make_singular_message_accessor".to_owned(),
                 type_params: vec![format!(
                     "{}",
-                    m.rust_name_relative(&self.get_file_and_mod())
+                    m.rust_name_relative(&self.file_and_mod())
                 )],
                 callback_params: self.make_accessor_fns_has_get(),
             }
@@ -141,7 +141,7 @@ impl FieldGen<'_> {
                 name: "make_message_field_accessor".to_owned(),
                 type_params: vec![format!(
                     "{}",
-                    m.rust_name_relative(&self.get_file_and_mod())
+                    m.rust_name_relative(&self.file_and_mod())
                 )],
                 callback_params: self.make_accessor_fns_lambda(),
             },
@@ -160,7 +160,7 @@ impl FieldGen<'_> {
                 name: "make_option_enum_accessor".to_owned(),
                 type_params: vec![format!(
                     "{}",
-                    en.rust_name_relative(&self.get_file_and_mod())
+                    en.rust_name_relative(&self.file_and_mod())
                 )],
                 callback_params: self.make_accessor_fns_lambda_default_value(),
             },
@@ -178,7 +178,7 @@ impl FieldGen<'_> {
             .proto_field
             .message
             .scope
-            .get_file_and_mod(self.customize.clone());
+            .file_and_mod(self.customize.clone());
 
         if let FieldElem::Enum(..) = oneof.elem {
             return AccessorFn {

@@ -221,7 +221,7 @@ impl<'a> OneofGen<'a> {
                     .oneof
                     .message
                     .scope
-                    .get_file_and_mod(self.customize.for_elem.clone())
+                    .file_and_mod(self.customize.for_elem.clone())
                     .relative_mod
                     .into_path(),
             )
@@ -229,12 +229,12 @@ impl<'a> OneofGen<'a> {
         )))
     }
 
-    fn get_file_and_mod(&self) -> FileAndMod {
+    fn file_and_mod(&self) -> FileAndMod {
         let mut file_and_mod = self
             .message
             .message
             .scope
-            .get_file_and_mod(self.customize.for_elem.clone());
+            .file_and_mod(self.customize.for_elem.clone());
         file_and_mod
             .relative_mod
             .push_ident(self.message.message.mod_name());
@@ -257,7 +257,7 @@ impl<'a> OneofGen<'a> {
                     "{}({}),",
                     variant.field.rust_name,
                     &variant
-                        .rust_type(&self.get_file_and_mod())
+                        .rust_type(&self.file_and_mod())
                         .to_code(&self.customize.for_elem)
                 ));
             }

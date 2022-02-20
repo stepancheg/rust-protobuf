@@ -83,7 +83,7 @@ pub(crate) fn gen_file(
         });
 
         let mut path = vec![message_type_number, 0];
-        for (id, message) in scope.get_messages().iter().enumerate() {
+        for (id, message) in scope.messages().iter().enumerate() {
             // ignore map entries, because they are not used in map fields
             if !message.is_map() {
                 path[1] = id as i32;
@@ -112,7 +112,7 @@ pub(crate) fn gen_file(
         });
 
         let mut path = vec![enum_type_number, 0];
-        for (id, enum_type) in scope.get_enums().iter().enumerate() {
+        for (id, enum_type) in scope.enums().iter().enumerate() {
             path[1] = id as i32;
 
             w.write_line("");

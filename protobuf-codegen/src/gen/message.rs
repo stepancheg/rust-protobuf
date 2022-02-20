@@ -114,7 +114,7 @@ impl<'a> MessageGen<'a> {
             .collect();
         let lite_runtime = customize.for_elem.lite_runtime.unwrap_or_else(|| {
             message
-                .get_file_descriptor()
+                .file_descriptor()
                 .options
                 .get_or_default()
                 .optimize_for()
@@ -139,10 +139,10 @@ impl<'a> MessageGen<'a> {
         self.file_index.messsage_to_index[&self.message.protobuf_name_to_package()]
     }
 
-    pub fn get_file_and_mod(&self) -> FileAndMod {
+    pub fn file_and_mod(&self) -> FileAndMod {
         self.message
             .scope
-            .get_file_and_mod(self.customize.for_elem.clone())
+            .file_and_mod(self.customize.for_elem.clone())
     }
 
     fn expose_oneof(&self) -> bool {
@@ -221,15 +221,15 @@ impl<'a> MessageGen<'a> {
                             let ref field = variant.field;
 
                             let (refv, vtype) = if field.elem_type_is_copy() {
-                                ("v", variant.rust_type(&self.get_file_and_mod()))
+                                ("v", variant.rust_type(&self.file_and_mod()))
                             } else {
                                 (
                                     "ref v",
-                                    variant.rust_type(&self.get_file_and_mod()).ref_type(),
+                                    variant.rust_type(&self.file_and_mod()).ref_type(),
                                 )
                             };
                             w.case_block(
-                                format!("&{}({})", variant.path(&self.get_file_and_mod()), refv),
+                                format!("&{}({})", variant.path(&self.file_and_mod()), refv),
                                 |w| {
                                     cb(w, &variant, "v", &vtype);
                                 },
@@ -287,7 +287,7 @@ impl<'a> MessageGen<'a> {
                     w.field_entry(
                         f.rust_name.get(),
                         &f.kind
-                            .default(&self.customize.for_elem, &self.get_file_and_mod(), true),
+                            .default(&self.customize.for_elem, &self.file_and_mod(), true),
                     );
                 }
                 for o in &self.oneofs() {
@@ -426,7 +426,7 @@ impl<'a> MessageGen<'a> {
                 "{}::reflect::MessageDescriptor::new_generated_2({}(), {})",
                 protobuf_crate_path(&self.customize.for_elem),
                 self.message
-                    .get_scope()
+                    .scope()
                     .rust_path_to_file()
                     .to_reverse()
                     .append_ident("file_descriptor".into()),
@@ -441,7 +441,7 @@ impl<'a> MessageGen<'a> {
             protobuf_crate_path(&self.customize.for_elem)
         );
         w.fn_block(
-            Visibility::Path(self.message.get_scope().rust_path_to_file().to_reverse()),
+            Visibility::Path(self.message.scope().rust_path_to_file().to_reverse()),
             &sig,
             |w| {
                 let fields = self.fields_except_group();
@@ -721,14 +721,14 @@ impl<'a> MessageGen<'a> {
         let nested_messages: Vec<_> = self
             .message
             .to_scope()
-            .get_messages()
+            .messages()
             .into_iter()
             .filter(|nested| {
                 // ignore map entries, because they are not used in map fields
                 !nested.is_map()
             })
             .collect();
-        let nested_enums = self.message.to_scope().get_enums();
+        let nested_enums = self.message.to_scope().enums();
 
         if !oneofs.is_empty() || !nested_messages.is_empty() || !nested_enums.is_empty() {
             w.write_line("");
@@ -786,7 +786,7 @@ impl<'a> MessageGen<'a> {
 
                 let len = path.len() - 2;
                 path[len] = enum_type_number;
-                for (id, enum_type) in self.message.to_scope().get_enums().iter().enumerate() {
+                for (id, enum_type) in self.message.to_scope().enums().iter().enumerate() {
                     let len = path.len() - 1;
                     path[len] = id as i32;
 

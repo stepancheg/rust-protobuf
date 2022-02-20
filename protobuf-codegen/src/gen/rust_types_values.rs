@@ -515,7 +515,7 @@ pub(crate) fn message_or_enum_to_rust_relative(
     message_or_enum: &dyn WithScope,
     current: &FileAndMod,
 ) -> RustIdentWithPath {
-    let same_file = message_or_enum.get_scope().get_file_descriptor().name() == current.file;
+    let same_file = message_or_enum.scope().file_descriptor().name() == current.file;
     if same_file {
         // field type is a message or enum declared in the same file
         make_path(
@@ -530,7 +530,7 @@ pub(crate) fn message_or_enum_to_rust_relative(
             protobuf_crate_path(&current.customize),
             name
         ))
-    } else if is_descriptor_proto(message_or_enum.get_file_descriptor()) {
+    } else if is_descriptor_proto(message_or_enum.file_descriptor()) {
         // Messages defined in descriptor.proto
         RustIdentWithPath::from(format!(
             "{}::descriptor::{}",

@@ -307,8 +307,8 @@ impl<'a> SingularOrOneofField<'a> {
         }
     }
 
-    // Type of get_xxx function for singular type
-    pub fn get_xxx_return_type(&self, reference: &FileAndMod) -> RustType {
+    // Type of `xxx` function for singular type.
+    pub fn getter_return_type(&self, reference: &FileAndMod) -> RustType {
         let elem = self.elem();
         if let FieldElem::Enum(ref en) = elem {
             en.enum_rust_type(reference)
@@ -618,7 +618,7 @@ impl<'a> FieldGen<'a> {
 
         FieldGen {
             _root_scope: root_scope,
-            syntax: field.message.get_scope().file_scope.syntax(),
+            syntax: field.message.scope().file_scope.syntax(),
             rust_name: rust_field_name_for_protobuf_field_name(&field.field.name()),
             proto_type: field.field.get_proto().field_type(),
             wire_type: WireType::for_type(field.field.get_proto().field_type()),
@@ -634,11 +634,11 @@ impl<'a> FieldGen<'a> {
     }
 
     // for message level
-    fn get_file_and_mod(&self) -> FileAndMod {
+    fn file_and_mod(&self) -> FileAndMod {
         self.proto_field
             .message
             .scope
-            .get_file_and_mod(self.customize.clone())
+            .file_and_mod(self.customize.clone())
     }
 
     fn tag_size(&self) -> u32 {
@@ -759,19 +759,19 @@ impl<'a> FieldGen<'a> {
         }))
     }
 
-    // for field `foo`, return type of `fn get_foo(..)`
-    fn get_xxx_return_type(&self) -> RustType {
+    // for field `foo`, return type of `fn foo(..)`
+    fn getter_return_type(&self) -> RustType {
         let reference = self
             .proto_field
             .message
             .scope
-            .get_file_and_mod(self.customize.clone());
+            .file_and_mod(self.customize.clone());
         match &self.kind {
             FieldKind::Singular(s) => {
-                SingularOrOneofField::Singular(s.clone()).get_xxx_return_type(&reference)
+                SingularOrOneofField::Singular(s.clone()).getter_return_type(&reference)
             }
             FieldKind::Oneof(o) => {
-                SingularOrOneofField::Oneof(o.clone()).get_xxx_return_type(&reference)
+                SingularOrOneofField::Oneof(o.clone()).getter_return_type(&reference)
             }
             FieldKind::Repeated(RepeatedField { ref elem, .. }) => RustType::Ref(Box::new(
                 RustType::Slice(Box::new(elem.rust_storage_elem_type(&reference))),
@@ -839,7 +839,7 @@ impl<'a> FieldGen<'a> {
             ReflectValueRef::F64(v) => Self::defaut_value_from_proto_float(v as f64, "f64"),
             ReflectValueRef::Enum(_e, _v) => {
                 if let &FieldElem::Enum(ref e) = elem {
-                    format!("{}", e.default_value_rust_expr(&self.get_file_and_mod()))
+                    format!("{}", e.default_value_rust_expr(&self.file_and_mod()))
                 } else {
                     unreachable!()
                 }
@@ -870,7 +870,7 @@ impl<'a> FieldGen<'a> {
                         .proto_field
                         .message
                         .scope
-                        .get_file_and_mod(self.customize.clone()),
+                        .file_and_mod(self.customize.clone()),
                 ),
             };
 
@@ -881,12 +881,12 @@ impl<'a> FieldGen<'a> {
         })
     }
 
-    // default value to be returned from fn get_xxx
-    fn get_xxx_default_value_rust(&self) -> String {
+    // default value to be returned from `fn xxx` for field `xxx`.
+    fn xxx_default_value_rust(&self) -> String {
         match self.kind {
             FieldKind::Singular(..) | FieldKind::Oneof(..) => {
                 self.default_value_from_proto().unwrap_or_else(|| {
-                    self.get_xxx_return_type()
+                    self.getter_return_type()
                         .default_value(&self.customize, false)
                 })
             }
@@ -905,7 +905,7 @@ impl<'a> FieldGen<'a> {
                                 .proto_field
                                 .message
                                 .scope
-                                .get_file_and_mod(self.customize.clone()),
+                                .file_and_mod(self.customize.clone()),
                         )
                         .default_value_typed(&self.customize, false)
                 })
@@ -945,7 +945,7 @@ impl<'a> FieldGen<'a> {
                             .proto_field
                             .message
                             .scope
-                            .get_file_and_mod(self.customize.clone()),
+                            .file_and_mod(self.customize.clone()),
                     )
                     .clear(&self.self_field(), &self.customize);
                 w.write_line(&format!("{};", clear_expr));
@@ -1026,7 +1026,7 @@ impl<'a> FieldGen<'a> {
                             .proto_field
                             .message
                             .scope
-                            .get_file_and_mod(self.customize.clone()),
+                            .file_and_mod(self.customize.clone()),
                     ),
                 ));
 
@@ -1079,7 +1079,7 @@ impl<'a> FieldGen<'a> {
                 .proto_field
                 .message
                 .scope
-                .get_file_and_mod(self.customize.clone()),
+                .file_and_mod(self.customize.clone()),
         ) {
             RustType::Option(ref e) if e.is_copy() => {
                 return RustType::Option(e.clone()).value(self.self_field());
@@ -1100,7 +1100,7 @@ impl<'a> FieldGen<'a> {
                     .proto_field
                     .message
                     .scope
-                    .get_file_and_mod(self.customize.clone()),
+                    .file_and_mod(self.customize.clone()),
             ),
         );
 
@@ -1141,7 +1141,7 @@ impl<'a> FieldGen<'a> {
                             .proto_field
                             .message
                             .scope
-                            .get_file_and_mod(self.customize.clone()),
+                            .file_and_mod(self.customize.clone()),
                     )
                     .to_code(&self.customize),
             );
@@ -1164,7 +1164,7 @@ impl<'a> FieldGen<'a> {
                             .proto_field
                             .message
                             .scope
-                            .get_file_and_mod(self.customize.clone()),
+                            .file_and_mod(self.customize.clone()),
                     )
                     .is_copy()
                 {
@@ -1198,7 +1198,7 @@ impl<'a> FieldGen<'a> {
                                     .proto_field
                                     .message
                                     .scope
-                                    .get_file_and_mod(self.customize.clone()),
+                                    .file_and_mod(self.customize.clone()),
                             ),
                         };
                         cb(&v, w);
@@ -1214,7 +1214,7 @@ impl<'a> FieldGen<'a> {
                                     .proto_field
                                     .message
                                     .scope
-                                    .get_file_and_mod(self.customize.clone())
+                                    .file_and_mod(self.customize.clone())
                             )
                             .default_value(&self.customize, false)
                         ),
@@ -1226,7 +1226,7 @@ impl<'a> FieldGen<'a> {
                                         .proto_field
                                         .message
                                         .scope
-                                        .get_file_and_mod(self.customize.clone()),
+                                        .file_and_mod(self.customize.clone()),
                                 ),
                             };
                             cb(&v, w);
@@ -1263,7 +1263,7 @@ impl<'a> FieldGen<'a> {
             .proto_field
             .message
             .scope
-            .get_file_and_mod(self.customize.clone());
+            .file_and_mod(self.customize.clone());
 
         match &self.kind {
             FieldKind::Oneof(oneof_field) => {
@@ -1321,7 +1321,7 @@ impl<'a> FieldGen<'a> {
                     .proto_field
                     .message
                     .scope
-                    .get_file_and_mod(self.customize.clone()),
+                    .file_and_mod(self.customize.clone()),
             )
             .clone(),
             &self.customize,
@@ -1344,7 +1344,7 @@ impl<'a> FieldGen<'a> {
                             .proto_field
                             .message
                             .scope
-                            .get_file_and_mod(self.customize.clone()),
+                            .file_and_mod(self.customize.clone()),
                     ),
                     &self.customize,
                 );
@@ -1384,7 +1384,7 @@ impl<'a> FieldGen<'a> {
                                     .proto_field
                                     .message
                                     .scope
-                                    .get_file_and_mod(self.customize.clone())
+                                    .file_and_mod(self.customize.clone())
                             ),
                             &self.customize
                         )
@@ -1411,7 +1411,7 @@ impl<'a> FieldGen<'a> {
                                             .proto_field
                                             .message
                                             .scope
-                                            .get_file_and_mod(self.customize.clone()),
+                                            .file_and_mod(self.customize.clone()),
                                     )
                                     .default_value_typed(&self.customize, false)
                                     .into_type(
@@ -1420,7 +1420,7 @@ impl<'a> FieldGen<'a> {
                                                 .proto_field
                                                 .message
                                                 .scope
-                                                .get_file_and_mod(self.customize.clone()),
+                                                .file_and_mod(self.customize.clone()),
                                         ),
                                         &self.customize,
                                     )
@@ -1580,7 +1580,7 @@ impl<'a> FieldGen<'a> {
                     .proto_field
                     .message
                     .scope
-                    .get_file_and_mod(self.customize.clone()),
+                    .file_and_mod(self.customize.clone()),
             ),
         };
 
@@ -1614,8 +1614,8 @@ impl<'a> FieldGen<'a> {
         w.write_line(&format!(
             "{}::rt::read_map_into::<{}, {}>(wire_type, is, &mut {})?;",
             protobuf_crate_path(&self.customize),
-            key.lib_protobuf_type(&self.get_file_and_mod()),
-            value.lib_protobuf_type(&self.get_file_and_mod()),
+            key.lib_protobuf_type(&self.file_and_mod()),
+            value.lib_protobuf_type(&self.file_and_mod()),
             self.self_field()
         ));
     }
@@ -1761,8 +1761,8 @@ impl<'a> FieldGen<'a> {
                 w.write_line(&format!(
                     "{}::rt::write_map_with_cached_sizes::<{}, {}>({}, &{}, os)?;",
                     protobuf_crate_path(&self.customize),
-                    key.lib_protobuf_type(&self.get_file_and_mod()),
-                    value.lib_protobuf_type(&self.get_file_and_mod()),
+                    key.lib_protobuf_type(&self.file_and_mod()),
+                    value.lib_protobuf_type(&self.file_and_mod()),
                     self.proto_field.number(),
                     self.self_field()
                 ));
@@ -1818,8 +1818,8 @@ impl<'a> FieldGen<'a> {
                     "{} += {}::rt::compute_map_size::<{}, {}>({}, &{});",
                     sum_var,
                     protobuf_crate_path(&self.customize),
-                    key.lib_protobuf_type(&self.get_file_and_mod()),
-                    value.lib_protobuf_type(&self.get_file_and_mod()),
+                    key.lib_protobuf_type(&self.file_and_mod()),
+                    value.lib_protobuf_type(&self.file_and_mod()),
                     self.proto_field.number(),
                     self.self_field()
                 ));
@@ -1838,7 +1838,7 @@ impl<'a> FieldGen<'a> {
                         .proto_field
                         .message
                         .scope
-                        .get_file_and_mod(self.customize.clone()),
+                        .file_and_mod(self.customize.clone()),
                 );
                 w.write_line(option_kind.unwrap_ref_or_else(
                     &format!("{}.as_ref()", self_field),
@@ -1864,7 +1864,7 @@ impl<'a> FieldGen<'a> {
             }
             SingularFieldFlag::WithFlag { .. } => {
                 w.match_expr(&self.self_field(), |w| {
-                    let default_value = self.get_xxx_default_value_rust();
+                    let default_value = self.xxx_default_value_rust();
                     w.case_expr("Some(e)", &format!("e.enum_value_or({})", default_value));
                     w.case_expr("None", &format!("{}", default_value));
                 });
@@ -1873,7 +1873,7 @@ impl<'a> FieldGen<'a> {
     }
 
     fn write_message_field_get_singular(&self, singular: &SingularField, w: &mut CodeWriter) {
-        let get_xxx_return_type = self.get_xxx_return_type();
+        let get_xxx_return_type = self.getter_return_type();
 
         match singular.elem {
             FieldElem::Message(..) => self.write_message_field_get_singular_message(singular, w),
@@ -1881,7 +1881,7 @@ impl<'a> FieldGen<'a> {
                 self.write_message_field_get_singular_enum(singular.flag, en, w)
             }
             _ => {
-                let get_xxx_default_value_rust = self.get_xxx_default_value_rust();
+                let get_xxx_default_value_rust = self.xxx_default_value_rust();
                 let self_field = self.self_field();
                 match singular {
                     &SingularField {
@@ -1893,12 +1893,12 @@ impl<'a> FieldGen<'a> {
                             let as_option = self.self_field_as_option(elem, option_kind);
                             w.match_expr(&as_option.value, |w| {
                                 let v_type = as_option.rust_type.elem_type();
-                                let r_type = self.get_xxx_return_type();
+                                let r_type = self.getter_return_type();
                                 w.case_expr(
                                     "Some(v)",
                                     v_type.into_target(&r_type, "v", &self.customize),
                                 );
-                                let get_xxx_default_value_rust = self.get_xxx_default_value_rust();
+                                let get_xxx_default_value_rust = self.xxx_default_value_rust();
                                 w.case_expr("None", get_xxx_default_value_rust);
                             });
                         } else {
@@ -1918,7 +1918,7 @@ impl<'a> FieldGen<'a> {
                                     .proto_field
                                     .message
                                     .scope
-                                    .get_file_and_mod(self.customize.clone()),
+                                    .file_and_mod(self.customize.clone()),
                             )
                             .into_target(
                                 &get_xxx_return_type,
@@ -1933,12 +1933,12 @@ impl<'a> FieldGen<'a> {
     }
 
     fn write_message_field_get_oneof(&self, o: &OneofField, w: &mut CodeWriter) {
-        let get_xxx_return_type = SingularOrOneofField::Oneof(o.clone()).get_xxx_return_type(
+        let get_xxx_return_type = SingularOrOneofField::Oneof(o.clone()).getter_return_type(
             &self
                 .proto_field
                 .message
                 .scope
-                .get_file_and_mod(self.customize.clone()),
+                .file_and_mod(self.customize.clone()),
         );
         let OneofField { ref elem, .. } = o;
         w.match_expr(&format!("self.{}", o.oneof_field_name), |w| {
@@ -1950,7 +1950,7 @@ impl<'a> FieldGen<'a> {
                             .proto_field
                             .message
                             .scope
-                            .get_file_and_mod(self.customize.clone()),
+                            .file_and_mod(self.customize.clone()),
                     )
                     .ref_type(),
                 )
@@ -1962,7 +1962,7 @@ impl<'a> FieldGen<'a> {
                             .proto_field
                             .message
                             .scope
-                            .get_file_and_mod(self.customize.clone()),
+                            .file_and_mod(self.customize.clone()),
                     ),
                 )
             };
@@ -1982,12 +1982,12 @@ impl<'a> FieldGen<'a> {
                 ),
                 vtype.into_target(&get_xxx_return_type, "v", &self.customize),
             );
-            w.case_expr("_", self.get_xxx_default_value_rust());
+            w.case_expr("_", self.xxx_default_value_rust());
         });
     }
 
     fn write_message_field_get(&self, w: &mut CodeWriter) {
-        let get_xxx_return_type = self.get_xxx_return_type();
+        let get_xxx_return_type = self.getter_return_type();
         let fn_def = format!(
             "{}(&self) -> {}",
             self.rust_name,
@@ -2081,7 +2081,7 @@ impl<'a> FieldGen<'a> {
                 .proto_field
                 .message
                 .scope
-                .get_file_and_mod(self.customize.clone()),
+                .file_and_mod(self.customize.clone()),
         );
         w.comment("Param is passed by value, moved");
         let ref name = self.rust_name;
@@ -2104,7 +2104,7 @@ impl<'a> FieldGen<'a> {
                                     .proto_field
                                     .message
                                     .scope
-                                    .get_file_and_mod(self.customize.clone()),
+                                    .file_and_mod(self.customize.clone()),
                             ),
                             "v",
                             &self.customize,
@@ -2160,7 +2160,7 @@ impl<'a> FieldGen<'a> {
                 .proto_field
                 .message
                 .scope
-                .get_file_and_mod(self.customize.clone()),
+                .file_and_mod(self.customize.clone()),
         );
         w.comment("Mutable pointer to the field.");
         if self.is_singular() {
@@ -2225,7 +2225,7 @@ impl<'a> FieldGen<'a> {
                                                 .proto_field
                                                 .message
                                                 .scope
-                                                .get_file_and_mod(self.customize.clone())
+                                                .file_and_mod(self.customize.clone())
                                         ),
                                         &self.customize
                                     )
@@ -2264,7 +2264,7 @@ impl<'a> FieldGen<'a> {
                 .proto_field
                 .message
                 .scope
-                .get_file_and_mod(self.customize.clone()),
+                .file_and_mod(self.customize.clone()),
         );
 
         // TODO: replace with if let
@@ -2278,7 +2278,7 @@ impl<'a> FieldGen<'a> {
                             .proto_field
                             .message
                             .scope
-                            .get_file_and_mod(self.customize.clone()),
+                            .file_and_mod(self.customize.clone()),
                     )
                     .value("v".to_owned());
                 let converted = value_in_some.into_type(
@@ -2287,7 +2287,7 @@ impl<'a> FieldGen<'a> {
                             .proto_field
                             .message
                             .scope
-                            .get_file_and_mod(self.customize.clone()),
+                            .file_and_mod(self.customize.clone()),
                     ),
                     &self.customize,
                 );
@@ -2318,7 +2318,7 @@ impl<'a> FieldGen<'a> {
                             .proto_field
                             .message
                             .scope
-                            .get_file_and_mod(self.customize.clone()),
+                            .file_and_mod(self.customize.clone()),
                     )
                     .default_value_typed(&self.customize, false)
                     .into_type(take_xxx_return_type.clone(), &self.customize)
@@ -2344,7 +2344,7 @@ impl<'a> FieldGen<'a> {
                                         .proto_field
                                         .message
                                         .scope
-                                        .get_file_and_mod(self.customize.clone()),
+                                        .file_and_mod(self.customize.clone()),
                                 )
                                 .default_value(&self.customize, false),
                         ),
@@ -2368,7 +2368,7 @@ impl<'a> FieldGen<'a> {
                         .proto_field
                         .message
                         .scope
-                        .get_file_and_mod(self.customize.clone())
+                        .file_and_mod(self.customize.clone())
                 )
                 .default_value(&self.customize, false)
             )),
@@ -2381,7 +2381,7 @@ impl<'a> FieldGen<'a> {
                 .proto_field
                 .message
                 .scope
-                .get_file_and_mod(self.customize.clone()),
+                .file_and_mod(self.customize.clone()),
         );
         w.comment("Take field");
         w.pub_fn(
