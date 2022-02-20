@@ -903,7 +903,7 @@ pub fn read_unknown_or_skip_group(
 ///
 /// Function is used in generated code, so error types can be changed,
 /// but this function remains unchanged.
-pub fn unexpected_wire_type(wire_type: WireType) -> crate::Error {
+pub(crate) fn unexpected_wire_type(wire_type: WireType) -> crate::Error {
     ProtobufError::WireError(WireError::UnexpectedWireType(wire_type)).into()
 }
 
