@@ -24,7 +24,7 @@ use crate::reflect::Syntax;
 use crate::rt::bytes_size;
 use crate::rt::compute_raw_varint32_size;
 use crate::rt::compute_raw_varint64_size;
-use crate::rt::read_map_template;
+use crate::rt::map::read_map_template;
 use crate::rt::read_unknown_or_skip_group_with_tag_unpacked;
 use crate::rt::string_size;
 use crate::rt::tag_size;

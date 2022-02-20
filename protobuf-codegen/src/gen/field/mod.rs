@@ -1609,17 +1609,19 @@ impl<'a> FieldGen<'a> {
     }
 
     // Write `merge_from` part for this map field
-    fn write_merge_from_map(&self, w: &mut CodeWriter) {
+    fn write_merge_from_map_case_block(&self, w: &mut CodeWriter) {
         let &MapField {
             ref key, ref value, ..
         } = self.map();
-        w.write_line(&format!(
-            "{}::rt::read_map_into::<{}, {}>(wire_type, is, &mut {})?;",
-            protobuf_crate_path(&self.customize),
-            key.lib_protobuf_type(&self.file_and_mod()),
-            value.lib_protobuf_type(&self.file_and_mod()),
-            self.self_field()
-        ));
+        w.case_block(&format!("(_, {})", self.tag()), |w| {
+            w.write_line(&format!(
+                "{}::rt::read_map_into::<{}, {}>(is, &mut {})?;",
+                protobuf_crate_path(&self.customize),
+                key.lib_protobuf_type(&self.file_and_mod()),
+                value.lib_protobuf_type(&self.file_and_mod()),
+                self.self_field()
+            ));
+        })
     }
 
     // Write `merge_from` part for this singular field
@@ -1686,9 +1688,7 @@ impl<'a> FieldGen<'a> {
         let number = self.proto_field.number();
         match self.kind {
             FieldKind::Oneof(ref f) => self.write_merge_from_oneof_case_block(&f, w),
-            FieldKind::Map(..) => w.case_block(&format!("({}, _)", number), |w| {
-                self.write_merge_from_map(w)
-            }),
+            FieldKind::Map(..) => self.write_merge_from_map_case_block(w),
             FieldKind::Singular(ref s) => w.case_block(&format!("({}, _)", number), |w| {
                 self.write_merge_from_singular(s, wire_type_var, w)
             }),

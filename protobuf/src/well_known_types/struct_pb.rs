@@ -80,8 +80,8 @@ impl crate::Message for Struct {
             // TODO: tag is temporary for migration
             let tag = (field_number << 3) + wire_type as u32;
             match (field_number, tag) {
-                (1, _) => {
-                    crate::rt::read_map_into::<crate::reflect::types::ProtobufTypeString, crate::reflect::types::ProtobufTypeMessage<Value>>(wire_type, is, &mut self.fields)?;
+                (_, 10) => {
+                    crate::rt::read_map_into::<crate::reflect::types::ProtobufTypeString, crate::reflect::types::ProtobufTypeMessage<Value>>(is, &mut self.fields)?;
                 },
                 (_, tag) => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
@@ -470,40 +470,22 @@ impl crate::Message for Value {
             // TODO: tag is temporary for migration
             let tag = (field_number << 3) + wire_type as u32;
             match (field_number, tag) {
-                (1, _) => {
-                    if wire_type != crate::rt::WireType::Varint {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 8) => {
                     self.kind = ::std::option::Option::Some(value::Kind::null_value(is.read_enum_or_unknown()?));
                 },
-                (2, _) => {
-                    if wire_type != crate::rt::WireType::Fixed64 {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 17) => {
                     self.kind = ::std::option::Option::Some(value::Kind::number_value(is.read_double()?));
                 },
-                (3, _) => {
-                    if wire_type != crate::rt::WireType::LengthDelimited {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 26) => {
                     self.kind = ::std::option::Option::Some(value::Kind::string_value(is.read_string()?));
                 },
-                (4, _) => {
-                    if wire_type != crate::rt::WireType::Varint {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 32) => {
                     self.kind = ::std::option::Option::Some(value::Kind::bool_value(is.read_bool()?));
                 },
-                (5, _) => {
-                    if wire_type != crate::rt::WireType::LengthDelimited {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 42) => {
                     self.kind = ::std::option::Option::Some(value::Kind::struct_value(is.read_message()?));
                 },
-                (6, _) => {
-                    if wire_type != crate::rt::WireType::LengthDelimited {
-                        return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
-                    }
+                (_, 50) => {
                     self.kind = ::std::option::Option::Some(value::Kind::list_value(is.read_message()?));
                 },
                 (_, tag) => {
