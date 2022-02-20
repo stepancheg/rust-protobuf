@@ -116,10 +116,7 @@ impl FieldGen<'_> {
 
             AccessorFn {
                 name: "make_singular_message_accessor".to_owned(),
-                type_params: vec![format!(
-                    "{}",
-                    m.rust_name_relative(&self.file_and_mod())
-                )],
+                type_params: vec![format!("{}", m.rust_name_relative(&self.file_and_mod()))],
                 callback_params: self.make_accessor_fns_has_get(),
             }
         } else {
@@ -139,10 +136,7 @@ impl FieldGen<'_> {
         match elem {
             FieldElem::Message(m) => AccessorFn {
                 name: "make_message_field_accessor".to_owned(),
-                type_params: vec![format!(
-                    "{}",
-                    m.rust_name_relative(&self.file_and_mod())
-                )],
+                type_params: vec![format!("{}", m.rust_name_relative(&self.file_and_mod()))],
                 callback_params: self.make_accessor_fns_lambda(),
             },
             FieldElem::Primitive(field_descriptor_proto::Type::TYPE_STRING, ..)
@@ -158,10 +152,7 @@ impl FieldGen<'_> {
             },
             FieldElem::Enum(ref en) => AccessorFn {
                 name: "make_option_enum_accessor".to_owned(),
-                type_params: vec![format!(
-                    "{}",
-                    en.rust_name_relative(&self.file_and_mod())
-                )],
+                type_params: vec![format!("{}", en.rust_name_relative(&self.file_and_mod()))],
                 callback_params: self.make_accessor_fns_lambda_default_value(),
             },
             FieldElem::Group => {

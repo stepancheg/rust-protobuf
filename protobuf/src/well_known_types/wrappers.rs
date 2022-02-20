@@ -94,7 +94,7 @@ impl crate::Message for DoubleValue {
         if self.value != 0. {
             my_size += 9;
         }
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -103,7 +103,7 @@ impl crate::Message for DoubleValue {
         if self.value != 0. {
             os.write_double(1, self.value)?;
         }
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -111,7 +111,7 @@ impl crate::Message for DoubleValue {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -227,7 +227,7 @@ impl crate::Message for FloatValue {
         if self.value != 0. {
             my_size += 5;
         }
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -236,7 +236,7 @@ impl crate::Message for FloatValue {
         if self.value != 0. {
             os.write_float(1, self.value)?;
         }
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -244,7 +244,7 @@ impl crate::Message for FloatValue {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -360,7 +360,7 @@ impl crate::Message for Int64Value {
         if self.value != 0 {
             my_size += crate::rt::value_size(1, self.value, crate::rt::WireType::Varint);
         }
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -369,7 +369,7 @@ impl crate::Message for Int64Value {
         if self.value != 0 {
             os.write_int64(1, self.value)?;
         }
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -377,7 +377,7 @@ impl crate::Message for Int64Value {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -493,7 +493,7 @@ impl crate::Message for UInt64Value {
         if self.value != 0 {
             my_size += crate::rt::value_size(1, self.value, crate::rt::WireType::Varint);
         }
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -502,7 +502,7 @@ impl crate::Message for UInt64Value {
         if self.value != 0 {
             os.write_uint64(1, self.value)?;
         }
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -510,7 +510,7 @@ impl crate::Message for UInt64Value {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -626,7 +626,7 @@ impl crate::Message for Int32Value {
         if self.value != 0 {
             my_size += crate::rt::value_size(1, self.value, crate::rt::WireType::Varint);
         }
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -635,7 +635,7 @@ impl crate::Message for Int32Value {
         if self.value != 0 {
             os.write_int32(1, self.value)?;
         }
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -643,7 +643,7 @@ impl crate::Message for Int32Value {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -759,7 +759,7 @@ impl crate::Message for UInt32Value {
         if self.value != 0 {
             my_size += crate::rt::value_size(1, self.value, crate::rt::WireType::Varint);
         }
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -768,7 +768,7 @@ impl crate::Message for UInt32Value {
         if self.value != 0 {
             os.write_uint32(1, self.value)?;
         }
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -776,7 +776,7 @@ impl crate::Message for UInt32Value {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -892,7 +892,7 @@ impl crate::Message for BoolValue {
         if self.value != false {
             my_size += 2;
         }
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -901,7 +901,7 @@ impl crate::Message for BoolValue {
         if self.value != false {
             os.write_bool(1, self.value)?;
         }
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -909,7 +909,7 @@ impl crate::Message for BoolValue {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -1025,7 +1025,7 @@ impl crate::Message for StringValue {
         if !self.value.is_empty() {
             my_size += crate::rt::string_size(1, &self.value);
         }
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -1034,7 +1034,7 @@ impl crate::Message for StringValue {
         if !self.value.is_empty() {
             os.write_string(1, &self.value)?;
         }
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -1042,7 +1042,7 @@ impl crate::Message for StringValue {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -1158,7 +1158,7 @@ impl crate::Message for BytesValue {
         if !self.value.is_empty() {
             my_size += crate::rt::bytes_size(1, &self.value);
         }
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -1167,7 +1167,7 @@ impl crate::Message for BytesValue {
         if !self.value.is_empty() {
             os.write_bytes(1, &self.value)?;
         }
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -1175,7 +1175,7 @@ impl crate::Message for BytesValue {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 

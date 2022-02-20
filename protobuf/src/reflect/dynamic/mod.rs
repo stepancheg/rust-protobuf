@@ -466,7 +466,7 @@ impl Message for DynamicMessage {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &UnknownFields {
+    fn unknown_fields(&self) -> &UnknownFields {
         &self.unknown_fields
     }
 

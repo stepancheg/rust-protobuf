@@ -73,13 +73,13 @@ impl crate::Message for Empty {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::Result<()> {
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -87,7 +87,7 @@ impl crate::Message for Empty {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 

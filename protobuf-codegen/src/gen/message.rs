@@ -223,10 +223,7 @@ impl<'a> MessageGen<'a> {
                             let (refv, vtype) = if field.elem_type_is_copy() {
                                 ("v", variant.rust_type(&self.file_and_mod()))
                             } else {
-                                (
-                                    "ref v",
-                                    variant.rust_type(&self.file_and_mod()).ref_type(),
-                                )
+                                ("ref v", variant.rust_type(&self.file_and_mod()).ref_type())
                             };
                             w.case_block(
                                 format!("&{}({})", variant.path(&self.file_and_mod()), refv),
@@ -259,7 +256,7 @@ impl<'a> MessageGen<'a> {
                 };
                 variant.field.write_write_element(w, "os", &v);
             });
-            w.write_line("os.write_unknown_fields(self.get_unknown_fields())?;");
+            w.write_line("os.write_unknown_fields(self.unknown_fields())?;");
             w.write_line("::std::result::Result::Ok(())");
         });
     }
@@ -346,7 +343,7 @@ impl<'a> MessageGen<'a> {
                 variant.field.write_element_size(w, v, vtype, "my_size");
             });
             w.write_line(&format!(
-                "my_size += {}::rt::unknown_fields_size(self.get_unknown_fields());",
+                "my_size += {}::rt::unknown_fields_size(self.unknown_fields());",
                 protobuf_crate_path(&self.customize.for_elem)
             ));
             w.write_line("self.cached_size.set(my_size);");
@@ -375,7 +372,7 @@ impl<'a> MessageGen<'a> {
 
     fn write_unknown_fields(&self, w: &mut CodeWriter) {
         let sig = format!(
-            "get_unknown_fields(&self) -> &{}::UnknownFields",
+            "unknown_fields(&self) -> &{}::UnknownFields",
             protobuf_crate_path(&self.customize.for_elem)
         );
         w.def_fn(&sig, |w| {

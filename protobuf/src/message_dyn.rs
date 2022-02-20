@@ -59,7 +59,7 @@ impl<M: Message> MessageDyn for M {
     }
 
     fn get_unknown_fields_dyn(&self) -> &UnknownFields {
-        self.get_unknown_fields()
+        self.unknown_fields()
     }
 
     fn mut_unknown_fields_dyn(&mut self) -> &mut UnknownFields {

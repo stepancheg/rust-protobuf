@@ -113,7 +113,7 @@ impl crate::Message for Timestamp {
         if self.nanos != 0 {
             my_size += crate::rt::value_size(2, self.nanos, crate::rt::WireType::Varint);
         }
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -125,7 +125,7 @@ impl crate::Message for Timestamp {
         if self.nanos != 0 {
             os.write_int32(2, self.nanos)?;
         }
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -133,7 +133,7 @@ impl crate::Message for Timestamp {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 

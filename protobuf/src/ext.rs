@@ -38,7 +38,7 @@ impl<M: Message, T: ProtobufType> ExtFieldOptional<M, T> {
     ///
     /// Extension data is stored in [`UnknownFields`](crate::UnknownFields).
     pub fn get(&self, m: &M) -> Option<T::ProtobufValue> {
-        m.get_unknown_fields()
+        m.unknown_fields()
             .get(self.field_number)
             .and_then(T::get_from_unknown)
     }

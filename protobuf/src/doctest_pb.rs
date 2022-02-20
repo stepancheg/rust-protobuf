@@ -87,7 +87,7 @@ impl crate::Message for MyMessage {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 

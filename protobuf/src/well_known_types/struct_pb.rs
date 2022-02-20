@@ -94,14 +94,14 @@ impl crate::Message for Struct {
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
         my_size += crate::rt::compute_map_size::<crate::reflect::types::ProtobufTypeString, crate::reflect::types::ProtobufTypeMessage<Value>>(1, &self.fields);
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::Result<()> {
         crate::rt::write_map_with_cached_sizes::<crate::reflect::types::ProtobufTypeString, crate::reflect::types::ProtobufTypeMessage<Value>>(1, &self.fields, os)?;
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -109,7 +109,7 @@ impl crate::Message for Struct {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -538,7 +538,7 @@ impl crate::Message for Value {
                 },
             };
         }
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -566,7 +566,7 @@ impl crate::Message for Value {
                 },
             };
         }
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -574,7 +574,7 @@ impl crate::Message for Value {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -723,7 +723,7 @@ impl crate::Message for ListValue {
             let len = value.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -732,7 +732,7 @@ impl crate::Message for ListValue {
         for v in &self.values {
             crate::rt::write_message_field_with_cached_size(1, v, os)?;
         };
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -740,7 +740,7 @@ impl crate::Message for ListValue {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 

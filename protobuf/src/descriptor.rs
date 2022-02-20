@@ -95,7 +95,7 @@ impl crate::Message for FileDescriptorSet {
             let len = value.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -104,7 +104,7 @@ impl crate::Message for FileDescriptorSet {
         for v in &self.file {
             crate::rt::write_message_field_with_cached_size(1, v, os)?;
         };
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -112,7 +112,7 @@ impl crate::Message for FileDescriptorSet {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -532,7 +532,7 @@ impl crate::Message for FileDescriptorProto {
         if let Some(v) = self.syntax.as_ref() {
             my_size += crate::rt::string_size(12, &v);
         }
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -574,7 +574,7 @@ impl crate::Message for FileDescriptorProto {
         if let Some(v) = self.syntax.as_ref() {
             os.write_string(12, v)?;
         }
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -582,7 +582,7 @@ impl crate::Message for FileDescriptorProto {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -921,7 +921,7 @@ impl crate::Message for DescriptorProto {
         for value in &self.reserved_name {
             my_size += crate::rt::string_size(10, &value);
         };
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -957,7 +957,7 @@ impl crate::Message for DescriptorProto {
         for v in &self.reserved_name {
             os.write_string(10, &v)?;
         };
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -965,7 +965,7 @@ impl crate::Message for DescriptorProto {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -1172,7 +1172,7 @@ pub mod descriptor_proto {
                 let len = v.compute_size();
                 my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
             }
-            my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+            my_size += crate::rt::unknown_fields_size(self.unknown_fields());
             self.cached_size.set(my_size);
             my_size
         }
@@ -1187,7 +1187,7 @@ pub mod descriptor_proto {
             if let Some(v) = self.options.as_ref() {
                 crate::rt::write_message_field_with_cached_size(3, v, os)?;
             }
-            os.write_unknown_fields(self.get_unknown_fields())?;
+            os.write_unknown_fields(self.unknown_fields())?;
             ::std::result::Result::Ok(())
         }
 
@@ -1195,7 +1195,7 @@ pub mod descriptor_proto {
             self.cached_size.get()
         }
 
-        fn get_unknown_fields(&self) -> &crate::UnknownFields {
+        fn unknown_fields(&self) -> &crate::UnknownFields {
             &self.unknown_fields
         }
 
@@ -1370,7 +1370,7 @@ pub mod descriptor_proto {
             if let Some(v) = self.end {
                 my_size += crate::rt::value_size(2, v, crate::rt::WireType::Varint);
             }
-            my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+            my_size += crate::rt::unknown_fields_size(self.unknown_fields());
             self.cached_size.set(my_size);
             my_size
         }
@@ -1382,7 +1382,7 @@ pub mod descriptor_proto {
             if let Some(v) = self.end {
                 os.write_int32(2, v)?;
             }
-            os.write_unknown_fields(self.get_unknown_fields())?;
+            os.write_unknown_fields(self.unknown_fields())?;
             ::std::result::Result::Ok(())
         }
 
@@ -1390,7 +1390,7 @@ pub mod descriptor_proto {
             self.cached_size.get()
         }
 
-        fn get_unknown_fields(&self) -> &crate::UnknownFields {
+        fn unknown_fields(&self) -> &crate::UnknownFields {
             &self.unknown_fields
         }
 
@@ -1509,7 +1509,7 @@ impl crate::Message for ExtensionRangeOptions {
             let len = value.compute_size();
             my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -1518,7 +1518,7 @@ impl crate::Message for ExtensionRangeOptions {
         for v in &self.uninterpreted_option {
             crate::rt::write_message_field_with_cached_size(999, v, os)?;
         };
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -1526,7 +1526,7 @@ impl crate::Message for ExtensionRangeOptions {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -2134,7 +2134,7 @@ impl crate::Message for FieldDescriptorProto {
         if let Some(v) = self.proto3_optional {
             my_size += 3;
         }
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -2173,7 +2173,7 @@ impl crate::Message for FieldDescriptorProto {
         if let Some(v) = self.proto3_optional {
             os.write_bool(17, v)?;
         }
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -2181,7 +2181,7 @@ impl crate::Message for FieldDescriptorProto {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -2545,7 +2545,7 @@ impl crate::Message for OneofDescriptorProto {
             let len = v.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         }
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -2557,7 +2557,7 @@ impl crate::Message for OneofDescriptorProto {
         if let Some(v) = self.options.as_ref() {
             crate::rt::write_message_field_with_cached_size(2, v, os)?;
         }
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -2565,7 +2565,7 @@ impl crate::Message for OneofDescriptorProto {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -2792,7 +2792,7 @@ impl crate::Message for EnumDescriptorProto {
         for value in &self.reserved_name {
             my_size += crate::rt::string_size(5, &value);
         };
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -2813,7 +2813,7 @@ impl crate::Message for EnumDescriptorProto {
         for v in &self.reserved_name {
             os.write_string(5, &v)?;
         };
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -2821,7 +2821,7 @@ impl crate::Message for EnumDescriptorProto {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -3005,7 +3005,7 @@ pub mod enum_descriptor_proto {
             if let Some(v) = self.end {
                 my_size += crate::rt::value_size(2, v, crate::rt::WireType::Varint);
             }
-            my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+            my_size += crate::rt::unknown_fields_size(self.unknown_fields());
             self.cached_size.set(my_size);
             my_size
         }
@@ -3017,7 +3017,7 @@ pub mod enum_descriptor_proto {
             if let Some(v) = self.end {
                 os.write_int32(2, v)?;
             }
-            os.write_unknown_fields(self.get_unknown_fields())?;
+            os.write_unknown_fields(self.unknown_fields())?;
             ::std::result::Result::Ok(())
         }
 
@@ -3025,7 +3025,7 @@ pub mod enum_descriptor_proto {
             self.cached_size.get()
         }
 
-        fn get_unknown_fields(&self) -> &crate::UnknownFields {
+        fn unknown_fields(&self) -> &crate::UnknownFields {
             &self.unknown_fields
         }
 
@@ -3233,7 +3233,7 @@ impl crate::Message for EnumValueDescriptorProto {
             let len = v.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         }
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -3248,7 +3248,7 @@ impl crate::Message for EnumValueDescriptorProto {
         if let Some(v) = self.options.as_ref() {
             crate::rt::write_message_field_with_cached_size(3, v, os)?;
         }
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -3256,7 +3256,7 @@ impl crate::Message for EnumValueDescriptorProto {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -3448,7 +3448,7 @@ impl crate::Message for ServiceDescriptorProto {
             let len = v.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         }
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -3463,7 +3463,7 @@ impl crate::Message for ServiceDescriptorProto {
         if let Some(v) = self.options.as_ref() {
             crate::rt::write_message_field_with_cached_size(3, v, os)?;
         }
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -3471,7 +3471,7 @@ impl crate::Message for ServiceDescriptorProto {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -3826,7 +3826,7 @@ impl crate::Message for MethodDescriptorProto {
         if let Some(v) = self.server_streaming {
             my_size += 2;
         }
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -3850,7 +3850,7 @@ impl crate::Message for MethodDescriptorProto {
         if let Some(v) = self.server_streaming {
             os.write_bool(6, v)?;
         }
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -3858,7 +3858,7 @@ impl crate::Message for MethodDescriptorProto {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -4939,7 +4939,7 @@ impl crate::Message for FileOptions {
             let len = value.compute_size();
             my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -5008,7 +5008,7 @@ impl crate::Message for FileOptions {
         for v in &self.uninterpreted_option {
             crate::rt::write_message_field_with_cached_size(999, v, os)?;
         };
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -5016,7 +5016,7 @@ impl crate::Message for FileOptions {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -5383,7 +5383,7 @@ impl crate::Message for MessageOptions {
             let len = value.compute_size();
             my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -5404,7 +5404,7 @@ impl crate::Message for MessageOptions {
         for v in &self.uninterpreted_option {
             crate::rt::write_message_field_with_cached_size(999, v, os)?;
         };
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -5412,7 +5412,7 @@ impl crate::Message for MessageOptions {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -5811,7 +5811,7 @@ impl crate::Message for FieldOptions {
             let len = value.compute_size();
             my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -5838,7 +5838,7 @@ impl crate::Message for FieldOptions {
         for v in &self.uninterpreted_option {
             crate::rt::write_message_field_with_cached_size(999, v, os)?;
         };
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -5846,7 +5846,7 @@ impl crate::Message for FieldOptions {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -6087,7 +6087,7 @@ impl crate::Message for OneofOptions {
             let len = value.compute_size();
             my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -6096,7 +6096,7 @@ impl crate::Message for OneofOptions {
         for v in &self.uninterpreted_option {
             crate::rt::write_message_field_with_cached_size(999, v, os)?;
         };
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -6104,7 +6104,7 @@ impl crate::Message for OneofOptions {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -6298,7 +6298,7 @@ impl crate::Message for EnumOptions {
             let len = value.compute_size();
             my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -6313,7 +6313,7 @@ impl crate::Message for EnumOptions {
         for v in &self.uninterpreted_option {
             crate::rt::write_message_field_with_cached_size(999, v, os)?;
         };
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -6321,7 +6321,7 @@ impl crate::Message for EnumOptions {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -6481,7 +6481,7 @@ impl crate::Message for EnumValueOptions {
             let len = value.compute_size();
             my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -6493,7 +6493,7 @@ impl crate::Message for EnumValueOptions {
         for v in &self.uninterpreted_option {
             crate::rt::write_message_field_with_cached_size(999, v, os)?;
         };
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -6501,7 +6501,7 @@ impl crate::Message for EnumValueOptions {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -6659,7 +6659,7 @@ impl crate::Message for ServiceOptions {
             let len = value.compute_size();
             my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -6671,7 +6671,7 @@ impl crate::Message for ServiceOptions {
         for v in &self.uninterpreted_option {
             crate::rt::write_message_field_with_cached_size(999, v, os)?;
         };
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -6679,7 +6679,7 @@ impl crate::Message for ServiceOptions {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -6876,7 +6876,7 @@ impl crate::Message for MethodOptions {
             let len = value.compute_size();
             my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -6891,7 +6891,7 @@ impl crate::Message for MethodOptions {
         for v in &self.uninterpreted_option {
             crate::rt::write_message_field_with_cached_size(999, v, os)?;
         };
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -6899,7 +6899,7 @@ impl crate::Message for MethodOptions {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -7354,7 +7354,7 @@ impl crate::Message for UninterpretedOption {
         if let Some(v) = self.aggregate_value.as_ref() {
             my_size += crate::rt::string_size(8, &v);
         }
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -7381,7 +7381,7 @@ impl crate::Message for UninterpretedOption {
         if let Some(v) = self.aggregate_value.as_ref() {
             os.write_string(8, v)?;
         }
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -7389,7 +7389,7 @@ impl crate::Message for UninterpretedOption {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -7599,7 +7599,7 @@ pub mod uninterpreted_option {
             if let Some(v) = self.is_extension {
                 my_size += 2;
             }
-            my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+            my_size += crate::rt::unknown_fields_size(self.unknown_fields());
             self.cached_size.set(my_size);
             my_size
         }
@@ -7611,7 +7611,7 @@ pub mod uninterpreted_option {
             if let Some(v) = self.is_extension {
                 os.write_bool(2, v)?;
             }
-            os.write_unknown_fields(self.get_unknown_fields())?;
+            os.write_unknown_fields(self.unknown_fields())?;
             ::std::result::Result::Ok(())
         }
 
@@ -7619,7 +7619,7 @@ pub mod uninterpreted_option {
             self.cached_size.get()
         }
 
-        fn get_unknown_fields(&self) -> &crate::UnknownFields {
+        fn unknown_fields(&self) -> &crate::UnknownFields {
             &self.unknown_fields
         }
 
@@ -7739,7 +7739,7 @@ impl crate::Message for SourceCodeInfo {
             let len = value.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -7748,7 +7748,7 @@ impl crate::Message for SourceCodeInfo {
         for v in &self.location {
             crate::rt::write_message_field_with_cached_size(1, v, os)?;
         };
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -7756,7 +7756,7 @@ impl crate::Message for SourceCodeInfo {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -8004,7 +8004,7 @@ pub mod source_code_info {
             for value in &self.leading_detached_comments {
                 my_size += crate::rt::string_size(6, &value);
             };
-            my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+            my_size += crate::rt::unknown_fields_size(self.unknown_fields());
             self.cached_size.set(my_size);
             my_size
         }
@@ -8021,7 +8021,7 @@ pub mod source_code_info {
             for v in &self.leading_detached_comments {
                 os.write_string(6, &v)?;
             };
-            os.write_unknown_fields(self.get_unknown_fields())?;
+            os.write_unknown_fields(self.unknown_fields())?;
             ::std::result::Result::Ok(())
         }
 
@@ -8029,7 +8029,7 @@ pub mod source_code_info {
             self.cached_size.get()
         }
 
-        fn get_unknown_fields(&self) -> &crate::UnknownFields {
+        fn unknown_fields(&self) -> &crate::UnknownFields {
             &self.unknown_fields
         }
 
@@ -8158,7 +8158,7 @@ impl crate::Message for GeneratedCodeInfo {
             let len = value.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -8167,7 +8167,7 @@ impl crate::Message for GeneratedCodeInfo {
         for v in &self.annotation {
             crate::rt::write_message_field_with_cached_size(1, v, os)?;
         };
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -8175,7 +8175,7 @@ impl crate::Message for GeneratedCodeInfo {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -8419,7 +8419,7 @@ pub mod generated_code_info {
             if let Some(v) = self.end {
                 my_size += crate::rt::value_size(4, v, crate::rt::WireType::Varint);
             }
-            my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+            my_size += crate::rt::unknown_fields_size(self.unknown_fields());
             self.cached_size.set(my_size);
             my_size
         }
@@ -8435,7 +8435,7 @@ pub mod generated_code_info {
             if let Some(v) = self.end {
                 os.write_int32(4, v)?;
             }
-            os.write_unknown_fields(self.get_unknown_fields())?;
+            os.write_unknown_fields(self.unknown_fields())?;
             ::std::result::Result::Ok(())
         }
 
@@ -8443,7 +8443,7 @@ pub mod generated_code_info {
             self.cached_size.get()
         }
 
-        fn get_unknown_fields(&self) -> &crate::UnknownFields {
+        fn unknown_fields(&self) -> &crate::UnknownFields {
             &self.unknown_fields
         }
 

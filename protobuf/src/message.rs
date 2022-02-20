@@ -222,7 +222,7 @@ pub trait Message:
     }
 
     /// Get a reference to unknown fields.
-    fn get_unknown_fields(&self) -> &UnknownFields;
+    fn unknown_fields(&self) -> &UnknownFields;
     /// Get a mutable reference to unknown fields.
     fn mut_unknown_fields(&mut self) -> &mut UnknownFields;
 

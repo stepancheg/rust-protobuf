@@ -94,7 +94,7 @@ impl crate::Message for SourceContext {
         if !self.file_name.is_empty() {
             my_size += crate::rt::string_size(1, &self.file_name);
         }
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -103,7 +103,7 @@ impl crate::Message for SourceContext {
         if !self.file_name.is_empty() {
             os.write_string(1, &self.file_name)?;
         }
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -111,7 +111,7 @@ impl crate::Message for SourceContext {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 

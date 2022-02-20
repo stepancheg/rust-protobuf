@@ -88,7 +88,7 @@ impl crate::Message for FieldMask {
         for value in &self.paths {
             my_size += crate::rt::string_size(1, &value);
         };
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -97,7 +97,7 @@ impl crate::Message for FieldMask {
         for v in &self.paths {
             os.write_string(1, &v)?;
         };
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -105,7 +105,7 @@ impl crate::Message for FieldMask {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 

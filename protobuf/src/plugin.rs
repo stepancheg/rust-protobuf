@@ -238,7 +238,7 @@ impl crate::Message for Version {
         if let Some(v) = self.suffix.as_ref() {
             my_size += crate::rt::string_size(4, &v);
         }
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -256,7 +256,7 @@ impl crate::Message for Version {
         if let Some(v) = self.suffix.as_ref() {
             os.write_string(4, v)?;
         }
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -264,7 +264,7 @@ impl crate::Message for Version {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -490,7 +490,7 @@ impl crate::Message for CodeGeneratorRequest {
             let len = v.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         }
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -508,7 +508,7 @@ impl crate::Message for CodeGeneratorRequest {
         if let Some(v) = self.compiler_version.as_ref() {
             crate::rt::write_message_field_with_cached_size(3, v, os)?;
         }
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -516,7 +516,7 @@ impl crate::Message for CodeGeneratorRequest {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -737,7 +737,7 @@ impl crate::Message for CodeGeneratorResponse {
             let len = value.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
         };
-        my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
@@ -752,7 +752,7 @@ impl crate::Message for CodeGeneratorResponse {
         for v in &self.file {
             crate::rt::write_message_field_with_cached_size(15, v, os)?;
         };
-        os.write_unknown_fields(self.get_unknown_fields())?;
+        os.write_unknown_fields(self.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -760,7 +760,7 @@ impl crate::Message for CodeGeneratorResponse {
         self.cached_size.get()
     }
 
-    fn get_unknown_fields(&self) -> &crate::UnknownFields {
+    fn unknown_fields(&self) -> &crate::UnknownFields {
         &self.unknown_fields
     }
 
@@ -1093,7 +1093,7 @@ pub mod code_generator_response {
                 let len = v.compute_size();
                 my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
             }
-            my_size += crate::rt::unknown_fields_size(self.get_unknown_fields());
+            my_size += crate::rt::unknown_fields_size(self.unknown_fields());
             self.cached_size.set(my_size);
             my_size
         }
@@ -1111,7 +1111,7 @@ pub mod code_generator_response {
             if let Some(v) = self.generated_code_info.as_ref() {
                 crate::rt::write_message_field_with_cached_size(16, v, os)?;
             }
-            os.write_unknown_fields(self.get_unknown_fields())?;
+            os.write_unknown_fields(self.unknown_fields())?;
             ::std::result::Result::Ok(())
         }
 
@@ -1119,7 +1119,7 @@ pub mod code_generator_response {
             self.cached_size.get()
         }
 
-        fn get_unknown_fields(&self) -> &crate::UnknownFields {
+        fn unknown_fields(&self) -> &crate::UnknownFields {
             &self.unknown_fields
         }
 
