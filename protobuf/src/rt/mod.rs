@@ -511,37 +511,6 @@ pub fn read_repeated_bool_into(
     }
 }
 
-/// Read repeated `string` field into given vec.
-pub fn read_repeated_string_into(
-    wire_type: WireType,
-    is: &mut CodedInputStream,
-    target: &mut Vec<String>,
-) -> Result<()> {
-    match wire_type {
-        WireType::LengthDelimited => {
-            target.push(is.read_string()?);
-            Ok(())
-        }
-        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
-    }
-}
-
-/// Read repeated `Chars` field into given vec.
-#[cfg(feature = "bytes")]
-pub fn read_repeated_tokio_string_into(
-    wire_type: WireType,
-    is: &mut CodedInputStream,
-    target: &mut Vec<Chars>,
-) -> Result<()> {
-    match wire_type {
-        WireType::LengthDelimited => {
-            target.push(is.read_tokio_chars()?);
-            Ok(())
-        }
-        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
-    }
-}
-
 /// Read singular `Chars` field.
 #[cfg(feature = "bytes")]
 pub fn read_singular_tokio_string_into(
@@ -586,37 +555,6 @@ pub fn read_singular_proto3_tokio_string_into(
     }
 }
 
-/// Read repeated `bytes` field into given vec.
-pub fn read_repeated_bytes_into(
-    wire_type: WireType,
-    is: &mut CodedInputStream,
-    target: &mut Vec<Vec<u8>>,
-) -> Result<()> {
-    match wire_type {
-        WireType::LengthDelimited => {
-            target.push(is.read_bytes()?);
-            Ok(())
-        }
-        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
-    }
-}
-
-/// Read repeated `Bytes` field into given vec.
-#[cfg(feature = "bytes")]
-pub fn read_repeated_tokio_bytes_into(
-    wire_type: WireType,
-    is: &mut CodedInputStream,
-    target: &mut Vec<Bytes>,
-) -> Result<()> {
-    match wire_type {
-        WireType::LengthDelimited => {
-            target.push(is.read_tokio_bytes()?);
-            Ok(())
-        }
-        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
-    }
-}
-
 /// Read singular `Bytes` field.
 #[cfg(feature = "bytes")]
 pub fn read_singular_tokio_bytes_into(
@@ -655,21 +593,6 @@ pub fn read_singular_proto3_tokio_bytes_into(
     match wire_type {
         WireType::LengthDelimited => {
             *target = is.read_tokio_bytes()?;
-            Ok(())
-        }
-        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
-    }
-}
-
-/// Read repeated `message` field.
-pub fn read_repeated_message_into_vec<M: Message + Default>(
-    wire_type: WireType,
-    is: &mut CodedInputStream,
-    target: &mut Vec<M>,
-) -> Result<()> {
-    match wire_type {
-        WireType::LengthDelimited => {
-            target.push(is.read_message()?);
             Ok(())
         }
         _ => Err(WireError::UnexpectedWireType(wire_type).into()),
