@@ -1,5 +1,5 @@
 [package]
-name = "perftest-bytes"
+name = "protobuf-perftest-misc"
 version = "0.0.0"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 publish = false
@@ -15,9 +15,11 @@ with-bytes = ["bytes", "protobuf/with-bytes"]
 
 [dependencies]
 bytes = { version = "1.1", optional = true }
+fastrand = "1.4.0"
 
 [dependencies.protobuf]
-path = "../../protobuf"
+path = "../../../protobuf"
+features = ["with-bytes"]
 
 [build-dependencies]
-protobuf-codegen = { path = "../../protobuf-codegen" }
+protobuf-codegen = { path = "../../../protobuf-codegen" }

@@ -11,13 +11,13 @@ proto3 = []
 with-bytes = ["protobuf/with-bytes"]
 
 [dependencies.protobuf]
-path = "../../protobuf"
+path = "../../../protobuf"
 
 [dependencies]
 rand = "~0.5"
 
 [build-dependencies]
-protobuf-codegen = { path = "../../protobuf-codegen" }
+protobuf-codegen = { path = "../../../protobuf-codegen" }
 
 [[bin]]
 
