@@ -607,12 +607,10 @@ pub fn read_singular_message_into_field<M>(
 where
     M: Message + Default,
 {
-    is.incr_recursion()?;
     let mut m = M::new();
-    let res = is.merge_message(&mut m);
+    is.merge_message(&mut m)?;
     *target = MessageField::some(m);
-    is.decr_recursion();
-    res
+    Ok(())
 }
 
 /// Write message with field number and length to the stream.
