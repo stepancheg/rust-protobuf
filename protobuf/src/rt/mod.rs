@@ -622,26 +622,6 @@ pub fn read_repeated_enum_or_unknown_into<E: Enum>(
     }
 }
 
-/// Read repeated `enum` field into given vec,
-/// and when value is unknown store it in unknown fields
-/// which matches proto2 spec.
-///
-/// See explanation
-/// [here](https://github.com/stepancheg/rust-protobuf/issues/233#issuecomment-375142710)
-pub fn read_proto3_enum_with_unknown_fields_into<E: Enum>(
-    wire_type: WireType,
-    is: &mut CodedInputStream,
-    target: &mut E,
-    field_number: u32,
-    unknown_fields: &mut UnknownFields,
-) -> Result<()> {
-    if wire_type != WireType::Varint {
-        return Err(WireError::UnexpectedWireType(wire_type).into());
-    }
-
-    read_enum_with_unknown_fields_into(is, |e| *target = e, field_number, unknown_fields)
-}
-
 /// Read repeated `string` field into given vec.
 pub fn read_repeated_string_into(
     wire_type: WireType,
