@@ -211,14 +211,10 @@ pub trait Message:
 
         let size = self.compute_size() as usize;
         let mut v = Vec::with_capacity(size);
-        // skip zerofill
-        unsafe {
-            v.set_len(size);
-        }
         {
-            let mut os = CodedOutputStream::bytes(&mut v);
+            let mut os = CodedOutputStream::vec(&mut v);
             self.write_to_with_cached_sizes(&mut os)?;
-            os.check_eof();
+            os.flush()?;
         }
         Ok(v)
     }
