@@ -1493,41 +1493,6 @@ impl<'a> FieldGen<'a> {
         ));
     }
 
-    fn write_merge_from_field_message_string_bytes_singular(
-        &self,
-        s: &SingularField,
-        w: &mut CodeWriter,
-    ) {
-        let singular_or_proto3 = match s {
-            SingularField {
-                flag: SingularFieldFlag::WithFlag { .. },
-                ..
-            } => "singular",
-            SingularField {
-                flag: SingularFieldFlag::WithoutFlag,
-                ..
-            } => "singular_proto3",
-        };
-        let suffix = match s.elem {
-            FieldElem::Message(..) => "into_field",
-            _ => "into",
-        };
-        let tokio = match s.elem.primitive_type_variant() {
-            PrimitiveTypeVariant::TokioBytes => "tokio_",
-            PrimitiveTypeVariant::Default => "",
-        };
-        let type_name_for_fn = protobuf_name(self.proto_type);
-        w.write_line(&format!(
-            "{}::rt::read_{}_{}{}_{}(wire_type, is, &mut self.{})?;",
-            protobuf_crate_path(&self.customize),
-            singular_or_proto3,
-            tokio,
-            type_name_for_fn,
-            suffix,
-            self.rust_name,
-        ));
-    }
-
     fn write_error_unexpected_wire_type(&self, wire_type_var: &str, w: &mut CodeWriter) {
         w.write_line(&format!(
             "return ::std::result::Result::Err({}::rt::unexpected_wire_type({}));",
@@ -1621,7 +1586,11 @@ impl<'a> FieldGen<'a> {
             &format!("({}, _)", self.proto_field.number()),
             |w| match s.elem {
                 FieldElem::Message(..) => {
-                    self.write_merge_from_field_message_string_bytes_singular(s, w);
+                    w.write_line(&format!(
+                        "{}::rt::read_singular_message_into_field(wire_type, is, &mut self.{})?;",
+                        protobuf_crate_path(&self.customize),
+                        self.rust_name,
+                    ));
                 }
                 _ => {
                     self.write_assert_wire_type(wire_type_var, w);
