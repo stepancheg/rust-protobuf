@@ -175,8 +175,8 @@ fn print_to_internal(m: &MessageRef, buf: &mut String, pretty: bool, indent: usi
         }
     }
 
-    let unknown_fields = m.get_unknown_fields_dyn();
-    let mut numbers: Vec<u32> = m.get_unknown_fields_dyn().iter().map(|(n, _)| n).collect();
+    let unknown_fields = m.unknown_fields_dyn();
+    let mut numbers: Vec<u32> = m.unknown_fields_dyn().iter().map(|(n, _)| n).collect();
     // Sort for stable output
     numbers.sort();
     for &n in &numbers {

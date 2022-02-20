@@ -32,7 +32,7 @@ pub trait MessageDyn: Any + fmt::Debug + fmt::Display + Send + Sync + 'static {
     fn is_initialized_dyn(&self) -> bool;
 
     /// Get a reference to unknown fields.
-    fn get_unknown_fields_dyn(&self) -> &UnknownFields;
+    fn unknown_fields_dyn(&self) -> &UnknownFields;
     /// Get a mutable reference to unknown fields.
     fn mut_unknown_fields_dyn(&mut self) -> &mut UnknownFields;
 }
@@ -58,7 +58,7 @@ impl<M: Message> MessageDyn for M {
         self.is_initialized()
     }
 
-    fn get_unknown_fields_dyn(&self) -> &UnknownFields {
+    fn unknown_fields_dyn(&self) -> &UnknownFields {
         self.unknown_fields()
     }
 
