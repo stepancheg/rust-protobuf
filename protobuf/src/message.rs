@@ -17,7 +17,7 @@ use crate::reflect::MessageDescriptor;
 use crate::unknown::UnknownFields;
 use crate::wire_format::check_message_size;
 
-/// Trait implemented for all the messages (generated and dynamic).
+/// Trait implemented for all the generated messages.
 ///
 /// * Generated messages are generated from `.proto` files
 /// * Dynamic messages can be created without code generation using only parsed proto files
