@@ -1,10 +1,7 @@
 //! Functions and typrs used by generated protobuf code.
 //!
 //! Should rarely be used by programs written by hands.
-
-use std::collections::HashMap;
 use std::default::Default;
-use std::hash::Hash;
 
 #[cfg(feature = "bytes")]
 use ::bytes::Bytes;
@@ -20,7 +17,6 @@ use crate::error::Result;
 use crate::error::WireError;
 pub use crate::lazy_v2::LazyV2;
 use crate::message::*;
-use crate::reflect::types::*;
 use crate::reflect::ProtobufValue;
 use crate::unknown::UnknownFields;
 use crate::varint::encoded_varint64_len;
@@ -33,6 +29,7 @@ use crate::MessageField;
 pub(crate) mod map;
 pub use map::compute_map_size;
 pub use map::read_map_into;
+pub use map::write_map_with_cached_sizes;
 
 /// Given `u64` value compute varint encoded length.
 pub fn compute_raw_varint64_size(value: u64) -> u64 {
@@ -262,10 +259,6 @@ pub fn value_varint_zigzag_size_no_tag<T: ProtobufVarintZigzag>(value: T) -> u64
 /// Length of value when encoding with zigzag encoding with tag
 pub fn value_varint_zigzag_size<T: ProtobufVarintZigzag>(field_number: u32, value: T) -> u64 {
     tag_size(field_number) + value_varint_zigzag_size_no_tag(value)
-}
-
-fn enum_size_no_tag<E: Enum>(value: E) -> u64 {
-    value.value().len_varint()
 }
 
 fn enum_or_unknown_size_no_tag<E: Enum>(value: EnumOrUnknown<E>) -> u64 {
@@ -912,34 +905,6 @@ pub fn read_unknown_or_skip_group(
 /// but this function remains unchanged.
 pub fn unexpected_wire_type(wire_type: WireType) -> crate::Error {
     ProtobufError::WireError(WireError::UnexpectedWireType(wire_type)).into()
-}
-
-/// Write map, message sizes must be already known.
-pub fn write_map_with_cached_sizes<K, V>(
-    field_number: u32,
-    map: &HashMap<K::ProtobufValue, V::ProtobufValue>,
-    os: &mut CodedOutputStream,
-) -> Result<()>
-where
-    K: ProtobufType,
-    V: ProtobufType,
-    K::ProtobufValue: Eq + Hash,
-{
-    for (k, v) in map {
-        let key_tag_size = 1;
-        let value_tag_size = 1;
-
-        let key_len = K::get_cached_size_with_length_delimiter(k);
-        let value_len = V::get_cached_size_with_length_delimiter(v);
-
-        let entry_len = key_tag_size + key_len + value_tag_size + value_len;
-
-        os.write_tag(field_number, WireType::LengthDelimited)?;
-        os.write_raw_varint32(entry_len)?;
-        K::write_with_cached_size(1, k, os)?;
-        V::write_with_cached_size(2, v, os)?;
-    }
-    Ok(())
 }
 
 /// Write message with field number and length to the stream.
