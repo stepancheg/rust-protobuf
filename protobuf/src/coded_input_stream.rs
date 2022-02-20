@@ -272,10 +272,7 @@ impl<'a> CodedInputStream<'a> {
     #[inline]
     pub(crate) fn read_tag(&mut self) -> crate::Result<wire_format::Tag> {
         let v = self.read_raw_varint32()?;
-        match wire_format::Tag::new(v) {
-            Some(tag) => Ok(tag),
-            None => Err(ProtobufError::WireError(WireError::IncorrectTag(v)).into()),
-        }
+        wire_format::Tag::new(v)
     }
 
     /// Read tag, return it is pair (field number, wire type)

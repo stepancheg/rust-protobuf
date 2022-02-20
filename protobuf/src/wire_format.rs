@@ -97,17 +97,16 @@ impl Tag {
     }
 
     /// Extract wire type and field number from integer tag
-    // TODO: should return Result instead of Option
-    pub fn new(value: u32) -> Option<Tag> {
+    pub fn new(value: u32) -> crate::Result<Tag> {
         let wire_type = WireType::new(value & TAG_TYPE_MASK);
         if wire_type.is_none() {
-            return None;
+            return Err(WireError::IncorrectTag(value).into());
         }
         let field_number = value >> TAG_TYPE_BITS;
         if field_number == 0 {
-            return None;
+            return Err(WireError::IncorrectTag(value).into());
         }
-        Some(Tag {
+        Ok(Tag {
             field_number,
             wire_type: wire_type.unwrap(),
         })
