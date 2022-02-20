@@ -15,7 +15,7 @@ members = [
     "protobuf-examples/vs-prost",
     "protobuf-parse",
     "protobuf-test",
-    "protobuf-test-common",
+    "test-crates/protobuf-test-common",
     "perftest/vs-cxx",
     "perftest/bytes",
     "perftest/misc",
