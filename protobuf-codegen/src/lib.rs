@@ -30,7 +30,8 @@
 //! mostly complex message options specified in `.proto` files.
 //! I never saw anyone using them, but you have been warned.
 //!
-//! Note `protoc` command can be obtained from `protoc-bin-vendored` crate.
+//! Note `protoc` command can be obtained from
+//! [`protoc-bin-vendored`](https://docs.rs/protoc-bin-vendored) crate.
 //!
 //! # Version 3
 //!
