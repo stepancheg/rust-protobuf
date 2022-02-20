@@ -13,7 +13,6 @@ use crate::chars::Chars;
 use crate::coded_input_stream::CodedInputStream;
 use crate::coded_output_stream::CodedOutputStream;
 use crate::enums::Enum;
-use crate::enums::EnumOrUnknown;
 use crate::error::Result;
 use crate::message::Message;
 pub use crate::reflect::type_dynamic::ProtobufTypeDynamic;
@@ -24,6 +23,7 @@ use crate::unknown::UnknownValues;
 use crate::wire_format::WireType;
 use crate::zigzag::decode_zig_zag_32;
 use crate::zigzag::decode_zig_zag_64;
+use crate::EnumOrUnknown;
 
 /// Encapsulate type-specific serialization and conversion logic
 pub trait ProtobufType: Send + Sync + Clone + 'static {

@@ -11,7 +11,6 @@ use bytes::Bytes;
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;
 use crate::enums::Enum;
-use crate::enums::EnumOrUnknown;
 use crate::message::Message;
 use crate::reflect::runtime_type_box::RuntimeTypeBox;
 use crate::reflect::value::value_ref::ReflectValueMut;
@@ -19,6 +18,7 @@ use crate::reflect::MessageRef;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
+use crate::EnumOrUnknown;
 
 /// `RuntimeType` is not implemented by all protobuf types directly
 /// because it's not possible to implement `RuntimeType` for all `Message`

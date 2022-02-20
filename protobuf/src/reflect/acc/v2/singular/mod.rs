@@ -2,7 +2,6 @@ use std::fmt;
 use std::marker;
 
 use crate::enums::Enum;
-use crate::enums::EnumOrUnknown;
 use crate::message::Message;
 use crate::message_dyn::MessageDyn;
 use crate::reflect::acc::v2::AccessorV2;
@@ -13,6 +12,7 @@ use crate::reflect::MessageRef;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
+use crate::EnumOrUnknown;
 use crate::MessageField;
 
 pub(crate) mod oneof;

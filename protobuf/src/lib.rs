@@ -44,8 +44,8 @@
 pub use crate::clear::Clear;
 pub use crate::coded_input_stream::CodedInputStream;
 pub use crate::coded_output_stream::CodedOutputStream;
+pub use crate::enum_or_unknown::EnumOrUnknown;
 pub use crate::enums::Enum;
-pub use crate::enums::EnumOrUnknown;
 pub use crate::message::Message;
 pub use crate::message_dyn::MessageDyn;
 pub use crate::message_field::MessageField;
@@ -70,6 +70,7 @@ pub mod rustproto;
 mod clear;
 mod coded_input_stream;
 mod coded_output_stream;
+mod enum_or_unknown;
 mod enums;
 mod error;
 pub mod ext;

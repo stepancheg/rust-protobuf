@@ -11,7 +11,6 @@ use crate::buf_read_iter::BufReadIter;
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;
 use crate::enums::Enum;
-use crate::enums::EnumOrUnknown;
 use crate::error::ProtobufError;
 use crate::error::WireError;
 use crate::message::Message;
@@ -39,6 +38,7 @@ use crate::wire_format;
 use crate::wire_format::WireType;
 use crate::zigzag::decode_zig_zag_32;
 use crate::zigzag::decode_zig_zag_64;
+use crate::EnumOrUnknown;
 use crate::MessageDyn;
 
 // Default recursion level limit. 100 is the default value of C++'s implementation.
