@@ -18,6 +18,7 @@ proto3 = []
 with-bytes = ["bytes", "protobuf/with-bytes"]
 
 [dependencies]
+anyhow    = "1.0.53"
 glob         = "0.2"
 log          = "0.*"
 env_logger   = "0.5.*"

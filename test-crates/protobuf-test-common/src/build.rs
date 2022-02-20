@@ -7,6 +7,7 @@ use std::io::Read;
 use std::io::Write;
 use std::path::Path;
 
+use anyhow::Context;
 use glob;
 use log::debug;
 pub use protobuf_codegen::Customize;
@@ -223,7 +224,10 @@ where
 
 pub fn list_tests_in_dir(dir: &str) -> Vec<String> {
     let mut r = Vec::new();
-    for entry in fs::read_dir(dir).expect("read_dir") {
+    for entry in fs::read_dir(dir)
+        .with_context(|| format!("read_dir {}", dir))
+        .expect("read_dir")
+    {
         let entry = entry.expect("entry");
         let entry_path = entry.path();
         let file_name = entry_path.as_path().file_name().unwrap().to_str().unwrap();
