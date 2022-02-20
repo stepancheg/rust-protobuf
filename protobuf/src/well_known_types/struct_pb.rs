@@ -523,7 +523,7 @@ impl crate::Message for Value {
                     my_size += 9;
                 },
                 &value::Kind::string_value(ref v) => {
-                    my_size += crate::rt::string_size(3, &v);
+                    my_size += 1 + crate::rt::string_size_no_tag(&v);
                 },
                 &value::Kind::bool_value(v) => {
                     my_size += 2;

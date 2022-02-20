@@ -957,15 +957,15 @@ impl<'a> FieldGen<'a> {
             None => match self.proto_type {
                 field_descriptor_proto::Type::TYPE_MESSAGE => panic!("not a single-liner"),
                 field_descriptor_proto::Type::TYPE_BYTES => format!(
-                    "{}::rt::bytes_size({}, &{})",
+                    "{} + {}::rt::bytes_size_no_tag(&{})",
+                    protobuf::rt::tag_size(self.proto_field.number()),
                     protobuf_crate_path(&self.customize),
-                    self.proto_field.number(),
                     var
                 ),
                 field_descriptor_proto::Type::TYPE_STRING => format!(
-                    "{}::rt::string_size({}, &{})",
+                    "{} + {}::rt::string_size_no_tag(&{})",
+                    protobuf::rt::tag_size(self.proto_field.number()),
                     protobuf_crate_path(&self.customize),
-                    self.proto_field.number(),
                     var
                 ),
                 field_descriptor_proto::Type::TYPE_ENUM => {

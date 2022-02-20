@@ -163,14 +163,14 @@ impl crate::Message for Type {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if !self.name.is_empty() {
-            my_size += crate::rt::string_size(1, &self.name);
+            my_size += 1 + crate::rt::string_size_no_tag(&self.name);
         }
         for value in &self.fields {
             let len = value.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         for value in &self.oneofs {
-            my_size += crate::rt::string_size(3, &value);
+            my_size += 1 + crate::rt::string_size_no_tag(&value);
         };
         for value in &self.options {
             let len = value.compute_size();
@@ -476,10 +476,10 @@ impl crate::Message for Field {
             my_size += crate::rt::value_size(3, self.number, crate::rt::WireType::Varint);
         }
         if !self.name.is_empty() {
-            my_size += crate::rt::string_size(4, &self.name);
+            my_size += 1 + crate::rt::string_size_no_tag(&self.name);
         }
         if !self.type_url.is_empty() {
-            my_size += crate::rt::string_size(6, &self.type_url);
+            my_size += 1 + crate::rt::string_size_no_tag(&self.type_url);
         }
         if self.oneof_index != 0 {
             my_size += crate::rt::value_size(7, self.oneof_index, crate::rt::WireType::Varint);
@@ -492,10 +492,10 @@ impl crate::Message for Field {
             my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         if !self.json_name.is_empty() {
-            my_size += crate::rt::string_size(10, &self.json_name);
+            my_size += 1 + crate::rt::string_size_no_tag(&self.json_name);
         }
         if !self.default_value.is_empty() {
-            my_size += crate::rt::string_size(11, &self.default_value);
+            my_size += 1 + crate::rt::string_size_no_tag(&self.default_value);
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
         self.cached_size.set(my_size as u32);
@@ -916,7 +916,7 @@ impl crate::Message for Enum {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if !self.name.is_empty() {
-            my_size += crate::rt::string_size(1, &self.name);
+            my_size += 1 + crate::rt::string_size_no_tag(&self.name);
         }
         for value in &self.enumvalue {
             let len = value.compute_size();
@@ -1112,7 +1112,7 @@ impl crate::Message for EnumValue {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if !self.name.is_empty() {
-            my_size += crate::rt::string_size(1, &self.name);
+            my_size += 1 + crate::rt::string_size_no_tag(&self.name);
         }
         if self.number != 0 {
             my_size += crate::rt::value_size(2, self.number, crate::rt::WireType::Varint);
@@ -1283,7 +1283,7 @@ impl crate::Message for Option {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if !self.name.is_empty() {
-            my_size += crate::rt::string_size(1, &self.name);
+            my_size += 1 + crate::rt::string_size_no_tag(&self.name);
         }
         if let Some(v) = self.value.as_ref() {
             let len = v.compute_size();
