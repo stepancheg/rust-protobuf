@@ -67,13 +67,17 @@ impl Parser {
         self
     }
 
-    /// Specify `protoc` path used for parsing. Ignored if `protoc` parser is used.
+    /// Specify `protoc` path used for parsing.
+    ///
+    /// This is ignored if pure rust parser is used.
     pub fn protoc_path(&mut self, protoc: &Path) -> &mut Self {
         self.protoc = Some(protoc.to_owned());
         self
     }
 
     /// Extra arguments to pass to `protoc` command (like experimental options).
+    ///
+    /// This is ignored if pure rust parser is used.
     pub fn protoc_extra_args(
         &mut self,
         args: impl IntoIterator<Item = impl AsRef<OsStr>>,
