@@ -108,7 +108,7 @@ impl crate::Message for FileDescriptorSet {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -578,7 +578,7 @@ impl crate::Message for FileDescriptorProto {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -961,7 +961,7 @@ impl crate::Message for DescriptorProto {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -1191,7 +1191,7 @@ pub mod descriptor_proto {
             ::std::result::Result::Ok(())
         }
 
-        fn get_cached_size(&self) -> u32 {
+        fn cached_size(&self) -> u32 {
             self.cached_size.get()
         }
 
@@ -1386,7 +1386,7 @@ pub mod descriptor_proto {
             ::std::result::Result::Ok(())
         }
 
-        fn get_cached_size(&self) -> u32 {
+        fn cached_size(&self) -> u32 {
             self.cached_size.get()
         }
 
@@ -1522,7 +1522,7 @@ impl crate::Message for ExtensionRangeOptions {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -2177,7 +2177,7 @@ impl crate::Message for FieldDescriptorProto {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -2561,7 +2561,7 @@ impl crate::Message for OneofDescriptorProto {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -2817,7 +2817,7 @@ impl crate::Message for EnumDescriptorProto {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -3021,7 +3021,7 @@ pub mod enum_descriptor_proto {
             ::std::result::Result::Ok(())
         }
 
-        fn get_cached_size(&self) -> u32 {
+        fn cached_size(&self) -> u32 {
             self.cached_size.get()
         }
 
@@ -3252,7 +3252,7 @@ impl crate::Message for EnumValueDescriptorProto {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -3467,7 +3467,7 @@ impl crate::Message for ServiceDescriptorProto {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -3854,7 +3854,7 @@ impl crate::Message for MethodDescriptorProto {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -5012,7 +5012,7 @@ impl crate::Message for FileOptions {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -5408,7 +5408,7 @@ impl crate::Message for MessageOptions {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -5842,7 +5842,7 @@ impl crate::Message for FieldOptions {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -6100,7 +6100,7 @@ impl crate::Message for OneofOptions {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -6317,7 +6317,7 @@ impl crate::Message for EnumOptions {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -6497,7 +6497,7 @@ impl crate::Message for EnumValueOptions {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -6675,7 +6675,7 @@ impl crate::Message for ServiceOptions {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -6895,7 +6895,7 @@ impl crate::Message for MethodOptions {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -7385,7 +7385,7 @@ impl crate::Message for UninterpretedOption {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -7615,7 +7615,7 @@ pub mod uninterpreted_option {
             ::std::result::Result::Ok(())
         }
 
-        fn get_cached_size(&self) -> u32 {
+        fn cached_size(&self) -> u32 {
             self.cached_size.get()
         }
 
@@ -7752,7 +7752,7 @@ impl crate::Message for SourceCodeInfo {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -8025,7 +8025,7 @@ pub mod source_code_info {
             ::std::result::Result::Ok(())
         }
 
-        fn get_cached_size(&self) -> u32 {
+        fn cached_size(&self) -> u32 {
             self.cached_size.get()
         }
 
@@ -8171,7 +8171,7 @@ impl crate::Message for GeneratedCodeInfo {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -8439,7 +8439,7 @@ pub mod generated_code_info {
             ::std::result::Result::Ok(())
         }
 
-        fn get_cached_size(&self) -> u32 {
+        fn cached_size(&self) -> u32 {
             self.cached_size.get()
         }
 

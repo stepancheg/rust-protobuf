@@ -991,7 +991,7 @@ where
     M: Message,
 {
     os.write_tag(field_number, WireType::LengthDelimited)?;
-    os.write_raw_varint32(message.get_cached_size())?;
+    os.write_raw_varint32(message.cached_size())?;
     message.write_to_with_cached_sizes(os)
 }
 

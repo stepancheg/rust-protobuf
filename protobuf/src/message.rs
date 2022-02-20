@@ -85,7 +85,7 @@ pub trait Message:
     fn compute_size(&self) -> u32;
 
     /// Get size previously computed by `compute_size`.
-    fn get_cached_size(&self) -> u32;
+    fn cached_size(&self) -> u32;
 
     /// Write the message to the stream.
     ///

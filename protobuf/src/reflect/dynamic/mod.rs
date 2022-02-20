@@ -462,7 +462,7 @@ impl Message for DynamicMessage {
         handler.m_size
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 

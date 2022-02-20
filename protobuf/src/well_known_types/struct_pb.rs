@@ -105,7 +105,7 @@ impl crate::Message for Struct {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -570,7 +570,7 @@ impl crate::Message for Value {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -736,7 +736,7 @@ impl crate::Message for ListValue {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 

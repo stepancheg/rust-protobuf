@@ -107,7 +107,7 @@ impl crate::Message for DoubleValue {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -240,7 +240,7 @@ impl crate::Message for FloatValue {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -373,7 +373,7 @@ impl crate::Message for Int64Value {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -506,7 +506,7 @@ impl crate::Message for UInt64Value {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -639,7 +639,7 @@ impl crate::Message for Int32Value {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -772,7 +772,7 @@ impl crate::Message for UInt32Value {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -905,7 +905,7 @@ impl crate::Message for BoolValue {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -1038,7 +1038,7 @@ impl crate::Message for StringValue {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -1171,7 +1171,7 @@ impl crate::Message for BytesValue {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 

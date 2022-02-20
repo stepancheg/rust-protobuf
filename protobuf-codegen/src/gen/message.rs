@@ -261,8 +261,8 @@ impl<'a> MessageGen<'a> {
         });
     }
 
-    fn write_get_cached_size(&self, w: &mut CodeWriter) {
-        w.def_fn("get_cached_size(&self) -> u32", |w| {
+    fn write_cached_size_getter(&self, w: &mut CodeWriter) {
+        w.def_fn("cached_size(&self) -> u32", |w| {
             w.write_line("self.cached_size.get()");
         });
     }
@@ -506,7 +506,7 @@ impl<'a> MessageGen<'a> {
                 w.write_line("");
                 self.write_write_to_with_cached_sizes(w);
                 w.write_line("");
-                self.write_get_cached_size(w);
+                self.write_cached_size_getter(w);
                 w.write_line("");
                 self.write_unknown_fields(w);
                 w.write_line("");

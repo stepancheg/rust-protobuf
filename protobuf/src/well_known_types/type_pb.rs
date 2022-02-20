@@ -211,7 +211,7 @@ impl crate::Message for Type {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -537,7 +537,7 @@ impl crate::Message for Field {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -958,7 +958,7 @@ impl crate::Message for Enum {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -1140,7 +1140,7 @@ impl crate::Message for EnumValue {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -1305,7 +1305,7 @@ impl crate::Message for Option {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 

@@ -260,7 +260,7 @@ impl crate::Message for Version {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -512,7 +512,7 @@ impl crate::Message for CodeGeneratorRequest {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -756,7 +756,7 @@ impl crate::Message for CodeGeneratorResponse {
         ::std::result::Result::Ok(())
     }
 
-    fn get_cached_size(&self) -> u32 {
+    fn cached_size(&self) -> u32 {
         self.cached_size.get()
     }
 
@@ -1115,7 +1115,7 @@ pub mod code_generator_response {
             ::std::result::Result::Ok(())
         }
 
-        fn get_cached_size(&self) -> u32 {
+        fn cached_size(&self) -> u32 {
             self.cached_size.get()
         }
 
