@@ -1,13 +1,13 @@
 use std::collections::HashMap;
 use std::hash::Hash;
 
+use crate::error::WireError;
 use crate::reflect::types::ProtobufType;
 use crate::rt::compute_raw_varint64_size;
 use crate::rt::tag_size;
 use crate::wire_format::WireType;
 use crate::CodedInputStream;
 use crate::CodedOutputStream;
-use crate::error::WireError;
 
 /// Compute serialized size of `map` field and cache nested field sizes.
 pub fn compute_map_size<K, V>(
