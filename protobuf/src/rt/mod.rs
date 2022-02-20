@@ -16,7 +16,6 @@ use crate::error::Result;
 use crate::error::WireError;
 pub use crate::lazy_v2::LazyV2;
 use crate::message::*;
-use crate::reflect::ProtobufValue;
 use crate::unknown::UnknownFields;
 use crate::varint::encoded_varint64_len;
 pub use crate::wire_format::WireType;
@@ -25,10 +24,12 @@ use crate::EnumOrUnknown;
 use crate::MessageField;
 
 pub(crate) mod map;
+pub(crate) mod repeated;
 pub(crate) mod unsorted;
 pub use map::compute_map_size;
 pub use map::read_map_into;
 pub use map::write_map_with_cached_sizes;
+pub use repeated::read_repeated_enum_or_unknown_into;
 pub use unsorted::read_unknown_or_skip_group;
 
 /// Given `u64` value compute varint encoded length.
@@ -504,57 +505,6 @@ pub fn read_repeated_bool_into(
         WireType::LengthDelimited => is.read_repeated_packed_bool_into(target),
         WireType::Varint => {
             target.push(is.read_bool()?);
-            Ok(())
-        }
-        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
-    }
-}
-
-/// Read repeated `enum` field into given vec.
-/// This function is no longer called from generated code, remove in 1.5.
-pub fn read_repeated_enum_into<E: Enum + ProtobufValue>(
-    wire_type: WireType,
-    is: &mut CodedInputStream,
-    target: &mut Vec<E>,
-) -> Result<()> {
-    match wire_type {
-        WireType::LengthDelimited => is.read_repeated_packed_enum_into(target),
-        WireType::Varint => {
-            target.push(is.read_enum()?);
-            Ok(())
-        }
-        _ => Err(WireError::UnexpectedWireType(wire_type).into()),
-    }
-}
-
-fn read_repeated_packed_enum_or_unknown_into<E: Enum>(
-    is: &mut CodedInputStream,
-    target: &mut Vec<EnumOrUnknown<E>>,
-) -> Result<()> {
-    let len = is.read_raw_varint64()?;
-    let old_limit = is.push_limit(len)?;
-    while !is.eof()? {
-        target.push(is.read_enum_or_unknown()?);
-    }
-    is.pop_limit(old_limit);
-    Ok(())
-}
-
-/// Read repeated `enum` field into given vec,
-/// and when value is unknown store it in unknown fields
-/// which matches proto2 spec.
-///
-/// See explanation
-/// [here](https://github.com/stepancheg/rust-protobuf/issues/233#issuecomment-375142710)
-pub fn read_repeated_enum_or_unknown_into<E: Enum>(
-    wire_type: WireType,
-    is: &mut CodedInputStream,
-    target: &mut Vec<EnumOrUnknown<E>>,
-) -> Result<()> {
-    match wire_type {
-        WireType::LengthDelimited => read_repeated_packed_enum_or_unknown_into(is, target),
-        WireType::Varint => {
-            target.push(is.read_enum_or_unknown()?);
             Ok(())
         }
         _ => Err(WireError::UnexpectedWireType(wire_type).into()),
