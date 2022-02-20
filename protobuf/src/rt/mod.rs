@@ -16,7 +16,6 @@ use crate::error::Result;
 use crate::error::WireError;
 pub use crate::lazy_v2::LazyV2;
 use crate::message::*;
-use crate::unknown::UnknownFields;
 use crate::varint::encoded_varint64_len;
 pub use crate::wire_format::WireType;
 use crate::zigzag::*;
@@ -31,6 +30,7 @@ pub use map::read_map_into;
 pub use map::write_map_with_cached_sizes;
 pub use repeated::read_repeated_packed_enum_or_unknown_into;
 pub use unsorted::read_unknown_or_skip_group;
+pub use unsorted::unknown_fields_size;
 
 /// Given `u64` value compute varint encoded length.
 pub fn compute_raw_varint64_size(value: u64) -> u64 {
@@ -281,26 +281,6 @@ pub fn string_size_no_tag(s: &str) -> u64 {
 /// Size of encoded string field.
 pub fn string_size(field_number: u32, s: &str) -> u64 {
     tag_size(field_number) + string_size_no_tag(s)
-}
-
-/// Size of encoded unknown fields size.
-pub fn unknown_fields_size(unknown_fields: &UnknownFields) -> u64 {
-    let mut r = 0;
-    for (number, values) in unknown_fields {
-        r += (tag_size(number) + 4) * values.fixed32.len() as u64;
-        r += (tag_size(number) + 8) * values.fixed64.len() as u64;
-
-        r += tag_size(number) * values.varint.len() as u64;
-        for varint in &values.varint {
-            r += varint.len_varint();
-        }
-
-        r += tag_size(number) * values.length_delimited.len() as u64;
-        for bytes in &values.length_delimited {
-            r += bytes_size_no_tag(&bytes);
-        }
-    }
-    r
 }
 
 /// Read repeated `int32` field into given vec.

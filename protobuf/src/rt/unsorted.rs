@@ -1,3 +1,6 @@
+use crate::rt::bytes_size_no_tag;
+use crate::rt::tag_size;
+use crate::rt::ProtobufVarint;
 use crate::wire_format::Tag;
 use crate::wire_format::WireType;
 use crate::CodedInputStream;
@@ -11,6 +14,26 @@ fn skip_group(is: &mut CodedInputStream) -> crate::Result<()> {
         }
         is.skip_field(wire_type)?;
     }
+}
+
+/// Size of encoded unknown fields size.
+pub fn unknown_fields_size(unknown_fields: &UnknownFields) -> u64 {
+    let mut r = 0;
+    for (number, values) in unknown_fields {
+        r += (tag_size(number) + 4) * values.fixed32.len() as u64;
+        r += (tag_size(number) + 8) * values.fixed64.len() as u64;
+
+        r += tag_size(number) * values.varint.len() as u64;
+        for varint in &values.varint {
+            r += varint.len_varint();
+        }
+
+        r += tag_size(number) * values.length_delimited.len() as u64;
+        for bytes in &values.length_delimited {
+            r += bytes_size_no_tag(&bytes);
+        }
+    }
+    r
 }
 
 /// Handle unknown field in generated code.
