@@ -273,12 +273,6 @@ fn enum_or_unknown_size_no_tag<E: Enum>(value: EnumOrUnknown<E>) -> u64 {
 }
 
 /// Size of encoded enum field value.
-// TODO: drop
-pub fn enum_size<E: Enum>(field_number: u32, value: E) -> u64 {
-    tag_size(field_number) + enum_size_no_tag(value)
-}
-
-/// Size of encoded enum field value.
 pub fn enum_or_unknown_size<E: Enum>(field_number: u32, value: EnumOrUnknown<E>) -> u64 {
     tag_size(field_number) + enum_or_unknown_size_no_tag(value)
 }
