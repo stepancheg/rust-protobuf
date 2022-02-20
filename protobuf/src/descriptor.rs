@@ -446,11 +446,17 @@ impl crate::Message for FileDescriptorProto {
                 (_, 26) => {
                     self.dependency.push(is.read_string()?);
                 },
-                (10, _) => {
-                    crate::rt::read_repeated_int32_into(wire_type, is, &mut self.public_dependency)?;
+                (_, 82) => {
+                    is.read_repeated_packed_int32_into(&mut self.public_dependency)?;
                 },
-                (11, _) => {
-                    crate::rt::read_repeated_int32_into(wire_type, is, &mut self.weak_dependency)?;
+                (_, 80) => {
+                    self.public_dependency.push(is.read_int32()?);
+                },
+                (_, 90) => {
+                    is.read_repeated_packed_int32_into(&mut self.weak_dependency)?;
+                },
+                (_, 88) => {
+                    self.weak_dependency.push(is.read_int32()?);
                 },
                 (_, 34) => {
                     self.message_type.push(is.read_message()?);
@@ -7784,11 +7790,17 @@ pub mod source_code_info {
                 // TODO: tag is temporary for migration
                 let tag = (field_number << 3) + wire_type as u32;
                 match (field_number, tag) {
-                    (1, _) => {
-                        crate::rt::read_repeated_int32_into(wire_type, is, &mut self.path)?;
+                    (_, 10) => {
+                        is.read_repeated_packed_int32_into(&mut self.path)?;
                     },
-                    (2, _) => {
-                        crate::rt::read_repeated_int32_into(wire_type, is, &mut self.span)?;
+                    (_, 8) => {
+                        self.path.push(is.read_int32()?);
+                    },
+                    (_, 18) => {
+                        is.read_repeated_packed_int32_into(&mut self.span)?;
+                    },
+                    (_, 16) => {
+                        self.span.push(is.read_int32()?);
                     },
                     (_, 26) => {
                         self.leading_comments = ::std::option::Option::Some(is.read_string()?);
@@ -8200,8 +8212,11 @@ pub mod generated_code_info {
                 // TODO: tag is temporary for migration
                 let tag = (field_number << 3) + wire_type as u32;
                 match (field_number, tag) {
-                    (1, _) => {
-                        crate::rt::read_repeated_int32_into(wire_type, is, &mut self.path)?;
+                    (_, 10) => {
+                        is.read_repeated_packed_int32_into(&mut self.path)?;
+                    },
+                    (_, 8) => {
+                        self.path.push(is.read_int32()?);
                     },
                     (_, 18) => {
                         self.source_file = ::std::option::Option::Some(is.read_string()?);
