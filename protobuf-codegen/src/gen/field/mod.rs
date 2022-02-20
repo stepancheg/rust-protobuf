@@ -1574,36 +1574,39 @@ impl<'a> FieldGen<'a> {
     }
 
     // Write `merge_from` part for this repeated field
-    fn write_merge_from_repeated(&self, wire_type_var: &str, w: &mut CodeWriter) {
+    fn write_merge_from_repeated_case_block(&self, wire_type_var: &str, w: &mut CodeWriter) {
         let field = match self.kind {
             FieldKind::Repeated(ref field) => field,
             _ => panic!(),
         };
 
-        match field.elem {
-            FieldElem::Message(..)
-            | FieldElem::Primitive(field_descriptor_proto::Type::TYPE_STRING, ..)
-            | FieldElem::Primitive(field_descriptor_proto::Type::TYPE_BYTES, ..) => {
-                self.write_merge_from_field_message_string_bytes_repeated(field, w);
-            }
-            FieldElem::Enum(..) => {
-                w.write_line(&format!(
-                    "{}::rt::read_repeated_enum_or_unknown_into({}, is, &mut self.{})?",
-                    protobuf_crate_path(&self.customize),
-                    wire_type_var,
-                    self.rust_name,
-                ));
-            }
-            _ => {
-                w.write_line(&format!(
-                    "{}::rt::read_repeated_{}_into({}, is, &mut self.{})?;",
-                    protobuf_crate_path(&self.customize),
-                    protobuf_name(self.proto_type),
-                    wire_type_var,
-                    self.rust_name
-                ));
-            }
-        }
+        w.case_block(
+            &format!("({}, _)", self.proto_field.number()),
+            |w| match field.elem {
+                FieldElem::Message(..)
+                | FieldElem::Primitive(field_descriptor_proto::Type::TYPE_STRING, ..)
+                | FieldElem::Primitive(field_descriptor_proto::Type::TYPE_BYTES, ..) => {
+                    self.write_merge_from_field_message_string_bytes_repeated(field, w);
+                }
+                FieldElem::Enum(..) => {
+                    w.write_line(&format!(
+                        "{}::rt::read_repeated_enum_or_unknown_into({}, is, &mut self.{})?",
+                        protobuf_crate_path(&self.customize),
+                        wire_type_var,
+                        self.rust_name,
+                    ));
+                }
+                _ => {
+                    w.write_line(&format!(
+                        "{}::rt::read_repeated_{}_into({}, is, &mut self.{})?;",
+                        protobuf_crate_path(&self.customize),
+                        protobuf_name(self.proto_type),
+                        wire_type_var,
+                        self.rust_name
+                    ));
+                }
+            },
+        )
     }
 
     /// Write `merge_from` part for this field
@@ -1612,14 +1615,11 @@ impl<'a> FieldGen<'a> {
         wire_type_var: &str,
         w: &mut CodeWriter,
     ) {
-        let number = self.proto_field.number();
         match self.kind {
             FieldKind::Oneof(ref f) => self.write_merge_from_oneof_case_block(&f, w),
             FieldKind::Map(..) => self.write_merge_from_map_case_block(w),
             FieldKind::Singular(ref s) => self.write_merge_from_singular_case_block(s, w),
-            FieldKind::Repeated(..) => w.case_block(&format!("({}, _)", number), |w| {
-                self.write_merge_from_repeated(wire_type_var, w)
-            }),
+            FieldKind::Repeated(..) => self.write_merge_from_repeated_case_block(wire_type_var, w),
         }
     }
 
