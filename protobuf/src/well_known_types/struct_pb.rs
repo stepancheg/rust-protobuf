@@ -91,11 +91,11 @@ impl crate::Message for Struct {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         my_size += crate::rt::compute_map_size::<crate::reflect::types::ProtobufTypeString, crate::reflect::types::ProtobufTypeMessage<Value>>(1, &self.fields);
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -512,7 +512,7 @@ impl crate::Message for Value {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if let ::std::option::Option::Some(ref v) = self.kind {
             match v {
@@ -530,16 +530,16 @@ impl crate::Message for Value {
                 },
                 &value::Kind::struct_value(ref v) => {
                     let len = v.compute_size();
-                    my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+                    my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
                 },
                 &value::Kind::list_value(ref v) => {
                     let len = v.compute_size();
-                    my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+                    my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
                 },
             };
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -717,14 +717,14 @@ impl crate::Message for ListValue {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         for value in &self.values {
             let len = value.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 

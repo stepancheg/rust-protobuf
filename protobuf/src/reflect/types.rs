@@ -48,14 +48,14 @@ pub trait ProtobufType: Send + Sync + Clone + 'static {
     fn get_from_unknown(_unknown_values: &UnknownValues) -> Option<Self::ProtobufValue>;
 
     /// Compute serialized size of a value
-    fn compute_size(value: &Self::ProtobufValue) -> u32;
+    fn compute_size(value: &Self::ProtobufValue) -> u64;
 
     /// Compute size adding length prefix if wire type is length delimited
     /// (i. e. string, bytes, message)
-    fn compute_size_with_length_delimiter(value: &Self::ProtobufValue) -> u32 {
+    fn compute_size_with_length_delimiter(value: &Self::ProtobufValue) -> u64 {
         let size = Self::compute_size(value);
         if Self::WIRE_TYPE == WireType::LengthDelimited {
-            rt::compute_raw_varint32_size(size) + size
+            rt::compute_raw_varint64_size(size) + size
         } else {
             size
         }
@@ -64,7 +64,7 @@ pub trait ProtobufType: Send + Sync + Clone + 'static {
     /// Get previously computed size
     #[inline]
     fn get_cached_size(value: &Self::ProtobufValue) -> u32 {
-        Self::compute_size(value)
+        Self::compute_size(value) as u32
     }
 
     /// Get previously cached size with length prefix
@@ -72,7 +72,7 @@ pub trait ProtobufType: Send + Sync + Clone + 'static {
     fn get_cached_size_with_length_delimiter(value: &Self::ProtobufValue) -> u32 {
         let size = Self::get_cached_size(value);
         if Self::WIRE_TYPE == WireType::LengthDelimited {
-            rt::compute_raw_varint32_size(size) + size
+            rt::compute_raw_varint32_size(size) as u32 + size
         } else {
             size
         }
@@ -177,8 +177,8 @@ impl ProtobufType for ProtobufTypeFloat {
             .map(|&bits| f32::from_bits(bits))
     }
 
-    fn compute_size(_value: &f32) -> u32 {
-        Self::ENCODED_SIZE
+    fn compute_size(_value: &f32) -> u64 {
+        Self::ENCODED_SIZE as u64
     }
 
     fn write_with_cached_size(
@@ -212,8 +212,8 @@ impl ProtobufType for ProtobufTypeDouble {
             .map(|&bits| f64::from_bits(bits))
     }
 
-    fn compute_size(_value: &f64) -> u32 {
-        Self::ENCODED_SIZE
+    fn compute_size(_value: &f64) -> u64 {
+        Self::ENCODED_SIZE as u64
     }
 
     fn write_with_cached_size(
@@ -238,7 +238,7 @@ impl ProtobufType for ProtobufTypeInt32 {
         is.read_int32()
     }
 
-    fn compute_size(value: &i32) -> u32 {
+    fn compute_size(value: &i32) -> u64 {
         // See also: https://github.com/protocolbuffers/protobuf/blob/bd00671b924310c0353a730bf8fa77c44e0a9c72/src/google/protobuf/io/coded_stream.h#L1300-L1306
         if *value < 0 {
             return 10;
@@ -272,7 +272,7 @@ impl ProtobufType for ProtobufTypeInt64 {
         unknown_values.varint.iter().rev().next().map(|&v| v as i64)
     }
 
-    fn compute_size(value: &i64) -> u32 {
+    fn compute_size(value: &i64) -> u64 {
         rt::compute_raw_varint64_size(*value as u64)
     }
 
@@ -298,7 +298,7 @@ impl ProtobufType for ProtobufTypeUint32 {
         unknown_values.varint.iter().rev().next().map(|&v| v as u32)
     }
 
-    fn compute_size(value: &u32) -> u32 {
+    fn compute_size(value: &u32) -> u64 {
         rt::compute_raw_varint32_size(*value)
     }
 
@@ -324,7 +324,7 @@ impl ProtobufType for ProtobufTypeUint64 {
         unknown_values.varint.iter().cloned().rev().next()
     }
 
-    fn compute_size(value: &u64) -> u32 {
+    fn compute_size(value: &u64) -> u64 {
         rt::compute_raw_varint64_size(*value)
     }
 
@@ -350,7 +350,7 @@ impl ProtobufType for ProtobufTypeSint32 {
         ProtobufTypeUint32::get_from_unknown(unknown_values).map(decode_zig_zag_32)
     }
 
-    fn compute_size(value: &i32) -> u32 {
+    fn compute_size(value: &i32) -> u64 {
         rt::value_varint_zigzag_size_no_tag(*value)
     }
 
@@ -376,7 +376,7 @@ impl ProtobufType for ProtobufTypeSint64 {
         ProtobufTypeUint64::get_from_unknown(unknown_values).map(decode_zig_zag_64)
     }
 
-    fn compute_size(value: &i64) -> u32 {
+    fn compute_size(value: &i64) -> u64 {
         rt::value_varint_zigzag_size_no_tag(*value)
     }
 
@@ -402,8 +402,8 @@ impl ProtobufType for ProtobufTypeFixed32 {
         unknown_values.fixed32.iter().cloned().rev().next()
     }
 
-    fn compute_size(_value: &u32) -> u32 {
-        Self::ENCODED_SIZE
+    fn compute_size(_value: &u32) -> u64 {
+        Self::ENCODED_SIZE as u64
     }
 
     fn write_with_cached_size(
@@ -432,8 +432,8 @@ impl ProtobufType for ProtobufTypeFixed64 {
         unknown_values.fixed64.iter().cloned().rev().next()
     }
 
-    fn compute_size(_value: &u64) -> u32 {
-        Self::ENCODED_SIZE
+    fn compute_size(_value: &u64) -> u64 {
+        Self::ENCODED_SIZE as u64
     }
 
     fn write_with_cached_size(
@@ -462,8 +462,8 @@ impl ProtobufType for ProtobufTypeSfixed32 {
         ProtobufTypeFixed32::get_from_unknown(unknown_values).map(|u| u as i32)
     }
 
-    fn compute_size(_value: &i32) -> u32 {
-        Self::ENCODED_SIZE
+    fn compute_size(_value: &i32) -> u64 {
+        Self::ENCODED_SIZE as u64
     }
 
     fn write_with_cached_size(
@@ -492,7 +492,7 @@ impl ProtobufType for ProtobufTypeSfixed64 {
         ProtobufTypeFixed64::get_from_unknown(unknown_values).map(|u| u as i64)
     }
 
-    fn compute_size(_value: &i64) -> u32 {
+    fn compute_size(_value: &i64) -> u64 {
         8
     }
 
@@ -522,7 +522,7 @@ impl ProtobufType for ProtobufTypeBool {
         unknown.varint.iter().rev().next().map(|&v| v != 0)
     }
 
-    fn compute_size(_value: &bool) -> u32 {
+    fn compute_size(_value: &bool) -> u64 {
         1
     }
 
@@ -550,8 +550,8 @@ impl ProtobufType for ProtobufTypeString {
             .map(|b| String::from_utf8(b).expect("not a valid string"))
     }
 
-    fn compute_size(value: &String) -> u32 {
-        value.len() as u32
+    fn compute_size(value: &String) -> u64 {
+        value.len() as u64
     }
 
     fn write_with_cached_size(
@@ -576,8 +576,8 @@ impl ProtobufType for ProtobufTypeBytes {
         unknown_values.length_delimited.iter().cloned().rev().next()
     }
 
-    fn compute_size(value: &Vec<u8>) -> u32 {
-        value.len() as u32
+    fn compute_size(value: &Vec<u8>) -> u64 {
+        value.len() as u64
     }
 
     fn write_with_cached_size(
@@ -603,8 +603,8 @@ impl ProtobufType for ProtobufTypeTokioBytes {
         ProtobufTypeBytes::get_from_unknown(unknown_values).map(Bytes::from)
     }
 
-    fn compute_size(value: &Bytes) -> u32 {
-        value.len() as u32
+    fn compute_size(value: &Bytes) -> u64 {
+        value.len() as u64
     }
 
     fn write_with_cached_size(
@@ -630,8 +630,8 @@ impl ProtobufType for ProtobufTypeTokioChars {
         ProtobufTypeString::get_from_unknown(unknown_values).map(Chars::from)
     }
 
-    fn compute_size(value: &Chars) -> u32 {
-        value.len() as u32
+    fn compute_size(value: &Chars) -> u64 {
+        value.len() as u64
     }
 
     fn write_with_cached_size(
@@ -658,7 +658,7 @@ impl<E: Enum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufTypeEnum<E> 
             .map(|i| E::from_i32(i).expect("not a valid enum value"))
     }
 
-    fn compute_size(value: &E) -> u32 {
+    fn compute_size(value: &E) -> u64 {
         rt::compute_raw_varint32_size(value.value() as u32) // TODO: wrap
     }
 
@@ -684,7 +684,7 @@ impl<E: Enum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufTypeEnumOrUn
         ProtobufTypeInt32::get_from_unknown(unknown_values).map(|i| EnumOrUnknown::from_i32(i))
     }
 
-    fn compute_size(value: &EnumOrUnknown<E>) -> u32 {
+    fn compute_size(value: &EnumOrUnknown<E>) -> u64 {
         rt::compute_raw_varint32_size(value.value() as u32) // TODO: wrap
     }
 
@@ -716,7 +716,7 @@ impl<M: Message + Clone + ProtobufValue + Default> ProtobufType for ProtobufType
             .map(|bytes| M::parse_from_bytes(bytes).expect("cannot parse message"))
     }
 
-    fn compute_size(value: &M) -> u32 {
+    fn compute_size(value: &M) -> u64 {
         value.compute_size()
     }
 

@@ -30,7 +30,7 @@ use crate::EnumOrUnknown;
 use crate::MessageField;
 
 /// Given `u64` value compute varint encoded length.
-pub fn compute_raw_varint64_size(value: u64) -> u32 {
+pub fn compute_raw_varint64_size(value: u64) -> u64 {
     if (value & (0xffffffffffffffffu64 << 7)) == 0 {
         return 1;
     }
@@ -62,7 +62,12 @@ pub fn compute_raw_varint64_size(value: u64) -> u32 {
 }
 
 /// Given `u32` value compute varint encoded length.
-pub fn compute_raw_varint32_size(value: u32) -> u32 {
+pub fn compute_raw_varint32_size(value: u32) -> u64 {
+    compute_raw_varint64_size(value as u64)
+}
+
+/// Given `usize` value compute varint encoded length.
+pub fn compute_raw_varint_usize_size(value: usize) -> u64 {
     compute_raw_varint64_size(value as u64)
 }
 
@@ -75,55 +80,55 @@ pub trait ProtobufFixed {
 /// Helper trait implemented by integer types which could be encoded as varint.
 pub trait ProtobufVarint {
     /// Size of self when encoded as varint.
-    fn len_varint(&self) -> u32;
+    fn len_varint(&self) -> u64;
 }
 
 /// Helper trait implemented by integer types which could be encoded as zigzag varint.
 pub trait ProtobufVarintZigzag {
     /// Size of self when encoded as zigzag varint.
-    fn len_varint_zigzag(&self) -> u32;
+    fn len_varint_zigzag(&self) -> u64;
 }
 
 impl ProtobufVarint for u64 {
-    fn len_varint(&self) -> u32 {
+    fn len_varint(&self) -> u64 {
         compute_raw_varint64_size(*self)
     }
 }
 
 impl ProtobufVarint for u32 {
-    fn len_varint(&self) -> u32 {
+    fn len_varint(&self) -> u64 {
         (*self as u64).len_varint()
     }
 }
 
 impl ProtobufVarint for i64 {
-    fn len_varint(&self) -> u32 {
+    fn len_varint(&self) -> u64 {
         // same as length of u64
         (*self as u64).len_varint()
     }
 }
 
 impl ProtobufVarintZigzag for i64 {
-    fn len_varint_zigzag(&self) -> u32 {
+    fn len_varint_zigzag(&self) -> u64 {
         compute_raw_varint64_size(encode_zig_zag_64(*self))
     }
 }
 
 impl ProtobufVarint for i32 {
-    fn len_varint(&self) -> u32 {
+    fn len_varint(&self) -> u64 {
         // sign-extend and then compute
         (*self as i64).len_varint()
     }
 }
 
 impl ProtobufVarintZigzag for i32 {
-    fn len_varint_zigzag(&self) -> u32 {
+    fn len_varint_zigzag(&self) -> u64 {
         compute_raw_varint32_size(encode_zig_zag_32(*self))
     }
 }
 
 impl ProtobufVarint for bool {
-    fn len_varint(&self) -> u32 {
+    fn len_varint(&self) -> u64 {
         1
     }
 }
@@ -167,33 +172,35 @@ impl<E:ProtobufEnum> ProtobufVarint for E {
 */
 
 /// Size of serialized repeated packed field, excluding length and tag.
-pub fn vec_packed_varint_data_size<T: ProtobufVarint>(vec: &[T]) -> u32 {
-    vec.iter().map(|v| v.len_varint()).fold(0, |a, i| a + i)
+pub fn vec_packed_varint_data_size<T: ProtobufVarint>(vec: &[T]) -> u64 {
+    vec.iter()
+        .map(|v| v.len_varint() as u64)
+        .fold(0, |a, i| a + i)
 }
 
 /// Size of serialized repeated packed field, excluding length and tag.
-pub fn vec_packed_varint_zigzag_data_size<T: ProtobufVarintZigzag>(vec: &[T]) -> u32 {
+pub fn vec_packed_varint_zigzag_data_size<T: ProtobufVarintZigzag>(vec: &[T]) -> u64 {
     vec.iter()
         .map(|v| v.len_varint_zigzag())
         .fold(0, |a, i| a + i)
 }
 
 /// Size of serialized repeated packed enum field, excluding length and tag.
-pub fn vec_packed_enum_data_size<E: Enum>(vec: &[E]) -> u32 {
+pub fn vec_packed_enum_data_size<E: Enum>(vec: &[E]) -> u64 {
     vec.iter()
         .map(|e| compute_raw_varint32_size(e.value() as u32))
         .fold(0, |a, i| a + i)
 }
 
 /// Size of serialized repeated packed enum field, excluding length and tag.
-pub fn vec_packed_enum_or_unknown_data_size<E: Enum>(vec: &[EnumOrUnknown<E>]) -> u32 {
+pub fn vec_packed_enum_or_unknown_data_size<E: Enum>(vec: &[EnumOrUnknown<E>]) -> u64 {
     vec.iter()
         .map(|e| compute_raw_varint32_size(e.value() as u32))
         .fold(0, |a, i| a + i)
 }
 
 /// Size of serialized data with length prefix and tag
-pub fn vec_packed_varint_size<T: ProtobufVarint>(field_number: u32, vec: &[T]) -> u32 {
+pub fn vec_packed_varint_size<T: ProtobufVarint>(field_number: u32, vec: &[T]) -> u64 {
     if vec.is_empty() {
         0
     } else {
@@ -203,7 +210,7 @@ pub fn vec_packed_varint_size<T: ProtobufVarint>(field_number: u32, vec: &[T]) -
 }
 
 /// Size of serialized data with length prefix and tag
-pub fn vec_packed_varint_zigzag_size<T: ProtobufVarintZigzag>(field_number: u32, vec: &[T]) -> u32 {
+pub fn vec_packed_varint_zigzag_size<T: ProtobufVarintZigzag>(field_number: u32, vec: &[T]) -> u64 {
     if vec.is_empty() {
         0
     } else {
@@ -213,7 +220,7 @@ pub fn vec_packed_varint_zigzag_size<T: ProtobufVarintZigzag>(field_number: u32,
 }
 
 /// Size of serialized data with length prefix and tag
-pub fn vec_packed_enum_size<E: Enum>(field_number: u32, vec: &[E]) -> u32 {
+pub fn vec_packed_enum_size<E: Enum>(field_number: u32, vec: &[E]) -> u64 {
     if vec.is_empty() {
         0
     } else {
@@ -226,7 +233,7 @@ pub fn vec_packed_enum_size<E: Enum>(field_number: u32, vec: &[E]) -> u32 {
 pub fn vec_packed_enum_or_unknown_size<E: Enum>(
     field_number: u32,
     vec: &[EnumOrUnknown<E>],
-) -> u32 {
+) -> u64 {
     if vec.is_empty() {
         0
     } else {
@@ -236,12 +243,12 @@ pub fn vec_packed_enum_or_unknown_size<E: Enum>(
 }
 
 /// Compute data size of fixed encoding of repeated field data.
-pub(crate) fn vec_packed_fixed_data_size<V: ProtobufFixed>(vec: &[V]) -> u32 {
-    (vec.len() * V::LEN as usize) as u32
+pub(crate) fn vec_packed_fixed_data_size<V: ProtobufFixed>(vec: &[V]) -> u64 {
+    (vec.len() as u64) * (V::LEN as u64)
 }
 
 /// Compute field size (data plus header) of fixed encoding of repeated field.
-pub fn vec_packed_fixed_size<V: ProtobufFixed>(field_number: u32, vec: &[V]) -> u32 {
+pub fn vec_packed_fixed_size<V: ProtobufFixed>(field_number: u32, vec: &[V]) -> u64 {
     if vec.is_empty() {
         0
     } else {
@@ -251,13 +258,13 @@ pub fn vec_packed_fixed_size<V: ProtobufFixed>(field_number: u32, vec: &[V]) -> 
 }
 
 /// Compute tag size. Size of tag does not depend on wire type.
-pub fn tag_size(field_number: u32) -> u32 {
+pub fn tag_size(field_number: u32) -> u64 {
     wire_format::Tag::make(field_number, WireType::Fixed64)
         .value()
         .len_varint()
 }
 
-fn value_size_no_tag<T: ProtobufVarint>(value: T, wt: WireType) -> u32 {
+fn value_size_no_tag<T: ProtobufVarint>(value: T, wt: WireType) -> u64 {
     match wt {
         WireType::Fixed64 => 8,
         WireType::Fixed32 => 4,
@@ -267,70 +274,70 @@ fn value_size_no_tag<T: ProtobufVarint>(value: T, wt: WireType) -> u32 {
 }
 
 /// Integer value size when encoded as specified wire type.
-pub fn value_size<T: ProtobufVarint>(field_number: u32, value: T, wt: WireType) -> u32 {
+pub fn value_size<T: ProtobufVarint>(field_number: u32, value: T, wt: WireType) -> u64 {
     tag_size(field_number) + value_size_no_tag(value, wt)
 }
 
 /// Integer value size when encoded as specified wire type.
-pub fn value_varint_zigzag_size_no_tag<T: ProtobufVarintZigzag>(value: T) -> u32 {
+pub fn value_varint_zigzag_size_no_tag<T: ProtobufVarintZigzag>(value: T) -> u64 {
     value.len_varint_zigzag()
 }
 
 /// Length of value when encoding with zigzag encoding with tag
-pub fn value_varint_zigzag_size<T: ProtobufVarintZigzag>(field_number: u32, value: T) -> u32 {
+pub fn value_varint_zigzag_size<T: ProtobufVarintZigzag>(field_number: u32, value: T) -> u64 {
     tag_size(field_number) + value_varint_zigzag_size_no_tag(value)
 }
 
-fn enum_size_no_tag<E: Enum>(value: E) -> u32 {
+fn enum_size_no_tag<E: Enum>(value: E) -> u64 {
     value.value().len_varint()
 }
 
-fn enum_or_unknown_size_no_tag<E: Enum>(value: EnumOrUnknown<E>) -> u32 {
-    value.value().len_varint()
+fn enum_or_unknown_size_no_tag<E: Enum>(value: EnumOrUnknown<E>) -> u64 {
+    value.value().len_varint() as u64
 }
 
 /// Size of encoded enum field value.
 // TODO: drop
-pub fn enum_size<E: Enum>(field_number: u32, value: E) -> u32 {
+pub fn enum_size<E: Enum>(field_number: u32, value: E) -> u64 {
     tag_size(field_number) + enum_size_no_tag(value)
 }
 
 /// Size of encoded enum field value.
-pub fn enum_or_unknown_size<E: Enum>(field_number: u32, value: EnumOrUnknown<E>) -> u32 {
+pub fn enum_or_unknown_size<E: Enum>(field_number: u32, value: EnumOrUnknown<E>) -> u64 {
     tag_size(field_number) + enum_or_unknown_size_no_tag(value)
 }
 
-fn bytes_size_no_tag(bytes: &[u8]) -> u32 {
-    compute_raw_varint64_size(bytes.len() as u64) + bytes.len() as u32
+fn bytes_size_no_tag(bytes: &[u8]) -> u64 {
+    compute_raw_varint64_size(bytes.len() as u64) + bytes.len() as u64
 }
 
 /// Size of encoded bytes field.
-pub fn bytes_size(field_number: u32, bytes: &[u8]) -> u32 {
+pub fn bytes_size(field_number: u32, bytes: &[u8]) -> u64 {
     tag_size(field_number) + bytes_size_no_tag(bytes)
 }
 
-fn string_size_no_tag(s: &str) -> u32 {
+fn string_size_no_tag(s: &str) -> u64 {
     bytes_size_no_tag(s.as_bytes())
 }
 
 /// Size of encoded string field.
-pub fn string_size(field_number: u32, s: &str) -> u32 {
+pub fn string_size(field_number: u32, s: &str) -> u64 {
     tag_size(field_number) + string_size_no_tag(s)
 }
 
 /// Size of encoded unknown fields size.
-pub fn unknown_fields_size(unknown_fields: &UnknownFields) -> u32 {
+pub fn unknown_fields_size(unknown_fields: &UnknownFields) -> u64 {
     let mut r = 0;
     for (number, values) in unknown_fields {
-        r += (tag_size(number) + 4) * values.fixed32.len() as u32;
-        r += (tag_size(number) + 8) * values.fixed64.len() as u32;
+        r += (tag_size(number) + 4) * values.fixed32.len() as u64;
+        r += (tag_size(number) + 8) * values.fixed64.len() as u64;
 
-        r += tag_size(number) * values.varint.len() as u32;
+        r += tag_size(number) * values.varint.len() as u64;
         for varint in &values.varint {
             r += varint.len_varint();
         }
 
-        r += tag_size(number) * values.length_delimited.len() as u32;
+        r += tag_size(number) * values.length_delimited.len() as u64;
         for bytes in &values.length_delimited {
             r += bytes_size_no_tag(&bytes);
         }
@@ -933,7 +940,7 @@ pub fn unexpected_wire_type(wire_type: WireType) -> crate::Error {
 pub fn compute_map_size<K, V>(
     field_number: u32,
     map: &HashMap<K::ProtobufValue, V::ProtobufValue>,
-) -> u32
+) -> u64
 where
     K: ProtobufType,
     V: ProtobufType,
@@ -948,7 +955,7 @@ where
         let value_len = V::compute_size_with_length_delimiter(v);
 
         let entry_len = key_tag_size + key_len + value_tag_size + value_len;
-        sum += tag_size(field_number) + compute_raw_varint32_size(entry_len) + entry_len;
+        sum += tag_size(field_number) + compute_raw_varint64_size(entry_len) + entry_len;
     }
     sum
 }

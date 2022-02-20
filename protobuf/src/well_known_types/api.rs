@@ -209,35 +209,35 @@ impl crate::Message for Api {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if !self.name.is_empty() {
             my_size += crate::rt::string_size(1, &self.name);
         }
         for value in &self.methods {
             let len = value.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         for value in &self.options {
             let len = value.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         if !self.version.is_empty() {
             my_size += crate::rt::string_size(4, &self.version);
         }
         if let Some(v) = self.source_context.as_ref() {
             let len = v.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         }
         for value in &self.mixins {
             let len = value.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         if self.syntax != crate::EnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2) {
             my_size += crate::rt::enum_or_unknown_size(7, self.syntax);
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -478,7 +478,7 @@ impl crate::Message for Method {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if !self.name.is_empty() {
             my_size += crate::rt::string_size(1, &self.name);
@@ -497,13 +497,13 @@ impl crate::Message for Method {
         }
         for value in &self.options {
             let len = value.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         if self.syntax != crate::EnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2) {
             my_size += crate::rt::enum_or_unknown_size(7, self.syntax);
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -672,7 +672,7 @@ impl crate::Message for Mixin {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if !self.name.is_empty() {
             my_size += crate::rt::string_size(1, &self.name);
@@ -681,7 +681,7 @@ impl crate::Message for Mixin {
             my_size += crate::rt::string_size(2, &self.root);
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 

@@ -1,6 +1,7 @@
 //! Constants used in serializations.
 
 use crate::descriptor::field_descriptor_proto;
+use crate::error::WireError;
 
 /// Tag occupies three bits.
 pub(crate) const TAG_TYPE_BITS: u32 = 3;
@@ -8,6 +9,22 @@ pub(crate) const TAG_TYPE_BITS: u32 = 3;
 pub(crate) const TAG_TYPE_MASK: u32 = (1u32 << TAG_TYPE_BITS as usize) - 1;
 /// Max possible field number
 pub(crate) const FIELD_NUMBER_MAX: u32 = 0x1fffffff;
+
+pub(crate) const MAX_VARINT_ENCODED_SIZE: u64 = i32::MAX as u64;
+
+#[inline]
+pub(crate) fn check_message_size(size: u64) -> crate::Result<u32> {
+    if size <= MAX_VARINT_ENCODED_SIZE {
+        Ok(size as u32)
+    } else {
+        #[cold]
+        fn message_too_large(size: u64) -> crate::Error {
+            WireError::MessageTooLarge(size).into()
+        }
+
+        Err(message_too_large(size))
+    }
+}
 
 /// All supported "wire types" are listed in this enum.
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]

@@ -23,6 +23,7 @@ use crate::reflect::RuntimeFieldType;
 use crate::reflect::Syntax;
 use crate::rt::bytes_size;
 use crate::rt::compute_raw_varint32_size;
+use crate::rt::compute_raw_varint64_size;
 use crate::rt::read_map_template;
 use crate::rt::read_unknown_or_skip_group;
 use crate::rt::string_size;
@@ -396,7 +397,7 @@ impl Message for DynamicMessage {
             ) -> Result<()> {
                 let entry_data_size = compute_map_entry_field_data_size(key, kt, value, vt);
                 self.os.write_tag(number, WireType::LengthDelimited)?;
-                self.os.write_raw_varint32(entry_data_size)?;
+                self.os.write_raw_varint32(entry_data_size as u32)?;
                 singular_write_to(kt, 1, key, self.os)?;
                 singular_write_to(vt, 2, value, self.os)?;
                 Ok(())
@@ -412,9 +413,9 @@ impl Message for DynamicMessage {
         self.for_each_field_to_write(&mut handler)
     }
 
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         struct Handler {
-            m_size: u32,
+            m_size: u64,
         }
 
         impl ForEachSingularFieldToWrite for Handler {
@@ -527,7 +528,7 @@ fn singular_write_to(
 }
 
 /// Compute singular field size
-fn compute_singular_size(proto_type: Type, field_number: u32, v: &ReflectValueRef) -> u32 {
+fn compute_singular_size(proto_type: Type, field_number: u32, v: &ReflectValueRef) -> u64 {
     match proto_type {
         Type::TYPE_ENUM => {
             let enum_v = v.to_enum_value().unwrap();
@@ -536,7 +537,7 @@ fn compute_singular_size(proto_type: Type, field_number: u32, v: &ReflectValueRe
         Type::TYPE_MESSAGE => {
             let msg_v = v.to_message().unwrap();
             let len = msg_v.compute_size_dyn();
-            tag_size(field_number) + compute_raw_varint32_size(len) + len
+            tag_size(field_number) + compute_raw_varint64_size(len) + len
         }
         Type::TYPE_GROUP => {
             unimplemented!()
@@ -590,7 +591,7 @@ fn compute_repeated_packed_size(
     proto_type: Type,
     field_number: u32,
     v: &ReflectRepeatedRef,
-) -> u32 {
+) -> u64 {
     match proto_type {
         Type::TYPE_INT32 => vec_packed_varint_size(field_number, v.data_i32()),
         Type::TYPE_INT64 => vec_packed_varint_size(field_number, v.data_i64()),
@@ -646,7 +647,7 @@ fn compute_map_entry_field_data_size(
     kt: Type,
     value: &ReflectValueRef,
     vt: Type,
-) -> u32 {
+) -> u64 {
     let key_size = compute_singular_size(kt, 1, key);
     let value_size = compute_singular_size(vt, 2, value);
     key_size + value_size

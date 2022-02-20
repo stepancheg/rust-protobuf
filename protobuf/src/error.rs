@@ -31,6 +31,8 @@ pub(crate) enum WireError {
     LimitOverflow,
     #[error("New limit must not be greater than current limit")]
     LimitIncrease,
+    #[error("Encoded message size {0} is too large")]
+    MessageTooLarge(u64),
 }
 
 /// Generic protobuf error
@@ -69,6 +71,13 @@ impl From<ProtobufError> for Error {
     #[cold]
     fn from(e: ProtobufError) -> Self {
         Self(Box::new(e))
+    }
+}
+
+impl From<WireError> for Error {
+    #[cold]
+    fn from(e: WireError) -> Self {
+        Self(Box::new(ProtobufError::WireError(e)))
     }
 }
 

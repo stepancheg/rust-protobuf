@@ -331,7 +331,7 @@ impl<'a> MessageGen<'a> {
         w.comment("Compute sizes of nested messages");
         // there are unused variables in oneof
         w.allow(&["unused_variables"]);
-        w.def_fn("compute_size(&self) -> u32", |w| {
+        w.def_fn("compute_size(&self) -> u64", |w| {
             // To have access to its methods but not polute the name space.
             w.write_line("let mut my_size = 0;");
             for field in self.fields_except_oneof_and_group() {
@@ -344,7 +344,7 @@ impl<'a> MessageGen<'a> {
                 "my_size += {}::rt::unknown_fields_size(self.unknown_fields());",
                 protobuf_crate_path(&self.customize.for_elem)
             ));
-            w.write_line("self.cached_size.set(my_size);");
+            w.write_line("self.cached_size.set(my_size as u32);");
             w.write_line("my_size");
         });
     }

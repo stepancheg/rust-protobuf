@@ -637,7 +637,7 @@ impl<'a> FieldGen<'a> {
     }
 
     fn tag_size(&self) -> u32 {
-        rt::tag_size(self.proto_field.number())
+        rt::tag_size(self.proto_field.number()) as u32
     }
 
     fn is_singular(&self) -> bool {
@@ -1710,7 +1710,7 @@ impl<'a> FieldGen<'a> {
                 w.write_line(&format!("let len = {}.compute_size();", item_var));
                 let tag_size = self.tag_size();
                 w.write_line(&format!(
-                    "{} += {} + {}::rt::compute_raw_varint32_size(len) + len;",
+                    "{} += {} + {}::rt::compute_raw_varint64_size(len) + len;",
                     sum_var,
                     tag_size,
                     protobuf_crate_path(&self.customize),
@@ -1787,7 +1787,7 @@ impl<'a> FieldGen<'a> {
                         let tag_size = self.tag_size();
                         let self_field = self.self_field();
                         w.write_line(&format!(
-                            "{} += {} * {}.len() as u32;",
+                            "{} += {} * {}.len() as u64;",
                             sum_var,
                             (s + tag_size) as isize,
                             self_field

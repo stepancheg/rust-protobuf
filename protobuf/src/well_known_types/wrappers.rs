@@ -89,13 +89,13 @@ impl crate::Message for DoubleValue {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if self.value != 0. {
             my_size += 9;
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -222,13 +222,13 @@ impl crate::Message for FloatValue {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if self.value != 0. {
             my_size += 5;
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -355,13 +355,13 @@ impl crate::Message for Int64Value {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if self.value != 0 {
             my_size += crate::rt::value_size(1, self.value, crate::rt::WireType::Varint);
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -488,13 +488,13 @@ impl crate::Message for UInt64Value {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if self.value != 0 {
             my_size += crate::rt::value_size(1, self.value, crate::rt::WireType::Varint);
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -621,13 +621,13 @@ impl crate::Message for Int32Value {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if self.value != 0 {
             my_size += crate::rt::value_size(1, self.value, crate::rt::WireType::Varint);
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -754,13 +754,13 @@ impl crate::Message for UInt32Value {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if self.value != 0 {
             my_size += crate::rt::value_size(1, self.value, crate::rt::WireType::Varint);
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -887,13 +887,13 @@ impl crate::Message for BoolValue {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if self.value != false {
             my_size += 2;
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -1020,13 +1020,13 @@ impl crate::Message for StringValue {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if !self.value.is_empty() {
             my_size += crate::rt::string_size(1, &self.value);
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -1153,13 +1153,13 @@ impl crate::Message for BytesValue {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if !self.value.is_empty() {
             my_size += crate::rt::bytes_size(1, &self.value);
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 

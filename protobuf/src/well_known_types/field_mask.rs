@@ -83,13 +83,13 @@ impl crate::Message for FieldMask {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         for value in &self.paths {
             my_size += crate::rt::string_size(1, &value);
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 

@@ -224,7 +224,7 @@ impl crate::Message for Version {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if let Some(v) = self.major {
             my_size += crate::rt::value_size(1, v, crate::rt::WireType::Varint);
@@ -239,7 +239,7 @@ impl crate::Message for Version {
             my_size += crate::rt::string_size(4, &v);
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -474,7 +474,7 @@ impl crate::Message for CodeGeneratorRequest {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         for value in &self.file_to_generate {
             my_size += crate::rt::string_size(1, &value);
@@ -484,14 +484,14 @@ impl crate::Message for CodeGeneratorRequest {
         }
         for value in &self.proto_file {
             let len = value.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         if let Some(v) = self.compiler_version.as_ref() {
             let len = v.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -725,7 +725,7 @@ impl crate::Message for CodeGeneratorResponse {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if let Some(v) = self.error.as_ref() {
             my_size += crate::rt::string_size(1, &v);
@@ -735,10 +735,10 @@ impl crate::Message for CodeGeneratorResponse {
         }
         for value in &self.file {
             let len = value.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -1078,7 +1078,7 @@ pub mod code_generator_response {
 
         // Compute sizes of nested messages
         #[allow(unused_variables)]
-        fn compute_size(&self) -> u32 {
+        fn compute_size(&self) -> u64 {
             let mut my_size = 0;
             if let Some(v) = self.name.as_ref() {
                 my_size += crate::rt::string_size(1, &v);
@@ -1091,10 +1091,10 @@ pub mod code_generator_response {
             }
             if let Some(v) = self.generated_code_info.as_ref() {
                 let len = v.compute_size();
-                my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
+                my_size += 2 + crate::rt::compute_raw_varint64_size(len) + len;
             }
             my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-            self.cached_size.set(my_size);
+            self.cached_size.set(my_size as u32);
             my_size
         }
 

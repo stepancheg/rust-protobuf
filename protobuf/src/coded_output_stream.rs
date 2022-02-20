@@ -14,6 +14,7 @@ use crate::rt::vec_packed_varint_data_size;
 use crate::rt::vec_packed_varint_zigzag_data_size;
 use crate::varint;
 use crate::wire_format;
+use crate::wire_format::check_message_size;
 use crate::wire_format::WireType;
 use crate::zigzag::encode_zig_zag_32;
 use crate::zigzag::encode_zig_zag_64;
@@ -607,6 +608,7 @@ impl<'a> CodedOutputStream<'a> {
     /// Write dynamic message
     pub fn write_message_no_tag_dyn(&mut self, msg: &dyn MessageDyn) -> Result<()> {
         let size = msg.compute_size_dyn();
+        let size = check_message_size(size)?;
         self.write_raw_varint32(size)?;
         msg.write_to_dyn(self)?;
         Ok(())
@@ -641,7 +643,7 @@ impl<'a> CodedOutputStream<'a> {
         }
         self.write_tag(field_number, WireType::LengthDelimited)?;
         let data_size = vec_packed_fixed_data_size(values);
-        self.write_raw_varint32(data_size)?;
+        self.write_raw_varint32(data_size as u32)?;
         self.write_repeated_packed_float_no_tag(values)?;
         Ok(())
     }
@@ -665,7 +667,7 @@ impl<'a> CodedOutputStream<'a> {
         }
         self.write_tag(field_number, WireType::LengthDelimited)?;
         let data_size = vec_packed_fixed_data_size(values);
-        self.write_raw_varint32(data_size)?;
+        self.write_raw_varint32(data_size as u32)?;
         self.write_repeated_packed_double_no_tag(values)?;
         Ok(())
     }
@@ -690,7 +692,7 @@ impl<'a> CodedOutputStream<'a> {
         }
         self.write_tag(field_number, WireType::LengthDelimited)?;
         let data_size = vec_packed_fixed_data_size(values);
-        self.write_raw_varint32(data_size)?;
+        self.write_raw_varint32(data_size as u32)?;
         self.write_repeated_packed_fixed32_no_tag(values)?;
         Ok(())
     }
@@ -714,7 +716,7 @@ impl<'a> CodedOutputStream<'a> {
         }
         self.write_tag(field_number, WireType::LengthDelimited)?;
         let data_size = vec_packed_fixed_data_size(values);
-        self.write_raw_varint32(data_size)?;
+        self.write_raw_varint32(data_size as u32)?;
         self.write_repeated_packed_fixed64_no_tag(values)?;
         Ok(())
     }
@@ -738,7 +740,7 @@ impl<'a> CodedOutputStream<'a> {
         }
         self.write_tag(field_number, WireType::LengthDelimited)?;
         let data_size = vec_packed_fixed_data_size(values);
-        self.write_raw_varint32(data_size)?;
+        self.write_raw_varint32(data_size as u32)?;
         self.write_repeated_packed_sfixed32_no_tag(values)?;
         Ok(())
     }
@@ -762,7 +764,7 @@ impl<'a> CodedOutputStream<'a> {
         }
         self.write_tag(field_number, WireType::LengthDelimited)?;
         let data_size = vec_packed_fixed_data_size(values);
-        self.write_raw_varint32(data_size)?;
+        self.write_raw_varint32(data_size as u32)?;
         self.write_repeated_packed_sfixed64_no_tag(values)?;
         Ok(())
     }
@@ -782,7 +784,7 @@ impl<'a> CodedOutputStream<'a> {
         }
         self.write_tag(field_number, WireType::LengthDelimited)?;
         let data_size = vec_packed_varint_data_size(values);
-        self.write_raw_varint32(data_size)?;
+        self.write_raw_varint32(data_size as u32)?;
         self.write_repeated_packed_int32_no_tag(values)?;
         Ok(())
     }
@@ -802,7 +804,7 @@ impl<'a> CodedOutputStream<'a> {
         }
         self.write_tag(field_number, WireType::LengthDelimited)?;
         let data_size = vec_packed_varint_data_size(values);
-        self.write_raw_varint32(data_size)?;
+        self.write_raw_varint32(data_size as u32)?;
         self.write_repeated_packed_int64_no_tag(values)?;
         Ok(())
     }
@@ -826,7 +828,7 @@ impl<'a> CodedOutputStream<'a> {
         }
         self.write_tag(field_number, WireType::LengthDelimited)?;
         let data_size = vec_packed_varint_data_size(values);
-        self.write_raw_varint32(data_size)?;
+        self.write_raw_varint32(data_size as u32)?;
         self.write_repeated_packed_uint32_no_tag(values)?;
         Ok(())
     }
@@ -850,7 +852,7 @@ impl<'a> CodedOutputStream<'a> {
         }
         self.write_tag(field_number, WireType::LengthDelimited)?;
         let data_size = vec_packed_varint_data_size(values);
-        self.write_raw_varint32(data_size)?;
+        self.write_raw_varint32(data_size as u32)?;
         self.write_repeated_packed_uint64_no_tag(values)?;
         Ok(())
     }
@@ -874,7 +876,7 @@ impl<'a> CodedOutputStream<'a> {
         }
         self.write_tag(field_number, WireType::LengthDelimited)?;
         let data_size = vec_packed_varint_zigzag_data_size(values);
-        self.write_raw_varint32(data_size)?;
+        self.write_raw_varint32(data_size as u32)?;
         self.write_repeated_packed_sint32_no_tag(values)?;
         Ok(())
     }
@@ -898,7 +900,7 @@ impl<'a> CodedOutputStream<'a> {
         }
         self.write_tag(field_number, WireType::LengthDelimited)?;
         let data_size = vec_packed_varint_zigzag_data_size(values);
-        self.write_raw_varint32(data_size)?;
+        self.write_raw_varint32(data_size as u32)?;
         self.write_repeated_packed_sint64_no_tag(values)?;
         Ok(())
     }
@@ -918,7 +920,7 @@ impl<'a> CodedOutputStream<'a> {
         }
         self.write_tag(field_number, WireType::LengthDelimited)?;
         let data_size = vec_packed_fixed_data_size(values);
-        self.write_raw_varint32(data_size)?;
+        self.write_raw_varint32(data_size as u32)?;
         self.write_repeated_packed_bool_no_tag(values)?;
         Ok(())
     }
@@ -953,7 +955,7 @@ impl<'a> CodedOutputStream<'a> {
         }
         self.write_tag(field_number, WireType::LengthDelimited)?;
         let data_size = vec_packed_enum_or_unknown_data_size(values);
-        self.write_raw_varint32(data_size)?;
+        self.write_raw_varint32(data_size as u32)?;
         self.write_repeated_packed_enum_or_unknown_no_tag(values)?;
         Ok(())
     }

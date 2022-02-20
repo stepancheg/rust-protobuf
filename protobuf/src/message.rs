@@ -15,6 +15,7 @@ use crate::message_dyn::MessageDyn;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::MessageDescriptor;
 use crate::unknown::UnknownFields;
+use crate::wire_format::check_message_size;
 
 /// Trait implemented for all the messages (generated and dynamic).
 ///
@@ -81,10 +82,14 @@ pub trait Message:
     /// by calling `compute_size` prior to this call.
     fn write_to_with_cached_sizes(&self, os: &mut CodedOutputStream) -> Result<()>;
 
-    /// Compute and cache size of this message and all nested messages
-    fn compute_size(&self) -> u32;
+    /// Compute and cache size of this message and all nested messages.
+    ///
+    /// Note if the computation overflows u32, the cached size is stored truncated.
+    fn compute_size(&self) -> u64;
 
     /// Get size previously computed by `compute_size`.
+    ///
+    /// Note if message size exceeds u32, the cached size is stored truncated.
     fn cached_size(&self) -> u32;
 
     /// Write the message to the stream.
@@ -103,9 +108,10 @@ pub trait Message:
 
     /// Write the message to the stream prepending the message with message length
     /// encoded as varint.
-    fn write_length_delimited_to(&self, os: &mut CodedOutputStream) -> Result<()> {
+    fn write_length_delimited_to(&self, os: &mut CodedOutputStream) -> crate::Result<()> {
         let size = self.compute_size();
-        os.write_raw_varint32(size)?;
+        let size = check_message_size(size)?;
+        os.write_raw_varint32(size as u32)?;
 
         let written = os.total_bytes_written();
 

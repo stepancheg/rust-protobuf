@@ -127,7 +127,7 @@ impl crate::Message for Any {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if !self.type_url.is_empty() {
             my_size += crate::rt::string_size(1, &self.type_url);
@@ -136,7 +136,7 @@ impl crate::Message for Any {
             my_size += crate::rt::bytes_size(2, &self.value);
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 

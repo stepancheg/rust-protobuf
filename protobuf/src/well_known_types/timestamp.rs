@@ -105,7 +105,7 @@ impl crate::Message for Timestamp {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if self.seconds != 0 {
             my_size += crate::rt::value_size(1, self.seconds, crate::rt::WireType::Varint);
@@ -114,7 +114,7 @@ impl crate::Message for Timestamp {
             my_size += crate::rt::value_size(2, self.nanos, crate::rt::WireType::Varint);
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 

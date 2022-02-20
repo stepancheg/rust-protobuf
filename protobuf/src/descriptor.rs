@@ -89,14 +89,14 @@ impl crate::Message for FileDescriptorSet {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         for value in &self.file {
             let len = value.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -488,7 +488,7 @@ impl crate::Message for FileDescriptorProto {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if let Some(v) = self.name.as_ref() {
             my_size += crate::rt::string_size(1, &v);
@@ -507,33 +507,33 @@ impl crate::Message for FileDescriptorProto {
         };
         for value in &self.message_type {
             let len = value.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         for value in &self.enum_type {
             let len = value.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         for value in &self.service {
             let len = value.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         for value in &self.extension {
             let len = value.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         if let Some(v) = self.options.as_ref() {
             let len = v.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         }
         if let Some(v) = self.source_code_info.as_ref() {
             let len = v.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         }
         if let Some(v) = self.syntax.as_ref() {
             my_size += crate::rt::string_size(12, &v);
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -881,48 +881,48 @@ impl crate::Message for DescriptorProto {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if let Some(v) = self.name.as_ref() {
             my_size += crate::rt::string_size(1, &v);
         }
         for value in &self.field {
             let len = value.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         for value in &self.extension {
             let len = value.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         for value in &self.nested_type {
             let len = value.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         for value in &self.enum_type {
             let len = value.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         for value in &self.extension_range {
             let len = value.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         for value in &self.oneof_decl {
             let len = value.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         if let Some(v) = self.options.as_ref() {
             let len = v.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         }
         for value in &self.reserved_range {
             let len = value.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         for value in &self.reserved_name {
             my_size += crate::rt::string_size(10, &value);
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -1160,7 +1160,7 @@ pub mod descriptor_proto {
 
         // Compute sizes of nested messages
         #[allow(unused_variables)]
-        fn compute_size(&self) -> u32 {
+        fn compute_size(&self) -> u64 {
             let mut my_size = 0;
             if let Some(v) = self.start {
                 my_size += crate::rt::value_size(1, v, crate::rt::WireType::Varint);
@@ -1170,10 +1170,10 @@ pub mod descriptor_proto {
             }
             if let Some(v) = self.options.as_ref() {
                 let len = v.compute_size();
-                my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+                my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
             }
             my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-            self.cached_size.set(my_size);
+            self.cached_size.set(my_size as u32);
             my_size
         }
 
@@ -1362,7 +1362,7 @@ pub mod descriptor_proto {
 
         // Compute sizes of nested messages
         #[allow(unused_variables)]
-        fn compute_size(&self) -> u32 {
+        fn compute_size(&self) -> u64 {
             let mut my_size = 0;
             if let Some(v) = self.start {
                 my_size += crate::rt::value_size(1, v, crate::rt::WireType::Varint);
@@ -1371,7 +1371,7 @@ pub mod descriptor_proto {
                 my_size += crate::rt::value_size(2, v, crate::rt::WireType::Varint);
             }
             my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-            self.cached_size.set(my_size);
+            self.cached_size.set(my_size as u32);
             my_size
         }
 
@@ -1503,14 +1503,14 @@ impl crate::Message for ExtensionRangeOptions {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
-            my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 2 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -2098,7 +2098,7 @@ impl crate::Message for FieldDescriptorProto {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if let Some(v) = self.name.as_ref() {
             my_size += crate::rt::string_size(1, &v);
@@ -2129,13 +2129,13 @@ impl crate::Message for FieldDescriptorProto {
         }
         if let Some(v) = self.options.as_ref() {
             let len = v.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         }
         if let Some(v) = self.proto3_optional {
             my_size += 3;
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -2536,17 +2536,17 @@ impl crate::Message for OneofDescriptorProto {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if let Some(v) = self.name.as_ref() {
             my_size += crate::rt::string_size(1, &v);
         }
         if let Some(v) = self.options.as_ref() {
             let len = v.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -2772,28 +2772,28 @@ impl crate::Message for EnumDescriptorProto {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if let Some(v) = self.name.as_ref() {
             my_size += crate::rt::string_size(1, &v);
         }
         for value in &self.value {
             let len = value.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         if let Some(v) = self.options.as_ref() {
             let len = v.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         }
         for value in &self.reserved_range {
             let len = value.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         for value in &self.reserved_name {
             my_size += crate::rt::string_size(5, &value);
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -2997,7 +2997,7 @@ pub mod enum_descriptor_proto {
 
         // Compute sizes of nested messages
         #[allow(unused_variables)]
-        fn compute_size(&self) -> u32 {
+        fn compute_size(&self) -> u64 {
             let mut my_size = 0;
             if let Some(v) = self.start {
                 my_size += crate::rt::value_size(1, v, crate::rt::WireType::Varint);
@@ -3006,7 +3006,7 @@ pub mod enum_descriptor_proto {
                 my_size += crate::rt::value_size(2, v, crate::rt::WireType::Varint);
             }
             my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-            self.cached_size.set(my_size);
+            self.cached_size.set(my_size as u32);
             my_size
         }
 
@@ -3221,7 +3221,7 @@ impl crate::Message for EnumValueDescriptorProto {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if let Some(v) = self.name.as_ref() {
             my_size += crate::rt::string_size(1, &v);
@@ -3231,10 +3231,10 @@ impl crate::Message for EnumValueDescriptorProto {
         }
         if let Some(v) = self.options.as_ref() {
             let len = v.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -3435,21 +3435,21 @@ impl crate::Message for ServiceDescriptorProto {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if let Some(v) = self.name.as_ref() {
             my_size += crate::rt::string_size(1, &v);
         }
         for value in &self.method {
             let len = value.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         if let Some(v) = self.options.as_ref() {
             let len = v.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -3805,7 +3805,7 @@ impl crate::Message for MethodDescriptorProto {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if let Some(v) = self.name.as_ref() {
             my_size += crate::rt::string_size(1, &v);
@@ -3818,7 +3818,7 @@ impl crate::Message for MethodDescriptorProto {
         }
         if let Some(v) = self.options.as_ref() {
             let len = v.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         }
         if let Some(v) = self.client_streaming {
             my_size += 2;
@@ -3827,7 +3827,7 @@ impl crate::Message for MethodDescriptorProto {
             my_size += 2;
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -4873,7 +4873,7 @@ impl crate::Message for FileOptions {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if let Some(v) = self.java_package.as_ref() {
             my_size += crate::rt::string_size(1, &v);
@@ -4937,10 +4937,10 @@ impl crate::Message for FileOptions {
         }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
-            my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 2 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -5365,7 +5365,7 @@ impl crate::Message for MessageOptions {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if let Some(v) = self.message_set_wire_format {
             my_size += 2;
@@ -5381,10 +5381,10 @@ impl crate::Message for MessageOptions {
         }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
-            my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 2 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -5787,7 +5787,7 @@ impl crate::Message for FieldOptions {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if let Some(v) = self.ctype {
             my_size += crate::rt::enum_or_unknown_size(1, v);
@@ -5809,10 +5809,10 @@ impl crate::Message for FieldOptions {
         }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
-            my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 2 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -6081,14 +6081,14 @@ impl crate::Message for OneofOptions {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
-            my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 2 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -6286,7 +6286,7 @@ impl crate::Message for EnumOptions {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if let Some(v) = self.allow_alias {
             my_size += 2;
@@ -6296,10 +6296,10 @@ impl crate::Message for EnumOptions {
         }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
-            my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 2 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -6472,17 +6472,17 @@ impl crate::Message for EnumValueOptions {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if let Some(v) = self.deprecated {
             my_size += 2;
         }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
-            my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 2 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -6650,17 +6650,17 @@ impl crate::Message for ServiceOptions {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if let Some(v) = self.deprecated {
             my_size += 3;
         }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
-            my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 2 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -6864,7 +6864,7 @@ impl crate::Message for MethodOptions {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if let Some(v) = self.deprecated {
             my_size += 3;
@@ -6874,10 +6874,10 @@ impl crate::Message for MethodOptions {
         }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
-            my_size += 2 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 2 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -7330,11 +7330,11 @@ impl crate::Message for UninterpretedOption {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         for value in &self.name {
             let len = value.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         if let Some(v) = self.identifier_value.as_ref() {
             my_size += crate::rt::string_size(3, &v);
@@ -7355,7 +7355,7 @@ impl crate::Message for UninterpretedOption {
             my_size += crate::rt::string_size(8, &v);
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -7591,7 +7591,7 @@ pub mod uninterpreted_option {
 
         // Compute sizes of nested messages
         #[allow(unused_variables)]
-        fn compute_size(&self) -> u32 {
+        fn compute_size(&self) -> u64 {
             let mut my_size = 0;
             if let Some(v) = self.name_part.as_ref() {
                 my_size += crate::rt::string_size(1, &v);
@@ -7600,7 +7600,7 @@ pub mod uninterpreted_option {
                 my_size += 2;
             }
             my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-            self.cached_size.set(my_size);
+            self.cached_size.set(my_size as u32);
             my_size
         }
 
@@ -7733,14 +7733,14 @@ impl crate::Message for SourceCodeInfo {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         for value in &self.location {
             let len = value.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -7987,7 +7987,7 @@ pub mod source_code_info {
 
         // Compute sizes of nested messages
         #[allow(unused_variables)]
-        fn compute_size(&self) -> u32 {
+        fn compute_size(&self) -> u64 {
             let mut my_size = 0;
             if !self.path.is_empty() {
                 my_size += crate::rt::vec_packed_varint_size(1, &self.path);
@@ -8005,7 +8005,7 @@ pub mod source_code_info {
                 my_size += crate::rt::string_size(6, &value);
             };
             my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-            self.cached_size.set(my_size);
+            self.cached_size.set(my_size as u32);
             my_size
         }
 
@@ -8152,14 +8152,14 @@ impl crate::Message for GeneratedCodeInfo {
 
     // Compute sizes of nested messages
     #[allow(unused_variables)]
-    fn compute_size(&self) -> u32 {
+    fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         for value in &self.annotation {
             let len = value.compute_size();
-            my_size += 1 + crate::rt::compute_raw_varint32_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size);
+        self.cached_size.set(my_size as u32);
         my_size
     }
 
@@ -8405,7 +8405,7 @@ pub mod generated_code_info {
 
         // Compute sizes of nested messages
         #[allow(unused_variables)]
-        fn compute_size(&self) -> u32 {
+        fn compute_size(&self) -> u64 {
             let mut my_size = 0;
             if !self.path.is_empty() {
                 my_size += crate::rt::vec_packed_varint_size(1, &self.path);
@@ -8420,7 +8420,7 @@ pub mod generated_code_info {
                 my_size += crate::rt::value_size(4, v, crate::rt::WireType::Varint);
             }
             my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-            self.cached_size.set(my_size);
+            self.cached_size.set(my_size as u32);
             my_size
         }
 

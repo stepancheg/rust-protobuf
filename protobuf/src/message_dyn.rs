@@ -7,6 +7,7 @@ use crate::coded_output_stream::WithCodedOutputStream;
 use crate::error::ProtobufError;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectEqMode;
+use crate::wire_format::check_message_size;
 use crate::CodedInputStream;
 use crate::CodedOutputStream;
 use crate::Message;
@@ -25,7 +26,7 @@ pub trait MessageDyn: Any + fmt::Debug + fmt::Display + Send + Sync + 'static {
     fn write_to_with_cached_sizes_dyn(&self, os: &mut CodedOutputStream) -> Result<()>;
 
     /// Compute (and cache) the message size.
-    fn compute_size_dyn(&self) -> u32;
+    fn compute_size_dyn(&self) -> u64;
 
     /// True iff all required fields are initialized.
     /// Always returns `true` for protobuf 3.
@@ -50,7 +51,7 @@ impl<M: Message> MessageDyn for M {
         self.write_to_with_cached_sizes(os)
     }
 
-    fn compute_size_dyn(&self) -> u32 {
+    fn compute_size_dyn(&self) -> u64 {
         self.compute_size()
     }
 
@@ -144,6 +145,7 @@ impl dyn MessageDyn {
     /// encoded as varint.
     pub fn write_length_delimited_to_dyn(&self, os: &mut CodedOutputStream) -> Result<()> {
         let size = self.compute_size_dyn();
+        let size = check_message_size(size)?;
         os.write_raw_varint32(size)?;
         self.write_to_with_cached_sizes_dyn(os)?;
 
