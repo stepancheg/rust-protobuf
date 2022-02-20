@@ -132,7 +132,7 @@ impl<'a> CodedInputStream<'a> {
     /// This operation returns a shared view if `CodedInputStream` is
     /// constructed with `Bytes` parameter.
     #[cfg(feature = "bytes")]
-    fn read_raw_callerche_bytes(&mut self, count: usize) -> crate::Result<Bytes> {
+    fn read_raw_tokio_bytes(&mut self, count: usize) -> crate::Result<Bytes> {
         self.source.read_exact_bytes(count)
     }
 
@@ -560,7 +560,7 @@ impl<'a> CodedInputStream<'a> {
     #[cfg(feature = "bytes")]
     pub fn read_tokio_bytes(&mut self) -> crate::Result<Bytes> {
         let len = self.read_raw_varint32()?;
-        self.read_raw_callerche_bytes(len as usize)
+        self.read_raw_tokio_bytes(len as usize)
     }
 
     /// Read `string` field, length delimited
