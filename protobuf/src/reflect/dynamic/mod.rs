@@ -25,7 +25,7 @@ use crate::rt::bytes_size;
 use crate::rt::compute_raw_varint32_size;
 use crate::rt::compute_raw_varint64_size;
 use crate::rt::read_map_template;
-use crate::rt::read_unknown_or_skip_group;
+use crate::rt::read_unknown_or_skip_group_with_tag_unpacked;
 use crate::rt::string_size;
 use crate::rt::tag_size;
 use crate::rt::unknown_fields_size;
@@ -329,7 +329,12 @@ impl Message for DynamicMessage {
             let field_desc = match self.descriptor.field_by_number(field) {
                 Some(f) => f,
                 None => {
-                    read_unknown_or_skip_group(field, wire_type, is, &mut self.unknown_fields)?;
+                    read_unknown_or_skip_group_with_tag_unpacked(
+                        field,
+                        wire_type,
+                        is,
+                        &mut self.unknown_fields,
+                    )?;
                     continue;
                 }
             };

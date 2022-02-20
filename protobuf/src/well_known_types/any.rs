@@ -104,21 +104,23 @@ impl crate::Message for Any {
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
-            match field_number {
-                1 => {
+            // TODO: tag is temporary for migration
+            let tag = (field_number << 3) + wire_type as u32;
+            match (field_number, tag) {
+                (1, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.type_url = is.read_string()?;
                 },
-                2 => {
+                (2, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.value = is.read_bytes()?;
                 },
-                _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                (_, tag) => {
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
         }

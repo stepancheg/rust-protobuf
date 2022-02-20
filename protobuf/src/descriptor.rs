@@ -75,12 +75,14 @@ impl crate::Message for FileDescriptorSet {
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
-            match field_number {
-                1 => {
+            // TODO: tag is temporary for migration
+            let tag = (field_number << 3) + wire_type as u32;
+            match (field_number, tag) {
+                (1, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.file)?;
                 },
-                _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                (_, tag) => {
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -432,54 +434,56 @@ impl crate::Message for FileDescriptorProto {
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
-            match field_number {
-                1 => {
+            // TODO: tag is temporary for migration
+            let tag = (field_number << 3) + wire_type as u32;
+            match (field_number, tag) {
+                (1, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.name = ::std::option::Option::Some(is.read_string()?);
                 },
-                2 => {
+                (2, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.package = ::std::option::Option::Some(is.read_string()?);
                 },
-                3 => {
+                (3, _) => {
                     crate::rt::read_repeated_string_into(wire_type, is, &mut self.dependency)?;
                 },
-                10 => {
+                (10, _) => {
                     crate::rt::read_repeated_int32_into(wire_type, is, &mut self.public_dependency)?;
                 },
-                11 => {
+                (11, _) => {
                     crate::rt::read_repeated_int32_into(wire_type, is, &mut self.weak_dependency)?;
                 },
-                4 => {
+                (4, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.message_type)?;
                 },
-                5 => {
+                (5, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.enum_type)?;
                 },
-                6 => {
+                (6, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.service)?;
                 },
-                7 => {
+                (7, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.extension)?;
                 },
-                8 => {
+                (8, _) => {
                     crate::rt::read_singular_message_into_field(wire_type, is, &mut self.options)?;
                 },
-                9 => {
+                (9, _) => {
                     crate::rt::read_singular_message_into_field(wire_type, is, &mut self.source_code_info)?;
                 },
-                12 => {
+                (12, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.syntax = ::std::option::Option::Some(is.read_string()?);
                 },
-                _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                (_, tag) => {
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -837,42 +841,44 @@ impl crate::Message for DescriptorProto {
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
-            match field_number {
-                1 => {
+            // TODO: tag is temporary for migration
+            let tag = (field_number << 3) + wire_type as u32;
+            match (field_number, tag) {
+                (1, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.name = ::std::option::Option::Some(is.read_string()?);
                 },
-                2 => {
+                (2, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.field)?;
                 },
-                6 => {
+                (6, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.extension)?;
                 },
-                3 => {
+                (3, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.nested_type)?;
                 },
-                4 => {
+                (4, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.enum_type)?;
                 },
-                5 => {
+                (5, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.extension_range)?;
                 },
-                8 => {
+                (8, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.oneof_decl)?;
                 },
-                7 => {
+                (7, _) => {
                     crate::rt::read_singular_message_into_field(wire_type, is, &mut self.options)?;
                 },
-                9 => {
+                (9, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.reserved_range)?;
                 },
-                10 => {
+                (10, _) => {
                     crate::rt::read_repeated_string_into(wire_type, is, &mut self.reserved_name)?;
                 },
-                _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                (_, tag) => {
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -1134,24 +1140,26 @@ pub mod descriptor_proto {
         fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
             while !is.eof()? {
                 let (field_number, wire_type) = is.read_tag_unpack()?;
-                match field_number {
-                    1 => {
+                // TODO: tag is temporary for migration
+                let tag = (field_number << 3) + wire_type as u32;
+                match (field_number, tag) {
+                    (1, _) => {
                         if wire_type != crate::rt::WireType::Varint {
                             return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                         }
                         self.start = ::std::option::Option::Some(is.read_int32()?);
                     },
-                    2 => {
+                    (2, _) => {
                         if wire_type != crate::rt::WireType::Varint {
                             return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                         }
                         self.end = ::std::option::Option::Some(is.read_int32()?);
                     },
-                    3 => {
+                    (3, _) => {
                         crate::rt::read_singular_message_into_field(wire_type, is, &mut self.options)?;
                     },
-                    _ => {
-                        crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    (_, tag) => {
+                        crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                     },
                 };
             }
@@ -1339,21 +1347,23 @@ pub mod descriptor_proto {
         fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
             while !is.eof()? {
                 let (field_number, wire_type) = is.read_tag_unpack()?;
-                match field_number {
-                    1 => {
+                // TODO: tag is temporary for migration
+                let tag = (field_number << 3) + wire_type as u32;
+                match (field_number, tag) {
+                    (1, _) => {
                         if wire_type != crate::rt::WireType::Varint {
                             return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                         }
                         self.start = ::std::option::Option::Some(is.read_int32()?);
                     },
-                    2 => {
+                    (2, _) => {
                         if wire_type != crate::rt::WireType::Varint {
                             return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                         }
                         self.end = ::std::option::Option::Some(is.read_int32()?);
                     },
-                    _ => {
-                        crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    (_, tag) => {
+                        crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                     },
                 };
             }
@@ -1489,12 +1499,14 @@ impl crate::Message for ExtensionRangeOptions {
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
-            match field_number {
-                999 => {
+            // TODO: tag is temporary for migration
+            let tag = (field_number << 3) + wire_type as u32;
+            match (field_number, tag) {
+                (999, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
                 },
-                _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                (_, tag) => {
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -2024,72 +2036,74 @@ impl crate::Message for FieldDescriptorProto {
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
-            match field_number {
-                1 => {
+            // TODO: tag is temporary for migration
+            let tag = (field_number << 3) + wire_type as u32;
+            match (field_number, tag) {
+                (1, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.name = ::std::option::Option::Some(is.read_string()?);
                 },
-                3 => {
+                (3, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.number = ::std::option::Option::Some(is.read_int32()?);
                 },
-                4 => {
+                (4, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.label = ::std::option::Option::Some(is.read_enum_or_unknown()?);
                 },
-                5 => {
+                (5, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.field_type = ::std::option::Option::Some(is.read_enum_or_unknown()?);
                 },
-                6 => {
+                (6, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.type_name = ::std::option::Option::Some(is.read_string()?);
                 },
-                2 => {
+                (2, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.extendee = ::std::option::Option::Some(is.read_string()?);
                 },
-                7 => {
+                (7, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.default_value = ::std::option::Option::Some(is.read_string()?);
                 },
-                9 => {
+                (9, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.oneof_index = ::std::option::Option::Some(is.read_int32()?);
                 },
-                10 => {
+                (10, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.json_name = ::std::option::Option::Some(is.read_string()?);
                 },
-                8 => {
+                (8, _) => {
                     crate::rt::read_singular_message_into_field(wire_type, is, &mut self.options)?;
                 },
-                17 => {
+                (17, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.proto3_optional = ::std::option::Option::Some(is.read_bool()?);
                 },
-                _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                (_, tag) => {
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -2516,18 +2530,20 @@ impl crate::Message for OneofDescriptorProto {
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
-            match field_number {
-                1 => {
+            // TODO: tag is temporary for migration
+            let tag = (field_number << 3) + wire_type as u32;
+            match (field_number, tag) {
+                (1, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.name = ::std::option::Option::Some(is.read_string()?);
                 },
-                2 => {
+                (2, _) => {
                     crate::rt::read_singular_message_into_field(wire_type, is, &mut self.options)?;
                 },
-                _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                (_, tag) => {
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -2743,27 +2759,29 @@ impl crate::Message for EnumDescriptorProto {
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
-            match field_number {
-                1 => {
+            // TODO: tag is temporary for migration
+            let tag = (field_number << 3) + wire_type as u32;
+            match (field_number, tag) {
+                (1, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.name = ::std::option::Option::Some(is.read_string()?);
                 },
-                2 => {
+                (2, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.value)?;
                 },
-                3 => {
+                (3, _) => {
                     crate::rt::read_singular_message_into_field(wire_type, is, &mut self.options)?;
                 },
-                4 => {
+                (4, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.reserved_range)?;
                 },
-                5 => {
+                (5, _) => {
                     crate::rt::read_repeated_string_into(wire_type, is, &mut self.reserved_name)?;
                 },
-                _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                (_, tag) => {
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -2974,21 +2992,23 @@ pub mod enum_descriptor_proto {
         fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
             while !is.eof()? {
                 let (field_number, wire_type) = is.read_tag_unpack()?;
-                match field_number {
-                    1 => {
+                // TODO: tag is temporary for migration
+                let tag = (field_number << 3) + wire_type as u32;
+                match (field_number, tag) {
+                    (1, _) => {
                         if wire_type != crate::rt::WireType::Varint {
                             return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                         }
                         self.start = ::std::option::Option::Some(is.read_int32()?);
                     },
-                    2 => {
+                    (2, _) => {
                         if wire_type != crate::rt::WireType::Varint {
                             return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                         }
                         self.end = ::std::option::Option::Some(is.read_int32()?);
                     },
-                    _ => {
-                        crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    (_, tag) => {
+                        crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                     },
                 };
             }
@@ -3195,24 +3215,26 @@ impl crate::Message for EnumValueDescriptorProto {
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
-            match field_number {
-                1 => {
+            // TODO: tag is temporary for migration
+            let tag = (field_number << 3) + wire_type as u32;
+            match (field_number, tag) {
+                (1, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.name = ::std::option::Option::Some(is.read_string()?);
                 },
-                2 => {
+                (2, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.number = ::std::option::Option::Some(is.read_int32()?);
                 },
-                3 => {
+                (3, _) => {
                     crate::rt::read_singular_message_into_field(wire_type, is, &mut self.options)?;
                 },
-                _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                (_, tag) => {
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -3412,21 +3434,23 @@ impl crate::Message for ServiceDescriptorProto {
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
-            match field_number {
-                1 => {
+            // TODO: tag is temporary for migration
+            let tag = (field_number << 3) + wire_type as u32;
+            match (field_number, tag) {
+                (1, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.name = ::std::option::Option::Some(is.read_string()?);
                 },
-                2 => {
+                (2, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.method)?;
                 },
-                3 => {
+                (3, _) => {
                     crate::rt::read_singular_message_into_field(wire_type, is, &mut self.options)?;
                 },
-                _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                (_, tag) => {
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -3761,42 +3785,44 @@ impl crate::Message for MethodDescriptorProto {
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
-            match field_number {
-                1 => {
+            // TODO: tag is temporary for migration
+            let tag = (field_number << 3) + wire_type as u32;
+            match (field_number, tag) {
+                (1, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.name = ::std::option::Option::Some(is.read_string()?);
                 },
-                2 => {
+                (2, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.input_type = ::std::option::Option::Some(is.read_string()?);
                 },
-                3 => {
+                (3, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.output_type = ::std::option::Option::Some(is.read_string()?);
                 },
-                4 => {
+                (4, _) => {
                     crate::rt::read_singular_message_into_field(wire_type, is, &mut self.options)?;
                 },
-                5 => {
+                (5, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.client_streaming = ::std::option::Option::Some(is.read_bool()?);
                 },
-                6 => {
+                (6, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.server_streaming = ::std::option::Option::Some(is.read_bool()?);
                 },
-                _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                (_, tag) => {
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -4739,132 +4765,134 @@ impl crate::Message for FileOptions {
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
-            match field_number {
-                1 => {
+            // TODO: tag is temporary for migration
+            let tag = (field_number << 3) + wire_type as u32;
+            match (field_number, tag) {
+                (1, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.java_package = ::std::option::Option::Some(is.read_string()?);
                 },
-                8 => {
+                (8, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.java_outer_classname = ::std::option::Option::Some(is.read_string()?);
                 },
-                10 => {
+                (10, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.java_multiple_files = ::std::option::Option::Some(is.read_bool()?);
                 },
-                20 => {
+                (20, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.java_generate_equals_and_hash = ::std::option::Option::Some(is.read_bool()?);
                 },
-                27 => {
+                (27, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.java_string_check_utf8 = ::std::option::Option::Some(is.read_bool()?);
                 },
-                9 => {
+                (9, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.optimize_for = ::std::option::Option::Some(is.read_enum_or_unknown()?);
                 },
-                11 => {
+                (11, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.go_package = ::std::option::Option::Some(is.read_string()?);
                 },
-                16 => {
+                (16, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.cc_generic_services = ::std::option::Option::Some(is.read_bool()?);
                 },
-                17 => {
+                (17, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.java_generic_services = ::std::option::Option::Some(is.read_bool()?);
                 },
-                18 => {
+                (18, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.py_generic_services = ::std::option::Option::Some(is.read_bool()?);
                 },
-                42 => {
+                (42, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.php_generic_services = ::std::option::Option::Some(is.read_bool()?);
                 },
-                23 => {
+                (23, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.deprecated = ::std::option::Option::Some(is.read_bool()?);
                 },
-                31 => {
+                (31, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.cc_enable_arenas = ::std::option::Option::Some(is.read_bool()?);
                 },
-                36 => {
+                (36, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.objc_class_prefix = ::std::option::Option::Some(is.read_string()?);
                 },
-                37 => {
+                (37, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.csharp_namespace = ::std::option::Option::Some(is.read_string()?);
                 },
-                39 => {
+                (39, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.swift_prefix = ::std::option::Option::Some(is.read_string()?);
                 },
-                40 => {
+                (40, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.php_class_prefix = ::std::option::Option::Some(is.read_string()?);
                 },
-                41 => {
+                (41, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.php_namespace = ::std::option::Option::Some(is.read_string()?);
                 },
-                44 => {
+                (44, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.php_metadata_namespace = ::std::option::Option::Some(is.read_string()?);
                 },
-                45 => {
+                (45, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.ruby_package = ::std::option::Option::Some(is.read_string()?);
                 },
-                999 => {
+                (999, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
                 },
-                _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                (_, tag) => {
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -5327,36 +5355,38 @@ impl crate::Message for MessageOptions {
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
-            match field_number {
-                1 => {
+            // TODO: tag is temporary for migration
+            let tag = (field_number << 3) + wire_type as u32;
+            match (field_number, tag) {
+                (1, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.message_set_wire_format = ::std::option::Option::Some(is.read_bool()?);
                 },
-                2 => {
+                (2, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.no_standard_descriptor_accessor = ::std::option::Option::Some(is.read_bool()?);
                 },
-                3 => {
+                (3, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.deprecated = ::std::option::Option::Some(is.read_bool()?);
                 },
-                7 => {
+                (7, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.map_entry = ::std::option::Option::Some(is.read_bool()?);
                 },
-                999 => {
+                (999, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
                 },
-                _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                (_, tag) => {
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -5737,48 +5767,50 @@ impl crate::Message for FieldOptions {
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
-            match field_number {
-                1 => {
+            // TODO: tag is temporary for migration
+            let tag = (field_number << 3) + wire_type as u32;
+            match (field_number, tag) {
+                (1, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.ctype = ::std::option::Option::Some(is.read_enum_or_unknown()?);
                 },
-                2 => {
+                (2, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.packed = ::std::option::Option::Some(is.read_bool()?);
                 },
-                6 => {
+                (6, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.jstype = ::std::option::Option::Some(is.read_enum_or_unknown()?);
                 },
-                5 => {
+                (5, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.lazy = ::std::option::Option::Some(is.read_bool()?);
                 },
-                3 => {
+                (3, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.deprecated = ::std::option::Option::Some(is.read_bool()?);
                 },
-                10 => {
+                (10, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.weak = ::std::option::Option::Some(is.read_bool()?);
                 },
-                999 => {
+                (999, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
                 },
-                _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                (_, tag) => {
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -6067,12 +6099,14 @@ impl crate::Message for OneofOptions {
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
-            match field_number {
-                999 => {
+            // TODO: tag is temporary for migration
+            let tag = (field_number << 3) + wire_type as u32;
+            match (field_number, tag) {
+                (999, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
                 },
-                _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                (_, tag) => {
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -6260,24 +6294,26 @@ impl crate::Message for EnumOptions {
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
-            match field_number {
-                2 => {
+            // TODO: tag is temporary for migration
+            let tag = (field_number << 3) + wire_type as u32;
+            match (field_number, tag) {
+                (2, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.allow_alias = ::std::option::Option::Some(is.read_bool()?);
                 },
-                3 => {
+                (3, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.deprecated = ::std::option::Option::Some(is.read_bool()?);
                 },
-                999 => {
+                (999, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
                 },
-                _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                (_, tag) => {
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -6452,18 +6488,20 @@ impl crate::Message for EnumValueOptions {
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
-            match field_number {
-                1 => {
+            // TODO: tag is temporary for migration
+            let tag = (field_number << 3) + wire_type as u32;
+            match (field_number, tag) {
+                (1, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.deprecated = ::std::option::Option::Some(is.read_bool()?);
                 },
-                999 => {
+                (999, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
                 },
-                _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                (_, tag) => {
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -6630,18 +6668,20 @@ impl crate::Message for ServiceOptions {
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
-            match field_number {
-                33 => {
+            // TODO: tag is temporary for migration
+            let tag = (field_number << 3) + wire_type as u32;
+            match (field_number, tag) {
+                (33, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.deprecated = ::std::option::Option::Some(is.read_bool()?);
                 },
-                999 => {
+                (999, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
                 },
-                _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                (_, tag) => {
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -6838,24 +6878,26 @@ impl crate::Message for MethodOptions {
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
-            match field_number {
-                33 => {
+            // TODO: tag is temporary for migration
+            let tag = (field_number << 3) + wire_type as u32;
+            match (field_number, tag) {
+                (33, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.deprecated = ::std::option::Option::Some(is.read_bool()?);
                 },
-                34 => {
+                (34, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.idempotency_level = ::std::option::Option::Some(is.read_enum_or_unknown()?);
                 },
-                999 => {
+                (999, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.uninterpreted_option)?;
                 },
-                _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                (_, tag) => {
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -7280,48 +7322,50 @@ impl crate::Message for UninterpretedOption {
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
-            match field_number {
-                2 => {
+            // TODO: tag is temporary for migration
+            let tag = (field_number << 3) + wire_type as u32;
+            match (field_number, tag) {
+                (2, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.name)?;
                 },
-                3 => {
+                (3, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.identifier_value = ::std::option::Option::Some(is.read_string()?);
                 },
-                4 => {
+                (4, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.positive_int_value = ::std::option::Option::Some(is.read_uint64()?);
                 },
-                5 => {
+                (5, _) => {
                     if wire_type != crate::rt::WireType::Varint {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.negative_int_value = ::std::option::Option::Some(is.read_int64()?);
                 },
-                6 => {
+                (6, _) => {
                     if wire_type != crate::rt::WireType::Fixed64 {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.double_value = ::std::option::Option::Some(is.read_double()?);
                 },
-                7 => {
+                (7, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.string_value = ::std::option::Option::Some(is.read_bytes()?);
                 },
-                8 => {
+                (8, _) => {
                     if wire_type != crate::rt::WireType::LengthDelimited {
                         return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                     }
                     self.aggregate_value = ::std::option::Option::Some(is.read_string()?);
                 },
-                _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                (_, tag) => {
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -7568,21 +7612,23 @@ pub mod uninterpreted_option {
         fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
             while !is.eof()? {
                 let (field_number, wire_type) = is.read_tag_unpack()?;
-                match field_number {
-                    1 => {
+                // TODO: tag is temporary for migration
+                let tag = (field_number << 3) + wire_type as u32;
+                match (field_number, tag) {
+                    (1, _) => {
                         if wire_type != crate::rt::WireType::LengthDelimited {
                             return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                         }
                         self.name_part = ::std::option::Option::Some(is.read_string()?);
                     },
-                    2 => {
+                    (2, _) => {
                         if wire_type != crate::rt::WireType::Varint {
                             return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                         }
                         self.is_extension = ::std::option::Option::Some(is.read_bool()?);
                     },
-                    _ => {
-                        crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    (_, tag) => {
+                        crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                     },
                 };
             }
@@ -7719,12 +7765,14 @@ impl crate::Message for SourceCodeInfo {
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
-            match field_number {
-                1 => {
+            // TODO: tag is temporary for migration
+            let tag = (field_number << 3) + wire_type as u32;
+            match (field_number, tag) {
+                (1, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.location)?;
                 },
-                _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                (_, tag) => {
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -7955,30 +8003,32 @@ pub mod source_code_info {
         fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
             while !is.eof()? {
                 let (field_number, wire_type) = is.read_tag_unpack()?;
-                match field_number {
-                    1 => {
+                // TODO: tag is temporary for migration
+                let tag = (field_number << 3) + wire_type as u32;
+                match (field_number, tag) {
+                    (1, _) => {
                         crate::rt::read_repeated_int32_into(wire_type, is, &mut self.path)?;
                     },
-                    2 => {
+                    (2, _) => {
                         crate::rt::read_repeated_int32_into(wire_type, is, &mut self.span)?;
                     },
-                    3 => {
+                    (3, _) => {
                         if wire_type != crate::rt::WireType::LengthDelimited {
                             return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                         }
                         self.leading_comments = ::std::option::Option::Some(is.read_string()?);
                     },
-                    4 => {
+                    (4, _) => {
                         if wire_type != crate::rt::WireType::LengthDelimited {
                             return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                         }
                         self.trailing_comments = ::std::option::Option::Some(is.read_string()?);
                     },
-                    6 => {
+                    (6, _) => {
                         crate::rt::read_repeated_string_into(wire_type, is, &mut self.leading_detached_comments)?;
                     },
-                    _ => {
-                        crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    (_, tag) => {
+                        crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                     },
                 };
             }
@@ -8138,12 +8188,14 @@ impl crate::Message for GeneratedCodeInfo {
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
-            match field_number {
-                1 => {
+            // TODO: tag is temporary for migration
+            let tag = (field_number << 3) + wire_type as u32;
+            match (field_number, tag) {
+                (1, _) => {
                     crate::rt::read_repeated_message_into_vec(wire_type, is, &mut self.annotation)?;
                 },
-                _ => {
-                    crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                (_, tag) => {
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                 },
             };
         }
@@ -8373,30 +8425,32 @@ pub mod generated_code_info {
         fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
             while !is.eof()? {
                 let (field_number, wire_type) = is.read_tag_unpack()?;
-                match field_number {
-                    1 => {
+                // TODO: tag is temporary for migration
+                let tag = (field_number << 3) + wire_type as u32;
+                match (field_number, tag) {
+                    (1, _) => {
                         crate::rt::read_repeated_int32_into(wire_type, is, &mut self.path)?;
                     },
-                    2 => {
+                    (2, _) => {
                         if wire_type != crate::rt::WireType::LengthDelimited {
                             return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                         }
                         self.source_file = ::std::option::Option::Some(is.read_string()?);
                     },
-                    3 => {
+                    (3, _) => {
                         if wire_type != crate::rt::WireType::Varint {
                             return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                         }
                         self.begin = ::std::option::Option::Some(is.read_int32()?);
                     },
-                    4 => {
+                    (4, _) => {
                         if wire_type != crate::rt::WireType::Varint {
                             return ::std::result::Result::Err(crate::rt::unexpected_wire_type(wire_type));
                         }
                         self.end = ::std::option::Option::Some(is.read_int32()?);
                     },
-                    _ => {
-                        crate::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
+                    (_, tag) => {
+                        crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
                     },
                 };
             }

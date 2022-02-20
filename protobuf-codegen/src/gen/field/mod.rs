@@ -1680,7 +1680,7 @@ impl<'a> FieldGen<'a> {
         w: &mut CodeWriter,
     ) {
         let number = self.proto_field.number();
-        w.case_block(number.to_string(), |w| match self.kind {
+        w.case_block(&format!("({}, _)", number), |w| match self.kind {
             FieldKind::Oneof(ref f) => self.write_merge_from_oneof(&f, wire_type_var, w),
             FieldKind::Map(..) => self.write_merge_from_map(w),
             FieldKind::Singular(ref s) => self.write_merge_from_singular(s, wire_type_var, w),

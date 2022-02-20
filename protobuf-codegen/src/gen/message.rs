@@ -395,12 +395,14 @@ impl<'a> MessageGen<'a> {
         w.def_fn(&sig, |w| {
             w.while_block("!is.eof()?", |w| {
                 w.write_line(&format!("let (field_number, wire_type) = is.read_tag_unpack()?;"));
-                w.match_block("field_number", |w| {
+                w.comment("TODO: tag is temporary for migration");
+                w.write_line(&format!("let tag = (field_number << 3) + wire_type as u32;"));
+                w.match_block("(field_number, tag)", |w| {
                     for f in &self.fields_except_group() {
                         f.write_merge_from_field_case_block("wire_type", w);
                     }
-                    w.case_block("_", |w| {
-                        w.write_line(&format!("{}::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;", protobuf_crate_path(&self.customize.for_elem)));
+                    w.case_block("(_, tag)", |w| {
+                        w.write_line(&format!("{}::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;", protobuf_crate_path(&self.customize.for_elem)));
                     });
                 });
             });
