@@ -230,12 +230,20 @@ impl<'a> CodedOutputStream<'a> {
     /// and program terminates. So it's advisable to explicitly call flush
     /// before destructor.
     pub fn flush(&mut self) -> Result<()> {
-        match self.target {
+        match &mut self.target {
             OutputTarget::Bytes => Ok(()),
-            OutputTarget::Write(..) | OutputTarget::Vec(..) => {
-                // TODO: must not reserve additional in Vec
-                self.refresh_buffer()
+            OutputTarget::Vec(vec) => {
+                let vec_len = vec.len();
+                assert!(vec_len + self.pos_within_buf <= vec.capacity());
+                unsafe {
+                    vec.set_len(vec_len + self.pos_within_buf);
+                }
+                self.buffer = vec_spare_capacity_mut(vec);
+                self.pos_of_buffer_start += self.pos_within_buf as u64;
+                self.pos_within_buf = 0;
+                Ok(())
             }
+            OutputTarget::Write(..) => self.refresh_buffer(),
         }
     }
 
@@ -1163,6 +1171,21 @@ mod test {
             }
             assert_eq!(expected, *v);
         }
+    }
+
+    #[test]
+    fn flush_for_vec_does_not_allocate_more() {
+        let mut v = Vec::with_capacity(10);
+        {
+            let mut os = CodedOutputStream::vec(&mut v);
+            for i in 0..10 {
+                os.write_raw_byte(i as u8).unwrap();
+            }
+            os.flush().unwrap();
+        }
+        assert_eq!(10, v.len());
+        // Previously, this allocated more data in buf.
+        assert_eq!(10, v.capacity());
     }
 
     #[test]
