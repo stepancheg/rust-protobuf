@@ -63,12 +63,19 @@ pub(crate) enum ProtobufError {
 /// Error type for protobuf operations.
 #[derive(Debug, thiserror::Error)]
 #[error(transparent)]
-pub struct Error(#[from] pub(crate) ProtobufError);
+pub struct Error(pub(crate) Box<ProtobufError>);
+
+impl From<ProtobufError> for Error {
+    #[cold]
+    fn from(e: ProtobufError) -> Self {
+        Self(Box::new(e))
+    }
+}
 
 impl From<Error> for io::Error {
     #[cold]
     fn from(err: Error) -> Self {
-        match err.0 {
+        match *err.0 {
             ProtobufError::IoError(e) => e,
             ProtobufError::WireError(e) => {
                 io::Error::new(io::ErrorKind::InvalidData, ProtobufError::WireError(e))
@@ -85,6 +92,6 @@ impl From<Error> for io::Error {
 impl From<io::Error> for Error {
     #[cold]
     fn from(err: io::Error) -> Self {
-        Error(ProtobufError::IoError(err))
+        Error(Box::new(ProtobufError::IoError(err)))
     }
 }
