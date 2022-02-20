@@ -6,6 +6,7 @@ Stable versions are 2.xx still supported.
 ## [3] - Unreleased
 
 - Getters are now generated without `get_` prefix. `get_` prefix also removed from public API functions.
+- Reflection API now supports `ServiceDescriptor`. Which can be used to generate code for gRPC for example.
 
 ## [3.0.0-alpha.6] - 2022-02-08
 
