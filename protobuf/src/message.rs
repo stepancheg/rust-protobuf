@@ -183,10 +183,10 @@ pub trait Message:
     /// Check if all required fields of this object are initialized.
     fn check_initialized(&self) -> Result<()> {
         if !self.is_initialized() {
-            Err(ProtobufError::MessageNotInitialized(
-                self.descriptor_by_instance().name().to_owned(),
+            Err(
+                ProtobufError::MessageNotInitialized(Self::descriptor_static().name().to_owned())
+                    .into(),
             )
-            .into())
         } else {
             Ok(())
         }
