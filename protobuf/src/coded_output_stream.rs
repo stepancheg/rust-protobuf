@@ -79,8 +79,11 @@ pub struct CodedOutputStream<'a> {
     // We don't access the actual buffer in `OutputTarget` except when
     // we initialize `buffer` field here.
     buffer: *mut [MaybeUninit<u8>],
-    // within buffer
-    position: usize,
+    /// Position within the buffer.
+    /// Always correct.
+    pos_within_buf: usize,
+    /// Absolute position of the buffer start.
+    pos_of_buffer_start: u64,
 }
 
 impl<'a> CodedOutputStream<'a> {
@@ -101,7 +104,8 @@ impl<'a> CodedOutputStream<'a> {
         CodedOutputStream {
             target: OutputTarget::Write(writer, buffer_storage),
             buffer,
-            position: 0,
+            pos_within_buf: 0,
+            pos_of_buffer_start: 0,
         }
     }
 
@@ -115,7 +119,8 @@ impl<'a> CodedOutputStream<'a> {
         CodedOutputStream {
             target: OutputTarget::Bytes,
             buffer,
-            position: 0,
+            pos_within_buf: 0,
+            pos_of_buffer_start: 0,
         }
     }
 
@@ -125,8 +130,19 @@ impl<'a> CodedOutputStream<'a> {
         CodedOutputStream {
             target: OutputTarget::Vec(vec),
             buffer,
-            position: 0,
+            pos_within_buf: 0,
+            pos_of_buffer_start: 0,
         }
+    }
+
+    /// Total number of bytes written to this stream.
+    ///
+    /// This number may be larger than the actual number of bytes written to the underlying stream,
+    /// if the buffer was not flushed.
+    ///
+    /// The number may be inaccurate if there was an error during the write.
+    pub fn total_bytes_written(&self) -> u64 {
+        self.pos_of_buffer_start + self.pos_within_buf as u64
     }
 
     /// Check if EOF is reached.
@@ -137,7 +153,7 @@ impl<'a> CodedOutputStream<'a> {
     pub fn check_eof(&self) {
         match self.target {
             OutputTarget::Bytes => {
-                assert_eq!(self.buffer().len() as u64, self.position as u64);
+                assert_eq!(self.buffer().len() as u64, self.pos_within_buf as u64);
             }
             OutputTarget::Write(..) | OutputTarget::Vec(..) => {
                 panic!("must not be called with Writer or Vec");
@@ -163,16 +179,18 @@ impl<'a> CodedOutputStream<'a> {
     fn refresh_buffer(&mut self) -> Result<()> {
         match self.target {
             OutputTarget::Write(ref mut write, _) => {
-                write.write_all(Self::filled_buffer_impl(self.buffer, self.position))?;
-                self.position = 0;
+                write.write_all(Self::filled_buffer_impl(self.buffer, self.pos_within_buf))?;
+                self.pos_of_buffer_start += self.pos_within_buf as u64;
+                self.pos_within_buf = 0;
             }
             OutputTarget::Vec(ref mut vec) => unsafe {
                 let vec_len = vec.len();
-                assert!(vec_len + self.position <= vec.capacity());
-                vec.set_len(vec_len + self.position);
+                assert!(vec_len + self.pos_within_buf <= vec.capacity());
+                vec.set_len(vec_len + self.pos_within_buf);
                 vec.reserve(1);
                 self.buffer = vec_spare_capacity_mut(vec);
-                self.position = 0;
+                self.pos_of_buffer_start += self.pos_within_buf as u64;
+                self.pos_within_buf = 0;
             },
             OutputTarget::Bytes => {
                 return Err(ProtobufError::IoError(io::Error::new(
@@ -202,36 +220,37 @@ impl<'a> CodedOutputStream<'a> {
 
     /// Write a byte
     pub fn write_raw_byte(&mut self, byte: u8) -> Result<()> {
-        if self.position as usize == self.buffer().len() {
+        if self.pos_within_buf as usize == self.buffer().len() {
             self.refresh_buffer()?;
         }
-        unsafe { (&mut *self.buffer)[self.position as usize].write(byte) };
-        self.position += 1;
+        unsafe { (&mut *self.buffer)[self.pos_within_buf as usize].write(byte) };
+        self.pos_within_buf += 1;
         Ok(())
     }
 
     /// Write bytes
     pub fn write_raw_bytes(&mut self, bytes: &[u8]) -> Result<()> {
-        if bytes.len() <= self.buffer().len() - self.position {
-            let bottom = self.position as usize;
+        if bytes.len() <= self.buffer().len() - self.pos_within_buf {
+            let bottom = self.pos_within_buf as usize;
             let top = bottom + (bytes.len() as usize);
             // SAFETY: see the `buffer` field documentation about invariants.
             let buffer = unsafe { &mut (&mut *self.buffer)[bottom..top] };
             maybe_uninit_write_slice(buffer, bytes);
-            self.position += bytes.len();
+            self.pos_within_buf += bytes.len();
             return Ok(());
         }
 
         self.refresh_buffer()?;
 
-        assert!(self.position == 0);
+        assert!(self.pos_within_buf == 0);
 
-        if self.position + bytes.len() < self.buffer().len() {
+        if self.pos_within_buf + bytes.len() < self.buffer().len() {
             // SAFETY: see the `buffer` field documentation about invariants.
-            let buffer =
-                unsafe { &mut (&mut *self.buffer)[self.position..self.position + bytes.len()] };
+            let buffer = unsafe {
+                &mut (&mut *self.buffer)[self.pos_within_buf..self.pos_within_buf + bytes.len()]
+            };
             maybe_uninit_write_slice(buffer, bytes);
-            self.position += bytes.len();
+            self.pos_within_buf += bytes.len();
             return Ok(());
         }
 
@@ -257,12 +276,12 @@ impl<'a> CodedOutputStream<'a> {
 
     /// Write varint
     pub fn write_raw_varint32(&mut self, value: u32) -> Result<()> {
-        if self.buffer().len() - self.position >= 5 {
+        if self.buffer().len() - self.pos_within_buf >= 5 {
             // fast path
             let len = unsafe {
-                varint::encode_varint32(value, &mut (&mut *self.buffer)[self.position..])
+                varint::encode_varint32(value, &mut (&mut *self.buffer)[self.pos_within_buf..])
             };
-            self.position += len;
+            self.pos_within_buf += len;
             Ok(())
         } else {
             // slow path
@@ -276,12 +295,12 @@ impl<'a> CodedOutputStream<'a> {
 
     /// Write varint
     pub fn write_raw_varint64(&mut self, value: u64) -> Result<()> {
-        if self.buffer().len() - self.position >= 10 {
+        if self.buffer().len() - self.pos_within_buf >= 10 {
             // fast path
             let len = unsafe {
-                varint::encode_varint64(value, &mut (&mut *self.buffer)[self.position..])
+                varint::encode_varint64(value, &mut (&mut *self.buffer)[self.pos_within_buf..])
             };
-            self.position += len;
+            self.pos_within_buf += len;
             Ok(())
         } else {
             // slow path

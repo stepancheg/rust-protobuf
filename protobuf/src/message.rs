@@ -106,9 +106,13 @@ pub trait Message:
     fn write_length_delimited_to(&self, os: &mut CodedOutputStream) -> Result<()> {
         let size = self.compute_size();
         os.write_raw_varint32(size)?;
+
+        let written = os.total_bytes_written();
+
         self.write_to_with_cached_sizes(os)?;
 
-        // TODO: assert we've written same number of bytes as computed
+        // Self-check.
+        assert_eq!(written + size as u64, os.total_bytes_written());
 
         Ok(())
     }

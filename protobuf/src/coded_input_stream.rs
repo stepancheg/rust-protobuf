@@ -655,7 +655,6 @@ mod test {
     use crate::error::ProtobufError;
     use crate::error::Result;
     use crate::hex::decode_hex;
-    use crate::Error;
 
     fn test_read_partial<F>(hex: &str, mut callback: F)
     where
