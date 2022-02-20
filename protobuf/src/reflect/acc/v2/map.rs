@@ -2,8 +2,8 @@ use std::collections::HashMap;
 use std::fmt;
 use std::hash::Hash;
 
-use crate::message::Message;
 use crate::message_dyn::MessageDyn;
+use crate::message_full::MessageFull;
 use crate::reflect::acc::v2::AccessorV2;
 use crate::reflect::acc::FieldAccessor;
 use crate::reflect::map::ReflectMapMut;
@@ -30,7 +30,7 @@ impl<'a> fmt::Debug for MapFieldAccessorHolder {
 
 struct MapFieldAccessorImpl<M, K, V>
 where
-    M: Message,
+    M: MessageFull,
     K: ProtobufValue,
     V: ProtobufValue,
 {
@@ -40,7 +40,7 @@ where
 
 impl<M, K, V> MapFieldAccessor for MapFieldAccessorImpl<M, K, V>
 where
-    M: Message,
+    M: MessageFull,
     K: ProtobufValue + Eq + Hash,
     K::RuntimeType: RuntimeTypeHashable,
     V: ProtobufValue,
@@ -69,7 +69,7 @@ pub fn make_map_simpler_accessor<M, K, V>(
     mut_field: for<'a> fn(&'a mut M) -> &'a mut HashMap<K, V>,
 ) -> FieldAccessor
 where
-    M: Message + 'static,
+    M: MessageFull + 'static,
     K: ProtobufValue + Hash + Eq,
     K::RuntimeType: RuntimeTypeHashable,
     V: ProtobufValue,

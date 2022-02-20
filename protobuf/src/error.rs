@@ -54,6 +54,9 @@ pub(crate) enum ProtobufError {
     /// Not all required fields of message set.
     #[error("Message `{}` is missing required fields", .0)]
     MessageNotInitialized(String),
+    /// Not all required fields of message set.
+    #[error("Message is missing required fields")]
+    MessageNotInitializedLite,
     /// Protobuf type and runtime types mismatch.
     #[error("Protobuf type and runtime types are not compatible")]
     IncompatibleProtobufTypeAndRuntimeType,

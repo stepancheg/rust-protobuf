@@ -1,5 +1,5 @@
-use protobuf::Message;
 use protobuf::MessageDyn;
+use protobuf::MessageFull;
 
 use crate::dynamic_descriptor_for_descriptor;
 use crate::hex::encode_hex;
@@ -10,7 +10,9 @@ use crate::recreate_as_dynamic;
 /// - deserialize message as dynamic
 /// - serialize dynamic message
 /// - compare bytes output of generated and dynamic messages
-pub fn serialize_then_parse_as_dynamic_then_serialize<M: Message>(m: &M) -> Box<dyn MessageDyn> {
+pub fn serialize_then_parse_as_dynamic_then_serialize<M: MessageFull>(
+    m: &M,
+) -> Box<dyn MessageDyn> {
     // Find the dynamic version of the generated message.
     let description_dynamic = dynamic_descriptor_for_descriptor::<M>();
 
@@ -37,7 +39,7 @@ pub fn serialize_then_parse_as_dynamic_then_serialize<M: Message>(m: &M) -> Box<
 /// - serialize dynamic message
 /// - parse serialized dynamic message
 /// - compare dynamic messages
-pub fn serialize_then_parse_as_dynamic_and_serialize_and_parse<M: Message>(m: &M) {
+pub fn serialize_then_parse_as_dynamic_and_serialize_and_parse<M: MessageFull>(m: &M) {
     let parsed_1 = recreate_as_dynamic(m);
     let bytes_1 = parsed_1.write_to_bytes_dyn().unwrap();
     let parsed_2 = parsed_1

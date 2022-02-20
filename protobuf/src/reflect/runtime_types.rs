@@ -10,15 +10,15 @@ use bytes::Bytes;
 
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;
-use crate::enums::Enum;
-use crate::message::Message;
+use crate::enum_or_unknown::EnumOrUnknown;
+use crate::message_full::MessageFull;
 use crate::reflect::runtime_type_box::RuntimeTypeBox;
 use crate::reflect::value::value_ref::ReflectValueMut;
 use crate::reflect::MessageRef;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
-use crate::EnumOrUnknown;
+use crate::EnumFull;
 
 /// `RuntimeType` is not implemented by all protobuf types directly
 /// because it's not possible to implement `RuntimeType` for all `Message`
@@ -148,13 +148,13 @@ pub struct RuntimeTypeTokioChars;
 
 /// Implementation for enum.
 #[derive(Debug, Copy, Clone)]
-pub struct RuntimeTypeEnum<E: Enum + ProtobufValue>(marker::PhantomData<E>);
+pub struct RuntimeTypeEnum<E: EnumFull + ProtobufValue>(marker::PhantomData<E>);
 /// Implementation for enum.
 #[derive(Debug, Copy, Clone)]
-pub struct RuntimeTypeEnumOrUnknown<E: Enum>(marker::PhantomData<E>);
+pub struct RuntimeTypeEnumOrUnknown<E: EnumFull>(marker::PhantomData<E>);
 /// Implementation for [`Message`].
 #[derive(Debug, Copy, Clone)]
-pub struct RuntimeTypeMessage<M: Message>(marker::PhantomData<M>);
+pub struct RuntimeTypeMessage<M: MessageFull>(marker::PhantomData<M>);
 
 impl RuntimeType for RuntimeTypeF32 {
     type Value = f32;
@@ -692,7 +692,7 @@ impl RuntimeTypeHashable for RuntimeTypeTokioChars {
 
 impl<E> RuntimeType for RuntimeTypeEnum<E>
 where
-    E: Enum + ProtobufValue + fmt::Debug,
+    E: EnumFull + ProtobufValue + fmt::Debug,
 {
     type Value = E;
 
@@ -743,7 +743,7 @@ where
 
 impl<E> RuntimeType for RuntimeTypeEnumOrUnknown<E>
 where
-    E: Enum + fmt::Debug,
+    E: EnumFull + fmt::Debug,
 {
     type Value = EnumOrUnknown<E>;
 
@@ -799,7 +799,7 @@ where
 
 impl<M> RuntimeType for RuntimeTypeMessage<M>
 where
-    M: Message + ProtobufValue + Clone + Default,
+    M: MessageFull + ProtobufValue + Clone + Default,
 {
     type Value = M;
 

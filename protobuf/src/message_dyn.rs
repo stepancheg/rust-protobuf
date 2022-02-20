@@ -10,7 +10,7 @@ use crate::reflect::ReflectEqMode;
 use crate::wire_format::check_message_size;
 use crate::CodedInputStream;
 use crate::CodedOutputStream;
-use crate::Message;
+use crate::MessageFull;
 use crate::UnknownFields;
 
 /// Dynamic-dispatch version of [`Message`].
@@ -37,7 +37,7 @@ pub trait MessageDyn: Any + fmt::Debug + fmt::Display + Send + Sync + 'static {
     fn mut_unknown_fields_dyn(&mut self) -> &mut UnknownFields;
 }
 
-impl<M: Message> MessageDyn for M {
+impl<M: MessageFull> MessageDyn for M {
     fn descriptor_dyn(&self) -> MessageDescriptor {
         M::descriptor_static()
     }
@@ -170,8 +170,8 @@ impl dyn MessageDyn {
     /// Downcast `Box<dyn Message>` to specific message type.
     ///
     /// ```
-    /// # use protobuf::{Message, MessageDyn};
-    /// # fn foo<MyMessage: Message>(message: Box<dyn MessageDyn>) {
+    /// # use protobuf::{MessageFull, MessageDyn};
+    /// # fn foo<MyMessage: MessageFull>(message: Box<dyn MessageDyn>) {
     /// let m: Box<dyn MessageDyn> = message;
     /// let m: Box<MyMessage> = <dyn MessageDyn>::downcast_box(m).unwrap();
     /// # }
@@ -192,13 +192,13 @@ impl dyn MessageDyn {
     /// Downcast `&dyn Message` to specific message type.
     ///
     /// ```
-    /// # use protobuf::{Message, MessageDyn};
-    /// # fn foo<MyMessage: Message>(message: &dyn MessageDyn) {
+    /// # use protobuf::{MessageFull, MessageDyn};
+    /// # fn foo<MyMessage: MessageFull>(message: &dyn MessageDyn) {
     /// let m: &dyn MessageDyn = message;
     /// let m: &MyMessage = <dyn MessageDyn>::downcast_ref(m).unwrap();
     /// # }
     /// ```
-    pub fn downcast_ref<'a, M: Message + 'a>(&'a self) -> Option<&'a M> {
+    pub fn downcast_ref<'a, M: MessageFull + 'a>(&'a self) -> Option<&'a M> {
         if Any::type_id(&*self) == TypeId::of::<M>() {
             unsafe { Some(&*(self as *const dyn MessageDyn as *const M)) }
         } else {
@@ -209,13 +209,13 @@ impl dyn MessageDyn {
     /// Downcast `&mut dyn Message` to specific message type.
     ///
     /// ```
-    /// # use protobuf::{Message, MessageDyn};
-    /// # fn foo<MyMessage: Message>(message: &mut dyn MessageDyn) {
+    /// # use protobuf::{MessageFull, MessageDyn};
+    /// # fn foo<MyMessage: MessageFull>(message: &mut dyn MessageDyn) {
     /// let m: &mut dyn MessageDyn = message;
     /// let m: &mut MyMessage = <dyn MessageDyn>::downcast_mut(m).unwrap();
     /// # }
     /// ```
-    pub fn downcast_mut<'a, M: Message + 'a>(&'a mut self) -> Option<&'a mut M> {
+    pub fn downcast_mut<'a, M: MessageFull + 'a>(&'a mut self) -> Option<&'a mut M> {
         if Any::type_id(&*self) == TypeId::of::<M>() {
             unsafe { Some(&mut *(self as *mut dyn MessageDyn as *mut M)) }
         } else {

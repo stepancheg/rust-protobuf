@@ -14,12 +14,12 @@
 use std::fmt::Formatter;
 use std::marker::PhantomData;
 
-use protobuf::Enum;
+use protobuf::EnumFull;
 use protobuf::EnumOrUnknown;
 
 include!(concat!(env!("OUT_DIR"), "/protos/mod.rs"));
 
-fn serialize_enum_or_unknown<E: Enum, S: serde::Serializer>(
+fn serialize_enum_or_unknown<E: EnumFull, S: serde::Serializer>(
     e: &Option<EnumOrUnknown<E>>,
     s: S,
 ) -> Result<S::Ok, S::Error> {
@@ -33,12 +33,12 @@ fn serialize_enum_or_unknown<E: Enum, S: serde::Serializer>(
     }
 }
 
-fn deserialize_enum_or_unknown<'de, E: Enum, D: serde::Deserializer<'de>>(
+fn deserialize_enum_or_unknown<'de, E: EnumFull, D: serde::Deserializer<'de>>(
     d: D,
 ) -> Result<Option<EnumOrUnknown<E>>, D::Error> {
-    struct DeserializeEnumVisitor<E: Enum>(PhantomData<E>);
+    struct DeserializeEnumVisitor<E: EnumFull>(PhantomData<E>);
 
-    impl<'de, E: Enum> serde::de::Visitor<'de> for DeserializeEnumVisitor<E> {
+    impl<'de, E: EnumFull> serde::de::Visitor<'de> for DeserializeEnumVisitor<E> {
         type Value = Option<EnumOrUnknown<E>>;
 
         fn expecting(&self, formatter: &mut Formatter) -> std::fmt::Result {

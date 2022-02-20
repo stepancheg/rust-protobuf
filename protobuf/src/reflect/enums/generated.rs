@@ -10,7 +10,7 @@ use crate::reflect::enums::index::EnumIndex;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
 use crate::reflect::name::compute_full_name;
-use crate::Enum;
+use crate::EnumFull;
 use crate::EnumOrUnknown;
 
 pub(crate) trait GetEnumDescriptor: Send + Sync + 'static {
@@ -24,9 +24,9 @@ impl<'a> fmt::Debug for &'a dyn GetEnumDescriptor {
     }
 }
 
-pub(crate) struct GetEnumDescriptorImpl<E: Enum>(marker::PhantomData<E>);
+pub(crate) struct GetEnumDescriptorImpl<E: EnumFull>(marker::PhantomData<E>);
 
-impl<E: Enum> GetEnumDescriptor for GetEnumDescriptorImpl<E> {
+impl<E: EnumFull> GetEnumDescriptor for GetEnumDescriptorImpl<E> {
     #[cfg(not(rustc_nightly))]
     unsafe fn copy_to(&self, value: i32, dest: *mut ()) {
         let e = E::from_i32(value).expect("unknown value");
@@ -47,7 +47,7 @@ impl GeneratedEnumDescriptorData {
     #[doc(hidden)]
     pub fn new_2<E>(name_in_file: &'static str, index_in_file: usize) -> GeneratedEnumDescriptorData
     where
-        E: Enum,
+        E: EnumFull,
     {
         GeneratedEnumDescriptorData {
             index_in_file,

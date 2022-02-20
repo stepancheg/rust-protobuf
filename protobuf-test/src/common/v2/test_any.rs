@@ -1,5 +1,5 @@
 use protobuf::well_known_types::Any;
-use protobuf::Message;
+use protobuf::MessageFull;
 
 use super::test_any_pb::MessageOne;
 use super::test_any_pb::MessageTwo;

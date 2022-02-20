@@ -522,7 +522,7 @@ pub(crate) enum FieldDescriptorImplRef<'a> {
 #[cfg(test)]
 mod test {
     use crate::descriptor::DescriptorProto;
-    use crate::Message;
+    use crate::MessageFull;
 
     #[test]
     #[cfg_attr(miri, ignore)]

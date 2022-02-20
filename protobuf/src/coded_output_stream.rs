@@ -22,6 +22,7 @@ use crate::Enum;
 use crate::EnumOrUnknown;
 use crate::Message;
 use crate::MessageDyn;
+use crate::MessageFull;
 use crate::Result;
 use crate::UnknownFields;
 use crate::UnknownValueRef;
@@ -969,7 +970,7 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write `message` field
-    pub fn write_message<M: Message>(&mut self, field_number: u32, msg: &M) -> Result<()> {
+    pub fn write_message<M: MessageFull>(&mut self, field_number: u32, msg: &M) -> Result<()> {
         self.write_tag(field_number, WireType::LengthDelimited)?;
         self.write_message_no_tag(msg)?;
         Ok(())

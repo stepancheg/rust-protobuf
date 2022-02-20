@@ -3,8 +3,8 @@ use std::io::Read;
 
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
-use crate::message::Message;
 use crate::message_dyn::MessageDyn;
+use crate::message_full::MessageFull;
 use crate::reflect::dynamic::DynamicMessage;
 use crate::reflect::field::FieldDescriptorImpl;
 use crate::reflect::file::index::FileIndexMessageEntry;
@@ -92,7 +92,7 @@ impl MessageDescriptor {
     }
 
     /// Get a message descriptor for given message type
-    pub fn for_type<M: Message>() -> MessageDescriptor {
+    pub fn for_type<M: MessageFull>() -> MessageDescriptor {
         M::descriptor_static()
     }
 
@@ -352,7 +352,7 @@ pub(crate) enum MessageDescriptorImplRef<'a> {
 mod test {
     use crate::descriptor::descriptor_proto::ExtensionRange;
     use crate::descriptor::DescriptorProto;
-    use crate::Message;
+    use crate::MessageFull;
 
     #[test]
     #[cfg_attr(miri, ignore)] // Too slow on Miri.

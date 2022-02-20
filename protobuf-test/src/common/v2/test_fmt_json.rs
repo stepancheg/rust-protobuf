@@ -1,5 +1,5 @@
 use protobuf::json;
-use protobuf::Message;
+use protobuf::MessageFull;
 use protobuf_test_common::*;
 
 use super::test_fmt_json_pb::*;

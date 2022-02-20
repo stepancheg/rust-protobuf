@@ -3,9 +3,9 @@ use protobuf::reflect::ReflectFieldRef;
 use protobuf::reflect::ReflectValueBox;
 use protobuf::reflect::ReflectValueRef;
 use protobuf::reflect::RuntimeFieldType;
-use protobuf::Enum;
-use protobuf::Message;
+use protobuf::EnumFull;
 use protobuf::MessageDyn;
+use protobuf::MessageFull;
 use protobuf_test_common::value_for_runtime_type;
 
 use super::test_reflect_pb::*;

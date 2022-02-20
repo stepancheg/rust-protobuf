@@ -3,20 +3,20 @@ extern crate protobuf;
 use std::io::BufReader;
 use std::str;
 
-use protobuf::Message;
+use protobuf::MessageFull;
 
 pub mod all_types_pb;
 
-fn test_bytes<M: Message>(bytes: &[u8]) {
+fn test_bytes<M: MessageFull>(bytes: &[u8]) {
     drop(M::parse_from_bytes(bytes));
 }
 
-fn test_read<M: Message>(bytes: &[u8]) {
+fn test_read<M: MessageFull>(bytes: &[u8]) {
     let mut reader = BufReader::new(bytes);
     drop(M::parse_from_reader(&mut reader));
 }
 
-fn test_parse_json<M: Message>(bytes: &[u8]) {
+fn test_parse_json<M: MessageFull>(bytes: &[u8]) {
     let text = match str::from_utf8(bytes) {
         Ok(text) => text,
         Err(_) => return,
@@ -24,7 +24,7 @@ fn test_parse_json<M: Message>(bytes: &[u8]) {
     drop(protobuf::json::parse_from_str::<M>(text));
 }
 
-fn test_parse_text_format<M: Message>(bytes: &[u8]) {
+fn test_parse_text_format<M: MessageFull>(bytes: &[u8]) {
     let text = match str::from_utf8(bytes) {
         Ok(text) => text,
         Err(_) => return,
@@ -32,7 +32,7 @@ fn test_parse_text_format<M: Message>(bytes: &[u8]) {
     drop(protobuf::text_format::parse_from_str::<M>(text));
 }
 
-fn test_write_to_bytes<M: Message>(bytes: &[u8]) {
+fn test_write_to_bytes<M: MessageFull>(bytes: &[u8]) {
     let message = match M::parse_from_bytes(bytes) {
         Ok(message) => message,
         Err(_) => return,
@@ -72,7 +72,7 @@ pub fn fuzz_target_map_read(bytes: &[u8]) {
     test_read::<all_types_pb::TestTypesMap>(bytes);
 }
 
-fn test_message<M: Message>(bytes: &[u8]) {
+fn test_message<M: MessageFull>(bytes: &[u8]) {
     if bytes.len() < 1 {
         return;
     }

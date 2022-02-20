@@ -1,67 +1,29 @@
-use std::fmt;
 use std::io::Read;
 use std::io::Write;
 
-#[cfg(feature = "bytes")]
-use bytes::Bytes;
-
-use crate::clear::Clear;
-use crate::coded_input_stream::CodedInputStream;
-use crate::coded_output_stream::CodedOutputStream;
 use crate::coded_output_stream::WithCodedOutputStream;
 use crate::error::ProtobufError;
-use crate::error::Result;
-use crate::message_dyn::MessageDyn;
-use crate::reflect::reflect_eq::ReflectEqMode;
-use crate::reflect::MessageDescriptor;
-use crate::unknown::UnknownFields;
 use crate::wire_format::check_message_size;
+use crate::Clear;
+use crate::CodedInputStream;
+use crate::CodedOutputStream;
+use crate::UnknownFields;
 
-/// Trait implemented for all the generated messages.
+/// Trait which is implemented by all generated message.
 ///
-/// * Generated messages are generated from `.proto` files
-/// * Dynamic messages can be created without code generation using only parsed proto files
-///   (see [FileDescriptor::new_dynamic](crate::reflect::FileDescriptor::new_dynamic)).
-///
-///
-/// Also, generated messages implement `Default + PartialEq`
-///
-/// This trait is sized, there's accompanying [`MessageDyn`](crate::MessageDyn) trait
-/// which is implemented for all messages which can be used in functions
-/// without making message a function type parameter.
-///
-/// ## `Display`
-///
-/// [`Display`](fmt::Display) implementation for messages does protobuf text format.
-/// See [`text_format`](crate::text_format) for more details.
-pub trait Message:
-    fmt::Debug + fmt::Display + Clear + Clone + Send + Sync + Sized + 'static
-{
-    /// Get message descriptor for message type.
-    ///
-    /// ```
-    /// # use protobuf::Message;
-    /// # fn foo<MyMessage: Message>() {
-    /// let descriptor = MyMessage::descriptor_static();
-    /// assert_eq!("MyMessage", descriptor.name());
-    /// # }
-    /// ```
-    fn descriptor_static() -> MessageDescriptor {
-        panic!(
-            "descriptor_static is not implemented for message, \
-             LITE_RUNTIME must be used"
-        );
-    }
-
+/// Note, by default all generated messages also implement [`MessageFull`](crate::MessageFull)
+/// trait which provides access to reflection and features which depend on reflection
+/// (text format and JSON serialization).
+pub trait Message: Clear + Clone + Send + Sync + Sized + 'static {
     /// True iff all required fields are initialized.
     /// Always returns `true` for protobuf 3.
     fn is_initialized(&self) -> bool;
 
     /// Update this message object with fields read from given stream.
-    fn merge_from(&mut self, is: &mut CodedInputStream) -> Result<()>;
+    fn merge_from(&mut self, is: &mut CodedInputStream) -> crate::Result<()>;
 
     /// Parse message from stream.
-    fn parse_from(is: &mut CodedInputStream) -> Result<Self> {
+    fn parse_from(is: &mut CodedInputStream) -> crate::Result<Self> {
         let mut r: Self = Message::new();
         r.merge_from(is)?;
         r.check_initialized()?;
@@ -72,7 +34,7 @@ pub trait Message:
     ///
     /// Sizes of this messages and nested messages must be cached
     /// by calling `compute_size` prior to this call.
-    fn write_to_with_cached_sizes(&self, os: &mut CodedOutputStream) -> Result<()>;
+    fn write_to_with_cached_sizes(&self, os: &mut CodedOutputStream) -> crate::Result<()>;
 
     /// Compute and cache size of this message and all nested messages.
     ///
@@ -87,7 +49,7 @@ pub trait Message:
     /// Write the message to the stream.
     ///
     /// Results in error if message is not fully initialized.
-    fn write_to(&self, os: &mut CodedOutputStream) -> Result<()> {
+    fn write_to(&self, os: &mut CodedOutputStream) -> crate::Result<()> {
         self.check_initialized()?;
 
         // cache sizes
@@ -123,7 +85,7 @@ pub trait Message:
 
     /// Write the message to the vec, prepend the message with message length
     /// encoded as varint.
-    fn write_length_delimited_to_vec(&self, vec: &mut Vec<u8>) -> Result<()> {
+    fn write_length_delimited_to_vec(&self, vec: &mut Vec<u8>) -> crate::Result<()> {
         let mut os = CodedOutputStream::vec(vec);
         self.write_length_delimited_to(&mut os)?;
         os.flush()?;
@@ -131,14 +93,14 @@ pub trait Message:
     }
 
     /// Update this message object with fields read from given stream.
-    fn merge_from_bytes(&mut self, bytes: &[u8]) -> Result<()> {
+    fn merge_from_bytes(&mut self, bytes: &[u8]) -> crate::Result<()> {
         let mut is = CodedInputStream::from_bytes(bytes);
         self.merge_from(&mut is)
     }
 
     /// Parse message from reader.
     /// Parse stops on EOF or when error encountered.
-    fn parse_from_reader(reader: &mut dyn Read) -> Result<Self>
+    fn parse_from_reader(reader: &mut dyn Read) -> crate::Result<Self>
     where
         Self: Sized,
     {
@@ -149,7 +111,7 @@ pub trait Message:
     }
 
     /// Parse message from byte array.
-    fn parse_from_bytes(bytes: &[u8]) -> Result<Self>
+    fn parse_from_bytes(bytes: &[u8]) -> crate::Result<Self>
     where
         Self: Sized,
     {
@@ -162,7 +124,7 @@ pub trait Message:
     /// Parse message from `Bytes` object.
     /// Resulting message may share references to the passed bytes object.
     #[cfg(feature = "bytes")]
-    fn parse_from_tokio_bytes(bytes: &Bytes) -> Result<Self>
+    fn parse_from_tokio_bytes(bytes: &bytes::Bytes) -> crate::Result<Self>
     where
         Self: Sized,
     {
@@ -173,32 +135,30 @@ pub trait Message:
     }
 
     /// Check if all required fields of this object are initialized.
-    fn check_initialized(&self) -> Result<()> {
+    fn check_initialized(&self) -> crate::Result<()> {
         if !self.is_initialized() {
-            Err(
-                ProtobufError::MessageNotInitialized(Self::descriptor_static().name().to_owned())
-                    .into(),
-            )
+            // TODO: add message name
+            Err(ProtobufError::MessageNotInitializedLite.into())
         } else {
             Ok(())
         }
     }
 
     /// Write the message to the writer.
-    fn write_to_writer(&self, w: &mut dyn Write) -> Result<()> {
+    fn write_to_writer(&self, w: &mut dyn Write) -> crate::Result<()> {
         w.with_coded_output_stream(|os| self.write_to(os))
     }
 
     /// Write the message to bytes vec.
-    fn write_to_vec(&self, v: &mut Vec<u8>) -> Result<()> {
+    fn write_to_vec(&self, v: &mut Vec<u8>) -> crate::Result<()> {
         v.with_coded_output_stream(|os| self.write_to(os))
     }
 
     /// Write the message to bytes vec.
-    ///    
+    ///
     /// > **Note**: You can use [`Message::parse_from_bytes`]
     /// to do the reverse.
-    fn write_to_bytes(&self) -> Result<Vec<u8>> {
+    fn write_to_bytes(&self) -> crate::Result<Vec<u8>> {
         self.check_initialized()?;
 
         let size = self.compute_size() as usize;
@@ -213,13 +173,13 @@ pub trait Message:
 
     /// Write the message to the writer, prepend the message with message length
     /// encoded as varint.
-    fn write_length_delimited_to_writer(&self, w: &mut dyn Write) -> Result<()> {
+    fn write_length_delimited_to_writer(&self, w: &mut dyn Write) -> crate::Result<()> {
         w.with_coded_output_stream(|os| self.write_length_delimited_to(os))
     }
 
     /// Write the message to the bytes vec, prepend the message with message length
     /// encoded as varint.
-    fn write_length_delimited_to_bytes(&self) -> Result<Vec<u8>> {
+    fn write_length_delimited_to_bytes(&self) -> crate::Result<Vec<u8>> {
         let mut v = Vec::new();
         v.with_coded_output_stream(|os| self.write_length_delimited_to(os))?;
         Ok(v)
@@ -233,8 +193,8 @@ pub trait Message:
     /// Create an empty message object.
     ///
     /// ```
-    /// # use protobuf::Message;
-    /// # fn foo<MyMessage: Message>() {
+    /// # use protobuf::MessageFull;
+    /// # fn foo<MyMessage: MessageFull>() {
     /// let m = MyMessage::new();
     /// # }
     /// ```
@@ -243,19 +203,10 @@ pub trait Message:
     /// Return a pointer to default immutable message with static lifetime.
     ///
     /// ```
-    /// # use protobuf::Message;
-    /// # fn foo<MyMessage: Message>() {
+    /// # use protobuf::MessageFull;
+    /// # fn foo<MyMessage: MessageFull>() {
     /// let m: &MyMessage = MyMessage::default_instance();
     /// # }
     /// ```
     fn default_instance() -> &'static Self;
-
-    /// Reflective equality.
-    ///
-    /// # See also
-    ///
-    /// [`dyn Message::reflect_eq_dyn()`], `dyn` version of this function.
-    fn reflect_eq(&self, other: &Self, mode: &ReflectEqMode) -> bool {
-        <dyn MessageDyn>::reflect_eq_dyn(self, other, mode)
-    }
 }

@@ -3,7 +3,7 @@ use std::path::Path;
 use std::time::Instant;
 
 use perftest_data::PerftestData;
-use protobuf::Message;
+use protobuf::MessageFull;
 use rand::Rng;
 use rand::SeedableRng;
 use rand::StdRng;
@@ -30,7 +30,7 @@ struct TestRunner {
 }
 
 impl TestRunner {
-    fn run_test<M: Message + Clone + PartialEq>(&self, name: &str, data: &[M]) {
+    fn run_test<M: MessageFull + Clone + PartialEq>(&self, name: &str, data: &[M]) {
         assert!(data.len() > 0, "empty string for test: {}", name);
 
         let mut rng: StdRng = SeedableRng::from_seed([
@@ -75,7 +75,7 @@ impl TestRunner {
             random_data.len() as u64,
             || {
                 let mut coded_input_stream = protobuf::CodedInputStream::from_bytes(&buf);
-                let mut msg: M = Message::new();
+                let mut msg: M = MessageFull::new();
                 let mut count = 0;
                 while !coded_input_stream.eof().unwrap() {
                     msg.clear();
@@ -89,7 +89,7 @@ impl TestRunner {
         assert_eq!(random_data.len(), merged);
     }
 
-    fn test<M: Message + Clone + PartialEq>(&mut self, name: &str, data: &[M]) {
+    fn test<M: MessageFull + Clone + PartialEq>(&mut self, name: &str, data: &[M]) {
         if self.selected.as_ref().map(|s| *s == name).unwrap_or(true) {
             self.run_test(name, data);
             self.any_matched = true;

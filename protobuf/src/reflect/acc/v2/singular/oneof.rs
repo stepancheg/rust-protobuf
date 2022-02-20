@@ -19,10 +19,10 @@ use crate::reflect::value::value_ref::ReflectValueMut;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
-use crate::Enum;
+use crate::EnumFull;
 use crate::EnumOrUnknown;
-use crate::Message;
 use crate::MessageDyn;
+use crate::MessageFull;
 
 /// Make accessor for `oneof` `message` field
 pub fn make_oneof_message_has_get_mut_set_accessor<M, F>(
@@ -33,8 +33,8 @@ pub fn make_oneof_message_has_get_mut_set_accessor<M, F>(
     set_field: fn(&mut M, F),
 ) -> FieldAccessor
 where
-    M: Message + 'static,
-    F: Message + ProtobufValue,
+    M: MessageFull + 'static,
+    F: MessageFull + ProtobufValue,
 {
     FieldAccessor::new_v2(
         name,
@@ -61,7 +61,7 @@ pub fn make_oneof_copy_has_get_set_simpler_accessors<M, V>(
     set: fn(&mut M, V),
 ) -> FieldAccessor
 where
-    M: Message + 'static,
+    M: MessageFull + 'static,
     V: ProtobufValue + Copy,
 {
     FieldAccessor::new_v2(
@@ -78,13 +78,13 @@ where
     )
 }
 
-struct OneofEnumAccessor<M: Message, E: Enum> {
+struct OneofEnumAccessor<M: MessageFull, E: EnumFull> {
     get: fn(&M) -> Option<EnumOrUnknown<E>>,
     set: fn(&mut M, EnumOrUnknown<E>),
     default_value: E,
 }
 
-impl<M: Message, E: Enum> SingularFieldAccessor for OneofEnumAccessor<M, E> {
+impl<M: MessageFull, E: EnumFull> SingularFieldAccessor for OneofEnumAccessor<M, E> {
     fn get_field<'a>(&self, m: &'a dyn MessageDyn) -> Option<ReflectValueRef<'a>> {
         let m = m.downcast_ref().unwrap();
         let value = (self.get)(m);
@@ -122,8 +122,8 @@ pub fn make_oneof_enum_accessors<M, E>(
     default_value: E,
 ) -> FieldAccessor
 where
-    M: Message + 'static,
-    E: Enum,
+    M: MessageFull,
+    E: EnumFull,
 {
     FieldAccessor::new_v2(
         name,
@@ -145,7 +145,7 @@ pub fn make_oneof_deref_has_get_set_simpler_accessor<M, F>(
     set: fn(&mut M, F),
 ) -> FieldAccessor
 where
-    M: Message + 'static,
+    M: MessageFull + 'static,
     F: ProtobufValue,
     F::RuntimeType: RuntimeTypeWithDeref,
 {

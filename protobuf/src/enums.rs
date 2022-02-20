@@ -1,9 +1,9 @@
 use std::fmt;
 
-use crate::reflect::EnumDescriptor;
-use crate::reflect::EnumValueDescriptor;
-
 /// Trait implemented by all protobuf enum types.
+///
+/// Additionally, generated enums also implement [`EnumFull`](crate::EnumFull) trait,
+/// which provides access to reflection.
 pub trait Enum: Eq + Sized + Copy + fmt::Debug + Default + Send + Sync + 'static {
     /// Get enum `i32` value.
     fn value(&self) -> i32;
@@ -14,21 +14,4 @@ pub trait Enum: Eq + Sized + Copy + fmt::Debug + Default + Send + Sync + 'static
 
     /// Get all enum values for enum type.
     fn values() -> &'static [Self];
-
-    /// Get enum value descriptor.
-    fn descriptor(&self) -> EnumValueDescriptor {
-        self.enum_descriptor()
-            .value_by_number(self.value())
-            .unwrap()
-    }
-
-    /// Get enum descriptor.
-    fn enum_descriptor(&self) -> EnumDescriptor {
-        Self::enum_descriptor_static()
-    }
-
-    /// Get enum descriptor by type.
-    fn enum_descriptor_static() -> EnumDescriptor {
-        panic!();
-    }
 }

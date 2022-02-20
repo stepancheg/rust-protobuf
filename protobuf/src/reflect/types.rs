@@ -14,7 +14,7 @@ use crate::coded_input_stream::CodedInputStream;
 use crate::coded_output_stream::CodedOutputStream;
 use crate::enums::Enum;
 use crate::error::Result;
-use crate::message::Message;
+use crate::message_full::MessageFull;
 pub use crate::reflect::type_dynamic::ProtobufTypeDynamic;
 use crate::reflect::type_dynamic::ProtobufTypeDynamicImpl;
 use crate::reflect::ProtobufValue;
@@ -23,6 +23,7 @@ use crate::unknown::UnknownValues;
 use crate::wire_format::WireType;
 use crate::zigzag::decode_zig_zag_32;
 use crate::zigzag::decode_zig_zag_64;
+use crate::EnumFull;
 use crate::EnumOrUnknown;
 
 /// Encapsulate type-specific serialization and conversion logic
@@ -157,7 +158,7 @@ pub struct ProtobufTypeEnum<E: Enum>(marker::PhantomData<E>);
 pub struct ProtobufTypeEnumOrUnknown<E: Enum>(marker::PhantomData<E>);
 /// `message`
 #[derive(Copy, Clone)]
-pub struct ProtobufTypeMessage<M: Message>(marker::PhantomData<M>);
+pub struct ProtobufTypeMessage<M: MessageFull>(marker::PhantomData<M>);
 
 impl ProtobufType for ProtobufTypeFloat {
     type ProtobufValue = f32;
@@ -671,7 +672,7 @@ impl<E: Enum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufTypeEnum<E> 
     }
 }
 
-impl<E: Enum + fmt::Debug> ProtobufType for ProtobufTypeEnumOrUnknown<E> {
+impl<E: EnumFull + fmt::Debug> ProtobufType for ProtobufTypeEnumOrUnknown<E> {
     type ProtobufValue = EnumOrUnknown<E>;
 
     const WIRE_TYPE: WireType = WireType::Varint;
@@ -697,7 +698,7 @@ impl<E: Enum + fmt::Debug> ProtobufType for ProtobufTypeEnumOrUnknown<E> {
     }
 }
 
-impl<M: Message + Clone + ProtobufValue + Default> ProtobufType for ProtobufTypeMessage<M> {
+impl<M: MessageFull + Clone + ProtobufValue + Default> ProtobufType for ProtobufTypeMessage<M> {
     type ProtobufValue = M;
 
     const WIRE_TYPE: WireType = WireType::LengthDelimited;

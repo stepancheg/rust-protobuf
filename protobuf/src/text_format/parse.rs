@@ -1,7 +1,7 @@
 use std::str;
 
-use crate::message::Message;
 use crate::message_dyn::MessageDyn;
+use crate::message_full::MessageFull;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::EnumValueDescriptor;
 use crate::reflect::MessageDescriptor;
@@ -307,7 +307,7 @@ pub fn merge_from_str(message: &mut dyn MessageDyn, input: &str) -> ParseWithLoc
 }
 
 /// Parse text format message.
-pub fn parse_from_str<M: Message>(input: &str) -> ParseWithLocResult<M> {
+pub fn parse_from_str<M: MessageFull>(input: &str) -> ParseWithLocResult<M> {
     let mut m = M::new();
     merge_from_str(&mut m, input)?;
     if let Err(_) = m.check_initialized() {

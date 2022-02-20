@@ -1,5 +1,5 @@
 use protobuf::EnumOrUnknown;
-use protobuf::Message;
+use protobuf::MessageFull;
 
 use super::test_reflect_default_pb::*;
 

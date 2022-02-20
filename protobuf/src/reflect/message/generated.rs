@@ -5,8 +5,8 @@ use std::fmt;
 use std::marker;
 
 use crate::descriptor::FileDescriptorProto;
-use crate::message::Message;
 use crate::message_dyn::MessageDyn;
+use crate::message_full::MessageFull;
 use crate::reflect::acc::FieldAccessor;
 use crate::reflect::file::building::FileDescriptorBuilding;
 use crate::reflect::file::index::FileIndex;
@@ -33,7 +33,7 @@ pub(crate) struct MessageFactoryImpl<M>(pub marker::PhantomData<M>);
 
 impl<M> MessageFactory for MessageFactoryImpl<M>
 where
-    M: 'static + Message + Default + Clone + PartialEq,
+    M: 'static + MessageFull + Default + Clone + PartialEq,
 {
     fn new_instance(&self) -> Box<dyn MessageDyn> {
         let m: M = Default::default();
@@ -71,7 +71,7 @@ impl GeneratedMessageDescriptorData {
     ///
     /// This function is not a part of public API.
     #[doc(hidden)]
-    pub fn new_2<M: 'static + Message + Default + Clone + PartialEq>(
+    pub fn new_2<M: 'static + MessageFull + Default + Clone + PartialEq>(
         protobuf_name_to_package: &'static str,
         _index: u32,
         fields: Vec<FieldAccessor>,

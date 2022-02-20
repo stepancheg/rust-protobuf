@@ -9,11 +9,11 @@ use crate::coded_output_stream::CodedOutputStream;
 use crate::enums::Enum;
 use crate::error::Result;
 pub use crate::lazy_v2::LazyV2;
-use crate::message::*;
 use crate::varint::encoded_varint64_len;
 pub use crate::wire_format::WireType;
 use crate::zigzag::*;
 use crate::EnumOrUnknown;
+use crate::Message;
 use crate::MessageField;
 
 pub(crate) mod map;

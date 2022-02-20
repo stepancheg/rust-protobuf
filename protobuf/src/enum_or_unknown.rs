@@ -5,6 +5,7 @@ use crate::reflect::runtime_types::RuntimeTypeEnumOrUnknown;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::ProtobufValue;
 use crate::Enum;
+use crate::EnumFull;
 
 /// Protobuf enums with possibly unknown values are preserved in this struct.
 #[derive(Eq, PartialEq, Ord, PartialOrd, Copy, Clone)]
@@ -61,7 +62,9 @@ impl<E: Enum> EnumOrUnknown<E> {
     pub fn enum_value_or(&self, map_unknown: E) -> E {
         self.enum_value().unwrap_or(map_unknown)
     }
+}
 
+impl<E: EnumFull> EnumOrUnknown<E> {
     /// Get enum descriptor by type.
     pub fn enum_descriptor_static() -> EnumDescriptor {
         E::enum_descriptor_static()
@@ -74,13 +77,13 @@ impl<E: Enum> From<E> for EnumOrUnknown<E> {
     }
 }
 
-impl<E: Enum> Default for EnumOrUnknown<E> {
+impl<E: EnumFull> Default for EnumOrUnknown<E> {
     fn default() -> EnumOrUnknown<E> {
         EnumOrUnknown::new(E::default())
     }
 }
 
-impl<E: Enum> fmt::Debug for EnumOrUnknown<E> {
+impl<E: EnumFull> fmt::Debug for EnumOrUnknown<E> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self.enum_value() {
             Ok(e) => fmt::Debug::fmt(&e, f),
@@ -89,6 +92,6 @@ impl<E: Enum> fmt::Debug for EnumOrUnknown<E> {
     }
 }
 
-impl<E: Enum> ProtobufValue for EnumOrUnknown<E> {
+impl<E: EnumFull> ProtobufValue for EnumOrUnknown<E> {
     type RuntimeType = RuntimeTypeEnumOrUnknown<E>;
 }

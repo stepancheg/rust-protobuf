@@ -1,5 +1,5 @@
 use protobuf::text_format::print_to_string;
-use protobuf::Message;
+use protobuf::MessageFull;
 use protobuf_test_common::*;
 
 use super::test_fmt_text_format_pb::*;

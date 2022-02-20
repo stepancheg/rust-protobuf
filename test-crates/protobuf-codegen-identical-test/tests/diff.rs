@@ -208,7 +208,7 @@ fn normalize_field(field: &mut FieldDescriptorProto) {
     }
 }
 
-fn pretty_message<M: protobuf::Message>(message: &M) -> String {
+fn pretty_message<M: protobuf::MessageFull>(message: &M) -> String {
     format!("{:#}", message)
 }
 

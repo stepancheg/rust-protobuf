@@ -5,7 +5,7 @@ use crate::reflect::dynamic::DynamicMessage;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::MessageDescriptor;
-use crate::Message;
+use crate::MessageFull;
 
 #[derive(Clone, Debug)]
 enum MessageRefImpl<'a> {
@@ -27,7 +27,7 @@ impl<'a> From<&'a dyn MessageDyn> for MessageRef<'a> {
     }
 }
 
-impl<'a, M: Message> From<&'a M> for MessageRef<'a> {
+impl<'a, M: MessageFull> From<&'a M> for MessageRef<'a> {
     fn from(m: &'a M) -> Self {
         MessageRef {
             imp: MessageRefImpl::Message(m),

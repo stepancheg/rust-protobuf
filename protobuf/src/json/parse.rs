@@ -6,11 +6,10 @@ use std::num::ParseIntError;
 use super::base64;
 use super::float;
 use super::rfc_3339;
-use crate::enums::Enum;
 use crate::json::base64::FromBase64Error;
 use crate::json::well_known_wrapper::WellKnownWrapper;
-use crate::message::Message;
 use crate::message_dyn::MessageDyn;
+use crate::message_full::MessageFull;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::EnumValueDescriptor;
 use crate::reflect::FieldDescriptor;
@@ -44,6 +43,7 @@ use crate::well_known_types::Timestamp;
 use crate::well_known_types::UInt32Value;
 use crate::well_known_types::UInt64Value;
 use crate::well_known_types::Value;
+use crate::EnumFull;
 
 #[derive(Debug, thiserror::Error)]
 enum ParseErrorWithoutLocInner {
@@ -914,7 +914,7 @@ pub fn parse_dynamic_from_str(
 }
 
 /// Parse JSON to protobuf message.
-pub fn parse_from_str_with_options<M: Message>(
+pub fn parse_from_str_with_options<M: MessageFull>(
     json: &str,
     parse_options: &ParseOptions,
 ) -> ParseResult<M> {
@@ -923,6 +923,6 @@ pub fn parse_from_str_with_options<M: Message>(
 }
 
 /// Parse JSON to protobuf message.
-pub fn parse_from_str<M: Message>(json: &str) -> ParseResult<M> {
+pub fn parse_from_str<M: MessageFull>(json: &str) -> ParseResult<M> {
     parse_from_str_with_options(json, &ParseOptions::default())
 }

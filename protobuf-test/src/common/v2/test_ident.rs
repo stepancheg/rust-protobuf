@@ -1,4 +1,4 @@
-use protobuf::Message;
+use protobuf::MessageFull;
 
 use super::test_ident_pb::*;
 

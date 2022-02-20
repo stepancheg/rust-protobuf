@@ -1,7 +1,7 @@
 use crate::message_dyn::MessageDyn;
 use crate::reflect::MessageDescriptor;
 use crate::well_known_types::Any;
-use crate::Message;
+use crate::MessageFull;
 use crate::Result;
 
 impl Any {
@@ -21,18 +21,18 @@ impl Any {
     /// # Examples
     ///
     /// ```
-    /// # use protobuf::Message;
+    /// # use protobuf::MessageFull;
     /// # use protobuf::Result;
     /// use protobuf::well_known_types::Any;
     ///
-    /// # fn the_test<MyMessage: Message>(message: &MyMessage) -> Result<()> {
+    /// # fn the_test<MyMessage: MessageFull>(message: &MyMessage) -> Result<()> {
     /// let message: &MyMessage = message;
     /// let any = Any::pack(message)?;
     /// assert!(any.is::<MyMessage>());
     /// #   Ok(())
     /// # }
     /// ```
-    pub fn pack<M: Message>(message: &M) -> Result<Any> {
+    pub fn pack<M: MessageFull>(message: &M) -> Result<Any> {
         Any::pack_dyn(message)
     }
 
@@ -41,7 +41,7 @@ impl Any {
     /// # Examples
     ///
     /// ```
-    /// use protobuf::{Message, MessageDyn};
+    /// use protobuf::{MessageFull, MessageDyn};
     /// # use protobuf::Result;
     /// use protobuf::well_known_types::Any;
     ///
@@ -65,7 +65,7 @@ impl Any {
     }
 
     /// Check if `Any` contains a message of given type.
-    pub fn is<M: Message>(&self) -> bool {
+    pub fn is<M: MessageFull>(&self) -> bool {
         self.is_dyn(&M::descriptor_static())
     }
 
@@ -83,7 +83,7 @@ impl Any {
     ///
     /// * `Ok(None)` when message type mismatch
     /// * `Err` when parse failed
-    pub fn unpack<M: Message>(&self) -> Result<Option<M>> {
+    pub fn unpack<M: MessageFull>(&self) -> Result<Option<M>> {
         if !self.is::<M>() {
             return Ok(None);
         }

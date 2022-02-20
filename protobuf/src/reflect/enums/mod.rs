@@ -10,6 +10,7 @@ use crate::reflect::enums::dynamic::DynamicEnumDescriptor;
 use crate::reflect::enums::generated::GeneratedEnumDescriptor;
 use crate::reflect::file::FileDescriptorImpl;
 use crate::reflect::FileDescriptor;
+use crate::EnumFull;
 
 pub(crate) mod dynamic;
 pub(crate) mod generated;
@@ -81,7 +82,7 @@ impl EnumValueDescriptor {
     ///
     /// ```
     /// # use protobuf::well_known_types::NullValue;
-    /// # use protobuf::Enum;
+    /// # use protobuf::EnumFull;
     /// # use protobuf::reflect::EnumValueDescriptor;
     ///
     /// # if !cfg!(miri) {
@@ -91,7 +92,7 @@ impl EnumValueDescriptor {
     /// assert_eq!(Some(NullValue::NULL_VALUE), null);
     /// # }
     /// ```
-    pub fn cast<E: Enum>(&self) -> Option<E> {
+    pub fn cast<E: EnumFull>(&self) -> Option<E> {
         if self.enum_descriptor != E::enum_descriptor_static() {
             return None;
         }
@@ -157,7 +158,7 @@ impl EnumDescriptor {
     }
 
     /// Get `EnumDescriptor` object for given enum type
-    pub fn for_type<E: Enum>() -> EnumDescriptor {
+    pub fn for_type<E: EnumFull>() -> EnumDescriptor {
         E::enum_descriptor_static()
     }
 
@@ -226,7 +227,7 @@ impl EnumDescriptor {
     /// Check if this enum descriptor corresponds given enum type
     ///
     /// ```
-    /// # use protobuf::Enum;
+    /// # use protobuf::EnumFull;
     /// # use protobuf::descriptor::field_descriptor_proto::Label;
     /// # use protobuf::reflect::EnumDescriptor;
     ///

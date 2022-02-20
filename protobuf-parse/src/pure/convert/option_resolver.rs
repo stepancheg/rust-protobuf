@@ -11,7 +11,7 @@ use protobuf::reflect::FieldDescriptor;
 use protobuf::reflect::FileDescriptor;
 use protobuf::reflect::MessageDescriptor;
 use protobuf::text_format::lexer::StrLitDecodeError;
-use protobuf::Message;
+use protobuf::MessageFull;
 use protobuf::UnknownFields;
 use protobuf::UnknownValue;
 
@@ -413,7 +413,7 @@ impl<'a> OptionResoler<'a> {
         option_value: &ProtobufConstant,
     ) -> anyhow::Result<()>
     where
-        M: Message,
+        M: MessageFull,
     {
         self.custom_option_ext_step(
             scope,
@@ -669,7 +669,7 @@ impl<'a> OptionResoler<'a> {
         option_value: &ProtobufConstant,
     ) -> anyhow::Result<()>
     where
-        M: Message,
+        M: MessageFull,
     {
         if M::descriptor_static().full_name() == "google.protobuf.FieldOptions" {
             if option.get() == "default" || option.get() == "json_name" {
@@ -710,7 +710,7 @@ impl<'a> OptionResoler<'a> {
         option: &model::ProtobufOption,
     ) -> anyhow::Result<()>
     where
-        M: Message,
+        M: MessageFull,
     {
         match &option.name {
             ProtobufOptionName::Builtin(simple) => {
@@ -726,7 +726,7 @@ impl<'a> OptionResoler<'a> {
         input: &[model::ProtobufOption],
     ) -> anyhow::Result<Option<M>>
     where
-        M: Message,
+        M: MessageFull,
     {
         if input.is_empty() {
             // Empty options do not have to represented to unset message field,

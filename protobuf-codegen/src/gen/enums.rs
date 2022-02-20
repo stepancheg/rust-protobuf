@@ -142,6 +142,9 @@ impl<'a> EnumGen<'a> {
         w.write_line("");
         self.write_impl_enum(w);
         w.write_line("");
+        // TODO: do not write if lite runtime is enabled
+        self.write_impl_enum_full(w);
+        w.write_line("");
         self.write_impl_default(w);
         w.write_line("");
         self.write_impl_self(w);
@@ -258,9 +261,21 @@ impl<'a> EnumGen<'a> {
                     w.write_line("];");
                     w.write_line("values");
                 });
+            },
+        );
+    }
 
+    fn write_impl_enum_full(&self, w: &mut CodeWriter) {
+        let ref type_name = self.type_name;
+        w.impl_for_block(
+            &format!(
+                "{}::EnumFull",
+                protobuf_crate_path(&self.customize.for_elem)
+            ),
+            &format!("{}", type_name),
+            |w| {
+                // TODO: write unconditionally
                 if !self.lite_runtime {
-                    w.write_line("");
                     self.write_enum_descriptor_static(w);
                 }
             },

@@ -1,8 +1,8 @@
 use std::fmt;
 use std::marker;
 
-use crate::message::Message;
 use crate::message_dyn::MessageDyn;
+use crate::message_full::MessageFull;
 use crate::reflect::acc::v2::AccessorV2;
 use crate::reflect::acc::FieldAccessor;
 use crate::reflect::repeated::ReflectRepeated;
@@ -29,7 +29,7 @@ impl<'a> fmt::Debug for RepeatedFieldAccessorHolder {
 
 trait RepeatedFieldGetMut<M, R: ?Sized>: Send + Sync + 'static
 where
-    M: Message + 'static,
+    M: MessageFull + 'static,
 {
     fn get_field<'a>(&self, message: &'a M) -> &'a R;
     fn mut_field<'a>(&self, message: &'a mut M) -> &'a mut R;
@@ -37,7 +37,7 @@ where
 
 struct RepeatedFieldGetMutImpl<M, L>
 where
-    M: Message + 'static,
+    M: MessageFull + 'static,
 {
     get_field: for<'a> fn(&'a M) -> &'a L,
     mut_field: for<'a> fn(&'a mut M) -> &'a mut L,
@@ -45,7 +45,7 @@ where
 
 impl<M, V> RepeatedFieldGetMut<M, dyn ReflectRepeated> for RepeatedFieldGetMutImpl<M, Vec<V>>
 where
-    M: Message + 'static,
+    M: MessageFull + 'static,
     V: ProtobufValue,
 {
     fn get_field<'a>(&self, m: &'a M) -> &'a dyn ReflectRepeated {
@@ -59,7 +59,7 @@ where
 
 struct RepeatedFieldAccessorImpl<M, V>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
 {
     fns: Box<dyn RepeatedFieldGetMut<M, dyn ReflectRepeated>>,
@@ -68,7 +68,7 @@ where
 
 impl<M, V> RepeatedFieldAccessor for RepeatedFieldAccessorImpl<M, V>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
 {
     fn get_repeated<'a>(&self, m: &'a dyn MessageDyn) -> ReflectRepeatedRef<'a> {
@@ -95,7 +95,7 @@ pub fn make_vec_simpler_accessor<M, V>(
     mut_vec: for<'a> fn(&'a mut M) -> &'a mut Vec<V>,
 ) -> FieldAccessor
 where
-    M: Message + 'static,
+    M: MessageFull + 'static,
     V: ProtobufValue,
 {
     FieldAccessor::new_v2(

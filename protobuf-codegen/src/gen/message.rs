@@ -491,7 +491,7 @@ impl<'a> MessageGen<'a> {
 
     fn write_impl_message(&self, w: &mut CodeWriter) {
         w.impl_for_block(
-            &format!("{}::Message", protobuf_crate_path(&self.customize.for_elem)),
+            &format!("{}::Message", protobuf_crate_path(&self.customize.for_elem),),
             &format!("{}", self.type_name),
             |w| {
                 self.write_is_initialized(w);
@@ -509,12 +509,25 @@ impl<'a> MessageGen<'a> {
                 w.def_fn(&format!("new() -> {}", self.type_name), |w| {
                     w.write_line(&format!("{}::new()", self.type_name));
                 });
+                w.write_line("");
+                self.write_default_instance(w);
+            },
+        );
+    }
+
+    fn write_impl_message_full(&self, w: &mut CodeWriter) {
+        w.impl_for_block(
+            &format!(
+                "{}::MessageFull",
+                protobuf_crate_path(&self.customize.for_elem),
+            ),
+            &format!("{}", self.type_name),
+            |w| {
+                // TODO: write unconditionally
                 if !self.lite_runtime {
                     w.write_line("");
                     self.write_descriptor_static_new(w);
                 }
-                w.write_line("");
-                self.write_default_instance(w);
             },
         );
     }
@@ -701,6 +714,9 @@ impl<'a> MessageGen<'a> {
         self.write_impl_self(w);
         w.write_line("");
         self.write_impl_message(w);
+        w.write_line("");
+        // TODO: do not write if lite runtime
+        self.write_impl_message_full(w);
         w.write_line("");
         self.write_impl_clear(w);
         w.write_line("");

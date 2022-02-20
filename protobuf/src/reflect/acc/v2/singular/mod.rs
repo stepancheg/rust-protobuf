@@ -1,9 +1,11 @@
 use std::fmt;
 use std::marker;
 
-use crate::enums::Enum;
+use crate::enum_or_unknown::EnumOrUnknown;
 use crate::message::Message;
 use crate::message_dyn::MessageDyn;
+use crate::message_field::MessageField;
+use crate::message_full::MessageFull;
 use crate::reflect::acc::v2::AccessorV2;
 use crate::reflect::acc::FieldAccessor;
 use crate::reflect::runtime_types::RuntimeTypeWithDeref;
@@ -12,8 +14,7 @@ use crate::reflect::MessageRef;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
-use crate::EnumOrUnknown;
-use crate::MessageField;
+use crate::EnumFull;
 
 pub(crate) mod oneof;
 
@@ -89,14 +90,14 @@ trait SetImpl<M>: Send + Sync + 'static {
 
 struct MutOrDefaultUnmplemented<M>
 where
-    M: Message,
+    M: MessageFull,
 {
     _marker: marker::PhantomData<M>,
 }
 
 impl<M> MutOrDefaultUnmplemented<M>
 where
-    M: Message,
+    M: MessageFull,
 {
     fn new() -> MutOrDefaultUnmplemented<M> {
         MutOrDefaultUnmplemented {
@@ -107,7 +108,7 @@ where
 
 impl<M> MutOrDefaultImpl<M> for MutOrDefaultUnmplemented<M>
 where
-    M: Message,
+    M: MessageFull,
 {
     fn mut_singular_field_or_default_impl<'a>(&self, _m: &'a mut M) -> ReflectValueMut<'a> {
         unimplemented!()
@@ -116,7 +117,7 @@ where
 
 struct SingularFieldAccessorImpl<M, V, G, D, E, S>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
     G: GetOptionImpl<M>,
     D: GetOrDefaultImpl<M>,
@@ -132,7 +133,7 @@ where
 
 impl<M, V, G, D, E, S> SingularFieldAccessor for SingularFieldAccessorImpl<M, V, G, D, E, S>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
     G: GetOptionImpl<M>,
     D: GetOrDefaultImpl<M>,
@@ -164,7 +165,7 @@ where
 
 struct GetOptionImplFieldPointer<M, V>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
 {
     get_field: for<'a> fn(&'a M) -> &'a V,
@@ -172,7 +173,7 @@ where
 
 struct GetOptionImplOptionFieldPointer<M, V, O>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
     O: OptionLike<V> + Sync + Send + 'static,
 {
@@ -182,7 +183,7 @@ where
 
 struct GetOptionImplHasGetRef<M, V>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
 {
     has: for<'a> fn(&'a M) -> bool,
@@ -191,7 +192,7 @@ where
 
 struct GetOptionImplHasGetRefDeref<M, V>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
     V::RuntimeType: RuntimeTypeWithDeref,
 {
@@ -201,7 +202,7 @@ where
 
 struct GetOptionImplHasGetCopy<M, V>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
 {
     has: for<'a> fn(&'a M) -> bool,
@@ -210,7 +211,7 @@ where
 
 impl<M, V> GetOptionImpl<M> for GetOptionImplFieldPointer<M, V>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
 {
     fn get_reflect_impl<'a>(&self, m: &'a M) -> Option<ReflectValueRef<'a>> {
@@ -225,7 +226,7 @@ where
 
 impl<M, V, O> GetOptionImpl<M> for GetOptionImplOptionFieldPointer<M, V, O>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
     O: OptionLike<V> + Sync + Send + 'static,
 {
@@ -236,7 +237,7 @@ where
 
 impl<M, V> GetOptionImpl<M> for GetOptionImplHasGetRef<M, V>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
 {
     fn get_reflect_impl<'a>(&self, m: &'a M) -> Option<ReflectValueRef<'a>> {
@@ -250,7 +251,7 @@ where
 
 impl<M, V> GetOptionImpl<M> for GetOptionImplHasGetRefDeref<M, V>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
     V::RuntimeType: RuntimeTypeWithDeref,
 {
@@ -267,7 +268,7 @@ where
 
 impl<M, V> GetOptionImpl<M> for GetOptionImplHasGetCopy<M, V>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
 {
     fn get_reflect_impl<'a>(&self, m: &'a M) -> Option<ReflectValueRef<'a>> {
@@ -281,7 +282,7 @@ where
 
 struct GetOrDefaultGetRef<M, V>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
 {
     get_field: for<'a> fn(&'a M) -> &'a V,
@@ -289,7 +290,7 @@ where
 
 struct GetOrDefaultGetRefDeref<M, V>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
     V::RuntimeType: RuntimeTypeWithDeref,
 {
@@ -302,8 +303,8 @@ where
 
 struct GetOrDefaultOptionRefTypeDefault<M, V, O>
 where
-    M: Message,
-    V: Message,
+    M: MessageFull,
+    V: MessageFull,
     O: OptionLike<V> + Sync + Send + 'static,
 {
     get_field: for<'a> fn(&'a M) -> &'a O,
@@ -312,7 +313,7 @@ where
 
 struct GetOrDefaultGetCopy<M, V>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
 {
     get_field: for<'a> fn(&'a M) -> V,
@@ -320,7 +321,7 @@ where
 
 impl<M, V> GetOrDefaultImpl<M> for GetOrDefaultGetRef<M, V>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
 {
     fn get_singular_field_or_default_impl<'a>(&self, m: &'a M) -> ReflectValueRef<'a> {
@@ -330,15 +331,15 @@ where
 
 impl<M, V, O> GetOrDefaultImpl<M> for GetOrDefaultOptionRefTypeDefault<M, V, O>
 where
-    M: Message,
-    V: Message,
+    M: MessageFull,
+    V: MessageFull,
     O: OptionLike<V> + Sync + Send + 'static,
 {
     fn get_singular_field_or_default_impl<'a>(&self, m: &'a M) -> ReflectValueRef<'a> {
         ReflectValueRef::Message(MessageRef::from(
             match (self.get_field)(m).as_option_ref() {
                 Some(v) => v,
-                None => V::default_instance(),
+                None => <V as Message>::default_instance(),
             },
         ))
     }
@@ -346,7 +347,7 @@ where
 
 impl<M, V> GetOrDefaultImpl<M> for GetOrDefaultGetRefDeref<M, V>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
     V::RuntimeType: RuntimeTypeWithDeref,
 {
@@ -357,7 +358,7 @@ where
 
 impl<M, V> GetOrDefaultImpl<M> for GetOrDefaultGetCopy<M, V>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
 {
     fn get_singular_field_or_default_impl<'a>(&self, m: &'a M) -> ReflectValueRef<'a> {
@@ -367,7 +368,7 @@ where
 
 struct MutOrDefaultGetMut<M, V>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
 {
     mut_field: for<'a> fn(&'a mut M) -> &'a mut V,
@@ -375,7 +376,7 @@ where
 
 impl<M, V> MutOrDefaultImpl<M> for MutOrDefaultGetMut<M, V>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
 {
     fn mut_singular_field_or_default_impl<'a>(&self, m: &'a mut M) -> ReflectValueMut<'a> {
@@ -385,7 +386,7 @@ where
 
 struct MutOrDefaultOptionMut<M, V, O>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
     O: OptionLike<V> + Sync + Send + 'static,
 {
@@ -395,7 +396,7 @@ where
 
 impl<M, V, O> MutOrDefaultImpl<M> for MutOrDefaultOptionMut<M, V, O>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
     O: OptionLike<V> + Sync + Send + 'static,
 {
@@ -410,7 +411,7 @@ where
 
 struct SetImplFieldPointer<M, V>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
 {
     mut_field: for<'a> fn(&'a mut M) -> &'a mut V,
@@ -418,7 +419,7 @@ where
 
 struct SetImplOptionFieldPointer<M, V, O>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
     O: OptionLike<V> + Sync + Send + 'static,
 {
@@ -428,7 +429,7 @@ where
 
 struct SetImplSetField<M, V>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
 {
     set_field: for<'a> fn(&'a mut M, V),
@@ -436,7 +437,7 @@ where
 
 impl<M, V> SetImpl<M> for SetImplFieldPointer<M, V>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
 {
     fn set_singular_field(&self, m: &mut M, value: ReflectValueBox) {
@@ -446,7 +447,7 @@ where
 
 impl<M, V, O> SetImpl<M> for SetImplOptionFieldPointer<M, V, O>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
     O: OptionLike<V> + Sync + Send + 'static,
 {
@@ -457,7 +458,7 @@ where
 
 impl<M, V> SetImpl<M> for SetImplSetField<M, V>
 where
-    M: Message,
+    M: MessageFull,
     V: ProtobufValue,
 {
     fn set_singular_field(&self, m: &mut M, value: ReflectValueBox) {
@@ -473,8 +474,8 @@ pub fn make_message_field_accessor<M, V>(
     mut_field: for<'a> fn(&'a mut M) -> &'a mut MessageField<V>,
 ) -> FieldAccessor
 where
-    M: Message + 'static,
-    V: Message + ProtobufValue + 'static,
+    M: MessageFull + 'static,
+    V: MessageFull + ProtobufValue + 'static,
 {
     FieldAccessor::new_v2(
         name,
@@ -510,7 +511,7 @@ pub fn make_option_get_copy_simpler_accessor<M, V>(
     get_value: fn(&M) -> V,
 ) -> FieldAccessor
 where
-    M: Message + 'static,
+    M: MessageFull + 'static,
     V: ProtobufValue + 'static,
 {
     FieldAccessor::new_v2(
@@ -535,12 +536,12 @@ where
     )
 }
 
-struct GetOrDefaultEnum<M, E: Enum> {
+struct GetOrDefaultEnum<M, E: EnumFull> {
     get_field: for<'a> fn(&'a M) -> &'a Option<EnumOrUnknown<E>>,
     default_value: E,
 }
 
-impl<M: Message, E: Enum> GetOrDefaultImpl<M> for GetOrDefaultEnum<M, E> {
+impl<M: MessageFull, E: EnumFull> GetOrDefaultImpl<M> for GetOrDefaultEnum<M, E> {
     fn get_singular_field_or_default_impl<'a>(&self, m: &'a M) -> ReflectValueRef<'a> {
         ReflectValueRef::Enum(
             E::enum_descriptor_static(),
@@ -560,8 +561,8 @@ pub fn make_option_enum_accessor<M, E>(
     default_value: E,
 ) -> FieldAccessor
 where
-    M: Message + 'static,
-    E: Enum,
+    M: MessageFull,
+    E: EnumFull,
 {
     FieldAccessor::new_v2(
         name,
@@ -604,7 +605,7 @@ pub fn make_option_get_ref_simpler_accessor<M, V>(
     get_value: for<'a> fn(&'a M) -> &'a <V::RuntimeType as RuntimeTypeWithDeref>::DerefTarget,
 ) -> FieldAccessor
 where
-    M: Message + 'static,
+    M: MessageFull + 'static,
     V: ProtobufValue + 'static,
     V::RuntimeType: RuntimeTypeWithDeref,
 {
@@ -637,7 +638,7 @@ pub fn make_simpler_field_accessor<M, V>(
     mut_field: for<'a> fn(&'a mut M) -> &'a mut V,
 ) -> FieldAccessor
 where
-    M: Message + 'static,
+    M: MessageFull + 'static,
     V: ProtobufValue,
 {
     FieldAccessor::new_v2(
