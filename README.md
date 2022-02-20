@@ -43,6 +43,8 @@ Version 3 of rust-protobuf is mostly feature-complete, but to release it:
 * more testing needed
 * API need to be polished since breaking API is not semver-friendly
 
+Current plan is to release version 3 in a few weeks.
+
 [Tracking issue for rust-protobuf=3](https://github.com/stepancheg/rust-protobuf/issues/518).
 
 The crate **needs help**:
