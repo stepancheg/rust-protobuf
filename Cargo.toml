@@ -6,7 +6,6 @@ members = [
     # Exclude test-protoc from the project, because it depends on binary
     #"protoc/test-protoc",
     "protobuf",
-    "protobuf-fuzz",
     "protobuf-codegen",
     "protobuf-codegen-pure-test",
     "protobuf-examples/customize-serde",
@@ -18,6 +17,7 @@ members = [
     "perftest/vs-cxx",
     "perftest/bytes",
     "perftest/misc",
-    "test-crates/protobuf-test-common",
     "test-crates/protobuf-codegen-identical-test",
+    "test-crates/protobuf-fuzz",
+    "test-crates/protobuf-test-common",
 ]

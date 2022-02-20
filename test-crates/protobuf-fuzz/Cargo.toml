@@ -14,18 +14,18 @@ default = []
 with-bytes = ["bytes", "protobuf/with-bytes", "protobuf-test-common/with-bytes"]
 
 [build-dependencies]
-protobuf-codegen = { path = "../protobuf-codegen" }
-protobuf-test-common = { path = "../test-crates/protobuf-test-common" }
+protobuf-codegen = { path = "../../protobuf-codegen" }
+protobuf-test-common = { path = "../../test-crates/protobuf-test-common" }
 glob        = "0.2"
 log         = "0.*"
 env_logger  = "0.5.*"
 
 [dependencies]
-protobuf-test-common = { path = "../test-crates/protobuf-test-common" }
+protobuf-test-common = { path = "../../test-crates/protobuf-test-common" }
 serde        = { version = "1.0", features = ["derive"] }
 serde_derive = "1.0"
 serde_json   = "1.0"
 bytes = { version = "1.1", optional = true }
 
 [dependencies.protobuf]
-path = "../protobuf"
+path = "../../protobuf"
