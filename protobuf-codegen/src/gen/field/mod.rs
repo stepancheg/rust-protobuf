@@ -1496,7 +1496,7 @@ impl<'a> FieldGen<'a> {
 
     // Write `merge_from` part for this oneof field
     fn write_merge_from_oneof_case_block(&self, o: &OneofField, w: &mut CodeWriter) {
-        w.case_block(&format!("(_, {})", self.tag()), |w| {
+        w.case_block(&format!("{}", self.tag()), |w| {
             let typed = RustValueTyped {
                 value: format!(
                     "{}?",
@@ -1539,7 +1539,7 @@ impl<'a> FieldGen<'a> {
         let &MapField {
             ref key, ref value, ..
         } = self.map();
-        w.case_block(&format!("(_, {})", self.tag()), |w| {
+        w.case_block(&format!("{}", self.tag()), |w| {
             w.write_line(&format!(
                 "{}::rt::read_map_into::<{}, {}>(is, &mut {})?;",
                 protobuf_crate_path(&self.customize),
@@ -1552,7 +1552,7 @@ impl<'a> FieldGen<'a> {
 
     // Write `merge_from` part for this singular field
     fn write_merge_from_singular_case_block(&self, s: &SingularField, w: &mut CodeWriter) {
-        w.case_block(&format!("(_, {})", self.tag()), |w| match s.elem {
+        w.case_block(&format!("{}", self.tag()), |w| match s.elem {
             FieldElem::Message(..) => {
                 w.write_line(&format!(
                     "{}::rt::read_singular_message_into_field(is, &mut self.{})?;",
@@ -1581,13 +1581,13 @@ impl<'a> FieldGen<'a> {
             FieldElem::Message(..)
             | FieldElem::Primitive(field_descriptor_proto::Type::TYPE_STRING, ..)
             | FieldElem::Primitive(field_descriptor_proto::Type::TYPE_BYTES, ..) => {
-                w.case_block(&format!("(_, {})", self.tag()), |w| {
+                w.case_block(&format!("{}", self.tag()), |w| {
                     self.write_merge_from_field_message_string_bytes_repeated(field, w);
                 })
             }
             FieldElem::Enum(..) => {
                 w.case_block(
-                    &format!("(_, {})", self.tag_with_wire_type(WireType::Varint)),
+                    &format!("{}", self.tag_with_wire_type(WireType::Varint)),
                     |w| {
                         w.write_line(&format!(
                             "self.{}.push(is.read_enum_or_unknown()?);",
@@ -1596,10 +1596,7 @@ impl<'a> FieldGen<'a> {
                     },
                 );
                 w.case_block(
-                    &format!(
-                        "(_, {})",
-                        self.tag_with_wire_type(WireType::LengthDelimited)
-                    ),
+                    &format!("{}", self.tag_with_wire_type(WireType::LengthDelimited)),
                     |w| {
                         w.write_line(&format!(
                             "{}::rt::read_repeated_packed_enum_or_unknown_into(is, &mut self.{})?",
@@ -1612,10 +1609,7 @@ impl<'a> FieldGen<'a> {
             _ => {
                 assert_ne!(self.wire_type, WireType::LengthDelimited);
                 w.case_block(
-                    &format!(
-                        "(_, {})",
-                        self.tag_with_wire_type(WireType::LengthDelimited)
-                    ),
+                    &format!("{}", self.tag_with_wire_type(WireType::LengthDelimited)),
                     |w| {
                         w.write_line(&format!(
                             "is.read_repeated_packed_{}_into(&mut self.{})?;",
@@ -1624,7 +1618,7 @@ impl<'a> FieldGen<'a> {
                         ));
                     },
                 );
-                w.case_block(&format!("(_, {})", self.tag()), |w| {
+                w.case_block(&format!("{}", self.tag()), |w| {
                     w.write_line(&format!(
                         "self.{}.push(is.read_{}()?);",
                         self.rust_name,
