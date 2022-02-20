@@ -727,16 +727,16 @@ mod test {
     fn test_input_stream_read_raw_vaint_malformed() {
         // varint cannot have length > 10
         test_read_partial("ff ff ff ff ff ff ff ff ff ff 01", |reader| {
-            let result = reader.read_raw_varint64();
-            match result {
-                Err(Error(ProtobufError::WireError(..))) => (),
+            let error = reader.read_raw_varint64().unwrap_err().0;
+            match *error {
+                ProtobufError::WireError(..) => (),
                 _ => panic!(),
             }
         });
         test_read_partial("ff ff ff ff ff ff ff ff ff ff 01", |reader| {
-            let result = reader.read_raw_varint32();
-            match result {
-                Err(Error(ProtobufError::WireError(..))) => (),
+            let error = reader.read_raw_varint32().unwrap_err().0;
+            match *error {
+                ProtobufError::WireError(..) => (),
                 _ => panic!(),
             }
         });
@@ -745,9 +745,9 @@ mod test {
     #[test]
     fn test_input_stream_read_raw_varint_unexpected_eof() {
         test_read_partial("96 97", |reader| {
-            let result = reader.read_raw_varint32();
-            match result {
-                Err(Error(ProtobufError::WireError(..))) => (),
+            let error = reader.read_raw_varint32().unwrap_err().0;
+            match *error {
+                ProtobufError::WireError(..) => (),
                 _ => panic!(),
             }
         });
