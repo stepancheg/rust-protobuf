@@ -44,7 +44,7 @@ impl TestRunner {
         while total_size < self.data_size {
             let ref item = data[rng.gen_range(0, data.len())];
             random_data.push(item.clone());
-            total_size += item.compute_size();
+            total_size += item.compute_size() as u32;
         }
 
         let mut buf = Vec::new();
