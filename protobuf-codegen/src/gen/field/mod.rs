@@ -1564,44 +1564,48 @@ impl<'a> FieldGen<'a> {
         );
     }
 
+    fn tag(&self) -> u32 {
+        (self.proto_field.number() << 3) | (self.wire_type as u32)
+    }
+
     // Write `merge_from` part for this oneof field
-    fn write_merge_from_oneof(&self, o: &OneofField, wire_type_var: &str, w: &mut CodeWriter) {
-        self.write_assert_wire_type(wire_type_var, w);
+    fn write_merge_from_oneof_case_block(&self, o: &OneofField, w: &mut CodeWriter) {
+        w.case_block(&format!("(_, {})", self.tag()), |w| {
+            let typed = RustValueTyped {
+                value: format!(
+                    "{}?",
+                    self.proto_type.read("is", o.elem.primitive_type_variant())
+                ),
+                rust_type: self.full_storage_iter_elem_type(
+                    &self
+                        .proto_field
+                        .message
+                        .scope
+                        .file_and_mod(self.customize.clone()),
+                ),
+            };
 
-        let typed = RustValueTyped {
-            value: format!(
-                "{}?",
-                self.proto_type.read("is", o.elem.primitive_type_variant())
-            ),
-            rust_type: self.full_storage_iter_elem_type(
-                &self
-                    .proto_field
-                    .message
-                    .scope
-                    .file_and_mod(self.customize.clone()),
-            ),
-        };
+            let maybe_boxed = if o.boxed {
+                typed.boxed(&self.customize)
+            } else {
+                typed
+            };
 
-        let maybe_boxed = if o.boxed {
-            typed.boxed(&self.customize)
-        } else {
-            typed
-        };
-
-        w.write_line(&format!(
-            "self.{} = ::std::option::Option::Some({}({}));",
-            o.oneof_field_name,
-            o.variant_path(
-                &self
-                    .proto_field
-                    .message
-                    .scope
-                    .rust_path_to_file()
-                    .clone()
-                    .into_path()
-            ),
-            maybe_boxed.value
-        )); // TODO: into_type
+            w.write_line(&format!(
+                "self.{} = ::std::option::Option::Some({}({}));",
+                o.oneof_field_name,
+                o.variant_path(
+                    &self
+                        .proto_field
+                        .message
+                        .scope
+                        .rust_path_to_file()
+                        .clone()
+                        .into_path()
+                ),
+                maybe_boxed.value
+            )); // TODO: into_type
+        })
     }
 
     // Write `merge_from` part for this map field
@@ -1680,12 +1684,18 @@ impl<'a> FieldGen<'a> {
         w: &mut CodeWriter,
     ) {
         let number = self.proto_field.number();
-        w.case_block(&format!("({}, _)", number), |w| match self.kind {
-            FieldKind::Oneof(ref f) => self.write_merge_from_oneof(&f, wire_type_var, w),
-            FieldKind::Map(..) => self.write_merge_from_map(w),
-            FieldKind::Singular(ref s) => self.write_merge_from_singular(s, wire_type_var, w),
-            FieldKind::Repeated(..) => self.write_merge_from_repeated(wire_type_var, w),
-        });
+        match self.kind {
+            FieldKind::Oneof(ref f) => self.write_merge_from_oneof_case_block(&f, w),
+            FieldKind::Map(..) => w.case_block(&format!("({}, _)", number), |w| {
+                self.write_merge_from_map(w)
+            }),
+            FieldKind::Singular(ref s) => w.case_block(&format!("({}, _)", number), |w| {
+                self.write_merge_from_singular(s, wire_type_var, w)
+            }),
+            FieldKind::Repeated(..) => w.case_block(&format!("({}, _)", number), |w| {
+                self.write_merge_from_repeated(wire_type_var, w)
+            }),
+        }
     }
 
     fn self_field_vec_packed_size(&self) -> String {
