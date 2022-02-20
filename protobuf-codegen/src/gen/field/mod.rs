@@ -1580,33 +1580,34 @@ impl<'a> FieldGen<'a> {
             _ => panic!(),
         };
 
-        w.case_block(
-            &format!("({}, _)", self.proto_field.number()),
-            |w| match field.elem {
-                FieldElem::Message(..)
-                | FieldElem::Primitive(field_descriptor_proto::Type::TYPE_STRING, ..)
-                | FieldElem::Primitive(field_descriptor_proto::Type::TYPE_BYTES, ..) => {
+        match field.elem {
+            FieldElem::Message(..)
+            | FieldElem::Primitive(field_descriptor_proto::Type::TYPE_STRING, ..)
+            | FieldElem::Primitive(field_descriptor_proto::Type::TYPE_BYTES, ..) => {
+                w.case_block(&format!("({}, _)", self.proto_field.number()), |w| {
                     self.write_merge_from_field_message_string_bytes_repeated(field, w);
-                }
-                FieldElem::Enum(..) => {
+                })
+            }
+            FieldElem::Enum(..) => {
+                w.case_block(&format!("({}, _)", self.proto_field.number()), |w| {
                     w.write_line(&format!(
                         "{}::rt::read_repeated_enum_or_unknown_into({}, is, &mut self.{})?",
                         protobuf_crate_path(&self.customize),
                         wire_type_var,
                         self.rust_name,
                     ));
-                }
-                _ => {
-                    w.write_line(&format!(
-                        "{}::rt::read_repeated_{}_into({}, is, &mut self.{})?;",
-                        protobuf_crate_path(&self.customize),
-                        protobuf_name(self.proto_type),
-                        wire_type_var,
-                        self.rust_name
-                    ));
-                }
-            },
-        )
+                })
+            }
+            _ => w.case_block(&format!("({}, _)", self.proto_field.number()), |w| {
+                w.write_line(&format!(
+                    "{}::rt::read_repeated_{}_into({}, is, &mut self.{})?;",
+                    protobuf_crate_path(&self.customize),
+                    protobuf_name(self.proto_type),
+                    wire_type_var,
+                    self.rust_name
+                ));
+            }),
+        }
     }
 
     /// Write `merge_from` part for this field
