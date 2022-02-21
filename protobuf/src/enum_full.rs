@@ -19,7 +19,5 @@ pub trait EnumFull: Enum {
     }
 
     /// Get enum descriptor by type.
-    fn enum_descriptor_static() -> EnumDescriptor {
-        panic!();
-    }
+    fn enum_descriptor_static() -> EnumDescriptor;
 }
