@@ -62,6 +62,8 @@ impl FieldMask {
 }
 
 impl crate::Message for FieldMask {
+    const NAME: &'static str = "FieldMask";
+
     fn is_initialized(&self) -> bool {
         true
     }

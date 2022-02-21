@@ -103,6 +103,8 @@ impl Type {
 }
 
 impl crate::Message for Type {
+    const NAME: &'static str = "Type";
+
     fn is_initialized(&self) -> bool {
         for v in &self.fields {
             if !v.is_initialized() {
@@ -381,6 +383,8 @@ impl Field {
 }
 
 impl crate::Message for Field {
+    const NAME: &'static str = "Field";
+
     fn is_initialized(&self) -> bool {
         for v in &self.options {
             if !v.is_initialized() {
@@ -828,6 +832,8 @@ impl Enum {
 }
 
 impl crate::Message for Enum {
+    const NAME: &'static str = "Enum";
+
     fn is_initialized(&self) -> bool {
         for v in &self.enumvalue {
             if !v.is_initialized() {
@@ -1037,6 +1043,8 @@ impl EnumValue {
 }
 
 impl crate::Message for EnumValue {
+    const NAME: &'static str = "EnumValue";
+
     fn is_initialized(&self) -> bool {
         for v in &self.options {
             if !v.is_initialized() {
@@ -1211,6 +1219,8 @@ impl Option {
 }
 
 impl crate::Message for Option {
+    const NAME: &'static str = "Option";
+
     fn is_initialized(&self) -> bool {
         for v in &self.value {
             if !v.is_initialized() {

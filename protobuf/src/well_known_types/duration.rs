@@ -77,6 +77,8 @@ impl Duration {
 }
 
 impl crate::Message for Duration {
+    const NAME: &'static str = "Duration";
+
     fn is_initialized(&self) -> bool {
         true
     }

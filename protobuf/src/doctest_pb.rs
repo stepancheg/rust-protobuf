@@ -53,6 +53,8 @@ impl MyMessage {
 }
 
 impl crate::Message for MyMessage {
+    const NAME: &'static str = "MyMessage";
+
     fn is_initialized(&self) -> bool {
         true
     }

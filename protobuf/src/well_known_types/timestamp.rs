@@ -75,6 +75,8 @@ impl Timestamp {
 }
 
 impl crate::Message for Timestamp {
+    const NAME: &'static str = "Timestamp";
+
     fn is_initialized(&self) -> bool {
         true
     }

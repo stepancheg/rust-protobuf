@@ -70,6 +70,8 @@ impl Struct {
 }
 
 impl crate::Message for Struct {
+    const NAME: &'static str = "Struct";
+
     fn is_initialized(&self) -> bool {
         true
     }
@@ -456,6 +458,8 @@ impl Value {
 }
 
 impl crate::Message for Value {
+    const NAME: &'static str = "Value";
+
     fn is_initialized(&self) -> bool {
         if let Some(value::Kind::struct_value(ref v)) = self.kind {
             if !v.is_initialized() {
@@ -684,6 +688,8 @@ impl ListValue {
 }
 
 impl crate::Message for ListValue {
+    const NAME: &'static str = "ListValue";
+
     fn is_initialized(&self) -> bool {
         for v in &self.values {
             if !v.is_initialized() {

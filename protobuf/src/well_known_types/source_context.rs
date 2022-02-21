@@ -65,6 +65,8 @@ impl SourceContext {
 }
 
 impl crate::Message for SourceContext {
+    const NAME: &'static str = "SourceContext";
+
     fn is_initialized(&self) -> bool {
         true
     }

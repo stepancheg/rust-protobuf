@@ -63,6 +63,8 @@ impl FileDescriptorSet {
 }
 
 impl crate::Message for FileDescriptorSet {
+    const NAME: &'static str = "FileDescriptorSet";
+
     fn is_initialized(&self) -> bool {
         for v in &self.file {
             if !v.is_initialized() {
@@ -398,6 +400,8 @@ impl FileDescriptorProto {
 }
 
 impl crate::Message for FileDescriptorProto {
+    const NAME: &'static str = "FileDescriptorProto";
+
     fn is_initialized(&self) -> bool {
         for v in &self.message_type {
             if !v.is_initialized() {
@@ -793,6 +797,8 @@ impl DescriptorProto {
 }
 
 impl crate::Message for DescriptorProto {
+    const NAME: &'static str = "DescriptorProto";
+
     fn is_initialized(&self) -> bool {
         for v in &self.field {
             if !v.is_initialized() {
@@ -1125,6 +1131,8 @@ pub mod descriptor_proto {
     }
 
     impl crate::Message for ExtensionRange {
+        const NAME: &'static str = "ExtensionRange";
+
         fn is_initialized(&self) -> bool {
             for v in &self.options {
                 if !v.is_initialized() {
@@ -1332,6 +1340,8 @@ pub mod descriptor_proto {
     }
 
     impl crate::Message for ReservedRange {
+        const NAME: &'static str = "ReservedRange";
+
         fn is_initialized(&self) -> bool {
             true
         }
@@ -1474,6 +1484,8 @@ impl ExtensionRangeOptions {
 }
 
 impl crate::Message for ExtensionRangeOptions {
+    const NAME: &'static str = "ExtensionRangeOptions";
+
     fn is_initialized(&self) -> bool {
         for v in &self.uninterpreted_option {
             if !v.is_initialized() {
@@ -2012,6 +2024,8 @@ impl FieldDescriptorProto {
 }
 
 impl crate::Message for FieldDescriptorProto {
+    const NAME: &'static str = "FieldDescriptorProto";
+
     fn is_initialized(&self) -> bool {
         for v in &self.options {
             if !v.is_initialized() {
@@ -2473,6 +2487,8 @@ impl OneofDescriptorProto {
 }
 
 impl crate::Message for OneofDescriptorProto {
+    const NAME: &'static str = "OneofDescriptorProto";
+
     fn is_initialized(&self) -> bool {
         for v in &self.options {
             if !v.is_initialized() {
@@ -2690,6 +2706,8 @@ impl EnumDescriptorProto {
 }
 
 impl crate::Message for EnumDescriptorProto {
+    const NAME: &'static str = "EnumDescriptorProto";
+
     fn is_initialized(&self) -> bool {
         for v in &self.value {
             if !v.is_initialized() {
@@ -2936,6 +2954,8 @@ pub mod enum_descriptor_proto {
     }
 
     impl crate::Message for EnumReservedRange {
+        const NAME: &'static str = "EnumReservedRange";
+
         fn is_initialized(&self) -> bool {
             true
         }
@@ -3149,6 +3169,8 @@ impl EnumValueDescriptorProto {
 }
 
 impl crate::Message for EnumValueDescriptorProto {
+    const NAME: &'static str = "EnumValueDescriptorProto";
+
     fn is_initialized(&self) -> bool {
         for v in &self.options {
             if !v.is_initialized() {
@@ -3358,6 +3380,8 @@ impl ServiceDescriptorProto {
 }
 
 impl crate::Message for ServiceDescriptorProto {
+    const NAME: &'static str = "ServiceDescriptorProto";
+
     fn is_initialized(&self) -> bool {
         for v in &self.method {
             if !v.is_initialized() {
@@ -3712,6 +3736,8 @@ impl MethodDescriptorProto {
 }
 
 impl crate::Message for MethodDescriptorProto {
+    const NAME: &'static str = "MethodDescriptorProto";
+
     fn is_initialized(&self) -> bool {
         for v in &self.options {
             if !v.is_initialized() {
@@ -4678,6 +4704,8 @@ impl FileOptions {
 }
 
 impl crate::Message for FileOptions {
+    const NAME: &'static str = "FileOptions";
+
     fn is_initialized(&self) -> bool {
         for v in &self.uninterpreted_option {
             if !v.is_initialized() {
@@ -5207,6 +5235,8 @@ impl MessageOptions {
 }
 
 impl crate::Message for MessageOptions {
+    const NAME: &'static str = "MessageOptions";
+
     fn is_initialized(&self) -> bool {
         for v in &self.uninterpreted_option {
             if !v.is_initialized() {
@@ -5608,6 +5638,8 @@ impl FieldOptions {
 }
 
 impl crate::Message for FieldOptions {
+    const NAME: &'static str = "FieldOptions";
+
     fn is_initialized(&self) -> bool {
         for v in &self.uninterpreted_option {
             if !v.is_initialized() {
@@ -5919,6 +5951,8 @@ impl OneofOptions {
 }
 
 impl crate::Message for OneofOptions {
+    const NAME: &'static str = "OneofOptions";
+
     fn is_initialized(&self) -> bool {
         for v in &self.uninterpreted_option {
             if !v.is_initialized() {
@@ -6115,6 +6149,8 @@ impl EnumOptions {
 }
 
 impl crate::Message for EnumOptions {
+    const NAME: &'static str = "EnumOptions";
+
     fn is_initialized(&self) -> bool {
         for v in &self.uninterpreted_option {
             if !v.is_initialized() {
@@ -6304,6 +6340,8 @@ impl EnumValueOptions {
 }
 
 impl crate::Message for EnumValueOptions {
+    const NAME: &'static str = "EnumValueOptions";
+
     fn is_initialized(&self) -> bool {
         for v in &self.uninterpreted_option {
             if !v.is_initialized() {
@@ -6482,6 +6520,8 @@ impl ServiceOptions {
 }
 
 impl crate::Message for ServiceOptions {
+    const NAME: &'static str = "ServiceOptions";
+
     fn is_initialized(&self) -> bool {
         for v in &self.uninterpreted_option {
             if !v.is_initialized() {
@@ -6690,6 +6730,8 @@ impl MethodOptions {
 }
 
 impl crate::Message for MethodOptions {
+    const NAME: &'static str = "MethodOptions";
+
     fn is_initialized(&self) -> bool {
         for v in &self.uninterpreted_option {
             if !v.is_initialized() {
@@ -7127,6 +7169,8 @@ impl UninterpretedOption {
 }
 
 impl crate::Message for UninterpretedOption {
+    const NAME: &'static str = "UninterpretedOption";
+
     fn is_initialized(&self) -> bool {
         for v in &self.name {
             if !v.is_initialized() {
@@ -7399,6 +7443,8 @@ pub mod uninterpreted_option {
     }
 
     impl crate::Message for NamePart {
+        const NAME: &'static str = "NamePart";
+
         fn is_initialized(&self) -> bool {
             if self.name_part.is_none() {
                 return false;
@@ -7548,6 +7594,8 @@ impl SourceCodeInfo {
 }
 
 impl crate::Message for SourceCodeInfo {
+    const NAME: &'static str = "SourceCodeInfo";
+
     fn is_initialized(&self) -> bool {
         for v in &self.location {
             if !v.is_initialized() {
@@ -7792,6 +7840,8 @@ pub mod source_code_info {
     }
 
     impl crate::Message for Location {
+        const NAME: &'static str = "Location";
+
         fn is_initialized(&self) -> bool {
             true
         }
@@ -7973,6 +8023,8 @@ impl GeneratedCodeInfo {
 }
 
 impl crate::Message for GeneratedCodeInfo {
+    const NAME: &'static str = "GeneratedCodeInfo";
+
     fn is_initialized(&self) -> bool {
         for v in &self.annotation {
             if !v.is_initialized() {
@@ -8216,6 +8268,8 @@ pub mod generated_code_info {
     }
 
     impl crate::Message for Annotation {
+        const NAME: &'static str = "Annotation";
+
         fn is_initialized(&self) -> bool {
             true
         }

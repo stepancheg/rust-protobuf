@@ -65,6 +65,8 @@ impl DoubleValue {
 }
 
 impl crate::Message for DoubleValue {
+    const NAME: &'static str = "DoubleValue";
+
     fn is_initialized(&self) -> bool {
         true
     }
@@ -198,6 +200,8 @@ impl FloatValue {
 }
 
 impl crate::Message for FloatValue {
+    const NAME: &'static str = "FloatValue";
+
     fn is_initialized(&self) -> bool {
         true
     }
@@ -331,6 +335,8 @@ impl Int64Value {
 }
 
 impl crate::Message for Int64Value {
+    const NAME: &'static str = "Int64Value";
+
     fn is_initialized(&self) -> bool {
         true
     }
@@ -464,6 +470,8 @@ impl UInt64Value {
 }
 
 impl crate::Message for UInt64Value {
+    const NAME: &'static str = "UInt64Value";
+
     fn is_initialized(&self) -> bool {
         true
     }
@@ -597,6 +605,8 @@ impl Int32Value {
 }
 
 impl crate::Message for Int32Value {
+    const NAME: &'static str = "Int32Value";
+
     fn is_initialized(&self) -> bool {
         true
     }
@@ -730,6 +740,8 @@ impl UInt32Value {
 }
 
 impl crate::Message for UInt32Value {
+    const NAME: &'static str = "UInt32Value";
+
     fn is_initialized(&self) -> bool {
         true
     }
@@ -863,6 +875,8 @@ impl BoolValue {
 }
 
 impl crate::Message for BoolValue {
+    const NAME: &'static str = "BoolValue";
+
     fn is_initialized(&self) -> bool {
         true
     }
@@ -996,6 +1010,8 @@ impl StringValue {
 }
 
 impl crate::Message for StringValue {
+    const NAME: &'static str = "StringValue";
+
     fn is_initialized(&self) -> bool {
         true
     }
@@ -1129,6 +1145,8 @@ impl BytesValue {
 }
 
 impl crate::Message for BytesValue {
+    const NAME: &'static str = "BytesValue";
+
     fn is_initialized(&self) -> bool {
         true
     }

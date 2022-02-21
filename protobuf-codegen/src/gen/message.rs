@@ -497,6 +497,11 @@ impl<'a> MessageGen<'a> {
             &format!("{}::Message", protobuf_crate_path(&self.customize.for_elem),),
             &format!("{}", self.type_name),
             |w| {
+                w.write_line(&format!(
+                    "const NAME: &'static str = \"{}\";",
+                    self.message.message.name()
+                ));
+                w.write_line("");
                 self.write_is_initialized(w);
                 w.write_line("");
                 self.write_merge_from(w);

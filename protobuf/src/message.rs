@@ -15,6 +15,13 @@ use crate::UnknownFields;
 /// trait which provides access to reflection and features which depend on reflection
 /// (text format and JSON serialization).
 pub trait Message: Clear + Clone + Send + Sync + Sized + 'static {
+    /// Message name as specified in `.proto` file.
+    ///
+    /// Message name can be accessed using
+    /// [`MessageFull::descriptor_static`](crate::MessageFull::descriptor_static),
+    /// but when lite runtime is requested, this field can be used.
+    const NAME: &'static str;
+
     /// True iff all required fields are initialized.
     /// Always returns `true` for protobuf 3.
     fn is_initialized(&self) -> bool;
@@ -137,8 +144,7 @@ pub trait Message: Clear + Clone + Send + Sync + Sized + 'static {
     /// Check if all required fields of this object are initialized.
     fn check_initialized(&self) -> crate::Result<()> {
         if !self.is_initialized() {
-            // TODO: add message name
-            Err(ProtobufError::MessageNotInitializedLite.into())
+            Err(ProtobufError::MessageNotInitialized(Self::NAME.to_owned()).into())
         } else {
             Ok(())
         }

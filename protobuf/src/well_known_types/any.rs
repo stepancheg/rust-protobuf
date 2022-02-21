@@ -97,6 +97,8 @@ impl Any {
 }
 
 impl crate::Message for Any {
+    const NAME: &'static str = "Any";
+
     fn is_initialized(&self) -> bool {
         true
     }

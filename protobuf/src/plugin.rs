@@ -182,6 +182,8 @@ impl Version {
 }
 
 impl crate::Message for Version {
+    const NAME: &'static str = "Version";
+
     fn is_initialized(&self) -> bool {
         true
     }
@@ -422,6 +424,8 @@ impl CodeGeneratorRequest {
 }
 
 impl crate::Message for CodeGeneratorRequest {
+    const NAME: &'static str = "CodeGeneratorRequest";
+
     fn is_initialized(&self) -> bool {
         for v in &self.proto_file {
             if !v.is_initialized() {
@@ -678,6 +682,8 @@ impl CodeGeneratorResponse {
 }
 
 impl crate::Message for CodeGeneratorResponse {
+    const NAME: &'static str = "CodeGeneratorResponse";
+
     fn is_initialized(&self) -> bool {
         for v in &self.file {
             if !v.is_initialized() {
@@ -1022,6 +1028,8 @@ pub mod code_generator_response {
     }
 
     impl crate::Message for File {
+        const NAME: &'static str = "File";
+
         fn is_initialized(&self) -> bool {
             for v in &self.generated_code_info {
                 if !v.is_initialized() {

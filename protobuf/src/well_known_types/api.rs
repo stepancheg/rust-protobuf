@@ -141,6 +141,8 @@ impl Api {
 }
 
 impl crate::Message for Api {
+    const NAME: &'static str = "Api";
+
     fn is_initialized(&self) -> bool {
         for v in &self.methods {
             if !v.is_initialized() {
@@ -410,6 +412,8 @@ impl Method {
 }
 
 impl crate::Message for Method {
+    const NAME: &'static str = "Method";
+
     fn is_initialized(&self) -> bool {
         for v in &self.options {
             if !v.is_initialized() {
@@ -621,6 +625,8 @@ impl Mixin {
 }
 
 impl crate::Message for Mixin {
+    const NAME: &'static str = "Mixin";
+
     fn is_initialized(&self) -> bool {
         true
     }

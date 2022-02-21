@@ -53,6 +53,8 @@ impl Empty {
 }
 
 impl crate::Message for Empty {
+    const NAME: &'static str = "Empty";
+
     fn is_initialized(&self) -> bool {
         true
     }
