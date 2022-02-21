@@ -1,4 +1,17 @@
-//! Reflection implementation for protobuf types.
+//! # Reflection implementation for protobuf data
+//!
+//! ## Generated vs dynamic
+//!
+//! rust-protobuf supports reflection for both:
+//! * generated messages (generated rust code)
+//! * dynamic messages (created from arbitrary `FileDescriptorProto` without code generation)
+//!
+//! The API to work with these types of messages is the same.
+//!
+//! ## API
+//!
+//! The API roughly follows Google protobuf C++ and Java API.
+//! Some minor adjustements are made to make code more idiomatic to rust.
 
 mod acc;
 mod dynamic;
@@ -16,6 +29,8 @@ mod service;
 mod type_dynamic;
 pub(crate) mod value;
 
+// TODO: this is referenced from generated code.
+//   Do something about it.
 pub mod runtime_types;
 pub mod types;
 
