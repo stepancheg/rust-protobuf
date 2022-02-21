@@ -3,6 +3,7 @@ use std::path::Path;
 use std::time::Instant;
 
 use perftest_data::PerftestData;
+use protobuf::Message;
 use protobuf::MessageFull;
 use rand::Rng;
 use rand::SeedableRng;
@@ -75,7 +76,7 @@ impl TestRunner {
             random_data.len() as u64,
             || {
                 let mut coded_input_stream = protobuf::CodedInputStream::from_bytes(&buf);
-                let mut msg: M = MessageFull::new();
+                let mut msg: M = Message::new();
                 let mut count = 0;
                 while !coded_input_stream.eof().unwrap() {
                     msg.clear();
