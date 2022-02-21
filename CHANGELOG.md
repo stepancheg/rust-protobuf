@@ -5,6 +5,8 @@ Stable versions are 2.xx still supported.
 
 ## [3] - Unreleased
 
+- Lite runtime generation is restored. When lite runtime requested, code is generated without reflection support.
+
 ## [3.0.0-alpha.7] - 2022-02-20
 
 - Getters are now generated without `get_` prefix. `get_` prefix also removed from public API functions.
