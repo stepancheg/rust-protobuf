@@ -7,7 +7,7 @@ extern crate test;
 use protobuf::well_known_types::value;
 use protobuf::well_known_types::Struct;
 use protobuf::well_known_types::Value;
-use protobuf::MessageFull;
+use protobuf::Message;
 use test::Bencher;
 
 #[bench]
