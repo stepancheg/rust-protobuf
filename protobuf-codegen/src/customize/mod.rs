@@ -104,7 +104,7 @@ pub struct Customize {
     pub(crate) tokio_bytes_for_bytes: Option<bool>,
     /// Use `bytes::Bytes` for `string` fields
     pub(crate) tokio_bytes_for_string: Option<bool>,
-    /// Enable lite runtime
+    /// Enable lite runtime.
     pub(crate) lite_runtime: Option<bool>,
     /// Generate `mod.rs` in the output directory.
     ///
@@ -126,6 +126,9 @@ pub(crate) enum CustomizeParseParameterError {
 }
 
 impl Customize {
+    /// Insert code before the element in the generated file
+    /// (e. g. serde annotations, see
+    /// [example here](https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-examples/customize-serde)).
     pub fn before(mut self, before: &str) -> Self {
         self.before = Some(before.to_owned());
         self
@@ -161,16 +164,24 @@ impl Customize {
         self
     }
 
+    /// Generate code for "lite runtime". Generated code contains no code for reflection.
+    /// So the generated code (and more importantly, generated binary size) is smaller,
+    /// but reflection, text format, JSON serialization won't work.
+    ///
+    /// Note when using `protoc` plugin `protoc-gen-rust`, the option name is just `lite`.
     pub fn lite_runtime(mut self, lite_runtime: bool) -> Self {
         self.lite_runtime = Some(lite_runtime);
         self
     }
 
+    /// Generate `mod.rs` with all the generated modules.
+    /// This option is on by default in rust-protobuf version 3.
     pub fn gen_mod_rs(mut self, gen_mod_rs: bool) -> Self {
         self.gen_mod_rs = Some(gen_mod_rs);
         self
     }
 
+    /// Generate code bundled in protobuf crate. Regular users don't need this option.
     pub fn inside_protobuf(mut self, inside_protobuf: bool) -> Self {
         self.inside_protobuf = Some(inside_protobuf);
         self
