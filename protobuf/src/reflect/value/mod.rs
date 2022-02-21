@@ -1,4 +1,3 @@
-use std::any::Any;
 use std::fmt;
 
 #[cfg(feature = "bytes")]
@@ -32,9 +31,7 @@ pub(crate) mod value_ref;
 /// (primitives, string, messages, enums).
 ///
 /// Used in reflection.
-pub trait ProtobufValue:
-    Any + Clone + Default + fmt::Debug + Send + Sync + Sized + 'static
-{
+pub trait ProtobufValue: Clone + Default + fmt::Debug + Send + Sync + Sized + 'static {
     /// Actual implementation of type properties.
     type RuntimeType: RuntimeType<Value = Self>;
 
