@@ -141,9 +141,10 @@ impl<'a> EnumGen<'a> {
         }
         w.write_line("");
         self.write_impl_enum(w);
-        w.write_line("");
-        // TODO: do not write if lite runtime is enabled
-        self.write_impl_enum_full(w);
+        if !self.lite_runtime {
+            w.write_line("");
+            self.write_impl_enum_full(w);
+        }
         w.write_line("");
         self.write_impl_default(w);
         w.write_line("");

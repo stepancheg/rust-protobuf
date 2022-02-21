@@ -83,7 +83,7 @@ impl<E: Enum> Default for EnumOrUnknown<E> {
     }
 }
 
-impl<E: EnumFull> fmt::Debug for EnumOrUnknown<E> {
+impl<E: Enum + fmt::Debug> fmt::Debug for EnumOrUnknown<E> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self.enum_value() {
             Ok(e) => fmt::Debug::fmt(&e, f),

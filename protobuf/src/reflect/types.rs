@@ -2,7 +2,6 @@
 
 #![doc(hidden)]
 
-use std::fmt;
 use std::marker;
 
 #[cfg(feature = "bytes")]
@@ -22,7 +21,6 @@ use crate::unknown::UnknownValues;
 use crate::wire_format::WireType;
 use crate::zigzag::decode_zig_zag_32;
 use crate::zigzag::decode_zig_zag_64;
-use crate::EnumFull;
 use crate::EnumOrUnknown;
 use crate::Message;
 
@@ -641,7 +639,7 @@ impl ProtobufType for ProtobufTypeTokioChars {
     }
 }
 
-impl<E: EnumFull + fmt::Debug> ProtobufType for ProtobufTypeEnumOrUnknown<E> {
+impl<E: Enum> ProtobufType for ProtobufTypeEnumOrUnknown<E> {
     type ProtobufValue = EnumOrUnknown<E>;
 
     const WIRE_TYPE: WireType = WireType::Varint;

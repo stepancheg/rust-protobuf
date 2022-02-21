@@ -531,11 +531,8 @@ impl<'a> MessageGen<'a> {
             ),
             &format!("{}", self.type_name),
             |w| {
-                // TODO: write unconditionally
-                if !self.lite_runtime {
-                    w.write_line("");
-                    self.write_descriptor_static_new(w);
-                }
+                w.write_line("");
+                self.write_descriptor_static_new(w);
             },
         );
     }
@@ -722,14 +719,16 @@ impl<'a> MessageGen<'a> {
         self.write_impl_self(w);
         w.write_line("");
         self.write_impl_message(w);
-        w.write_line("");
-        // TODO: do not write if lite runtime
-        self.write_impl_message_full(w);
+        if !self.lite_runtime {
+            w.write_line("");
+            self.write_impl_message_full(w);
+        }
         w.write_line("");
         self.write_impl_clear(w);
-        w.write_line("");
-        self.write_impl_display(w);
         if !self.lite_runtime {
+            w.write_line("");
+            self.write_impl_display(w);
+
             w.write_line("");
             self.write_impl_value(w);
         }
