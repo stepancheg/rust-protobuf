@@ -1,8 +1,6 @@
 // TODO: used by grpc-rust, should move it into separate crate.
 #![doc(hidden)]
 
-use std::io::Write;
-
 use crate::gen::rust_name::RustRelativePath;
 
 /// Field visibility.
@@ -13,26 +11,25 @@ pub(crate) enum Visibility {
 }
 
 pub(crate) struct CodeWriter<'a> {
-    writer: &'a mut (dyn Write + 'a),
+    writer: &'a mut String,
     indent: String,
 }
 
 impl<'a> CodeWriter<'a> {
-    pub fn new(writer: &'a mut dyn Write) -> CodeWriter<'a> {
+    pub fn new(writer: &'a mut String) -> CodeWriter<'a> {
         CodeWriter {
-            writer: writer,
+            writer,
             indent: "".to_string(),
         }
     }
 
     pub fn write_line<S: AsRef<str>>(&mut self, line: S) {
-        (if line.as_ref().is_empty() {
-            self.writer.write_all("\n".as_bytes())
+        if line.as_ref().is_empty() {
+            self.writer.push_str("\n");
         } else {
             let s: String = [self.indent.as_ref(), line.as_ref(), "\n"].concat();
-            self.writer.write_all(s.as_bytes())
-        })
-        .unwrap();
+            self.writer.push_str(&s);
+        }
     }
 
     pub fn write_generated_by(&mut self, pkg: &str, version: &str, parser: &str) {

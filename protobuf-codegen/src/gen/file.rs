@@ -50,7 +50,7 @@ pub(crate) fn gen_file(
 
     let file_index = FileIndex::index(&file_scope);
 
-    let mut v = Vec::new();
+    let mut v = String::new();
 
     {
         let mut w = CodeWriter::new(&mut v);
@@ -138,7 +138,7 @@ pub(crate) fn gen_file(
     GenFileResult {
         compiler_plugin_result: compiler_plugin::GenResult {
             name: proto_name_to_rs(file_descriptor.proto().name()),
-            content: v,
+            content: v.into_bytes(),
         },
         mod_name: proto_path_to_rust_mod(file_descriptor.proto().name()).into_string(),
     }

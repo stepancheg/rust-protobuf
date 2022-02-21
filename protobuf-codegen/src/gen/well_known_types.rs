@@ -109,7 +109,7 @@ fn find_file_descriptor<'a>(
 pub(crate) fn gen_well_known_types_mod(
     file_descriptors: &[FileDescriptor],
 ) -> compiler_plugin::GenResult {
-    let mut v = Vec::new();
+    let mut v = String::new();
 
     {
         let mut w = CodeWriter::new(&mut v);
@@ -165,7 +165,7 @@ pub(crate) fn gen_well_known_types_mod(
 
     compiler_plugin::GenResult {
         name: "well_known_types_mod.rs".to_string(),
-        content: v,
+        content: v.into_bytes(),
     }
 }
 
