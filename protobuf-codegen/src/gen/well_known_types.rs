@@ -95,7 +95,7 @@ fn find_file_descriptor<'a>(
     {
         Some(f) => f,
         None => panic!(
-            "file descriptor not found for {}, all names: {}",
+            "file descriptor not found for file `{}`, all names: {}",
             file_name,
             file_descriptors
                 .iter()

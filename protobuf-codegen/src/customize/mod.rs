@@ -117,14 +117,13 @@ pub struct Customize {
     pub(crate) inside_protobuf: Option<bool>,
 }
 
-#[derive(Debug)]
-pub enum CustomizeParseParameterError {
-    EqNotFound,
-    CannotParseBool,
+#[derive(Debug, thiserror::Error)]
+pub(crate) enum CustomizeParseParameterError {
+    #[error("Cannot parse bool option value: {:?}", .0)]
+    CannotParseBool(String),
+    #[error("Unknown option name: {:?}", .0)]
     UnknownOptionName(String),
 }
-
-pub type CustomizeParseParameterResult<T> = Result<T, CustomizeParseParameterError>;
 
 impl Customize {
     pub fn before(mut self, before: &str) -> Self {
@@ -219,21 +218,22 @@ impl Customize {
     }
 
     /// Parse customize options from a string passed via protoc flag.
-    pub fn parse_from_parameter(parameter: &str) -> CustomizeParseParameterResult<Customize> {
-        fn parse_bool(v: &str) -> CustomizeParseParameterResult<bool> {
+    pub fn parse_from_parameter(parameter: &str) -> anyhow::Result<Customize> {
+        fn parse_bool(v: &str) -> anyhow::Result<bool> {
             v.parse()
-                .map_err(|_| CustomizeParseParameterError::CannotParseBool)
+                .map_err(|_| CustomizeParseParameterError::CannotParseBool(v.to_owned()).into())
         }
 
         let mut r = Customize::default();
         for nv in parameter.split_whitespace() {
-            let eq = match nv.find('=') {
-                Some(eq) => eq,
-                None => return Err(CustomizeParseParameterError::EqNotFound),
+            let (n, v) = match nv.find('=') {
+                Some(eq) => {
+                    let n = &nv[..eq];
+                    let v = &nv[eq + 1..];
+                    (n, v)
+                }
+                None => (nv, "true"),
             };
-
-            let n = &nv[..eq];
-            let v = &nv[eq + 1..];
 
             if n == "expose_oneof" {
                 r.expose_oneof = Some(parse_bool(v)?);
@@ -253,10 +253,12 @@ impl Customize {
                 r.gen_mod_rs = Some(parse_bool(v)?);
             } else if n == "inside_protobuf" {
                 r.inside_protobuf = Some(parse_bool(v)?);
+            } else if n == "lite" {
+                // Support Java and C++ protoc plugin syntax:
+                // https://github.com/protocolbuffers/protobuf/issues/6489
+                r.lite_runtime = Some(parse_bool(v)?);
             } else {
-                return Err(CustomizeParseParameterError::UnknownOptionName(
-                    n.to_owned(),
-                ));
+                return Err(CustomizeParseParameterError::UnknownOptionName(n.to_owned()).into());
             }
         }
         Ok(r)
