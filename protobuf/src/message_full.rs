@@ -33,13 +33,7 @@ pub trait MessageFull: Message + fmt::Debug + fmt::Display {
     /// assert_eq!("MyMessage", descriptor.name());
     /// # }
     /// ```
-    fn descriptor_static() -> MessageDescriptor {
-        // TODO: get rig of this.
-        panic!(
-            "descriptor_static is not implemented for message, \
-             LITE_RUNTIME must be used"
-        );
-    }
+    fn descriptor_static() -> MessageDescriptor;
 
     /// Reflective equality.
     ///
