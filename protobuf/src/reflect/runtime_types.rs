@@ -146,9 +146,6 @@ pub struct RuntimeTypeTokioChars;
 
 /// Implementation for enum.
 #[derive(Debug, Copy, Clone)]
-pub struct RuntimeTypeEnum<E: EnumFull + ProtobufValue>(marker::PhantomData<E>);
-/// Implementation for enum.
-#[derive(Debug, Copy, Clone)]
 pub struct RuntimeTypeEnumOrUnknown<E: EnumFull>(marker::PhantomData<E>);
 /// Implementation for [`Message`].
 #[derive(Debug, Copy, Clone)]
@@ -685,57 +682,6 @@ impl RuntimeTypeHashable for RuntimeTypeTokioChars {
             ReflectValueRef::String(s) => map.get(&*s),
             _ => None,
         }
-    }
-}
-
-impl<E> RuntimeType for RuntimeTypeEnum<E>
-where
-    E: EnumFull + ProtobufValue + fmt::Debug,
-{
-    type Value = E;
-
-    fn runtime_type_box() -> RuntimeTypeBox
-    where
-        Self: Sized,
-    {
-        RuntimeTypeBox::Enum(E::enum_descriptor_static())
-    }
-
-    fn default_value_ref() -> ReflectValueRef<'static> {
-        ReflectValueRef::Enum(
-            E::enum_descriptor_static(),
-            E::enum_descriptor_static().first_value().value(),
-        )
-    }
-
-    fn from_value_box(value_box: ReflectValueBox) -> Result<E, ReflectValueBox> {
-        match value_box {
-            // TODO: panic
-            ReflectValueBox::Enum(d, v) if d == E::enum_descriptor_static() => {
-                Ok(E::from_i32(v).expect("unknown enum value"))
-            }
-            b => Err(b),
-        }
-    }
-
-    fn into_value_box(value: E) -> ReflectValueBox {
-        ReflectValueBox::Enum(E::enum_descriptor_static(), value.value())
-    }
-
-    fn into_static_value_ref(value: E) -> ReflectValueRef<'static> {
-        ReflectValueRef::Enum(E::enum_descriptor_static(), value.value())
-    }
-
-    fn as_ref(value: &E) -> ReflectValueRef {
-        ReflectValueRef::Enum(E::enum_descriptor_static(), value.value())
-    }
-
-    fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {
-        unimplemented!()
-    }
-
-    fn is_non_zero(value: &E) -> bool {
-        value.value() != 0
     }
 }
 
