@@ -7,8 +7,6 @@ use std::str;
 
 use bytes::Bytes;
 
-use crate::clear::Clear;
-
 /// Thin wrapper around `Bytes` which guarantees that bytes are valid UTF-8 string.
 /// Should be API-compatible to `String`.
 #[derive(Clone, PartialEq, Eq, Hash, PartialOrd, Ord)]
@@ -75,12 +73,6 @@ impl Deref for Chars {
 impl Borrow<str> for Chars {
     fn borrow(&self) -> &str {
         &*self
-    }
-}
-
-impl Clear for Chars {
-    fn clear(&mut self) {
-        self.0.clear();
     }
 }
 

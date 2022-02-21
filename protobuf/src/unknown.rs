@@ -7,7 +7,6 @@ use std::hash::Hash;
 use std::hash::Hasher;
 use std::slice;
 
-use crate::clear::Clear;
 use crate::reflect::ReflectValueRef;
 use crate::rt;
 use crate::wire_format::WireType;
@@ -248,9 +247,16 @@ impl Hash for UnknownFields {
 }
 
 impl UnknownFields {
-    /// Empty unknown fields
+    /// Empty unknown fields.
     pub const fn new() -> UnknownFields {
         UnknownFields { fields: None }
+    }
+
+    /// Clear all unknown fields.
+    pub fn clear(&mut self) {
+        if let Some(ref mut fields) = self.fields {
+            fields.clear();
+        }
     }
 
     fn init_map(&mut self) {
@@ -326,14 +332,6 @@ impl UnknownFields {
         stream.flush().unwrap();
         drop(stream);
         r
-    }
-}
-
-impl Clear for UnknownFields {
-    fn clear(&mut self) {
-        if let Some(ref mut fields) = self.fields {
-            fields.clear();
-        }
     }
 }
 

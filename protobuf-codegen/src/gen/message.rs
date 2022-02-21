@@ -518,6 +518,13 @@ impl<'a> MessageGen<'a> {
                     w.write_line(&format!("{}::new()", self.type_name));
                 });
                 w.write_line("");
+                w.def_fn("clear(&mut self)", |w| {
+                    for f in self.fields_except_group() {
+                        f.write_clear(w);
+                    }
+                    w.write_line("self.unknown_fields.clear();");
+                });
+                w.write_line("");
                 self.write_default_instance(w);
             },
         );
@@ -565,21 +572,6 @@ impl<'a> MessageGen<'a> {
                 },
             );
         });
-    }
-
-    fn write_impl_clear(&self, w: &mut CodeWriter) {
-        w.impl_for_block(
-            &format!("{}::Clear", protobuf_crate_path(&self.customize.for_elem)),
-            &format!("{}", self.type_name),
-            |w| {
-                w.def_fn("clear(&mut self)", |w| {
-                    for f in self.fields_except_group() {
-                        f.write_clear(w);
-                    }
-                    w.write_line("self.unknown_fields.clear();");
-                });
-            },
-        );
     }
 
     fn supports_derive_partial_eq(&self) -> bool {
@@ -723,8 +715,6 @@ impl<'a> MessageGen<'a> {
             w.write_line("");
             self.write_impl_message_full(w);
         }
-        w.write_line("");
-        self.write_impl_clear(w);
         if !self.lite_runtime {
             w.write_line("");
             self.write_impl_display(w);

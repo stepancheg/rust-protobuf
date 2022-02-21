@@ -4,7 +4,6 @@ use std::io::Write;
 use crate::coded_output_stream::WithCodedOutputStream;
 use crate::error::ProtobufError;
 use crate::wire_format::check_message_size;
-use crate::Clear;
 use crate::CodedInputStream;
 use crate::CodedOutputStream;
 use crate::UnknownFields;
@@ -14,7 +13,7 @@ use crate::UnknownFields;
 /// Note, by default all generated messages also implement [`MessageFull`](crate::MessageFull)
 /// trait which provides access to reflection and features which depend on reflection
 /// (text format and JSON serialization).
-pub trait Message: Clear + Clone + Send + Sync + Sized + 'static {
+pub trait Message: Clone + Send + Sync + Sized + 'static {
     /// Message name as specified in `.proto` file.
     ///
     /// Message name can be accessed using
@@ -205,6 +204,11 @@ pub trait Message: Clear + Clone + Send + Sync + Sized + 'static {
     /// # }
     /// ```
     fn new() -> Self;
+
+    /// Reset all fields.
+    fn clear(&mut self) {
+        *self = Self::new();
+    }
 
     /// Return a pointer to default immutable message with static lifetime.
     ///

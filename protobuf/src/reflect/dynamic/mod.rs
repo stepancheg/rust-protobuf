@@ -38,7 +38,6 @@ use crate::rt::vec_packed_varint_size;
 use crate::rt::vec_packed_varint_zigzag_size;
 use crate::text_format;
 use crate::wire_format::WireType;
-use crate::Clear;
 use crate::CodedInputStream;
 use crate::CodedOutputStream;
 use crate::Result;
@@ -269,12 +268,6 @@ trait ForEachSingularFieldToWrite {
         vt: Type,
     ) -> Result<()>;
     fn unknown_fields(&mut self, unknown_fields: &UnknownFields) -> Result<()>;
-}
-
-impl Clear for DynamicMessage {
-    fn clear(&mut self) {
-        self.fields = Vec::new().into_boxed_slice();
-    }
 }
 
 impl fmt::Display for DynamicMessage {

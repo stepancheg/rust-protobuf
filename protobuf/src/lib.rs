@@ -41,7 +41,6 @@
 #![deny(missing_docs)]
 #![deny(rustdoc::broken_intra_doc_links)]
 
-pub use crate::clear::Clear;
 pub use crate::coded_input_stream::CodedInputStream;
 pub use crate::coded_output_stream::CodedOutputStream;
 pub use crate::enum_full::EnumFull;
@@ -69,7 +68,6 @@ pub mod descriptor;
 pub mod plugin;
 pub mod rustproto;
 
-mod clear;
 mod coded_input_stream;
 mod coded_output_stream;
 mod enum_full;
