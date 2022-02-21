@@ -1,3 +1,4 @@
+use protobuf::EnumOrUnknown;
 use protobuf::Message;
 
 use super::test_reflect_default_pb::*;
@@ -16,7 +17,7 @@ fn test_regular() {
 
     let e = descriptor.field_by_name("e").unwrap();
     assert_eq!(
-        Fruit::BANANA,
+        EnumOrUnknown::new(Fruit::BANANA),
         e.get_singular_field_or_default(&m)
             .downcast_clone()
             .unwrap()
@@ -37,7 +38,7 @@ fn test_oneof() {
 
     let e = descriptor.field_by_name("oe").unwrap();
     assert_eq!(
-        Fruit::BANANA,
+        EnumOrUnknown::new(Fruit::BANANA),
         e.get_singular_field_or_default(&m)
             .downcast_clone()
             .unwrap()

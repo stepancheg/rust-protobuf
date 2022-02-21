@@ -671,7 +671,7 @@ impl<E: Enum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufTypeEnum<E> 
     }
 }
 
-impl<E: Enum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufTypeEnumOrUnknown<E> {
+impl<E: Enum + fmt::Debug> ProtobufType for ProtobufTypeEnumOrUnknown<E> {
     type ProtobufValue = EnumOrUnknown<E>;
 
     const WIRE_TYPE: WireType = WireType::Varint;

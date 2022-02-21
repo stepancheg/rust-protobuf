@@ -561,7 +561,7 @@ pub fn make_option_enum_accessor<M, E>(
 ) -> FieldAccessor
 where
     M: Message + 'static,
-    E: Enum + ProtobufValue,
+    E: Enum,
 {
     FieldAccessor::new_v2(
         name,

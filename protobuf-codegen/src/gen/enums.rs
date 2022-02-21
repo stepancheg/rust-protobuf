@@ -144,8 +144,6 @@ impl<'a> EnumGen<'a> {
         w.write_line("");
         self.write_impl_default(w);
         w.write_line("");
-        self.write_impl_value(w);
-        w.write_line("");
         self.write_impl_self(w);
     }
 
@@ -311,22 +309,6 @@ impl<'a> EnumGen<'a> {
                 ));
             },
         );
-    }
-
-    fn write_impl_value(&self, w: &mut CodeWriter) {
-        w.impl_for_block(
-            &format!(
-                "{}::reflect::ProtobufValue",
-                protobuf_crate_path(&self.customize.for_elem)
-            ),
-            &format!("{}", self.type_name),
-            |w| {
-                w.write_line(&format!(
-                    "type RuntimeType = {}::reflect::runtime_types::RuntimeTypeEnum<Self>;",
-                    protobuf_crate_path(&self.customize.for_elem)
-                ));
-            },
-        )
     }
 
     fn write_impl_eq(&self, w: &mut CodeWriter) {
