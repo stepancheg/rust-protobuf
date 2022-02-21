@@ -50,11 +50,7 @@ pub(crate) fn gen_file(
 
     let file_index = FileIndex::index(&file_scope);
 
-    let mut v = String::new();
-
-    {
-        let mut w = CodeWriter::new(&mut v);
-
+    let v = CodeWriter::with(|w| {
         w.write_generated_by("rust-protobuf", env!("CARGO_PKG_VERSION"), parser);
 
         w.write_line("");
@@ -98,7 +94,7 @@ pub(crate) fn gen_file(
                     &path,
                     file_descriptor.proto().source_code_info.as_ref(),
                 )
-                .write(&mut w);
+                .write(w);
             }
         }
 
@@ -124,16 +120,16 @@ pub(crate) fn gen_file(
                 &path,
                 file_descriptor.proto().source_code_info.as_ref(),
             )
-            .write(&mut w);
+            .write(w);
         }
 
-        write_extensions(file_descriptor, &root_scope, &mut w, &customize);
+        write_extensions(file_descriptor, &root_scope, w, &customize);
 
         if !lite_runtime {
             w.write_line("");
-            write_file_descriptor_data(file_descriptor, &customize.for_elem, &mut w);
+            write_file_descriptor_data(file_descriptor, &customize.for_elem, w);
         }
-    }
+    });
 
     GenFileResult {
         compiler_plugin_result: compiler_plugin::GenResult {

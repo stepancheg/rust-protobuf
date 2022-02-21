@@ -23,6 +23,15 @@ impl<'a> CodeWriter<'a> {
         }
     }
 
+    pub(crate) fn with(f: impl FnOnce(&mut CodeWriter)) -> String {
+        let mut writer = String::new();
+        {
+            let mut cw = CodeWriter::new(&mut writer);
+            f(&mut cw);
+        }
+        writer
+    }
+
     pub fn write_line<S: AsRef<str>>(&mut self, line: S) {
         if line.as_ref().is_empty() {
             self.writer.push_str("\n");
