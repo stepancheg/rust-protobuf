@@ -5,11 +5,9 @@
 
 extern crate test;
 
-use std::fmt::Write;
-
 use bytes::Bytes;
 use perftest_bytes::messages;
-use protobuf::MessageFull;
+use protobuf::Message;
 
 fn make_string_of_len(len: usize) -> String {
     let mut s = String::new();
