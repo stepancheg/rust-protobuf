@@ -34,7 +34,6 @@ See `Customize` struct in [`protobuf-codegen` crate](https://docs.rs/protobuf/%3
 
 * [`protobuf-codegen`](https://docs.rs/protobuf-codegen/%3E=3.0.0-alpha)
   can be used to rust code from `.proto` crates.
-* [`protoc`](https://docs.rs/protoc/%3E=3.0.0-alpha) crate can be used to invoke `protoc` programmatically.
 * [`protoc-bin-vendored`](https://docs.rs/protoc-bin-vendored/%3E=3.0.0-alpha)
   contains `protoc` command packed into the crate.
 * [`protobuf-parse`](https://docs.rs/protobuf-parse/%3E=3.0.0-alpha) contains
