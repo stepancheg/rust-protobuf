@@ -5,6 +5,7 @@
 
 extern crate test;
 
+use std::fmt::Write as _;
 use bytes::Bytes;
 use perftest_bytes::messages;
 use protobuf::Message;
