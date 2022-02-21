@@ -242,14 +242,10 @@ impl RustType {
             RustType::Option(..) => format!("{} = {}", v, EXPR_NONE),
             RustType::Vec(..)
             | RustType::Bytes
+            | RustType::Chars
             | RustType::String
             | RustType::MessageField(..)
             | RustType::HashMap(..) => format!("{}.clear()", v),
-            RustType::Chars => format!(
-                "{}::Clear::clear(&mut {})",
-                protobuf_crate_path(customize),
-                v
-            ),
             RustType::Bool
             | RustType::Float(..)
             | RustType::Int(..)

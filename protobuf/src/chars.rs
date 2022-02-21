@@ -18,6 +18,11 @@ impl Chars {
         Chars(Bytes::new())
     }
 
+    /// Clear the buffer.
+    pub fn clear(&mut self) {
+        self.0.clear();
+    }
+
     /// Try convert from `Bytes`
     pub fn from_bytes(bytes: Bytes) -> Result<Chars, str::Utf8Error> {
         str::from_utf8(&bytes)?;
