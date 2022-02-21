@@ -151,9 +151,11 @@ impl<'a> EnumGen<'a> {
     }
 
     fn write_impl_self(&self, w: &mut CodeWriter) {
-        w.impl_self_block(&format!("{}", self.type_name), |w| {
-            self.write_generated_enum_descriptor_data(w);
-        });
+        if !self.lite_runtime {
+            w.impl_self_block(&format!("{}", self.type_name), |w| {
+                self.write_generated_enum_descriptor_data(w);
+            });
+        }
     }
 
     fn write_enum(&self, w: &mut CodeWriter) {

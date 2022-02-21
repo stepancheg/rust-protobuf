@@ -20,7 +20,11 @@ pub trait ProtobufTypeDynamic: Send + Sync + 'static {
 
 pub(crate) struct ProtobufTypeDynamicImpl<T: ProtobufType>(pub marker::PhantomData<T>);
 
-impl<T: ProtobufType> ProtobufTypeDynamic for ProtobufTypeDynamicImpl<T> {
+impl<T> ProtobufTypeDynamic for ProtobufTypeDynamicImpl<T>
+where
+    T: ProtobufType,
+    <T as ProtobufType>::ProtobufValue: ProtobufValue,
+{
     fn wire_type(&self) -> WireType {
         T::WIRE_TYPE
     }

@@ -14,7 +14,6 @@ use crate::coded_input_stream::CodedInputStream;
 use crate::coded_output_stream::CodedOutputStream;
 use crate::enums::Enum;
 use crate::error::Result;
-use crate::message_full::MessageFull;
 pub use crate::reflect::type_dynamic::ProtobufTypeDynamic;
 use crate::reflect::type_dynamic::ProtobufTypeDynamicImpl;
 use crate::reflect::ProtobufValue;
@@ -25,14 +24,18 @@ use crate::zigzag::decode_zig_zag_32;
 use crate::zigzag::decode_zig_zag_64;
 use crate::EnumFull;
 use crate::EnumOrUnknown;
+use crate::Message;
 
 /// Encapsulate type-specific serialization and conversion logic
 pub trait ProtobufType: Send + Sync + Clone + Sized + 'static {
     /// Rust type for this protobuf type.
-    type ProtobufValue: ProtobufValue;
+    type ProtobufValue: Default;
 
     /// Dynamic version of this
-    fn dynamic() -> &'static dyn ProtobufTypeDynamic {
+    fn dynamic() -> &'static dyn ProtobufTypeDynamic
+    where
+        Self::ProtobufValue: ProtobufValue,
+    {
         &ProtobufTypeDynamicImpl::<Self>(marker::PhantomData)
     }
 
@@ -152,7 +155,7 @@ pub struct ProtobufTypeTokioChars;
 pub struct ProtobufTypeEnumOrUnknown<E: Enum>(marker::PhantomData<E>);
 /// `message`
 #[derive(Copy, Clone)]
-pub struct ProtobufTypeMessage<M: MessageFull>(marker::PhantomData<M>);
+pub struct ProtobufTypeMessage<M: Message>(marker::PhantomData<M>);
 
 impl ProtobufType for ProtobufTypeFloat {
     type ProtobufValue = f32;
@@ -664,7 +667,7 @@ impl<E: EnumFull + fmt::Debug> ProtobufType for ProtobufTypeEnumOrUnknown<E> {
     }
 }
 
-impl<M: MessageFull + Clone + ProtobufValue + Default> ProtobufType for ProtobufTypeMessage<M> {
+impl<M: Message + Clone + Default> ProtobufType for ProtobufTypeMessage<M> {
     type ProtobufValue = M;
 
     const WIRE_TYPE: WireType = WireType::LengthDelimited;

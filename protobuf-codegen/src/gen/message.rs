@@ -363,8 +363,11 @@ impl<'a> MessageGen<'a> {
             });
 
             self.write_field_accessors(w);
-            w.write_line("");
-            self.write_generated_message_descriptor_data(w);
+
+            if !self.lite_runtime {
+                w.write_line("");
+                self.write_generated_message_descriptor_data(w);
+            }
         });
     }
 
@@ -721,8 +724,10 @@ impl<'a> MessageGen<'a> {
         self.write_impl_clear(w);
         w.write_line("");
         self.write_impl_display(w);
-        w.write_line("");
-        self.write_impl_value(w);
+        if !self.lite_runtime {
+            w.write_line("");
+            self.write_impl_value(w);
+        }
 
         let mod_name = message_name_to_nested_mod_name(&self.message.message.name());
 
