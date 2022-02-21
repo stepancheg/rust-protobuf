@@ -1,6 +1,8 @@
-//! Functions and types used by generated protobuf code.
+//! # Functions and types used by generated protobuf code
 //!
-//! Should rarely be used by programs written by hands.
+//! These are not considered to be public API of rust-protobuf,
+//! so they can be changed any time (provided compatibility with
+//! previously generated code is preserved).
 use std::default::Default;
 
 pub use crate::cached_size::CachedSize;
