@@ -28,14 +28,12 @@ use crate::EnumFull;
 ///
 /// The downside is that we have to explicitly specify type parameters
 /// in a lot of places.
-pub trait RuntimeType: fmt::Debug + Send + Sync + 'static {
+pub trait RuntimeType: fmt::Debug + Send + Sync + Sized + 'static {
     /// Actual value for this type.
     type Value: ProtobufValue + Clone + Sized + fmt::Debug + Default;
 
     /// "Box" version of type type.
-    fn runtime_type_box() -> RuntimeTypeBox
-    where
-        Self: Sized;
+    fn runtime_type_box() -> RuntimeTypeBox;
 
     /// Default value for this type.
     fn default_value_ref() -> ReflectValueRef<'static>;
