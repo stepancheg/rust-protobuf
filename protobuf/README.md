@@ -9,6 +9,7 @@ but contains numerous improvements like:
 * runtime reflection for mutability, not just for access
 * protobuf text format and JSON parsing (which rely on reflection)
 * dynamic message support: work with protobuf data without generating code from schema
+* lite runtime codegen option now produces correct code without reflection support
 
 Stable version of rust-protobuf will be supported until version 3 released.
 
