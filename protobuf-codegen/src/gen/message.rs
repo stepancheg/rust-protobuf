@@ -91,7 +91,7 @@ impl<'a> MessageGen<'a> {
             &message.message,
         );
 
-        static FIELD_NUMBER: protobuf::rt::LazyV2<i32> = protobuf::rt::LazyV2::INIT;
+        static FIELD_NUMBER: protobuf::rt::Lazy<i32> = protobuf::rt::Lazy::new();
         let field_number = *FIELD_NUMBER.get(|| {
             protobuf::reflect::MessageDescriptor::for_type::<DescriptorProto>()
                 .field_by_name("field")
@@ -751,7 +751,7 @@ impl<'a> MessageGen<'a> {
                     oneof.write(w);
                 }
 
-                static NESTED_TYPE_NUMBER: protobuf::rt::LazyV2<i32> = protobuf::rt::LazyV2::INIT;
+                static NESTED_TYPE_NUMBER: protobuf::rt::Lazy<i32> = protobuf::rt::Lazy::new();
                 let nested_type_number = *NESTED_TYPE_NUMBER.get(|| {
                     protobuf::reflect::MessageDescriptor::for_type::<DescriptorProto>()
                         .field_by_name("nested_type")
@@ -782,7 +782,7 @@ impl<'a> MessageGen<'a> {
                     .write(w);
                 }
 
-                static ENUM_TYPE_NUMBER: protobuf::rt::LazyV2<i32> = protobuf::rt::LazyV2::INIT;
+                static ENUM_TYPE_NUMBER: protobuf::rt::Lazy<i32> = protobuf::rt::Lazy::new();
                 let enum_type_number = *ENUM_TYPE_NUMBER.get(|| {
                     protobuf::reflect::MessageDescriptor::for_type::<DescriptorProto>()
                         .field_by_name("enum_type")

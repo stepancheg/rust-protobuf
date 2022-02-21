@@ -8,7 +8,7 @@ use crate::coded_input_stream::CodedInputStream;
 use crate::coded_output_stream::CodedOutputStream;
 use crate::enums::Enum;
 use crate::error::Result;
-pub use crate::lazy_v2::LazyV2;
+pub use crate::lazy::Lazy;
 use crate::varint::encoded_varint64_len;
 pub use crate::wire_format::WireType;
 use crate::zigzag::*;

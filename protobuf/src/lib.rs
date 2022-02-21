@@ -76,7 +76,7 @@ mod enums;
 mod error;
 pub mod ext;
 pub mod json;
-mod lazy_v2;
+mod lazy;
 mod message;
 mod message_dyn;
 mod message_field;

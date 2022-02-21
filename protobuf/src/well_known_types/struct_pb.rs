@@ -129,7 +129,7 @@ impl crate::Message for Struct {
     }
 
     fn default_instance() -> &'static Struct {
-        static instance: crate::rt::LazyV2<Struct> = crate::rt::LazyV2::INIT;
+        static instance: crate::rt::Lazy<Struct> = crate::rt::Lazy::new();
         instance.get(Struct::new)
     }
 }
@@ -945,7 +945,7 @@ static file_descriptor_proto_data: &'static [u8] = b"\
 
 /// `FileDescriptorProto` object which was a source for this generated file
 pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
-    static file_descriptor_proto_lazy: crate::rt::LazyV2<crate::descriptor::FileDescriptorProto> = crate::rt::LazyV2::INIT;
+    static file_descriptor_proto_lazy: crate::rt::Lazy<crate::descriptor::FileDescriptorProto> = crate::rt::Lazy::new();
     file_descriptor_proto_lazy.get(|| {
         crate::Message::parse_from_bytes(file_descriptor_proto_data).unwrap()
     })
@@ -953,7 +953,7 @@ pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProt
 
 /// `FileDescriptor` object which allows dynamic access to files
 pub fn file_descriptor() -> crate::reflect::FileDescriptor {
-    static file_descriptor_lazy: crate::rt::LazyV2<crate::reflect::GeneratedFileDescriptor> = crate::rt::LazyV2::INIT;
+    static file_descriptor_lazy: crate::rt::Lazy<crate::reflect::GeneratedFileDescriptor> = crate::rt::Lazy::new();
     let file_descriptor = file_descriptor_lazy.get(|| {
         let mut deps = ::std::vec::Vec::new();
         let mut messages = ::std::vec::Vec::new();
