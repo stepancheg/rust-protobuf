@@ -13,7 +13,11 @@ use crate::CodedOutputStream;
 use crate::MessageFull;
 use crate::UnknownFields;
 
-/// Dynamic-dispatch version of [`Message`].
+/// Dynamic-dispatch version of either generated message or dynamic message.
+///
+/// Generated messages implement [`MessageFull`](crate::MessageFull) unless lite runtime requested.
+/// Dynamic messages can be created with
+/// [`FileDescriptor::new_dynamic`](crate::reflect::FileDescriptor::new_dynamic).
 pub trait MessageDyn: Any + fmt::Debug + fmt::Display + Send + Sync + 'static {
     /// Message descriptor for this message, used for reflection.
     fn descriptor_dyn(&self) -> MessageDescriptor;
@@ -121,7 +125,7 @@ impl dyn MessageDyn {
 
     /// Write the message to bytes vec.
     ///
-    /// > **Note**: You can use [`Message::parse_from_bytes`]
+    /// > **Note**: You can use [`Message::parse_from_bytes`](crate::Message::parse_from_bytes)
     /// to do the reverse.
     pub fn write_to_bytes_dyn(&self) -> crate::Result<Vec<u8>> {
         self.check_initialized_dyn()?;

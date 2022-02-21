@@ -13,7 +13,7 @@ enum MessageRefImpl<'a> {
     EmptyDynamic(DynamicMessage),
 }
 
-/// Wrapper around either [`Message`] reference or a container for an empty dynamic message.
+/// Wrapper around either [`MessageFull`] reference or a container for an empty dynamic message.
 #[derive(Clone, Debug)]
 pub struct MessageRef<'a> {
     imp: MessageRefImpl<'a>,

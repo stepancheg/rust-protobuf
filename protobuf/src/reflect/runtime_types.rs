@@ -147,7 +147,7 @@ pub struct RuntimeTypeTokioChars;
 /// Implementation for enum.
 #[derive(Debug, Copy, Clone)]
 pub struct RuntimeTypeEnumOrUnknown<E: EnumFull>(marker::PhantomData<E>);
-/// Implementation for [`Message`].
+/// Implementation for [`MessageFull`].
 #[derive(Debug, Copy, Clone)]
 pub struct RuntimeTypeMessage<M: MessageFull>(marker::PhantomData<M>);
 
