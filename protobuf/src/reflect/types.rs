@@ -150,9 +150,6 @@ pub struct ProtobufTypeTokioBytes;
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeTokioChars;
 
-/// `enum` as `ProtobufEnum`
-#[derive(Copy, Clone)]
-pub struct ProtobufTypeEnum<E: Enum>(marker::PhantomData<E>);
 /// `enum` as `ProtobufEnumOrUnknown`
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeEnumOrUnknown<E: Enum>(marker::PhantomData<E>);
@@ -641,34 +638,6 @@ impl ProtobufType for ProtobufTypeTokioChars {
         os: &mut CodedOutputStream,
     ) -> Result<()> {
         os.write_string(field_number, &value)
-    }
-}
-
-impl<E: Enum + ProtobufValue + fmt::Debug> ProtobufType for ProtobufTypeEnum<E> {
-    type ProtobufValue = E;
-
-    const WIRE_TYPE: WireType = WireType::Varint;
-
-    fn read(is: &mut CodedInputStream) -> Result<E> {
-        is.read_enum()
-    }
-
-    fn get_from_unknown(unknown_values: &UnknownValues) -> Option<E> {
-        // TODO: do not panic
-        ProtobufTypeInt32::get_from_unknown(unknown_values)
-            .map(|i| E::from_i32(i).expect("not a valid enum value"))
-    }
-
-    fn compute_size(value: &E) -> u64 {
-        rt::compute_raw_varint32_size(value.value() as u32) // TODO: wrap
-    }
-
-    fn write_with_cached_size(
-        field_number: u32,
-        value: &E,
-        os: &mut CodedOutputStream,
-    ) -> Result<()> {
-        os.write_enum_obj(field_number, *value)
     }
 }
 

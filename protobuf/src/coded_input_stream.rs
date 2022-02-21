@@ -17,7 +17,6 @@ use crate::misc::maybe_ununit_array_assume_init;
 use crate::reflect::types::ProtobufType;
 use crate::reflect::types::ProtobufTypeBool;
 use crate::reflect::types::ProtobufTypeDouble;
-use crate::reflect::types::ProtobufTypeEnum;
 use crate::reflect::types::ProtobufTypeFixed;
 use crate::reflect::types::ProtobufTypeFixed32;
 use crate::reflect::types::ProtobufTypeFixed64;
@@ -31,7 +30,6 @@ use crate::reflect::types::ProtobufTypeSint64;
 use crate::reflect::types::ProtobufTypeUint32;
 use crate::reflect::types::ProtobufTypeUint64;
 use crate::reflect::MessageDescriptor;
-use crate::reflect::ProtobufValue;
 use crate::unknown::UnknownValue;
 use crate::wire_format;
 use crate::wire_format::WireType;
@@ -497,14 +495,6 @@ impl<'a> CodedInputStream<'a> {
         target: &mut Vec<i32>,
     ) -> crate::Result<()> {
         self.read_repeated_packed_into::<ProtobufTypeInt32>(target)
-    }
-
-    /// Read repeated packed `enum` into `ProtobufEnum`
-    pub fn read_repeated_packed_enum_into<E: Enum + ProtobufValue>(
-        &mut self,
-        target: &mut Vec<E>,
-    ) -> crate::Result<()> {
-        self.read_repeated_packed_into::<ProtobufTypeEnum<E>>(target)
     }
 
     /// Read `UnknownValue`
