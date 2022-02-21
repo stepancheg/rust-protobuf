@@ -6,6 +6,7 @@ use std::path::Path;
 use std::path::PathBuf;
 use std::process;
 
+use anyhow::Context;
 use protobuf_parse::Parser;
 
 use crate::customize::CustomizeCallback;
@@ -223,7 +224,9 @@ impl Codegen {
 
         parser.inputs(&self.inputs);
         parser.includes(&self.includes);
-        let parsed_and_typechecked = parser.parse_and_typecheck()?;
+        let parsed_and_typechecked = parser
+            .parse_and_typecheck()
+            .context("parse and typecheck")?;
 
         gen_and_write(
             &parsed_and_typechecked.file_descriptors,

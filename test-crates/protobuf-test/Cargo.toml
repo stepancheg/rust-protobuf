@@ -1,5 +1,5 @@
 [package]
-name = "protobuf-codegen-pure-test"
+name = "protobuf-test"
 version = "0.0.0"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 publish = false
@@ -15,18 +15,18 @@ proto3 = []
 with-bytes = ["bytes", "protobuf/with-bytes", "protobuf-test-common/with-bytes"]
 
 [build-dependencies]
-protobuf-codegen = { path = "../protobuf-codegen" }
-protobuf-test-common = { path = "../test-crates/protobuf-test-common" }
 glob        = "0.2"
 log         = "0.*"
 env_logger  = "0.5.*"
 
+protoc-bin-vendored = "=3.0.0"
+
+protobuf-codegen = { path = "../../protobuf-codegen" }
+protobuf-test-common = { path = "../../test-crates/protobuf-test-common" }
+
 [dependencies]
-protobuf-test-common = { path = "../test-crates/protobuf-test-common" }
-serde        = { version = "1.0", features = ["derive"], optional = true }
-serde_derive = { version = "1.0", optional = true }
-serde_json   = { version = "1.0", optional = true }
+protobuf-test-common = { path = "../../test-crates/protobuf-test-common" }
 bytes = { version = "1.1", optional = true }
 
 [dependencies.protobuf]
-path = "../protobuf"
+path = "../../protobuf"

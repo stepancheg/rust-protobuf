@@ -29,7 +29,7 @@ fn gen_in_dir(dir: &str, include_dir: &str) {
             codegen()
                 .out_dir(out_dir)
                 .inputs(input)
-                .includes(&["../proto", include_dir])
+                .includes(&["../../proto", include_dir])
                 .customize(customize)
                 .run_from_script()
         },
@@ -54,8 +54,8 @@ fn generate_in_v2_v3() {
 fn generate_interop() {
     codegen()
         .out_dir("src/interop")
-        .includes(&["../interop/cxx", "../proto"])
-        .input("../interop/cxx/interop_pb.proto")
+        .includes(&["../../interop/cxx", "../../proto"])
+        .input("../../interop/cxx/interop_pb.proto")
         .run_from_script();
 }
 

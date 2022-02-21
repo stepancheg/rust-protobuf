@@ -371,7 +371,7 @@ fn should_skip_with_marker(path: &str) -> bool {
 #[test]
 fn common_v2() {
     test_diff_in(
-        "../../protobuf-test",
+        "../../test-crates/protobuf-test",
         "src/common/v2",
         "src/common/v2",
         should_skip_with_marker,
@@ -391,7 +391,7 @@ fn common_v3() {
     .unwrap();
 
     copy_tests_v2_v3(
-        "../../protobuf-test/src/common/v2",
+        "../../test-crates/protobuf-test/src/common/v2",
         &format!("{}/src/common/v3", common_v3_root.path().to_str().unwrap()),
     );
 
@@ -406,7 +406,7 @@ fn common_v3() {
 #[test]
 fn v2() {
     test_diff_in(
-        "../../protobuf-test",
+        "../../test-crates/protobuf-test",
         "src/v2",
         "src/v2",
         should_skip_with_marker,
@@ -416,7 +416,7 @@ fn v2() {
 #[test]
 fn v3() {
     test_diff_in(
-        "../../protobuf-test",
+        "../../test-crates/protobuf-test",
         "src/v3",
         "src/v3",
         should_skip_with_marker,
@@ -426,16 +426,19 @@ fn v3() {
 #[test]
 fn interop() {
     test_diff_in(
-        "../../protobuf-test",
-        "../interop/cxx",
-        "../interop/cxx",
+        "../..",
+        "interop/cxx",
+        "interop/cxx",
         should_skip_with_marker,
     );
 }
 
 #[test]
 fn google() {
-    test_diff_in("../../protobuf-test", "src/google/protobuf", "src", |_| {
-        false
-    });
+    test_diff_in(
+        "../../test-crates/protobuf-test",
+        "src/google/protobuf",
+        "src",
+        |_| false,
+    );
 }
