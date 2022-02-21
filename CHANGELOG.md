@@ -8,6 +8,7 @@ Stable versions are 2.xx still supported.
 - Unimplement `DerefMut` for `MessageField`: `DerefMut` which modifies the object state is too dangerous.
   `Deref` is kept though. `Deref` returns an empty instance if field is not set.
 - Added `Message::clear`, removed trait `Clear`
+- `Lazy` (which is used in generated code) is now implemented with `once_cell` crate.
 
 ## [3.0.0-alpha.8] - 2022-02-21
 
