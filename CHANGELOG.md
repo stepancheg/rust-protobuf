@@ -6,6 +6,8 @@ Stable versions are 2.xx still supported.
 ## [3] - Unreleased
 
 - Lite runtime generation is restored. When lite runtime requested, code is generated without reflection support.
+- `lite` option can be specified when using `protoc-gen-rust` plugin similarly to how
+  [C++ or Java do](https://github.com/protocolbuffers/protobuf/issues/6489).
 
 ## [3.0.0-alpha.7] - 2022-02-20
 
