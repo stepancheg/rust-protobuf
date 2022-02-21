@@ -21,10 +21,9 @@ impl Any {
     ///
     /// ```
     /// # use protobuf::MessageFull;
-    /// # use protobuf::Result;
     /// use protobuf::well_known_types::Any;
     ///
-    /// # fn the_test<MyMessage: MessageFull>(message: &MyMessage) -> crate::Result<()> {
+    /// # fn the_test<MyMessage: MessageFull>(message: &MyMessage) -> protobuf::Result<()> {
     /// let message: &MyMessage = message;
     /// let any = Any::pack(message)?;
     /// assert!(any.is::<MyMessage>());
@@ -41,10 +40,9 @@ impl Any {
     ///
     /// ```
     /// use protobuf::{MessageFull, MessageDyn};
-    /// # use protobuf::Result;
     /// use protobuf::well_known_types::Any;
     ///
-    /// # fn the_test(message: &dyn MessageDyn) -> crate::Result<()> {
+    /// # fn the_test(message: &dyn MessageDyn) -> protobuf::Result<()> {
     /// let message: &dyn MessageDyn = message;
     /// let any = Any::pack_dyn(message)?;
     /// assert!(any.is_dyn(&message.descriptor_dyn()));
