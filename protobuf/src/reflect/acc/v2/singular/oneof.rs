@@ -9,13 +9,20 @@ use crate::reflect::acc::v2::singular::GetOrDefaultGetRefDeref;
 use crate::reflect::acc::v2::singular::MutOrDefaultGetMut;
 use crate::reflect::acc::v2::singular::MutOrDefaultUnmplemented;
 use crate::reflect::acc::v2::singular::SetImplSetField;
+use crate::reflect::acc::v2::singular::SingularFieldAccessor;
 use crate::reflect::acc::v2::singular::SingularFieldAccessorHolder;
 use crate::reflect::acc::v2::singular::SingularFieldAccessorImpl;
 use crate::reflect::acc::v2::AccessorV2;
 use crate::reflect::acc::FieldAccessor;
 use crate::reflect::runtime_types::RuntimeTypeWithDeref;
+use crate::reflect::value::value_ref::ReflectValueMut;
 use crate::reflect::ProtobufValue;
+use crate::reflect::ReflectValueBox;
+use crate::reflect::ReflectValueRef;
+use crate::Enum;
+use crate::EnumOrUnknown;
 use crate::Message;
+use crate::MessageDyn;
 
 /// Make accessor for `oneof` `message` field
 pub fn make_oneof_message_has_get_mut_set_accessor<M, F>(
@@ -66,6 +73,65 @@ where
                 mut_or_default_impl: MutOrDefaultUnmplemented::new(),
                 set_impl: SetImplSetField::<M, V> { set_field: set },
                 _marker: marker::PhantomData,
+            }),
+        }),
+    )
+}
+
+struct OneofEnumAccessor<M: Message, E: Enum> {
+    get: fn(&M) -> Option<EnumOrUnknown<E>>,
+    set: fn(&mut M, EnumOrUnknown<E>),
+    default_value: E,
+}
+
+impl<M: Message, E: Enum> SingularFieldAccessor for OneofEnumAccessor<M, E> {
+    fn get_field<'a>(&self, m: &'a dyn MessageDyn) -> Option<ReflectValueRef<'a>> {
+        let m = m.downcast_ref().unwrap();
+        let value = (self.get)(m);
+        value.map(|v| ReflectValueRef::Enum(E::enum_descriptor_static(), v.value()))
+    }
+
+    fn get_field_or_default<'a>(&self, m: &'a dyn MessageDyn) -> ReflectValueRef<'a> {
+        let m = m.downcast_ref().unwrap();
+        let value = (self.get)(m);
+        let value = value.unwrap_or(EnumOrUnknown::new(self.default_value));
+        ReflectValueRef::Enum(E::enum_descriptor_static(), value.value())
+    }
+
+    fn mut_field_or_default<'a>(&self, _m: &'a mut dyn MessageDyn) -> ReflectValueMut<'a> {
+        panic!("cannot get mutable pointer")
+    }
+
+    fn set_field(&self, m: &mut dyn MessageDyn, value: ReflectValueBox) {
+        let m = m.downcast_mut().unwrap();
+        match value {
+            ReflectValueBox::Enum(e, v) => {
+                assert_eq!(E::enum_descriptor_static(), e);
+                (self.set)(m, EnumOrUnknown::from_i32(v));
+            }
+            _ => panic!("expecting enum value"),
+        }
+    }
+}
+
+/// Make accessor for `Copy` field
+pub fn make_oneof_enum_accessors<M, E>(
+    name: &'static str,
+    get: fn(&M) -> Option<EnumOrUnknown<E>>,
+    set: fn(&mut M, EnumOrUnknown<E>),
+    default_value: E,
+) -> FieldAccessor
+where
+    M: Message + 'static,
+    E: Enum,
+{
+    FieldAccessor::new_v2(
+        name,
+        AccessorV2::Singular(SingularFieldAccessorHolder {
+            accessor: Box::new(OneofEnumAccessor {
+                get,
+                set,
+                default_value,
             }),
         }),
     )

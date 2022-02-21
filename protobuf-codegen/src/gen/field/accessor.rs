@@ -2,6 +2,7 @@ use protobuf::descriptor::field_descriptor_proto;
 
 use crate::gen::code_writer::CodeWriter;
 use crate::gen::field::FieldElem;
+use crate::gen::field::FieldElemEnum;
 use crate::gen::field::FieldGen;
 use crate::gen::field::FieldKind;
 use crate::gen::field::MapField;
@@ -110,6 +111,62 @@ impl FieldGen<'_> {
         }
     }
 
+    fn accessor_fn_oneof_enum(&self, oneof: &OneofField, en: &FieldElemEnum) -> AccessorFn {
+        let message = self.proto_field.message.rust_name();
+
+        let variant_path = oneof.variant_path(
+            &self
+                .proto_field
+                .message
+                .scope
+                .rust_path_to_file()
+                .clone()
+                .into_path(),
+        );
+
+        let getter = CodeWriter::with(|w| {
+            w.expr_block(
+                &format!(
+                    "|message: &{}| match &message.{}",
+                    message, oneof.oneof_field_name
+                ),
+                |w| {
+                    w.case_expr(
+                        &format!("::std::option::Option::Some({}(e))", variant_path),
+                        "::std::option::Option::Some(*e)",
+                    );
+                    w.case_expr("_", "::std::option::Option::None");
+                },
+            );
+        });
+
+        let setter = CodeWriter::with(|w| {
+            w.expr_block(
+                &format!(
+                    "|message: &mut {}, e: {}::EnumOrUnknown<{}>|",
+                    message,
+                    protobuf_crate_path(&self.customize),
+                    en.enum_rust_type(&self.file_and_mod())
+                        .to_code(&self.customize)
+                ),
+                |w| {
+                    w.write_line(&format!(
+                        "message.{} = ::std::option::Option::Some({}(e));",
+                        oneof.oneof_field_name, variant_path
+                    ));
+                },
+            )
+        });
+
+        let default = self.xxx_default_value_rust();
+
+        AccessorFn {
+            name: "make_oneof_enum_accessors".to_owned(),
+            type_params: vec![format!("_")],
+            callback_params: vec![getter, setter, default],
+        }
+    }
+
     fn accessor_fn_singular_without_flag(&self, elem: &FieldElem) -> AccessorFn {
         if let &FieldElem::Message(ref m, ..) = elem {
             // TODO: old style, needed because of default instance
@@ -171,12 +228,8 @@ impl FieldGen<'_> {
             .scope
             .file_and_mod(self.customize.clone());
 
-        if let FieldElem::Enum(..) = oneof.elem {
-            return AccessorFn {
-                name: "make_oneof_copy_has_get_set_simpler_accessors".to_owned(),
-                type_params: vec![format!("_")],
-                callback_params: self.make_accessor_fns_has_get_set(),
-            };
+        if let FieldElem::Enum(en) = &oneof.elem {
+            return self.accessor_fn_oneof_enum(oneof, en);
         }
 
         if elem.is_copy() {
@@ -230,7 +283,15 @@ impl FieldGen<'_> {
         w.indented(|w| {
             w.write_line(&format!("\"{}\",", self.proto_field.name()));
             for callback in &accessor_fn.callback_params {
-                w.write_line(&format!("{},", callback));
+                let callback_lines: Vec<&str> = callback.lines().collect();
+                for (i, callback_line) in callback_lines.iter().enumerate() {
+                    let comma = if i == callback_lines.len() - 1 {
+                        ","
+                    } else {
+                        ""
+                    };
+                    w.write_line(&format!("{}{}", callback_line, comma));
+                }
             }
         });
         w.write_line("));");
