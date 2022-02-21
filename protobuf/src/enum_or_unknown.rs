@@ -77,7 +77,7 @@ impl<E: Enum> From<E> for EnumOrUnknown<E> {
     }
 }
 
-impl<E: EnumFull> Default for EnumOrUnknown<E> {
+impl<E: Enum> Default for EnumOrUnknown<E> {
     fn default() -> EnumOrUnknown<E> {
         EnumOrUnknown::new(E::default())
     }
