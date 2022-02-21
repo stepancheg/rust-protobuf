@@ -222,7 +222,7 @@ pub fn value_size<T: ProtobufVarint>(field_number: u32, value: T, wt: WireType) 
 }
 
 /// Integer value size when encoded as specified wire type.
-pub fn value_varint_zigzag_size_no_tag<T: ProtobufVarintZigzag>(value: T) -> u64 {
+pub(crate) fn value_varint_zigzag_size_no_tag<T: ProtobufVarintZigzag>(value: T) -> u64 {
     value.len_varint_zigzag()
 }
 
@@ -241,7 +241,7 @@ pub fn enum_or_unknown_size<E: Enum>(field_number: u32, value: EnumOrUnknown<E>)
 }
 
 /// Size of encoded bytes field.
-pub fn bytes_size_no_tag(bytes: &[u8]) -> u64 {
+pub(crate) fn bytes_size_no_tag(bytes: &[u8]) -> u64 {
     compute_raw_varint64_size(bytes.len() as u64) + bytes.len() as u64
 }
 
@@ -251,7 +251,7 @@ pub fn bytes_size(field_number: u32, bytes: &[u8]) -> u64 {
 }
 
 /// Size of encoded string field.
-pub fn string_size_no_tag(s: &str) -> u64 {
+pub(crate) fn string_size_no_tag(s: &str) -> u64 {
     bytes_size_no_tag(s.as_bytes())
 }
 
