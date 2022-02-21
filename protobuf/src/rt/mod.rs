@@ -148,13 +148,6 @@ pub fn vec_packed_varint_zigzag_data_size<T: ProtobufVarintZigzag>(vec: &[T]) ->
 }
 
 /// Size of serialized repeated packed enum field, excluding length and tag.
-pub fn vec_packed_enum_data_size<E: Enum>(vec: &[E]) -> u64 {
-    vec.iter()
-        .map(|e| compute_raw_varint32_size(e.value() as u32))
-        .fold(0, |a, i| a + i)
-}
-
-/// Size of serialized repeated packed enum field, excluding length and tag.
 pub fn vec_packed_enum_or_unknown_data_size<E: Enum>(vec: &[EnumOrUnknown<E>]) -> u64 {
     vec.iter()
         .map(|e| compute_raw_varint32_size(e.value() as u32))
@@ -177,16 +170,6 @@ pub fn vec_packed_varint_zigzag_size<T: ProtobufVarintZigzag>(field_number: u32,
         0
     } else {
         let data_size = vec_packed_varint_zigzag_data_size(vec);
-        tag_size(field_number) + data_size.len_varint() + data_size
-    }
-}
-
-/// Size of serialized data with length prefix and tag
-pub fn vec_packed_enum_size<E: Enum>(field_number: u32, vec: &[E]) -> u64 {
-    if vec.is_empty() {
-        0
-    } else {
-        let data_size = vec_packed_enum_data_size(vec);
         tag_size(field_number) + data_size.len_varint() + data_size
     }
 }
