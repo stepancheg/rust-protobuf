@@ -159,7 +159,6 @@ impl crate::Message for Timestamp {
 }
 
 impl crate::MessageFull for Timestamp {
-
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 0)
     }

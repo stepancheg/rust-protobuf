@@ -161,7 +161,6 @@ impl crate::Message for Duration {
 }
 
 impl crate::MessageFull for Duration {
-
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 0)
     }

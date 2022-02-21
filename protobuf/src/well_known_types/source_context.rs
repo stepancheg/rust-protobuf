@@ -138,7 +138,6 @@ impl crate::Message for SourceContext {
 }
 
 impl crate::MessageFull for SourceContext {
-
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 0)
     }

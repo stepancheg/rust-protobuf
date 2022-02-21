@@ -288,7 +288,6 @@ impl crate::Message for Version {
 }
 
 impl crate::MessageFull for Version {
-
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 0)
     }
@@ -540,7 +539,6 @@ impl crate::Message for CodeGeneratorRequest {
 }
 
 impl crate::MessageFull for CodeGeneratorRequest {
-
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 1)
     }
@@ -779,7 +777,6 @@ impl crate::Message for CodeGeneratorResponse {
 }
 
 impl crate::MessageFull for CodeGeneratorResponse {
-
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 2)
     }
@@ -1134,7 +1131,6 @@ pub mod code_generator_response {
     }
 
     impl crate::MessageFull for File {
-
         fn descriptor_static() -> crate::reflect::MessageDescriptor {
             crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 3)
         }

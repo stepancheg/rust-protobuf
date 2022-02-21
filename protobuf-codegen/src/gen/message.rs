@@ -538,7 +538,6 @@ impl<'a> MessageGen<'a> {
             ),
             &format!("{}", self.type_name),
             |w| {
-                w.write_line("");
                 self.write_descriptor_static_new(w);
             },
         );

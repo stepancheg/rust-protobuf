@@ -135,7 +135,6 @@ impl crate::Message for Struct {
 }
 
 impl crate::MessageFull for Struct {
-
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 0)
     }
@@ -599,7 +598,6 @@ impl crate::Message for Value {
 }
 
 impl crate::MessageFull for Value {
-
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 2)
     }
@@ -763,7 +761,6 @@ impl crate::Message for ListValue {
 }
 
 impl crate::MessageFull for ListValue {
-
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 3)
     }

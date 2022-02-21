@@ -135,7 +135,6 @@ impl crate::Message for FieldMask {
 }
 
 impl crate::MessageFull for FieldMask {
-
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 0)
     }

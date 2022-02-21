@@ -249,7 +249,6 @@ impl crate::Message for Type {
 }
 
 impl crate::MessageFull for Type {
-
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 0)
     }
@@ -559,7 +558,6 @@ impl crate::Message for Field {
 }
 
 impl crate::MessageFull for Field {
-
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 1)
     }
@@ -963,7 +961,6 @@ impl crate::Message for Enum {
 }
 
 impl crate::MessageFull for Enum {
-
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 2)
     }
@@ -1138,7 +1135,6 @@ impl crate::Message for EnumValue {
 }
 
 impl crate::MessageFull for EnumValue {
-
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 3)
     }
@@ -1301,7 +1297,6 @@ impl crate::Message for Option {
 }
 
 impl crate::MessageFull for Option {
-
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 4)
     }

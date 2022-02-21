@@ -304,7 +304,6 @@ impl crate::Message for Api {
 }
 
 impl crate::MessageFull for Api {
-
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 0)
     }
@@ -555,7 +554,6 @@ impl crate::Message for Method {
 }
 
 impl crate::MessageFull for Method {
-
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 1)
     }
@@ -705,7 +703,6 @@ impl crate::Message for Mixin {
 }
 
 impl crate::MessageFull for Mixin {
-
     fn descriptor_static() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 2)
     }
