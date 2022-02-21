@@ -27,15 +27,12 @@ use crate::EnumFull;
 use crate::EnumOrUnknown;
 
 /// Encapsulate type-specific serialization and conversion logic
-pub trait ProtobufType: Send + Sync + Clone + 'static {
+pub trait ProtobufType: Send + Sync + Clone + Sized + 'static {
     /// Rust type for this protobuf type.
     type ProtobufValue: ProtobufValue;
 
     /// Dynamic version of this
-    fn dynamic() -> &'static dyn ProtobufTypeDynamic
-    where
-        Self: Sized,
-    {
+    fn dynamic() -> &'static dyn ProtobufTypeDynamic {
         &ProtobufTypeDynamicImpl::<Self>(marker::PhantomData)
     }
 
