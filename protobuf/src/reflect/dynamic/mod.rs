@@ -40,7 +40,6 @@ use crate::text_format;
 use crate::wire_format::WireType;
 use crate::CodedInputStream;
 use crate::CodedOutputStream;
-use crate::Result;
 use crate::UnknownFields;
 
 pub(crate) mod map;
@@ -207,7 +206,7 @@ impl DynamicMessage {
     fn for_each_field_to_write(
         &self,
         handler: &mut impl ForEachSingularFieldToWrite,
-    ) -> Result<()> {
+    ) -> crate::Result<()> {
         let is_proto3 = self.descriptor.file_descriptor().syntax() == Syntax::Proto3;
         for field_desc in self.descriptor.fields() {
             let field_number = field_desc.proto().number() as u32;
@@ -257,8 +256,13 @@ impl DynamicMessage {
 }
 
 trait ForEachSingularFieldToWrite {
-    fn field(&mut self, t: Type, number: u32, value: &ReflectValueRef) -> Result<()>;
-    fn repeated_packed(&mut self, t: Type, number: u32, value: &ReflectRepeatedRef) -> Result<()>;
+    fn field(&mut self, t: Type, number: u32, value: &ReflectValueRef) -> crate::Result<()>;
+    fn repeated_packed(
+        &mut self,
+        t: Type,
+        number: u32,
+        value: &ReflectRepeatedRef,
+    ) -> crate::Result<()>;
     fn map_field_entry(
         &mut self,
         number: u32,
@@ -266,8 +270,8 @@ trait ForEachSingularFieldToWrite {
         kt: Type,
         value: &ReflectValueRef,
         vt: Type,
-    ) -> Result<()>;
-    fn unknown_fields(&mut self, unknown_fields: &UnknownFields) -> Result<()>;
+    ) -> crate::Result<()>;
+    fn unknown_fields(&mut self, unknown_fields: &UnknownFields) -> crate::Result<()>;
 }
 
 impl fmt::Display for DynamicMessage {
@@ -319,7 +323,7 @@ impl MessageDyn for DynamicMessage {
         true
     }
 
-    fn merge_from_dyn(&mut self, is: &mut CodedInputStream) -> Result<()> {
+    fn merge_from_dyn(&mut self, is: &mut CodedInputStream) -> crate::Result<()> {
         while !is.eof()? {
             let (field, wire_type) = is.read_tag_unpack()?;
             let field_desc = match self.descriptor.field_by_number(field) {
@@ -369,13 +373,18 @@ impl MessageDyn for DynamicMessage {
         Ok(())
     }
 
-    fn write_to_with_cached_sizes_dyn(&self, os: &mut CodedOutputStream) -> Result<()> {
+    fn write_to_with_cached_sizes_dyn(&self, os: &mut CodedOutputStream) -> crate::Result<()> {
         struct Handler<'a, 'o> {
             os: &'a mut CodedOutputStream<'o>,
         }
 
         impl<'a, 'o> ForEachSingularFieldToWrite for Handler<'a, 'o> {
-            fn field(&mut self, t: Type, number: u32, value: &ReflectValueRef) -> Result<()> {
+            fn field(
+                &mut self,
+                t: Type,
+                number: u32,
+                value: &ReflectValueRef,
+            ) -> crate::Result<()> {
                 singular_write_to(t, number, value, self.os)
             }
 
@@ -384,7 +393,7 @@ impl MessageDyn for DynamicMessage {
                 t: Type,
                 number: u32,
                 value: &ReflectRepeatedRef,
-            ) -> Result<()> {
+            ) -> crate::Result<()> {
                 repeated_write_to(t, number, value, self.os)
             }
 
@@ -395,7 +404,7 @@ impl MessageDyn for DynamicMessage {
                 kt: Type,
                 value: &ReflectValueRef,
                 vt: Type,
-            ) -> Result<()> {
+            ) -> crate::Result<()> {
                 let entry_data_size = compute_map_entry_field_data_size(key, kt, value, vt);
                 self.os.write_tag(number, WireType::LengthDelimited)?;
                 self.os.write_raw_varint32(entry_data_size as u32)?;
@@ -404,7 +413,7 @@ impl MessageDyn for DynamicMessage {
                 Ok(())
             }
 
-            fn unknown_fields(&mut self, unknown_fields: &UnknownFields) -> Result<()> {
+            fn unknown_fields(&mut self, unknown_fields: &UnknownFields) -> crate::Result<()> {
                 self.os.write_unknown_fields(unknown_fields)
             }
         }
@@ -420,7 +429,12 @@ impl MessageDyn for DynamicMessage {
         }
 
         impl ForEachSingularFieldToWrite for Handler {
-            fn field(&mut self, t: Type, number: u32, value: &ReflectValueRef) -> Result<()> {
+            fn field(
+                &mut self,
+                t: Type,
+                number: u32,
+                value: &ReflectValueRef,
+            ) -> crate::Result<()> {
                 self.m_size += compute_singular_size(t, number, value);
                 Ok(())
             }
@@ -430,7 +444,7 @@ impl MessageDyn for DynamicMessage {
                 t: Type,
                 number: u32,
                 value: &ReflectRepeatedRef,
-            ) -> Result<()> {
+            ) -> crate::Result<()> {
                 self.m_size += compute_repeated_packed_size(t, number, value);
                 Ok(())
             }
@@ -442,7 +456,7 @@ impl MessageDyn for DynamicMessage {
                 kt: Type,
                 value: &ReflectValueRef,
                 vt: Type,
-            ) -> Result<()> {
+            ) -> crate::Result<()> {
                 let entry_data_size = compute_map_entry_field_data_size(key, kt, value, vt);
                 self.m_size += tag_size(number)
                     + compute_raw_varint32_size(entry_data_size as u32)
@@ -450,7 +464,7 @@ impl MessageDyn for DynamicMessage {
                 Ok(())
             }
 
-            fn unknown_fields(&mut self, unknown_fields: &UnknownFields) -> Result<()> {
+            fn unknown_fields(&mut self, unknown_fields: &UnknownFields) -> crate::Result<()> {
                 self.m_size += unknown_fields_size(unknown_fields);
                 Ok(())
             }
@@ -479,7 +493,7 @@ fn singular_write_to(
     field_number: u32,
     v: &ReflectValueRef,
     os: &mut CodedOutputStream,
-) -> Result<()> {
+) -> crate::Result<()> {
     match proto_type {
         Type::TYPE_ENUM => {
             let enum_v = v.to_enum_value().unwrap();
@@ -602,7 +616,7 @@ fn repeated_write_to(
     field_number: u32,
     v: &ReflectRepeatedRef,
     os: &mut CodedOutputStream,
-) -> Result<()> {
+) -> crate::Result<()> {
     match proto_type {
         Type::TYPE_INT32 => os.write_repeated_packed_int32(field_number, v.data_i32()),
         Type::TYPE_INT64 => os.write_repeated_packed_int64(field_number, v.data_i64()),

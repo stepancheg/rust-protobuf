@@ -23,7 +23,6 @@ use crate::EnumOrUnknown;
 use crate::Message;
 use crate::MessageDyn;
 use crate::MessageFull;
-use crate::Result;
 use crate::UnknownFields;
 use crate::UnknownValueRef;
 
@@ -32,15 +31,15 @@ use crate::UnknownValueRef;
 const OUTPUT_STREAM_BUFFER_SIZE: usize = 8 * 1024;
 
 pub trait WithCodedOutputStream {
-    fn with_coded_output_stream<T, F>(self, cb: F) -> Result<T>
+    fn with_coded_output_stream<T, F>(self, cb: F) -> crate::Result<T>
     where
-        F: FnOnce(&mut CodedOutputStream) -> Result<T>;
+        F: FnOnce(&mut CodedOutputStream) -> crate::Result<T>;
 }
 
 impl<'a> WithCodedOutputStream for &'a mut (dyn Write + 'a) {
-    fn with_coded_output_stream<T, F>(self, cb: F) -> Result<T>
+    fn with_coded_output_stream<T, F>(self, cb: F) -> crate::Result<T>
     where
-        F: FnOnce(&mut CodedOutputStream) -> Result<T>,
+        F: FnOnce(&mut CodedOutputStream) -> crate::Result<T>,
     {
         let mut os = CodedOutputStream::new(self);
         let r = cb(&mut os)?;
@@ -50,9 +49,9 @@ impl<'a> WithCodedOutputStream for &'a mut (dyn Write + 'a) {
 }
 
 impl<'a> WithCodedOutputStream for &'a mut Vec<u8> {
-    fn with_coded_output_stream<T, F>(mut self, cb: F) -> Result<T>
+    fn with_coded_output_stream<T, F>(mut self, cb: F) -> crate::Result<T>
     where
-        F: FnOnce(&mut CodedOutputStream) -> Result<T>,
+        F: FnOnce(&mut CodedOutputStream) -> crate::Result<T>,
     {
         let mut os = CodedOutputStream::vec(&mut self);
         let r = cb(&mut os)?;
@@ -198,7 +197,7 @@ impl<'a> CodedOutputStream<'a> {
         unsafe { slice::from_raw_parts_mut(buffer as *mut u8, position) }
     }
 
-    fn refresh_buffer(&mut self) -> Result<()> {
+    fn refresh_buffer(&mut self) -> crate::Result<()> {
         match self.target {
             OutputTarget::Write(ref mut write, _) => {
                 write.write_all(Self::filled_buffer_impl(self.buffer, self.pos_within_buf))?;
@@ -230,7 +229,7 @@ impl<'a> CodedOutputStream<'a> {
     /// however, if `flush` in destructor fails, then destructor panics
     /// and program terminates. So it's advisable to explicitly call flush
     /// before destructor.
-    pub fn flush(&mut self) -> Result<()> {
+    pub fn flush(&mut self) -> crate::Result<()> {
         match &mut self.target {
             OutputTarget::Bytes => Ok(()),
             OutputTarget::Vec(vec) => {
@@ -249,7 +248,7 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write a byte
-    pub fn write_raw_byte(&mut self, byte: u8) -> Result<()> {
+    pub fn write_raw_byte(&mut self, byte: u8) -> crate::Result<()> {
         if self.pos_within_buf as usize == self.buffer().len() {
             self.refresh_buffer()?;
         }
@@ -259,7 +258,7 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write bytes
-    pub fn write_raw_bytes(&mut self, bytes: &[u8]) -> Result<()> {
+    pub fn write_raw_bytes(&mut self, bytes: &[u8]) -> crate::Result<()> {
         if bytes.len() <= self.buffer().len() - self.pos_within_buf {
             let bottom = self.pos_within_buf as usize;
             let top = bottom + (bytes.len() as usize);
@@ -302,12 +301,12 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write a tag
-    pub fn write_tag(&mut self, field_number: u32, wire_type: WireType) -> Result<()> {
+    pub fn write_tag(&mut self, field_number: u32, wire_type: WireType) -> crate::Result<()> {
         self.write_raw_varint32(wire_format::Tag::make(field_number, wire_type).value())
     }
 
     /// Write varint
-    pub fn write_raw_varint32(&mut self, value: u32) -> Result<()> {
+    pub fn write_raw_varint32(&mut self, value: u32) -> crate::Result<()> {
         if self.buffer().len() - self.pos_within_buf >= 5 {
             // fast path
             let len = unsafe {
@@ -326,7 +325,7 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write varint
-    pub fn write_raw_varint64(&mut self, value: u64) -> Result<()> {
+    pub fn write_raw_varint64(&mut self, value: u64) -> crate::Result<()> {
         if self.buffer().len() - self.pos_within_buf >= 10 {
             // fast path
             let len = unsafe {
@@ -345,101 +344,101 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write 32-bit integer little endian
-    pub fn write_raw_little_endian32(&mut self, value: u32) -> Result<()> {
+    pub fn write_raw_little_endian32(&mut self, value: u32) -> crate::Result<()> {
         self.write_raw_bytes(&value.to_le_bytes())
     }
 
     /// Write 64-bit integer little endian
-    pub fn write_raw_little_endian64(&mut self, value: u64) -> Result<()> {
+    pub fn write_raw_little_endian64(&mut self, value: u64) -> crate::Result<()> {
         self.write_raw_bytes(&value.to_le_bytes())
     }
 
     /// Write `float`
-    pub fn write_float_no_tag(&mut self, value: f32) -> Result<()> {
+    pub fn write_float_no_tag(&mut self, value: f32) -> crate::Result<()> {
         self.write_raw_little_endian32(value.to_bits())
     }
 
     /// Write `double`
-    pub fn write_double_no_tag(&mut self, value: f64) -> Result<()> {
+    pub fn write_double_no_tag(&mut self, value: f64) -> crate::Result<()> {
         self.write_raw_little_endian64(value.to_bits())
     }
 
     /// Write `float` field
-    pub fn write_float(&mut self, field_number: u32, value: f32) -> Result<()> {
+    pub fn write_float(&mut self, field_number: u32, value: f32) -> crate::Result<()> {
         self.write_tag(field_number, WireType::Fixed32)?;
         self.write_float_no_tag(value)?;
         Ok(())
     }
 
     /// Write `double` field
-    pub fn write_double(&mut self, field_number: u32, value: f64) -> Result<()> {
+    pub fn write_double(&mut self, field_number: u32, value: f64) -> crate::Result<()> {
         self.write_tag(field_number, WireType::Fixed64)?;
         self.write_double_no_tag(value)?;
         Ok(())
     }
 
     /// Write varint
-    pub fn write_uint64_no_tag(&mut self, value: u64) -> Result<()> {
+    pub fn write_uint64_no_tag(&mut self, value: u64) -> crate::Result<()> {
         self.write_raw_varint64(value)
     }
 
     /// Write varint
-    pub fn write_uint32_no_tag(&mut self, value: u32) -> Result<()> {
+    pub fn write_uint32_no_tag(&mut self, value: u32) -> crate::Result<()> {
         self.write_raw_varint32(value)
     }
 
     /// Write varint
-    pub fn write_int64_no_tag(&mut self, value: i64) -> Result<()> {
+    pub fn write_int64_no_tag(&mut self, value: i64) -> crate::Result<()> {
         self.write_raw_varint64(value as u64)
     }
 
     /// Write varint
-    pub fn write_int32_no_tag(&mut self, value: i32) -> Result<()> {
+    pub fn write_int32_no_tag(&mut self, value: i32) -> crate::Result<()> {
         self.write_raw_varint64(value as u64)
     }
 
     /// Write zigzag varint
-    pub fn write_sint64_no_tag(&mut self, value: i64) -> Result<()> {
+    pub fn write_sint64_no_tag(&mut self, value: i64) -> crate::Result<()> {
         self.write_uint64_no_tag(encode_zig_zag_64(value))
     }
 
     /// Write zigzag varint
-    pub fn write_sint32_no_tag(&mut self, value: i32) -> Result<()> {
+    pub fn write_sint32_no_tag(&mut self, value: i32) -> crate::Result<()> {
         self.write_uint32_no_tag(encode_zig_zag_32(value))
     }
 
     /// Write `fixed64`
-    pub fn write_fixed64_no_tag(&mut self, value: u64) -> Result<()> {
+    pub fn write_fixed64_no_tag(&mut self, value: u64) -> crate::Result<()> {
         self.write_raw_little_endian64(value)
     }
 
     /// Write `fixed32`
-    pub fn write_fixed32_no_tag(&mut self, value: u32) -> Result<()> {
+    pub fn write_fixed32_no_tag(&mut self, value: u32) -> crate::Result<()> {
         self.write_raw_little_endian32(value)
     }
 
     /// Write `sfixed64`
-    pub fn write_sfixed64_no_tag(&mut self, value: i64) -> Result<()> {
+    pub fn write_sfixed64_no_tag(&mut self, value: i64) -> crate::Result<()> {
         self.write_raw_little_endian64(value as u64)
     }
 
     /// Write `sfixed32`
-    pub fn write_sfixed32_no_tag(&mut self, value: i32) -> Result<()> {
+    pub fn write_sfixed32_no_tag(&mut self, value: i32) -> crate::Result<()> {
         self.write_raw_little_endian32(value as u32)
     }
 
     /// Write `bool`
-    pub fn write_bool_no_tag(&mut self, value: bool) -> Result<()> {
+    pub fn write_bool_no_tag(&mut self, value: bool) -> crate::Result<()> {
         self.write_raw_varint32(if value { 1 } else { 0 })
     }
 
     /// Write `enum`
-    pub fn write_enum_no_tag(&mut self, value: i32) -> Result<()> {
+    pub fn write_enum_no_tag(&mut self, value: i32) -> crate::Result<()> {
         self.write_int32_no_tag(value)
     }
 
     /// Write `enum`
-    pub fn write_enum_obj_no_tag<E>(&mut self, value: E) -> Result<()>
+    pub fn write_enum_obj_no_tag<E>(&mut self, value: E) -> crate::Result<()>
     where
         E: Enum,
     {
@@ -447,7 +446,7 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write `enum`
-    pub fn write_enum_or_unknown_no_tag<E>(&mut self, value: EnumOrUnknown<E>) -> Result<()>
+    pub fn write_enum_or_unknown_no_tag<E>(&mut self, value: EnumOrUnknown<E>) -> crate::Result<()>
     where
         E: Enum,
     {
@@ -455,7 +454,7 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write unknown value
-    pub fn write_unknown_no_tag(&mut self, unknown: UnknownValueRef) -> Result<()> {
+    pub fn write_unknown_no_tag(&mut self, unknown: UnknownValueRef) -> crate::Result<()> {
         match unknown {
             UnknownValueRef::Fixed64(fixed64) => self.write_raw_little_endian64(fixed64),
             UnknownValueRef::Fixed32(fixed32) => self.write_raw_little_endian32(fixed32),
@@ -465,91 +464,91 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write `uint64` field
-    pub fn write_uint64(&mut self, field_number: u32, value: u64) -> Result<()> {
+    pub fn write_uint64(&mut self, field_number: u32, value: u64) -> crate::Result<()> {
         self.write_tag(field_number, WireType::Varint)?;
         self.write_uint64_no_tag(value)?;
         Ok(())
     }
 
     /// Write `uint32` field
-    pub fn write_uint32(&mut self, field_number: u32, value: u32) -> Result<()> {
+    pub fn write_uint32(&mut self, field_number: u32, value: u32) -> crate::Result<()> {
         self.write_tag(field_number, WireType::Varint)?;
         self.write_uint32_no_tag(value)?;
         Ok(())
     }
 
     /// Write `int64` field
-    pub fn write_int64(&mut self, field_number: u32, value: i64) -> Result<()> {
+    pub fn write_int64(&mut self, field_number: u32, value: i64) -> crate::Result<()> {
         self.write_tag(field_number, WireType::Varint)?;
         self.write_int64_no_tag(value)?;
         Ok(())
     }
 
     /// Write `int32` field
-    pub fn write_int32(&mut self, field_number: u32, value: i32) -> Result<()> {
+    pub fn write_int32(&mut self, field_number: u32, value: i32) -> crate::Result<()> {
         self.write_tag(field_number, WireType::Varint)?;
         self.write_int32_no_tag(value)?;
         Ok(())
     }
 
     /// Write `sint64` field
-    pub fn write_sint64(&mut self, field_number: u32, value: i64) -> Result<()> {
+    pub fn write_sint64(&mut self, field_number: u32, value: i64) -> crate::Result<()> {
         self.write_tag(field_number, WireType::Varint)?;
         self.write_sint64_no_tag(value)?;
         Ok(())
     }
 
     /// Write `sint32` field
-    pub fn write_sint32(&mut self, field_number: u32, value: i32) -> Result<()> {
+    pub fn write_sint32(&mut self, field_number: u32, value: i32) -> crate::Result<()> {
         self.write_tag(field_number, WireType::Varint)?;
         self.write_sint32_no_tag(value)?;
         Ok(())
     }
 
     /// Write `fixed64` field
-    pub fn write_fixed64(&mut self, field_number: u32, value: u64) -> Result<()> {
+    pub fn write_fixed64(&mut self, field_number: u32, value: u64) -> crate::Result<()> {
         self.write_tag(field_number, WireType::Fixed64)?;
         self.write_fixed64_no_tag(value)?;
         Ok(())
     }
 
     /// Write `fixed32` field
-    pub fn write_fixed32(&mut self, field_number: u32, value: u32) -> Result<()> {
+    pub fn write_fixed32(&mut self, field_number: u32, value: u32) -> crate::Result<()> {
         self.write_tag(field_number, WireType::Fixed32)?;
         self.write_fixed32_no_tag(value)?;
         Ok(())
     }
 
     /// Write `sfixed64` field
-    pub fn write_sfixed64(&mut self, field_number: u32, value: i64) -> Result<()> {
+    pub fn write_sfixed64(&mut self, field_number: u32, value: i64) -> crate::Result<()> {
         self.write_tag(field_number, WireType::Fixed64)?;
         self.write_sfixed64_no_tag(value)?;
         Ok(())
     }
 
     /// Write `sfixed32` field
-    pub fn write_sfixed32(&mut self, field_number: u32, value: i32) -> Result<()> {
+    pub fn write_sfixed32(&mut self, field_number: u32, value: i32) -> crate::Result<()> {
         self.write_tag(field_number, WireType::Fixed32)?;
         self.write_sfixed32_no_tag(value)?;
         Ok(())
     }
 
     /// Write `bool` field
-    pub fn write_bool(&mut self, field_number: u32, value: bool) -> Result<()> {
+    pub fn write_bool(&mut self, field_number: u32, value: bool) -> crate::Result<()> {
         self.write_tag(field_number, WireType::Varint)?;
         self.write_bool_no_tag(value)?;
         Ok(())
     }
 
     /// Write `enum` field
-    pub fn write_enum(&mut self, field_number: u32, value: i32) -> Result<()> {
+    pub fn write_enum(&mut self, field_number: u32, value: i32) -> crate::Result<()> {
         self.write_tag(field_number, WireType::Varint)?;
         self.write_enum_no_tag(value)?;
         Ok(())
     }
 
     /// Write `enum` field
-    pub fn write_enum_obj<E>(&mut self, field_number: u32, value: E) -> Result<()>
+    pub fn write_enum_obj<E>(&mut self, field_number: u32, value: E) -> crate::Result<()>
     where
         E: Enum,
     {
@@ -561,7 +560,7 @@ impl<'a> CodedOutputStream<'a> {
         &mut self,
         field_number: u32,
         value: EnumOrUnknown<E>,
-    ) -> Result<()>
+    ) -> crate::Result<()>
     where
         E: Enum,
     {
@@ -569,14 +568,18 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write unknown field
-    pub fn write_unknown(&mut self, field_number: u32, value: UnknownValueRef) -> Result<()> {
+    pub fn write_unknown(
+        &mut self,
+        field_number: u32,
+        value: UnknownValueRef,
+    ) -> crate::Result<()> {
         self.write_tag(field_number, value.wire_type())?;
         self.write_unknown_no_tag(value)?;
         Ok(())
     }
 
     /// Write unknown fields
-    pub fn write_unknown_fields(&mut self, fields: &UnknownFields) -> Result<()> {
+    pub fn write_unknown_fields(&mut self, fields: &UnknownFields) -> crate::Result<()> {
         for (number, values) in fields {
             for value in values {
                 self.write_unknown(number, value)?;
@@ -586,7 +589,10 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write unknown fields sorting them by name
-    pub(crate) fn write_unknown_fields_sorted(&mut self, fields: &UnknownFields) -> Result<()> {
+    pub(crate) fn write_unknown_fields_sorted(
+        &mut self,
+        fields: &UnknownFields,
+    ) -> crate::Result<()> {
         let mut fields: Vec<_> = fields.iter().collect();
         fields.sort_by_key(|(n, _)| *n);
         for (number, values) in fields {
@@ -598,24 +604,24 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write bytes
-    pub fn write_bytes_no_tag(&mut self, bytes: &[u8]) -> Result<()> {
+    pub fn write_bytes_no_tag(&mut self, bytes: &[u8]) -> crate::Result<()> {
         self.write_raw_varint32(bytes.len() as u32)?;
         self.write_raw_bytes(bytes)?;
         Ok(())
     }
 
     /// Write string
-    pub fn write_string_no_tag(&mut self, s: &str) -> Result<()> {
+    pub fn write_string_no_tag(&mut self, s: &str) -> crate::Result<()> {
         self.write_bytes_no_tag(s.as_bytes())
     }
 
     /// Write message
-    pub fn write_message_no_tag<M: Message>(&mut self, msg: &M) -> Result<()> {
+    pub fn write_message_no_tag<M: Message>(&mut self, msg: &M) -> crate::Result<()> {
         msg.write_length_delimited_to(self)
     }
 
     /// Write dynamic message
-    pub fn write_message_no_tag_dyn(&mut self, msg: &dyn MessageDyn) -> Result<()> {
+    pub fn write_message_no_tag_dyn(&mut self, msg: &dyn MessageDyn) -> crate::Result<()> {
         let size = msg.compute_size_dyn();
         let size = check_message_size(size)?;
         self.write_raw_varint32(size)?;
@@ -624,21 +630,21 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write `bytes` field
-    pub fn write_bytes(&mut self, field_number: u32, bytes: &[u8]) -> Result<()> {
+    pub fn write_bytes(&mut self, field_number: u32, bytes: &[u8]) -> crate::Result<()> {
         self.write_tag(field_number, WireType::LengthDelimited)?;
         self.write_bytes_no_tag(bytes)?;
         Ok(())
     }
 
     /// Write `string` field
-    pub fn write_string(&mut self, field_number: u32, s: &str) -> Result<()> {
+    pub fn write_string(&mut self, field_number: u32, s: &str) -> crate::Result<()> {
         self.write_tag(field_number, WireType::LengthDelimited)?;
         self.write_string_no_tag(s)?;
         Ok(())
     }
 
     /// Write repeated packed float values.
-    pub fn write_repeated_packed_float_no_tag(&mut self, values: &[f32]) -> Result<()> {
+    pub fn write_repeated_packed_float_no_tag(&mut self, values: &[f32]) -> crate::Result<()> {
         for v in values {
             self.write_float_no_tag(*v)?;
         }
@@ -646,7 +652,11 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write field header and data for repeated packed float.
-    pub fn write_repeated_packed_float(&mut self, field_number: u32, values: &[f32]) -> Result<()> {
+    pub fn write_repeated_packed_float(
+        &mut self,
+        field_number: u32,
+        values: &[f32],
+    ) -> crate::Result<()> {
         if values.is_empty() {
             return Ok(());
         }
@@ -658,7 +668,7 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write repeated packed double values.
-    pub fn write_repeated_packed_double_no_tag(&mut self, values: &[f64]) -> Result<()> {
+    pub fn write_repeated_packed_double_no_tag(&mut self, values: &[f64]) -> crate::Result<()> {
         for v in values {
             self.write_double_no_tag(*v)?;
         }
@@ -670,7 +680,7 @@ impl<'a> CodedOutputStream<'a> {
         &mut self,
         field_number: u32,
         values: &[f64],
-    ) -> Result<()> {
+    ) -> crate::Result<()> {
         if values.is_empty() {
             return Ok(());
         }
@@ -682,7 +692,7 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write repeated packed fixed32 values.
-    pub fn write_repeated_packed_fixed32_no_tag(&mut self, values: &[u32]) -> Result<()> {
+    pub fn write_repeated_packed_fixed32_no_tag(&mut self, values: &[u32]) -> crate::Result<()> {
         // TODO: these can be memcopied.
         for v in values {
             self.write_fixed32_no_tag(*v)?;
@@ -695,7 +705,7 @@ impl<'a> CodedOutputStream<'a> {
         &mut self,
         field_number: u32,
         values: &[u32],
-    ) -> Result<()> {
+    ) -> crate::Result<()> {
         if values.is_empty() {
             return Ok(());
         }
@@ -707,7 +717,7 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write repeated packed fixed64 values.
-    pub fn write_repeated_packed_fixed64_no_tag(&mut self, values: &[u64]) -> Result<()> {
+    pub fn write_repeated_packed_fixed64_no_tag(&mut self, values: &[u64]) -> crate::Result<()> {
         for v in values {
             self.write_fixed64_no_tag(*v)?;
         }
@@ -719,7 +729,7 @@ impl<'a> CodedOutputStream<'a> {
         &mut self,
         field_number: u32,
         values: &[u64],
-    ) -> Result<()> {
+    ) -> crate::Result<()> {
         if values.is_empty() {
             return Ok(());
         }
@@ -731,7 +741,7 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write repeated packed sfixed32 values.
-    pub fn write_repeated_packed_sfixed32_no_tag(&mut self, values: &[i32]) -> Result<()> {
+    pub fn write_repeated_packed_sfixed32_no_tag(&mut self, values: &[i32]) -> crate::Result<()> {
         for v in values {
             self.write_sfixed32_no_tag(*v)?;
         }
@@ -743,7 +753,7 @@ impl<'a> CodedOutputStream<'a> {
         &mut self,
         field_number: u32,
         values: &[i32],
-    ) -> Result<()> {
+    ) -> crate::Result<()> {
         if values.is_empty() {
             return Ok(());
         }
@@ -755,7 +765,7 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write repeated packed sfixed64 values.
-    pub fn write_repeated_packed_sfixed64_no_tag(&mut self, values: &[i64]) -> Result<()> {
+    pub fn write_repeated_packed_sfixed64_no_tag(&mut self, values: &[i64]) -> crate::Result<()> {
         for v in values {
             self.write_sfixed64_no_tag(*v)?;
         }
@@ -767,7 +777,7 @@ impl<'a> CodedOutputStream<'a> {
         &mut self,
         field_number: u32,
         values: &[i64],
-    ) -> Result<()> {
+    ) -> crate::Result<()> {
         if values.is_empty() {
             return Ok(());
         }
@@ -779,7 +789,7 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write repeated packed int32 values.
-    pub fn write_repeated_packed_int32_no_tag(&mut self, values: &[i32]) -> Result<()> {
+    pub fn write_repeated_packed_int32_no_tag(&mut self, values: &[i32]) -> crate::Result<()> {
         for v in values {
             self.write_int32_no_tag(*v)?;
         }
@@ -787,7 +797,11 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write field header and data for repeated packed int32.
-    pub fn write_repeated_packed_int32(&mut self, field_number: u32, values: &[i32]) -> Result<()> {
+    pub fn write_repeated_packed_int32(
+        &mut self,
+        field_number: u32,
+        values: &[i32],
+    ) -> crate::Result<()> {
         if values.is_empty() {
             return Ok(());
         }
@@ -799,7 +813,7 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write repeated packed int64 values.
-    pub fn write_repeated_packed_int64_no_tag(&mut self, values: &[i64]) -> Result<()> {
+    pub fn write_repeated_packed_int64_no_tag(&mut self, values: &[i64]) -> crate::Result<()> {
         for v in values {
             self.write_int64_no_tag(*v)?;
         }
@@ -807,7 +821,11 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write field header and data for repeated packed int64.
-    pub fn write_repeated_packed_int64(&mut self, field_number: u32, values: &[i64]) -> Result<()> {
+    pub fn write_repeated_packed_int64(
+        &mut self,
+        field_number: u32,
+        values: &[i64],
+    ) -> crate::Result<()> {
         if values.is_empty() {
             return Ok(());
         }
@@ -819,7 +837,7 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write repeated packed uint32 values.
-    pub fn write_repeated_packed_uint32_no_tag(&mut self, values: &[u32]) -> Result<()> {
+    pub fn write_repeated_packed_uint32_no_tag(&mut self, values: &[u32]) -> crate::Result<()> {
         for v in values {
             self.write_uint32_no_tag(*v)?;
         }
@@ -831,7 +849,7 @@ impl<'a> CodedOutputStream<'a> {
         &mut self,
         field_number: u32,
         values: &[u32],
-    ) -> Result<()> {
+    ) -> crate::Result<()> {
         if values.is_empty() {
             return Ok(());
         }
@@ -843,7 +861,7 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write repeated packed uint64 values.
-    pub fn write_repeated_packed_uint64_no_tag(&mut self, values: &[u64]) -> Result<()> {
+    pub fn write_repeated_packed_uint64_no_tag(&mut self, values: &[u64]) -> crate::Result<()> {
         for v in values {
             self.write_uint64_no_tag(*v)?;
         }
@@ -855,7 +873,7 @@ impl<'a> CodedOutputStream<'a> {
         &mut self,
         field_number: u32,
         values: &[u64],
-    ) -> Result<()> {
+    ) -> crate::Result<()> {
         if values.is_empty() {
             return Ok(());
         }
@@ -867,7 +885,7 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write repeated packed sint32 values.
-    pub fn write_repeated_packed_sint32_no_tag(&mut self, values: &[i32]) -> Result<()> {
+    pub fn write_repeated_packed_sint32_no_tag(&mut self, values: &[i32]) -> crate::Result<()> {
         for v in values {
             self.write_sint32_no_tag(*v)?;
         }
@@ -879,7 +897,7 @@ impl<'a> CodedOutputStream<'a> {
         &mut self,
         field_number: u32,
         values: &[i32],
-    ) -> Result<()> {
+    ) -> crate::Result<()> {
         if values.is_empty() {
             return Ok(());
         }
@@ -891,7 +909,7 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write repeated packed sint64 values.
-    pub fn write_repeated_packed_sint64_no_tag(&mut self, values: &[i64]) -> Result<()> {
+    pub fn write_repeated_packed_sint64_no_tag(&mut self, values: &[i64]) -> crate::Result<()> {
         for v in values {
             self.write_sint64_no_tag(*v)?;
         }
@@ -903,7 +921,7 @@ impl<'a> CodedOutputStream<'a> {
         &mut self,
         field_number: u32,
         values: &[i64],
-    ) -> Result<()> {
+    ) -> crate::Result<()> {
         if values.is_empty() {
             return Ok(());
         }
@@ -915,7 +933,7 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write repeated packed bool values.
-    pub fn write_repeated_packed_bool_no_tag(&mut self, values: &[bool]) -> Result<()> {
+    pub fn write_repeated_packed_bool_no_tag(&mut self, values: &[bool]) -> crate::Result<()> {
         for v in values {
             self.write_bool_no_tag(*v)?;
         }
@@ -923,7 +941,11 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write field header and data for repeated packed bool.
-    pub fn write_repeated_packed_bool(&mut self, field_number: u32, values: &[bool]) -> Result<()> {
+    pub fn write_repeated_packed_bool(
+        &mut self,
+        field_number: u32,
+        values: &[bool],
+    ) -> crate::Result<()> {
         if values.is_empty() {
             return Ok(());
         }
@@ -935,7 +957,7 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write repeated packed enum values.
-    pub fn write_repeated_packed_enum_no_tag(&mut self, values: &[i32]) -> Result<()> {
+    pub fn write_repeated_packed_enum_no_tag(&mut self, values: &[i32]) -> crate::Result<()> {
         for v in values {
             self.write_enum_no_tag(*v)?;
         }
@@ -946,7 +968,7 @@ impl<'a> CodedOutputStream<'a> {
     pub fn write_repeated_packed_enum_or_unknown_no_tag<E: Enum>(
         &mut self,
         values: &[EnumOrUnknown<E>],
-    ) -> Result<()> {
+    ) -> crate::Result<()> {
         for v in values {
             self.write_enum_or_unknown_no_tag(*v)?;
         }
@@ -958,7 +980,7 @@ impl<'a> CodedOutputStream<'a> {
         &mut self,
         field_number: u32,
         values: &[EnumOrUnknown<E>],
-    ) -> Result<()> {
+    ) -> crate::Result<()> {
         if values.is_empty() {
             return Ok(());
         }
@@ -970,14 +992,22 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write `message` field
-    pub fn write_message<M: MessageFull>(&mut self, field_number: u32, msg: &M) -> Result<()> {
+    pub fn write_message<M: MessageFull>(
+        &mut self,
+        field_number: u32,
+        msg: &M,
+    ) -> crate::Result<()> {
         self.write_tag(field_number, WireType::LengthDelimited)?;
         self.write_message_no_tag(msg)?;
         Ok(())
     }
 
     /// Write dynamic `message` field
-    pub fn write_message_dyn(&mut self, field_number: u32, msg: &dyn MessageDyn) -> Result<()> {
+    pub fn write_message_dyn(
+        &mut self,
+        field_number: u32,
+        msg: &dyn MessageDyn,
+    ) -> crate::Result<()> {
         self.write_tag(field_number, WireType::LengthDelimited)?;
         self.write_message_no_tag_dyn(msg)?;
         Ok(())
@@ -1012,7 +1042,7 @@ mod test {
 
     fn test_write<F>(expected: &str, mut gen: F)
     where
-        F: FnMut(&mut CodedOutputStream) -> Result<()>,
+        F: FnMut(&mut CodedOutputStream) -> crate::Result<()>,
     {
         let expected_bytes = decode_hex(expected);
 

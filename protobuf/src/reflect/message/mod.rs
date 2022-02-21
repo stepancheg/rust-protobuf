@@ -19,7 +19,6 @@ use crate::reflect::FieldDescriptor;
 use crate::reflect::FileDescriptor;
 use crate::reflect::OneofDescriptor;
 use crate::CodedInputStream;
-use crate::Result;
 
 pub(crate) mod dynamic;
 pub(crate) mod generated;
@@ -318,7 +317,7 @@ impl MessageDescriptor {
     }
 
     /// Parse message from stream.
-    pub fn parse_from(&self, is: &mut CodedInputStream) -> Result<Box<dyn MessageDyn>> {
+    pub fn parse_from(&self, is: &mut CodedInputStream) -> crate::Result<Box<dyn MessageDyn>> {
         let mut r = self.new_instance();
         r.merge_from_dyn(is)?;
         r.check_initialized_dyn()?;
@@ -327,7 +326,7 @@ impl MessageDescriptor {
 
     /// Parse message from reader.
     /// Parse stops on EOF or when error encountered.
-    pub fn parse_from_reader(&self, reader: &mut dyn Read) -> Result<Box<dyn MessageDyn>> {
+    pub fn parse_from_reader(&self, reader: &mut dyn Read) -> crate::Result<Box<dyn MessageDyn>> {
         let mut is = CodedInputStream::new(reader);
         let r = self.parse_from(&mut is)?;
         is.check_eof()?;
@@ -335,7 +334,7 @@ impl MessageDescriptor {
     }
 
     /// Parse message from byte array.
-    pub fn parse_from_bytes(&self, bytes: &[u8]) -> Result<Box<dyn MessageDyn>> {
+    pub fn parse_from_bytes(&self, bytes: &[u8]) -> crate::Result<Box<dyn MessageDyn>> {
         let mut is = CodedInputStream::from_bytes(bytes);
         let r = self.parse_from(&mut is)?;
         is.check_eof()?;

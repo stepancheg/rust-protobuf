@@ -8,7 +8,6 @@ use crate::reflect::ReflectValueBox;
 use crate::reflect::RuntimeTypeBox;
 use crate::wire_format::WireType;
 use crate::CodedInputStream;
-use crate::Result;
 
 /// Runtime type and protobuf type.
 #[derive(Debug, Clone)]
@@ -44,7 +43,7 @@ impl ProtobufTypeBox {
         ProtobufTypeBox::new(RuntimeTypeBox::from_proto_type(t), t).unwrap()
     }
 
-    pub(crate) fn new(runtime: RuntimeTypeBox, t: Type) -> Result<ProtobufTypeBox> {
+    pub(crate) fn new(runtime: RuntimeTypeBox, t: Type) -> crate::Result<ProtobufTypeBox> {
         match (t, &runtime) {
             (Type::TYPE_INT32, RuntimeTypeBox::I32) => {}
             (Type::TYPE_INT64, RuntimeTypeBox::I64) => {}
@@ -73,7 +72,7 @@ impl ProtobufTypeBox {
         &self,
         is: &mut CodedInputStream,
         wire_type: WireType,
-    ) -> Result<ReflectValueBox> {
+    ) -> crate::Result<ReflectValueBox> {
         if wire_type != WireType::for_type(self.t) {
             return Err(WireError::UnexpectedWireType(wire_type).into());
         }
@@ -113,7 +112,7 @@ impl ProtobufTypeBox {
         is: &mut CodedInputStream,
         wire_type: WireType,
         repeated: &mut ReflectRepeatedMut,
-    ) -> Result<()> {
+    ) -> crate::Result<()> {
         if wire_type == WireType::for_type(self.t) {
             let value = self.read(is, wire_type)?;
             repeated.push(value);
