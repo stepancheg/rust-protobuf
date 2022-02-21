@@ -123,14 +123,14 @@ fn job(channel: RustToolchain, os: Os, features: Features) -> Job {
             steps.push(cargo_test(
                 "protobuf-test",
                 &format!(
-                    "--manifest-path=protobuf-test/Cargo.toml{}",
+                    "--manifest-path=test-crates/protobuf-test/Cargo.toml{}",
                     features.flag_suffix()
                 ),
             ));
             steps.push(cargo_test(
                 "protobuf-codegen-pure-test",
                 &format!(
-                    "--manifest-path=protobuf-codegen-pure-test/Cargo.toml{}",
+                    "--manifest-path=test-crates/protobuf-codegen-pure-test/Cargo.toml{}",
                     features.flag_suffix()
                 ),
             ));
