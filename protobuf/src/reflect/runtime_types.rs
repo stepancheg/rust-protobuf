@@ -151,7 +151,7 @@ pub struct RuntimeTypeTokioChars;
 pub struct RuntimeTypeEnum<E: Enum + ProtobufValue>(marker::PhantomData<E>);
 /// Implementation for enum.
 #[derive(Debug, Copy, Clone)]
-pub struct RuntimeTypeEnumOrUnknown<E: Enum + ProtobufValue>(marker::PhantomData<E>);
+pub struct RuntimeTypeEnumOrUnknown<E: Enum>(marker::PhantomData<E>);
 /// Implementation for [`Message`].
 #[derive(Debug, Copy, Clone)]
 pub struct RuntimeTypeMessage<M: Message>(marker::PhantomData<M>);
@@ -743,7 +743,7 @@ where
 
 impl<E> RuntimeType for RuntimeTypeEnumOrUnknown<E>
 where
-    E: Enum + ProtobufValue + fmt::Debug,
+    E: Enum + fmt::Debug,
 {
     type Value = EnumOrUnknown<E>;
 

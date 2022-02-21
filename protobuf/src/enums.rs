@@ -2,10 +2,9 @@ use std::fmt;
 
 use crate::reflect::EnumDescriptor;
 use crate::reflect::EnumValueDescriptor;
-use crate::reflect::ProtobufValue;
 
 /// Trait implemented by all protobuf enum types.
-pub trait Enum: Eq + Sized + Copy + 'static + ProtobufValue + fmt::Debug + Default {
+pub trait Enum: Eq + Sized + Copy + fmt::Debug + Default + Send + Sync + 'static {
     /// Get enum `i32` value.
     fn value(&self) -> i32;
 

@@ -89,6 +89,6 @@ impl<E: Enum> fmt::Debug for EnumOrUnknown<E> {
     }
 }
 
-impl<E: Enum + ProtobufValue> ProtobufValue for EnumOrUnknown<E> {
+impl<E: Enum> ProtobufValue for EnumOrUnknown<E> {
     type RuntimeType = RuntimeTypeEnumOrUnknown<E>;
 }
