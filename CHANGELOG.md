@@ -5,6 +5,9 @@ Stable versions are 2.xx still supported.
 
 ## [3] - Unreleased
 
+- Unimplement `DerefMut` for `MessageField`: `DerefMut` which modifies the object state is too dangerous.
+  `Deref` is kept though. `Deref` returns an empty instance if field is not set.
+
 ## [3.0.0-alpha.8] - 2022-02-21
 
 - Lite runtime generation is restored. When lite runtime requested, code is generated without reflection support.
