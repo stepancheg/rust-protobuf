@@ -1,5 +1,3 @@
-use std::f32;
-use std::f64;
 use std::fmt;
 use std::fmt::Write as fmt_Write;
 

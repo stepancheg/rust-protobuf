@@ -1,6 +1,3 @@
-use std::f32;
-use std::f64;
-
 use super::test_default_values_pb::*;
 
 #[test]

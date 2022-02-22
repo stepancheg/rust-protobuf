@@ -1,5 +1,4 @@
 use std::fmt;
-use std::i64;
 use std::time::Duration;
 
 // Number of seconds in a day is a constant.
@@ -469,8 +468,6 @@ impl fmt::Display for TmUtc {
 
 #[cfg(test)]
 mod test {
-    use std::i64;
-
     use super::*;
 
     #[test]

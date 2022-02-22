@@ -4,7 +4,6 @@ use std::io::BufReader;
 use std::io::Read;
 use std::mem;
 use std::mem::MaybeUninit;
-use std::u64;
 
 #[cfg(feature = "bytes")]
 use bytes::buf::UninitSlice;

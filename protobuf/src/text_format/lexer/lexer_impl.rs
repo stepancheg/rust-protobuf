@@ -1,6 +1,5 @@
 use std::char;
 use std::convert::TryFrom;
-use std::f64;
 use std::num::ParseFloatError;
 use std::num::ParseIntError;
 

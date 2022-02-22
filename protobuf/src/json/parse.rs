@@ -1,5 +1,3 @@
-use std::f32;
-use std::f64;
 use std::num::ParseFloatError;
 use std::num::ParseIntError;
 

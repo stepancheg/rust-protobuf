@@ -1,5 +1,3 @@
-use std::f64;
-
 #[derive(Debug)]
 pub enum ProtobufFloatParseError {
     EmptyString,
