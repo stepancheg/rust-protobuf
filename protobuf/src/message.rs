@@ -140,6 +140,22 @@ pub trait Message: Clone + Send + Sync + Sized + 'static {
         Ok(r)
     }
 
+    /// Parse message from `Iterator<Item=&Bytes>` object.
+    /// Resulting message may share references to the passed bytes object.
+    /// Note that `Iterator<Item=Bytes>` is not compatible with `Iterator<Item=&Bytes>`.
+    #[cfg(feature = "bytes")]
+    fn parse_from_tokio_bytes_iter(bytes_iter: &mut dyn Iterator<Item=&bytes::Bytes>) -> crate::Result<Self>
+    where
+        Self: Sized,
+    {
+        use crate::bytes_iterator_reader::BytesIteratorReader;
+        let mut reader = BytesIteratorReader::new(bytes_iter);
+        let mut is = CodedInputStream::new(&mut reader);
+        let r = Self::parse_from(&mut is)?;
+        is.check_eof()?;
+        Ok(r)
+    }
+
     /// Check if all required fields of this object are initialized.
     fn check_initialized(&self) -> crate::Result<()> {
         if !self.is_initialized() {

@@ -2,13 +2,13 @@ use std::io::Read;
 use bytes::{Buf, Bytes};
 use bytes::buf::Reader;
 
-struct BytesIteratorReader<'a, T: Iterator<Item=&'a Bytes>> {
+pub struct BytesIteratorReader<'a, T: Iterator<Item=&'a Bytes>> {
     iter: T,
     current_reader: Option<Reader<Bytes>>,
 }
 
 impl<'a, T: Iterator<Item=&'a Bytes>> BytesIteratorReader<'a, T> {
-    fn new(iter: T) -> BytesIteratorReader<'a, T> {
+    pub fn new(iter: T) -> BytesIteratorReader<'a, T> {
         BytesIteratorReader {
             iter,
             current_reader: None,
