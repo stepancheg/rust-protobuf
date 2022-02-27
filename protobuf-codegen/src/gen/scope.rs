@@ -416,7 +416,8 @@ impl<'a> MessageWithScope<'a> {
 
     /// This message is a special message which is a map.
     pub fn is_map(&self) -> bool {
-        map_entry(self).is_some()
+        // TODO: do not unwrap
+        map_entry(self).unwrap().is_some()
     }
 }
 

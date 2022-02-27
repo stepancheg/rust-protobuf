@@ -6,7 +6,7 @@ use crate::gen::scope::MessageWithScope;
 /// Pair of (key, value) if this message is map entry
 pub(crate) fn map_entry<'a>(
     d: &'a MessageWithScope,
-) -> Option<(FieldWithContext<'a>, FieldWithContext<'a>)> {
+) -> anyhow::Result<Option<(FieldWithContext<'a>, FieldWithContext<'a>)>> {
     if d.message.is_map_entry() {
         // Must be consistent with
         // DescriptorBuilder::ValidateMapEntry
@@ -38,8 +38,8 @@ pub(crate) fn map_entry<'a>(
             value.field.proto().label()
         );
 
-        Some((key, value))
+        Ok(Some((key, value)))
     } else {
-        None
+        Ok(None)
     }
 }

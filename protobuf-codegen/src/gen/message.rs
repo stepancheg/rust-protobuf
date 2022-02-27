@@ -81,7 +81,7 @@ impl<'a> MessageGen<'a> {
         parent_customize: &CustomizeElemCtx<'a>,
         path: &'a [i32],
         info: Option<&'a SourceCodeInfo>,
-    ) -> MessageGen<'a> {
+    ) -> anyhow::Result<MessageGen<'a>> {
         let message_descriptor = file_descriptor
             .message_by_package_relative_name(&format!("{}", message.protobuf_name_to_package()))
             .unwrap();
@@ -109,7 +109,7 @@ impl<'a> MessageGen<'a> {
                 path.extend_from_slice(&[field_number, id as i32]);
                 FieldGen::parse(field, root_scope, &customize, path, info)
             })
-            .collect();
+            .collect::<anyhow::Result<Vec<_>>>()?;
         let lite_runtime = customize.for_elem.lite_runtime.unwrap_or_else(|| {
             message
                 .file_descriptor()
@@ -118,7 +118,7 @@ impl<'a> MessageGen<'a> {
                 .optimize_for()
                 == file_options::OptimizeMode::LITE_RUNTIME
         });
-        MessageGen {
+        Ok(MessageGen {
             message_descriptor,
             file_descriptor,
             message,
@@ -130,7 +130,7 @@ impl<'a> MessageGen<'a> {
             customize,
             path,
             info,
-        }
+        })
     }
 
     fn index_in_file(&self) -> u32 {
@@ -779,6 +779,8 @@ impl<'a> MessageGen<'a> {
                         &path,
                         self.info,
                     )
+                    // TODO: do not unwrap
+                    .unwrap()
                     .write(w);
                 }
 

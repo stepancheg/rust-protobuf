@@ -31,7 +31,7 @@ pub(crate) fn gen_file(
     root_scope: &RootScope,
     parent_customize: &CustomizeElemCtx,
     parser: &str,
-) -> GenFileResult {
+) -> anyhow::Result<GenFileResult> {
     let customize = parent_customize.child(
         &customize_from_rustproto_for_file(file_descriptor.proto().options.get_or_default()),
         file_descriptor,
@@ -94,6 +94,8 @@ pub(crate) fn gen_file(
                     &path,
                     file_descriptor.proto().source_code_info.as_ref(),
                 )
+                // TODO: return error
+                .unwrap()
                 .write(w);
             }
         }
@@ -131,11 +133,11 @@ pub(crate) fn gen_file(
         }
     });
 
-    GenFileResult {
+    Ok(GenFileResult {
         compiler_plugin_result: compiler_plugin::GenResult {
             name: proto_name_to_rs(file_descriptor.proto().name()),
             content: v.into_bytes(),
         },
         mod_name: proto_path_to_rust_mod(file_descriptor.proto().name()).into_string(),
-    }
+    })
 }

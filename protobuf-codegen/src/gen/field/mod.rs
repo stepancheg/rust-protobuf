@@ -531,7 +531,7 @@ impl<'a> FieldGen<'a> {
         parent_customize: &CustomizeElemCtx<'a>,
         path: Vec<i32>,
         info: Option<&'a SourceCodeInfo>,
-    ) -> FieldGen<'a> {
+    ) -> anyhow::Result<FieldGen<'a>> {
         let customize = parent_customize
             .child(
                 &customize_from_rustproto_for_field(field.field.proto().options.get_or_default()),
@@ -563,7 +563,7 @@ impl<'a> FieldGen<'a> {
                 let message = root_scope
                     .find_message(&ProtobufAbsPath::from(field.field.proto().type_name()));
 
-                let (key, value) = map_entry(&message).unwrap();
+                let (key, value) = map_entry(&message)?.unwrap();
 
                 let key = field_elem(&key, root_scope, &customize);
                 let value = field_elem(&value, root_scope, &customize);
@@ -611,7 +611,7 @@ impl<'a> FieldGen<'a> {
             }
         };
 
-        FieldGen {
+        Ok(FieldGen {
             _root_scope: root_scope,
             syntax: field.message.scope().file_scope.syntax(),
             rust_name: rust_field_name_for_protobuf_field_name(&field.field.name()),
@@ -625,7 +625,7 @@ impl<'a> FieldGen<'a> {
             customize,
             path,
             info,
-        }
+        })
     }
 
     // for message level
