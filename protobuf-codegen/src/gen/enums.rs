@@ -117,12 +117,10 @@ impl<'a> EnumGen<'a> {
         r
     }
 
-    pub fn values_unique(&self) -> Vec<EnumValueGen> {
+    fn values_unique(&self) -> Vec<EnumValueGen> {
         let mut used = HashSet::new();
         let mut r = Vec::new();
         for p in self.enum_with_scope.values() {
-            // skipping non-unique enums
-            // TODO: should support it
             if !used.insert(p.proto.proto().number()) {
                 continue;
             }

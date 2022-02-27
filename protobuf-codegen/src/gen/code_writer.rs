@@ -157,8 +157,12 @@ impl<'a> CodeWriter<'a> {
         self.expr_block(&format!("impl {}", name.as_ref()), cb);
     }
 
-    pub(crate) fn impl_for_block<S1: AsRef<str>, S2: AsRef<str>, F>(&mut self, tr: S1, ty: S2, cb: F)
-    where
+    pub(crate) fn impl_for_block<S1: AsRef<str>, S2: AsRef<str>, F>(
+        &mut self,
+        tr: S1,
+        ty: S2,
+        cb: F,
+    ) where
         F: Fn(&mut CodeWriter),
     {
         self.impl_args_for_block(&[], tr.as_ref(), ty.as_ref(), cb);
