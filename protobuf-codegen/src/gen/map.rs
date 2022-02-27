@@ -1,3 +1,4 @@
+use anyhow::ensure;
 use protobuf::descriptor::field_descriptor_proto;
 
 use crate::gen::scope::FieldWithContext;
@@ -12,29 +13,55 @@ pub(crate) fn map_entry<'a>(
         // DescriptorBuilder::ValidateMapEntry
 
         // TODO: error, not panic
-        assert!(d.message.proto().name().ends_with("Entry"));
+        ensure!(d.message.proto().name().ends_with("Entry"));
 
-        assert_eq!(0, d.message.proto().extension.len());
-        assert_eq!(0, d.message.proto().extension_range.len());
-        assert_eq!(0, d.message.proto().nested_type.len());
-        assert_eq!(0, d.message.proto().enum_type.len());
+        ensure!(d.message.proto().extension.is_empty());
+        ensure!(d.message.proto().extension_range.is_empty());
+        ensure!(d.message.proto().nested_type.is_empty());
+        ensure!(d.message.proto().enum_type.is_empty());
 
-        assert_eq!(2, d.message.fields().count());
+        ensure!(
+            d.message.fields().count() == 2,
+            "expecting two fields, got: {}",
+            d.message
+                .fields()
+                .map(|f| format!("{}", f.name()))
+                .collect::<Vec<_>>()
+                .join(", ")
+        );
         let key = d.fields()[0].clone();
         let value = d.fields()[1].clone();
 
-        assert_eq!("key", key.name());
-        assert_eq!("value", value.name());
+        ensure!(
+            "key" == key.name(),
+            "first field must be named 'key', got: '{}'",
+            key.name()
+        );
+        ensure!(
+            "value" == value.name(),
+            "second field must be named 'value', got: '{}'",
+            value.name()
+        );
 
-        assert_eq!(1, key.number());
-        assert_eq!(2, value.number());
+        ensure!(
+            1 == key.number(),
+            "key field number must be 1, got: {}",
+            key.number()
+        );
+        ensure!(
+            2 == value.number(),
+            "value field number must be 2, got: {}",
+            value.number()
+        );
 
-        assert_eq!(
-            field_descriptor_proto::Label::LABEL_OPTIONAL,
+        ensure!(
+            field_descriptor_proto::Label::LABEL_OPTIONAL == key.field.proto().label(),
+            "key field must be optional, got: {:?}",
             key.field.proto().label()
         );
-        assert_eq!(
-            field_descriptor_proto::Label::LABEL_OPTIONAL,
+        ensure!(
+            field_descriptor_proto::Label::LABEL_OPTIONAL == value.field.proto().label(),
+            "value field must be optional, got: {:?}",
             value.field.proto().label()
         );
 
