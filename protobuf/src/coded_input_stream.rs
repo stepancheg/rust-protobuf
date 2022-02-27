@@ -216,12 +216,7 @@ impl<'a> CodedInputStream<'a> {
                     return Err(ProtobufError::WireError(WireError::IncorrectVarint).into());
                 }
 
-                let b = if true {
-                    // skip range check
-                    unsafe { *rem.get_unchecked(i) }
-                } else {
-                    rem[i]
-                };
+                let b = unsafe { *rem.get_unchecked(i) };
 
                 if i == 9 && (b & 0x7f) > 1 {
                     return Err(ProtobufError::WireError(WireError::IncorrectVarint).into());
