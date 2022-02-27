@@ -31,6 +31,7 @@ use crate::reflect::types::ProtobufTypeUint32;
 use crate::reflect::types::ProtobufTypeUint64;
 use crate::reflect::MessageDescriptor;
 use crate::unknown::UnknownValue;
+use crate::varint::decode::decode_varint64;
 use crate::wire_format;
 use crate::wire_format::WireType;
 use crate::zigzag::decode_zig_zag_32;
@@ -209,26 +210,9 @@ impl<'a> CodedInputStream<'a> {
         } else if rem.len() >= 10 {
             // Read from array when buf at at least 10 bytes,
             // max len for varint.
-            let mut r: u64 = 0;
-            let mut i: usize = 0;
-            loop {
-                if i == 10 {
-                    return Err(ProtobufError::WireError(WireError::IncorrectVarint).into());
-                }
-
-                let b = unsafe { *rem.get_unchecked(i) };
-
-                if i == 9 && (b & 0x7f) > 1 {
-                    return Err(ProtobufError::WireError(WireError::IncorrectVarint).into());
-                }
-                r = r | (((b & 0x7f) as u64) << (i as u64 * 7));
-                i += 1;
-                if b < 0x80 {
-                    break;
-                }
-            }
-            consume = i;
+            let (r, i) = decode_varint64(rem)?;
             ret = r;
+            consume = i;
         } else {
             return self.read_raw_varint64_slow();
         }

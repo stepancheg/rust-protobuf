@@ -101,8 +101,8 @@ pub(crate) fn encoded_varint64_len(value: u64) -> usize {
 mod test {
     use std::mem::MaybeUninit;
 
-    use crate::varint::encode_varint64;
-    use crate::varint::encoded_varint64_len;
+    use crate::varint::encode::encode_varint64;
+    use crate::varint::encode::encoded_varint64_len;
 
     #[test]
     fn test_encoded_varint64_len() {
