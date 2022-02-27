@@ -1,5 +1,4 @@
 pub(crate) mod ctx;
-pub(crate) mod custom_attr;
 pub(crate) mod rustproto_proto;
 
 use std::fmt;
