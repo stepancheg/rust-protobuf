@@ -357,7 +357,6 @@ impl<'a> MessageGen<'a> {
 
     fn write_impl_self(&self, w: &mut CodeWriter) {
         w.impl_self_block(&format!("{}", self.type_name), |w| {
-            // TODO: new should probably be a part of Message trait
             w.pub_fn(&format!("new() -> {}", self.type_name), |w| {
                 w.write_line("::std::default::Default::default()");
             });
