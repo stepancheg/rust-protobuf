@@ -275,10 +275,7 @@ impl<'a> EnumGen<'a> {
             ),
             &format!("{}", type_name),
             |w| {
-                // TODO: write unconditionally
-                if !self.lite_runtime {
-                    self.write_enum_descriptor_static(w);
-                }
+                self.write_enum_descriptor_static(w);
             },
         );
     }
