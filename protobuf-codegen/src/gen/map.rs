@@ -12,7 +12,6 @@ pub(crate) fn map_entry<'a>(
         // Must be consistent with
         // DescriptorBuilder::ValidateMapEntry
 
-        // TODO: error, not panic
         ensure!(d.message.proto().name().ends_with("Entry"));
 
         ensure!(d.message.proto().extension.is_empty());
