@@ -14,6 +14,7 @@ use crate::rt::vec_packed_varint_data_size;
 use crate::rt::vec_packed_varint_zigzag_data_size;
 use crate::varint::encode::encode_varint32;
 use crate::varint::encode::encode_varint64;
+use crate::varint::MAX_VARINT_ENCODED_LEN;
 use crate::wire_format;
 use crate::wire_format::check_message_size;
 use crate::wire_format::WireType;
@@ -326,7 +327,7 @@ impl<'a> CodedOutputStream<'a> {
 
     /// Write varint
     pub fn write_raw_varint64(&mut self, value: u64) -> crate::Result<()> {
-        if self.buffer().len() - self.pos_within_buf >= 10 {
+        if self.buffer().len() - self.pos_within_buf >= MAX_VARINT_ENCODED_LEN {
             // fast path
             let len =
                 unsafe { encode_varint64(value, &mut (&mut *self.buffer)[self.pos_within_buf..]) };
@@ -334,7 +335,7 @@ impl<'a> CodedOutputStream<'a> {
             Ok(())
         } else {
             // slow path
-            let buf = &mut [0u8; 10];
+            let buf = &mut [0u8; MAX_VARINT_ENCODED_LEN];
             let len = encode_varint64(value, unsafe {
                 slice::from_raw_parts_mut(buf.as_mut_ptr() as *mut MaybeUninit<u8>, buf.len())
             });

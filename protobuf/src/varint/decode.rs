@@ -1,15 +1,16 @@
 //! Varint decode utilities.
 
 use crate::error::WireError;
+use crate::varint::MAX_VARINT_ENCODED_LEN;
 
 /// Decode a varint, and return decoded value and decoded byte count.
 pub(crate) fn decode_varint64(rem: &[u8]) -> crate::Result<(u64, usize)> {
-    assert!(rem.len() >= 10);
+    assert!(rem.len() >= MAX_VARINT_ENCODED_LEN);
 
     let mut r: u64 = 0;
     let mut i: usize = 0;
     loop {
-        if i == 10 {
+        if i == MAX_VARINT_ENCODED_LEN {
             return Err(WireError::IncorrectVarint.into());
         }
 

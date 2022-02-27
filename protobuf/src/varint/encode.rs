@@ -1,10 +1,12 @@
 use std::mem::MaybeUninit;
 
+use crate::varint::MAX_VARINT_ENCODED_LEN;
+
 /// Encode u64 as varint.
 /// Panics if buffer length is less than 10.
 #[inline]
 pub(crate) fn encode_varint64(mut value: u64, buf: &mut [MaybeUninit<u8>]) -> usize {
-    assert!(buf.len() >= 10);
+    assert!(buf.len() >= MAX_VARINT_ENCODED_LEN);
 
     fn iter(value: &mut u64, byte: &mut MaybeUninit<u8>) -> bool {
         if (*value & !0x7F) > 0 {

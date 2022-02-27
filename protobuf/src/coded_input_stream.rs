@@ -32,6 +32,7 @@ use crate::reflect::types::ProtobufTypeUint64;
 use crate::reflect::MessageDescriptor;
 use crate::unknown::UnknownValue;
 use crate::varint::decode::decode_varint64;
+use crate::varint::MAX_VARINT_ENCODED_LEN;
 use crate::wire_format;
 use crate::wire_format::WireType;
 use crate::zigzag::decode_zig_zag_32;
@@ -172,7 +173,7 @@ impl<'a> CodedInputStream<'a> {
         let mut r: u64 = 0;
         let mut i = 0;
         loop {
-            if i == 10 {
+            if i == MAX_VARINT_ENCODED_LEN {
                 return Err(ProtobufError::WireError(WireError::IncorrectVarint).into());
             }
             let b = self.read_raw_byte()?;
@@ -207,7 +208,7 @@ impl<'a> CodedInputStream<'a> {
             // Handle the case of two bytes too
             ret = (rem[0] & 0x7f) as u64 | (rem[1] as u64) << 7;
             consume = 2;
-        } else if rem.len() >= 10 {
+        } else if rem.len() >= MAX_VARINT_ENCODED_LEN {
             // Read from array when buf at at least 10 bytes,
             // max len for varint.
             let (r, i) = decode_varint64(rem)?;
