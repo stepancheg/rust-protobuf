@@ -11,7 +11,6 @@ use crate::coded_output_stream::CodedOutputStream;
 use crate::enums::Enum;
 use crate::error::Result;
 pub use crate::lazy::Lazy;
-use crate::varint::encoded_varint64_len;
 pub use crate::wire_format::WireType;
 use crate::zigzag::*;
 use crate::EnumOrUnknown;
@@ -27,6 +26,8 @@ pub use map::write_map_with_cached_sizes;
 pub use repeated::read_repeated_packed_enum_or_unknown_into;
 pub use unsorted::read_unknown_or_skip_group;
 pub use unsorted::unknown_fields_size;
+
+use crate::varint::encode::encoded_varint64_len;
 
 /// Given `u64` value compute varint encoded length.
 pub fn compute_raw_varint64_size(value: u64) -> u64 {

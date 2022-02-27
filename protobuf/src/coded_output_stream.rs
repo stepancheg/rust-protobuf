@@ -12,7 +12,8 @@ use crate::rt::vec_packed_enum_or_unknown_data_size;
 use crate::rt::vec_packed_fixed_data_size;
 use crate::rt::vec_packed_varint_data_size;
 use crate::rt::vec_packed_varint_zigzag_data_size;
-use crate::varint;
+use crate::varint::encode::encode_varint32;
+use crate::varint::encode::encode_varint64;
 use crate::wire_format;
 use crate::wire_format::check_message_size;
 use crate::wire_format::WireType;
@@ -309,15 +310,14 @@ impl<'a> CodedOutputStream<'a> {
     pub fn write_raw_varint32(&mut self, value: u32) -> crate::Result<()> {
         if self.buffer().len() - self.pos_within_buf >= 5 {
             // fast path
-            let len = unsafe {
-                varint::encode_varint32(value, &mut (&mut *self.buffer)[self.pos_within_buf..])
-            };
+            let len =
+                unsafe { encode_varint32(value, &mut (&mut *self.buffer)[self.pos_within_buf..]) };
             self.pos_within_buf += len;
             Ok(())
         } else {
             // slow path
             let buf = &mut [0u8; 5];
-            let len = varint::encode_varint32(value, unsafe {
+            let len = encode_varint32(value, unsafe {
                 slice::from_raw_parts_mut(buf.as_mut_ptr() as *mut MaybeUninit<u8>, buf.len())
             });
             self.write_raw_bytes(&buf[..len])
@@ -328,15 +328,14 @@ impl<'a> CodedOutputStream<'a> {
     pub fn write_raw_varint64(&mut self, value: u64) -> crate::Result<()> {
         if self.buffer().len() - self.pos_within_buf >= 10 {
             // fast path
-            let len = unsafe {
-                varint::encode_varint64(value, &mut (&mut *self.buffer)[self.pos_within_buf..])
-            };
+            let len =
+                unsafe { encode_varint64(value, &mut (&mut *self.buffer)[self.pos_within_buf..]) };
             self.pos_within_buf += len;
             Ok(())
         } else {
             // slow path
             let buf = &mut [0u8; 10];
-            let len = varint::encode_varint64(value, unsafe {
+            let len = encode_varint64(value, unsafe {
                 slice::from_raw_parts_mut(buf.as_mut_ptr() as *mut MaybeUninit<u8>, buf.len())
             });
             self.write_raw_bytes(&buf[..len])
