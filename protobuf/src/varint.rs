@@ -3,7 +3,7 @@ use std::mem::MaybeUninit;
 /// Encode u64 as varint.
 /// Panics if buffer length is less than 10.
 #[inline]
-pub fn encode_varint64(mut value: u64, buf: &mut [MaybeUninit<u8>]) -> usize {
+pub(crate) fn encode_varint64(mut value: u64, buf: &mut [MaybeUninit<u8>]) -> usize {
     assert!(buf.len() >= 10);
 
     fn iter(value: &mut u64, byte: &mut MaybeUninit<u8>) -> bool {
@@ -54,7 +54,7 @@ pub fn encode_varint64(mut value: u64, buf: &mut [MaybeUninit<u8>]) -> usize {
 /// Encode u32 value as varint.
 /// Panics if buffer length is less than 5.
 #[inline]
-pub fn encode_varint32(mut value: u32, buf: &mut [MaybeUninit<u8>]) -> usize {
+pub(crate) fn encode_varint32(mut value: u32, buf: &mut [MaybeUninit<u8>]) -> usize {
     assert!(buf.len() >= 5);
 
     fn iter(value: &mut u32, byte: &mut MaybeUninit<u8>) -> bool {
