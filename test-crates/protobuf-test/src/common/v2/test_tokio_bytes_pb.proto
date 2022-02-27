@@ -2,7 +2,7 @@ syntax = "proto2";
 
 import "rustproto.proto";
 
-option (rustproto.tokio_bytes_for_bytes_all) = true;
+option (rustproto.tokio_bytes_all) = true;
 option (rustproto.tokio_bytes_for_string_all) = true;
 option (rustproto.generate_accessors_all) = true;
 

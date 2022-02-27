@@ -12,7 +12,7 @@ message TestMessage {
 }
 
 message TestMessageWithBytes {
-    option (rustproto.tokio_bytes_for_bytes) = true;
+    option (rustproto.tokio_bytes) = true;
     option (rustproto.tokio_bytes_for_string) = true;
 
     optional string s1 = 1;

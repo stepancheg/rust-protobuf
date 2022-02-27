@@ -20,7 +20,7 @@ extend google.protobuf.FileOptions {
     // When false, `get_` is not generated even if `syntax = "proto2"`
     optional bool generate_getter_all = 17005;
     // Use `bytes::Bytes` for `bytes` fields
-    optional bool tokio_bytes_for_bytes_all = 17011;
+    optional bool tokio_bytes_all = 17011;
     // Use `bytes::Bytes` for `string` fields
     optional bool tokio_bytes_for_string_all = 17012;
 
@@ -43,7 +43,7 @@ extend google.protobuf.MessageOptions {
     // When false, `get_` is not generated even if `syntax = "proto2"`
     optional bool generate_getter = 17005;
     // Use `bytes::Bytes` for `bytes` fields
-    optional bool tokio_bytes_for_bytes = 17011;
+    optional bool tokio_bytes = 17011;
     // Use `bytes::Bytes` for `string` fields
     optional bool tokio_bytes_for_string = 17012;
     // Use `serde_derive` to implement `Serialize` and `Deserialize`
@@ -60,7 +60,7 @@ extend google.protobuf.FieldOptions {
     // When false, `get_` is not generated even if `syntax = "proto2"`
     optional bool generate_getter_field = 17005;
     // Use `bytes::Bytes` for `bytes` fields
-    optional bool tokio_bytes_for_bytes_field = 17011;
+    optional bool tokio_bytes_field = 17011;
     // Use `bytes::Bytes` for `string` fields
     optional bool tokio_bytes_for_string_field = 17012;
 }

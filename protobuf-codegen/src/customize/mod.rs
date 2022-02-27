@@ -101,7 +101,7 @@ pub struct Customize {
     /// When false, `get_` is not generated even if `syntax = "proto2"`
     pub(crate) generate_getter: Option<bool>,
     /// Use `bytes::Bytes` for `bytes` fields
-    pub(crate) tokio_bytes_for_bytes: Option<bool>,
+    pub(crate) tokio_bytes: Option<bool>,
     /// Use `bytes::Bytes` for `string` fields
     pub(crate) tokio_bytes_for_string: Option<bool>,
     /// Enable lite runtime.
@@ -154,8 +154,8 @@ impl Customize {
         self
     }
 
-    pub fn tokio_bytes_for_bytes(mut self, tokio_bytes_for_bytes: bool) -> Self {
-        self.tokio_bytes_for_bytes = Some(tokio_bytes_for_bytes);
+    pub fn tokio_bytes(mut self, tokio_bytes: bool) -> Self {
+        self.tokio_bytes = Some(tokio_bytes);
         self
     }
 
@@ -204,8 +204,8 @@ impl Customize {
         if let Some(v) = that.generate_getter {
             self.generate_getter = Some(v);
         }
-        if let Some(v) = that.tokio_bytes_for_bytes {
-            self.tokio_bytes_for_bytes = Some(v);
+        if let Some(v) = that.tokio_bytes {
+            self.tokio_bytes = Some(v);
         }
         if let Some(v) = that.tokio_bytes_for_string {
             self.tokio_bytes_for_string = Some(v);
@@ -254,8 +254,8 @@ impl Customize {
                 r.generate_accessors = Some(parse_bool(v)?);
             } else if n == "generate_getter" {
                 r.generate_getter = Some(parse_bool(v)?);
-            } else if n == "tokio_bytes_for_bytes" {
-                r.tokio_bytes_for_bytes = Some(parse_bool(v)?);
+            } else if n == "tokio_bytes" {
+                r.tokio_bytes = Some(parse_bool(v)?);
             } else if n == "tokio_bytes_for_string" {
                 r.tokio_bytes_for_string = Some(parse_bool(v)?);
             } else if n == "lite_runtime" {

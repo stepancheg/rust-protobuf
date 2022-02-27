@@ -482,7 +482,7 @@ fn field_elem<'a>(
             _ => panic!("unknown named type: {:?}", field.field.proto().field_type()),
         }
     } else if field.field.proto().has_field_type() {
-        let tokio_for_bytes = customize.tokio_bytes_for_bytes.unwrap_or(false);
+        let tokio_for_bytes = customize.tokio_bytes.unwrap_or(false);
         let tokio_for_string = customize.tokio_bytes_for_string.unwrap_or(false);
 
         let elem = match field.field.proto().field_type() {
