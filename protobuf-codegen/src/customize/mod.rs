@@ -1,4 +1,3 @@
-pub(crate) mod by_path;
 pub(crate) mod ctx;
 pub(crate) mod custom_attr;
 pub(crate) mod rustproto_proto;
