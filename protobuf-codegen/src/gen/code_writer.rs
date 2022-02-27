@@ -1,3 +1,5 @@
+use std::convert::Infallible;
+
 use crate::gen::rust_name::RustRelativePath;
 
 /// Field visibility.
@@ -20,13 +22,27 @@ impl<'a> CodeWriter<'a> {
         }
     }
 
-    pub(crate) fn with(f: impl FnOnce(&mut CodeWriter)) -> String {
+    pub(crate) fn with_no_error(f: impl FnOnce(&mut CodeWriter)) -> String {
+        Self::with_impl::<Infallible, _>(|w| Ok(f(w))).unwrap_or_else(|e| match e {})
+    }
+
+    pub(crate) fn with<F>(f: F) -> anyhow::Result<String>
+    where
+        F: FnOnce(&mut CodeWriter) -> anyhow::Result<()>,
+    {
+        Self::with_impl(f)
+    }
+
+    fn with_impl<E, F>(f: F) -> Result<String, E>
+    where
+        F: FnOnce(&mut CodeWriter) -> Result<(), E>,
+    {
         let mut writer = String::new();
         {
             let mut cw = CodeWriter::new(&mut writer);
-            f(&mut cw);
+            f(&mut cw)?;
         }
-        writer
+        Ok(writer)
     }
 
     pub(crate) fn write_line<S: AsRef<str>>(&mut self, line: S) {

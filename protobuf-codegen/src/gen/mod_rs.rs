@@ -2,7 +2,7 @@ use crate::compiler_plugin;
 use crate::gen::code_writer::CodeWriter;
 
 pub(crate) fn gen_mod_rs(mods: &[String]) -> compiler_plugin::GenResult {
-    let v = CodeWriter::with(|w| {
+    let v = CodeWriter::with_no_error(|w| {
         w.comment(&format!("{}generated", "@"));
         w.write_line("");
         for m in mods {

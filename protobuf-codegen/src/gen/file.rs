@@ -93,9 +93,7 @@ pub(crate) fn gen_file(
                     &customize,
                     &path,
                     file_descriptor.proto().source_code_info.as_ref(),
-                )
-                // TODO: return error
-                .unwrap()
+                )?
                 .write(w);
             }
         }
@@ -131,7 +129,9 @@ pub(crate) fn gen_file(
             w.write_line("");
             write_file_descriptor_data(file_descriptor, &customize.for_elem, w);
         }
-    });
+
+        Ok(())
+    })?;
 
     Ok(GenFileResult {
         compiler_plugin_result: compiler_plugin::GenResult {

@@ -124,7 +124,7 @@ impl FieldGen<'_> {
                 .into_path(),
         );
 
-        let getter = CodeWriter::with(|w| {
+        let getter = CodeWriter::with_no_error(|w| {
             w.expr_block(
                 &format!(
                     "|message: &{}| match &message.{}",
@@ -140,7 +140,7 @@ impl FieldGen<'_> {
             );
         });
 
-        let setter = CodeWriter::with(|w| {
+        let setter = CodeWriter::with_no_error(|w| {
             w.expr_block(
                 &format!(
                     "|message: &mut {}, e: {}::EnumOrUnknown<{}>|",

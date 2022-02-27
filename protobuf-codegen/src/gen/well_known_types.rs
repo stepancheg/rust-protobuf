@@ -109,7 +109,7 @@ fn find_file_descriptor<'a>(
 pub(crate) fn gen_well_known_types_mod(
     file_descriptors: &[FileDescriptor],
 ) -> compiler_plugin::GenResult {
-    let v = CodeWriter::with(|w| {
+    let v = CodeWriter::with_no_error(|w| {
         w.comment("This file is generated. Do not edit");
         w.comment("@generated");
         w.mod_doc("Generated code for \"well known types\"");
