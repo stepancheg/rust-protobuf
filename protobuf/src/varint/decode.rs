@@ -57,3 +57,34 @@ pub(crate) fn decode_varint32(buf: &[u8]) -> crate::Result<Option<(u32, usize)>>
         None => Ok(None),
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::hex::decode_hex;
+    use crate::varint::decode::decode_varint32;
+    use crate::varint::decode::decode_varint64;
+
+    #[test]
+    fn test_decode_varint64() {
+        assert_eq!((0, 1), decode_varint64(&decode_hex("00")).unwrap().unwrap());
+        assert_eq!(
+            (u64::MAX, 10),
+            decode_varint64(&decode_hex("ff ff ff ff ff ff ff ff ff 01"))
+                .unwrap()
+                .unwrap()
+        );
+        assert!(decode_varint64(&decode_hex("ff ff ff ff ff ff ff ff ff 02")).is_err());
+    }
+
+    #[test]
+    fn test_decode_varint32() {
+        assert_eq!((0, 1), decode_varint32(&decode_hex("00")).unwrap().unwrap());
+        assert_eq!(
+            (u32::MAX, 5),
+            decode_varint32(&decode_hex("ff ff ff ff 0f"))
+                .unwrap()
+                .unwrap()
+        );
+        assert!(decode_varint32(&decode_hex("ff ff ff ff 10")).is_err());
+    }
+}
