@@ -227,6 +227,12 @@ impl<'a> EnumGen<'a> {
             &format!("{}::Enum", protobuf_crate_path(&self.customize.for_elem)),
             &format!("{}", type_name),
             |w| {
+                w.write_line(&format!(
+                    "const NAME: &'static str = \"{}\";",
+                    self.enum_with_scope.en.name()
+                ));
+
+                w.write_line("");
                 self.write_fn_value(w);
 
                 w.write_line("");

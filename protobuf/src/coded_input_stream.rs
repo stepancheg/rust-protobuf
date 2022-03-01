@@ -335,7 +335,7 @@ impl<'a> CodedInputStream<'a> {
         let i = self.read_enum_value()?;
         match Enum::from_i32(i) {
             Some(e) => Ok(e),
-            None => Err(ProtobufError::WireError(WireError::InvalidEnumValue(i)).into()),
+            None => Err(ProtobufError::WireError(WireError::InvalidEnumValue(E::NAME, i)).into()),
         }
     }
 

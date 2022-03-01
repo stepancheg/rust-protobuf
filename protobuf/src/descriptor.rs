@@ -2254,6 +2254,8 @@ pub mod field_descriptor_proto {
     }
 
     impl crate::Enum for Type {
+        const NAME: &'static str = "Type";
+
         fn value(&self) -> i32 {
             *self as i32
         }
@@ -2338,6 +2340,8 @@ pub mod field_descriptor_proto {
     }
 
     impl crate::Enum for Label {
+        const NAME: &'static str = "Label";
+
         fn value(&self) -> i32 {
             *self as i32
         }
@@ -4994,6 +4998,8 @@ pub mod file_options {
     }
 
     impl crate::Enum for OptimizeMode {
+        const NAME: &'static str = "OptimizeMode";
+
         fn value(&self) -> i32 {
             *self as i32
         }
@@ -5767,6 +5773,8 @@ pub mod field_options {
     }
 
     impl crate::Enum for CType {
+        const NAME: &'static str = "CType";
+
         fn value(&self) -> i32 {
             *self as i32
         }
@@ -5820,6 +5828,8 @@ pub mod field_options {
     }
 
     impl crate::Enum for JSType {
+        const NAME: &'static str = "JSType";
+
         fn value(&self) -> i32 {
             *self as i32
         }
@@ -6803,6 +6813,8 @@ pub mod method_options {
     }
 
     impl crate::Enum for IdempotencyLevel {
+        const NAME: &'static str = "IdempotencyLevel";
+
         fn value(&self) -> i32 {
             *self as i32
         }

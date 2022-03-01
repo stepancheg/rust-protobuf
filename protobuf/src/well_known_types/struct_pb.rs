@@ -788,6 +788,8 @@ pub enum NullValue {
 }
 
 impl crate::Enum for NullValue {
+    const NAME: &'static str = "NullValue";
+
     fn value(&self) -> i32 {
         *self as i32
     }

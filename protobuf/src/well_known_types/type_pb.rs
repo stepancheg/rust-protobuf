@@ -620,6 +620,8 @@ pub mod field {
     }
 
     impl crate::Enum for Kind {
+        const NAME: &'static str = "Kind";
+
         fn value(&self) -> i32 {
             *self as i32
         }
@@ -708,6 +710,8 @@ pub mod field {
     }
 
     impl crate::Enum for Cardinality {
+        const NAME: &'static str = "Cardinality";
+
         fn value(&self) -> i32 {
             *self as i32
         }
@@ -1323,6 +1327,8 @@ pub enum Syntax {
 }
 
 impl crate::Enum for Syntax {
+    const NAME: &'static str = "Syntax";
+
     fn value(&self) -> i32 {
         *self as i32
     }

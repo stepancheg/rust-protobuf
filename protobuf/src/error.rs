@@ -20,8 +20,8 @@ pub(crate) enum WireError {
     IncorrectVarint,
     #[error("Invalid UTF-8 sequence")]
     Utf8Error,
-    #[error("Invalid enum value: {}", .0)]
-    InvalidEnumValue(i32),
+    #[error("Invalid enum `{}` value: {}", .0, .1)]
+    InvalidEnumValue(&'static str, i32),
     #[error("Over recursion limit")]
     OverRecursionLimit,
     #[error("Truncated message")]

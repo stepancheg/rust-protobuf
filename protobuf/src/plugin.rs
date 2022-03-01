@@ -1157,6 +1157,8 @@ pub mod code_generator_response {
     }
 
     impl crate::Enum for Feature {
+        const NAME: &'static str = "Feature";
+
         fn value(&self) -> i32 {
             *self as i32
         }
