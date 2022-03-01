@@ -150,9 +150,13 @@ impl dyn MessageDyn {
         let size = self.compute_size_dyn();
         let size = check_message_size(size)?;
         os.write_raw_varint32(size)?;
+
+        let pos = os.total_bytes_written();
+
         self.write_to_with_cached_sizes_dyn(os)?;
 
-        // TODO: assert we've written same number of bytes as computed
+        // Cheap self-check.
+        assert_eq!(os.total_bytes_written() - pos, size as u64);
 
         Ok(())
     }
