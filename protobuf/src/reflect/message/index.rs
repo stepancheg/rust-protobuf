@@ -17,7 +17,7 @@ impl MessageIndex {
     pub(crate) fn index(
         proto: &DescriptorProto,
         building: &FileDescriptorBuilding,
-    ) -> MessageIndex {
+    ) -> crate::Result<MessageIndex> {
         let mut index_by_name = HashMap::new();
         let mut index_by_name_or_json_name = HashMap::new();
         let mut index_by_number = HashMap::new();
@@ -26,7 +26,7 @@ impl MessageIndex {
             .field
             .iter()
             .map(|f| FieldIndex::index(f, building))
-            .collect();
+            .collect::<crate::Result<_>>()?;
         for (i, f) in proto.field.iter().enumerate() {
             let field_index = &fields[i];
 
@@ -47,14 +47,14 @@ impl MessageIndex {
             .extension
             .iter()
             .map(|f| FieldIndex::index(f, building))
-            .collect();
+            .collect::<crate::Result<Vec<_>>>()?;
 
-        MessageIndex {
+        Ok(MessageIndex {
             fields,
             field_index_by_name: index_by_name,
             field_index_by_name_or_json_name: index_by_name_or_json_name,
             field_index_by_number: index_by_number,
             extensions,
-        }
+        })
     }
 }

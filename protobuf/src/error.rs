@@ -1,6 +1,7 @@
 use std::io;
 use std::str;
 
+use crate::reflect::error::ReflectError;
 use crate::wire_format::WireType;
 
 /// `Result` alias for `ProtobufError`
@@ -46,6 +47,8 @@ pub(crate) enum ProtobufError {
     /// Malformed input
     #[error(transparent)]
     WireError(#[from] WireError),
+    #[error(transparent)]
+    Reflect(#[from] ReflectError),
     /// Protocol contains a string which is not valid UTF-8 string
     #[error("UTF-8 decode error")]
     Utf8(
@@ -80,6 +83,13 @@ impl From<WireError> for Error {
     #[cold]
     fn from(e: WireError) -> Self {
         Self(Box::new(ProtobufError::WireError(e)))
+    }
+}
+
+impl From<ReflectError> for Error {
+    #[cold]
+    fn from(e: ReflectError) -> Self {
+        Self(Box::new(ProtobufError::Reflect(e)))
     }
 }
 

@@ -10,6 +10,7 @@ fn file_descriptor_dynamic() -> FileDescriptor {
         test_is_initialized_pb::file_descriptor_proto().clone(),
         Vec::new(),
     )
+    .unwrap()
 }
 
 fn test_is_initialized(message: &mut dyn MessageDyn) {

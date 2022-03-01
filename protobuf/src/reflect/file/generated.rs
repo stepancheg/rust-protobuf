@@ -58,6 +58,7 @@ impl GeneratedFileDescriptor {
                         &index,
                         &file_descriptor_building,
                     )
+                    .unwrap()
                 }
             })
             .collect();
@@ -68,7 +69,7 @@ impl GeneratedFileDescriptor {
             .map(|(i, e)| GeneratedEnumDescriptor::new(e, i, file_descriptor_proto))
             .collect();
 
-        let common = FileDescriptorCommon::new(index, dependencies, file_descriptor_proto);
+        let common = FileDescriptorCommon::new(index, dependencies, file_descriptor_proto).unwrap();
 
         GeneratedFileDescriptor {
             proto: file_descriptor_proto,

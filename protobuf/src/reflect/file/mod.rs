@@ -193,11 +193,10 @@ impl FileDescriptor {
     }
 
     /// Dynamic message created from [`FileDescriptorProto`] without generated files.
-    // TODO: this should return Result
     pub fn new_dynamic(
         proto: FileDescriptorProto,
         dependencies: Vec<FileDescriptor>,
-    ) -> FileDescriptor {
+    ) -> crate::Result<FileDescriptor> {
         // TODO: make it return `Result` on unsatisfied dependencies.
         // remove undeclared dependencies
         let dependencies: HashMap<_, &FileDescriptor> =
@@ -214,16 +213,16 @@ impl FileDescriptor {
             })
             .collect();
 
-        FileDescriptor {
+        Ok(FileDescriptor {
             imp: FileDescriptorImpl::Dynamic(Arc::new(DynamicFileDescriptor::new(
                 proto,
                 dependencies,
-            ))),
-        }
+            )?)),
+        })
     }
 
     /// Create a set of file descriptors from individual file descriptors.
-    pub fn new_dynamic_fds(protos: Vec<FileDescriptorProto>) -> Vec<FileDescriptor> {
+    pub fn new_dynamic_fds(protos: Vec<FileDescriptorProto>) -> crate::Result<Vec<FileDescriptor>> {
         FdsBuilder::build(protos)
     }
 

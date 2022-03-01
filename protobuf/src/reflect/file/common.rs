@@ -18,7 +18,7 @@ impl FileDescriptorCommon {
         index: FileIndex,
         dependencies: Vec<FileDescriptor>,
         current_file_descriptor: &FileDescriptorProto,
-    ) -> FileDescriptorCommon {
+    ) -> crate::Result<FileDescriptorCommon> {
         let deps_with_public = fds_extend_with_public(dependencies.clone());
         let building = FileDescriptorBuilding {
             current_file_descriptor,
@@ -30,12 +30,12 @@ impl FileDescriptorCommon {
             .extension
             .iter()
             .map(|ext| FieldIndex::index(ext, &building))
-            .collect();
+            .collect::<crate::Result<Vec<_>>>()?;
 
-        FileDescriptorCommon {
+        Ok(FileDescriptorCommon {
             index,
             dependencies,
             extensions,
-        }
+        })
     }
 }

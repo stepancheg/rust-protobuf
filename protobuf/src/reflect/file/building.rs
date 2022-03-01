@@ -59,14 +59,14 @@ impl<'a> FileDescriptorBuilding<'a> {
     pub(crate) fn resolve_field_type(
         &self,
         field: &FieldDescriptorProto,
-    ) -> ForwardProtobufFieldType {
-        match field.label() {
+    ) -> crate::Result<ForwardProtobufFieldType> {
+        Ok(match field.label() {
             field_descriptor_proto::Label::LABEL_OPTIONAL
             | field_descriptor_proto::Label::LABEL_REQUIRED => {
-                ForwardProtobufFieldType::Singular(self.resolve_field_element_type(field))
+                ForwardProtobufFieldType::Singular(self.resolve_field_element_type(field)?)
             }
             field_descriptor_proto::Label::LABEL_REPEATED => {
-                let element = self.resolve_field_element_type(field);
+                let element = self.resolve_field_element_type(field)?;
                 let type_proto = match &element {
                     ForwardProtobufTypeBox::CurrentFileMessage(m) => Some(
                         self.current_file_index.messages[*m]
@@ -81,15 +81,18 @@ impl<'a> FileDescriptorBuilding<'a> {
                     _ => None,
                 };
                 match type_proto {
-                    Some(m) if m.options.get_or_default().map_entry() => self.map_field(m),
+                    Some(m) if m.options.get_or_default().map_entry() => self.map_field(m)?,
                     _ => ForwardProtobufFieldType::Repeated(element),
                 }
             }
-        }
+        })
     }
 
-    fn resolve_field_element_type(&self, field: &FieldDescriptorProto) -> ForwardProtobufTypeBox {
-        match field.field_type() {
+    fn resolve_field_element_type(
+        &self,
+        field: &FieldDescriptorProto,
+    ) -> crate::Result<ForwardProtobufTypeBox> {
+        Ok(match field.field_type() {
             field_descriptor_proto::Type::TYPE_MESSAGE
             | field_descriptor_proto::Type::TYPE_GROUP => self.resolve_message(field.type_name()),
             field_descriptor_proto::Type::TYPE_ENUM => {
@@ -102,12 +105,12 @@ impl<'a> FileDescriptorBuilding<'a> {
                         .enums_by_name_to_package
                         .get(name_to_package)
                     {
-                        return ForwardProtobufTypeBox::CurrentFileEnum(*index);
+                        return Ok(ForwardProtobufTypeBox::CurrentFileEnum(*index));
                     }
                 }
                 for dep in self.deps_with_public {
                     if let Some(m) = dep.enum_by_full_name(field.type_name()) {
-                        return ForwardProtobufTypeBox::enumeration(m);
+                        return Ok(ForwardProtobufTypeBox::enumeration(m));
                     }
                 }
                 panic!(
@@ -117,7 +120,7 @@ impl<'a> FileDescriptorBuilding<'a> {
                 );
             }
             t => ForwardProtobufTypeBox::from_proto_type(t),
-        }
+        })
     }
 
     pub(crate) fn resolve_message(&self, type_name: &str) -> ForwardProtobufTypeBox {
@@ -145,7 +148,7 @@ impl<'a> FileDescriptorBuilding<'a> {
         );
     }
 
-    fn map_field(&self, type_proto: &DescriptorProto) -> ForwardProtobufFieldType {
+    fn map_field(&self, type_proto: &DescriptorProto) -> crate::Result<ForwardProtobufFieldType> {
         assert!(type_proto.name().ends_with("Entry"));
 
         assert_eq!(0, type_proto.extension.len());
@@ -168,8 +171,8 @@ impl<'a> FileDescriptorBuilding<'a> {
 
         // It is OK to resolve using current descriptor because map field
         // should always point to the same file.
-        let key = self.resolve_field_element_type(key);
-        let value = self.resolve_field_element_type(value);
-        ForwardProtobufFieldType::Map(key, value)
+        let key = self.resolve_field_element_type(key)?;
+        let value = self.resolve_field_element_type(value)?;
+        Ok(ForwardProtobufFieldType::Map(key, value))
     }
 }

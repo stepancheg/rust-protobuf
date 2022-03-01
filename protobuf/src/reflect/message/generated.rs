@@ -109,7 +109,7 @@ impl GeneratedMessageDescriptor {
         file_descriptor_proto: &'static FileDescriptorProto,
         _file_index: &FileIndex,
         building: &FileDescriptorBuilding,
-    ) -> GeneratedMessageDescriptor {
+    ) -> crate::Result<GeneratedMessageDescriptor> {
         let GeneratedMessageDescriptorData {
             protobuf_name_to_package,
             fields,
@@ -128,15 +128,15 @@ impl GeneratedMessageDescriptor {
             field_proto_by_name.insert(field_proto.name(), field_proto);
         }
 
-        let index = MessageIndex::index(proto, building);
+        let index = MessageIndex::index(proto, building)?;
 
-        GeneratedMessageDescriptor {
+        Ok(GeneratedMessageDescriptor {
             non_map: Some(NonMapMessageDescriptor {
                 factory,
                 fields,
                 index,
             }),
-        }
+        })
     }
 
     pub fn non_map(&self) -> &NonMapMessageDescriptor {

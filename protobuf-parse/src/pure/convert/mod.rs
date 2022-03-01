@@ -652,7 +652,7 @@ pub(crate) fn file_descriptor(
     let descriptor_without_options = FileDescriptor::new_dynamic(
         output.clone(),
         deps.iter().map(|d| d.descriptor.clone()).collect(),
-    );
+    )?;
 
     let option_resolver = OptionResoler {
         resolver: &resolver,

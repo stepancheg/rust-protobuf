@@ -16,6 +16,7 @@
 mod acc;
 mod dynamic;
 mod enums;
+pub(crate) mod error;
 mod field;
 mod file;
 mod find_message_or_enum;

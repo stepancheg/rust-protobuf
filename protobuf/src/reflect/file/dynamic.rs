@@ -23,7 +23,7 @@ impl DynamicFileDescriptor {
     pub fn new(
         proto: FileDescriptorProto,
         dependencies: Vec<FileDescriptor>,
-    ) -> DynamicFileDescriptor {
+    ) -> crate::Result<DynamicFileDescriptor> {
         let proto = Arc::new(proto);
 
         let index = FileIndex::index(&*proto, &dependencies);
@@ -44,16 +44,16 @@ impl DynamicFileDescriptor {
                     &file_descriptor_building,
                 )
             })
-            .collect();
+            .collect::<crate::Result<Vec<_>>>()?;
 
-        let common = FileDescriptorCommon::new(index, dependencies, &proto);
+        let common = FileDescriptorCommon::new(index, dependencies, &proto)?;
 
-        DynamicFileDescriptor {
+        Ok(DynamicFileDescriptor {
             messages,
             enums: Self::enums(&proto),
             proto,
             common,
-        }
+        })
     }
 
     fn enums(proto: &Arc<FileDescriptorProto>) -> Vec<DynamicEnumDescriptor> {

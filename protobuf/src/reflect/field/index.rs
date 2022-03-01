@@ -127,7 +127,10 @@ impl FieldIndex {
         })
     }
 
-    pub fn index(field: &FieldDescriptorProto, building: &FileDescriptorBuilding) -> FieldIndex {
+    pub(crate) fn index(
+        field: &FieldDescriptorProto,
+        building: &FileDescriptorBuilding,
+    ) -> crate::Result<FieldIndex> {
         let default_value = if field.has_default_value() {
             Some(Self::parse_default_value(field, building))
         } else {
@@ -146,12 +149,13 @@ impl FieldIndex {
             None
         };
 
-        FieldIndex {
+        let field_type = building.resolve_field_type(field)?;
+        Ok(FieldIndex {
             default_value,
             json_name,
             extendee,
-            field_type: building.resolve_field_type(field),
-        }
+            field_type,
+        })
     }
 
     pub(crate) fn default_value<'a>(&'a self, field: &FieldDescriptor) -> ReflectValueRef<'a> {

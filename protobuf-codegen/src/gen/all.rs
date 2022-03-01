@@ -21,7 +21,7 @@ pub(crate) fn gen_all(
     customize: &Customize,
     customize_callback: &dyn CustomizeCallback,
 ) -> anyhow::Result<Vec<compiler_plugin::GenResult>> {
-    let file_descriptors = FileDescriptor::new_dynamic_fds(file_descriptors.to_vec());
+    let file_descriptors = FileDescriptor::new_dynamic_fds(file_descriptors.to_vec())?;
 
     let root_scope = RootScope {
         file_descriptors: &file_descriptors,

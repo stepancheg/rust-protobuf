@@ -11,6 +11,7 @@ fn dynamic_file_descriptor() -> FileDescriptor {
             .clone(),
         Vec::new(),
     )
+    .unwrap()
 }
 
 fn do_test_get_set(file_descriptor: &FileDescriptor) {

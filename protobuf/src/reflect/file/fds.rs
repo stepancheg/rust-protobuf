@@ -11,7 +11,7 @@ pub(crate) struct FdsBuilder {
 }
 
 impl FdsBuilder {
-    fn process_one(&mut self) {
+    fn process_one(&mut self) -> crate::Result<()> {
         let (n, deps) = self
             .unprocessed
             .iter()
@@ -37,10 +37,11 @@ impl FdsBuilder {
         let n = n.clone();
         let proto = self.unprocessed.remove(&n).unwrap();
         self.processed
-            .insert(n.clone(), FileDescriptor::new_dynamic(proto, deps));
+            .insert(n.clone(), FileDescriptor::new_dynamic(proto, deps)?);
+        Ok(())
     }
 
-    pub fn build(protos: Vec<FileDescriptorProto>) -> Vec<FileDescriptor> {
+    pub(crate) fn build(protos: Vec<FileDescriptorProto>) -> crate::Result<Vec<FileDescriptor>> {
         let mut builder = FdsBuilder {
             names: protos.iter().map(|p| p.name().to_owned()).collect(),
             unprocessed: protos
@@ -51,15 +52,15 @@ impl FdsBuilder {
         };
 
         while !builder.unprocessed.is_empty() {
-            builder.process_one();
+            builder.process_one()?;
         }
 
         let mut processed = builder.processed;
-        builder
+        Ok(builder
             .names
             .iter()
             .map(|n| processed.remove(n).unwrap())
-            .collect()
+            .collect())
     }
 }
 

@@ -13,10 +13,10 @@ impl DynamicMessageDescriptor {
         proto: &FileDescriptorProto,
         path: &MessagePath,
         building: &FileDescriptorBuilding,
-    ) -> DynamicMessageDescriptor {
+    ) -> crate::Result<DynamicMessageDescriptor> {
         let m = path.eval(proto).unwrap();
-        let indices = MessageIndex::index(m, building);
+        let indices = MessageIndex::index(m, building)?;
 
-        DynamicMessageDescriptor { indices }
+        Ok(DynamicMessageDescriptor { indices })
     }
 }
