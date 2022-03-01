@@ -191,35 +191,15 @@ impl<'a> CodedInputStream<'a> {
     /// Read varint
     #[inline]
     pub fn read_raw_varint64(&mut self) -> crate::Result<u64> {
-        let ret;
-        let consume;
-
         let rem = self.source.remaining_in_buf();
 
-        if rem.len() < 1 {
-            return self.read_raw_varint64_slow();
+        match decode_varint64(rem)? {
+            Some((r, c)) => {
+                self.source.consume(c);
+                Ok(r)
+            }
+            None => self.read_raw_varint64_slow(),
         }
-
-        if rem[0] < 0x80 {
-            // The most common case
-            ret = rem[0] as u64;
-            consume = 1;
-        } else if rem.len() >= 2 && rem[1] < 0x80 {
-            // Handle the case of two bytes too
-            ret = (rem[0] & 0x7f) as u64 | (rem[1] as u64) << 7;
-            consume = 2;
-        } else if rem.len() >= MAX_VARINT_ENCODED_LEN {
-            // Read from array when buf at at least 10 bytes,
-            // max len for varint.
-            let (r, i) = decode_varint64(rem)?;
-            ret = r;
-            consume = i;
-        } else {
-            return self.read_raw_varint64_slow();
-        }
-
-        self.source.consume(consume);
-        Ok(ret)
     }
 
     /// Read varint

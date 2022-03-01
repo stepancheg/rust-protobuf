@@ -4,26 +4,41 @@ use crate::error::WireError;
 use crate::varint::MAX_VARINT_ENCODED_LEN;
 
 /// Decode a varint, and return decoded value and decoded byte count.
-pub(crate) fn decode_varint64(rem: &[u8]) -> crate::Result<(u64, usize)> {
-    assert!(rem.len() >= MAX_VARINT_ENCODED_LEN);
-
+#[inline]
+fn decode_varint64_full(rem: &[u8]) -> crate::Result<Option<(u64, usize)>> {
     let mut r: u64 = 0;
-    let mut i: usize = 0;
-    loop {
+    for (i, &b) in rem.iter().enumerate() {
         if i == MAX_VARINT_ENCODED_LEN {
             return Err(WireError::IncorrectVarint.into());
         }
-
-        let b = unsafe { *rem.get_unchecked(i) };
 
         if i == 9 && (b & 0x7f) > 1 {
             return Err(WireError::IncorrectVarint.into());
         }
         r = r | (((b & 0x7f) as u64) << (i as u64 * 7));
-        i += 1;
         if b < 0x80 {
-            break;
+            return Ok(Some((r, i + 1)));
         }
     }
-    Ok((r, i))
+    Ok(None)
+}
+
+/// Try decode a varint. Return `None` if the buffer does not contain complete varint.
+#[inline]
+pub(crate) fn decode_varint64(buf: &[u8]) -> crate::Result<Option<(u64, usize)>> {
+    if buf.len() >= 1 && buf[0] < 0x80 {
+        // The the most common case.
+        let ret = buf[0] as u64;
+        let consume = 1;
+        Ok(Some((ret, consume)))
+    } else if buf.len() >= 2 && buf[1] < 0x80 {
+        // Handle the case of two bytes too.
+        let ret = (buf[0] & 0x7f) as u64 | (buf[1] as u64) << 7;
+        let consume = 2;
+        Ok(Some((ret, consume)))
+    } else {
+        // Read from array when buf at at least 10 bytes,
+        // max len for varint.
+        decode_varint64_full(buf)
+    }
 }
