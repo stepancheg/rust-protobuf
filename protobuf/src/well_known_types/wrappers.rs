@@ -72,8 +72,7 @@ impl crate::Message for DoubleValue {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 9 => {
                     self.value = is.read_double()?;
@@ -204,8 +203,7 @@ impl crate::Message for FloatValue {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 13 => {
                     self.value = is.read_float()?;
@@ -336,8 +334,7 @@ impl crate::Message for Int64Value {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 8 => {
                     self.value = is.read_int64()?;
@@ -468,8 +465,7 @@ impl crate::Message for UInt64Value {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 8 => {
                     self.value = is.read_uint64()?;
@@ -600,8 +596,7 @@ impl crate::Message for Int32Value {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 8 => {
                     self.value = is.read_int32()?;
@@ -732,8 +727,7 @@ impl crate::Message for UInt32Value {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 8 => {
                     self.value = is.read_uint32()?;
@@ -864,8 +858,7 @@ impl crate::Message for BoolValue {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 8 => {
                     self.value = is.read_bool()?;
@@ -996,8 +989,7 @@ impl crate::Message for StringValue {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 10 => {
                     self.value = is.read_string()?;
@@ -1128,8 +1120,7 @@ impl crate::Message for BytesValue {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 10 => {
                     self.value = is.read_bytes()?;

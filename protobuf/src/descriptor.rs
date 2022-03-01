@@ -75,8 +75,7 @@ impl crate::Message for FileDescriptorSet {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 10 => {
                     self.file.push(is.read_message()?);
@@ -434,8 +433,7 @@ impl crate::Message for FileDescriptorProto {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 10 => {
                     self.name = ::std::option::Option::Some(is.read_string()?);
@@ -838,8 +836,7 @@ impl crate::Message for DescriptorProto {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 10 => {
                     self.name = ::std::option::Option::Some(is.read_string()?);
@@ -1134,8 +1131,7 @@ pub mod descriptor_proto {
         }
 
         fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-            while !is.eof()? {
-                let tag = is.read_raw_varint32()?;
+            while let Some(tag) = is.read_raw_tag_or_eof()? {
                 match tag {
                     8 => {
                         self.start = ::std::option::Option::Some(is.read_int32()?);
@@ -1335,8 +1331,7 @@ pub mod descriptor_proto {
         }
 
         fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-            while !is.eof()? {
-                let tag = is.read_raw_varint32()?;
+            while let Some(tag) = is.read_raw_tag_or_eof()? {
                 match tag {
                     8 => {
                         self.start = ::std::option::Option::Some(is.read_int32()?);
@@ -1481,8 +1476,7 @@ impl crate::Message for ExtensionRangeOptions {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 7994 => {
                     self.uninterpreted_option.push(is.read_message()?);
@@ -2018,8 +2012,7 @@ impl crate::Message for FieldDescriptorProto {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 10 => {
                     self.name = ::std::option::Option::Some(is.read_string()?);
@@ -2482,8 +2475,7 @@ impl crate::Message for OneofDescriptorProto {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 10 => {
                     self.name = ::std::option::Option::Some(is.read_string()?);
@@ -2708,8 +2700,7 @@ impl crate::Message for EnumDescriptorProto {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 10 => {
                     self.name = ::std::option::Option::Some(is.read_string()?);
@@ -2938,8 +2929,7 @@ pub mod enum_descriptor_proto {
         }
 
         fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-            while !is.eof()? {
-                let tag = is.read_raw_varint32()?;
+            while let Some(tag) = is.read_raw_tag_or_eof()? {
                 match tag {
                     8 => {
                         self.start = ::std::option::Option::Some(is.read_int32()?);
@@ -3155,8 +3145,7 @@ impl crate::Message for EnumValueDescriptorProto {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 10 => {
                     self.name = ::std::option::Option::Some(is.read_string()?);
@@ -3368,8 +3357,7 @@ impl crate::Message for ServiceDescriptorProto {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 10 => {
                     self.name = ::std::option::Option::Some(is.read_string()?);
@@ -3716,8 +3704,7 @@ impl crate::Message for MethodDescriptorProto {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 10 => {
                     self.name = ::std::option::Option::Some(is.read_string()?);
@@ -4681,8 +4668,7 @@ impl crate::Message for FileOptions {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 10 => {
                     self.java_package = ::std::option::Option::Some(is.read_string()?);
@@ -5211,8 +5197,7 @@ impl crate::Message for MessageOptions {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 8 => {
                     self.message_set_wire_format = ::std::option::Option::Some(is.read_bool()?);
@@ -5611,8 +5596,7 @@ impl crate::Message for FieldOptions {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 8 => {
                     self.ctype = ::std::option::Option::Some(is.read_enum_or_unknown()?);
@@ -5925,8 +5909,7 @@ impl crate::Message for OneofOptions {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 7994 => {
                     self.uninterpreted_option.push(is.read_message()?);
@@ -6120,8 +6103,7 @@ impl crate::Message for EnumOptions {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 16 => {
                     self.allow_alias = ::std::option::Option::Some(is.read_bool()?);
@@ -6308,8 +6290,7 @@ impl crate::Message for EnumValueOptions {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 8 => {
                     self.deprecated = ::std::option::Option::Some(is.read_bool()?);
@@ -6485,8 +6466,7 @@ impl crate::Message for ServiceOptions {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 264 => {
                     self.deprecated = ::std::option::Option::Some(is.read_bool()?);
@@ -6692,8 +6672,7 @@ impl crate::Message for MethodOptions {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 264 => {
                     self.deprecated = ::std::option::Option::Some(is.read_bool()?);
@@ -7130,8 +7109,7 @@ impl crate::Message for UninterpretedOption {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 18 => {
                     self.name.push(is.read_message()?);
@@ -7402,8 +7380,7 @@ pub mod uninterpreted_option {
         }
 
         fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-            while !is.eof()? {
-                let tag = is.read_raw_varint32()?;
+            while let Some(tag) = is.read_raw_tag_or_eof()? {
                 match tag {
                     10 => {
                         self.name_part = ::std::option::Option::Some(is.read_string()?);
@@ -7549,8 +7526,7 @@ impl crate::Message for SourceCodeInfo {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 10 => {
                     self.location.push(is.read_message()?);
@@ -7787,8 +7763,7 @@ pub mod source_code_info {
         }
 
         fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-            while !is.eof()? {
-                let tag = is.read_raw_varint32()?;
+            while let Some(tag) = is.read_raw_tag_or_eof()? {
                 match tag {
                     10 => {
                         is.read_repeated_packed_int32_into(&mut self.path)?;
@@ -7972,8 +7947,7 @@ impl crate::Message for GeneratedCodeInfo {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 10 => {
                     self.annotation.push(is.read_message()?);
@@ -8209,8 +8183,7 @@ pub mod generated_code_info {
         }
 
         fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-            while !is.eof()? {
-                let tag = is.read_raw_varint32()?;
+            while let Some(tag) = is.read_raw_tag_or_eof()? {
                 match tag {
                     10 => {
                         is.read_repeated_packed_int32_into(&mut self.path)?;

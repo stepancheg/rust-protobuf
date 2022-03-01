@@ -84,8 +84,7 @@ impl crate::Message for Duration {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 8 => {
                     self.seconds = is.read_int64()?;

@@ -250,6 +250,17 @@ impl<'a> CodedInputStream<'a> {
         Ok(u64::from_le_bytes(bytes))
     }
 
+    /// Read tag number as `u32` or None if EOF is reached.
+    #[inline]
+    pub fn read_raw_tag_or_eof(&mut self) -> crate::Result<Option<u32>> {
+        // TODO: optimize this.
+        if self.eof()? {
+            return Ok(None);
+        }
+        let tag = self.read_raw_varint32()?;
+        Ok(Some(tag))
+    }
+
     /// Read tag
     #[inline]
     pub(crate) fn read_tag(&mut self) -> crate::Result<wire_format::Tag> {

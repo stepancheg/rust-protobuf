@@ -77,8 +77,7 @@ impl crate::Message for Struct {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 10 => {
                     crate::rt::read_map_into::<crate::reflect::types::ProtobufTypeString, crate::reflect::types::ProtobufTypeMessage<Value>>(is, &mut self.fields)?;
@@ -472,8 +471,7 @@ impl crate::Message for Value {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 8 => {
                     self.kind = ::std::option::Option::Some(value::Kind::null_value(is.read_enum_or_unknown()?));
@@ -694,8 +692,7 @@ impl crate::Message for ListValue {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 10 => {
                     self.values.push(is.read_message()?);

@@ -125,8 +125,7 @@ impl crate::Message for Type {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 10 => {
                     self.name = is.read_string()?;
@@ -392,8 +391,7 @@ impl crate::Message for Field {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 8 => {
                     self.kind = is.read_enum_or_unknown()?;
@@ -852,8 +850,7 @@ impl crate::Message for Enum {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 10 => {
                     self.name = is.read_string()?;
@@ -1050,8 +1047,7 @@ impl crate::Message for EnumValue {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 10 => {
                     self.name = is.read_string()?;
@@ -1223,8 +1219,7 @@ impl crate::Message for Option {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 10 => {
                     self.name = is.read_string()?;

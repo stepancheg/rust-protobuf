@@ -189,8 +189,7 @@ impl crate::Message for Version {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 8 => {
                     self.major = ::std::option::Option::Some(is.read_int32()?);
@@ -438,8 +437,7 @@ impl crate::Message for CodeGeneratorRequest {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 10 => {
                     self.file_to_generate.push(is.read_string()?);
@@ -688,8 +686,7 @@ impl crate::Message for CodeGeneratorResponse {
     }
 
     fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-        while !is.eof()? {
-            let tag = is.read_raw_varint32()?;
+        while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 10 => {
                     self.error = ::std::option::Option::Some(is.read_string()?);
@@ -1031,8 +1028,7 @@ pub mod code_generator_response {
         }
 
         fn merge_from(&mut self, is: &mut crate::CodedInputStream<'_>) -> crate::Result<()> {
-            while !is.eof()? {
-                let tag = is.read_raw_varint32()?;
+            while let Some(tag) = is.read_raw_tag_or_eof()? {
                 match tag {
                     10 => {
                         self.name = ::std::option::Option::Some(is.read_string()?);

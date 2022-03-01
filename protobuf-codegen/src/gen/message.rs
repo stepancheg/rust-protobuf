@@ -395,9 +395,7 @@ impl<'a> MessageGen<'a> {
             protobuf_crate_path(&self.customize.for_elem),
         );
         w.def_fn(&sig, |w| {
-            w.while_block("!is.eof()?", |w| {
-                // TODO: combine check for EOF and read tag.
-                w.write_line(&format!("let tag = is.read_raw_varint32()?;"));
+            w.while_block("let Some(tag) = is.read_raw_tag_or_eof()?", |w| {
                 w.match_block("tag", |w| {
                     for f in &self.fields_except_group() {
                         f.write_merge_from_field_case_block(w);
