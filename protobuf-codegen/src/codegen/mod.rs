@@ -241,7 +241,7 @@ impl Codegen {
     /// Similar to `run`, but prints the message to stderr and exits the process on error.
     pub fn run_from_script(&self) {
         if let Err(e) = self.run() {
-            eprintln!("codegen failed: {:#}", e);
+            eprintln!("codegen failed: {:?}", e);
             process::exit(1);
         }
     }
