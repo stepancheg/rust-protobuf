@@ -212,7 +212,7 @@ impl<'a> CodedInputStream<'a> {
     }
 
     /// Read varint
-    #[inline(always)]
+    #[inline]
     pub fn read_raw_varint32(&mut self) -> crate::Result<u32> {
         let rem = self.source.remaining_in_buf();
 
