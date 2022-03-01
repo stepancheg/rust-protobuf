@@ -31,6 +31,7 @@ use crate::reflect::types::ProtobufTypeUint32;
 use crate::reflect::types::ProtobufTypeUint64;
 use crate::reflect::MessageDescriptor;
 use crate::unknown::UnknownValue;
+use crate::varint::decode::decode_varint32;
 use crate::varint::decode::decode_varint64;
 use crate::varint::MAX_VARINT_ENCODED_LEN;
 use crate::wire_format;
@@ -188,6 +189,14 @@ impl<'a> CodedInputStream<'a> {
         }
     }
 
+    fn read_raw_varint32_slow(&mut self) -> crate::Result<u32> {
+        let v = self.read_raw_varint64_slow()?;
+        if v > u32::MAX as u64 {
+            return Err(ProtobufError::WireError(WireError::U32Overflow(v)).into());
+        }
+        Ok(v as u32)
+    }
+
     /// Read varint
     #[inline]
     pub fn read_raw_varint64(&mut self) -> crate::Result<u64> {
@@ -205,11 +214,25 @@ impl<'a> CodedInputStream<'a> {
     /// Read varint
     #[inline(always)]
     pub fn read_raw_varint32(&mut self) -> crate::Result<u32> {
-        let value = self.read_raw_varint64()?;
-        if value > (u32::MAX as u64) {
-            return Err(ProtobufError::WireError(WireError::U32Overflow(value)).into());
+        let rem = self.source.remaining_in_buf();
+
+        match decode_varint32(rem)? {
+            Some((r, c)) => {
+                self.source.consume(c);
+                Ok(r)
+            }
+            None => self.read_raw_varint32_slow(),
         }
-        Ok(value as u32)
+    }
+
+    #[inline]
+    fn read_raw_varint32_or_eof(&mut self) -> crate::Result<Option<u32>> {
+        if self.eof()? {
+            return Ok(None);
+        }
+
+        let v = self.read_raw_varint32()?;
+        Ok(Some(v))
     }
 
     /// Read little-endian 32-bit integer
@@ -233,12 +256,7 @@ impl<'a> CodedInputStream<'a> {
     /// Read tag number as `u32` or None if EOF is reached.
     #[inline]
     pub fn read_raw_tag_or_eof(&mut self) -> crate::Result<Option<u32>> {
-        // TODO: optimize this.
-        if self.eof()? {
-            return Ok(None);
-        }
-        let tag = self.read_raw_varint32()?;
-        Ok(Some(tag))
+        self.read_raw_varint32_or_eof()
     }
 
     /// Read tag

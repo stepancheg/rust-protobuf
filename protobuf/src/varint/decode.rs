@@ -42,3 +42,18 @@ pub(crate) fn decode_varint64(buf: &[u8]) -> crate::Result<Option<(u64, usize)>>
         decode_varint64_full(buf)
     }
 }
+
+/// Try decode a varint. Return `None` if the buffer does not contain complete varint.
+#[inline]
+pub(crate) fn decode_varint32(buf: &[u8]) -> crate::Result<Option<(u32, usize)>> {
+    // TODO: optimize
+    match decode_varint64(buf)? {
+        Some((v, consumed)) => {
+            if v > u32::MAX as u64 {
+                return Err(WireError::U32Overflow(v).into());
+            }
+            Ok(Some((v as u32, consumed)))
+        }
+        None => Ok(None),
+    }
+}
