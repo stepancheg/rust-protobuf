@@ -33,6 +33,8 @@ pub(crate) enum WireError {
     LimitIncrease,
     #[error("Encoded message size {0} is too large")]
     MessageTooLarge(u64),
+    #[error("Value too large for u32: {}", .0)]
+    U32Overflow(u64),
 }
 
 /// Generic protobuf error

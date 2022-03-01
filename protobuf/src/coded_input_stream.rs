@@ -225,7 +225,11 @@ impl<'a> CodedInputStream<'a> {
     /// Read varint
     #[inline(always)]
     pub fn read_raw_varint32(&mut self) -> crate::Result<u32> {
-        self.read_raw_varint64().map(|v| v as u32)
+        let value = self.read_raw_varint64()?;
+        if value > (u32::MAX as u64) {
+            return Err(ProtobufError::WireError(WireError::U32Overflow(value)).into());
+        }
+        Ok(value as u32)
     }
 
     /// Read little-endian 32-bit integer
@@ -278,7 +282,8 @@ impl<'a> CodedInputStream<'a> {
 
     /// Read `int32`
     pub fn read_int32(&mut self) -> crate::Result<i32> {
-        self.read_raw_varint32().map(|v| v as i32)
+        // TODO: error on overflow
+        self.read_raw_varint64().map(|v| v as i32)
     }
 
     /// Read `uint64`
@@ -323,7 +328,7 @@ impl<'a> CodedInputStream<'a> {
 
     /// Read `bool`
     pub fn read_bool(&mut self) -> crate::Result<bool> {
-        self.read_raw_varint32().map(|v| v != 0)
+        self.read_raw_varint64().map(|v| v != 0)
     }
 
     pub(crate) fn read_enum_value(&mut self) -> crate::Result<i32> {
