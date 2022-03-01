@@ -4,4 +4,6 @@ pub(crate) enum ReflectError {
     MessageNotFoundInFiles(String, String),
     #[error("Dependency `{}` of `{}` not found; all deps: {}", .0, .1, .2)]
     DependencyNotFound(String, String, String),
+    #[error("Non-unique dependencies given: {}", .0)]
+    NonUniqueDependencies(String),
 }
