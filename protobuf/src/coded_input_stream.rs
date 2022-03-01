@@ -227,12 +227,22 @@ impl<'a> CodedInputStream<'a> {
 
     #[inline]
     fn read_raw_varint32_or_eof(&mut self) -> crate::Result<Option<u32>> {
-        if self.eof()? {
-            return Ok(None);
+        let rem = self.source.remaining_in_buf();
+        let v = decode_varint32(rem)?;
+        match v {
+            Some((r, c)) => {
+                self.source.consume(c);
+                Ok(Some(r))
+            }
+            None => {
+                if self.eof()? {
+                    Ok(None)
+                } else {
+                    let v = self.read_raw_varint32_slow()?;
+                    Ok(Some(v))
+                }
+            }
         }
-
-        let v = self.read_raw_varint32()?;
-        Ok(Some(v))
     }
 
     /// Read little-endian 32-bit integer
