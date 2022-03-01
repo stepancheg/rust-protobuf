@@ -259,7 +259,7 @@ impl<'a> CodedInputStream<'a> {
 
     /// Read tag, return it is pair (field number, wire type)
     #[inline]
-    pub fn read_tag_unpack(&mut self) -> crate::Result<(u32, WireType)> {
+    pub(crate) fn read_tag_unpack(&mut self) -> crate::Result<(u32, WireType)> {
         self.read_tag().map(|t| t.unpack())
     }
 
