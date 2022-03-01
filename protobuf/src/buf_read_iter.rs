@@ -404,6 +404,7 @@ impl<'ignore> BufReadIter<'ignore> {
     #[inline(always)]
     pub(crate) fn fill_buf(&mut self) -> Result<&[u8]> {
         if self.pos_within_buf == self.limit_within_buf {
+            // TODO: paritally inline this.
             self.do_fill_buf()?;
         }
 
