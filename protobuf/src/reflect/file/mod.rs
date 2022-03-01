@@ -6,6 +6,7 @@ use std::sync::Arc;
 
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
+use crate::reflect::error::ReflectError;
 use crate::reflect::field::FieldDescriptorImpl;
 use crate::reflect::file::common::FileDescriptorCommon;
 use crate::reflect::file::dynamic::DynamicFileDescriptor;
@@ -197,21 +198,29 @@ impl FileDescriptor {
         proto: FileDescriptorProto,
         dependencies: Vec<FileDescriptor>,
     ) -> crate::Result<FileDescriptor> {
-        // TODO: make it return `Result` on unsatisfied dependencies.
         // remove undeclared dependencies
-        let dependencies: HashMap<_, &FileDescriptor> =
+        let dependencies_index: HashMap<_, &FileDescriptor> =
             dependencies.iter().map(|d| (d.proto().name(), d)).collect();
         let dependencies: Vec<FileDescriptor> = proto
             .dependency
             .iter()
             .map(|d| {
-                // TODO: do not panic
-                (*dependencies
-                    .get(d.as_str())
-                    .unwrap_or_else(|| panic!("dependency not found: {}", d)))
-                .clone()
+                let dep = dependencies_index.get(d.as_str());
+                match dep {
+                    Some(dep) => Ok((*dep).clone()),
+                    None => Err(ReflectError::DependencyNotFound(
+                        d.clone(),
+                        proto.name().to_owned(),
+                        dependencies
+                            .iter()
+                            .map(|d| d.proto().name())
+                            .collect::<Vec<_>>()
+                            .join(", "),
+                    )
+                    .into()),
+                }
             })
-            .collect();
+            .collect::<crate::Result<Vec<_>>>()?;
 
         Ok(FileDescriptor {
             imp: FileDescriptorImpl::Dynamic(Arc::new(DynamicFileDescriptor::new(
