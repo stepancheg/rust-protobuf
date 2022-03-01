@@ -12,14 +12,13 @@ impl ServiceIndex {
     pub(crate) fn index(
         proto: &ServiceDescriptorProto,
         building: &FileDescriptorBuilding,
-    ) -> ServiceIndex {
-        ServiceIndex {
-            methods: proto
-                .method
-                .iter()
-                .map(|method| MethodIndex::index(method, building))
-                .collect(),
-        }
+    ) -> crate::Result<ServiceIndex> {
+        let methods = proto
+            .method
+            .iter()
+            .map(|method| MethodIndex::index(method, building))
+            .collect::<crate::Result<Vec<_>>>()?;
+        Ok(ServiceIndex { methods })
     }
 }
 
@@ -33,12 +32,12 @@ impl MethodIndex {
     pub(crate) fn index(
         proto: &MethodDescriptorProto,
         building: &FileDescriptorBuilding,
-    ) -> MethodIndex {
-        let input_type = building.resolve_message(proto.input_type());
-        let output_type = building.resolve_message(proto.output_type());
-        MethodIndex {
+    ) -> crate::Result<MethodIndex> {
+        let input_type = building.resolve_message(proto.input_type())?;
+        let output_type = building.resolve_message(proto.output_type())?;
+        Ok(MethodIndex {
             input_type,
             output_type,
-        }
+        })
     }
 }

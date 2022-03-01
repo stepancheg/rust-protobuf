@@ -38,7 +38,10 @@ pub(crate) struct FileIndex {
 }
 
 impl FileIndex {
-    pub(crate) fn index(file: &FileDescriptorProto, deps: &[FileDescriptor]) -> FileIndex {
+    pub(crate) fn index(
+        file: &FileDescriptorProto,
+        deps: &[FileDescriptor],
+    ) -> crate::Result<FileIndex> {
         let mut index = FileIndex {
             messages: Vec::new(),
             message_by_name_to_package: HashMap::new(),
@@ -74,11 +77,11 @@ impl FileIndex {
                     current_file_index: &index,
                     deps_with_public: deps,
                 },
-            );
+            )?;
             index.services.push(service_index);
         }
 
-        index
+        Ok(index)
     }
 
     fn index_message_and_inners(

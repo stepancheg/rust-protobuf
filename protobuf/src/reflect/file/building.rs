@@ -5,6 +5,7 @@ use crate::descriptor::DescriptorProto;
 use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::FieldDescriptorProto;
 use crate::descriptor::FileDescriptorProto;
+use crate::reflect::error::ReflectError;
 use crate::reflect::field::index::ForwardProtobufFieldType;
 use crate::reflect::field::index::ForwardProtobufTypeBox;
 use crate::reflect::file::index::FileIndex;
@@ -94,7 +95,9 @@ impl<'a> FileDescriptorBuilding<'a> {
     ) -> crate::Result<ForwardProtobufTypeBox> {
         Ok(match field.field_type() {
             field_descriptor_proto::Type::TYPE_MESSAGE
-            | field_descriptor_proto::Type::TYPE_GROUP => self.resolve_message(field.type_name()),
+            | field_descriptor_proto::Type::TYPE_GROUP => {
+                self.resolve_message(field.type_name())?
+            }
             field_descriptor_proto::Type::TYPE_ENUM => {
                 if let Some(name_to_package) = protobuf_name_starts_with_package(
                     field.type_name(),
@@ -123,7 +126,7 @@ impl<'a> FileDescriptorBuilding<'a> {
         })
     }
 
-    pub(crate) fn resolve_message(&self, type_name: &str) -> ForwardProtobufTypeBox {
+    pub(crate) fn resolve_message(&self, type_name: &str) -> crate::Result<ForwardProtobufTypeBox> {
         if let Some(name_to_package) =
             protobuf_name_starts_with_package(type_name, self.current_file_descriptor.package())
         {
@@ -132,20 +135,15 @@ impl<'a> FileDescriptorBuilding<'a> {
                 .message_by_name_to_package
                 .get(name_to_package)
             {
-                return ForwardProtobufTypeBox::CurrentFileMessage(*index);
+                return Ok(ForwardProtobufTypeBox::CurrentFileMessage(*index));
             }
         }
         for dep in self.deps_with_public {
             if let Some(m) = dep.message_by_full_name(type_name) {
-                return ForwardProtobufTypeBox::message(m);
+                return Ok(ForwardProtobufTypeBox::message(m));
             }
         }
-        // TODO: error, not panic
-        panic!(
-            "message not found: {}; files: {}",
-            type_name,
-            self.all_files_str()
-        );
+        Err(ReflectError::MessageNotFoundInFiles(type_name.to_owned(), self.all_files_str()).into())
     }
 
     fn map_field(&self, type_proto: &DescriptorProto) -> crate::Result<ForwardProtobufFieldType> {

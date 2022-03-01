@@ -29,7 +29,7 @@ impl GeneratedFileDescriptor {
         messages: Vec<GeneratedMessageDescriptorData>,
         enums: Vec<GeneratedEnumDescriptorData>,
     ) -> GeneratedFileDescriptor {
-        let index = FileIndex::index(file_descriptor_proto, &dependencies);
+        let index = FileIndex::index(file_descriptor_proto, &dependencies).unwrap();
 
         let mut messages: HashMap<&str, GeneratedMessageDescriptorData> = messages
             .into_iter()

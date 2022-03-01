@@ -144,7 +144,7 @@ impl FieldIndex {
         };
 
         let extendee = if field.has_extendee() {
-            Some(building.resolve_message(field.extendee()))
+            Some(building.resolve_message(field.extendee())?)
         } else {
             None
         };
