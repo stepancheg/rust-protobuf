@@ -54,6 +54,7 @@ enum InputSource<'a> {
 /// This is achievable with `BufReadIter`.
 pub(crate) struct BufReadIter<'a> {
     input_source: InputSource<'a>,
+    /// Invariants: `0 <= pos_within_buf <= limit_within_buf <= buf.len()`.
     buf: &'a [u8],
     pos_within_buf: usize,
     limit_within_buf: usize,
