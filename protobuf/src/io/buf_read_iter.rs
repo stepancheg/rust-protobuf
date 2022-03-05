@@ -18,8 +18,8 @@ use crate::coded_input_stream::READ_RAW_BYTES_MAX_ALLOC;
 use crate::error::ProtobufError;
 use crate::error::WireError;
 use crate::io::buf_read_or_reader::BufReadOrReader;
+use crate::io::input_buf::InputBuf;
 use crate::io::input_source::InputSource;
-use crate::misc::maybe_uninit_write_slice;
 use crate::misc::vec_spare_capacity_mut;
 
 // If an input stream is constructed with a `Read`, we create a
@@ -44,10 +44,7 @@ const NO_LIMIT: u64 = u64::MAX;
 /// This is achievable with `BufReadIter`.
 pub(crate) struct BufReadIter<'a> {
     input_source: InputSource<'a>,
-    /// Invariants: `0 <= pos_within_buf <= limit_within_buf <= buf.len()`.
-    buf: &'a [u8],
-    pos_within_buf: usize,
-    limit_within_buf: usize,
+    buf: InputBuf<'a>,
     pos_of_buf_start: u64,
     limit: u64,
 }
@@ -55,7 +52,7 @@ pub(crate) struct BufReadIter<'a> {
 impl<'a> Drop for BufReadIter<'a> {
     fn drop(&mut self) {
         match self.input_source {
-            InputSource::Read(ref mut buf_read) => buf_read.consume(self.pos_within_buf),
+            InputSource::Read(ref mut buf_read) => buf_read.consume(self.buf.pos_within_buf()),
             _ => {}
         }
     }
@@ -68,9 +65,7 @@ impl<'ignore> BufReadIter<'ignore> {
                 INPUT_STREAM_BUFFER_SIZE,
                 read,
             ))),
-            buf: &[],
-            pos_within_buf: 0,
-            limit_within_buf: 0,
+            buf: InputBuf::empty(),
             pos_of_buf_start: 0,
             limit: NO_LIMIT,
         }
@@ -79,9 +74,7 @@ impl<'ignore> BufReadIter<'ignore> {
     pub(crate) fn from_buf_read<'a>(buf_read: &'a mut dyn BufRead) -> BufReadIter<'a> {
         BufReadIter {
             input_source: InputSource::Read(BufReadOrReader::BufRead(buf_read)),
-            buf: &[],
-            pos_within_buf: 0,
-            limit_within_buf: 0,
+            buf: InputBuf::empty(),
             pos_of_buf_start: 0,
             limit: NO_LIMIT,
         }
@@ -90,9 +83,7 @@ impl<'ignore> BufReadIter<'ignore> {
     pub(crate) fn from_byte_slice<'a>(bytes: &'a [u8]) -> BufReadIter<'a> {
         BufReadIter {
             input_source: InputSource::Slice(bytes),
-            buf: bytes,
-            pos_within_buf: 0,
-            limit_within_buf: bytes.len(),
+            buf: InputBuf::from_bytes(bytes),
             pos_of_buf_start: 0,
             limit: NO_LIMIT,
         }
@@ -102,9 +93,7 @@ impl<'ignore> BufReadIter<'ignore> {
     pub(crate) fn from_bytes<'a>(bytes: &'a Bytes) -> BufReadIter<'a> {
         BufReadIter {
             input_source: InputSource::Bytes(bytes),
-            buf: &bytes,
-            pos_within_buf: 0,
-            limit_within_buf: bytes.len(),
+            buf: InputBuf::from_bytes(&bytes),
             pos_of_buf_start: 0,
             limit: NO_LIMIT,
         }
@@ -112,25 +101,19 @@ impl<'ignore> BufReadIter<'ignore> {
 
     #[inline]
     fn assertions(&self) {
-        debug_assert!(self.pos_within_buf <= self.limit_within_buf);
-        debug_assert!(self.limit_within_buf <= self.buf.len());
-        debug_assert!(self.pos_of_buf_start + self.pos_within_buf as u64 <= self.limit);
+        debug_assert!(self.pos() <= self.limit);
     }
 
     #[inline(always)]
     pub(crate) fn pos(&self) -> u64 {
-        self.pos_of_buf_start + self.pos_within_buf as u64
+        self.pos_of_buf_start + self.buf.pos_within_buf() as u64
     }
 
     /// Recompute `limit_within_buf` after update of `limit`
     #[inline]
     fn update_limit_within_buf(&mut self) {
-        if self.pos_of_buf_start + (self.buf.len() as u64) <= self.limit {
-            self.limit_within_buf = self.buf.len();
-        } else {
-            self.limit_within_buf = (self.limit - self.pos_of_buf_start) as usize;
-        }
-
+        assert!(self.limit >= self.pos_of_buf_start);
+        self.buf.update_limit(self.limit - self.pos_of_buf_start);
         self.assertions();
     }
 
@@ -162,16 +145,17 @@ impl<'ignore> BufReadIter<'ignore> {
 
     #[inline]
     pub(crate) fn remaining_in_buf(&self) -> &[u8] {
-        unsafe {
-            &self
-                .buf
-                .get_unchecked(self.pos_within_buf..self.limit_within_buf)
-        }
+        self.buf.remaining_in_buf()
+    }
+
+    #[inline]
+    pub(crate) fn consume(&mut self, amt: usize) {
+        self.buf.consume(amt);
     }
 
     #[inline(always)]
     pub(crate) fn remaining_in_buf_len(&self) -> usize {
-        self.limit_within_buf - self.pos_within_buf
+        self.remaining_in_buf().len()
     }
 
     #[inline(always)]
@@ -179,47 +163,48 @@ impl<'ignore> BufReadIter<'ignore> {
         if self.limit == NO_LIMIT {
             NO_LIMIT
         } else {
-            self.limit - (self.pos_of_buf_start + self.pos_within_buf as u64)
+            self.limit - self.pos()
         }
     }
 
     #[inline(always)]
     pub(crate) fn eof(&mut self) -> crate::Result<bool> {
-        if self.pos_within_buf == self.limit_within_buf {
-            Ok(self.fill_buf()?.is_empty())
-        } else {
+        if self.remaining_in_buf_len() != 0 {
             Ok(false)
+        } else {
+            Ok(self.fill_buf()?.is_empty())
         }
+    }
+
+    fn read_byte_slow(&mut self) -> crate::Result<u8> {
+        self.do_fill_buf()?;
+
+        if let Some(b) = self.buf.read_byte() {
+            return Ok(b);
+        }
+
+        Err(WireError::UnexpectedEof.into())
     }
 
     #[inline(always)]
     pub(crate) fn read_byte(&mut self) -> crate::Result<u8> {
-        if self.pos_within_buf == self.limit_within_buf {
-            self.do_fill_buf()?;
-            if self.remaining_in_buf_len() == 0 {
-                return Err(ProtobufError::WireError(WireError::UnexpectedEof).into());
-            }
+        if let Some(b) = self.buf.read_byte() {
+            return Ok(b);
         }
 
-        let r = unsafe { *self.buf.get_unchecked(self.pos_within_buf) };
-        self.pos_within_buf += 1;
-        Ok(r)
+        self.read_byte_slow()
     }
 
     #[cfg(feature = "bytes")]
     pub(crate) fn read_exact_bytes(&mut self, len: usize) -> crate::Result<Bytes> {
         if let InputSource::Bytes(bytes) = self.input_source {
-            let end = match self.pos_within_buf.checked_add(len) {
-                Some(end) => end,
-                None => return Err(ProtobufError::WireError(WireError::UnexpectedEof).into()),
-            };
-
-            if end > self.limit_within_buf {
+            if len > self.remaining_in_buf_len() {
                 return Err(ProtobufError::WireError(WireError::UnexpectedEof).into());
             }
+            let end = self.buf.pos_within_buf() + len;
 
-            let r = bytes.slice(self.pos_within_buf..end);
-            self.pos_within_buf += len;
+            let r = bytes.slice(self.buf.pos_within_buf()..end);
+            self.buf.consume(len);
             Ok(r)
         } else {
             if len >= READ_RAW_BYTES_MAX_ALLOC {
@@ -252,7 +237,7 @@ impl<'ignore> BufReadIter<'ignore> {
 
         let len = cmp::min(rem.len(), buf.len());
         buf[..len].copy_from_slice(&rem[..len]);
-        self.pos_within_buf += len;
+        self.buf.consume(len);
         Ok(len)
     }
 
@@ -264,7 +249,7 @@ impl<'ignore> BufReadIter<'ignore> {
 
         let len = cmp::min(rem.len(), max);
         vec.extend_from_slice(&rem[..len]);
-        self.pos_within_buf += len;
+        self.buf.consume(len);
         Ok(len)
     }
 
@@ -273,14 +258,12 @@ impl<'ignore> BufReadIter<'ignore> {
             return Err(ProtobufError::WireError(WireError::UnexpectedEof).into());
         }
 
-        let consume = self.pos_within_buf;
-        self.pos_of_buf_start += self.pos_within_buf as u64;
-        self.pos_within_buf = 0;
-        self.buf = &[];
-        self.limit_within_buf = 0;
+        let consume = self.buf.pos_within_buf();
+        self.pos_of_buf_start += self.buf.pos_within_buf() as u64;
+        self.buf = InputBuf::empty();
 
-        match self.input_source {
-            InputSource::Read(ref mut buf_read) => {
+        match &mut self.input_source {
+            InputSource::Read(buf_read) => {
                 buf_read.consume(consume);
                 buf_read.read_exact_uninit(buf)?;
             }
@@ -299,12 +282,7 @@ impl<'ignore> BufReadIter<'ignore> {
     #[inline]
     pub(crate) fn read_exact(&mut self, buf: &mut [MaybeUninit<u8>]) -> crate::Result<()> {
         if self.remaining_in_buf_len() >= buf.len() {
-            let buf_len = buf.len();
-            maybe_uninit_write_slice(
-                buf,
-                &self.buf[self.pos_within_buf..self.pos_within_buf + buf_len],
-            );
-            self.pos_within_buf += buf_len;
+            self.buf.read_bytes(buf);
             return Ok(());
         }
 
@@ -364,7 +342,7 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     fn do_fill_buf(&mut self) -> crate::Result<()> {
-        debug_assert!(self.pos_within_buf == self.limit_within_buf);
+        debug_assert!(self.remaining_in_buf().is_empty());
 
         // Limit is reached, do not fill buf, because otherwise
         // synchronous read from `CodedInputStream` may block.
@@ -372,16 +350,14 @@ impl<'ignore> BufReadIter<'ignore> {
             return Ok(());
         }
 
-        let consume = self.buf.len();
-        self.pos_of_buf_start += self.buf.len() as u64;
-        self.buf = &[];
-        self.pos_within_buf = 0;
-        self.limit_within_buf = 0;
+        let consume = self.buf.pos_within_buf();
+        self.pos_of_buf_start += consume as u64;
+        self.buf = InputBuf::empty();
 
         match self.input_source {
             InputSource::Read(ref mut buf_read) => {
                 buf_read.consume(consume);
-                self.buf = unsafe { mem::transmute(buf_read.fill_buf()?) };
+                self.buf = unsafe { InputBuf::from_bytes_ignore_lifetime(buf_read.fill_buf()?) };
             }
             _ => {
                 return Ok(());
@@ -395,21 +371,15 @@ impl<'ignore> BufReadIter<'ignore> {
 
     #[inline(always)]
     pub(crate) fn fill_buf(&mut self) -> crate::Result<&[u8]> {
-        if self.pos_within_buf == self.limit_within_buf {
-            // TODO: paritally inline this.
-            self.do_fill_buf()?;
+        let rem = self.buf.remaining_in_buf();
+        if !rem.is_empty() {
+            return Ok(rem);
         }
 
-        Ok(unsafe {
-            self.buf
-                .get_unchecked(self.pos_within_buf..self.limit_within_buf)
-        })
-    }
+        // TODO: partially inline this.
+        self.do_fill_buf()?;
 
-    #[inline(always)]
-    pub(crate) fn consume(&mut self, amt: usize) {
-        assert!(amt <= self.limit_within_buf - self.pos_within_buf);
-        self.pos_within_buf += amt;
+        Ok(self.buf.remaining_in_buf())
     }
 }
 
