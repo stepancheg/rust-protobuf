@@ -25,8 +25,6 @@ use crate::misc::vec_spare_capacity_mut;
 // `BufReader` with an internal buffer of this size.
 const INPUT_STREAM_BUFFER_SIZE: usize = 4096;
 
-const USE_UNSAFE_FOR_SPEED: bool = true;
-
 const NO_LIMIT: u64 = u64::MAX;
 
 /// Hold all possible combinations of input source
@@ -171,14 +169,10 @@ impl<'ignore> BufReadIter<'ignore> {
 
     #[inline]
     pub(crate) fn remaining_in_buf(&self) -> &[u8] {
-        if USE_UNSAFE_FOR_SPEED {
-            unsafe {
-                &self
-                    .buf
-                    .get_unchecked(self.pos_within_buf..self.limit_within_buf)
-            }
-        } else {
-            &self.buf[self.pos_within_buf..self.limit_within_buf]
+        unsafe {
+            &self
+                .buf
+                .get_unchecked(self.pos_within_buf..self.limit_within_buf)
         }
     }
 
@@ -214,11 +208,7 @@ impl<'ignore> BufReadIter<'ignore> {
             }
         }
 
-        let r = if USE_UNSAFE_FOR_SPEED {
-            unsafe { *self.buf.get_unchecked(self.pos_within_buf) }
-        } else {
-            self.buf[self.pos_within_buf]
-        };
+        let r = unsafe { *self.buf.get_unchecked(self.pos_within_buf) };
         self.pos_within_buf += 1;
         Ok(r)
     }
@@ -417,13 +407,9 @@ impl<'ignore> BufReadIter<'ignore> {
             self.do_fill_buf()?;
         }
 
-        Ok(if USE_UNSAFE_FOR_SPEED {
-            unsafe {
-                self.buf
-                    .get_unchecked(self.pos_within_buf..self.limit_within_buf)
-            }
-        } else {
-            &self.buf[self.pos_within_buf..self.limit_within_buf]
+        Ok(unsafe {
+            self.buf
+                .get_unchecked(self.pos_within_buf..self.limit_within_buf)
         })
     }
 

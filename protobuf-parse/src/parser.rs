@@ -3,8 +3,8 @@ use std::ffi::OsStr;
 use std::ffi::OsString;
 use std::path::Path;
 use std::path::PathBuf;
-use anyhow::Context;
 
+use anyhow::Context;
 use protobuf::descriptor::FileDescriptorSet;
 
 use crate::protoc;
@@ -90,8 +90,9 @@ impl Parser {
     /// Parse `.proto` files and typecheck them using pure Rust parser of `protoc` command.
     pub fn parse_and_typecheck(&self) -> anyhow::Result<ParsedAndTypechecked> {
         match &self.which_parser {
-            WhichParser::Pure => pure::parse_and_typecheck::parse_and_typecheck(&self)
-                .context("using pure parser"),
+            WhichParser::Pure => {
+                pure::parse_and_typecheck::parse_and_typecheck(&self).context("using pure parser")
+            }
             WhichParser::Protoc => protoc::parse_and_typecheck::parse_and_typecheck(&self)
                 .context("using protoc parser"),
         }
