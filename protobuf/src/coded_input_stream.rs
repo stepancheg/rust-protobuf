@@ -536,8 +536,7 @@ impl<'a> CodedInputStream<'a> {
 
     /// Skip exact number of bytes
     pub fn skip_raw_bytes(&mut self, count: u32) -> crate::Result<()> {
-        // TODO: make it more efficient
-        self.read_raw_bytes(count).map(|_| ())
+        self.source.skip_bytes(count)
     }
 
     /// Read `bytes` field, length delimited

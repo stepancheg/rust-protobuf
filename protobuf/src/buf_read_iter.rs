@@ -371,6 +371,12 @@ impl<'ignore> BufReadIter<'ignore> {
         Ok(())
     }
 
+    pub(crate) fn skip_bytes(&mut self, count: u32) -> Result<()> {
+        // TODO: make it more efficient
+        let mut vec = Vec::with_capacity(count as usize);
+        self.read_exact_to_vec(count as usize, &mut vec).map(|_| ())
+    }
+
     fn do_fill_buf(&mut self) -> Result<()> {
         debug_assert!(self.pos_within_buf == self.limit_within_buf);
 
