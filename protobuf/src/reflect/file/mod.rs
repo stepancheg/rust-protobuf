@@ -203,7 +203,14 @@ impl FileDescriptor {
             dependencies.iter().map(|d| (d.proto().name(), d)).collect();
 
         if dependencies_index.len() != dependencies.len() {
-            return Err(ReflectError::NonUniqueDependencies(dependencies.iter().map(|d| d.proto().name()).collect::<Vec<_>>().join(", ")).into());
+            return Err(ReflectError::NonUniqueDependencies(
+                dependencies
+                    .iter()
+                    .map(|d| d.proto().name())
+                    .collect::<Vec<_>>()
+                    .join(", "),
+            )
+            .into());
         }
 
         let dependencies: Vec<FileDescriptor> = proto
