@@ -301,8 +301,8 @@ impl<'a> CodedInputStream<'a> {
 
     /// Read `int32`
     pub fn read_int32(&mut self) -> crate::Result<i32> {
-        // TODO: error on overflow
-        self.read_raw_varint64().map(|v| v as i32)
+        let v = self.read_int64()?;
+        i32::try_from(v).map_err(|_| WireError::I32Overflow(v).into())
     }
 
     /// Read `uint64`

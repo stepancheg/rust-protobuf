@@ -36,6 +36,8 @@ pub(crate) enum WireError {
     MessageTooLarge(u64),
     #[error("Value too large for u32: {}", .0)]
     U32Overflow(u64),
+    #[error("Value too large for i32: {}", .0)]
+    I32Overflow(i64),
 }
 
 /// Generic protobuf error
