@@ -377,7 +377,7 @@ impl<'ignore> BufReadIter<'ignore> {
     pub(crate) fn skip_bytes(&mut self, count: u32) -> crate::Result<()> {
         // TODO: make it more efficient
         let mut vec = Vec::with_capacity(count as usize);
-        self.read_exact_to_vec(count as usize, &mut vec).map(|_| ())
+        self.read_exact_to_vec(count as usize, &mut vec)
     }
 
     fn do_fill_buf(&mut self) -> crate::Result<()> {
