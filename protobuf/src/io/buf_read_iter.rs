@@ -14,10 +14,11 @@ use bytes::Bytes;
 #[cfg(feature = "bytes")]
 use bytes::BytesMut;
 
-use crate::buf_read_or_reader::BufReadOrReader;
 use crate::coded_input_stream::READ_RAW_BYTES_MAX_ALLOC;
 use crate::error::ProtobufError;
 use crate::error::WireError;
+use crate::io::buf_read_or_reader::BufReadOrReader;
+use crate::io::input_source::InputSource;
 use crate::misc::maybe_uninit_write_slice;
 use crate::misc::vec_spare_capacity_mut;
 
@@ -26,14 +27,6 @@ use crate::misc::vec_spare_capacity_mut;
 const INPUT_STREAM_BUFFER_SIZE: usize = 4096;
 
 const NO_LIMIT: u64 = u64::MAX;
-
-/// Hold all possible combinations of input source
-enum InputSource<'a> {
-    Read(BufReadOrReader<'a>),
-    Slice(&'a [u8]),
-    #[cfg(feature = "bytes")]
-    Bytes(&'a Bytes),
-}
 
 /// Dangerous implementation of `BufRead`.
 ///

@@ -7,12 +7,12 @@ use std::mem::MaybeUninit;
 #[cfg(feature = "bytes")]
 use ::bytes::Bytes;
 
-use crate::buf_read_iter::BufReadIter;
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;
 use crate::enums::Enum;
 use crate::error::ProtobufError;
 use crate::error::WireError;
+use crate::io::buf_read_iter::BufReadIter;
 use crate::misc::maybe_ununit_array_assume_init;
 use crate::reflect::types::ProtobufType;
 use crate::reflect::types::ProtobufTypeBool;
