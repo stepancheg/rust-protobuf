@@ -17,7 +17,6 @@ use bytes::BytesMut;
 use crate::buf_read_or_reader::BufReadOrReader;
 use crate::coded_input_stream::READ_RAW_BYTES_MAX_ALLOC;
 use crate::error::ProtobufError;
-use crate::error::Result;
 use crate::error::WireError;
 use crate::misc::maybe_uninit_write_slice;
 use crate::misc::vec_spare_capacity_mut;
@@ -144,7 +143,7 @@ impl<'ignore> BufReadIter<'ignore> {
         self.assertions();
     }
 
-    pub(crate) fn push_limit(&mut self, limit: u64) -> Result<u64> {
+    pub(crate) fn push_limit(&mut self, limit: u64) -> crate::Result<u64> {
         let new_limit = match self.pos().checked_add(limit) {
             Some(new_limit) => new_limit,
             None => return Err(ProtobufError::WireError(WireError::LimitOverflow).into()),
@@ -198,7 +197,7 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     #[inline(always)]
-    pub(crate) fn eof(&mut self) -> Result<bool> {
+    pub(crate) fn eof(&mut self) -> crate::Result<bool> {
         if self.pos_within_buf == self.limit_within_buf {
             Ok(self.fill_buf()?.is_empty())
         } else {
@@ -207,7 +206,7 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     #[inline(always)]
-    pub(crate) fn read_byte(&mut self) -> Result<u8> {
+    pub(crate) fn read_byte(&mut self) -> crate::Result<u8> {
         if self.pos_within_buf == self.limit_within_buf {
             self.do_fill_buf()?;
             if self.remaining_in_buf_len() == 0 {
@@ -225,7 +224,7 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     #[cfg(feature = "bytes")]
-    pub(crate) fn read_exact_bytes(&mut self, len: usize) -> Result<Bytes> {
+    pub(crate) fn read_exact_bytes(&mut self, len: usize) -> crate::Result<Bytes> {
         if let InputSource::Bytes(bytes) = self.input_source {
             let end = match self.pos_within_buf.checked_add(len) {
                 Some(end) => end,
@@ -265,7 +264,7 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     /// Returns 0 when EOF or limit reached.
-    pub(crate) fn read(&mut self, buf: &mut [u8]) -> Result<usize> {
+    pub(crate) fn read(&mut self, buf: &mut [u8]) -> crate::Result<usize> {
         let rem = self.fill_buf()?;
 
         let len = cmp::min(rem.len(), buf.len());
@@ -277,7 +276,7 @@ impl<'ignore> BufReadIter<'ignore> {
     /// Read at most `max` bytes.
     ///
     /// Returns 0 when EOF or limit reached.
-    fn read_to_vec(&mut self, vec: &mut Vec<u8>, max: usize) -> Result<usize> {
+    fn read_to_vec(&mut self, vec: &mut Vec<u8>, max: usize) -> crate::Result<usize> {
         let rem = self.fill_buf()?;
 
         let len = cmp::min(rem.len(), max);
@@ -286,7 +285,7 @@ impl<'ignore> BufReadIter<'ignore> {
         Ok(len)
     }
 
-    fn read_exact_slow(&mut self, buf: &mut [MaybeUninit<u8>]) -> Result<()> {
+    fn read_exact_slow(&mut self, buf: &mut [MaybeUninit<u8>]) -> crate::Result<()> {
         if self.bytes_until_limit() < buf.len() as u64 {
             return Err(ProtobufError::WireError(WireError::UnexpectedEof).into());
         }
@@ -315,7 +314,7 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     #[inline]
-    pub(crate) fn read_exact(&mut self, buf: &mut [MaybeUninit<u8>]) -> Result<()> {
+    pub(crate) fn read_exact(&mut self, buf: &mut [MaybeUninit<u8>]) -> crate::Result<()> {
         if self.remaining_in_buf_len() >= buf.len() {
             let buf_len = buf.len();
             maybe_uninit_write_slice(
@@ -331,7 +330,11 @@ impl<'ignore> BufReadIter<'ignore> {
 
     /// Read raw bytes into the supplied vector.  The vector will be resized as needed and
     /// overwritten.
-    pub(crate) fn read_exact_to_vec(&mut self, count: usize, target: &mut Vec<u8>) -> Result<()> {
+    pub(crate) fn read_exact_to_vec(
+        &mut self,
+        count: usize,
+        target: &mut Vec<u8>,
+    ) -> crate::Result<()> {
         // TODO: also do some limits when reading from unlimited source
         if count as u64 > self.bytes_until_limit() {
             return Err(ProtobufError::WireError(WireError::TruncatedMessage).into());
@@ -371,13 +374,13 @@ impl<'ignore> BufReadIter<'ignore> {
         Ok(())
     }
 
-    pub(crate) fn skip_bytes(&mut self, count: u32) -> Result<()> {
+    pub(crate) fn skip_bytes(&mut self, count: u32) -> crate::Result<()> {
         // TODO: make it more efficient
         let mut vec = Vec::with_capacity(count as usize);
         self.read_exact_to_vec(count as usize, &mut vec).map(|_| ())
     }
 
-    fn do_fill_buf(&mut self) -> Result<()> {
+    fn do_fill_buf(&mut self) -> crate::Result<()> {
         debug_assert!(self.pos_within_buf == self.limit_within_buf);
 
         // Limit is reached, do not fill buf, because otherwise
@@ -408,7 +411,7 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     #[inline(always)]
-    pub(crate) fn fill_buf(&mut self) -> Result<&[u8]> {
+    pub(crate) fn fill_buf(&mut self) -> crate::Result<&[u8]> {
         if self.pos_within_buf == self.limit_within_buf {
             // TODO: paritally inline this.
             self.do_fill_buf()?;
