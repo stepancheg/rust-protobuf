@@ -242,6 +242,19 @@ impl<'ignore> BufReadIter<'ignore> {
         Ok(len)
     }
 
+    fn consume_buf(&mut self) -> crate::Result<()> {
+        match &mut self.input_source {
+            InputSource::Read(read) => {
+                read.consume(self.buf.pos_within_buf());
+                self.pos_of_buf_start += self.buf.pos_within_buf() as u64;
+                self.buf = InputBuf::empty();
+                self.assertions();
+                Ok(())
+            }
+            _ => Err(WireError::UnexpectedEof.into()),
+        }
+    }
+
     /// Read at most `max` bytes.
     ///
     /// Returns 0 when EOF or limit reached.
@@ -259,25 +272,17 @@ impl<'ignore> BufReadIter<'ignore> {
             return Err(ProtobufError::WireError(WireError::UnexpectedEof).into());
         }
 
-        let consume = self.buf.pos_within_buf();
-        self.pos_of_buf_start += self.buf.pos_within_buf() as u64;
-        self.buf = InputBuf::empty();
+        self.consume_buf()?;
 
         match &mut self.input_source {
             InputSource::Read(buf_read) => {
-                buf_read.consume(consume);
                 buf_read.read_exact_uninit(buf)?;
+                self.pos_of_buf_start += buf.len() as u64;
+                self.assertions();
+                Ok(())
             }
-            _ => {
-                return Err(ProtobufError::WireError(WireError::UnexpectedEof).into());
-            }
+            _ => unreachable!(),
         }
-
-        self.pos_of_buf_start += buf.len() as u64;
-
-        self.assertions();
-
-        Ok(())
     }
 
     #[inline]
@@ -337,9 +342,26 @@ impl<'ignore> BufReadIter<'ignore> {
     }
 
     pub(crate) fn skip_bytes(&mut self, count: u32) -> crate::Result<()> {
-        // TODO: make it more efficient
-        let mut vec = Vec::with_capacity(count as usize);
-        self.read_exact_to_vec(count as usize, &mut vec)
+        if count as usize <= self.remaining_in_buf_len() {
+            self.buf.consume(count as usize);
+            return Ok(());
+        }
+
+        if count as u64 > self.bytes_until_limit() {
+            return Err(WireError::TruncatedMessage.into());
+        }
+
+        self.consume_buf()?;
+
+        match &mut self.input_source {
+            InputSource::Read(read) => {
+                read.skip_bytes(count as usize)?;
+                self.pos_of_buf_start += count as u64;
+                self.assertions();
+                Ok(())
+            }
+            _ => unreachable!(),
+        }
     }
 
     fn do_fill_buf(&mut self) -> crate::Result<()> {
@@ -351,23 +373,23 @@ impl<'ignore> BufReadIter<'ignore> {
             return Ok(());
         }
 
-        let consume = self.buf.pos_within_buf();
-        self.pos_of_buf_start += consume as u64;
-        self.buf = InputBuf::empty();
+        match self.input_source {
+            InputSource::Read(..) => {}
+            _ => return Ok(()),
+        }
+
+        self.consume_buf()?;
 
         match self.input_source {
             InputSource::Read(ref mut buf_read) => {
-                buf_read.consume(consume);
                 self.buf = unsafe { InputBuf::from_bytes_ignore_lifetime(buf_read.fill_buf()?) };
+                self.update_limit_within_buf();
+                Ok(())
             }
             _ => {
-                return Ok(());
+                unreachable!();
             }
         }
-
-        self.update_limit_within_buf();
-
-        Ok(())
     }
 
     #[inline(always)]

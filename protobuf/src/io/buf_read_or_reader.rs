@@ -76,6 +76,23 @@ impl<'a> BufReadOrReader<'a> {
         }
         Ok(())
     }
+
+    pub(crate) fn skip_bytes(&mut self, count: usize) -> Result<(), io::Error> {
+        let mut rem = count;
+        while rem != 0 {
+            let buf = self.fill_buf()?;
+            if buf.is_empty() {
+                return Err(io::Error::new(
+                    io::ErrorKind::UnexpectedEof,
+                    "Unexpected end of file",
+                ));
+            }
+            let consume = cmp::min(buf.len(), rem);
+            self.consume(consume);
+            rem -= consume;
+        }
+        Ok(())
+    }
 }
 
 impl<'a> BufRead for BufReadOrReader<'a> {
