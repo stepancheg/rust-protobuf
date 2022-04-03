@@ -368,10 +368,10 @@ impl FieldDescriptor {
     ///
     /// If this field belongs to a different message type or fields is not singular.
     pub fn get_singular_field_or_default<'a>(&self, m: &'a dyn MessageDyn) -> ReflectValueRef<'a> {
-        let (descriptor, index) = self.regular();
         match self.get_singular(m) {
             Some(m) => m,
             None => {
+                let (descriptor, index) = self.regular();
                 let message_index = match self.singular() {
                     SingularFieldAccessorRef::Generated(..) => descriptor.generated_index(),
                     SingularFieldAccessorRef::Dynamic(..) => {
