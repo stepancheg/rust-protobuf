@@ -1,10 +1,13 @@
 use protobuf::MessageFull;
+use protobuf_test_common::test_serialize_deserialize_with_dynamic;
 
 use super::test_optional_pb::*;
 
 #[test]
-fn test() {
-    let _message = TestOptionalProto3::new();
+fn serialize_deserialize() {
+    let mut message = TestOptionalProto3::new();
+    message.iii = Some(0x1a);
+    test_serialize_deserialize_with_dynamic("f8 01 1a", &message);
 }
 
 #[test]
