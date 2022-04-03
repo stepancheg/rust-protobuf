@@ -63,14 +63,6 @@ impl FieldGen<'_> {
         ]
     }
 
-    fn make_accessor_fns_has_get(&self) -> Vec<String> {
-        let message = self.proto_field.message.rust_name();
-        vec![
-            format!("{}::has_{}", message, self.rust_name),
-            format!("{}::{}", message, self.rust_name),
-        ]
-    }
-
     fn make_accessor_fns_has_get_set(&self) -> Vec<String> {
         let message = self.proto_field.message.rust_name();
         vec![
@@ -167,21 +159,11 @@ impl FieldGen<'_> {
         }
     }
 
-    fn accessor_fn_singular_without_flag(&self, elem: &FieldElem) -> AccessorFn {
-        if let &FieldElem::Message(ref m, ..) = elem {
-            // TODO: old style, needed because of default instance
-
-            AccessorFn {
-                name: "make_singular_message_accessor".to_owned(),
-                type_params: vec![format!("{}", m.rust_name_relative(&self.file_and_mod()))],
-                callback_params: self.make_accessor_fns_has_get(),
-            }
-        } else {
-            AccessorFn {
-                name: "make_simpler_field_accessor".to_owned(),
-                type_params: vec![format!("_")],
-                callback_params: self.make_accessor_fns_lambda(),
-            }
+    fn accessor_fn_singular_without_flag(&self, _elem: &FieldElem) -> AccessorFn {
+        AccessorFn {
+            name: "make_simpler_field_accessor".to_owned(),
+            type_params: vec![format!("_")],
+            callback_params: self.make_accessor_fns_lambda(),
         }
     }
 
