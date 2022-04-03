@@ -591,6 +591,7 @@ impl<'a> FieldGen<'a> {
                     let flag = if field.message.scope.file_scope.syntax() == Syntax::Proto3
                         && field.field.proto().field_type()
                             != field_descriptor_proto::Type::TYPE_MESSAGE
+                        && !field.field.proto().proto3_optional()
                     {
                         SingularFieldFlag::WithoutFlag
                     } else {
