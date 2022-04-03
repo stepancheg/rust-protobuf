@@ -1,6 +1,7 @@
 //! `BufRead` pointer or `BufReader` owned.
 
 use std::cmp;
+use std::fmt;
 use std::io;
 use std::io::BufRead;
 use std::io::BufReader;
@@ -13,6 +14,15 @@ use crate::misc::maybe_uninit_write_slice;
 pub(crate) enum BufReadOrReader<'a> {
     BufReader(BufReader<&'a mut dyn Read>),
     BufRead(&'a mut dyn BufRead),
+}
+
+impl<'a> fmt::Debug for BufReadOrReader<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            BufReadOrReader::BufReader(..) => write!(f, "BufReader(...)"),
+            BufReadOrReader::BufRead(..) => write!(f, "BufRead(...)"),
+        }
+    }
 }
 
 impl<'a> Read for BufReadOrReader<'a> {

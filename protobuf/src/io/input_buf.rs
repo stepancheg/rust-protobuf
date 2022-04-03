@@ -3,6 +3,7 @@ use std::mem::MaybeUninit;
 
 use crate::misc::maybe_uninit_write_slice;
 
+#[derive(Debug)]
 pub(crate) struct InputBuf<'a> {
     // Invariants: `0 <= pos_within_buf <= limit_within_buf <= buf.len()`.
     buf: &'a [u8],

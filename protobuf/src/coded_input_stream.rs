@@ -49,6 +49,7 @@ const DEFAULT_RECURSION_LIMIT: u32 = 100;
 pub(crate) const READ_RAW_BYTES_MAX_ALLOC: usize = 10_000_000;
 
 /// Buffered read with handy utilities.
+#[derive(Debug)]
 pub struct CodedInputStream<'a> {
     source: BufReadIter<'a>,
     recursion_level: u32,

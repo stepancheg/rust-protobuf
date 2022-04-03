@@ -42,6 +42,7 @@ const NO_LIMIT: u64 = u64::MAX;
 /// It is important for `CodedInputStream` performance that small reads
 /// (e. g. 4 bytes reads) do not involve virtual calls or switches.
 /// This is achievable with `BufReadIter`.
+#[derive(Debug)]
 pub(crate) struct BufReadIter<'a> {
     input_source: InputSource<'a>,
     buf: InputBuf<'a>,
