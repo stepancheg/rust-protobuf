@@ -568,7 +568,7 @@ impl<'a> Parser<'a> {
     // Fields
 
     // label = "required" | "optional" | "repeated"
-    fn next_label(&mut self, mode: MessageBodyParseMode) -> anyhow::Result<Rule> {
+    fn next_label(&mut self, mode: MessageBodyParseMode) -> anyhow::Result<Option<Rule>> {
         for rule in Rule::ALL {
             let mut clone = self.clone();
             if clone.tokenizer.next_ident_if_eq(rule.as_str())? {
@@ -577,14 +577,14 @@ impl<'a> Parser<'a> {
                 }
 
                 *self = clone;
-                return Ok(rule);
+                return Ok(Some(rule));
             }
         }
 
         if mode.some_label_required() {
             Err(ParserError::LabelRequired.into())
         } else {
-            Ok(Rule::Optional)
+            Ok(None)
         }
     }
 
@@ -657,7 +657,7 @@ impl<'a> Parser<'a> {
             if !mode.map_allowed() {
                 return Err(ParserError::MapFieldNotAllowed.into());
             }
-            Rule::Optional
+            None
         } else {
             self.next_label(mode)?
         };

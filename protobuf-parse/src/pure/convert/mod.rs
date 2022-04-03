@@ -551,17 +551,18 @@ fn syntax(input: model::Syntax) -> String {
     }
 }
 
-fn label(input: model::Rule) -> protobuf::descriptor::field_descriptor_proto::Label {
+fn label(input: Option<model::Rule>) -> protobuf::descriptor::field_descriptor_proto::Label {
     match input {
-        model::Rule::Optional => {
+        Some(model::Rule::Optional) => {
             protobuf::descriptor::field_descriptor_proto::Label::LABEL_OPTIONAL
         }
-        model::Rule::Required => {
+        Some(model::Rule::Required) => {
             protobuf::descriptor::field_descriptor_proto::Label::LABEL_REQUIRED
         }
-        model::Rule::Repeated => {
+        Some(model::Rule::Repeated) => {
             protobuf::descriptor::field_descriptor_proto::Label::LABEL_REPEATED
         }
+        None => protobuf::descriptor::field_descriptor_proto::Label::LABEL_OPTIONAL,
     }
 }
 
