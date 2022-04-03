@@ -384,7 +384,7 @@ impl<'a> MessageWithScope<'a> {
 
     pub fn oneofs(&self) -> Vec<OneofWithContext<'a>> {
         self.message
-            .all_oneofs()
+            .oneofs()
             .into_iter()
             .map(|oneof| OneofWithContext {
                 message: self.clone(),
@@ -515,11 +515,11 @@ pub(crate) struct FieldWithContext<'a> {
 
 impl<'a> FieldWithContext<'a> {
     pub fn is_oneof(&self) -> bool {
-        self.field.containing_oneof_including_synthetic().is_some()
+        self.field.containing_oneof().is_some()
     }
 
     pub fn oneof(&self) -> Option<OneofWithContext<'a>> {
-        match self.field.containing_oneof_including_synthetic() {
+        match self.field.containing_oneof() {
             Some(oneof) => Some(OneofWithContext {
                 message: self.message.clone(),
                 oneof,
@@ -570,9 +570,7 @@ impl<'a> OneofWithContext<'a> {
         self.message
             .fields()
             .into_iter()
-            .filter(|f| {
-                f.field.containing_oneof_including_synthetic().as_ref() == Some(&self.oneof)
-            })
+            .filter(|f| f.field.containing_oneof().as_ref() == Some(&self.oneof))
             .map(|f| OneofVariantWithContext {
                 oneof: self,
                 field: f.field,
