@@ -149,23 +149,20 @@ impl Version {
 
     fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
         let mut fields = ::std::vec::Vec::with_capacity(4);
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
             "major",
             |m: &Version| { &m.major },
             |m: &mut Version| { &mut m.major },
-            Version::major,
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
             "minor",
             |m: &Version| { &m.minor },
             |m: &mut Version| { &mut m.minor },
-            Version::minor,
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
             "patch",
             |m: &Version| { &m.patch },
             |m: &mut Version| { &mut m.patch },
-            Version::patch,
         ));
         fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "suffix",
@@ -654,11 +651,10 @@ impl CodeGeneratorResponse {
             |m: &mut CodeGeneratorResponse| { &mut m.error },
             CodeGeneratorResponse::error,
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_simpler_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
             "supported_features",
             |m: &CodeGeneratorResponse| { &m.supported_features },
             |m: &mut CodeGeneratorResponse| { &mut m.supported_features },
-            CodeGeneratorResponse::supported_features,
         ));
         fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
             "file",

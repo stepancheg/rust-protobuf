@@ -490,12 +490,10 @@ where
 }
 
 /// Make accessor for `Option<C>` field
-pub fn make_option_get_copy_simpler_accessor<M, V>(
+pub fn make_option_get_copy_accessor<M, V>(
     name: &'static str,
     get_field: for<'a> fn(&'a M) -> &'a Option<V>,
     mut_field: for<'a> fn(&'a mut M) -> &'a mut Option<V>,
-    // TODO: remove this
-    _get_value: fn(&M) -> V,
 ) -> FieldAccessor
 where
     M: MessageFull + 'static,
