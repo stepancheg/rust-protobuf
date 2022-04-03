@@ -4,7 +4,7 @@ use crate::Os;
 use crate::MACOS;
 
 pub(crate) fn install_protobuf(os: Os) -> Vec<Step> {
-    let protobuf_version = "3.20.0";
+    let protobuf_version = "3.19.4";
 
     let mut steps = Vec::new();
     steps.push(cache(

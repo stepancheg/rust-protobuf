@@ -22,7 +22,7 @@ jobs:
             - name: Cache protobuf
               uses: actions/cache@v2
               with:
-                  key: pb-linux-3.20.0
+                  key: pb-linux-3.19.4
                   path: ~/pb
               env:
                   cache-name: pb
@@ -30,7 +30,7 @@ jobs:
               run: ci/install-protobuf.sh
               shell: bash
               env:
-                  PROTOBUF_VERSION: 3.20.0
+                  PROTOBUF_VERSION: 3.19.4
             - name: Protoc check
               run: protoc --version
               shell: bash
@@ -67,7 +67,7 @@ jobs:
             - name: Cache protobuf
               uses: actions/cache@v2
               with:
-                  key: pb-linux-3.20.0
+                  key: pb-linux-3.19.4
                   path: ~/pb
               env:
                   cache-name: pb
@@ -75,7 +75,7 @@ jobs:
               run: ci/install-protobuf.sh
               shell: bash
               env:
-                  PROTOBUF_VERSION: 3.20.0
+                  PROTOBUF_VERSION: 3.19.4
             - name: Protoc check
               run: protoc --version
               shell: bash
@@ -112,7 +112,7 @@ jobs:
             - name: Cache protobuf
               uses: actions/cache@v2
               with:
-                  key: pb-linux-3.20.0
+                  key: pb-linux-3.19.4
                   path: ~/pb
               env:
                   cache-name: pb
@@ -120,7 +120,7 @@ jobs:
               run: ci/install-protobuf.sh
               shell: bash
               env:
-                  PROTOBUF_VERSION: 3.20.0
+                  PROTOBUF_VERSION: 3.19.4
             - name: Protoc check
               run: protoc --version
               shell: bash
@@ -154,7 +154,7 @@ jobs:
             - name: Cache protobuf
               uses: actions/cache@v2
               with:
-                  key: pb-linux-3.20.0
+                  key: pb-linux-3.19.4
                   path: ~/pb
               env:
                   cache-name: pb
@@ -162,7 +162,7 @@ jobs:
               run: ci/install-protobuf.sh
               shell: bash
               env:
-                  PROTOBUF_VERSION: 3.20.0
+                  PROTOBUF_VERSION: 3.19.4
             - name: Protoc check
               run: protoc --version
               shell: bash
@@ -198,7 +198,7 @@ jobs:
             - name: Cache protobuf
               uses: actions/cache@v2
               with:
-                  key: pb-windows-3.20.0
+                  key: pb-windows-3.19.4
                   path: ~/pb
               env:
                   cache-name: pb
@@ -206,7 +206,7 @@ jobs:
               run: ci/install-protobuf.sh
               shell: bash
               env:
-                  PROTOBUF_VERSION: 3.20.0
+                  PROTOBUF_VERSION: 3.19.4
             - name: Protoc check
               run: protoc --version
               shell: bash
@@ -269,7 +269,7 @@ jobs:
             - name: Cache protobuf
               uses: actions/cache@v2
               with:
-                  key: pb-linux-3.20.0
+                  key: pb-linux-3.19.4
                   path: ~/pb
               env:
                   cache-name: pb
@@ -277,7 +277,7 @@ jobs:
               run: ci/install-protobuf.sh
               shell: bash
               env:
-                  PROTOBUF_VERSION: 3.20.0
+                  PROTOBUF_VERSION: 3.19.4
             - name: Protoc check
               run: protoc --version
               shell: bash
