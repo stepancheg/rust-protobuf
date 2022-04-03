@@ -1,7 +1,6 @@
 use std::fmt;
 use std::marker;
 
-use crate::enum_or_unknown::EnumOrUnknown;
 use crate::message::Message;
 use crate::message_dyn::MessageDyn;
 use crate::message_field::MessageField;
@@ -14,7 +13,6 @@ use crate::reflect::MessageRef;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
-use crate::EnumFull;
 
 pub(crate) mod oneof;
 
@@ -516,23 +514,6 @@ where
             }),
         }),
     )
-}
-
-struct GetOrDefaultEnum<M, E: EnumFull> {
-    get_field: for<'a> fn(&'a M) -> &'a Option<EnumOrUnknown<E>>,
-    default_value: E,
-}
-
-impl<M: MessageFull, E: EnumFull> GetOrDefaultImpl<M> for GetOrDefaultEnum<M, E> {
-    fn get_singular_field_or_default_impl<'a>(&self, m: &'a M) -> ReflectValueRef<'a> {
-        ReflectValueRef::Enum(
-            E::enum_descriptor_static(),
-            match (self.get_field)(m) {
-                Some(e) => e.value(),
-                None => self.default_value.value(),
-            },
-        )
-    }
 }
 
 /// String or bytes field
