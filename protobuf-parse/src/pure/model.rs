@@ -79,6 +79,18 @@ pub(crate) enum Rule {
     Required,
 }
 
+impl Rule {
+    pub(crate) const ALL: [Rule; 3] = [Rule::Optional, Rule::Repeated, Rule::Required];
+
+    pub(crate) const fn as_str(&self) -> &'static str {
+        match self {
+            Rule::Optional => "optional",
+            Rule::Repeated => "repeated",
+            Rule::Required => "required",
+        }
+    }
+}
+
 /// Protobuf group
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) struct Group {

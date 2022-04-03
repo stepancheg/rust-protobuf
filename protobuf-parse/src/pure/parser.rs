@@ -569,20 +569,15 @@ impl<'a> Parser<'a> {
 
     // label = "required" | "optional" | "repeated"
     fn next_label(&mut self, mode: MessageBodyParseMode) -> anyhow::Result<Rule> {
-        let map = &[
-            ("optional", Rule::Optional),
-            ("required", Rule::Required),
-            ("repeated", Rule::Repeated),
-        ];
-        for &(name, value) in map {
+        for rule in Rule::ALL {
             let mut clone = self.clone();
-            if clone.tokenizer.next_ident_if_eq(name)? {
-                if !mode.label_allowed(value) {
+            if clone.tokenizer.next_ident_if_eq(rule.as_str())? {
+                if !mode.label_allowed(rule) {
                     return Err(ParserError::LabelNotAllowed.into());
                 }
 
                 *self = clone;
-                return Ok(value);
+                return Ok(rule);
             }
         }
 
