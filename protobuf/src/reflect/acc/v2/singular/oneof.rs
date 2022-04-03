@@ -3,9 +3,6 @@ use std::marker;
 use crate::reflect::acc::v2::singular::GetOptionImplHasGetCopy;
 use crate::reflect::acc::v2::singular::GetOptionImplHasGetRef;
 use crate::reflect::acc::v2::singular::GetOptionImplHasGetRefDeref;
-use crate::reflect::acc::v2::singular::GetOrDefaultGetCopy;
-use crate::reflect::acc::v2::singular::GetOrDefaultGetRef;
-use crate::reflect::acc::v2::singular::GetOrDefaultGetRefDeref;
 use crate::reflect::acc::v2::singular::MutOrDefaultGetMut;
 use crate::reflect::acc::v2::singular::MutOrDefaultUnmplemented;
 use crate::reflect::acc::v2::singular::SetImplSetField;
@@ -39,12 +36,11 @@ where
     FieldAccessor::new_v2(
         name,
         AccessorV2::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(SingularFieldAccessorImpl::<M, F, _, _, _, _> {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, F, _, _, _> {
                 get_option_impl: GetOptionImplHasGetRef::<M, F> {
                     get: get_field,
                     has: has_field,
                 },
-                get_or_default_impl: GetOrDefaultGetRef::<M, F> { get_field },
                 mut_or_default_impl: MutOrDefaultGetMut::<M, F> { mut_field },
                 set_impl: SetImplSetField::<M, F> { set_field },
                 _marker: marker::PhantomData,
@@ -67,9 +63,8 @@ where
     FieldAccessor::new_v2(
         name,
         AccessorV2::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _, _> {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
                 get_option_impl: GetOptionImplHasGetCopy::<M, V> { has, get },
-                get_or_default_impl: GetOrDefaultGetCopy::<M, V> { get_field: get },
                 mut_or_default_impl: MutOrDefaultUnmplemented::new(),
                 set_impl: SetImplSetField::<M, V> { set_field: set },
                 _marker: marker::PhantomData,
@@ -81,7 +76,6 @@ where
 struct OneofEnumAccessor<M: MessageFull, E: EnumFull> {
     get: fn(&M) -> Option<EnumOrUnknown<E>>,
     set: fn(&mut M, EnumOrUnknown<E>),
-    default_value: E,
 }
 
 impl<M: MessageFull, E: EnumFull> SingularFieldAccessor for OneofEnumAccessor<M, E> {
@@ -89,13 +83,6 @@ impl<M: MessageFull, E: EnumFull> SingularFieldAccessor for OneofEnumAccessor<M,
         let m = m.downcast_ref().unwrap();
         let value = (self.get)(m);
         value.map(|v| ReflectValueRef::Enum(E::enum_descriptor_static(), v.value()))
-    }
-
-    fn get_field_or_default<'a>(&self, m: &'a dyn MessageDyn) -> ReflectValueRef<'a> {
-        let m = m.downcast_ref().unwrap();
-        let value = (self.get)(m);
-        let value = value.unwrap_or(EnumOrUnknown::new(self.default_value));
-        ReflectValueRef::Enum(E::enum_descriptor_static(), value.value())
     }
 
     fn mut_field_or_default<'a>(&self, _m: &'a mut dyn MessageDyn) -> ReflectValueMut<'a> {
@@ -119,7 +106,8 @@ pub fn make_oneof_enum_accessors<M, E>(
     name: &'static str,
     get: fn(&M) -> Option<EnumOrUnknown<E>>,
     set: fn(&mut M, EnumOrUnknown<E>),
-    default_value: E,
+    // TODO: remove this
+    _default_value: E,
 ) -> FieldAccessor
 where
     M: MessageFull,
@@ -128,11 +116,7 @@ where
     FieldAccessor::new_v2(
         name,
         AccessorV2::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(OneofEnumAccessor {
-                get,
-                set,
-                default_value,
-            }),
+            accessor: Box::new(OneofEnumAccessor { get, set }),
         }),
     )
 }
@@ -152,9 +136,8 @@ where
     FieldAccessor::new_v2(
         name,
         AccessorV2::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(SingularFieldAccessorImpl::<M, F, _, _, _, _> {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, F, _, _, _> {
                 get_option_impl: GetOptionImplHasGetRefDeref::<M, F> { has, get },
-                get_or_default_impl: GetOrDefaultGetRefDeref::<M, F> { get_field: get },
                 mut_or_default_impl: MutOrDefaultUnmplemented::new(),
                 set_impl: SetImplSetField::<M, F> { set_field: set },
                 _marker: marker::PhantomData,
