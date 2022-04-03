@@ -535,45 +535,6 @@ impl<M: MessageFull, E: EnumFull> GetOrDefaultImpl<M> for GetOrDefaultEnum<M, E>
     }
 }
 
-/// Make accessor for enum field
-pub fn make_option_enum_accessor<M, E>(
-    name: &'static str,
-    get_field: for<'a> fn(&'a M) -> &'a Option<EnumOrUnknown<E>>,
-    mut_field: for<'a> fn(&'a mut M) -> &'a mut Option<EnumOrUnknown<E>>,
-    // TODO: remove this
-    _default_value: E,
-) -> FieldAccessor
-where
-    M: MessageFull,
-    E: EnumFull,
-{
-    FieldAccessor::new_v2(
-        name,
-        AccessorV2::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(SingularFieldAccessorImpl::<M, EnumOrUnknown<E>, _, _, _> {
-                get_option_impl: GetOptionImplOptionFieldPointer::<
-                    M,
-                    EnumOrUnknown<E>,
-                    Option<EnumOrUnknown<E>>,
-                > {
-                    get_field,
-                    _marker: marker::PhantomData,
-                },
-                mut_or_default_impl: MutOrDefaultUnmplemented::new(),
-                set_impl: SetImplOptionFieldPointer::<
-                    M,
-                    EnumOrUnknown<E>,
-                    Option<EnumOrUnknown<E>>,
-                > {
-                    mut_field,
-                    _marker: marker::PhantomData,
-                },
-                _marker: marker::PhantomData,
-            }),
-        }),
-    )
-}
-
 /// String or bytes field
 pub fn make_option_get_ref_simpler_accessor<M, V>(
     name: &'static str,

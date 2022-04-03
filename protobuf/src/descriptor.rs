@@ -1933,17 +1933,15 @@ impl FieldDescriptorProto {
             |m: &FieldDescriptorProto| { &m.number },
             |m: &mut FieldDescriptorProto| { &mut m.number },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_enum_accessor::<_, field_descriptor_proto::Label>(
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
             "label",
             |m: &FieldDescriptorProto| { &m.label },
             |m: &mut FieldDescriptorProto| { &mut m.label },
-            field_descriptor_proto::Label::LABEL_OPTIONAL,
         ));
-        fields.push(crate::reflect::rt::v2::make_option_enum_accessor::<_, field_descriptor_proto::Type>(
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
             "type",
             |m: &FieldDescriptorProto| { &m.field_type },
             |m: &mut FieldDescriptorProto| { &mut m.field_type },
-            field_descriptor_proto::Type::TYPE_DOUBLE,
         ));
         fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "type_name",
@@ -4537,11 +4535,10 @@ impl FileOptions {
             |m: &FileOptions| { &m.java_string_check_utf8 },
             |m: &mut FileOptions| { &mut m.java_string_check_utf8 },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_enum_accessor::<_, file_options::OptimizeMode>(
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
             "optimize_for",
             |m: &FileOptions| { &m.optimize_for },
             |m: &mut FileOptions| { &mut m.optimize_for },
-            file_options::OptimizeMode::SPEED,
         ));
         fields.push(crate::reflect::rt::v2::make_option_get_ref_simpler_accessor::<_, _>(
             "go_package",
@@ -5509,22 +5506,20 @@ impl FieldOptions {
 
     fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
         let mut fields = ::std::vec::Vec::with_capacity(7);
-        fields.push(crate::reflect::rt::v2::make_option_enum_accessor::<_, field_options::CType>(
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
             "ctype",
             |m: &FieldOptions| { &m.ctype },
             |m: &mut FieldOptions| { &mut m.ctype },
-            field_options::CType::STRING,
         ));
         fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
             "packed",
             |m: &FieldOptions| { &m.packed },
             |m: &mut FieldOptions| { &mut m.packed },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_enum_accessor::<_, field_options::JSType>(
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
             "jstype",
             |m: &FieldOptions| { &m.jstype },
             |m: &mut FieldOptions| { &mut m.jstype },
-            field_options::JSType::JS_NORMAL,
         ));
         fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
             "lazy",
@@ -6606,11 +6601,10 @@ impl MethodOptions {
             |m: &MethodOptions| { &m.deprecated },
             |m: &mut MethodOptions| { &mut m.deprecated },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_enum_accessor::<_, method_options::IdempotencyLevel>(
+        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
             "idempotency_level",
             |m: &MethodOptions| { &m.idempotency_level },
             |m: &mut MethodOptions| { &mut m.idempotency_level },
-            method_options::IdempotencyLevel::IDEMPOTENCY_UNKNOWN,
         ));
         fields.push(crate::reflect::rt::v2::make_vec_simpler_accessor::<_, _>(
             "uninterpreted_option",

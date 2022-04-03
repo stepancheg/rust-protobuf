@@ -54,15 +54,6 @@ impl FieldGen<'_> {
         ]
     }
 
-    fn make_accessor_fns_lambda_default_value(&self) -> Vec<String> {
-        let message = self.proto_field.message.rust_name();
-        vec![
-            format!("|m: &{}| {{ &m.{} }}", message, self.rust_name),
-            format!("|m: &mut {}| {{ &mut m.{} }}", message, self.rust_name),
-            format!("{}", self.xxx_default_value_rust()),
-        ]
-    }
-
     fn make_accessor_fns_has_get_set(&self) -> Vec<String> {
         let message = self.proto_field.message.rust_name();
         vec![
@@ -184,15 +175,10 @@ impl FieldGen<'_> {
                 type_params: vec!["_".to_owned()],
                 callback_params: self.make_accessor_fns_lambda_get(),
             },
-            FieldElem::Primitive(..) => AccessorFn {
+            FieldElem::Primitive(..) | FieldElem::Enum(..) => AccessorFn {
                 name: "make_option_get_copy_accessor".to_owned(),
                 type_params: vec!["_".to_owned()],
                 callback_params: self.make_accessor_fns_lambda(),
-            },
-            FieldElem::Enum(ref en) => AccessorFn {
-                name: "make_option_enum_accessor".to_owned(),
-                type_params: vec![format!("{}", en.rust_name_relative(&self.file_and_mod()))],
-                callback_params: self.make_accessor_fns_lambda_default_value(),
             },
             FieldElem::Group => {
                 unreachable!("no accessor for group field");
