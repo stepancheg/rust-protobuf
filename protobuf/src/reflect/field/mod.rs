@@ -205,6 +205,17 @@ impl FieldDescriptor {
         }
     }
 
+    fn index_with_message_lifetime<'a>(&self, m: &'a dyn MessageDyn) -> &'a FieldIndex {
+        let (descriptor, index) = self.regular();
+        let message_index = match self.singular() {
+            SingularFieldAccessorRef::Generated(..) => descriptor.generated_index(),
+            SingularFieldAccessorRef::Dynamic(..) => {
+                DynamicMessage::downcast_ref(m).descriptor.index()
+            }
+        };
+        &message_index.fields[index]
+    }
+
     /// JSON field name.
     ///
     /// Can be different from `.proto` field name.
@@ -370,16 +381,7 @@ impl FieldDescriptor {
     pub fn get_singular_field_or_default<'a>(&self, m: &'a dyn MessageDyn) -> ReflectValueRef<'a> {
         match self.get_singular(m) {
             Some(m) => m,
-            None => {
-                let (descriptor, index) = self.regular();
-                let message_index = match self.singular() {
-                    SingularFieldAccessorRef::Generated(..) => descriptor.generated_index(),
-                    SingularFieldAccessorRef::Dynamic(..) => {
-                        DynamicMessage::downcast_ref(m).descriptor.index()
-                    }
-                };
-                message_index.fields[index].default_value(self)
-            }
+            None => self.index_with_message_lifetime(m).default_value(self),
         }
     }
 
