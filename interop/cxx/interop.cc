@@ -78,7 +78,7 @@ int main(int argc, const char** argv) {
         }
         auto json_ok = JsonStringToMessage(json_text, &m);
         if (!json_ok.ok()) {
-            cerr << "failed to JsonStringToMessage: " << json_ok.error_message() << "\n";
+            cerr << "failed to JsonStringToMessage: " << json_ok.message() << "\n";
             _exit(32);
         }
 
