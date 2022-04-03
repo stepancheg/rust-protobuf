@@ -734,7 +734,7 @@ mod test {
     }
 
     #[test]
-    fn test_input_stream_read_raw_varint_malformed() {
+    fn test_input_stream_read_raw_varint_too_long() {
         // varint cannot have length > 10
         test_read_partial("ff ff ff ff ff ff ff ff ff ff 01", |reader| {
             let error = reader.read_raw_varint64().unwrap_err().0;
