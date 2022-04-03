@@ -1,3 +1,4 @@
+use protobuf::reflect::ReflectValueRef;
 use protobuf::MessageFull;
 use protobuf_test_common::test_serialize_deserialize_with_dynamic;
 
@@ -42,4 +43,17 @@ fn reflect_oneofs() {
     let oneofs = descriptor.oneofs().collect::<Vec<_>>();
     assert_eq!(1, oneofs.len());
     assert!(!oneofs[0].is_synthetic());
+
+    let mut message = TestOptionalProto3::new();
+
+    let iii = descriptor.field_by_name("iii").unwrap();
+
+    assert_eq!(None, iii.get_singular(&mut message));
+
+    iii.set_singular_field(&mut message, 17.into());
+    assert_eq!(Some(17), message.iii);
+    assert_eq!(
+        Some(ReflectValueRef::I32(17)),
+        iii.get_singular(&mut message)
+    );
 }
