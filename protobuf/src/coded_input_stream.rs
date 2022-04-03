@@ -721,15 +721,21 @@ mod test {
             |reader| reader.read_raw_varint64(),
         );
 
-        test_read("ff ff ff ff ff ff ff ff ff 02", |is| {
-            assert!(is.read_raw_varint64().is_err());
-        });
-
         test_read_v("ff ff ff ff 0f", 0xffffffff, |reader| {
             reader.read_raw_varint32()
         });
         test_read_v("ff ff ff ff 0f", 0xffffffff, |reader| {
             reader.read_raw_varint64()
+        });
+    }
+
+    #[test]
+    fn test_input_stream_read_raw_varint_out_of_range() {
+        test_read_partial("ff ff ff ff ff ff ff ff ff 02", |is| {
+            assert!(is.read_raw_varint64().is_err());
+        });
+        test_read_partial("ff ff ff ff ff ff ff ff ff 02", |is| {
+            assert!(is.read_raw_varint32().is_err());
         });
     }
 
