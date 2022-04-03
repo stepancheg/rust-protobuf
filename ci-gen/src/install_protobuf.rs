@@ -17,7 +17,7 @@ pub(crate) fn install_protobuf(os: Os) -> Vec<Step> {
     }
 
     steps.push(
-        Step::run("Install protobuf", "ci/install-protobuf.sh").env("PROTOBUF_VERSION", "3.6.1"),
+        Step::run("Install protobuf", "ci/install-protobuf.sh").env("PROTOBUF_VERSION", "3.20.0"),
     );
     steps.push(Step::run("Protoc check", "protoc --version"));
     steps

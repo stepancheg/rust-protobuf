@@ -30,7 +30,7 @@ jobs:
               run: ci/install-protobuf.sh
               shell: bash
               env:
-                  PROTOBUF_VERSION: 3.6.1
+                  PROTOBUF_VERSION: 3.20.0
             - name: Protoc check
               run: protoc --version
               shell: bash
@@ -75,7 +75,7 @@ jobs:
               run: ci/install-protobuf.sh
               shell: bash
               env:
-                  PROTOBUF_VERSION: 3.6.1
+                  PROTOBUF_VERSION: 3.20.0
             - name: Protoc check
               run: protoc --version
               shell: bash
@@ -120,7 +120,7 @@ jobs:
               run: ci/install-protobuf.sh
               shell: bash
               env:
-                  PROTOBUF_VERSION: 3.6.1
+                  PROTOBUF_VERSION: 3.20.0
             - name: Protoc check
               run: protoc --version
               shell: bash
@@ -162,7 +162,7 @@ jobs:
               run: ci/install-protobuf.sh
               shell: bash
               env:
-                  PROTOBUF_VERSION: 3.6.1
+                  PROTOBUF_VERSION: 3.20.0
             - name: Protoc check
               run: protoc --version
               shell: bash
@@ -206,7 +206,7 @@ jobs:
               run: ci/install-protobuf.sh
               shell: bash
               env:
-                  PROTOBUF_VERSION: 3.6.1
+                  PROTOBUF_VERSION: 3.20.0
             - name: Protoc check
               run: protoc --version
               shell: bash
@@ -277,7 +277,7 @@ jobs:
               run: ci/install-protobuf.sh
               shell: bash
               env:
-                  PROTOBUF_VERSION: 3.6.1
+                  PROTOBUF_VERSION: 3.20.0
             - name: Protoc check
               run: protoc --version
               shell: bash
