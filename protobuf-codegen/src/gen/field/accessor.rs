@@ -1,5 +1,3 @@
-use protobuf::descriptor::field_descriptor_proto;
-
 use crate::gen::code_writer::CodeWriter;
 use crate::gen::field::FieldElem;
 use crate::gen::field::FieldElemEnum;
@@ -42,15 +40,6 @@ impl FieldGen<'_> {
         vec![
             format!("|m: &{}| {{ &m.{} }}", message, self.rust_name),
             format!("|m: &mut {}| {{ &mut m.{} }}", message, self.rust_name),
-        ]
-    }
-
-    fn make_accessor_fns_lambda_get(&self) -> Vec<String> {
-        let message = self.proto_field.message.rust_name();
-        vec![
-            format!("|m: &{}| {{ &m.{} }}", message, self.rust_name),
-            format!("|m: &mut {}| {{ &mut m.{} }}", message, self.rust_name),
-            format!("{}::{}", message, self.rust_name),
         ]
     }
 
@@ -168,12 +157,6 @@ impl FieldGen<'_> {
                 name: "make_message_field_accessor".to_owned(),
                 type_params: vec![format!("{}", m.rust_name_relative(&self.file_and_mod()))],
                 callback_params: self.make_accessor_fns_lambda(),
-            },
-            FieldElem::Primitive(field_descriptor_proto::Type::TYPE_STRING, ..)
-            | FieldElem::Primitive(field_descriptor_proto::Type::TYPE_BYTES, ..) => AccessorFn {
-                name: "make_option_get_ref_simpler_accessor".to_owned(),
-                type_params: vec!["_".to_owned()],
-                callback_params: self.make_accessor_fns_lambda_get(),
             },
             FieldElem::Primitive(..) | FieldElem::Enum(..) => AccessorFn {
                 name: "make_option_get_copy_accessor".to_owned(),

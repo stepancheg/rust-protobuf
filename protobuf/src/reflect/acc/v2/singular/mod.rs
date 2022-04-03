@@ -488,6 +488,7 @@ where
 }
 
 /// Make accessor for `Option<C>` field
+// TODO: rename: it is not only about copy
 pub fn make_option_get_copy_accessor<M, V>(
     name: &'static str,
     get_field: for<'a> fn(&'a M) -> &'a Option<V>,
@@ -496,38 +497,6 @@ pub fn make_option_get_copy_accessor<M, V>(
 where
     M: MessageFull + 'static,
     V: ProtobufValue + 'static,
-{
-    FieldAccessor::new_v2(
-        name,
-        AccessorV2::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
-                get_option_impl: GetOptionImplOptionFieldPointer::<M, V, _> {
-                    get_field,
-                    _marker: marker::PhantomData,
-                },
-                mut_or_default_impl: MutOrDefaultUnmplemented::new(),
-                set_impl: SetImplOptionFieldPointer::<M, V, _> {
-                    mut_field,
-                    _marker: marker::PhantomData,
-                },
-                _marker: marker::PhantomData,
-            }),
-        }),
-    )
-}
-
-/// String or bytes field
-pub fn make_option_get_ref_simpler_accessor<M, V>(
-    name: &'static str,
-    get_field: for<'a> fn(&'a M) -> &'a Option<V>,
-    mut_field: for<'a> fn(&'a mut M) -> &'a mut Option<V>,
-    // TODO: remove this
-    _get_value: for<'a> fn(&'a M) -> &'a <V::RuntimeType as RuntimeTypeWithDeref>::DerefTarget,
-) -> FieldAccessor
-where
-    M: MessageFull + 'static,
-    V: ProtobufValue + 'static,
-    V::RuntimeType: RuntimeTypeWithDeref,
 {
     FieldAccessor::new_v2(
         name,
