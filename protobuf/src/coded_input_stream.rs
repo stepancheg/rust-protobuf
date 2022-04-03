@@ -672,10 +672,19 @@ mod test {
         F: FnMut(&mut CodedInputStream),
     {
         let d = decode_hex(hex);
-        let mut reader = io::Cursor::new(d);
-        let mut is = CodedInputStream::from_buffered_reader(&mut reader as &mut dyn BufRead);
-        assert_eq!(0, is.pos());
-        callback(&mut is);
+        // Test with buffered reader.
+        {
+            let mut reader = io::Cursor::new(&d);
+            let mut is = CodedInputStream::from_buffered_reader(&mut reader as &mut dyn BufRead);
+            assert_eq!(0, is.pos());
+            callback(&mut is);
+        }
+        // Test from bytes.
+        {
+            let mut is = CodedInputStream::from_bytes(&d);
+            assert_eq!(0, is.pos());
+            callback(&mut is);
+        }
     }
 
     fn test_read<F>(hex: &str, mut callback: F)
