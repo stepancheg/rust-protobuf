@@ -8,6 +8,13 @@ fn test() {
 }
 
 #[test]
+fn field_types() {
+    let message = TestOptionalProto3::new();
+    let _iii: &Option<i32> = &message.iii;
+    let _sss: &Option<String> = &message.sss;
+}
+
+#[test]
 fn reflect_all_oneofs() {
     let descriptor = TestOptionalProto3::descriptor_static();
     let oneofs = descriptor.all_oneofs().collect::<Vec<_>>();
