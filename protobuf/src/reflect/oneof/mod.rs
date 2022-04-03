@@ -3,7 +3,7 @@ use crate::reflect::FieldDescriptor;
 use crate::reflect::MessageDescriptor;
 
 /// Oneof descriptor.
-#[derive(Eq, PartialEq, Clone)]
+#[derive(Eq, PartialEq, Clone, Debug)]
 pub struct OneofDescriptor {
     pub(crate) message_descriptor: MessageDescriptor,
     pub(crate) index: usize,
@@ -45,6 +45,6 @@ impl OneofDescriptor {
     pub fn fields<'a>(&'a self) -> impl Iterator<Item = FieldDescriptor> + 'a {
         self.message_descriptor
             .fields()
-            .filter(move |f| f.containing_oneof().as_ref() == Some(self))
+            .filter(move |f| f.containing_oneof_including_synthetic().as_ref() == Some(self))
     }
 }

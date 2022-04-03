@@ -15,6 +15,14 @@ fn reflect_all_oneofs() {
     assert!(!oneofs[0].is_synthetic());
     for oneof in &oneofs[1..] {
         assert!(oneof.is_synthetic());
+        let mut fields = oneof.fields().collect::<Vec<_>>();
+        assert_eq!(1, fields.len());
+        let field = fields.swap_remove(0);
+        assert_eq!(None, field.containing_oneof());
+        assert_eq!(
+            Some(oneof),
+            field.containing_oneof_including_synthetic().as_ref()
+        );
     }
 }
 

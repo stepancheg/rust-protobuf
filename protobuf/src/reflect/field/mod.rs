@@ -153,8 +153,8 @@ impl FieldDescriptor {
         self.to_string()
     }
 
-    /// Oneof descriptor containing this field.
-    pub fn containing_oneof(&self) -> Option<OneofDescriptor> {
+    /// Oneof descriptor containing this field. Do not skip synthetic oneofs.
+    pub fn containing_oneof_including_synthetic(&self) -> Option<OneofDescriptor> {
         if let FieldDescriptorImpl::Field(m, _) = &self.imp {
             let proto = self.proto();
             if proto.has_oneof_index() {
@@ -168,6 +168,14 @@ impl FieldDescriptor {
         } else {
             None
         }
+    }
+
+    /// Oneof containing this field.
+    ///
+    /// Return `None` if this field is not part of oneof or if it is synthetic oneof.
+    pub fn containing_oneof(&self) -> Option<OneofDescriptor> {
+        self.containing_oneof_including_synthetic()
+            .filter(|o| !o.is_synthetic())
     }
 
     /// Message which contains this field.

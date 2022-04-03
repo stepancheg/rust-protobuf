@@ -63,7 +63,7 @@ impl<'a> OneofField<'a> {
                         .message
                         .fields()
                         .into_iter()
-                        .filter(|f| f.containing_oneof().is_some()),
+                        .filter(|f| f.containing_oneof_including_synthetic().is_some()),
                 );
             }
         }

@@ -132,7 +132,7 @@ impl DynamicMessage {
     }
 
     fn clear_oneof_group_fields_except(&mut self, field: &FieldDescriptor) {
-        if let Some(oneof) = field.containing_oneof() {
+        if let Some(oneof) = field.containing_oneof_including_synthetic() {
             for next in oneof.fields() {
                 if &next == field {
                     continue;
