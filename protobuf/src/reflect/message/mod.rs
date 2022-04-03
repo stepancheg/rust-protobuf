@@ -247,8 +247,8 @@ impl MessageDescriptor {
         &self.index_entry().name_to_package
     }
 
-    /// Nested oneofs
-    pub fn oneofs<'a>(&'a self) -> impl Iterator<Item = OneofDescriptor> + 'a {
+    /// Nested oneofs including synthetic.
+    pub fn all_oneofs<'a>(&'a self) -> impl Iterator<Item = OneofDescriptor> + 'a {
         self.proto()
             .oneof_decl
             .iter()
@@ -257,6 +257,11 @@ impl MessageDescriptor {
                 message_descriptor: self.clone(),
                 index,
             })
+    }
+
+    /// Non-synthetic oneofs.
+    pub fn oneofs<'a>(&'a self) -> impl Iterator<Item = OneofDescriptor> + 'a {
+        self.all_oneofs().filter(|oneof| !oneof.is_synthetic())
     }
 
     /// Message field descriptors.

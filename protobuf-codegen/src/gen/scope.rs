@@ -384,7 +384,7 @@ impl<'a> MessageWithScope<'a> {
 
     pub fn oneofs(&self) -> Vec<OneofWithContext<'a>> {
         self.message
-            .oneofs()
+            .all_oneofs()
             .into_iter()
             .map(|oneof| OneofWithContext {
                 message: self.clone(),
@@ -408,7 +408,7 @@ impl<'a> MessageWithScope<'a> {
         if !self.to_scope().enums().is_empty() {
             return true;
         }
-        if !self.message.oneofs().next().is_none() {
+        if !self.message.all_oneofs().next().is_none() {
             return true;
         }
         false
