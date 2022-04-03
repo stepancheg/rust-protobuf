@@ -8,6 +8,7 @@ use protobuf::descriptor::descriptor_proto::ReservedRange;
 use protobuf::descriptor::field_descriptor_proto;
 use protobuf::descriptor::field_descriptor_proto::Type;
 use protobuf::descriptor::FieldDescriptorProto;
+use protobuf::descriptor::OneofDescriptorProto;
 use protobuf::json::json_name;
 use protobuf::reflect::FileDescriptor;
 use protobuf::text_format::quote_bytes_to;
@@ -269,7 +270,16 @@ impl<'a> Resolver<'a> {
             for fo in &input.fields {
                 match &fo.t {
                     model::FieldOrOneOf::Field(f) => {
-                        fields.push(self.field(&nested_scope, f, None)?);
+                        let oneof_index = if self.is_proto3_optional(f) {
+                            let oneof_index = output.oneof_decl.len() as i32;
+                            let mut oneof = OneofDescriptorProto::new();
+                            oneof.set_name(format!("_{}", f.name));
+                            output.oneof_decl.push(oneof);
+                            Some(oneof_index)
+                        } else {
+                            None
+                        };
+                        fields.push(self.field(&nested_scope, f, oneof_index)?);
                     }
                     model::FieldOrOneOf::OneOf(o) => {
                         let oneof_index = output.oneof_decl.len();
@@ -350,6 +360,11 @@ impl<'a> Resolver<'a> {
         Ok(output)
     }
 
+    fn is_proto3_optional(&self, input: &model::WithLoc<model::Field>) -> bool {
+        (self.current_file.syntax, input.t.rule)
+            == (model::Syntax::Proto3, Some(model::Rule::Optional))
+    }
+
     fn field(
         &self,
         scope: &ProtobufAbsPathRef,
@@ -363,6 +378,10 @@ impl<'a> Resolver<'a> {
             output.set_label(protobuf::descriptor::field_descriptor_proto::Label::LABEL_REPEATED);
         } else {
             output.set_label(label(input.t.rule));
+
+            if self.is_proto3_optional(input) {
+                output.set_proto3_optional(true);
+            }
         }
 
         let t = self.field_type(scope, &input.t.name, &input.t.typ)?;

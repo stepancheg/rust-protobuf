@@ -1,0 +1,6 @@
+syntax = "proto3";
+
+message TestOptionalProto3 {
+  optional int32 iii = 1;
+  optional string sss = 2;
+}
