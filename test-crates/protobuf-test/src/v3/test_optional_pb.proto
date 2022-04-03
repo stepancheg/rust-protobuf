@@ -1,6 +1,11 @@
 syntax = "proto3";
 
 message TestOptionalProto3 {
-  optional int32 iii = 1;
-  optional string sss = 2;
+  int32 non_optional = 1;
+  oneof one {
+    string one_field_1 = 11;
+    int32 one_field_2 = 12;
+  }
+  optional int32 iii = 31;
+  optional string sss = 22;
 }
