@@ -6,19 +6,14 @@ use crate::reflect::acc::v2::singular::GetOptionImplHasGetRefDeref;
 use crate::reflect::acc::v2::singular::MutOrDefaultGetMut;
 use crate::reflect::acc::v2::singular::MutOrDefaultUnmplemented;
 use crate::reflect::acc::v2::singular::SetImplSetField;
-use crate::reflect::acc::v2::singular::SingularFieldAccessor;
 use crate::reflect::acc::v2::singular::SingularFieldAccessorHolder;
 use crate::reflect::acc::v2::singular::SingularFieldAccessorImpl;
 use crate::reflect::acc::v2::AccessorV2;
 use crate::reflect::acc::FieldAccessor;
 use crate::reflect::runtime_types::RuntimeTypeWithDeref;
-use crate::reflect::value::value_ref::ReflectValueMut;
 use crate::reflect::ProtobufValue;
-use crate::reflect::ReflectValueBox;
-use crate::reflect::ReflectValueRef;
 use crate::EnumFull;
 use crate::EnumOrUnknown;
-use crate::MessageDyn;
 use crate::MessageFull;
 
 /// Make accessor for `oneof` `message` field
@@ -73,34 +68,6 @@ where
     )
 }
 
-struct OneofEnumAccessor<M: MessageFull, E: EnumFull> {
-    get: fn(&M) -> Option<EnumOrUnknown<E>>,
-    set: fn(&mut M, EnumOrUnknown<E>),
-}
-
-impl<M: MessageFull, E: EnumFull> SingularFieldAccessor for OneofEnumAccessor<M, E> {
-    fn get_field<'a>(&self, m: &'a dyn MessageDyn) -> Option<ReflectValueRef<'a>> {
-        let m = m.downcast_ref().unwrap();
-        let value = (self.get)(m);
-        value.map(|v| ReflectValueRef::Enum(E::enum_descriptor_static(), v.value()))
-    }
-
-    fn mut_field_or_default<'a>(&self, _m: &'a mut dyn MessageDyn) -> ReflectValueMut<'a> {
-        panic!("cannot get mutable pointer")
-    }
-
-    fn set_field(&self, m: &mut dyn MessageDyn, value: ReflectValueBox) {
-        let m = m.downcast_mut().unwrap();
-        match value {
-            ReflectValueBox::Enum(e, v) => {
-                assert_eq!(E::enum_descriptor_static(), e);
-                (self.set)(m, EnumOrUnknown::from_i32(v));
-            }
-            _ => panic!("expecting enum value"),
-        }
-    }
-}
-
 /// Make accessor for `Copy` field
 pub fn make_oneof_enum_accessors<M, E>(
     name: &'static str,
@@ -115,9 +82,7 @@ where
 {
     FieldAccessor::new(
         name,
-        AccessorV2::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(OneofEnumAccessor { get, set }),
-        }),
+        AccessorV2::Singular(SingularFieldAccessorHolder::new_get_option_set(get, set)),
     )
 }
 

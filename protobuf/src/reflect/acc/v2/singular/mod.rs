@@ -13,6 +13,8 @@ use crate::reflect::MessageRef;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
+use crate::EnumFull;
+use crate::EnumOrUnknown;
 
 pub(crate) mod oneof;
 
@@ -195,6 +197,47 @@ impl SingularFieldAccessorHolder {
                 get_field,
                 mut_field,
             }),
+        }
+    }
+
+    pub(crate) fn new_get_option_set<M, E>(
+        get: fn(&M) -> Option<EnumOrUnknown<E>>,
+        set: fn(&mut M, EnumOrUnknown<E>),
+    ) -> SingularFieldAccessorHolder
+    where
+        M: MessageFull,
+        E: EnumFull,
+    {
+        struct Impl<M, E> {
+            get: fn(&M) -> Option<EnumOrUnknown<E>>,
+            set: fn(&mut M, EnumOrUnknown<E>),
+        }
+
+        impl<M: MessageFull, E: EnumFull> SingularFieldAccessor for Impl<M, E> {
+            fn get_field<'a>(&self, m: &'a dyn MessageDyn) -> Option<ReflectValueRef<'a>> {
+                let m = m.downcast_ref().unwrap();
+                let value = (self.get)(m);
+                value.map(|v| ReflectValueRef::Enum(E::enum_descriptor_static(), v.value()))
+            }
+
+            fn mut_field_or_default<'a>(&self, _m: &'a mut dyn MessageDyn) -> ReflectValueMut<'a> {
+                panic!("cannot get mutable pointer")
+            }
+
+            fn set_field(&self, m: &mut dyn MessageDyn, value: ReflectValueBox) {
+                let m = m.downcast_mut().unwrap();
+                match value {
+                    ReflectValueBox::Enum(e, v) => {
+                        assert_eq!(E::enum_descriptor_static(), e);
+                        (self.set)(m, EnumOrUnknown::from_i32(v));
+                    }
+                    _ => panic!("expecting enum value"),
+                }
+            }
+        }
+
+        SingularFieldAccessorHolder {
+            accessor: Box::new(Impl { get, set }),
         }
     }
 }
