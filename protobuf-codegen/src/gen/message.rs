@@ -143,10 +143,6 @@ impl<'a> MessageGen<'a> {
             .file_and_mod(self.customize.for_elem.clone())
     }
 
-    fn expose_oneof(&self) -> bool {
-        self.customize.for_elem.expose_oneof.unwrap_or(true)
-    }
-
     fn oneofs(&'a self) -> Vec<OneofGen<'a>> {
         self.message
             .oneofs()
@@ -598,12 +594,8 @@ impl<'a> MessageGen<'a> {
             if !self.oneofs().is_empty() {
                 w.comment("message oneof groups");
                 for oneof in self.oneofs() {
-                    let vis = match self.expose_oneof() {
-                        true => Visibility::Public,
-                        false => Visibility::Default,
-                    };
                     w.field_decl_vis(
-                        vis,
+                        Visibility::Public,
                         &oneof.oneof.field_name().to_string(),
                         &oneof.full_storage_type().to_code(&self.customize.for_elem),
                     );

@@ -11,8 +11,6 @@ import "google/protobuf/descriptor.proto";
 package rustproto;
 
 extend google.protobuf.FileOptions {
-    // When true, oneof field is generated public
-    optional bool expose_oneof_all = 17001;
     // When true all fields are public, and not accessors generated
     optional bool expose_fields_all = 17003;
     // When false, `get_`, `set_`, `mut_` etc. accessors are not generated
@@ -34,8 +32,6 @@ extend google.protobuf.FileOptions {
 }
 
 extend google.protobuf.MessageOptions {
-    // When true, oneof field is generated public
-    optional bool expose_oneof = 17001;
     // When true all fields are public, and not accessors generated
     optional bool expose_fields = 17003;
     // When false, `get_`, `set_`, `mut_` etc. accessors are not generated

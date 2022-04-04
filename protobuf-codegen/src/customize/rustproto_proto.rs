@@ -8,7 +8,6 @@ use crate::Customize;
 
 pub(crate) fn customize_from_rustproto_for_message(source: &MessageOptions) -> Customize {
     let before = None;
-    let expose_oneof = rustproto::exts::expose_oneof.get(source);
     let expose_fields = rustproto::exts::expose_fields.get(source);
     let generate_accessors = rustproto::exts::generate_accessors.get(source);
     let generate_getter = rustproto::exts::generate_getter.get(source);
@@ -19,7 +18,6 @@ pub(crate) fn customize_from_rustproto_for_message(source: &MessageOptions) -> C
     let inside_protobuf = None;
     Customize {
         before,
-        expose_oneof,
         expose_fields,
         generate_accessors,
         generate_getter,
@@ -37,7 +35,6 @@ pub(crate) fn customize_from_rustproto_for_enum(_source: &EnumOptions) -> Custom
 
 pub(crate) fn customize_from_rustproto_for_field(source: &FieldOptions) -> Customize {
     let before = None;
-    let expose_oneof = None;
     let expose_fields = rustproto::exts::expose_fields_field.get(source);
     let generate_accessors = rustproto::exts::generate_accessors_field.get(source);
     let generate_getter = rustproto::exts::generate_getter_field.get(source);
@@ -48,7 +45,6 @@ pub(crate) fn customize_from_rustproto_for_field(source: &FieldOptions) -> Custo
     let inside_protobuf = None;
     Customize {
         before,
-        expose_oneof,
         expose_fields,
         generate_accessors,
         generate_getter,
@@ -62,7 +58,6 @@ pub(crate) fn customize_from_rustproto_for_field(source: &FieldOptions) -> Custo
 
 pub(crate) fn customize_from_rustproto_for_file(source: &FileOptions) -> Customize {
     let before = None;
-    let expose_oneof = rustproto::exts::expose_oneof_all.get(source);
     let expose_fields = rustproto::exts::expose_fields_all.get(source);
     let generate_accessors = rustproto::exts::generate_accessors_all.get(source);
     let generate_getter = rustproto::exts::generate_getter_all.get(source);
@@ -73,7 +68,6 @@ pub(crate) fn customize_from_rustproto_for_file(source: &FileOptions) -> Customi
     let inside_protobuf = None;
     Customize {
         before,
-        expose_oneof,
         expose_fields,
         generate_accessors,
         generate_getter,

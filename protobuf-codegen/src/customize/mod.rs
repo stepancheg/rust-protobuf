@@ -90,8 +90,6 @@ impl fmt::Debug for CustomizeCallbackHolder {
 pub struct Customize {
     /// Code to insert before the element in the generated file.
     pub(crate) before: Option<String>,
-    /// Make oneof enum public.
-    pub(crate) expose_oneof: Option<bool>,
     /// When true all fields are public, and accessors are not generated
     pub(crate) expose_fields: Option<bool>,
     /// When false, `get_`, `set_`, `mut_` etc. accessors are not generated
@@ -129,11 +127,6 @@ impl Customize {
     /// [example here](https://github.com/stepancheg/rust-protobuf/tree/master/protobuf-examples/customize-serde)).
     pub fn before(mut self, before: &str) -> Self {
         self.before = Some(before.to_owned());
-        self
-    }
-
-    pub fn expose_oneof(mut self, expose_oneof: bool) -> Self {
-        self.expose_oneof = Some(expose_oneof);
         self
     }
 
@@ -190,9 +183,6 @@ impl Customize {
         if let Some(v) = &that.before {
             self.before = Some(v.clone());
         }
-        if let Some(v) = that.expose_oneof {
-            self.expose_oneof = Some(v);
-        }
         if let Some(v) = that.expose_fields {
             self.expose_fields = Some(v);
         }
@@ -244,9 +234,7 @@ impl Customize {
                 None => (nv, "true"),
             };
 
-            if n == "expose_oneof" {
-                r.expose_oneof = Some(parse_bool(v)?);
-            } else if n == "expose_fields" {
+            if n == "expose_fields" {
                 r.expose_fields = Some(parse_bool(v)?);
             } else if n == "generate_accessors" {
                 r.generate_accessors = Some(parse_bool(v)?);
