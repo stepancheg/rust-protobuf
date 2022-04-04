@@ -489,7 +489,7 @@ where
 
 /// Make accessor for `Option<C>` field
 // TODO: rename: it is not only about copy
-pub fn make_option_get_copy_accessor<M, V>(
+pub fn make_option_accessor<M, V>(
     name: &'static str,
     get_field: for<'a> fn(&'a M) -> &'a Option<V>,
     mut_field: for<'a> fn(&'a mut M) -> &'a mut Option<V>,

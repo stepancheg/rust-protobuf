@@ -319,12 +319,12 @@ impl FileDescriptorProto {
 
     fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
         let mut fields = ::std::vec::Vec::with_capacity(12);
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "name",
             |m: &FileDescriptorProto| { &m.name },
             |m: &mut FileDescriptorProto| { &mut m.name },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "package",
             |m: &FileDescriptorProto| { &m.package },
             |m: &mut FileDescriptorProto| { &mut m.package },
@@ -374,7 +374,7 @@ impl FileDescriptorProto {
             |m: &FileDescriptorProto| { &m.source_code_info },
             |m: &mut FileDescriptorProto| { &mut m.source_code_info },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "syntax",
             |m: &FileDescriptorProto| { &m.syntax },
             |m: &mut FileDescriptorProto| { &mut m.syntax },
@@ -718,7 +718,7 @@ impl DescriptorProto {
 
     fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
         let mut fields = ::std::vec::Vec::with_capacity(10);
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "name",
             |m: &DescriptorProto| { &m.name },
             |m: &mut DescriptorProto| { &mut m.name },
@@ -1078,12 +1078,12 @@ pub mod descriptor_proto {
 
         pub(in super) fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
             let mut fields = ::std::vec::Vec::with_capacity(3);
-            fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+            fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
                 "start",
                 |m: &ExtensionRange| { &m.start },
                 |m: &mut ExtensionRange| { &mut m.start },
             ));
-            fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+            fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
                 "end",
                 |m: &ExtensionRange| { &m.end },
                 |m: &mut ExtensionRange| { &mut m.end },
@@ -1283,12 +1283,12 @@ pub mod descriptor_proto {
 
         pub(in super) fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
             let mut fields = ::std::vec::Vec::with_capacity(2);
-            fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+            fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
                 "start",
                 |m: &ReservedRange| { &m.start },
                 |m: &mut ReservedRange| { &mut m.start },
             ));
-            fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+            fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
                 "end",
                 |m: &ReservedRange| { &m.end },
                 |m: &mut ReservedRange| { &mut m.end },
@@ -1898,47 +1898,47 @@ impl FieldDescriptorProto {
 
     fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
         let mut fields = ::std::vec::Vec::with_capacity(11);
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "name",
             |m: &FieldDescriptorProto| { &m.name },
             |m: &mut FieldDescriptorProto| { &mut m.name },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "number",
             |m: &FieldDescriptorProto| { &m.number },
             |m: &mut FieldDescriptorProto| { &mut m.number },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "label",
             |m: &FieldDescriptorProto| { &m.label },
             |m: &mut FieldDescriptorProto| { &mut m.label },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "type",
             |m: &FieldDescriptorProto| { &m.field_type },
             |m: &mut FieldDescriptorProto| { &mut m.field_type },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "type_name",
             |m: &FieldDescriptorProto| { &m.type_name },
             |m: &mut FieldDescriptorProto| { &mut m.type_name },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "extendee",
             |m: &FieldDescriptorProto| { &m.extendee },
             |m: &mut FieldDescriptorProto| { &mut m.extendee },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "default_value",
             |m: &FieldDescriptorProto| { &m.default_value },
             |m: &mut FieldDescriptorProto| { &mut m.default_value },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "oneof_index",
             |m: &FieldDescriptorProto| { &m.oneof_index },
             |m: &mut FieldDescriptorProto| { &mut m.oneof_index },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "json_name",
             |m: &FieldDescriptorProto| { &m.json_name },
             |m: &mut FieldDescriptorProto| { &mut m.json_name },
@@ -1948,7 +1948,7 @@ impl FieldDescriptorProto {
             |m: &FieldDescriptorProto| { &m.options },
             |m: &mut FieldDescriptorProto| { &mut m.options },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "proto3_optional",
             |m: &FieldDescriptorProto| { &m.proto3_optional },
             |m: &mut FieldDescriptorProto| { &mut m.proto3_optional },
@@ -2402,7 +2402,7 @@ impl OneofDescriptorProto {
 
     fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
         let mut fields = ::std::vec::Vec::with_capacity(2);
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "name",
             |m: &OneofDescriptorProto| { &m.name },
             |m: &mut OneofDescriptorProto| { &mut m.name },
@@ -2598,7 +2598,7 @@ impl EnumDescriptorProto {
 
     fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
         let mut fields = ::std::vec::Vec::with_capacity(5);
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "name",
             |m: &EnumDescriptorProto| { &m.name },
             |m: &mut EnumDescriptorProto| { &mut m.name },
@@ -2852,12 +2852,12 @@ pub mod enum_descriptor_proto {
 
         pub(in super) fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
             let mut fields = ::std::vec::Vec::with_capacity(2);
-            fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+            fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
                 "start",
                 |m: &EnumReservedRange| { &m.start },
                 |m: &mut EnumReservedRange| { &mut m.start },
             ));
-            fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+            fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
                 "end",
                 |m: &EnumReservedRange| { &m.end },
                 |m: &mut EnumReservedRange| { &mut m.end },
@@ -3053,12 +3053,12 @@ impl EnumValueDescriptorProto {
 
     fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
         let mut fields = ::std::vec::Vec::with_capacity(3);
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "name",
             |m: &EnumValueDescriptorProto| { &m.name },
             |m: &mut EnumValueDescriptorProto| { &mut m.name },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "number",
             |m: &EnumValueDescriptorProto| { &m.number },
             |m: &mut EnumValueDescriptorProto| { &mut m.number },
@@ -3256,7 +3256,7 @@ impl ServiceDescriptorProto {
 
     fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
         let mut fields = ::std::vec::Vec::with_capacity(3);
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "name",
             |m: &ServiceDescriptorProto| { &m.name },
             |m: &mut ServiceDescriptorProto| { &mut m.name },
@@ -3585,17 +3585,17 @@ impl MethodDescriptorProto {
 
     fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
         let mut fields = ::std::vec::Vec::with_capacity(6);
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "name",
             |m: &MethodDescriptorProto| { &m.name },
             |m: &mut MethodDescriptorProto| { &mut m.name },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "input_type",
             |m: &MethodDescriptorProto| { &m.input_type },
             |m: &mut MethodDescriptorProto| { &mut m.input_type },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "output_type",
             |m: &MethodDescriptorProto| { &m.output_type },
             |m: &mut MethodDescriptorProto| { &mut m.output_type },
@@ -3605,12 +3605,12 @@ impl MethodDescriptorProto {
             |m: &MethodDescriptorProto| { &m.options },
             |m: &mut MethodDescriptorProto| { &mut m.options },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "client_streaming",
             |m: &MethodDescriptorProto| { &m.client_streaming },
             |m: &mut MethodDescriptorProto| { &mut m.client_streaming },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "server_streaming",
             |m: &MethodDescriptorProto| { &m.server_streaming },
             |m: &mut MethodDescriptorProto| { &mut m.server_streaming },
@@ -4451,102 +4451,102 @@ impl FileOptions {
 
     fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
         let mut fields = ::std::vec::Vec::with_capacity(21);
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "java_package",
             |m: &FileOptions| { &m.java_package },
             |m: &mut FileOptions| { &mut m.java_package },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "java_outer_classname",
             |m: &FileOptions| { &m.java_outer_classname },
             |m: &mut FileOptions| { &mut m.java_outer_classname },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "java_multiple_files",
             |m: &FileOptions| { &m.java_multiple_files },
             |m: &mut FileOptions| { &mut m.java_multiple_files },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "java_generate_equals_and_hash",
             |m: &FileOptions| { &m.java_generate_equals_and_hash },
             |m: &mut FileOptions| { &mut m.java_generate_equals_and_hash },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "java_string_check_utf8",
             |m: &FileOptions| { &m.java_string_check_utf8 },
             |m: &mut FileOptions| { &mut m.java_string_check_utf8 },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "optimize_for",
             |m: &FileOptions| { &m.optimize_for },
             |m: &mut FileOptions| { &mut m.optimize_for },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "go_package",
             |m: &FileOptions| { &m.go_package },
             |m: &mut FileOptions| { &mut m.go_package },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "cc_generic_services",
             |m: &FileOptions| { &m.cc_generic_services },
             |m: &mut FileOptions| { &mut m.cc_generic_services },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "java_generic_services",
             |m: &FileOptions| { &m.java_generic_services },
             |m: &mut FileOptions| { &mut m.java_generic_services },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "py_generic_services",
             |m: &FileOptions| { &m.py_generic_services },
             |m: &mut FileOptions| { &mut m.py_generic_services },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "php_generic_services",
             |m: &FileOptions| { &m.php_generic_services },
             |m: &mut FileOptions| { &mut m.php_generic_services },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "deprecated",
             |m: &FileOptions| { &m.deprecated },
             |m: &mut FileOptions| { &mut m.deprecated },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "cc_enable_arenas",
             |m: &FileOptions| { &m.cc_enable_arenas },
             |m: &mut FileOptions| { &mut m.cc_enable_arenas },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "objc_class_prefix",
             |m: &FileOptions| { &m.objc_class_prefix },
             |m: &mut FileOptions| { &mut m.objc_class_prefix },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "csharp_namespace",
             |m: &FileOptions| { &m.csharp_namespace },
             |m: &mut FileOptions| { &mut m.csharp_namespace },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "swift_prefix",
             |m: &FileOptions| { &m.swift_prefix },
             |m: &mut FileOptions| { &mut m.swift_prefix },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "php_class_prefix",
             |m: &FileOptions| { &m.php_class_prefix },
             |m: &mut FileOptions| { &mut m.php_class_prefix },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "php_namespace",
             |m: &FileOptions| { &m.php_namespace },
             |m: &mut FileOptions| { &mut m.php_namespace },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "php_metadata_namespace",
             |m: &FileOptions| { &m.php_metadata_namespace },
             |m: &mut FileOptions| { &mut m.php_metadata_namespace },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "ruby_package",
             |m: &FileOptions| { &m.ruby_package },
             |m: &mut FileOptions| { &mut m.ruby_package },
@@ -5053,22 +5053,22 @@ impl MessageOptions {
 
     fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
         let mut fields = ::std::vec::Vec::with_capacity(5);
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "message_set_wire_format",
             |m: &MessageOptions| { &m.message_set_wire_format },
             |m: &mut MessageOptions| { &mut m.message_set_wire_format },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "no_standard_descriptor_accessor",
             |m: &MessageOptions| { &m.no_standard_descriptor_accessor },
             |m: &mut MessageOptions| { &mut m.no_standard_descriptor_accessor },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "deprecated",
             |m: &MessageOptions| { &m.deprecated },
             |m: &mut MessageOptions| { &mut m.deprecated },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "map_entry",
             |m: &MessageOptions| { &m.map_entry },
             |m: &mut MessageOptions| { &mut m.map_entry },
@@ -5433,32 +5433,32 @@ impl FieldOptions {
 
     fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
         let mut fields = ::std::vec::Vec::with_capacity(7);
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "ctype",
             |m: &FieldOptions| { &m.ctype },
             |m: &mut FieldOptions| { &mut m.ctype },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "packed",
             |m: &FieldOptions| { &m.packed },
             |m: &mut FieldOptions| { &mut m.packed },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "jstype",
             |m: &FieldOptions| { &m.jstype },
             |m: &mut FieldOptions| { &mut m.jstype },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "lazy",
             |m: &FieldOptions| { &m.lazy },
             |m: &mut FieldOptions| { &mut m.lazy },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "deprecated",
             |m: &FieldOptions| { &m.deprecated },
             |m: &mut FieldOptions| { &mut m.deprecated },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "weak",
             |m: &FieldOptions| { &m.weak },
             |m: &mut FieldOptions| { &mut m.weak },
@@ -5952,12 +5952,12 @@ impl EnumOptions {
 
     fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
         let mut fields = ::std::vec::Vec::with_capacity(3);
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "allow_alias",
             |m: &EnumOptions| { &m.allow_alias },
             |m: &mut EnumOptions| { &mut m.allow_alias },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "deprecated",
             |m: &EnumOptions| { &m.deprecated },
             |m: &mut EnumOptions| { &mut m.deprecated },
@@ -6140,7 +6140,7 @@ impl EnumValueOptions {
 
     fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
         let mut fields = ::std::vec::Vec::with_capacity(2);
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "deprecated",
             |m: &EnumValueOptions| { &m.deprecated },
             |m: &mut EnumValueOptions| { &mut m.deprecated },
@@ -6312,7 +6312,7 @@ impl ServiceOptions {
 
     fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
         let mut fields = ::std::vec::Vec::with_capacity(2);
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "deprecated",
             |m: &ServiceOptions| { &m.deprecated },
             |m: &mut ServiceOptions| { &mut m.deprecated },
@@ -6508,12 +6508,12 @@ impl MethodOptions {
 
     fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
         let mut fields = ::std::vec::Vec::with_capacity(3);
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "deprecated",
             |m: &MethodOptions| { &m.deprecated },
             |m: &mut MethodOptions| { &mut m.deprecated },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "idempotency_level",
             |m: &MethodOptions| { &m.idempotency_level },
             |m: &mut MethodOptions| { &mut m.idempotency_level },
@@ -6921,32 +6921,32 @@ impl UninterpretedOption {
             |m: &UninterpretedOption| { &m.name },
             |m: &mut UninterpretedOption| { &mut m.name },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "identifier_value",
             |m: &UninterpretedOption| { &m.identifier_value },
             |m: &mut UninterpretedOption| { &mut m.identifier_value },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "positive_int_value",
             |m: &UninterpretedOption| { &m.positive_int_value },
             |m: &mut UninterpretedOption| { &mut m.positive_int_value },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "negative_int_value",
             |m: &UninterpretedOption| { &m.negative_int_value },
             |m: &mut UninterpretedOption| { &mut m.negative_int_value },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "double_value",
             |m: &UninterpretedOption| { &m.double_value },
             |m: &mut UninterpretedOption| { &mut m.double_value },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "string_value",
             |m: &UninterpretedOption| { &m.string_value },
             |m: &mut UninterpretedOption| { &mut m.string_value },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "aggregate_value",
             |m: &UninterpretedOption| { &m.aggregate_value },
             |m: &mut UninterpretedOption| { &mut m.aggregate_value },
@@ -7206,12 +7206,12 @@ pub mod uninterpreted_option {
 
         pub(in super) fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
             let mut fields = ::std::vec::Vec::with_capacity(2);
-            fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+            fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
                 "name_part",
                 |m: &NamePart| { &m.name_part },
                 |m: &mut NamePart| { &mut m.name_part },
             ));
-            fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+            fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
                 "is_extension",
                 |m: &NamePart| { &m.is_extension },
                 |m: &mut NamePart| { &mut m.is_extension },
@@ -7582,12 +7582,12 @@ pub mod source_code_info {
                 |m: &Location| { &m.span },
                 |m: &mut Location| { &mut m.span },
             ));
-            fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+            fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
                 "leading_comments",
                 |m: &Location| { &m.leading_comments },
                 |m: &mut Location| { &mut m.leading_comments },
             ));
-            fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+            fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
                 "trailing_comments",
                 |m: &Location| { &m.trailing_comments },
                 |m: &mut Location| { &mut m.trailing_comments },
@@ -7993,17 +7993,17 @@ pub mod generated_code_info {
                 |m: &Annotation| { &m.path },
                 |m: &mut Annotation| { &mut m.path },
             ));
-            fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+            fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
                 "source_file",
                 |m: &Annotation| { &m.source_file },
                 |m: &mut Annotation| { &mut m.source_file },
             ));
-            fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+            fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
                 "begin",
                 |m: &Annotation| { &m.begin },
                 |m: &mut Annotation| { &mut m.begin },
             ));
-            fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+            fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
                 "end",
                 |m: &Annotation| { &m.end },
                 |m: &mut Annotation| { &mut m.end },

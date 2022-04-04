@@ -147,22 +147,22 @@ impl Version {
 
     fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
         let mut fields = ::std::vec::Vec::with_capacity(4);
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "major",
             |m: &Version| { &m.major },
             |m: &mut Version| { &mut m.major },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "minor",
             |m: &Version| { &m.minor },
             |m: &mut Version| { &mut m.minor },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "patch",
             |m: &Version| { &m.patch },
             |m: &mut Version| { &mut m.patch },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "suffix",
             |m: &Version| { &m.suffix },
             |m: &mut Version| { &mut m.suffix },
@@ -386,7 +386,7 @@ impl CodeGeneratorRequest {
             |m: &CodeGeneratorRequest| { &m.file_to_generate },
             |m: &mut CodeGeneratorRequest| { &mut m.file_to_generate },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "parameter",
             |m: &CodeGeneratorRequest| { &m.parameter },
             |m: &mut CodeGeneratorRequest| { &mut m.parameter },
@@ -635,12 +635,12 @@ impl CodeGeneratorResponse {
 
     fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
         let mut fields = ::std::vec::Vec::with_capacity(3);
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "error",
             |m: &CodeGeneratorResponse| { &m.error },
             |m: &mut CodeGeneratorResponse| { &mut m.error },
         ));
-        fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+        fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "supported_features",
             |m: &CodeGeneratorResponse| { &m.supported_features },
             |m: &mut CodeGeneratorResponse| { &mut m.supported_features },
@@ -966,17 +966,17 @@ pub mod code_generator_response {
 
         pub(in super) fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
             let mut fields = ::std::vec::Vec::with_capacity(4);
-            fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+            fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
                 "name",
                 |m: &File| { &m.name },
                 |m: &mut File| { &mut m.name },
             ));
-            fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+            fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
                 "insertion_point",
                 |m: &File| { &m.insertion_point },
                 |m: &mut File| { &mut m.insertion_point },
             ));
-            fields.push(crate::reflect::rt::v2::make_option_get_copy_accessor::<_, _>(
+            fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
                 "content",
                 |m: &File| { &m.content },
                 |m: &mut File| { &mut m.content },

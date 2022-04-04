@@ -159,7 +159,7 @@ impl FieldGen<'_> {
                 callback_params: self.make_accessor_fns_lambda(),
             },
             FieldElem::Primitive(..) | FieldElem::Enum(..) => AccessorFn {
-                name: "make_option_get_copy_accessor".to_owned(),
+                name: "make_option_accessor".to_owned(),
                 type_params: vec!["_".to_owned()],
                 callback_params: self.make_accessor_fns_lambda(),
             },
