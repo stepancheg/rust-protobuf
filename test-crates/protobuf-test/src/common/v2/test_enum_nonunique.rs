@@ -1,4 +1,4 @@
-use super::test_nonunique_enum_pb::*;
+use super::test_enum_nonunique_pb::*;
 
 #[test]
 fn test() {
