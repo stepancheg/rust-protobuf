@@ -17,6 +17,12 @@ impl SpecialFields {
         }
     }
 
+    /// Clear.
+    pub fn clear(&mut self) {
+        self.unknown_fields.clear();
+        // No need to clear `cached_size`.
+    }
+
     /// Getter.
     pub fn cached_size(&self) -> &CachedSize {
         &self.cached_size

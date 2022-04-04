@@ -508,7 +508,7 @@ impl<'a> MessageGen<'a> {
                     for f in self.fields_except_group() {
                         f.write_clear(w);
                     }
-                    w.write_line("self.special_fields.mut_unknown_fields().clear();");
+                    w.write_line("self.special_fields.clear();");
                 });
                 w.write_line("");
                 self.write_default_instance(w);
