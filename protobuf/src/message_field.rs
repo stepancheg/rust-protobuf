@@ -158,7 +158,7 @@ impl<T: Default> MessageField<T> {
     }
 }
 
-impl<M: Message + Default> MessageField<M> {
+impl<M: Message> MessageField<M> {
     /// Get a reference to contained value or a default instance.
     pub fn get_or_default(&self) -> &M {
         self.as_ref().unwrap_or_else(|| M::default_instance())
@@ -174,7 +174,7 @@ impl<M: Message + Default> MessageField<M> {
 }
 
 /// Get a reference to contained value or a default instance if the field is not initialized.
-impl<M: Message + Default> Deref for MessageField<M> {
+impl<M: Message> Deref for MessageField<M> {
     type Target = M;
 
     fn deref(&self) -> &Self::Target {
@@ -187,7 +187,7 @@ impl<M: Message + Default> Deref for MessageField<M> {
 /// Note that part about initializing is not conventional.
 /// Generally `DerefMut` is not supposed to modify the state.
 #[cfg(no)]
-impl<M: Message + Default> DerefMut for MessageField<M> {
+impl<M: Message> DerefMut for MessageField<M> {
     fn deref_mut(&mut self) -> &mut Self::Target {
         self.mut_or_default()
     }

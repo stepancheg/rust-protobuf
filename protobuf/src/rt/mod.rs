@@ -3,7 +3,6 @@
 //! These are not considered to be public API of rust-protobuf,
 //! so they can be changed any time (provided compatibility with
 //! previously generated code is preserved).
-use std::default::Default;
 
 pub use crate::cached_size::CachedSize;
 use crate::coded_input_stream::CodedInputStream;
@@ -269,7 +268,7 @@ pub fn read_singular_message_into_field<M>(
     target: &mut MessageField<M>,
 ) -> Result<()>
 where
-    M: Message + Default,
+    M: Message,
 {
     let mut m = M::new();
     is.merge_message(&mut m)?;
