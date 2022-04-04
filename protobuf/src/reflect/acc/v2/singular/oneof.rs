@@ -92,7 +92,7 @@ where
 {
     FieldAccessor::new(
         name,
-        AccessorV2::Singular(SingularFieldAccessorHolder::new_has_get_set_deref::<M, F>(
+        AccessorV2::Singular(SingularFieldAccessorHolder::new_has_get_set_deref(
             has, get, set,
         )),
     )
