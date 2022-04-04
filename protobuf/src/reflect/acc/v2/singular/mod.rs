@@ -268,22 +268,6 @@ impl<'a> fmt::Debug for SingularFieldAccessorHolder {
     }
 }
 
-trait GetOptionImpl<M>: Send + Sync + 'static {
-    fn get_reflect_impl<'a>(&self, m: &'a M) -> Option<ReflectValueRef<'a>>;
-}
-
-trait GetOrDefaultImpl<M>: Send + Sync + 'static {
-    fn get_singular_field_or_default_impl<'a>(&self, m: &'a M) -> ReflectValueRef<'a>;
-}
-
-trait MutOrDefaultImpl<M>: Send + Sync + 'static {
-    fn mut_singular_field_or_default_impl<'a>(&self, m: &'a mut M) -> ReflectValueMut<'a>;
-}
-
-trait SetImpl<M>: Send + Sync + 'static {
-    fn set_singular_field(&self, m: &mut M, value: ReflectValueBox);
-}
-
 /// Make accessor for `SingularPtrField`
 pub fn make_message_field_accessor<M, V>(
     name: &'static str,
