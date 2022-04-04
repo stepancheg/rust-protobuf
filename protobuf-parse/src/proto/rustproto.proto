@@ -22,11 +22,6 @@ extend google.protobuf.FileOptions {
     // Use `bytes::Bytes` for `string` fields
     optional bool tokio_bytes_for_string_all = 17012;
 
-    // Use `serde_derive` to implement `Serialize` and `Deserialize`
-    optional bool serde_derive_all = 17030;
-    // Guard serde annotations with cfg attr.
-    optional string serde_derive_cfg_all = 17031;
-
     // When true, will only generate codes that works with lite runtime.
     optional bool lite_runtime_all = 17035;
 }
@@ -42,10 +37,6 @@ extend google.protobuf.MessageOptions {
     optional bool tokio_bytes = 17011;
     // Use `bytes::Bytes` for `string` fields
     optional bool tokio_bytes_for_string = 17012;
-    // Use `serde_derive` to implement `Serialize` and `Deserialize`
-    optional bool serde_derive = 17030;
-    // Guard serde annotations with cfg attr.
-    optional string serde_derive_cfg = 17031;
 }
 
 extend google.protobuf.FieldOptions {
