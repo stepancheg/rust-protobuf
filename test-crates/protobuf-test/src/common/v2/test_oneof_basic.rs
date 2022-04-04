@@ -1,6 +1,6 @@
 use protobuf_test_common::*;
 
-use super::test_oneof_pb::*;
+use super::test_oneof_basic_pb::*;
 
 #[test]
 fn test_simple() {
