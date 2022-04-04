@@ -118,3 +118,13 @@ impl From<io::Error> for Error {
         Error(Box::new(ProtobufError::IoError(err)))
     }
 }
+
+#[cfg(test)]
+mod test {
+    use std::mem;
+
+    #[test]
+    fn error_size() {
+        assert_eq!(mem::size_of::<usize>(), mem::size_of::<crate::Error>());
+    }
+}
