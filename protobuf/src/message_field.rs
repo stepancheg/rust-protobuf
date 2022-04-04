@@ -85,20 +85,6 @@ impl<T> MessageField<T> {
         self.0.as_mut().map(|v| &mut **v)
     }
 
-    /// Get data as reference.
-    /// Panics if empty.
-    #[inline]
-    pub fn get_ref(&self) -> &T {
-        self.as_ref().unwrap()
-    }
-
-    /// Get data as mutable reference.
-    /// Panics if empty.
-    #[inline]
-    pub fn get_mut_ref(&mut self) -> &mut T {
-        self.as_mut().unwrap()
-    }
-
     /// Take the data.
     /// Panics if empty
     #[inline]
@@ -183,7 +169,7 @@ impl<M: Message + Default> MessageField<M> {
         if self.is_none() {
             *self = MessageField::some(Default::default());
         }
-        self.get_mut_ref()
+        self.as_mut().unwrap()
     }
 }
 
