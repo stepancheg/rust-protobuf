@@ -182,7 +182,7 @@ impl Value {
 
     pub fn null_value(&self) -> NullValue {
         match self.kind {
-            ::std::option::Option::Some(value::Kind::null_value(v)) => crate::EnumOrUnknown::enum_value_or_default(&v),
+            ::std::option::Option::Some(value::Kind::NullValue(v)) => crate::EnumOrUnknown::enum_value_or_default(&v),
             _ => NullValue::NULL_VALUE,
         }
     }
@@ -193,21 +193,21 @@ impl Value {
 
     pub fn has_null_value(&self) -> bool {
         match self.kind {
-            ::std::option::Option::Some(value::Kind::null_value(..)) => true,
+            ::std::option::Option::Some(value::Kind::NullValue(..)) => true,
             _ => false,
         }
     }
 
     // Param is passed by value, moved
     pub fn set_null_value(&mut self, v: NullValue) {
-        self.kind = ::std::option::Option::Some(value::Kind::null_value(crate::EnumOrUnknown::new(v)))
+        self.kind = ::std::option::Option::Some(value::Kind::NullValue(crate::EnumOrUnknown::new(v)))
     }
 
     // double number_value = 2;
 
     pub fn number_value(&self) -> f64 {
         match self.kind {
-            ::std::option::Option::Some(value::Kind::number_value(v)) => v,
+            ::std::option::Option::Some(value::Kind::NumberValue(v)) => v,
             _ => 0.,
         }
     }
@@ -218,21 +218,21 @@ impl Value {
 
     pub fn has_number_value(&self) -> bool {
         match self.kind {
-            ::std::option::Option::Some(value::Kind::number_value(..)) => true,
+            ::std::option::Option::Some(value::Kind::NumberValue(..)) => true,
             _ => false,
         }
     }
 
     // Param is passed by value, moved
     pub fn set_number_value(&mut self, v: f64) {
-        self.kind = ::std::option::Option::Some(value::Kind::number_value(v))
+        self.kind = ::std::option::Option::Some(value::Kind::NumberValue(v))
     }
 
     // string string_value = 3;
 
     pub fn string_value(&self) -> &str {
         match self.kind {
-            ::std::option::Option::Some(value::Kind::string_value(ref v)) => v,
+            ::std::option::Option::Some(value::Kind::StringValue(ref v)) => v,
             _ => "",
         }
     }
@@ -243,24 +243,24 @@ impl Value {
 
     pub fn has_string_value(&self) -> bool {
         match self.kind {
-            ::std::option::Option::Some(value::Kind::string_value(..)) => true,
+            ::std::option::Option::Some(value::Kind::StringValue(..)) => true,
             _ => false,
         }
     }
 
     // Param is passed by value, moved
     pub fn set_string_value(&mut self, v: ::std::string::String) {
-        self.kind = ::std::option::Option::Some(value::Kind::string_value(v))
+        self.kind = ::std::option::Option::Some(value::Kind::StringValue(v))
     }
 
     // Mutable pointer to the field.
     pub fn mut_string_value(&mut self) -> &mut ::std::string::String {
-        if let ::std::option::Option::Some(value::Kind::string_value(_)) = self.kind {
+        if let ::std::option::Option::Some(value::Kind::StringValue(_)) = self.kind {
         } else {
-            self.kind = ::std::option::Option::Some(value::Kind::string_value(::std::string::String::new()));
+            self.kind = ::std::option::Option::Some(value::Kind::StringValue(::std::string::String::new()));
         }
         match self.kind {
-            ::std::option::Option::Some(value::Kind::string_value(ref mut v)) => v,
+            ::std::option::Option::Some(value::Kind::StringValue(ref mut v)) => v,
             _ => panic!(),
         }
     }
@@ -269,7 +269,7 @@ impl Value {
     pub fn take_string_value(&mut self) -> ::std::string::String {
         if self.has_string_value() {
             match self.kind.take() {
-                ::std::option::Option::Some(value::Kind::string_value(v)) => v,
+                ::std::option::Option::Some(value::Kind::StringValue(v)) => v,
                 _ => panic!(),
             }
         } else {
@@ -281,7 +281,7 @@ impl Value {
 
     pub fn bool_value(&self) -> bool {
         match self.kind {
-            ::std::option::Option::Some(value::Kind::bool_value(v)) => v,
+            ::std::option::Option::Some(value::Kind::BoolValue(v)) => v,
             _ => false,
         }
     }
@@ -292,21 +292,21 @@ impl Value {
 
     pub fn has_bool_value(&self) -> bool {
         match self.kind {
-            ::std::option::Option::Some(value::Kind::bool_value(..)) => true,
+            ::std::option::Option::Some(value::Kind::BoolValue(..)) => true,
             _ => false,
         }
     }
 
     // Param is passed by value, moved
     pub fn set_bool_value(&mut self, v: bool) {
-        self.kind = ::std::option::Option::Some(value::Kind::bool_value(v))
+        self.kind = ::std::option::Option::Some(value::Kind::BoolValue(v))
     }
 
     // .google.protobuf.Struct struct_value = 5;
 
     pub fn struct_value(&self) -> &Struct {
         match self.kind {
-            ::std::option::Option::Some(value::Kind::struct_value(ref v)) => v,
+            ::std::option::Option::Some(value::Kind::StructValue(ref v)) => v,
             _ => <Struct as crate::Message>::default_instance(),
         }
     }
@@ -317,24 +317,24 @@ impl Value {
 
     pub fn has_struct_value(&self) -> bool {
         match self.kind {
-            ::std::option::Option::Some(value::Kind::struct_value(..)) => true,
+            ::std::option::Option::Some(value::Kind::StructValue(..)) => true,
             _ => false,
         }
     }
 
     // Param is passed by value, moved
     pub fn set_struct_value(&mut self, v: Struct) {
-        self.kind = ::std::option::Option::Some(value::Kind::struct_value(v))
+        self.kind = ::std::option::Option::Some(value::Kind::StructValue(v))
     }
 
     // Mutable pointer to the field.
     pub fn mut_struct_value(&mut self) -> &mut Struct {
-        if let ::std::option::Option::Some(value::Kind::struct_value(_)) = self.kind {
+        if let ::std::option::Option::Some(value::Kind::StructValue(_)) = self.kind {
         } else {
-            self.kind = ::std::option::Option::Some(value::Kind::struct_value(Struct::new()));
+            self.kind = ::std::option::Option::Some(value::Kind::StructValue(Struct::new()));
         }
         match self.kind {
-            ::std::option::Option::Some(value::Kind::struct_value(ref mut v)) => v,
+            ::std::option::Option::Some(value::Kind::StructValue(ref mut v)) => v,
             _ => panic!(),
         }
     }
@@ -343,7 +343,7 @@ impl Value {
     pub fn take_struct_value(&mut self) -> Struct {
         if self.has_struct_value() {
             match self.kind.take() {
-                ::std::option::Option::Some(value::Kind::struct_value(v)) => v,
+                ::std::option::Option::Some(value::Kind::StructValue(v)) => v,
                 _ => panic!(),
             }
         } else {
@@ -355,7 +355,7 @@ impl Value {
 
     pub fn list_value(&self) -> &ListValue {
         match self.kind {
-            ::std::option::Option::Some(value::Kind::list_value(ref v)) => v,
+            ::std::option::Option::Some(value::Kind::ListValue(ref v)) => v,
             _ => <ListValue as crate::Message>::default_instance(),
         }
     }
@@ -366,24 +366,24 @@ impl Value {
 
     pub fn has_list_value(&self) -> bool {
         match self.kind {
-            ::std::option::Option::Some(value::Kind::list_value(..)) => true,
+            ::std::option::Option::Some(value::Kind::ListValue(..)) => true,
             _ => false,
         }
     }
 
     // Param is passed by value, moved
     pub fn set_list_value(&mut self, v: ListValue) {
-        self.kind = ::std::option::Option::Some(value::Kind::list_value(v))
+        self.kind = ::std::option::Option::Some(value::Kind::ListValue(v))
     }
 
     // Mutable pointer to the field.
     pub fn mut_list_value(&mut self) -> &mut ListValue {
-        if let ::std::option::Option::Some(value::Kind::list_value(_)) = self.kind {
+        if let ::std::option::Option::Some(value::Kind::ListValue(_)) = self.kind {
         } else {
-            self.kind = ::std::option::Option::Some(value::Kind::list_value(ListValue::new()));
+            self.kind = ::std::option::Option::Some(value::Kind::ListValue(ListValue::new()));
         }
         match self.kind {
-            ::std::option::Option::Some(value::Kind::list_value(ref mut v)) => v,
+            ::std::option::Option::Some(value::Kind::ListValue(ref mut v)) => v,
             _ => panic!(),
         }
     }
@@ -392,7 +392,7 @@ impl Value {
     pub fn take_list_value(&mut self) -> ListValue {
         if self.has_list_value() {
             match self.kind.take() {
-                ::std::option::Option::Some(value::Kind::list_value(v)) => v,
+                ::std::option::Option::Some(value::Kind::ListValue(v)) => v,
                 _ => panic!(),
             }
         } else {
@@ -405,11 +405,11 @@ impl Value {
         fields.push(crate::reflect::rt::v2::make_oneof_enum_accessors::<_, _>(
             "null_value",
             |message: &Value| match &message.kind {
-                ::std::option::Option::Some(value::Kind::null_value(e)) => ::std::option::Option::Some(*e),
+                ::std::option::Option::Some(value::Kind::NullValue(e)) => ::std::option::Option::Some(*e),
                 _ => ::std::option::Option::None,
             },
             |message: &mut Value, e: crate::EnumOrUnknown<NullValue>| {
-                message.kind = ::std::option::Option::Some(value::Kind::null_value(e));
+                message.kind = ::std::option::Option::Some(value::Kind::NullValue(e));
             },
             NullValue::NULL_VALUE,
         ));
@@ -457,12 +457,12 @@ impl crate::Message for Value {
     const NAME: &'static str = "Value";
 
     fn is_initialized(&self) -> bool {
-        if let Some(value::Kind::struct_value(ref v)) = self.kind {
+        if let Some(value::Kind::StructValue(ref v)) = self.kind {
             if !v.is_initialized() {
                 return false;
             }
         }
-        if let Some(value::Kind::list_value(ref v)) = self.kind {
+        if let Some(value::Kind::ListValue(ref v)) = self.kind {
             if !v.is_initialized() {
                 return false;
             }
@@ -474,22 +474,22 @@ impl crate::Message for Value {
         while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 8 => {
-                    self.kind = ::std::option::Option::Some(value::Kind::null_value(is.read_enum_or_unknown()?));
+                    self.kind = ::std::option::Option::Some(value::Kind::NullValue(is.read_enum_or_unknown()?));
                 },
                 17 => {
-                    self.kind = ::std::option::Option::Some(value::Kind::number_value(is.read_double()?));
+                    self.kind = ::std::option::Option::Some(value::Kind::NumberValue(is.read_double()?));
                 },
                 26 => {
-                    self.kind = ::std::option::Option::Some(value::Kind::string_value(is.read_string()?));
+                    self.kind = ::std::option::Option::Some(value::Kind::StringValue(is.read_string()?));
                 },
                 32 => {
-                    self.kind = ::std::option::Option::Some(value::Kind::bool_value(is.read_bool()?));
+                    self.kind = ::std::option::Option::Some(value::Kind::BoolValue(is.read_bool()?));
                 },
                 42 => {
-                    self.kind = ::std::option::Option::Some(value::Kind::struct_value(is.read_message()?));
+                    self.kind = ::std::option::Option::Some(value::Kind::StructValue(is.read_message()?));
                 },
                 50 => {
-                    self.kind = ::std::option::Option::Some(value::Kind::list_value(is.read_message()?));
+                    self.kind = ::std::option::Option::Some(value::Kind::ListValue(is.read_message()?));
                 },
                 tag => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
@@ -505,23 +505,23 @@ impl crate::Message for Value {
         let mut my_size = 0;
         if let ::std::option::Option::Some(ref v) = self.kind {
             match v {
-                &value::Kind::null_value(v) => {
+                &value::Kind::NullValue(v) => {
                     my_size += crate::rt::enum_or_unknown_size(1, v);
                 },
-                &value::Kind::number_value(v) => {
+                &value::Kind::NumberValue(v) => {
                     my_size += 9;
                 },
-                &value::Kind::string_value(ref v) => {
+                &value::Kind::StringValue(ref v) => {
                     my_size += crate::rt::string_size(3, &v);
                 },
-                &value::Kind::bool_value(v) => {
+                &value::Kind::BoolValue(v) => {
                     my_size += 2;
                 },
-                &value::Kind::struct_value(ref v) => {
+                &value::Kind::StructValue(ref v) => {
                     let len = v.compute_size();
                     my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
                 },
-                &value::Kind::list_value(ref v) => {
+                &value::Kind::ListValue(ref v) => {
                     let len = v.compute_size();
                     my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
                 },
@@ -535,22 +535,22 @@ impl crate::Message for Value {
     fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::Result<()> {
         if let ::std::option::Option::Some(ref v) = self.kind {
             match v {
-                &value::Kind::null_value(v) => {
+                &value::Kind::NullValue(v) => {
                     os.write_enum(1, crate::EnumOrUnknown::value(&v))?;
                 },
-                &value::Kind::number_value(v) => {
+                &value::Kind::NumberValue(v) => {
                     os.write_double(2, v)?;
                 },
-                &value::Kind::string_value(ref v) => {
+                &value::Kind::StringValue(ref v) => {
                     os.write_string(3, v)?;
                 },
-                &value::Kind::bool_value(v) => {
+                &value::Kind::BoolValue(v) => {
                     os.write_bool(4, v)?;
                 },
-                &value::Kind::struct_value(ref v) => {
+                &value::Kind::StructValue(ref v) => {
                     crate::rt::write_message_field_with_cached_size(5, v, os)?;
                 },
-                &value::Kind::list_value(ref v) => {
+                &value::Kind::ListValue(ref v) => {
                     crate::rt::write_message_field_with_cached_size(6, v, os)?;
                 },
             };
@@ -619,17 +619,17 @@ pub mod value {
     // @@protoc_insertion_point(oneof:google.protobuf.Value.kind)
     pub enum Kind {
         // @@protoc_insertion_point(oneof_field:google.protobuf.Value.null_value)
-        null_value(crate::EnumOrUnknown<super::NullValue>),
+        NullValue(crate::EnumOrUnknown<super::NullValue>),
         // @@protoc_insertion_point(oneof_field:google.protobuf.Value.number_value)
-        number_value(f64),
+        NumberValue(f64),
         // @@protoc_insertion_point(oneof_field:google.protobuf.Value.string_value)
-        string_value(::std::string::String),
+        StringValue(::std::string::String),
         // @@protoc_insertion_point(oneof_field:google.protobuf.Value.bool_value)
-        bool_value(bool),
+        BoolValue(bool),
         // @@protoc_insertion_point(oneof_field:google.protobuf.Value.struct_value)
-        struct_value(super::Struct),
+        StructValue(super::Struct),
         // @@protoc_insertion_point(oneof_field:google.protobuf.Value.list_value)
-        list_value(super::ListValue),
+        ListValue(super::ListValue),
     }
 
     impl crate::Oneof for Kind {

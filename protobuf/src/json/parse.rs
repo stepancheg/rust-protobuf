@@ -802,19 +802,19 @@ impl<'a> Parser<'a> {
 
     fn merge_wk_value(&mut self, value: &mut Value) -> ParseResultWithoutLoc<()> {
         if self.tokenizer.lookahead_is_ident("null")? {
-            value.kind = Some(value::Kind::null_value(self.read_wk_null_value()?.into()));
+            value.kind = Some(value::Kind::NullValue(self.read_wk_null_value()?.into()));
         } else if self.tokenizer.lookahead_is_ident("true")?
             || self.tokenizer.lookahead_is_ident("false")?
         {
-            value.kind = Some(value::Kind::bool_value(self.read_bool()?));
+            value.kind = Some(value::Kind::BoolValue(self.read_bool()?));
         } else if self.tokenizer.lookahead_is_json_number()? {
-            value.kind = Some(value::Kind::number_value(self.read_f64()?));
+            value.kind = Some(value::Kind::NumberValue(self.read_f64()?));
         } else if self.tokenizer.lookahead_is_str_lit()? {
-            value.kind = Some(value::Kind::string_value(self.read_string()?));
+            value.kind = Some(value::Kind::StringValue(self.read_string()?));
         } else if self.tokenizer.lookahead_is_symbol('[')? {
-            value.kind = Some(value::Kind::list_value(self.read_wk_list_value()?));
+            value.kind = Some(value::Kind::ListValue(self.read_wk_list_value()?));
         } else if self.tokenizer.lookahead_is_symbol('{')? {
-            value.kind = Some(value::Kind::struct_value(self.read_wk_struct()?));
+            value.kind = Some(value::Kind::StructValue(self.read_wk_struct()?));
         } else {
             return Err(ParseErrorWithoutLoc(
                 ParseErrorWithoutLocInner::UnexpectedToken,

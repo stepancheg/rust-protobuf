@@ -28,7 +28,7 @@ fn values_for_message_type(descriptor: &MessageDescriptor) -> Vec<Box<dyn Messag
     if descriptor == &Value::descriptor_static() {
         // special handling because empty `Value` is not valid
         let mut value = Value::new();
-        value.kind = Some(value::Kind::number_value(23.0));
+        value.kind = Some(value::Kind::NumberValue(23.0));
         vec![Box::new(value)]
     } else {
         vec![

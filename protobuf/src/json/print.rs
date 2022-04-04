@@ -248,7 +248,7 @@ impl PrintableToJson for Value {
         match self.kind {
             // None should not be possible here, but it's better to print null than crash
             None => w.print_json_null(),
-            Some(value::Kind::null_value(null_value)) => {
+            Some(value::Kind::NullValue(null_value)) => {
                 match null_value.enum_value() {
                     Ok(value) => w.print_wk_null_value(&value),
                     Err(n) => {
@@ -257,11 +257,11 @@ impl PrintableToJson for Value {
                     }
                 }
             }
-            Some(value::Kind::bool_value(b)) => w.print_printable(&b),
-            Some(value::Kind::number_value(n)) => w.print_printable(&n),
-            Some(value::Kind::string_value(ref s)) => w.print_printable::<String>(&s),
-            Some(value::Kind::struct_value(ref s)) => w.print_printable(&s),
-            Some(value::Kind::list_value(ref l)) => w.print_printable(&l),
+            Some(value::Kind::BoolValue(b)) => w.print_printable(&b),
+            Some(value::Kind::NumberValue(n)) => w.print_printable(&n),
+            Some(value::Kind::StringValue(ref s)) => w.print_printable::<String>(&s),
+            Some(value::Kind::StructValue(ref s)) => w.print_printable(&s),
+            Some(value::Kind::ListValue(ref l)) => w.print_printable(&l),
         }
     }
 }
