@@ -97,6 +97,7 @@ impl FileDescriptor {
         Syntax::parse(self.proto().syntax()).unwrap_or(Syntax::Proto2)
     }
 
+    // TODO: return iterator.
     /// Get top-level messages.
     pub fn messages(&self) -> Vec<MessageDescriptor> {
         self.index()
