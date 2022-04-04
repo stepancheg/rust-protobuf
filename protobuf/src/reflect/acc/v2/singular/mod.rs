@@ -175,37 +175,20 @@ impl SingularFieldAccessorHolder {
         M: MessageFull,
         E: EnumFull,
     {
-        struct Impl<M, E> {
-            get: fn(&M) -> Option<EnumOrUnknown<E>>,
-            set: fn(&mut M, EnumOrUnknown<E>),
-        }
-
-        impl<M: MessageFull, E: EnumFull> SingularFieldAccessor for Impl<M, E> {
-            fn get_field<'a>(&self, m: &'a dyn MessageDyn) -> Option<ReflectValueRef<'a>> {
-                let m = m.downcast_ref().unwrap();
-                let value = (self.get)(m);
+        Self::new(
+            move |m| {
+                let value = (get)(m);
                 value.map(|v| ReflectValueRef::Enum(E::enum_descriptor_static(), v.value()))
-            }
-
-            fn mut_field_or_default<'a>(&self, _m: &'a mut dyn MessageDyn) -> ReflectValueMut<'a> {
-                panic!("cannot get mutable pointer")
-            }
-
-            fn set_field(&self, m: &mut dyn MessageDyn, value: ReflectValueBox) {
-                let m = m.downcast_mut().unwrap();
-                match value {
-                    ReflectValueBox::Enum(e, v) => {
-                        assert_eq!(E::enum_descriptor_static(), e);
-                        (self.set)(m, EnumOrUnknown::from_i32(v));
-                    }
-                    _ => panic!("expecting enum value"),
+            },
+            |_m| panic!("cannot get mutable pointer"),
+            move |m, value| match value {
+                ReflectValueBox::Enum(e, v) => {
+                    assert_eq!(E::enum_descriptor_static(), e);
+                    (set)(m, EnumOrUnknown::from_i32(v));
                 }
-            }
-        }
-
-        SingularFieldAccessorHolder {
-            accessor: Box::new(Impl { get, set }),
-        }
+                _ => panic!("expecting enum value"),
+            },
+        )
     }
 
     pub(crate) fn new_has_get_set<M, V>(
