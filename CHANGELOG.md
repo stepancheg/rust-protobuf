@@ -5,10 +5,13 @@ Stable versions are 2.xx still supported.
 
 ## [3] - Unreleased
 
+## [3.0.0-alpha.9] - 2022-04-04
+
 - Unimplement `DerefMut` for `MessageField`: `DerefMut` which modifies the object state is too dangerous.
   `Deref` is kept though. `Deref` returns an empty instance if field is not set.
 - Added `Message::clear`, removed trait `Clear`
 - `Lazy` (which is used in generated code) is now implemented with `once_cell` crate.
+- protobuf 3 experimental `optional` fields are implemented
 
 ## [3.0.0-alpha.8] - 2022-02-21
 
