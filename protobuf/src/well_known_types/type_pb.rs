@@ -227,7 +227,7 @@ impl crate::Message for Type {
         self.options.clear();
         self.source_context.clear();
         self.syntax = crate::EnumOrUnknown::new(Syntax::SYNTAX_PROTO2);
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static Type {
@@ -528,7 +528,7 @@ impl crate::Message for Field {
         self.options.clear();
         self.json_name.clear();
         self.default_value.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static Field {
@@ -936,7 +936,7 @@ impl crate::Message for Enum {
         self.options.clear();
         self.source_context.clear();
         self.syntax = crate::EnumOrUnknown::new(Syntax::SYNTAX_PROTO2);
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static Enum {
@@ -1108,7 +1108,7 @@ impl crate::Message for EnumValue {
         self.name.clear();
         self.number = 0;
         self.options.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static EnumValue {
@@ -1267,7 +1267,7 @@ impl crate::Message for Option {
     fn clear(&mut self) {
         self.name.clear();
         self.value.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static Option {

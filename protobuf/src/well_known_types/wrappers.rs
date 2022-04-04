@@ -121,7 +121,7 @@ impl crate::Message for DoubleValue {
 
     fn clear(&mut self) {
         self.value = 0.;
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static DoubleValue {
@@ -249,7 +249,7 @@ impl crate::Message for FloatValue {
 
     fn clear(&mut self) {
         self.value = 0.;
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static FloatValue {
@@ -377,7 +377,7 @@ impl crate::Message for Int64Value {
 
     fn clear(&mut self) {
         self.value = 0;
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static Int64Value {
@@ -505,7 +505,7 @@ impl crate::Message for UInt64Value {
 
     fn clear(&mut self) {
         self.value = 0;
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static UInt64Value {
@@ -633,7 +633,7 @@ impl crate::Message for Int32Value {
 
     fn clear(&mut self) {
         self.value = 0;
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static Int32Value {
@@ -761,7 +761,7 @@ impl crate::Message for UInt32Value {
 
     fn clear(&mut self) {
         self.value = 0;
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static UInt32Value {
@@ -889,7 +889,7 @@ impl crate::Message for BoolValue {
 
     fn clear(&mut self) {
         self.value = false;
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static BoolValue {
@@ -1017,7 +1017,7 @@ impl crate::Message for StringValue {
 
     fn clear(&mut self) {
         self.value.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static StringValue {
@@ -1145,7 +1145,7 @@ impl crate::Message for BytesValue {
 
     fn clear(&mut self) {
         self.value.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static BytesValue {

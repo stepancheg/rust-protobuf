@@ -125,7 +125,7 @@ impl crate::Message for FileDescriptorSet {
 
     fn clear(&mut self) {
         self.file.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static FileDescriptorSet {
@@ -598,7 +598,7 @@ impl crate::Message for FileDescriptorProto {
         self.options.clear();
         self.source_code_info.clear();
         self.syntax = ::std::option::Option::None;
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static FileDescriptorProto {
@@ -973,7 +973,7 @@ impl crate::Message for DescriptorProto {
         self.options.clear();
         self.reserved_range.clear();
         self.reserved_name.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static DescriptorProto {
@@ -1186,7 +1186,7 @@ pub mod descriptor_proto {
             self.start = ::std::option::Option::None;
             self.end = ::std::option::Option::None;
             self.options.clear();
-            self.special_fields.mut_unknown_fields().clear();
+            self.special_fields.clear();
         }
 
         fn default_instance() -> &'static ExtensionRange {
@@ -1370,7 +1370,7 @@ pub mod descriptor_proto {
         fn clear(&mut self) {
             self.start = ::std::option::Option::None;
             self.end = ::std::option::Option::None;
-            self.special_fields.mut_unknown_fields().clear();
+            self.special_fields.clear();
         }
 
         fn default_instance() -> &'static ReservedRange {
@@ -1503,7 +1503,7 @@ impl crate::Message for ExtensionRangeOptions {
 
     fn clear(&mut self) {
         self.uninterpreted_option.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static ExtensionRangeOptions {
@@ -2126,7 +2126,7 @@ impl crate::Message for FieldDescriptorProto {
         self.json_name = ::std::option::Option::None;
         self.options.clear();
         self.proto3_optional = ::std::option::Option::None;
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static FieldDescriptorProto {
@@ -2495,7 +2495,7 @@ impl crate::Message for OneofDescriptorProto {
     fn clear(&mut self) {
         self.name = ::std::option::Option::None;
         self.options.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static OneofDescriptorProto {
@@ -2748,7 +2748,7 @@ impl crate::Message for EnumDescriptorProto {
         self.options.clear();
         self.reserved_range.clear();
         self.reserved_name.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static EnumDescriptorProto {
@@ -2939,7 +2939,7 @@ pub mod enum_descriptor_proto {
         fn clear(&mut self) {
             self.start = ::std::option::Option::None;
             self.end = ::std::option::Option::None;
-            self.special_fields.mut_unknown_fields().clear();
+            self.special_fields.clear();
         }
 
         fn default_instance() -> &'static EnumReservedRange {
@@ -3161,7 +3161,7 @@ impl crate::Message for EnumValueDescriptorProto {
         self.name = ::std::option::Option::None;
         self.number = ::std::option::Option::None;
         self.options.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static EnumValueDescriptorProto {
@@ -3370,7 +3370,7 @@ impl crate::Message for ServiceDescriptorProto {
         self.name = ::std::option::Option::None;
         self.method.clear();
         self.options.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static ServiceDescriptorProto {
@@ -3738,7 +3738,7 @@ impl crate::Message for MethodDescriptorProto {
         self.options.clear();
         self.client_streaming = ::std::option::Option::None;
         self.server_streaming = ::std::option::Option::None;
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static MethodDescriptorProto {
@@ -4829,7 +4829,7 @@ impl crate::Message for FileOptions {
         self.php_metadata_namespace = ::std::option::Option::None;
         self.ruby_package = ::std::option::Option::None;
         self.uninterpreted_option.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static FileOptions {
@@ -5191,7 +5191,7 @@ impl crate::Message for MessageOptions {
         self.deprecated = ::std::option::Option::None;
         self.map_entry = ::std::option::Option::None;
         self.uninterpreted_option.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static MessageOptions {
@@ -5601,7 +5601,7 @@ impl crate::Message for FieldOptions {
         self.deprecated = ::std::option::Option::None;
         self.weak = ::std::option::Option::None;
         self.uninterpreted_option.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static FieldOptions {
@@ -5851,7 +5851,7 @@ impl crate::Message for OneofOptions {
 
     fn clear(&mut self) {
         self.uninterpreted_option.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static OneofOptions {
@@ -6060,7 +6060,7 @@ impl crate::Message for EnumOptions {
         self.allow_alias = ::std::option::Option::None;
         self.deprecated = ::std::option::Option::None;
         self.uninterpreted_option.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static EnumOptions {
@@ -6233,7 +6233,7 @@ impl crate::Message for EnumValueOptions {
     fn clear(&mut self) {
         self.deprecated = ::std::option::Option::None;
         self.uninterpreted_option.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static EnumValueOptions {
@@ -6405,7 +6405,7 @@ impl crate::Message for ServiceOptions {
     fn clear(&mut self) {
         self.deprecated = ::std::option::Option::None;
         self.uninterpreted_option.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static ServiceOptions {
@@ -6616,7 +6616,7 @@ impl crate::Message for MethodOptions {
         self.deprecated = ::std::option::Option::None;
         self.idempotency_level = ::std::option::Option::None;
         self.uninterpreted_option.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static MethodOptions {
@@ -7084,7 +7084,7 @@ impl crate::Message for UninterpretedOption {
         self.double_value = ::std::option::Option::None;
         self.string_value = ::std::option::Option::None;
         self.aggregate_value = ::std::option::Option::None;
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static UninterpretedOption {
@@ -7299,7 +7299,7 @@ pub mod uninterpreted_option {
         fn clear(&mut self) {
             self.name_part = ::std::option::Option::None;
             self.is_extension = ::std::option::Option::None;
-            self.special_fields.mut_unknown_fields().clear();
+            self.special_fields.clear();
         }
 
         fn default_instance() -> &'static NamePart {
@@ -7433,7 +7433,7 @@ impl crate::Message for SourceCodeInfo {
 
     fn clear(&mut self) {
         self.location.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static SourceCodeInfo {
@@ -7706,7 +7706,7 @@ pub mod source_code_info {
             self.leading_comments = ::std::option::Option::None;
             self.trailing_comments = ::std::option::Option::None;
             self.leading_detached_comments.clear();
-            self.special_fields.mut_unknown_fields().clear();
+            self.special_fields.clear();
         }
 
         fn default_instance() -> &'static Location {
@@ -7846,7 +7846,7 @@ impl crate::Message for GeneratedCodeInfo {
 
     fn clear(&mut self) {
         self.annotation.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static GeneratedCodeInfo {
@@ -8106,7 +8106,7 @@ pub mod generated_code_info {
             self.source_file = ::std::option::Option::None;
             self.begin = ::std::option::Option::None;
             self.end = ::std::option::Option::None;
-            self.special_fields.mut_unknown_fields().clear();
+            self.special_fields.clear();
         }
 
         fn default_instance() -> &'static Annotation {

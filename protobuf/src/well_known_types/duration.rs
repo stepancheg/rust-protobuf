@@ -143,7 +143,7 @@ impl crate::Message for Duration {
     fn clear(&mut self) {
         self.seconds = 0;
         self.nanos = 0;
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static Duration {

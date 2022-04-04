@@ -264,7 +264,7 @@ impl crate::Message for Version {
         self.minor = ::std::option::Option::None;
         self.patch = ::std::option::Option::None;
         self.suffix = ::std::option::Option::None;
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static Version {
@@ -510,7 +510,7 @@ impl crate::Message for CodeGeneratorRequest {
         self.parameter = ::std::option::Option::None;
         self.proto_file.clear();
         self.compiler_version.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static CodeGeneratorRequest {
@@ -743,7 +743,7 @@ impl crate::Message for CodeGeneratorResponse {
         self.error = ::std::option::Option::None;
         self.supported_features = ::std::option::Option::None;
         self.file.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static CodeGeneratorResponse {
@@ -1089,7 +1089,7 @@ pub mod code_generator_response {
             self.insertion_point = ::std::option::Option::None;
             self.content = ::std::option::Option::None;
             self.generated_code_info.clear();
-            self.special_fields.mut_unknown_fields().clear();
+            self.special_fields.clear();
         }
 
         fn default_instance() -> &'static File {

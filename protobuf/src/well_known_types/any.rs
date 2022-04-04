@@ -163,7 +163,7 @@ impl crate::Message for Any {
     fn clear(&mut self) {
         self.type_url.clear();
         self.value.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static Any {

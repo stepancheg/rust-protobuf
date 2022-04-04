@@ -99,7 +99,7 @@ impl crate::Message for MyMessage {
     }
 
     fn clear(&mut self) {
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static MyMessage {

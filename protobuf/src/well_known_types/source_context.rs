@@ -121,7 +121,7 @@ impl crate::Message for SourceContext {
 
     fn clear(&mut self) {
         self.file_name.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static SourceContext {

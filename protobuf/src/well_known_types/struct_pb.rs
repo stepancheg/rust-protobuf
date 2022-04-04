@@ -122,7 +122,7 @@ impl crate::Message for Struct {
 
     fn clear(&mut self) {
         self.fields.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static Struct {
@@ -578,7 +578,7 @@ impl crate::Message for Value {
         self.kind = ::std::option::Option::None;
         self.kind = ::std::option::Option::None;
         self.kind = ::std::option::Option::None;
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static Value {
@@ -737,7 +737,7 @@ impl crate::Message for ListValue {
 
     fn clear(&mut self) {
         self.values.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static ListValue {

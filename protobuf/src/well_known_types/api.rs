@@ -281,7 +281,7 @@ impl crate::Message for Api {
         self.source_context.clear();
         self.mixins.clear();
         self.syntax = crate::EnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2);
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static Api {
@@ -527,7 +527,7 @@ impl crate::Message for Method {
         self.response_streaming = false;
         self.options.clear();
         self.syntax = crate::EnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2);
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static Method {
@@ -677,7 +677,7 @@ impl crate::Message for Mixin {
     fn clear(&mut self) {
         self.name.clear();
         self.root.clear();
-        self.special_fields.mut_unknown_fields().clear();
+        self.special_fields.clear();
     }
 
     fn default_instance() -> &'static Mixin {
