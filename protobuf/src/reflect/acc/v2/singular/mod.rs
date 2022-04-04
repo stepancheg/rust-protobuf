@@ -284,6 +284,59 @@ impl SingularFieldAccessorHolder {
             accessor: Box::new(Impl { has, get, set }),
         }
     }
+
+    pub(crate) fn new_has_get_set_deref<M, V>(
+        has: fn(&M) -> bool,
+        get: for<'a> fn(&'a M) -> &'a <V::RuntimeType as RuntimeTypeWithDeref>::DerefTarget,
+        set: fn(&mut M, V),
+    ) -> SingularFieldAccessorHolder
+    where
+        M: MessageFull,
+        V: ProtobufValue,
+        V::RuntimeType: RuntimeTypeWithDeref,
+    {
+        struct Impl<M, V>
+        where
+            M: MessageFull,
+            V: ProtobufValue,
+            V::RuntimeType: RuntimeTypeWithDeref,
+        {
+            has: fn(&M) -> bool,
+            get: for<'a> fn(&'a M) -> &'a <V::RuntimeType as RuntimeTypeWithDeref>::DerefTarget,
+            set: fn(&mut M, V),
+        }
+
+        impl<M, V> SingularFieldAccessor for Impl<M, V>
+        where
+            M: MessageFull,
+            V: ProtobufValue,
+            V::RuntimeType: RuntimeTypeWithDeref,
+        {
+            fn get_field<'a>(&self, m: &'a dyn MessageDyn) -> Option<ReflectValueRef<'a>> {
+                let m = m.downcast_ref().unwrap();
+                if (self.has)(m) {
+                    Some(<V::RuntimeType as RuntimeTypeWithDeref>::defef_as_ref(
+                        (self.get)(m),
+                    ))
+                } else {
+                    None
+                }
+            }
+
+            fn mut_field_or_default<'a>(&self, _m: &'a mut dyn MessageDyn) -> ReflectValueMut<'a> {
+                unimplemented!()
+            }
+
+            fn set_field(&self, m: &mut dyn MessageDyn, value: ReflectValueBox) {
+                let m = m.downcast_mut().unwrap();
+                (self.set)(m, value.downcast::<V>().expect("message"))
+            }
+        }
+
+        SingularFieldAccessorHolder {
+            accessor: Box::new(Impl { has, get, set }),
+        }
+    }
 }
 
 impl<'a> fmt::Debug for SingularFieldAccessorHolder {
@@ -306,33 +359,6 @@ trait MutOrDefaultImpl<M>: Send + Sync + 'static {
 
 trait SetImpl<M>: Send + Sync + 'static {
     fn set_singular_field(&self, m: &mut M, value: ReflectValueBox);
-}
-
-struct MutOrDefaultUnmplemented<M>
-where
-    M: MessageFull,
-{
-    _marker: marker::PhantomData<M>,
-}
-
-impl<M> MutOrDefaultUnmplemented<M>
-where
-    M: MessageFull,
-{
-    fn new() -> MutOrDefaultUnmplemented<M> {
-        MutOrDefaultUnmplemented {
-            _marker: marker::PhantomData,
-        }
-    }
-}
-
-impl<M> MutOrDefaultImpl<M> for MutOrDefaultUnmplemented<M>
-where
-    M: MessageFull,
-{
-    fn mut_singular_field_or_default_impl<'a>(&self, _m: &'a mut M) -> ReflectValueMut<'a> {
-        unimplemented!()
-    }
 }
 
 struct SingularFieldAccessorImpl<M, V, G, E, S>
