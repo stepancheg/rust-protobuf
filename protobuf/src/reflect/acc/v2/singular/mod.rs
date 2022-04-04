@@ -462,8 +462,8 @@ pub fn make_message_field_accessor<M, V>(
     mut_field: for<'a> fn(&'a mut M) -> &'a mut MessageField<V>,
 ) -> FieldAccessor
 where
-    M: MessageFull + 'static,
-    V: MessageFull + ProtobufValue + 'static,
+    M: MessageFull,
+    V: MessageFull,
 {
     FieldAccessor::new_v2(
         name,
@@ -495,8 +495,8 @@ pub fn make_option_accessor<M, V>(
     mut_field: for<'a> fn(&'a mut M) -> &'a mut Option<V>,
 ) -> FieldAccessor
 where
-    M: MessageFull + 'static,
-    V: ProtobufValue + 'static,
+    M: MessageFull,
+    V: ProtobufValue,
 {
     FieldAccessor::new_v2(
         name,
@@ -524,7 +524,7 @@ pub fn make_simpler_field_accessor<M, V>(
     mut_field: for<'a> fn(&'a mut M) -> &'a mut V,
 ) -> FieldAccessor
 where
-    M: MessageFull + 'static,
+    M: MessageFull,
     V: ProtobufValue,
 {
     FieldAccessor::new_v2(

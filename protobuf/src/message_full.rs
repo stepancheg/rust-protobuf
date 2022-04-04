@@ -3,6 +3,7 @@ use std::fmt;
 use crate::message_dyn::MessageDyn;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::MessageDescriptor;
+use crate::reflect::ProtobufValue;
 use crate::Message;
 
 /// Trait implemented for all the generated messages, except when lite runtime is enabled.
@@ -23,7 +24,7 @@ use crate::Message;
 ///
 /// [`Display`](fmt::Display) implementation for messages does protobuf text format.
 /// See [`text_format`](crate::text_format) for more details.
-pub trait MessageFull: Message + fmt::Debug + fmt::Display {
+pub trait MessageFull: Message + ProtobufValue + fmt::Debug + fmt::Display {
     /// Get message descriptor for message type.
     ///
     /// ```
