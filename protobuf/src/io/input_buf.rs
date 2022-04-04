@@ -57,12 +57,13 @@ impl<'a> InputBuf<'a> {
         self.pos_within_buf += amt;
     }
 
+    #[inline(always)]
     pub(crate) fn read_byte(&mut self) -> Option<u8> {
-        let r = self.remaining_in_buf().get(0);
+        let r = self.remaining_in_buf().first().copied();
         if let Some(..) = r {
             self.pos_within_buf += 1;
         }
-        r.copied()
+        r
     }
 
     pub(crate) fn read_bytes<'b>(&mut self, dest: &'b mut [MaybeUninit<u8>]) -> &'b mut [u8] {
