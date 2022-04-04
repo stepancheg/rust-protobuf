@@ -22,8 +22,8 @@ pub fn make_oneof_message_has_get_mut_set_accessor<M, F>(
     set_field: fn(&mut M, F),
 ) -> FieldAccessor
 where
-    M: MessageFull + 'static,
-    F: MessageFull + ProtobufValue,
+    M: MessageFull,
+    F: MessageFull,
 {
     FieldAccessor::new(
         name,
