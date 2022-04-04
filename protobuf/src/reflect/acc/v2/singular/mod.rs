@@ -200,39 +200,17 @@ impl SingularFieldAccessorHolder {
         M: MessageFull,
         V: ProtobufValue + Copy,
     {
-        struct Impl<M, V> {
-            has: fn(&M) -> bool,
-            get: fn(&M) -> V,
-            set: fn(&mut M, V),
-        }
-
-        impl<M, V> SingularFieldAccessor for Impl<M, V>
-        where
-            M: MessageFull,
-            V: ProtobufValue + Copy,
-        {
-            fn get_field<'a>(&self, m: &'a dyn MessageDyn) -> Option<ReflectValueRef<'a>> {
-                let m = m.downcast_ref().unwrap();
-                if (self.has)(m) {
-                    Some(V::into_static_value_ref((self.get)(m)))
+        Self::new(
+            move |m| {
+                if (has)(m) {
+                    Some(V::into_static_value_ref((get)(m)))
                 } else {
                     None
                 }
-            }
-
-            fn mut_field_or_default<'a>(&self, _m: &'a mut dyn MessageDyn) -> ReflectValueMut<'a> {
-                unimplemented!()
-            }
-
-            fn set_field(&self, m: &mut dyn MessageDyn, value: ReflectValueBox) {
-                let m = m.downcast_mut().unwrap();
-                (self.set)(m, value.downcast::<V>().expect("wrong type"))
-            }
-        }
-
-        SingularFieldAccessorHolder {
-            accessor: Box::new(Impl { has, get, set }),
-        }
+            },
+            |_m| unimplemented!(),
+            move |m, value| (set)(m, value.downcast::<V>().expect("wrong type")),
+        )
     }
 
     pub(crate) fn new_has_get_set_deref<M, V>(
