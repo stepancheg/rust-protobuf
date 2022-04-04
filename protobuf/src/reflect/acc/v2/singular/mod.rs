@@ -16,42 +16,6 @@ use crate::EnumOrUnknown;
 
 pub(crate) mod oneof;
 
-/// Option-like objects
-#[doc(hidden)]
-trait OptionLike<T> {
-    fn as_option_ref(&self) -> Option<&T>;
-    fn as_option_mut(&mut self) -> Option<&mut T>;
-    fn set_value(&mut self, value: T);
-}
-
-impl<T> OptionLike<T> for Option<T> {
-    fn as_option_ref(&self) -> Option<&T> {
-        self.as_ref()
-    }
-
-    fn as_option_mut(&mut self) -> Option<&mut T> {
-        self.as_mut()
-    }
-
-    fn set_value(&mut self, value: T) {
-        *self = Some(value);
-    }
-}
-
-impl<T> OptionLike<T> for MessageField<T> {
-    fn as_option_ref(&self) -> Option<&T> {
-        self.as_ref()
-    }
-
-    fn as_option_mut(&mut self) -> Option<&mut T> {
-        self.as_mut()
-    }
-
-    fn set_value(&mut self, value: T) {
-        *self = MessageField::some(value);
-    }
-}
-
 /// This trait should not be used directly, use `FieldDescriptor` instead
 pub(crate) trait SingularFieldAccessor: Send + Sync + 'static {
     fn get_field<'a>(&self, m: &'a dyn MessageDyn) -> Option<ReflectValueRef<'a>>;
@@ -140,9 +104,9 @@ impl SingularFieldAccessorHolder {
         V: ProtobufValue,
     {
         Self::new(
-            move |m| (get_field)(m).as_option_ref().map(V::as_ref),
+            move |m| (get_field)(m).as_ref().map(V::as_ref),
             move |_m| unimplemented!(),
-            move |m, value| (mut_field)(m).set_value(V::from_value_box(value).expect("wrong type")),
+            move |m, value| *(mut_field)(m) = Some(V::from_value_box(value).expect("wrong type")),
         )
     }
 
@@ -155,15 +119,17 @@ impl SingularFieldAccessorHolder {
         V: MessageFull,
     {
         Self::new(
-            move |m| (get_field)(m).as_option_ref().map(V::as_ref),
+            move |m| (get_field)(m).as_ref().map(V::as_ref),
             move |m| {
                 let option = (mut_field)(m);
-                if option.as_option_ref().is_none() {
-                    option.set_value(V::default());
+                if option.as_ref().is_none() {
+                    *option = MessageField::some(V::default());
                 }
-                V::as_mut(option.as_option_mut().unwrap())
+                V::as_mut(option.as_mut().unwrap())
             },
-            move |m, value| (mut_field)(m).set_value(V::from_value_box(value).expect("wrong type")),
+            move |m, value| {
+                *(mut_field)(m) = MessageField::some(V::from_value_box(value).expect("wrong type"))
+            },
         )
     }
 
