@@ -8,6 +8,10 @@ enum Color {
 }
 
 message Properties {
+    oneof properties {
+        int32 p1 = 1;
+        string p2 = 2;
+    }
 }
 
 message Triangle {
