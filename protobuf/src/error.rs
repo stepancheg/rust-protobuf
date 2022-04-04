@@ -4,7 +4,7 @@ use std::str;
 use crate::reflect::error::ReflectError;
 use crate::wire_format::WireType;
 
-/// `Result` alias for `ProtobufError`
+/// [`Result`] alias for [`Error`].
 pub type Result<T> = std::result::Result<T, crate::Error>;
 
 /// Enum values added here for diagnostic purposes.
