@@ -8,6 +8,7 @@ Stable versions are 2.xx still supported.
 * remove `expose_oneof` codegen option (it is on by default for a long time)
 * remove unused serde-related options from `rustproto.proto`
 * in generated code, enum variant names are converted to camel case
+* generate `SpecialFields` field in messages instead of a pair (`unknown_fields`, `cached_size`)
 
 ## [3.0.0-alpha.9] - 2022-04-04
 
