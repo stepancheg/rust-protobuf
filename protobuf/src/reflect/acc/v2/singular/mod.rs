@@ -223,47 +223,19 @@ impl SingularFieldAccessorHolder {
         V: ProtobufValue,
         V::RuntimeType: RuntimeTypeWithDeref,
     {
-        struct Impl<M, V>
-        where
-            M: MessageFull,
-            V: ProtobufValue,
-            V::RuntimeType: RuntimeTypeWithDeref,
-        {
-            has: fn(&M) -> bool,
-            get: for<'a> fn(&'a M) -> &'a <V::RuntimeType as RuntimeTypeWithDeref>::DerefTarget,
-            set: fn(&mut M, V),
-        }
-
-        impl<M, V> SingularFieldAccessor for Impl<M, V>
-        where
-            M: MessageFull,
-            V: ProtobufValue,
-            V::RuntimeType: RuntimeTypeWithDeref,
-        {
-            fn get_field<'a>(&self, m: &'a dyn MessageDyn) -> Option<ReflectValueRef<'a>> {
-                let m = m.downcast_ref().unwrap();
-                if (self.has)(m) {
+        Self::new(
+            move |m| {
+                if (has)(m) {
                     Some(<V::RuntimeType as RuntimeTypeWithDeref>::defef_as_ref(
-                        (self.get)(m),
+                        (get)(m),
                     ))
                 } else {
                     None
                 }
-            }
-
-            fn mut_field_or_default<'a>(&self, _m: &'a mut dyn MessageDyn) -> ReflectValueMut<'a> {
-                unimplemented!()
-            }
-
-            fn set_field(&self, m: &mut dyn MessageDyn, value: ReflectValueBox) {
-                let m = m.downcast_mut().unwrap();
-                (self.set)(m, value.downcast::<V>().expect("message"))
-            }
-        }
-
-        SingularFieldAccessorHolder {
-            accessor: Box::new(Impl { has, get, set }),
-        }
+            },
+            |_m| unimplemented!(),
+            move |m, value| (set)(m, value.downcast::<V>().expect("message")),
+        )
     }
 
     pub(crate) fn new_has_get_mut_set<M, F>(
