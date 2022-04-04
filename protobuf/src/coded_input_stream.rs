@@ -88,7 +88,7 @@ impl<'a> CodedInputStream<'a> {
 
     fn from_buf_read_iter(source: BufReadIter<'a>) -> CodedInputStream<'a> {
         CodedInputStream {
-            source: source,
+            source,
             recursion_level: 0,
             recursion_limit: DEFAULT_RECURSION_LIMIT,
         }
