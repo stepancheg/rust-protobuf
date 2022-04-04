@@ -37,10 +37,8 @@ pub struct Timestamp {
     // @@protoc_insertion_point(field:google.protobuf.Timestamp.nanos)
     pub nanos: i32,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.Timestamp.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.Timestamp.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.Timestamp.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a Timestamp {
@@ -109,7 +107,7 @@ impl crate::Message for Timestamp {
             my_size += crate::rt::value_size(2, self.nanos, crate::rt::WireType::Varint);
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -125,15 +123,15 @@ impl crate::Message for Timestamp {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> Timestamp {
@@ -143,15 +141,14 @@ impl crate::Message for Timestamp {
     fn clear(&mut self) {
         self.seconds = 0;
         self.nanos = 0;
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static Timestamp {
         static instance: Timestamp = Timestamp {
             seconds: 0,
             nanos: 0,
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }

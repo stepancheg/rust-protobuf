@@ -29,10 +29,8 @@ pub struct FieldMask {
     // @@protoc_insertion_point(field:google.protobuf.FieldMask.paths)
     pub paths: ::std::vec::Vec<::std::string::String>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.FieldMask.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.FieldMask.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.FieldMask.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a FieldMask {
@@ -90,7 +88,7 @@ impl crate::Message for FieldMask {
             my_size += crate::rt::string_size(1, &value);
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -103,15 +101,15 @@ impl crate::Message for FieldMask {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> FieldMask {
@@ -120,14 +118,13 @@ impl crate::Message for FieldMask {
 
     fn clear(&mut self) {
         self.paths.clear();
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static FieldMask {
         static instance: FieldMask = FieldMask {
             paths: ::std::vec::Vec::new(),
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }

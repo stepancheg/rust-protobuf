@@ -17,6 +17,7 @@ use protobuf::descriptor::MethodDescriptorProto;
 use protobuf::descriptor::OneofDescriptorProto;
 use protobuf::descriptor::ServiceDescriptorProto;
 use protobuf::text_format::lexer::float::parse_protobuf_float;
+use protobuf::Message;
 use protobuf_codegen::Codegen;
 use protobuf_parse::Parser;
 use protobuf_test_common::build::copy_tests_v2_v3;
@@ -132,7 +133,7 @@ fn normalize_file_descriptor(desc: &mut FileDescriptorProto) {
     // is an extension. Probably nobody outside of Google uses it.
     desc.options
         .mut_or_default()
-        .unknown_fields
+        .mut_unknown_fields()
         .remove(15478479);
 }
 
@@ -162,7 +163,10 @@ fn normalize_descriptor(desc: &mut DescriptorProto) {
     desc.options.mut_or_default();
 
     // group are not supported
-    desc.options.mut_or_default().unknown_fields.remove(7636463);
+    desc.options
+        .mut_or_default()
+        .mut_unknown_fields()
+        .remove(7636463);
 
     for field in &mut desc.field {
         normalize_field(field);

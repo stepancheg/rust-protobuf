@@ -59,10 +59,8 @@ pub struct Any {
     // @@protoc_insertion_point(field:google.protobuf.Any.value)
     pub value: ::std::vec::Vec<u8>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.Any.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.Any.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.Any.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a Any {
@@ -131,7 +129,7 @@ impl crate::Message for Any {
             my_size += crate::rt::bytes_size(2, &self.value);
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -147,15 +145,15 @@ impl crate::Message for Any {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> Any {
@@ -165,15 +163,14 @@ impl crate::Message for Any {
     fn clear(&mut self) {
         self.type_url.clear();
         self.value.clear();
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static Any {
         static instance: Any = Any {
             type_url: ::std::string::String::new(),
             value: ::std::vec::Vec::new(),
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }

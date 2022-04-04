@@ -78,10 +78,8 @@ pub struct Api {
     // @@protoc_insertion_point(field:google.protobuf.Api.syntax)
     pub syntax: crate::EnumOrUnknown<crate::well_known_types::Syntax>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.Api.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.Api.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.Api.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a Api {
@@ -229,7 +227,7 @@ impl crate::Message for Api {
             my_size += crate::rt::enum_or_unknown_size(7, self.syntax);
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -260,15 +258,15 @@ impl crate::Message for Api {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> Api {
@@ -283,7 +281,7 @@ impl crate::Message for Api {
         self.source_context.clear();
         self.mixins.clear();
         self.syntax = crate::EnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2);
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static Api {
@@ -295,8 +293,7 @@ impl crate::Message for Api {
             source_context: crate::MessageField::none(),
             mixins: ::std::vec::Vec::new(),
             syntax: crate::EnumOrUnknown::from_i32(0),
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
@@ -345,10 +342,8 @@ pub struct Method {
     // @@protoc_insertion_point(field:google.protobuf.Method.syntax)
     pub syntax: crate::EnumOrUnknown<crate::well_known_types::Syntax>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.Method.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.Method.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.Method.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a Method {
@@ -478,7 +473,7 @@ impl crate::Message for Method {
             my_size += crate::rt::enum_or_unknown_size(7, self.syntax);
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -509,15 +504,15 @@ impl crate::Message for Method {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> Method {
@@ -532,7 +527,7 @@ impl crate::Message for Method {
         self.response_streaming = false;
         self.options.clear();
         self.syntax = crate::EnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2);
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static Method {
@@ -544,8 +539,7 @@ impl crate::Message for Method {
             response_streaming: false,
             options: ::std::vec::Vec::new(),
             syntax: crate::EnumOrUnknown::from_i32(0),
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
@@ -579,10 +573,8 @@ pub struct Mixin {
     // @@protoc_insertion_point(field:google.protobuf.Mixin.root)
     pub root: ::std::string::String,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.Mixin.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.Mixin.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.Mixin.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a Mixin {
@@ -651,7 +643,7 @@ impl crate::Message for Mixin {
             my_size += crate::rt::string_size(2, &self.root);
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -667,15 +659,15 @@ impl crate::Message for Mixin {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> Mixin {
@@ -685,15 +677,14 @@ impl crate::Message for Mixin {
     fn clear(&mut self) {
         self.name.clear();
         self.root.clear();
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static Mixin {
         static instance: Mixin = Mixin {
             name: ::std::string::String::new(),
             root: ::std::string::String::new(),
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }

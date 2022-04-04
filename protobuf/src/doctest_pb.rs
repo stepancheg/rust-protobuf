@@ -25,10 +25,8 @@
 // @@protoc_insertion_point(message:MyMessage)
 pub struct MyMessage {
     // special fields
-    // @@protoc_insertion_point(special_field:MyMessage.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:MyMessage.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:MyMessage.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a MyMessage {
@@ -75,7 +73,7 @@ impl crate::Message for MyMessage {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -85,15 +83,15 @@ impl crate::Message for MyMessage {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> MyMessage {
@@ -101,13 +99,12 @@ impl crate::Message for MyMessage {
     }
 
     fn clear(&mut self) {
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static MyMessage {
         static instance: MyMessage = MyMessage {
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }

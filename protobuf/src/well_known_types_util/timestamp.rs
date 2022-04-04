@@ -1,17 +1,15 @@
 use std::time::Duration;
 use std::time::SystemTime;
 
-use crate::cached_size::CachedSize;
 use crate::well_known_types::Timestamp;
-use crate::UnknownFields;
+use crate::SpecialFields;
 
 impl Timestamp {
     /// Unix epoch value of timestamp.
     pub const UNIX_EPOCH: Timestamp = Timestamp {
         seconds: 0,
         nanos: 0,
-        unknown_fields: UnknownFields::new(),
-        cached_size: CachedSize::new(),
+        special_fields: SpecialFields::new(),
     };
 
     /// Return current time as `Timestamp`.

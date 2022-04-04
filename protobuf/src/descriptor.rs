@@ -30,10 +30,8 @@ pub struct FileDescriptorSet {
     // @@protoc_insertion_point(field:google.protobuf.FileDescriptorSet.file)
     pub file: ::std::vec::Vec<FileDescriptorProto>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.FileDescriptorSet.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.FileDescriptorSet.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.FileDescriptorSet.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a FileDescriptorSet {
@@ -97,7 +95,7 @@ impl crate::Message for FileDescriptorSet {
             my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -110,15 +108,15 @@ impl crate::Message for FileDescriptorSet {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> FileDescriptorSet {
@@ -127,14 +125,13 @@ impl crate::Message for FileDescriptorSet {
 
     fn clear(&mut self) {
         self.file.clear();
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static FileDescriptorSet {
         static instance: FileDescriptorSet = FileDescriptorSet {
             file: ::std::vec::Vec::new(),
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
@@ -197,10 +194,8 @@ pub struct FileDescriptorProto {
     // @@protoc_insertion_point(field:google.protobuf.FileDescriptorProto.syntax)
     syntax: ::std::option::Option<::std::string::String>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.FileDescriptorProto.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.FileDescriptorProto.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.FileDescriptorProto.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a FileDescriptorProto {
@@ -529,7 +524,7 @@ impl crate::Message for FileDescriptorProto {
             my_size += crate::rt::string_size(12, &v);
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -575,15 +570,15 @@ impl crate::Message for FileDescriptorProto {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> FileDescriptorProto {
@@ -603,7 +598,7 @@ impl crate::Message for FileDescriptorProto {
         self.options.clear();
         self.source_code_info.clear();
         self.syntax = ::std::option::Option::None;
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static FileDescriptorProto {
@@ -620,8 +615,7 @@ impl crate::Message for FileDescriptorProto {
             options: crate::MessageField::none(),
             source_code_info: crate::MessageField::none(),
             syntax: ::std::option::Option::None,
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
@@ -671,10 +665,8 @@ pub struct DescriptorProto {
     // @@protoc_insertion_point(field:google.protobuf.DescriptorProto.reserved_name)
     pub reserved_name: ::std::vec::Vec<::std::string::String>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.DescriptorProto.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.DescriptorProto.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.DescriptorProto.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a DescriptorProto {
@@ -915,7 +907,7 @@ impl crate::Message for DescriptorProto {
             my_size += crate::rt::string_size(10, &value);
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -955,15 +947,15 @@ impl crate::Message for DescriptorProto {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> DescriptorProto {
@@ -981,7 +973,7 @@ impl crate::Message for DescriptorProto {
         self.options.clear();
         self.reserved_range.clear();
         self.reserved_name.clear();
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static DescriptorProto {
@@ -996,8 +988,7 @@ impl crate::Message for DescriptorProto {
             options: crate::MessageField::none(),
             reserved_range: ::std::vec::Vec::new(),
             reserved_name: ::std::vec::Vec::new(),
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
@@ -1032,10 +1023,8 @@ pub mod descriptor_proto {
         // @@protoc_insertion_point(field:google.protobuf.DescriptorProto.ExtensionRange.options)
         pub options: crate::MessageField<super::ExtensionRangeOptions>,
         // special fields
-        // @@protoc_insertion_point(special_field:google.protobuf.DescriptorProto.ExtensionRange.unknown_fields)
-        pub unknown_fields: crate::UnknownFields,
-        // @@protoc_insertion_point(special_field:google.protobuf.DescriptorProto.ExtensionRange.cached_size)
-        pub cached_size: crate::rt::CachedSize,
+        // @@protoc_insertion_point(special_field:google.protobuf.DescriptorProto.ExtensionRange.special_fields)
+        pub special_fields: crate::SpecialFields,
     }
 
     impl<'a> ::std::default::Default for &'a ExtensionRange {
@@ -1159,7 +1148,7 @@ pub mod descriptor_proto {
                 my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
             }
             my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-            self.cached_size.set(my_size as u32);
+            self.special_fields.cached_size().set(my_size as u32);
             my_size
         }
 
@@ -1178,15 +1167,15 @@ pub mod descriptor_proto {
         }
 
         fn cached_size(&self) -> u32 {
-            self.cached_size.get()
+            self.special_fields.cached_size().get()
         }
 
         fn unknown_fields(&self) -> &crate::UnknownFields {
-            &self.unknown_fields
+            self.special_fields.unknown_fields()
         }
 
         fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-            &mut self.unknown_fields
+            self.special_fields.mut_unknown_fields()
         }
 
         fn new() -> ExtensionRange {
@@ -1197,7 +1186,7 @@ pub mod descriptor_proto {
             self.start = ::std::option::Option::None;
             self.end = ::std::option::Option::None;
             self.options.clear();
-            self.unknown_fields.clear();
+            self.special_fields.mut_unknown_fields().clear();
         }
 
         fn default_instance() -> &'static ExtensionRange {
@@ -1205,8 +1194,7 @@ pub mod descriptor_proto {
                 start: ::std::option::Option::None,
                 end: ::std::option::Option::None,
                 options: crate::MessageField::none(),
-                unknown_fields: crate::UnknownFields::new(),
-                cached_size: crate::rt::CachedSize::new(),
+                special_fields: crate::SpecialFields::new(),
             };
             &instance
         }
@@ -1240,10 +1228,8 @@ pub mod descriptor_proto {
         // @@protoc_insertion_point(field:google.protobuf.DescriptorProto.ReservedRange.end)
         end: ::std::option::Option<i32>,
         // special fields
-        // @@protoc_insertion_point(special_field:google.protobuf.DescriptorProto.ReservedRange.unknown_fields)
-        pub unknown_fields: crate::UnknownFields,
-        // @@protoc_insertion_point(special_field:google.protobuf.DescriptorProto.ReservedRange.cached_size)
-        pub cached_size: crate::rt::CachedSize,
+        // @@protoc_insertion_point(special_field:google.protobuf.DescriptorProto.ReservedRange.special_fields)
+        pub special_fields: crate::SpecialFields,
     }
 
     impl<'a> ::std::default::Default for &'a ReservedRange {
@@ -1350,7 +1336,7 @@ pub mod descriptor_proto {
                 my_size += crate::rt::value_size(2, v, crate::rt::WireType::Varint);
             }
             my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-            self.cached_size.set(my_size as u32);
+            self.special_fields.cached_size().set(my_size as u32);
             my_size
         }
 
@@ -1366,15 +1352,15 @@ pub mod descriptor_proto {
         }
 
         fn cached_size(&self) -> u32 {
-            self.cached_size.get()
+            self.special_fields.cached_size().get()
         }
 
         fn unknown_fields(&self) -> &crate::UnknownFields {
-            &self.unknown_fields
+            self.special_fields.unknown_fields()
         }
 
         fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-            &mut self.unknown_fields
+            self.special_fields.mut_unknown_fields()
         }
 
         fn new() -> ReservedRange {
@@ -1384,15 +1370,14 @@ pub mod descriptor_proto {
         fn clear(&mut self) {
             self.start = ::std::option::Option::None;
             self.end = ::std::option::Option::None;
-            self.unknown_fields.clear();
+            self.special_fields.mut_unknown_fields().clear();
         }
 
         fn default_instance() -> &'static ReservedRange {
             static instance: ReservedRange = ReservedRange {
                 start: ::std::option::Option::None,
                 end: ::std::option::Option::None,
-                unknown_fields: crate::UnknownFields::new(),
-                cached_size: crate::rt::CachedSize::new(),
+                special_fields: crate::SpecialFields::new(),
             };
             &instance
         }
@@ -1423,10 +1408,8 @@ pub struct ExtensionRangeOptions {
     // @@protoc_insertion_point(field:google.protobuf.ExtensionRangeOptions.uninterpreted_option)
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.ExtensionRangeOptions.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.ExtensionRangeOptions.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.ExtensionRangeOptions.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a ExtensionRangeOptions {
@@ -1490,7 +1473,7 @@ impl crate::Message for ExtensionRangeOptions {
             my_size += 2 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -1503,15 +1486,15 @@ impl crate::Message for ExtensionRangeOptions {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> ExtensionRangeOptions {
@@ -1520,14 +1503,13 @@ impl crate::Message for ExtensionRangeOptions {
 
     fn clear(&mut self) {
         self.uninterpreted_option.clear();
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static ExtensionRangeOptions {
         static instance: ExtensionRangeOptions = ExtensionRangeOptions {
             uninterpreted_option: ::std::vec::Vec::new(),
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
@@ -1618,10 +1600,8 @@ pub struct FieldDescriptorProto {
     // @@protoc_insertion_point(field:google.protobuf.FieldDescriptorProto.proto3_optional)
     proto3_optional: ::std::option::Option<bool>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.FieldDescriptorProto.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.FieldDescriptorProto.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.FieldDescriptorProto.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a FieldDescriptorProto {
@@ -2076,7 +2056,7 @@ impl crate::Message for FieldDescriptorProto {
             my_size += 3;
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -2119,15 +2099,15 @@ impl crate::Message for FieldDescriptorProto {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> FieldDescriptorProto {
@@ -2146,7 +2126,7 @@ impl crate::Message for FieldDescriptorProto {
         self.json_name = ::std::option::Option::None;
         self.options.clear();
         self.proto3_optional = ::std::option::Option::None;
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static FieldDescriptorProto {
@@ -2162,8 +2142,7 @@ impl crate::Message for FieldDescriptorProto {
             json_name: ::std::option::Option::None,
             options: crate::MessageField::none(),
             proto3_optional: ::std::option::Option::None,
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
@@ -2370,10 +2349,8 @@ pub struct OneofDescriptorProto {
     // @@protoc_insertion_point(field:google.protobuf.OneofDescriptorProto.options)
     pub options: crate::MessageField<OneofOptions>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.OneofDescriptorProto.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.OneofDescriptorProto.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.OneofDescriptorProto.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a OneofDescriptorProto {
@@ -2484,7 +2461,7 @@ impl crate::Message for OneofDescriptorProto {
             my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -2500,15 +2477,15 @@ impl crate::Message for OneofDescriptorProto {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> OneofDescriptorProto {
@@ -2518,15 +2495,14 @@ impl crate::Message for OneofDescriptorProto {
     fn clear(&mut self) {
         self.name = ::std::option::Option::None;
         self.options.clear();
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static OneofDescriptorProto {
         static instance: OneofDescriptorProto = OneofDescriptorProto {
             name: ::std::option::Option::None,
             options: crate::MessageField::none(),
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
@@ -2569,10 +2545,8 @@ pub struct EnumDescriptorProto {
     // @@protoc_insertion_point(field:google.protobuf.EnumDescriptorProto.reserved_name)
     pub reserved_name: ::std::vec::Vec<::std::string::String>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.EnumDescriptorProto.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.EnumDescriptorProto.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.EnumDescriptorProto.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a EnumDescriptorProto {
@@ -2728,7 +2702,7 @@ impl crate::Message for EnumDescriptorProto {
             my_size += crate::rt::string_size(5, &value);
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -2753,15 +2727,15 @@ impl crate::Message for EnumDescriptorProto {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> EnumDescriptorProto {
@@ -2774,7 +2748,7 @@ impl crate::Message for EnumDescriptorProto {
         self.options.clear();
         self.reserved_range.clear();
         self.reserved_name.clear();
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static EnumDescriptorProto {
@@ -2784,8 +2758,7 @@ impl crate::Message for EnumDescriptorProto {
             options: crate::MessageField::none(),
             reserved_range: ::std::vec::Vec::new(),
             reserved_name: ::std::vec::Vec::new(),
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
@@ -2824,10 +2797,8 @@ pub mod enum_descriptor_proto {
         // @@protoc_insertion_point(field:google.protobuf.EnumDescriptorProto.EnumReservedRange.end)
         end: ::std::option::Option<i32>,
         // special fields
-        // @@protoc_insertion_point(special_field:google.protobuf.EnumDescriptorProto.EnumReservedRange.unknown_fields)
-        pub unknown_fields: crate::UnknownFields,
-        // @@protoc_insertion_point(special_field:google.protobuf.EnumDescriptorProto.EnumReservedRange.cached_size)
-        pub cached_size: crate::rt::CachedSize,
+        // @@protoc_insertion_point(special_field:google.protobuf.EnumDescriptorProto.EnumReservedRange.special_fields)
+        pub special_fields: crate::SpecialFields,
     }
 
     impl<'a> ::std::default::Default for &'a EnumReservedRange {
@@ -2934,7 +2905,7 @@ pub mod enum_descriptor_proto {
                 my_size += crate::rt::value_size(2, v, crate::rt::WireType::Varint);
             }
             my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-            self.cached_size.set(my_size as u32);
+            self.special_fields.cached_size().set(my_size as u32);
             my_size
         }
 
@@ -2950,15 +2921,15 @@ pub mod enum_descriptor_proto {
         }
 
         fn cached_size(&self) -> u32 {
-            self.cached_size.get()
+            self.special_fields.cached_size().get()
         }
 
         fn unknown_fields(&self) -> &crate::UnknownFields {
-            &self.unknown_fields
+            self.special_fields.unknown_fields()
         }
 
         fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-            &mut self.unknown_fields
+            self.special_fields.mut_unknown_fields()
         }
 
         fn new() -> EnumReservedRange {
@@ -2968,15 +2939,14 @@ pub mod enum_descriptor_proto {
         fn clear(&mut self) {
             self.start = ::std::option::Option::None;
             self.end = ::std::option::Option::None;
-            self.unknown_fields.clear();
+            self.special_fields.mut_unknown_fields().clear();
         }
 
         fn default_instance() -> &'static EnumReservedRange {
             static instance: EnumReservedRange = EnumReservedRange {
                 start: ::std::option::Option::None,
                 end: ::std::option::Option::None,
-                unknown_fields: crate::UnknownFields::new(),
-                cached_size: crate::rt::CachedSize::new(),
+                special_fields: crate::SpecialFields::new(),
             };
             &instance
         }
@@ -3011,10 +2981,8 @@ pub struct EnumValueDescriptorProto {
     // @@protoc_insertion_point(field:google.protobuf.EnumValueDescriptorProto.options)
     pub options: crate::MessageField<EnumValueOptions>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.EnumValueDescriptorProto.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.EnumValueDescriptorProto.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.EnumValueDescriptorProto.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a EnumValueDescriptorProto {
@@ -3155,7 +3123,7 @@ impl crate::Message for EnumValueDescriptorProto {
             my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -3174,15 +3142,15 @@ impl crate::Message for EnumValueDescriptorProto {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> EnumValueDescriptorProto {
@@ -3193,7 +3161,7 @@ impl crate::Message for EnumValueDescriptorProto {
         self.name = ::std::option::Option::None;
         self.number = ::std::option::Option::None;
         self.options.clear();
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static EnumValueDescriptorProto {
@@ -3201,8 +3169,7 @@ impl crate::Message for EnumValueDescriptorProto {
             name: ::std::option::Option::None,
             number: ::std::option::Option::None,
             options: crate::MessageField::none(),
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
@@ -3236,10 +3203,8 @@ pub struct ServiceDescriptorProto {
     // @@protoc_insertion_point(field:google.protobuf.ServiceDescriptorProto.options)
     pub options: crate::MessageField<ServiceOptions>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.ServiceDescriptorProto.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.ServiceDescriptorProto.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.ServiceDescriptorProto.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a ServiceDescriptorProto {
@@ -3367,7 +3332,7 @@ impl crate::Message for ServiceDescriptorProto {
             my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -3386,15 +3351,15 @@ impl crate::Message for ServiceDescriptorProto {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> ServiceDescriptorProto {
@@ -3405,7 +3370,7 @@ impl crate::Message for ServiceDescriptorProto {
         self.name = ::std::option::Option::None;
         self.method.clear();
         self.options.clear();
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static ServiceDescriptorProto {
@@ -3413,8 +3378,7 @@ impl crate::Message for ServiceDescriptorProto {
             name: ::std::option::Option::None,
             method: ::std::vec::Vec::new(),
             options: crate::MessageField::none(),
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
@@ -3458,10 +3422,8 @@ pub struct MethodDescriptorProto {
     // @@protoc_insertion_point(field:google.protobuf.MethodDescriptorProto.server_streaming)
     server_streaming: ::std::option::Option<bool>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.MethodDescriptorProto.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.MethodDescriptorProto.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.MethodDescriptorProto.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a MethodDescriptorProto {
@@ -3726,7 +3688,7 @@ impl crate::Message for MethodDescriptorProto {
             my_size += 2;
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -3754,15 +3716,15 @@ impl crate::Message for MethodDescriptorProto {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> MethodDescriptorProto {
@@ -3776,7 +3738,7 @@ impl crate::Message for MethodDescriptorProto {
         self.options.clear();
         self.client_streaming = ::std::option::Option::None;
         self.server_streaming = ::std::option::Option::None;
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static MethodDescriptorProto {
@@ -3787,8 +3749,7 @@ impl crate::Message for MethodDescriptorProto {
             options: crate::MessageField::none(),
             client_streaming: ::std::option::Option::None,
             server_streaming: ::std::option::Option::None,
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
@@ -3920,10 +3881,8 @@ pub struct FileOptions {
     // @@protoc_insertion_point(field:google.protobuf.FileOptions.uninterpreted_option)
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.FileOptions.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.FileOptions.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.FileOptions.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a FileOptions {
@@ -4760,7 +4719,7 @@ impl crate::Message for FileOptions {
             my_size += 2 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -4833,15 +4792,15 @@ impl crate::Message for FileOptions {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> FileOptions {
@@ -4870,7 +4829,7 @@ impl crate::Message for FileOptions {
         self.php_metadata_namespace = ::std::option::Option::None;
         self.ruby_package = ::std::option::Option::None;
         self.uninterpreted_option.clear();
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static FileOptions {
@@ -4896,8 +4855,7 @@ impl crate::Message for FileOptions {
             php_metadata_namespace: ::std::option::Option::None,
             ruby_package: ::std::option::Option::None,
             uninterpreted_option: ::std::vec::Vec::new(),
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
@@ -5002,10 +4960,8 @@ pub struct MessageOptions {
     // @@protoc_insertion_point(field:google.protobuf.MessageOptions.uninterpreted_option)
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.MessageOptions.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.MessageOptions.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.MessageOptions.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a MessageOptions {
@@ -5189,7 +5145,7 @@ impl crate::Message for MessageOptions {
             my_size += 2 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -5214,15 +5170,15 @@ impl crate::Message for MessageOptions {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> MessageOptions {
@@ -5235,7 +5191,7 @@ impl crate::Message for MessageOptions {
         self.deprecated = ::std::option::Option::None;
         self.map_entry = ::std::option::Option::None;
         self.uninterpreted_option.clear();
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static MessageOptions {
@@ -5245,8 +5201,7 @@ impl crate::Message for MessageOptions {
             deprecated: ::std::option::Option::None,
             map_entry: ::std::option::Option::None,
             uninterpreted_option: ::std::vec::Vec::new(),
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
@@ -5341,10 +5296,8 @@ pub struct FieldOptions {
     // @@protoc_insertion_point(field:google.protobuf.FieldOptions.uninterpreted_option)
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.FieldOptions.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.FieldOptions.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.FieldOptions.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a FieldOptions {
@@ -5594,7 +5547,7 @@ impl crate::Message for FieldOptions {
             my_size += 2 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -5625,15 +5578,15 @@ impl crate::Message for FieldOptions {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> FieldOptions {
@@ -5648,7 +5601,7 @@ impl crate::Message for FieldOptions {
         self.deprecated = ::std::option::Option::None;
         self.weak = ::std::option::Option::None;
         self.uninterpreted_option.clear();
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static FieldOptions {
@@ -5660,8 +5613,7 @@ impl crate::Message for FieldOptions {
             deprecated: ::std::option::Option::None,
             weak: ::std::option::Option::None,
             uninterpreted_option: ::std::vec::Vec::new(),
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
@@ -5804,10 +5756,8 @@ pub struct OneofOptions {
     // @@protoc_insertion_point(field:google.protobuf.OneofOptions.uninterpreted_option)
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.OneofOptions.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.OneofOptions.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.OneofOptions.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a OneofOptions {
@@ -5871,7 +5821,7 @@ impl crate::Message for OneofOptions {
             my_size += 2 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -5884,15 +5834,15 @@ impl crate::Message for OneofOptions {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> OneofOptions {
@@ -5901,14 +5851,13 @@ impl crate::Message for OneofOptions {
 
     fn clear(&mut self) {
         self.uninterpreted_option.clear();
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static OneofOptions {
         static instance: OneofOptions = OneofOptions {
             uninterpreted_option: ::std::vec::Vec::new(),
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
@@ -5948,10 +5897,8 @@ pub struct EnumOptions {
     // @@protoc_insertion_point(field:google.protobuf.EnumOptions.uninterpreted_option)
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.EnumOptions.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.EnumOptions.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.EnumOptions.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a EnumOptions {
@@ -6075,7 +6022,7 @@ impl crate::Message for EnumOptions {
             my_size += 2 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -6094,15 +6041,15 @@ impl crate::Message for EnumOptions {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> EnumOptions {
@@ -6113,7 +6060,7 @@ impl crate::Message for EnumOptions {
         self.allow_alias = ::std::option::Option::None;
         self.deprecated = ::std::option::Option::None;
         self.uninterpreted_option.clear();
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static EnumOptions {
@@ -6121,8 +6068,7 @@ impl crate::Message for EnumOptions {
             allow_alias: ::std::option::Option::None,
             deprecated: ::std::option::Option::None,
             uninterpreted_option: ::std::vec::Vec::new(),
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
@@ -6158,10 +6104,8 @@ pub struct EnumValueOptions {
     // @@protoc_insertion_point(field:google.protobuf.EnumValueOptions.uninterpreted_option)
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.EnumValueOptions.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.EnumValueOptions.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.EnumValueOptions.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a EnumValueOptions {
@@ -6255,7 +6199,7 @@ impl crate::Message for EnumValueOptions {
             my_size += 2 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -6271,15 +6215,15 @@ impl crate::Message for EnumValueOptions {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> EnumValueOptions {
@@ -6289,15 +6233,14 @@ impl crate::Message for EnumValueOptions {
     fn clear(&mut self) {
         self.deprecated = ::std::option::Option::None;
         self.uninterpreted_option.clear();
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static EnumValueOptions {
         static instance: EnumValueOptions = EnumValueOptions {
             deprecated: ::std::option::Option::None,
             uninterpreted_option: ::std::vec::Vec::new(),
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
@@ -6333,10 +6276,8 @@ pub struct ServiceOptions {
     // @@protoc_insertion_point(field:google.protobuf.ServiceOptions.uninterpreted_option)
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.ServiceOptions.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.ServiceOptions.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.ServiceOptions.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a ServiceOptions {
@@ -6430,7 +6371,7 @@ impl crate::Message for ServiceOptions {
             my_size += 2 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -6446,15 +6387,15 @@ impl crate::Message for ServiceOptions {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> ServiceOptions {
@@ -6464,15 +6405,14 @@ impl crate::Message for ServiceOptions {
     fn clear(&mut self) {
         self.deprecated = ::std::option::Option::None;
         self.uninterpreted_option.clear();
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static ServiceOptions {
         static instance: ServiceOptions = ServiceOptions {
             deprecated: ::std::option::Option::None,
             uninterpreted_option: ::std::vec::Vec::new(),
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
@@ -6510,10 +6450,8 @@ pub struct MethodOptions {
     // @@protoc_insertion_point(field:google.protobuf.MethodOptions.uninterpreted_option)
     pub uninterpreted_option: ::std::vec::Vec<UninterpretedOption>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.MethodOptions.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.MethodOptions.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.MethodOptions.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a MethodOptions {
@@ -6640,7 +6578,7 @@ impl crate::Message for MethodOptions {
             my_size += 2 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -6659,15 +6597,15 @@ impl crate::Message for MethodOptions {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> MethodOptions {
@@ -6678,7 +6616,7 @@ impl crate::Message for MethodOptions {
         self.deprecated = ::std::option::Option::None;
         self.idempotency_level = ::std::option::Option::None;
         self.uninterpreted_option.clear();
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static MethodOptions {
@@ -6686,8 +6624,7 @@ impl crate::Message for MethodOptions {
             deprecated: ::std::option::Option::None,
             idempotency_level: ::std::option::Option::None,
             uninterpreted_option: ::std::vec::Vec::new(),
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
@@ -6797,10 +6734,8 @@ pub struct UninterpretedOption {
     // @@protoc_insertion_point(field:google.protobuf.UninterpretedOption.aggregate_value)
     aggregate_value: ::std::option::Option<::std::string::String>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.UninterpretedOption.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.UninterpretedOption.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.UninterpretedOption.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a UninterpretedOption {
@@ -7095,7 +7030,7 @@ impl crate::Message for UninterpretedOption {
             my_size += crate::rt::string_size(8, &v);
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -7126,15 +7061,15 @@ impl crate::Message for UninterpretedOption {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> UninterpretedOption {
@@ -7149,7 +7084,7 @@ impl crate::Message for UninterpretedOption {
         self.double_value = ::std::option::Option::None;
         self.string_value = ::std::option::Option::None;
         self.aggregate_value = ::std::option::Option::None;
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static UninterpretedOption {
@@ -7161,8 +7096,7 @@ impl crate::Message for UninterpretedOption {
             double_value: ::std::option::Option::None,
             string_value: ::std::option::Option::None,
             aggregate_value: ::std::option::Option::None,
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
@@ -7200,10 +7134,8 @@ pub mod uninterpreted_option {
         // @@protoc_insertion_point(field:google.protobuf.UninterpretedOption.NamePart.is_extension)
         is_extension: ::std::option::Option<bool>,
         // special fields
-        // @@protoc_insertion_point(special_field:google.protobuf.UninterpretedOption.NamePart.unknown_fields)
-        pub unknown_fields: crate::UnknownFields,
-        // @@protoc_insertion_point(special_field:google.protobuf.UninterpretedOption.NamePart.cached_size)
-        pub cached_size: crate::rt::CachedSize,
+        // @@protoc_insertion_point(special_field:google.protobuf.UninterpretedOption.NamePart.special_fields)
+        pub special_fields: crate::SpecialFields,
     }
 
     impl<'a> ::std::default::Default for &'a NamePart {
@@ -7333,7 +7265,7 @@ pub mod uninterpreted_option {
                 my_size += 2;
             }
             my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-            self.cached_size.set(my_size as u32);
+            self.special_fields.cached_size().set(my_size as u32);
             my_size
         }
 
@@ -7349,15 +7281,15 @@ pub mod uninterpreted_option {
         }
 
         fn cached_size(&self) -> u32 {
-            self.cached_size.get()
+            self.special_fields.cached_size().get()
         }
 
         fn unknown_fields(&self) -> &crate::UnknownFields {
-            &self.unknown_fields
+            self.special_fields.unknown_fields()
         }
 
         fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-            &mut self.unknown_fields
+            self.special_fields.mut_unknown_fields()
         }
 
         fn new() -> NamePart {
@@ -7367,15 +7299,14 @@ pub mod uninterpreted_option {
         fn clear(&mut self) {
             self.name_part = ::std::option::Option::None;
             self.is_extension = ::std::option::Option::None;
-            self.unknown_fields.clear();
+            self.special_fields.mut_unknown_fields().clear();
         }
 
         fn default_instance() -> &'static NamePart {
             static instance: NamePart = NamePart {
                 name_part: ::std::option::Option::None,
                 is_extension: ::std::option::Option::None,
-                unknown_fields: crate::UnknownFields::new(),
-                cached_size: crate::rt::CachedSize::new(),
+                special_fields: crate::SpecialFields::new(),
             };
             &instance
         }
@@ -7407,10 +7338,8 @@ pub struct SourceCodeInfo {
     // @@protoc_insertion_point(field:google.protobuf.SourceCodeInfo.location)
     pub location: ::std::vec::Vec<source_code_info::Location>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.SourceCodeInfo.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.SourceCodeInfo.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.SourceCodeInfo.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a SourceCodeInfo {
@@ -7474,7 +7403,7 @@ impl crate::Message for SourceCodeInfo {
             my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -7487,15 +7416,15 @@ impl crate::Message for SourceCodeInfo {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> SourceCodeInfo {
@@ -7504,14 +7433,13 @@ impl crate::Message for SourceCodeInfo {
 
     fn clear(&mut self) {
         self.location.clear();
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static SourceCodeInfo {
         static instance: SourceCodeInfo = SourceCodeInfo {
             location: ::std::vec::Vec::new(),
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
@@ -7555,10 +7483,8 @@ pub mod source_code_info {
         // @@protoc_insertion_point(field:google.protobuf.SourceCodeInfo.Location.leading_detached_comments)
         pub leading_detached_comments: ::std::vec::Vec<::std::string::String>,
         // special fields
-        // @@protoc_insertion_point(special_field:google.protobuf.SourceCodeInfo.Location.unknown_fields)
-        pub unknown_fields: crate::UnknownFields,
-        // @@protoc_insertion_point(special_field:google.protobuf.SourceCodeInfo.Location.cached_size)
-        pub cached_size: crate::rt::CachedSize,
+        // @@protoc_insertion_point(special_field:google.protobuf.SourceCodeInfo.Location.special_fields)
+        pub special_fields: crate::SpecialFields,
     }
 
     impl<'a> ::std::default::Default for &'a Location {
@@ -7738,7 +7664,7 @@ pub mod source_code_info {
                 my_size += crate::rt::string_size(6, &value);
             };
             my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-            self.cached_size.set(my_size as u32);
+            self.special_fields.cached_size().set(my_size as u32);
             my_size
         }
 
@@ -7759,15 +7685,15 @@ pub mod source_code_info {
         }
 
         fn cached_size(&self) -> u32 {
-            self.cached_size.get()
+            self.special_fields.cached_size().get()
         }
 
         fn unknown_fields(&self) -> &crate::UnknownFields {
-            &self.unknown_fields
+            self.special_fields.unknown_fields()
         }
 
         fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-            &mut self.unknown_fields
+            self.special_fields.mut_unknown_fields()
         }
 
         fn new() -> Location {
@@ -7780,7 +7706,7 @@ pub mod source_code_info {
             self.leading_comments = ::std::option::Option::None;
             self.trailing_comments = ::std::option::Option::None;
             self.leading_detached_comments.clear();
-            self.unknown_fields.clear();
+            self.special_fields.mut_unknown_fields().clear();
         }
 
         fn default_instance() -> &'static Location {
@@ -7790,8 +7716,7 @@ pub mod source_code_info {
                 leading_comments: ::std::option::Option::None,
                 trailing_comments: ::std::option::Option::None,
                 leading_detached_comments: ::std::vec::Vec::new(),
-                unknown_fields: crate::UnknownFields::new(),
-                cached_size: crate::rt::CachedSize::new(),
+                special_fields: crate::SpecialFields::new(),
             };
             &instance
         }
@@ -7826,10 +7751,8 @@ pub struct GeneratedCodeInfo {
     // @@protoc_insertion_point(field:google.protobuf.GeneratedCodeInfo.annotation)
     pub annotation: ::std::vec::Vec<generated_code_info::Annotation>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.GeneratedCodeInfo.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.GeneratedCodeInfo.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.GeneratedCodeInfo.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a GeneratedCodeInfo {
@@ -7893,7 +7816,7 @@ impl crate::Message for GeneratedCodeInfo {
             my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -7906,15 +7829,15 @@ impl crate::Message for GeneratedCodeInfo {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> GeneratedCodeInfo {
@@ -7923,14 +7846,13 @@ impl crate::Message for GeneratedCodeInfo {
 
     fn clear(&mut self) {
         self.annotation.clear();
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static GeneratedCodeInfo {
         static instance: GeneratedCodeInfo = GeneratedCodeInfo {
             annotation: ::std::vec::Vec::new(),
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
@@ -7975,10 +7897,8 @@ pub mod generated_code_info {
         // @@protoc_insertion_point(field:google.protobuf.GeneratedCodeInfo.Annotation.end)
         end: ::std::option::Option<i32>,
         // special fields
-        // @@protoc_insertion_point(special_field:google.protobuf.GeneratedCodeInfo.Annotation.unknown_fields)
-        pub unknown_fields: crate::UnknownFields,
-        // @@protoc_insertion_point(special_field:google.protobuf.GeneratedCodeInfo.Annotation.cached_size)
-        pub cached_size: crate::rt::CachedSize,
+        // @@protoc_insertion_point(special_field:google.protobuf.GeneratedCodeInfo.Annotation.special_fields)
+        pub special_fields: crate::SpecialFields,
     }
 
     impl<'a> ::std::default::Default for &'a Annotation {
@@ -8146,7 +8066,7 @@ pub mod generated_code_info {
                 my_size += crate::rt::value_size(4, v, crate::rt::WireType::Varint);
             }
             my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-            self.cached_size.set(my_size as u32);
+            self.special_fields.cached_size().set(my_size as u32);
             my_size
         }
 
@@ -8166,15 +8086,15 @@ pub mod generated_code_info {
         }
 
         fn cached_size(&self) -> u32 {
-            self.cached_size.get()
+            self.special_fields.cached_size().get()
         }
 
         fn unknown_fields(&self) -> &crate::UnknownFields {
-            &self.unknown_fields
+            self.special_fields.unknown_fields()
         }
 
         fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-            &mut self.unknown_fields
+            self.special_fields.mut_unknown_fields()
         }
 
         fn new() -> Annotation {
@@ -8186,7 +8106,7 @@ pub mod generated_code_info {
             self.source_file = ::std::option::Option::None;
             self.begin = ::std::option::Option::None;
             self.end = ::std::option::Option::None;
-            self.unknown_fields.clear();
+            self.special_fields.mut_unknown_fields().clear();
         }
 
         fn default_instance() -> &'static Annotation {
@@ -8195,8 +8115,7 @@ pub mod generated_code_info {
                 source_file: ::std::option::Option::None,
                 begin: ::std::option::Option::None,
                 end: ::std::option::Option::None,
-                unknown_fields: crate::UnknownFields::new(),
-                cached_size: crate::rt::CachedSize::new(),
+                special_fields: crate::SpecialFields::new(),
             };
             &instance
         }

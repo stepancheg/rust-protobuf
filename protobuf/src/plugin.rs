@@ -37,10 +37,8 @@ pub struct Version {
     // @@protoc_insertion_point(field:google.protobuf.compiler.Version.suffix)
     suffix: ::std::option::Option<::std::string::String>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.compiler.Version.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.compiler.Version.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.compiler.Version.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a Version {
@@ -224,7 +222,7 @@ impl crate::Message for Version {
             my_size += crate::rt::string_size(4, &v);
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -246,15 +244,15 @@ impl crate::Message for Version {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> Version {
@@ -266,7 +264,7 @@ impl crate::Message for Version {
         self.minor = ::std::option::Option::None;
         self.patch = ::std::option::Option::None;
         self.suffix = ::std::option::Option::None;
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static Version {
@@ -275,8 +273,7 @@ impl crate::Message for Version {
             minor: ::std::option::Option::None,
             patch: ::std::option::Option::None,
             suffix: ::std::option::Option::None,
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
@@ -331,10 +328,8 @@ pub struct CodeGeneratorRequest {
     // @@protoc_insertion_point(field:google.protobuf.compiler.CodeGeneratorRequest.compiler_version)
     pub compiler_version: crate::MessageField<Version>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.compiler.CodeGeneratorRequest.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.compiler.CodeGeneratorRequest.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.compiler.CodeGeneratorRequest.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a CodeGeneratorRequest {
@@ -473,7 +468,7 @@ impl crate::Message for CodeGeneratorRequest {
             my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -495,15 +490,15 @@ impl crate::Message for CodeGeneratorRequest {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> CodeGeneratorRequest {
@@ -515,7 +510,7 @@ impl crate::Message for CodeGeneratorRequest {
         self.parameter = ::std::option::Option::None;
         self.proto_file.clear();
         self.compiler_version.clear();
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static CodeGeneratorRequest {
@@ -524,8 +519,7 @@ impl crate::Message for CodeGeneratorRequest {
             parameter: ::std::option::Option::None,
             proto_file: ::std::vec::Vec::new(),
             compiler_version: crate::MessageField::none(),
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
@@ -569,10 +563,8 @@ pub struct CodeGeneratorResponse {
     // @@protoc_insertion_point(field:google.protobuf.compiler.CodeGeneratorResponse.file)
     pub file: ::std::vec::Vec<code_generator_response::File>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.compiler.CodeGeneratorResponse.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.compiler.CodeGeneratorResponse.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.compiler.CodeGeneratorResponse.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a CodeGeneratorResponse {
@@ -713,7 +705,7 @@ impl crate::Message for CodeGeneratorResponse {
             my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -732,15 +724,15 @@ impl crate::Message for CodeGeneratorResponse {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> CodeGeneratorResponse {
@@ -751,7 +743,7 @@ impl crate::Message for CodeGeneratorResponse {
         self.error = ::std::option::Option::None;
         self.supported_features = ::std::option::Option::None;
         self.file.clear();
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static CodeGeneratorResponse {
@@ -759,8 +751,7 @@ impl crate::Message for CodeGeneratorResponse {
             error: ::std::option::Option::None,
             supported_features: ::std::option::Option::None,
             file: ::std::vec::Vec::new(),
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
@@ -850,10 +841,8 @@ pub mod code_generator_response {
         // @@protoc_insertion_point(field:google.protobuf.compiler.CodeGeneratorResponse.File.generated_code_info)
         pub generated_code_info: crate::MessageField<crate::descriptor::GeneratedCodeInfo>,
         // special fields
-        // @@protoc_insertion_point(special_field:google.protobuf.compiler.CodeGeneratorResponse.File.unknown_fields)
-        pub unknown_fields: crate::UnknownFields,
-        // @@protoc_insertion_point(special_field:google.protobuf.compiler.CodeGeneratorResponse.File.cached_size)
-        pub cached_size: crate::rt::CachedSize,
+        // @@protoc_insertion_point(special_field:google.protobuf.compiler.CodeGeneratorResponse.File.special_fields)
+        pub special_fields: crate::SpecialFields,
     }
 
     impl<'a> ::std::default::Default for &'a File {
@@ -1058,7 +1047,7 @@ pub mod code_generator_response {
                 my_size += 2 + crate::rt::compute_raw_varint64_size(len) + len;
             }
             my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-            self.cached_size.set(my_size as u32);
+            self.special_fields.cached_size().set(my_size as u32);
             my_size
         }
 
@@ -1080,15 +1069,15 @@ pub mod code_generator_response {
         }
 
         fn cached_size(&self) -> u32 {
-            self.cached_size.get()
+            self.special_fields.cached_size().get()
         }
 
         fn unknown_fields(&self) -> &crate::UnknownFields {
-            &self.unknown_fields
+            self.special_fields.unknown_fields()
         }
 
         fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-            &mut self.unknown_fields
+            self.special_fields.mut_unknown_fields()
         }
 
         fn new() -> File {
@@ -1100,7 +1089,7 @@ pub mod code_generator_response {
             self.insertion_point = ::std::option::Option::None;
             self.content = ::std::option::Option::None;
             self.generated_code_info.clear();
-            self.unknown_fields.clear();
+            self.special_fields.mut_unknown_fields().clear();
         }
 
         fn default_instance() -> &'static File {
@@ -1109,8 +1098,7 @@ pub mod code_generator_response {
                 insertion_point: ::std::option::Option::None,
                 content: ::std::option::Option::None,
                 generated_code_info: crate::MessageField::none(),
-                unknown_fields: crate::UnknownFields::new(),
-                cached_size: crate::rt::CachedSize::new(),
+                special_fields: crate::SpecialFields::new(),
             };
             &instance
         }

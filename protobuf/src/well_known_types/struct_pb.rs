@@ -37,10 +37,8 @@ pub struct Struct {
     // @@protoc_insertion_point(field:google.protobuf.Struct.fields)
     pub fields: ::std::collections::HashMap<::std::string::String, Value>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.Struct.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.Struct.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.Struct.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a Struct {
@@ -96,7 +94,7 @@ impl crate::Message for Struct {
         let mut my_size = 0;
         my_size += crate::rt::compute_map_size::<crate::reflect::types::ProtobufTypeString, crate::reflect::types::ProtobufTypeMessage<Value>>(1, &self.fields);
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -107,15 +105,15 @@ impl crate::Message for Struct {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> Struct {
@@ -124,7 +122,7 @@ impl crate::Message for Struct {
 
     fn clear(&mut self) {
         self.fields.clear();
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static Struct {
@@ -161,10 +159,8 @@ pub struct Value {
     // message oneof groups
     pub kind: ::std::option::Option<value::Kind>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.Value.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.Value.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.Value.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a Value {
@@ -528,7 +524,7 @@ impl crate::Message for Value {
             };
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -560,15 +556,15 @@ impl crate::Message for Value {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> Value {
@@ -582,14 +578,13 @@ impl crate::Message for Value {
         self.kind = ::std::option::Option::None;
         self.kind = ::std::option::Option::None;
         self.kind = ::std::option::Option::None;
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static Value {
         static instance: Value = Value {
             kind: ::std::option::Option::None,
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
@@ -647,10 +642,8 @@ pub struct ListValue {
     // @@protoc_insertion_point(field:google.protobuf.ListValue.values)
     pub values: ::std::vec::Vec<Value>,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.ListValue.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.ListValue.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.ListValue.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a ListValue {
@@ -714,7 +707,7 @@ impl crate::Message for ListValue {
             my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -727,15 +720,15 @@ impl crate::Message for ListValue {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> ListValue {
@@ -744,14 +737,13 @@ impl crate::Message for ListValue {
 
     fn clear(&mut self) {
         self.values.clear();
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static ListValue {
         static instance: ListValue = ListValue {
             values: ::std::vec::Vec::new(),
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }

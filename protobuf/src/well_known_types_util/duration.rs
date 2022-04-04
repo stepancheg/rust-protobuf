@@ -1,14 +1,12 @@
-use crate::cached_size::CachedSize;
 use crate::well_known_types::Duration;
-use crate::UnknownFields;
+use crate::SpecialFields;
 
 impl Duration {
     /// Zero seconds zero nanoseconds.
     pub const ZERO: Duration = Duration {
         seconds: 0,
         nanos: 0,
-        unknown_fields: UnknownFields::new(),
-        cached_size: CachedSize::new(),
+        special_fields: SpecialFields::new(),
     };
 }
 

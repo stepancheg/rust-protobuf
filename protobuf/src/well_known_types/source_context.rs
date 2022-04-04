@@ -32,10 +32,8 @@ pub struct SourceContext {
     // @@protoc_insertion_point(field:google.protobuf.SourceContext.file_name)
     pub file_name: ::std::string::String,
     // special fields
-    // @@protoc_insertion_point(special_field:google.protobuf.SourceContext.unknown_fields)
-    pub unknown_fields: crate::UnknownFields,
-    // @@protoc_insertion_point(special_field:google.protobuf.SourceContext.cached_size)
-    pub cached_size: crate::rt::CachedSize,
+    // @@protoc_insertion_point(special_field:google.protobuf.SourceContext.special_fields)
+    pub special_fields: crate::SpecialFields,
 }
 
 impl<'a> ::std::default::Default for &'a SourceContext {
@@ -93,7 +91,7 @@ impl crate::Message for SourceContext {
             my_size += crate::rt::string_size(1, &self.file_name);
         }
         my_size += crate::rt::unknown_fields_size(self.unknown_fields());
-        self.cached_size.set(my_size as u32);
+        self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
 
@@ -106,15 +104,15 @@ impl crate::Message for SourceContext {
     }
 
     fn cached_size(&self) -> u32 {
-        self.cached_size.get()
+        self.special_fields.cached_size().get()
     }
 
     fn unknown_fields(&self) -> &crate::UnknownFields {
-        &self.unknown_fields
+        self.special_fields.unknown_fields()
     }
 
     fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        &mut self.unknown_fields
+        self.special_fields.mut_unknown_fields()
     }
 
     fn new() -> SourceContext {
@@ -123,14 +121,13 @@ impl crate::Message for SourceContext {
 
     fn clear(&mut self) {
         self.file_name.clear();
-        self.unknown_fields.clear();
+        self.special_fields.mut_unknown_fields().clear();
     }
 
     fn default_instance() -> &'static SourceContext {
         static instance: SourceContext = SourceContext {
             file_name: ::std::string::String::new(),
-            unknown_fields: crate::UnknownFields::new(),
-            cached_size: crate::rt::CachedSize::new(),
+            special_fields: crate::SpecialFields::new(),
         };
         &instance
     }
