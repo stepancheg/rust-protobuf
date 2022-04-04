@@ -13,9 +13,9 @@ use test::Bencher;
 #[bench]
 fn write_to_bytes(b: &mut Bencher) {
     let mut value = Value::new();
-    value.kind = Some(value::Kind::number_value(10.0));
+    value.kind = Some(value::Kind::NumberValue(10.0));
     let mut value2 = Value::new();
-    value2.kind = Some(value::Kind::bool_value(true));
+    value2.kind = Some(value::Kind::BoolValue(true));
     let mut s = Struct::new();
     s.fields.insert("foo".to_owned(), value);
     s.fields.insert("bar".to_owned(), value2);
