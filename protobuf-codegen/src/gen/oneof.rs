@@ -9,7 +9,7 @@ use protobuf_parse::ProtobufAbsPath;
 use crate::customize::ctx::CustomizeElemCtx;
 use crate::customize::Customize;
 use crate::gen::code_writer::CodeWriter;
-use crate::gen::field::rust_field_name_for_protobuf_field_name;
+use crate::gen::field::rust_variant_name_for_protobuf_oneof_field_name;
 use crate::gen::field::FieldElem;
 use crate::gen::field::FieldGen;
 use crate::gen::file_and_mod::FileAndMod;
@@ -82,7 +82,7 @@ impl<'a> OneofField<'a> {
             elem,
             type_name: oneof.rust_name(),
             boxed,
-            oneof_variant_rust_name: rust_field_name_for_protobuf_field_name(field.name()),
+            oneof_variant_rust_name: rust_variant_name_for_protobuf_oneof_field_name(field.name()),
             oneof_field_name: oneof.field_name(),
         }
     }
@@ -159,7 +159,7 @@ impl<'a> OneofVariantGen<'a> {
             "{}::{}",
             self.oneof
                 .type_name_relative(&reference.relative_mod.clone().into_path()),
-            self.field.rust_name
+            self.oneof_field.oneof_variant_rust_name,
         ))
     }
 }
@@ -255,7 +255,7 @@ impl<'a> OneofGen<'a> {
                 );
                 w.write_line(&format!(
                     "{}({}),",
-                    variant.field.rust_name,
+                    variant.oneof_field.oneof_variant_rust_name,
                     &variant
                         .rust_type(&self.file_and_mod())
                         .to_code(&self.customize.for_elem)

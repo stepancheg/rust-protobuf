@@ -5,6 +5,7 @@ use protobuf::reflect::RuntimeFieldType;
 use protobuf::reflect::Syntax;
 use protobuf::rt;
 use protobuf::rt::WireType;
+use protobuf_parse::camel_case;
 use protobuf_parse::ProtobufAbsPath;
 
 use crate::customize::ctx::CustomizeElemCtx;
@@ -2406,5 +2407,14 @@ pub(crate) fn rust_field_name_for_protobuf_field_name(name: &str) -> RustIdent {
         return RustIdent::new(&format!("field_{}", name));
     } else {
         RustIdent::new(name)
+    }
+}
+
+pub(crate) fn rust_variant_name_for_protobuf_oneof_field_name(name: &str) -> RustIdent {
+    let name = camel_case(name);
+    if rust::is_rust_keyword(&name) {
+        return RustIdent::new(&format!("Variant{}", name));
+    } else {
+        RustIdent::new(&name)
     }
 }
