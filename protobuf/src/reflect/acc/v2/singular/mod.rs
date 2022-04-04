@@ -337,6 +337,58 @@ impl SingularFieldAccessorHolder {
             accessor: Box::new(Impl { has, get, set }),
         }
     }
+
+    pub(crate) fn new_has_get_mut_set<M, F>(
+        has_field: fn(&M) -> bool,
+        get_field: for<'a> fn(&'a M) -> &'a F,
+        mut_field: for<'a> fn(&'a mut M) -> &'a mut F,
+        set_field: fn(&mut M, F),
+    ) -> SingularFieldAccessorHolder
+    where
+        M: MessageFull,
+        F: MessageFull,
+    {
+        struct Impl<M, F> {
+            has_field: fn(&M) -> bool,
+            get_field: for<'a> fn(&'a M) -> &'a F,
+            mut_field: for<'a> fn(&'a mut M) -> &'a mut F,
+            set_field: fn(&mut M, F),
+        }
+
+        impl<M, F> SingularFieldAccessor for Impl<M, F>
+        where
+            M: MessageFull,
+            F: MessageFull,
+        {
+            fn get_field<'a>(&self, m: &'a dyn MessageDyn) -> Option<ReflectValueRef<'a>> {
+                let m = m.downcast_ref().unwrap();
+                if (self.has_field)(m) {
+                    Some(F::as_ref((self.get_field)(m)))
+                } else {
+                    None
+                }
+            }
+
+            fn mut_field_or_default<'a>(&self, m: &'a mut dyn MessageDyn) -> ReflectValueMut<'a> {
+                let m = m.downcast_mut().unwrap();
+                F::as_mut((self.mut_field)(m))
+            }
+
+            fn set_field(&self, m: &mut dyn MessageDyn, value: ReflectValueBox) {
+                let m = m.downcast_mut().unwrap();
+                (self.set_field)(m, value.downcast::<F>().expect("message"))
+            }
+        }
+
+        SingularFieldAccessorHolder {
+            accessor: Box::new(Impl {
+                has_field,
+                get_field,
+                mut_field,
+                set_field,
+            }),
+        }
+    }
 }
 
 impl<'a> fmt::Debug for SingularFieldAccessorHolder {

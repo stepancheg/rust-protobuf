@@ -1,10 +1,4 @@
-use std::marker;
-
-use crate::reflect::acc::v2::singular::GetOptionImplHasGetRef;
-use crate::reflect::acc::v2::singular::MutOrDefaultGetMut;
-use crate::reflect::acc::v2::singular::SetImplSetField;
 use crate::reflect::acc::v2::singular::SingularFieldAccessorHolder;
-use crate::reflect::acc::v2::singular::SingularFieldAccessorImpl;
 use crate::reflect::acc::v2::AccessorV2;
 use crate::reflect::acc::FieldAccessor;
 use crate::reflect::runtime_types::RuntimeTypeWithDeref;
@@ -27,17 +21,9 @@ where
 {
     FieldAccessor::new(
         name,
-        AccessorV2::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(SingularFieldAccessorImpl::<M, F, _, _, _> {
-                get_option_impl: GetOptionImplHasGetRef::<M, F> {
-                    get: get_field,
-                    has: has_field,
-                },
-                mut_or_default_impl: MutOrDefaultGetMut::<M, F> { mut_field },
-                set_impl: SetImplSetField::<M, F> { set_field },
-                _marker: marker::PhantomData,
-            }),
-        }),
+        AccessorV2::Singular(SingularFieldAccessorHolder::new_has_get_mut_set(
+            has_field, get_field, mut_field, set_field,
+        )),
     )
 }
 
