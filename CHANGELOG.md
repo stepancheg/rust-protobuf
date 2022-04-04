@@ -6,6 +6,7 @@ Stable versions are 2.xx still supported.
 ## [3] - Unreleased
 
 * remove `expose_oneof` codegen option (it is on by default for a long time)
+* remove unused serde-related options from `rustproto.proto`
 
 ## [3.0.0-alpha.9] - 2022-04-04
 
