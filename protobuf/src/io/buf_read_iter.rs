@@ -144,7 +144,7 @@ impl<'ignore> BufReadIter<'ignore> {
         self.update_limit_within_buf();
     }
 
-    #[inline]
+    #[inline(always)]
     pub(crate) fn remaining_in_buf(&self) -> &[u8] {
         self.buf.remaining_in_buf()
     }

@@ -43,6 +43,7 @@ impl<'a> InputBuf<'a> {
         self.pos_within_buf
     }
 
+    #[inline(always)]
     pub(crate) fn remaining_in_buf(&self) -> &'a [u8] {
         // SAFETY: Invariants.
         unsafe {
