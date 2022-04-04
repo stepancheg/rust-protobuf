@@ -106,10 +106,7 @@ pub trait Message: Clone + Send + Sync + Sized + 'static {
 
     /// Parse message from reader.
     /// Parse stops on EOF or when error encountered.
-    fn parse_from_reader(reader: &mut dyn Read) -> crate::Result<Self>
-    where
-        Self: Sized,
-    {
+    fn parse_from_reader(reader: &mut dyn Read) -> crate::Result<Self> {
         let mut is = CodedInputStream::new(reader);
         let r = Message::parse_from(&mut is)?;
         is.check_eof()?;
@@ -117,10 +114,7 @@ pub trait Message: Clone + Send + Sync + Sized + 'static {
     }
 
     /// Parse message from byte array.
-    fn parse_from_bytes(bytes: &[u8]) -> crate::Result<Self>
-    where
-        Self: Sized,
-    {
+    fn parse_from_bytes(bytes: &[u8]) -> crate::Result<Self> {
         let mut is = CodedInputStream::from_bytes(bytes);
         let r = Message::parse_from(&mut is)?;
         is.check_eof()?;
@@ -130,10 +124,7 @@ pub trait Message: Clone + Send + Sync + Sized + 'static {
     /// Parse message from `Bytes` object.
     /// Resulting message may share references to the passed bytes object.
     #[cfg(feature = "bytes")]
-    fn parse_from_tokio_bytes(bytes: &bytes::Bytes) -> crate::Result<Self>
-    where
-        Self: Sized,
-    {
+    fn parse_from_tokio_bytes(bytes: &bytes::Bytes) -> crate::Result<Self> {
         let mut is = CodedInputStream::from_tokio_bytes(bytes);
         let r = Self::parse_from(&mut is)?;
         is.check_eof()?;
