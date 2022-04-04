@@ -226,7 +226,7 @@ impl SingularFieldAccessorHolder {
         Self::new(
             move |m| {
                 if (has)(m) {
-                    Some(<V::RuntimeType as RuntimeTypeWithDeref>::defef_as_ref(
+                    Some(<V::RuntimeType as RuntimeTypeWithDeref>::deref_as_ref(
                         (get)(m),
                     ))
                 } else {

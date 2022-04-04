@@ -89,7 +89,7 @@ pub trait RuntimeTypeWithDeref: RuntimeType {
 
     /// Deref.
     // TODO: rename to `deref`
-    fn defef_as_ref(value: &Self::DerefTarget) -> ReflectValueRef;
+    fn deref_as_ref(value: &Self::DerefTarget) -> ReflectValueRef;
 }
 
 /// Object wrapper can be used to query hashmap.
@@ -523,7 +523,7 @@ impl RuntimeType for RuntimeTypeString {
 impl RuntimeTypeWithDeref for RuntimeTypeString {
     type DerefTarget = str;
 
-    fn defef_as_ref(value: &str) -> ReflectValueRef {
+    fn deref_as_ref(value: &str) -> ReflectValueRef {
         ReflectValueRef::String(value)
     }
 }
@@ -576,7 +576,7 @@ impl RuntimeType for RuntimeTypeVecU8 {
 impl RuntimeTypeWithDeref for RuntimeTypeVecU8 {
     type DerefTarget = [u8];
 
-    fn defef_as_ref(value: &[u8]) -> ReflectValueRef {
+    fn deref_as_ref(value: &[u8]) -> ReflectValueRef {
         ReflectValueRef::Bytes(value)
     }
 }
@@ -624,7 +624,7 @@ impl RuntimeType for RuntimeTypeTokioBytes {
 impl RuntimeTypeWithDeref for RuntimeTypeTokioBytes {
     type DerefTarget = [u8];
 
-    fn defef_as_ref(value: &[u8]) -> ReflectValueRef {
+    fn deref_as_ref(value: &[u8]) -> ReflectValueRef {
         ReflectValueRef::Bytes(value)
     }
 }
@@ -671,7 +671,7 @@ impl RuntimeType for RuntimeTypeTokioChars {
 impl RuntimeTypeWithDeref for RuntimeTypeTokioChars {
     type DerefTarget = str;
 
-    fn defef_as_ref(value: &str) -> ReflectValueRef {
+    fn deref_as_ref(value: &str) -> ReflectValueRef {
         ReflectValueRef::String(value)
     }
 }
