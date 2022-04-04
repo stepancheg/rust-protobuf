@@ -1,6 +1,5 @@
 use std::marker;
 
-use crate::reflect::acc::v2::singular::GetOptionImplHasGetCopy;
 use crate::reflect::acc::v2::singular::GetOptionImplHasGetRef;
 use crate::reflect::acc::v2::singular::GetOptionImplHasGetRefDeref;
 use crate::reflect::acc::v2::singular::MutOrDefaultGetMut;
@@ -52,19 +51,12 @@ pub fn make_oneof_copy_has_get_set_simpler_accessors<M, V>(
     set: fn(&mut M, V),
 ) -> FieldAccessor
 where
-    M: MessageFull + 'static,
+    M: MessageFull,
     V: ProtobufValue + Copy,
 {
     FieldAccessor::new(
         name,
-        AccessorV2::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
-                get_option_impl: GetOptionImplHasGetCopy::<M, V> { has, get },
-                mut_or_default_impl: MutOrDefaultUnmplemented::new(),
-                set_impl: SetImplSetField::<M, V> { set_field: set },
-                _marker: marker::PhantomData,
-            }),
-        }),
+        AccessorV2::Singular(SingularFieldAccessorHolder::new_has_get_set(has, get, set)),
     )
 }
 
@@ -82,7 +74,9 @@ where
 {
     FieldAccessor::new(
         name,
-        AccessorV2::Singular(SingularFieldAccessorHolder::new_get_option_set(get, set)),
+        AccessorV2::Singular(SingularFieldAccessorHolder::new_get_option_set_enum(
+            get, set,
+        )),
     )
 }
 
