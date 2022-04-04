@@ -51,8 +51,3 @@ extend google.protobuf.FieldOptions {
     // Use `bytes::Bytes` for `string` fields
     optional bool tokio_bytes_for_string_field = 17012;
 }
-
-extend google.protobuf.EnumOptions {
-    // use rename_all attribute for serde
-    optional string serde_rename_all = 17032;
-}
