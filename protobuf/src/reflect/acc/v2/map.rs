@@ -74,7 +74,7 @@ where
     K::RuntimeType: RuntimeTypeHashable,
     V: ProtobufValue,
 {
-    FieldAccessor::new_v2(
+    FieldAccessor::new(
         name,
         AccessorV2::Map(MapFieldAccessorHolder {
             accessor: Box::new(MapFieldAccessorImpl::<M, K, V> {

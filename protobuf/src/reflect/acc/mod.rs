@@ -34,7 +34,7 @@ impl GeneratedFieldAccessor {
 }
 
 impl FieldAccessor {
-    pub(crate) fn new_v2(name: &'static str, accessor: AccessorV2) -> FieldAccessor {
+    pub(crate) fn new(name: &'static str, accessor: AccessorV2) -> FieldAccessor {
         FieldAccessor {
             _name: name,
             accessor: GeneratedFieldAccessor::V2(accessor),

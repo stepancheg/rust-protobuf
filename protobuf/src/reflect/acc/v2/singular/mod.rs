@@ -465,7 +465,7 @@ where
     M: MessageFull,
     V: MessageFull,
 {
-    FieldAccessor::new_v2(
+    FieldAccessor::new(
         name,
         AccessorV2::Singular(SingularFieldAccessorHolder {
             accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
@@ -498,7 +498,7 @@ where
     M: MessageFull,
     V: ProtobufValue,
 {
-    FieldAccessor::new_v2(
+    FieldAccessor::new(
         name,
         AccessorV2::Singular(SingularFieldAccessorHolder {
             accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
@@ -527,7 +527,7 @@ where
     M: MessageFull,
     V: ProtobufValue,
 {
-    FieldAccessor::new_v2(
+    FieldAccessor::new(
         name,
         AccessorV2::Singular(SingularFieldAccessorHolder {
             accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {

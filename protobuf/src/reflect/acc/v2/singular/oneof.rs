@@ -33,7 +33,7 @@ where
     M: MessageFull + 'static,
     F: MessageFull + ProtobufValue,
 {
-    FieldAccessor::new_v2(
+    FieldAccessor::new(
         name,
         AccessorV2::Singular(SingularFieldAccessorHolder {
             accessor: Box::new(SingularFieldAccessorImpl::<M, F, _, _, _> {
@@ -60,7 +60,7 @@ where
     M: MessageFull + 'static,
     V: ProtobufValue + Copy,
 {
-    FieldAccessor::new_v2(
+    FieldAccessor::new(
         name,
         AccessorV2::Singular(SingularFieldAccessorHolder {
             accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
@@ -113,7 +113,7 @@ where
     M: MessageFull,
     E: EnumFull,
 {
-    FieldAccessor::new_v2(
+    FieldAccessor::new(
         name,
         AccessorV2::Singular(SingularFieldAccessorHolder {
             accessor: Box::new(OneofEnumAccessor { get, set }),
@@ -133,7 +133,7 @@ where
     F: ProtobufValue,
     F::RuntimeType: RuntimeTypeWithDeref,
 {
-    FieldAccessor::new_v2(
+    FieldAccessor::new(
         name,
         AccessorV2::Singular(SingularFieldAccessorHolder {
             accessor: Box::new(SingularFieldAccessorImpl::<M, F, _, _, _> {

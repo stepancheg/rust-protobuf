@@ -98,7 +98,7 @@ where
     M: MessageFull + 'static,
     V: ProtobufValue,
 {
-    FieldAccessor::new_v2(
+    FieldAccessor::new(
         name,
         AccessorV2::Repeated(RepeatedFieldAccessorHolder {
             accessor: Box::new(RepeatedFieldAccessorImpl::<M, V> {
