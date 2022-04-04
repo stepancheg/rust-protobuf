@@ -181,6 +181,8 @@ pub trait Message: Clone + Send + Sync + Sized + 'static {
         Ok(v)
     }
 
+    // TODO: replace accessor with special fields
+
     /// Get a reference to unknown fields.
     fn unknown_fields(&self) -> &UnknownFields;
     /// Get a mutable reference to unknown fields.

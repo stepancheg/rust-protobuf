@@ -257,7 +257,7 @@ impl<'a> MessageGen<'a> {
 
     fn write_cached_size_getter(&self, w: &mut CodeWriter) {
         w.def_fn("cached_size(&self) -> u32", |w| {
-            w.write_line("self.cached_size.get()");
+            w.write_line("self.special_fields.cached_size().get()");
         });
     }
 
@@ -285,16 +285,9 @@ impl<'a> MessageGen<'a> {
                     w.field_entry(o.oneof.field_name().get(), EXPR_NONE);
                 }
                 w.field_entry(
-                    "unknown_fields",
+                    "special_fields",
                     &format!(
-                        "{}::UnknownFields::new()",
-                        protobuf_crate_path(&self.customize.for_elem)
-                    ),
-                );
-                w.field_entry(
-                    "cached_size",
-                    &format!(
-                        "{}::rt::CachedSize::new()",
+                        "{}::SpecialFields::new()",
                         protobuf_crate_path(&self.customize.for_elem)
                     ),
                 );
@@ -340,7 +333,7 @@ impl<'a> MessageGen<'a> {
                 "my_size += {}::rt::unknown_fields_size(self.unknown_fields());",
                 protobuf_crate_path(&self.customize.for_elem)
             ));
-            w.write_line("self.cached_size.set(my_size as u32);");
+            w.write_line("self.special_fields.cached_size().set(my_size as u32);");
             w.write_line("my_size");
         });
     }
@@ -372,7 +365,7 @@ impl<'a> MessageGen<'a> {
             protobuf_crate_path(&self.customize.for_elem)
         );
         w.def_fn(&sig, |w| {
-            w.write_line("&self.unknown_fields");
+            w.write_line("self.special_fields.unknown_fields()");
         });
         w.write_line("");
         let sig = format!(
@@ -380,7 +373,7 @@ impl<'a> MessageGen<'a> {
             protobuf_crate_path(&self.customize.for_elem)
         );
         w.def_fn(&sig, |w| {
-            w.write_line("&mut self.unknown_fields");
+            w.write_line("self.special_fields.mut_unknown_fields()");
         });
     }
 
@@ -515,7 +508,7 @@ impl<'a> MessageGen<'a> {
                     for f in self.fields_except_group() {
                         f.write_clear(w);
                     }
-                    w.write_line("self.unknown_fields.clear();");
+                    w.write_line("self.special_fields.mut_unknown_fields().clear();");
                 });
                 w.write_line("");
                 self.write_default_instance(w);
@@ -603,50 +596,27 @@ impl<'a> MessageGen<'a> {
             }
             w.comment("special fields");
 
-            let customize_unknown_fields = self
+            let customize_special_fields = self
                 .customize
                 .child(
                     &Customize::default(),
                     &SpecialFieldPseudoDescriptor {
                         message: &self.message.message,
-                        field: "unknown_fields",
-                    },
-                )
-                .for_elem;
-            let customize_cached_size = self
-                .customize
-                .child(
-                    &Customize::default(),
-                    &SpecialFieldPseudoDescriptor {
-                        message: &self.message.message,
-                        field: "cached_size",
+                        field: "special_fields",
                     },
                 )
                 .for_elem;
 
             write_protoc_insertion_point_for_special_field(
                 w,
-                &customize_unknown_fields,
+                &customize_special_fields,
                 &self.message_descriptor,
-                "unknown_fields",
+                "special_fields",
             );
             w.pub_field_decl(
-                "unknown_fields",
+                "special_fields",
                 &format!(
-                    "{}::UnknownFields",
-                    protobuf_crate_path(&self.customize.for_elem)
-                ),
-            );
-            write_protoc_insertion_point_for_special_field(
-                w,
-                &customize_cached_size,
-                &self.message_descriptor,
-                "cached_size",
-            );
-            w.pub_field_decl(
-                "cached_size",
-                &format!(
-                    "{}::rt::CachedSize",
+                    "{}::SpecialFields",
                     protobuf_crate_path(&self.customize.for_elem)
                 ),
             );

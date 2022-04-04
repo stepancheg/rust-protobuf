@@ -51,6 +51,7 @@ pub use crate::message_dyn::MessageDyn;
 pub use crate::message_field::MessageField;
 pub use crate::message_full::MessageFull;
 pub use crate::oneof::Oneof;
+pub use crate::special::SpecialFields;
 pub use crate::unknown::UnknownFields;
 pub use crate::unknown::UnknownFieldsIter;
 pub use crate::unknown::UnknownValue;
@@ -95,6 +96,7 @@ mod hex;
 
 mod cached_size;
 mod chars;
+mod special;
 mod unknown;
 mod varint;
 mod zigzag;
