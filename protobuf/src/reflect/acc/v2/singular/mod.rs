@@ -63,6 +63,77 @@ pub(crate) struct SingularFieldAccessorHolder {
     pub accessor: Box<dyn SingularFieldAccessor>,
 }
 
+impl SingularFieldAccessorHolder {
+    fn new_get_mut<M, V>(
+        get_field: for<'a> fn(&'a M) -> &'a V,
+        mut_field: for<'a> fn(&'a mut M) -> &'a mut V,
+    ) -> SingularFieldAccessorHolder
+    where
+        M: MessageFull,
+        V: ProtobufValue,
+    {
+        SingularFieldAccessorHolder {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
+                get_option_impl: GetOptionImplFieldPointer::<M, V> { get_field },
+                mut_or_default_impl: MutOrDefaultGetMut::<M, V> { mut_field },
+                set_impl: SetImplFieldPointer::<M, V> { mut_field },
+                _marker: marker::PhantomData,
+            }),
+        }
+    }
+
+    fn new_get_option_mut_option<M, V>(
+        get_field: for<'a> fn(&'a M) -> &'a Option<V>,
+        mut_field: for<'a> fn(&'a mut M) -> &'a mut Option<V>,
+    ) -> SingularFieldAccessorHolder
+    where
+        M: MessageFull,
+        V: ProtobufValue,
+    {
+        SingularFieldAccessorHolder {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
+                get_option_impl: GetOptionImplOptionFieldPointer::<M, V, _> {
+                    get_field,
+                    _marker: marker::PhantomData,
+                },
+                mut_or_default_impl: MutOrDefaultUnmplemented::new(),
+                set_impl: SetImplOptionFieldPointer::<M, V, _> {
+                    mut_field,
+                    _marker: marker::PhantomData,
+                },
+                _marker: marker::PhantomData,
+            }),
+        }
+    }
+
+    fn new_get_mut_message<M, V>(
+        get_field: for<'a> fn(&'a M) -> &'a MessageField<V>,
+        mut_field: for<'a> fn(&'a mut M) -> &'a mut MessageField<V>,
+    ) -> SingularFieldAccessorHolder
+    where
+        M: MessageFull,
+        V: MessageFull,
+    {
+        SingularFieldAccessorHolder {
+            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
+                get_option_impl: GetOptionImplOptionFieldPointer::<M, V, _> {
+                    get_field,
+                    _marker: marker::PhantomData,
+                },
+                mut_or_default_impl: MutOrDefaultOptionMut::<M, V, _> {
+                    mut_field,
+                    _marker: marker::PhantomData,
+                },
+                set_impl: SetImplOptionFieldPointer::<M, V, _> {
+                    mut_field,
+                    _marker: marker::PhantomData,
+                },
+                _marker: marker::PhantomData,
+            }),
+        }
+    }
+}
+
 impl<'a> fmt::Debug for SingularFieldAccessorHolder {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("SingularFieldAccessorHolder").finish()
@@ -467,28 +538,13 @@ where
 {
     FieldAccessor::new(
         name,
-        AccessorV2::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
-                get_option_impl: GetOptionImplOptionFieldPointer::<M, V, _> {
-                    get_field,
-                    _marker: marker::PhantomData,
-                },
-                mut_or_default_impl: MutOrDefaultOptionMut::<M, V, _> {
-                    mut_field,
-                    _marker: marker::PhantomData,
-                },
-                set_impl: SetImplOptionFieldPointer::<M, V, _> {
-                    mut_field,
-                    _marker: marker::PhantomData,
-                },
-                _marker: marker::PhantomData,
-            }),
-        }),
+        AccessorV2::Singular(SingularFieldAccessorHolder::new_get_mut_message(
+            get_field, mut_field,
+        )),
     )
 }
 
 /// Make accessor for `Option<C>` field
-// TODO: rename: it is not only about copy
 pub fn make_option_accessor<M, V>(
     name: &'static str,
     get_field: for<'a> fn(&'a M) -> &'a Option<V>,
@@ -500,20 +556,9 @@ where
 {
     FieldAccessor::new(
         name,
-        AccessorV2::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
-                get_option_impl: GetOptionImplOptionFieldPointer::<M, V, _> {
-                    get_field,
-                    _marker: marker::PhantomData,
-                },
-                mut_or_default_impl: MutOrDefaultUnmplemented::new(),
-                set_impl: SetImplOptionFieldPointer::<M, V, _> {
-                    mut_field,
-                    _marker: marker::PhantomData,
-                },
-                _marker: marker::PhantomData,
-            }),
-        }),
+        AccessorV2::Singular(SingularFieldAccessorHolder::new_get_option_mut_option(
+            get_field, mut_field,
+        )),
     )
 }
 
@@ -529,13 +574,8 @@ where
 {
     FieldAccessor::new(
         name,
-        AccessorV2::Singular(SingularFieldAccessorHolder {
-            accessor: Box::new(SingularFieldAccessorImpl::<M, V, _, _, _> {
-                get_option_impl: GetOptionImplFieldPointer::<M, V> { get_field },
-                mut_or_default_impl: MutOrDefaultGetMut::<M, V> { mut_field },
-                set_impl: SetImplFieldPointer::<M, V> { mut_field },
-                _marker: marker::PhantomData,
-            }),
-        }),
+        AccessorV2::Singular(SingularFieldAccessorHolder::new_get_mut(
+            get_field, mut_field,
+        )),
     )
 }
