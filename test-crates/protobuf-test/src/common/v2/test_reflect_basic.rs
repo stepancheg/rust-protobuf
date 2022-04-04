@@ -8,7 +8,7 @@ use protobuf::MessageDyn;
 use protobuf::MessageFull;
 use protobuf_test_common::value_for_runtime_type;
 
-use super::test_reflect_pb::*;
+use super::test_reflect_basic_pb::*;
 
 #[test]
 fn test_get_sub_message_via_reflection() {
