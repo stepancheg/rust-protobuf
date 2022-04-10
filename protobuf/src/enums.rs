@@ -19,6 +19,6 @@ pub trait Enum: Eq + Sized + Copy + fmt::Debug + Default + Send + Sync + 'static
     /// Return `None` if value is unknown.
     fn from_i32(v: i32) -> Option<Self>;
 
-    /// Get all enum values for enum type.
-    fn values() -> &'static [Self];
+    /// All enum values for enum type.
+    const VALUES: &'static [Self] = &[];
 }

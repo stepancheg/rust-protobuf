@@ -643,30 +643,27 @@ pub mod field {
             }
         }
 
-        fn values() -> &'static [Self] {
-            static values: &'static [Kind] = &[
-                Kind::TYPE_UNKNOWN,
-                Kind::TYPE_DOUBLE,
-                Kind::TYPE_FLOAT,
-                Kind::TYPE_INT64,
-                Kind::TYPE_UINT64,
-                Kind::TYPE_INT32,
-                Kind::TYPE_FIXED64,
-                Kind::TYPE_FIXED32,
-                Kind::TYPE_BOOL,
-                Kind::TYPE_STRING,
-                Kind::TYPE_GROUP,
-                Kind::TYPE_MESSAGE,
-                Kind::TYPE_BYTES,
-                Kind::TYPE_UINT32,
-                Kind::TYPE_ENUM,
-                Kind::TYPE_SFIXED32,
-                Kind::TYPE_SFIXED64,
-                Kind::TYPE_SINT32,
-                Kind::TYPE_SINT64,
-            ];
-            values
-        }
+        const VALUES: &'static [Kind] = &[
+            Kind::TYPE_UNKNOWN,
+            Kind::TYPE_DOUBLE,
+            Kind::TYPE_FLOAT,
+            Kind::TYPE_INT64,
+            Kind::TYPE_UINT64,
+            Kind::TYPE_INT32,
+            Kind::TYPE_FIXED64,
+            Kind::TYPE_FIXED32,
+            Kind::TYPE_BOOL,
+            Kind::TYPE_STRING,
+            Kind::TYPE_GROUP,
+            Kind::TYPE_MESSAGE,
+            Kind::TYPE_BYTES,
+            Kind::TYPE_UINT32,
+            Kind::TYPE_ENUM,
+            Kind::TYPE_SFIXED32,
+            Kind::TYPE_SFIXED64,
+            Kind::TYPE_SINT32,
+            Kind::TYPE_SINT64,
+        ];
     }
 
     impl crate::EnumFull for Kind {
@@ -718,15 +715,12 @@ pub mod field {
             }
         }
 
-        fn values() -> &'static [Self] {
-            static values: &'static [Cardinality] = &[
-                Cardinality::CARDINALITY_UNKNOWN,
-                Cardinality::CARDINALITY_OPTIONAL,
-                Cardinality::CARDINALITY_REQUIRED,
-                Cardinality::CARDINALITY_REPEATED,
-            ];
-            values
-        }
+        const VALUES: &'static [Cardinality] = &[
+            Cardinality::CARDINALITY_UNKNOWN,
+            Cardinality::CARDINALITY_OPTIONAL,
+            Cardinality::CARDINALITY_REQUIRED,
+            Cardinality::CARDINALITY_REPEATED,
+        ];
     }
 
     impl crate::EnumFull for Cardinality {
@@ -1321,13 +1315,10 @@ impl crate::Enum for Syntax {
         }
     }
 
-    fn values() -> &'static [Self] {
-        static values: &'static [Syntax] = &[
-            Syntax::SYNTAX_PROTO2,
-            Syntax::SYNTAX_PROTO3,
-        ];
-        values
-    }
+    const VALUES: &'static [Syntax] = &[
+        Syntax::SYNTAX_PROTO2,
+        Syntax::SYNTAX_PROTO3,
+    ];
 }
 
 impl crate::EnumFull for Syntax {

@@ -2238,29 +2238,26 @@ pub mod field_descriptor_proto {
             }
         }
 
-        fn values() -> &'static [Self] {
-            static values: &'static [Type] = &[
-                Type::TYPE_DOUBLE,
-                Type::TYPE_FLOAT,
-                Type::TYPE_INT64,
-                Type::TYPE_UINT64,
-                Type::TYPE_INT32,
-                Type::TYPE_FIXED64,
-                Type::TYPE_FIXED32,
-                Type::TYPE_BOOL,
-                Type::TYPE_STRING,
-                Type::TYPE_GROUP,
-                Type::TYPE_MESSAGE,
-                Type::TYPE_BYTES,
-                Type::TYPE_UINT32,
-                Type::TYPE_ENUM,
-                Type::TYPE_SFIXED32,
-                Type::TYPE_SFIXED64,
-                Type::TYPE_SINT32,
-                Type::TYPE_SINT64,
-            ];
-            values
-        }
+        const VALUES: &'static [Type] = &[
+            Type::TYPE_DOUBLE,
+            Type::TYPE_FLOAT,
+            Type::TYPE_INT64,
+            Type::TYPE_UINT64,
+            Type::TYPE_INT32,
+            Type::TYPE_FIXED64,
+            Type::TYPE_FIXED32,
+            Type::TYPE_BOOL,
+            Type::TYPE_STRING,
+            Type::TYPE_GROUP,
+            Type::TYPE_MESSAGE,
+            Type::TYPE_BYTES,
+            Type::TYPE_UINT32,
+            Type::TYPE_ENUM,
+            Type::TYPE_SFIXED32,
+            Type::TYPE_SFIXED64,
+            Type::TYPE_SINT32,
+            Type::TYPE_SINT64,
+        ];
     }
 
     impl crate::EnumFull for Type {
@@ -2309,14 +2306,11 @@ pub mod field_descriptor_proto {
             }
         }
 
-        fn values() -> &'static [Self] {
-            static values: &'static [Label] = &[
-                Label::LABEL_OPTIONAL,
-                Label::LABEL_REQUIRED,
-                Label::LABEL_REPEATED,
-            ];
-            values
-        }
+        const VALUES: &'static [Label] = &[
+            Label::LABEL_OPTIONAL,
+            Label::LABEL_REQUIRED,
+            Label::LABEL_REPEATED,
+        ];
     }
 
     impl crate::EnumFull for Label {
@@ -4907,14 +4901,11 @@ pub mod file_options {
             }
         }
 
-        fn values() -> &'static [Self] {
-            static values: &'static [OptimizeMode] = &[
-                OptimizeMode::SPEED,
-                OptimizeMode::CODE_SIZE,
-                OptimizeMode::LITE_RUNTIME,
-            ];
-            values
-        }
+        const VALUES: &'static [OptimizeMode] = &[
+            OptimizeMode::SPEED,
+            OptimizeMode::CODE_SIZE,
+            OptimizeMode::LITE_RUNTIME,
+        ];
     }
 
     impl crate::EnumFull for OptimizeMode {
@@ -5664,14 +5655,11 @@ pub mod field_options {
             }
         }
 
-        fn values() -> &'static [Self] {
-            static values: &'static [CType] = &[
-                CType::STRING,
-                CType::CORD,
-                CType::STRING_PIECE,
-            ];
-            values
-        }
+        const VALUES: &'static [CType] = &[
+            CType::STRING,
+            CType::CORD,
+            CType::STRING_PIECE,
+        ];
     }
 
     impl crate::EnumFull for CType {
@@ -5719,14 +5707,11 @@ pub mod field_options {
             }
         }
 
-        fn values() -> &'static [Self] {
-            static values: &'static [JSType] = &[
-                JSType::JS_NORMAL,
-                JSType::JS_STRING,
-                JSType::JS_NUMBER,
-            ];
-            values
-        }
+        const VALUES: &'static [JSType] = &[
+            JSType::JS_NORMAL,
+            JSType::JS_STRING,
+            JSType::JS_NUMBER,
+        ];
     }
 
     impl crate::EnumFull for JSType {
@@ -6678,14 +6663,11 @@ pub mod method_options {
             }
         }
 
-        fn values() -> &'static [Self] {
-            static values: &'static [IdempotencyLevel] = &[
-                IdempotencyLevel::IDEMPOTENCY_UNKNOWN,
-                IdempotencyLevel::NO_SIDE_EFFECTS,
-                IdempotencyLevel::IDEMPOTENT,
-            ];
-            values
-        }
+        const VALUES: &'static [IdempotencyLevel] = &[
+            IdempotencyLevel::IDEMPOTENCY_UNKNOWN,
+            IdempotencyLevel::NO_SIDE_EFFECTS,
+            IdempotencyLevel::IDEMPOTENT,
+        ];
     }
 
     impl crate::EnumFull for IdempotencyLevel {

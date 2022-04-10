@@ -11,5 +11,5 @@ fn test_enum_values() {
         TestEnumValuesEnum::SUMMER,
         TestEnumValuesEnum::AUTUMN,
     ];
-    assert_eq!(expected, TestEnumValuesEnum::values());
+    assert_eq!(expected, TestEnumValuesEnum::VALUES);
 }

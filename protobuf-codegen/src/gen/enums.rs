@@ -250,20 +250,14 @@ impl<'a> EnumGen<'a> {
         );
     }
 
-    fn write_impl_enum_fn_values(&self, w: &mut CodeWriter) {
-        w.def_fn(&format!("values() -> &'static [Self]"), |w| {
-            w.write_line(&format!(
-                "static values: &'static [{}] = &[",
-                self.type_name
-            ));
-            w.indented(|w| {
-                for value in self.values_all() {
-                    w.write_line(&format!("{},", value.rust_name_outer()));
-                }
-            });
-            w.write_line("];");
-            w.write_line("values");
+    fn write_impl_enum_const_values(&self, w: &mut CodeWriter) {
+        w.write_line(&format!("const VALUES: &'static [{}] = &[", self.type_name));
+        w.indented(|w| {
+            for value in self.values_all() {
+                w.write_line(&format!("{},", value.rust_name_outer()));
+            }
         });
+        w.write_line("];");
     }
 
     fn write_impl_enum(&self, w: &mut CodeWriter) {
@@ -277,7 +271,7 @@ impl<'a> EnumGen<'a> {
                 w.write_line("");
                 self.write_impl_enum_fn_from_i32(w);
                 w.write_line("");
-                self.write_impl_enum_fn_values(w);
+                self.write_impl_enum_const_values(w);
             },
         );
     }

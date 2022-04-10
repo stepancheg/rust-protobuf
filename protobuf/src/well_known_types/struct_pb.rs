@@ -793,12 +793,9 @@ impl crate::Enum for NullValue {
         }
     }
 
-    fn values() -> &'static [Self] {
-        static values: &'static [NullValue] = &[
-            NullValue::NULL_VALUE,
-        ];
-        values
-    }
+    const VALUES: &'static [NullValue] = &[
+        NullValue::NULL_VALUE,
+    ];
 }
 
 impl crate::EnumFull for NullValue {

@@ -1145,13 +1145,10 @@ pub mod code_generator_response {
             }
         }
 
-        fn values() -> &'static [Self] {
-            static values: &'static [Feature] = &[
-                Feature::FEATURE_NONE,
-                Feature::FEATURE_PROTO3_OPTIONAL,
-            ];
-            values
-        }
+        const VALUES: &'static [Feature] = &[
+            Feature::FEATURE_NONE,
+            Feature::FEATURE_PROTO3_OPTIONAL,
+        ];
     }
 
     impl crate::EnumFull for Feature {

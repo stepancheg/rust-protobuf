@@ -15,7 +15,7 @@ fn test_enum() {
             EnumWithAlias::B,
             EnumWithAlias::A_AGAIN,
         ],
-        EnumWithAlias::values()
+        EnumWithAlias::VALUES,
     );
     assert_eq!(EnumWithAlias::A, EnumWithAlias::A_AGAIN);
 }
