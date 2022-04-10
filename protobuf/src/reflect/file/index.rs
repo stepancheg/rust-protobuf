@@ -10,22 +10,22 @@ use crate::reflect::FileDescriptor;
 
 #[derive(Debug)]
 pub(crate) struct FileIndexMessageEntry {
-    pub path: MessagePath,
-    pub name_to_package: String,
-    pub full_name: String,
-    pub enclosing_message: Option<usize>,
-    pub nested_messages: Vec<usize>,
-    pub nested_enums: Vec<usize>,
-    pub map_entry: bool,
-    pub first_enum_index: usize,
+    pub(crate) path: MessagePath,
+    pub(crate) name_to_package: String,
+    pub(crate) full_name: String,
+    pub(crate) enclosing_message: Option<usize>,
+    pub(crate) nested_messages: Vec<usize>,
+    pub(crate) nested_enums: Vec<usize>,
+    pub(crate) map_entry: bool,
+    pub(crate) first_enum_index: usize,
 }
 
 #[derive(Debug)]
 pub(crate) struct FileIndexEnumEntry {
-    pub _message_path: MessagePath,
-    pub _enum_index: usize,
-    pub name_to_package: String,
-    pub enclosing_message: Option<usize>,
+    pub(crate) _message_path: MessagePath,
+    pub(crate) _enum_index: usize,
+    pub(crate) name_to_package: String,
+    pub(crate) enclosing_message: Option<usize>,
 }
 
 #[derive(Debug)]
