@@ -73,18 +73,6 @@ impl MessageDescriptor {
         self.proto().name()
     }
 
-    /// Get enums declared in this message.
-    pub fn enums(&self) -> impl Iterator<Item = EnumDescriptor> + '_ {
-        let first_enum_index = self.index_entry().first_enum_index;
-        self.proto()
-            .enum_type
-            .iter()
-            .enumerate()
-            .map(move |(i, _)| {
-                EnumDescriptor::new(self.file_descriptor.clone(), first_enum_index + i)
-            })
-    }
-
     fn index_entry(&self) -> &FileIndexMessageEntry {
         self.file_descriptor.message_index_entry(self.index)
     }
@@ -107,12 +95,16 @@ impl MessageDescriptor {
             .map(|i| MessageDescriptor::new(self.file_descriptor.clone(), *i))
     }
 
-    /// Enums declared in this messages.
-    pub fn nested_enums(&self) -> impl Iterator<Item = EnumDescriptor> + '_ {
-        self.index_entry()
-            .nested_enums
+    /// Get enums declared in this message.
+    pub fn enums(&self) -> impl Iterator<Item = EnumDescriptor> + '_ {
+        let first_enum_index = self.index_entry().first_enum_index;
+        self.proto()
+            .enum_type
             .iter()
-            .map(|i| EnumDescriptor::new(self.file_descriptor.clone(), *i))
+            .enumerate()
+            .map(move |(i, _)| {
+                EnumDescriptor::new(self.file_descriptor.clone(), first_enum_index + i)
+            })
     }
 
     /// Get a message containing this message, or `None` if this message is declared at file level.
@@ -378,7 +370,7 @@ mod test {
     #[cfg_attr(miri, ignore)] // Too slow on Miri.
     fn nested_enums() {
         assert!(FieldDescriptorProto::descriptor_static()
-            .nested_enums()
+            .enums()
             .collect::<Vec<_>>()
             .contains(&Type::enum_descriptor()));
     }
