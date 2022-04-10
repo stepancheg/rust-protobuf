@@ -9643,8 +9643,8 @@ pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProt
 pub fn file_descriptor() -> crate::reflect::FileDescriptor {
     static file_descriptor_lazy: crate::rt::Lazy<crate::reflect::GeneratedFileDescriptor> = crate::rt::Lazy::new();
     let file_descriptor = file_descriptor_lazy.get(|| {
-        let mut deps = ::std::vec::Vec::new();
-        let mut messages = ::std::vec::Vec::new();
+        let mut deps = ::std::vec::Vec::with_capacity(0);
+        let mut messages = ::std::vec::Vec::with_capacity(27);
         messages.push(FileDescriptorSet::generated_message_descriptor_data());
         messages.push(FileDescriptorProto::generated_message_descriptor_data());
         messages.push(DescriptorProto::generated_message_descriptor_data());
@@ -9672,7 +9672,7 @@ pub fn file_descriptor() -> crate::reflect::FileDescriptor {
         messages.push(uninterpreted_option::NamePart::generated_message_descriptor_data());
         messages.push(source_code_info::Location::generated_message_descriptor_data());
         messages.push(generated_code_info::Annotation::generated_message_descriptor_data());
-        let mut enums = ::std::vec::Vec::new();
+        let mut enums = ::std::vec::Vec::with_capacity(6);
         enums.push(field_descriptor_proto::Type::generated_enum_descriptor_data());
         enums.push(field_descriptor_proto::Label::generated_enum_descriptor_data());
         enums.push(file_options::OptimizeMode::generated_enum_descriptor_data());

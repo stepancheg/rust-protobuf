@@ -176,10 +176,10 @@ pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProt
 pub fn file_descriptor() -> crate::reflect::FileDescriptor {
     static file_descriptor_lazy: crate::rt::Lazy<crate::reflect::GeneratedFileDescriptor> = crate::rt::Lazy::new();
     let file_descriptor = file_descriptor_lazy.get(|| {
-        let mut deps = ::std::vec::Vec::new();
+        let mut deps = ::std::vec::Vec::with_capacity(1);
         deps.push(crate::descriptor::file_descriptor());
-        let mut messages = ::std::vec::Vec::new();
-        let mut enums = ::std::vec::Vec::new();
+        let mut messages = ::std::vec::Vec::with_capacity(0);
+        let mut enums = ::std::vec::Vec::with_capacity(0);
         crate::reflect::GeneratedFileDescriptor::new_generated(
             file_descriptor_proto(),
             deps,
