@@ -8,8 +8,10 @@ use crate::descriptor::EnumValueDescriptorProto;
 use crate::enums::Enum;
 use crate::reflect::enums::dynamic::DynamicEnumDescriptor;
 use crate::reflect::enums::generated::GeneratedEnumDescriptor;
+use crate::reflect::file::index::FileIndexEnumEntry;
 use crate::reflect::file::FileDescriptorImpl;
 use crate::reflect::FileDescriptor;
+use crate::reflect::MessageDescriptor;
 use crate::EnumFull;
 
 pub(crate) mod dynamic;
@@ -148,6 +150,10 @@ impl EnumDescriptor {
         self.proto().name()
     }
 
+    fn index_entry(&self) -> &FileIndexEnumEntry {
+        self.file_descriptor.enum_index_entry(self.index)
+    }
+
     /// Fully qualified protobuf name of enum
     pub fn full_name(&self) -> &str {
         match self.get_impl() {
@@ -167,6 +173,13 @@ impl EnumDescriptor {
             file_descriptor,
             index,
         }
+    }
+
+    /// Get a message containing this message, or `None` if this message is declared at file level.
+    pub fn enclosing_message(&self) -> Option<MessageDescriptor> {
+        self.index_entry()
+            .enclosing_message
+            .map(|i| MessageDescriptor::new(self.file_descriptor.clone(), i))
     }
 
     /// This enum values
@@ -253,4 +266,23 @@ impl EnumDescriptor {
 enum EnumDescriptorImplRef<'a> {
     Generated(&'static GeneratedEnumDescriptor),
     Dynamic(&'a DynamicEnumDescriptor),
+}
+
+#[cfg(test)]
+mod test {
+    use crate::descriptor::field_descriptor_proto::Type;
+    use crate::descriptor::FieldDescriptorProto;
+    use crate::well_known_types::NullValue;
+    use crate::EnumFull;
+    use crate::MessageFull;
+
+    #[test]
+    #[cfg_attr(miri, ignore)] // Too slow on Miri.
+    fn enclosing_message() {
+        assert_eq!(
+            Some(FieldDescriptorProto::descriptor_static()),
+            Type::enum_descriptor().enclosing_message()
+        );
+        assert_eq!(None, NullValue::enum_descriptor().enclosing_message());
+    }
 }

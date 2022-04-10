@@ -25,6 +25,7 @@ pub(crate) struct FileIndexEnumEntry {
     pub _message_path: MessagePath,
     pub _enum_index: usize,
     pub name_to_package: String,
+    pub enclosing_message: Option<usize>,
 }
 
 #[derive(Debug)]
@@ -57,6 +58,7 @@ impl FileIndex {
                 _message_path: MessagePath(Vec::new()),
                 _enum_index: index.enums.len(),
                 name_to_package: e.name().to_owned(),
+                enclosing_message: None,
             });
         }
 
@@ -111,6 +113,7 @@ impl FileIndex {
                 _message_path: path.clone(),
                 _enum_index: self.enums.len(),
                 name_to_package: concat_paths(&name_to_package, e.name()),
+                enclosing_message: Some(message_index),
             });
             self.messages[message_index]
                 .nested_enums

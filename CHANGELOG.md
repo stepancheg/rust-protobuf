@@ -15,6 +15,7 @@ Stable versions are 2.xx still supported.
 * rename `EnumFull::enum_descriptor_static` -> `enum_descriptor`
 * fix `EnumFull::descriptor` for enums with `allow_alias`
 * add `MessageDescriptor::nested_enums()`
+* add `EnumDescriptor::enclosing_message()`
 
 ## [3.0.0-alpha.9] - 2022-04-04
 
