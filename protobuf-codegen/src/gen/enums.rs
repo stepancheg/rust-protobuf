@@ -204,7 +204,7 @@ impl<'a> EnumGen<'a> {
         });
     }
 
-    fn write_fn_value(&self, w: &mut CodeWriter) {
+    fn write_impl_enum_fn_value(&self, w: &mut CodeWriter) {
         w.def_fn("value(&self) -> i32", |w| {
             if self.allow_alias() {
                 w.match_expr("*self", |w| {
@@ -221,53 +221,63 @@ impl<'a> EnumGen<'a> {
         });
     }
 
+    fn write_impl_enum_const_name(&self, w: &mut CodeWriter) {
+        w.write_line(&format!(
+            "const NAME: &'static str = \"{}\";",
+            self.enum_with_scope.en.name()
+        ));
+    }
+
+    fn write_impl_enum_fn_from_i32(&self, w: &mut CodeWriter) {
+        w.def_fn(
+            &format!(
+                "from_i32(value: i32) -> ::std::option::Option<{}>",
+                self.type_name
+            ),
+            |w| {
+                w.match_expr("value", |w| {
+                    let values = self.values_unique();
+                    for value in values {
+                        w.write_line(&format!(
+                            "{} => ::std::option::Option::Some({}),",
+                            value.number(),
+                            value.rust_name_outer()
+                        ));
+                    }
+                    w.write_line(&format!("_ => {}", EXPR_NONE));
+                });
+            },
+        );
+    }
+
+    fn write_impl_enum_fn_values(&self, w: &mut CodeWriter) {
+        w.def_fn(&format!("values() -> &'static [Self]"), |w| {
+            w.write_line(&format!(
+                "static values: &'static [{}] = &[",
+                self.type_name
+            ));
+            w.indented(|w| {
+                for value in self.values_all() {
+                    w.write_line(&format!("{},", value.rust_name_outer()));
+                }
+            });
+            w.write_line("];");
+            w.write_line("values");
+        });
+    }
+
     fn write_impl_enum(&self, w: &mut CodeWriter) {
-        let ref type_name = self.type_name;
         w.impl_for_block(
             &format!("{}::Enum", protobuf_crate_path(&self.customize.for_elem)),
-            &format!("{}", type_name),
+            &format!("{}", self.type_name),
             |w| {
-                w.write_line(&format!(
-                    "const NAME: &'static str = \"{}\";",
-                    self.enum_with_scope.en.name()
-                ));
-
+                self.write_impl_enum_const_name(w);
                 w.write_line("");
-                self.write_fn_value(w);
-
+                self.write_impl_enum_fn_value(w);
                 w.write_line("");
-                let ref type_name = self.type_name;
-                w.def_fn(
-                    &format!(
-                        "from_i32(value: i32) -> ::std::option::Option<{}>",
-                        type_name
-                    ),
-                    |w| {
-                        w.match_expr("value", |w| {
-                            let values = self.values_unique();
-                            for value in values {
-                                w.write_line(&format!(
-                                    "{} => ::std::option::Option::Some({}),",
-                                    value.number(),
-                                    value.rust_name_outer()
-                                ));
-                            }
-                            w.write_line(&format!("_ => {}", EXPR_NONE));
-                        });
-                    },
-                );
-
+                self.write_impl_enum_fn_from_i32(w);
                 w.write_line("");
-                w.def_fn(&format!("values() -> &'static [Self]"), |w| {
-                    w.write_line(&format!("static values: &'static [{}] = &[", type_name));
-                    w.indented(|w| {
-                        for value in self.values_all() {
-                            w.write_line(&format!("{},", value.rust_name_outer()));
-                        }
-                    });
-                    w.write_line("];");
-                    w.write_line("values");
-                });
+                self.write_impl_enum_fn_values(w);
             },
         );
     }
