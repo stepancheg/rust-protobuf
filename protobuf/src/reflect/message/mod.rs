@@ -7,10 +7,10 @@ use crate::message_dyn::MessageDyn;
 use crate::message_full::MessageFull;
 use crate::reflect::dynamic::DynamicMessage;
 use crate::reflect::field::FieldDescriptorImpl;
-use crate::reflect::file::index::FileIndexMessageEntry;
+use crate::reflect::file::index::MessageFieldsIndex;
+use crate::reflect::file::index::MessageIndex;
 use crate::reflect::file::FileDescriptorImpl;
 use crate::reflect::message::generated::GeneratedMessageDescriptor;
-use crate::reflect::message::index::MessageIndex;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::EnumDescriptor;
@@ -20,7 +20,6 @@ use crate::reflect::OneofDescriptor;
 use crate::CodedInputStream;
 
 pub(crate) mod generated;
-pub(crate) mod index;
 pub(crate) mod message_ref;
 pub(crate) mod path;
 
@@ -71,7 +70,7 @@ impl MessageDescriptor {
         self.proto().name()
     }
 
-    fn index_entry(&self) -> &FileIndexMessageEntry {
+    fn index_entry(&self) -> &MessageIndex {
         self.file_descriptor.message_index_entry(self.index)
     }
 
@@ -267,11 +266,11 @@ impl MessageDescriptor {
         })
     }
 
-    pub(crate) fn index(&self) -> &MessageIndex {
+    pub(crate) fn index(&self) -> &MessageFieldsIndex {
         &self.file_descriptor.index().index.messages[self.index].message_index
     }
 
-    pub(crate) fn generated_index(&self) -> &'static MessageIndex {
+    pub(crate) fn generated_index(&self) -> &'static MessageFieldsIndex {
         &self.file_descriptor.generated_index().index.messages[self.index].message_index
     }
 

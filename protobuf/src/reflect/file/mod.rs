@@ -12,7 +12,7 @@ use crate::reflect::file::common::FileDescriptorCommon;
 use crate::reflect::file::dynamic::DynamicFileDescriptor;
 use crate::reflect::file::fds::FdsBuilder;
 use crate::reflect::file::index::FileIndexEnumEntry;
-use crate::reflect::file::index::FileIndexMessageEntry;
+use crate::reflect::file::index::MessageIndex;
 use crate::reflect::name::protobuf_name_starts_with_package;
 use crate::reflect::service::ServiceDescriptor;
 use crate::reflect::EnumDescriptor;
@@ -89,7 +89,7 @@ impl FileDescriptor {
         }
     }
 
-    pub(crate) fn message_index_entry(&self, index: usize) -> &FileIndexMessageEntry {
+    pub(crate) fn message_index_entry(&self, index: usize) -> &MessageIndex {
         &self.index().index.messages[index]
     }
 

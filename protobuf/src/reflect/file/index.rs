@@ -2,16 +2,16 @@ use std::collections::HashMap;
 
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
+use crate::reflect::field::index::FieldIndex;
 use crate::reflect::file::building::FileDescriptorBuilding;
 use crate::reflect::file::fds::fds_extend_with_public;
-use crate::reflect::message::index::MessageIndex;
 use crate::reflect::message::path::MessagePath;
 use crate::reflect::name::concat_paths;
 use crate::reflect::service::index::ServiceIndex;
 use crate::reflect::FileDescriptor;
 
 #[derive(Debug)]
-pub(crate) struct FileIndexMessageEntry {
+pub(crate) struct MessageIndex {
     pub(crate) path: MessagePath,
     pub(crate) name_to_package: String,
     pub(crate) full_name: String,
@@ -20,7 +20,16 @@ pub(crate) struct FileIndexMessageEntry {
     pub(crate) map_entry: bool,
     pub(crate) first_enum_index: usize,
     pub(crate) enum_count: usize,
-    pub(crate) message_index: MessageIndex,
+    pub(crate) message_index: MessageFieldsIndex,
+}
+
+#[derive(Debug, Default)]
+pub(crate) struct MessageFieldsIndex {
+    pub(crate) fields: Vec<FieldIndex>,
+    pub(crate) field_index_by_name: HashMap<String, usize>,
+    pub(crate) field_index_by_name_or_json_name: HashMap<String, usize>,
+    pub(crate) field_index_by_number: HashMap<u32, usize>,
+    pub(crate) extensions: Vec<FieldIndex>,
 }
 
 #[derive(Debug)]
@@ -36,7 +45,7 @@ pub(crate) struct FileIndexOneofEntry {}
 
 #[derive(Debug)]
 pub(crate) struct FileIndex {
-    pub(crate) messages: Vec<FileIndexMessageEntry>,
+    pub(crate) messages: Vec<MessageIndex>,
     pub(crate) message_by_name_to_package: HashMap<String, usize>,
     pub(crate) top_level_messages: Vec<usize>,
     pub(crate) enums: Vec<FileIndexEnumEntry>,
@@ -109,7 +118,7 @@ impl FileIndex {
         let name_to_package = concat_paths(parent_name_to_package, message.name());
 
         let message_index = self.messages.len();
-        self.messages.push(FileIndexMessageEntry {
+        self.messages.push(MessageIndex {
             path: path.clone(),
             name_to_package: String::new(),
             full_name: String::new(),
@@ -118,7 +127,7 @@ impl FileIndex {
             map_entry: message.options.get_or_default().map_entry(),
             first_enum_index: self.enums.len(),
             enum_count: message.enum_type.len(),
-            message_index: MessageIndex::default(),
+            message_index: MessageFieldsIndex::default(),
         });
 
         for (_, e) in message.enum_type.iter().enumerate() {
@@ -181,9 +190,53 @@ impl FileIndex {
                 current_file_index: self,
                 deps_with_public,
             };
-            let message_index = MessageIndex::index(message_proto, &building)?;
+            let message_index = Self::index_message(message_proto, &building)?;
             self.messages[i].message_index = message_index;
         }
         Ok(())
+    }
+
+    fn index_message(
+        proto: &DescriptorProto,
+        building: &FileDescriptorBuilding,
+    ) -> crate::Result<MessageFieldsIndex> {
+        let mut index_by_name = HashMap::new();
+        let mut index_by_name_or_json_name = HashMap::new();
+        let mut index_by_number = HashMap::new();
+
+        let fields: Vec<FieldIndex> = proto
+            .field
+            .iter()
+            .map(|f| FieldIndex::index(f, building))
+            .collect::<crate::Result<_>>()?;
+        for (i, f) in proto.field.iter().enumerate() {
+            let field_index = &fields[i];
+
+            assert!(index_by_number.insert(f.number() as u32, i).is_none());
+            assert!(index_by_name.insert(f.name().to_owned(), i).is_none());
+            assert!(index_by_name_or_json_name
+                .insert(f.name().to_owned(), i)
+                .is_none());
+
+            if field_index.json_name != f.name() {
+                assert!(index_by_name_or_json_name
+                    .insert(field_index.json_name.clone(), i)
+                    .is_none());
+            }
+        }
+
+        let extensions: Vec<FieldIndex> = proto
+            .extension
+            .iter()
+            .map(|f| FieldIndex::index(f, building))
+            .collect::<crate::Result<Vec<_>>>()?;
+
+        Ok(MessageFieldsIndex {
+            fields,
+            field_index_by_name: index_by_name,
+            field_index_by_name_or_json_name: index_by_name_or_json_name,
+            field_index_by_number: index_by_number,
+            extensions,
+        })
     }
 }
