@@ -5,12 +5,12 @@ use crate::descriptor::EnumDescriptorProto;
 
 #[derive(Debug)]
 pub(crate) struct EnumIndex<S: Hash + Eq> {
-    pub index_by_name: HashMap<S, usize>,
-    pub index_by_number: HashMap<i32, usize>,
+    pub(crate) index_by_name: HashMap<S, usize>,
+    pub(crate) index_by_number: HashMap<i32, usize>,
 }
 
 impl<S: Hash + Eq> EnumIndex<S> {
-    pub fn index<'a>(proto: &'a EnumDescriptorProto) -> EnumIndex<S>
+    pub(crate) fn index<'a>(proto: &'a EnumDescriptorProto) -> EnumIndex<S>
     where
         S: From<&'a str>,
     {
