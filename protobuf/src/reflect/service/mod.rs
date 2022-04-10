@@ -37,14 +37,12 @@ impl ServiceDescriptor {
     }
 
     /// Method descriptors of this service.
-    pub fn methods(&self) -> Vec<MethodDescriptor> {
+    pub fn methods(&self) -> impl Iterator<Item = MethodDescriptor> + '_ {
         let value_len = self.proto().method.len();
-        (0..value_len)
-            .map(move |index| MethodDescriptor {
-                service_descriptor: self.clone(),
-                index,
-            })
-            .collect()
+        (0..value_len).map(move |index| MethodDescriptor {
+            service_descriptor: self.clone(),
+            index,
+        })
     }
 }
 

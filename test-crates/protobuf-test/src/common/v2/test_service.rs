@@ -11,6 +11,6 @@ fn test_service() {
 
 #[test]
 fn reflect() {
-    let services = file_descriptor().services();
+    let services = file_descriptor().services().collect::<Vec<_>>();
     assert_eq!(1, services.len());
 }

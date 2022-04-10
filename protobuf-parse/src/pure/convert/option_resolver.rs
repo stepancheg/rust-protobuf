@@ -81,8 +81,8 @@ impl LookupScope2 {
 
     fn messages(&self) -> Vec<MessageDescriptor> {
         match self {
-            LookupScope2::File(file) => file.messages(),
-            LookupScope2::Message(message, _) => message.nested_messages(),
+            LookupScope2::File(file) => file.messages().collect(),
+            LookupScope2::Message(message, _) => message.nested_messages().collect(),
         }
     }
 
@@ -99,8 +99,8 @@ impl LookupScope2 {
 
     fn extensions(&self) -> Vec<FieldDescriptor> {
         match self {
-            LookupScope2::File(f) => f.extensions(),
-            LookupScope2::Message(m, _) => m.extensions(),
+            LookupScope2::File(f) => f.extensions().collect(),
+            LookupScope2::Message(m, _) => m.extensions().collect(),
         }
     }
 }

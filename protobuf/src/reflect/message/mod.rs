@@ -76,14 +76,15 @@ impl MessageDescriptor {
     }
 
     /// Get enums declared in this message.
-    pub fn enums(&self) -> Vec<EnumDescriptor> {
+    pub fn enums(&self) -> impl Iterator<Item = EnumDescriptor> + '_ {
         let first_enum_index = self.index_entry().first_enum_index;
         self.proto()
             .enum_type
             .iter()
             .enumerate()
-            .map(|(i, _)| EnumDescriptor::new(self.file_descriptor.clone(), first_enum_index + i))
-            .collect()
+            .map(move |(i, _)| {
+                EnumDescriptor::new(self.file_descriptor.clone(), first_enum_index + i)
+            })
     }
 
     fn index_entry(&self) -> &FileIndexMessageEntry {
@@ -101,12 +102,11 @@ impl MessageDescriptor {
     }
 
     /// Messages declared in this messages.
-    pub fn nested_messages(&self) -> Vec<MessageDescriptor> {
+    pub fn nested_messages(&self) -> impl Iterator<Item = MessageDescriptor> + '_ {
         self.index_entry()
             .nested_messages
             .iter()
             .map(|i| MessageDescriptor::new(self.file_descriptor.clone(), *i))
-            .collect()
     }
 
     /// Get a message containing this message, or `None` if this message is declared at file level.
@@ -272,12 +272,10 @@ impl MessageDescriptor {
     }
 
     /// Extension fields.
-    pub fn extensions(&self) -> Vec<FieldDescriptor> {
-        (0..self.index().extensions.len())
-            .map(move |index| FieldDescriptor {
-                imp: FieldDescriptorImpl::ExtensionInMessage(self.clone(), index),
-            })
-            .collect()
+    pub fn extensions(&self) -> impl Iterator<Item = FieldDescriptor> + '_ {
+        (0..self.index().extensions.len()).map(move |index| FieldDescriptor {
+            imp: FieldDescriptorImpl::ExtensionInMessage(self.clone(), index),
+        })
     }
 
     pub(crate) fn index(&self) -> &MessageIndex {
@@ -363,6 +361,7 @@ mod test {
     fn nested_messages() {
         assert!(DescriptorProto::descriptor_static()
             .nested_messages()
+            .collect::<Vec<_>>()
             .contains(&ExtensionRange::descriptor_static()));
     }
 

@@ -164,18 +164,18 @@ impl<'a> Scope<'a> {
     // get message descriptors in this scope
     fn message_descriptors(&self) -> Vec<MessageDescriptor> {
         if self.path.is_empty() {
-            self.file_scope.file_descriptor.messages()
+            self.file_scope.file_descriptor.messages().collect()
         } else {
-            self.path.last().unwrap().nested_messages()
+            self.path.last().unwrap().nested_messages().collect()
         }
     }
 
     // get enum descriptors in this scope
     fn enum_descriptors(&self) -> Vec<EnumDescriptor> {
         if self.path.is_empty() {
-            self.file_scope.file_descriptor.enums()
+            self.file_scope.file_descriptor.enums().collect()
         } else {
-            self.path.last().unwrap().enums()
+            self.path.last().unwrap().enums().collect()
         }
     }
 

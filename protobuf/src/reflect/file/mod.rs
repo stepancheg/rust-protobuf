@@ -99,42 +99,37 @@ impl FileDescriptor {
 
     // TODO: return iterator.
     /// Get top-level messages.
-    pub fn messages(&self) -> Vec<MessageDescriptor> {
+    pub fn messages(&self) -> impl Iterator<Item = MessageDescriptor> + '_ {
         self.index()
             .index
             .top_level_messages
             .iter()
             .map(|i| MessageDescriptor::new(self.clone(), *i))
-            .collect()
     }
 
     /// Get top-level enums.
-    pub fn enums(&self) -> Vec<EnumDescriptor> {
+    pub fn enums(&self) -> impl Iterator<Item = EnumDescriptor> + '_ {
         self.proto()
             .enum_type
             .iter()
             .enumerate()
             .map(|(i, _)| EnumDescriptor::new(self.clone(), i))
-            .collect()
     }
 
     /// Get services defined in `.proto` file.
-    pub fn services(&self) -> Vec<ServiceDescriptor> {
+    pub fn services(&self) -> impl Iterator<Item = ServiceDescriptor> + '_ {
         self.proto()
             .service
             .iter()
             .enumerate()
             .map(|(i, _)| ServiceDescriptor::new(self.clone(), i))
-            .collect()
     }
 
     /// Extension fields.
-    pub fn extensions(&self) -> Vec<FieldDescriptor> {
-        (0..self.index().extensions.len())
-            .map(move |index| FieldDescriptor {
-                imp: FieldDescriptorImpl::ExtensionInFile(self.clone(), index),
-            })
-            .collect()
+    pub fn extensions(&self) -> impl Iterator<Item = FieldDescriptor> + '_ {
+        (0..self.index().extensions.len()).map(move |index| FieldDescriptor {
+            imp: FieldDescriptorImpl::ExtensionInFile(self.clone(), index),
+        })
     }
 
     /// Find message by name relative to the package.
@@ -265,12 +260,11 @@ impl FileDescriptor {
     }
 
     /// Subset of dependencies which are public
-    pub fn public_deps(&self) -> Vec<FileDescriptor> {
+    pub fn public_deps(&self) -> impl Iterator<Item = FileDescriptor> + '_ {
         self.proto()
             .public_dependency
             .iter()
             .map(|&i| self.deps()[i as usize].clone())
-            .collect()
     }
 
     fn _all_files(&self) -> Vec<&FileDescriptor> {
