@@ -14,11 +14,6 @@ pub trait EnumFull: Enum {
             .unwrap()
     }
 
-    /// Get enum descriptor.
-    fn enum_descriptor(&self) -> EnumDescriptor {
-        Self::enum_descriptor_static()
-    }
-
     /// Get enum descriptor by type.
     fn enum_descriptor_static() -> EnumDescriptor;
 }
