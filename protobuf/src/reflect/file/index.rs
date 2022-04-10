@@ -80,6 +80,7 @@ pub(crate) struct FileIndex {
     pub(crate) top_level_messages: Vec<usize>,
     pub(crate) enums: Vec<EnumIndex>,
     pub(crate) enums_by_name_to_package: HashMap<String, usize>,
+    #[allow(dead_code)] // TODO: use to implement `OneofDescriptor`
     pub(crate) oneofs: Vec<FileIndexOneofEntry>,
     pub(crate) services: Vec<ServiceIndex>,
 }

@@ -1,9 +1,7 @@
-pub(crate) mod dynamic;
 pub(crate) mod generated;
 
 use crate::descriptor::OneofDescriptorProto;
 use crate::reflect::file::FileDescriptorImpl;
-use crate::reflect::oneof::dynamic::DynamicOneofDescriptor;
 use crate::reflect::oneof::generated::GeneratedOneofDescriptor;
 use crate::reflect::FieldDescriptor;
 use crate::reflect::MessageDescriptor;
@@ -15,9 +13,9 @@ pub struct OneofDescriptor {
     pub(crate) index: usize,
 }
 
-pub(crate) enum OneofDescriptorImplRef<'a> {
+pub(crate) enum OneofDescriptorImplRef {
     Generated(&'static GeneratedOneofDescriptor),
-    Dynamic(&'a DynamicOneofDescriptor),
+    Dynamic,
 }
 
 impl OneofDescriptor {
@@ -37,9 +35,7 @@ impl OneofDescriptor {
             FileDescriptorImpl::Generated(g) => {
                 OneofDescriptorImplRef::Generated(&g.oneofs[self.index])
             }
-            FileDescriptorImpl::Dynamic(d) => {
-                OneofDescriptorImplRef::Dynamic(&d.oneofs[self.index])
-            }
+            FileDescriptorImpl::Dynamic(..) => OneofDescriptorImplRef::Dynamic,
         }
     }
 
