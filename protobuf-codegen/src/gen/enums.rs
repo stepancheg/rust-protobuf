@@ -77,7 +77,6 @@ impl<'a> EnumGen<'a> {
         );
         let lite_runtime = customize.for_elem.lite_runtime.unwrap_or_else(|| {
             enum_with_scope
-                .scope()
                 .file_descriptor()
                 .options
                 .get_or_default()

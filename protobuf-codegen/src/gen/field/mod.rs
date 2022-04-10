@@ -615,7 +615,7 @@ impl<'a> FieldGen<'a> {
 
         Ok(FieldGen {
             _root_scope: root_scope,
-            syntax: field.message.scope().file_scope.syntax(),
+            syntax: field.message.message.file_descriptor().syntax(),
             rust_name: rust_field_name_for_protobuf_field_name(&field.field.name()),
             proto_type: field.field.proto().field_type(),
             wire_type: WireType::for_type(field.field.proto().field_type()),
