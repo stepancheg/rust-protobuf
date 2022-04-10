@@ -1,7 +1,6 @@
 use std::any::TypeId;
 use std::fmt;
 use std::hash::Hash;
-use std::hash::Hasher;
 
 use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::EnumValueDescriptorProto;
@@ -20,16 +19,10 @@ pub(crate) mod generated;
 /// Description for enum variant.
 ///
 /// Used in reflection.
-#[derive(Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq, Hash)]
 pub struct EnumValueDescriptor {
     pub(crate) enum_descriptor: EnumDescriptor,
     pub(crate) index: usize,
-}
-
-impl Hash for EnumValueDescriptor {
-    fn hash<H: Hasher>(&self, state: &mut H) {
-        Hash::hash(&self.value(), state)
-    }
 }
 
 fn _assert_send_sync() {
