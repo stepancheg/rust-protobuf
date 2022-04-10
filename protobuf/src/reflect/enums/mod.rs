@@ -16,7 +16,6 @@ use crate::EnumFull;
 
 pub(crate) mod dynamic;
 pub(crate) mod generated;
-pub(crate) mod index;
 
 /// Description for enum variant.
 ///
@@ -206,10 +205,9 @@ impl EnumDescriptor {
 
     /// Find enum variant by name
     pub fn value_by_name(&self, name: &str) -> Option<EnumValueDescriptor> {
-        let index = match self.get_impl() {
-            EnumDescriptorImplRef::Generated(g) => *g.indices.index_by_name.get(name)?,
-            EnumDescriptorImplRef::Dynamic(d) => *d.indices.index_by_name.get(name)?,
-        };
+        let index = *self.file_descriptor.index().index.enums[self.index]
+            .index_by_name
+            .get(name)?;
         Some(EnumValueDescriptor {
             enum_descriptor: self.clone(),
             index,
@@ -218,10 +216,9 @@ impl EnumDescriptor {
 
     /// Find enum variant by number
     pub fn value_by_number(&self, number: i32) -> Option<EnumValueDescriptor> {
-        let index = match self.get_impl() {
-            EnumDescriptorImplRef::Generated(g) => *g.indices.index_by_number.get(&number)?,
-            EnumDescriptorImplRef::Dynamic(d) => *d.indices.index_by_number.get(&number)?,
-        };
+        let index = *self.file_descriptor.index().index.enums[self.index]
+            .index_by_number
+            .get(&number)?;
         Some(self.value_by_index(index))
     }
 

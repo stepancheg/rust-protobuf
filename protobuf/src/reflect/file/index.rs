@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use crate::descriptor::DescriptorProto;
+use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::field::index::FieldIndex;
 use crate::reflect::file::building::FileDescriptorBuilding;
@@ -38,6 +39,33 @@ pub(crate) struct FileIndexEnumEntry {
     pub(crate) _enum_index: usize,
     pub(crate) name_to_package: String,
     pub(crate) enclosing_message: Option<usize>,
+    pub(crate) index_by_name: HashMap<String, usize>,
+    pub(crate) index_by_number: HashMap<i32, usize>,
+}
+
+impl FileIndexEnumEntry {
+    pub(crate) fn new(
+        _message_path: MessagePath,
+        _enum_index: usize,
+        name_to_package: String,
+        enclosing_message: Option<usize>,
+        proto: &EnumDescriptorProto,
+    ) -> FileIndexEnumEntry {
+        let mut index_by_name = HashMap::new();
+        let mut index_by_number = HashMap::new();
+        for (i, v) in proto.value.iter().enumerate() {
+            index_by_number.insert(v.number(), i);
+            index_by_name.insert(v.name().to_owned(), i);
+        }
+        FileIndexEnumEntry {
+            _message_path,
+            _enum_index,
+            name_to_package,
+            enclosing_message,
+            index_by_name,
+            index_by_number,
+        }
+    }
 }
 
 #[derive(Debug)]
@@ -73,12 +101,13 @@ impl FileIndex {
 
         // Top-level enums start with zero
         for (_, e) in file.enum_type.iter().enumerate() {
-            index.enums.push(FileIndexEnumEntry {
-                _message_path: MessagePath(Vec::new()),
-                _enum_index: index.enums.len(),
-                name_to_package: e.name().to_owned(),
-                enclosing_message: None,
-            });
+            index.enums.push(FileIndexEnumEntry::new(
+                MessagePath(Vec::new()),
+                index.enums.len(),
+                e.name().to_owned(),
+                None,
+                e,
+            ));
         }
 
         for (i, message) in file.message_type.iter().enumerate() {
@@ -131,12 +160,13 @@ impl FileIndex {
         });
 
         for (_, e) in message.enum_type.iter().enumerate() {
-            self.enums.push(FileIndexEnumEntry {
-                _message_path: path.clone(),
-                _enum_index: self.enums.len(),
-                name_to_package: concat_paths(&name_to_package, e.name()),
-                enclosing_message: Some(message_index),
-            });
+            self.enums.push(FileIndexEnumEntry::new(
+                path.clone(),
+                self.enums.len(),
+                concat_paths(&name_to_package, e.name()),
+                Some(message_index),
+                e,
+            ));
         }
 
         for (i, nested) in message.nested_type.iter().enumerate() {

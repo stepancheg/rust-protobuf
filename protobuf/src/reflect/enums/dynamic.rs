@@ -2,7 +2,6 @@ use std::sync::Arc;
 
 use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::FileDescriptorProto;
-use crate::reflect::enums::index::EnumIndex;
 use crate::reflect::message::path::MessagePath;
 use crate::reflect::name::append_path;
 
@@ -16,8 +15,6 @@ pub(crate) struct DynamicEnumDescriptor {
     path: MessagePath,
     enum_index: usize,
     pub(crate) _values: Vec<DynamicEnumValueDescriptor>,
-
-    pub(crate) indices: EnumIndex<String>,
 }
 
 impl DynamicEnumDescriptor {
@@ -38,8 +35,6 @@ impl DynamicEnumDescriptor {
         };
         append_path(&mut full_name, e.name());
 
-        let indices = EnumIndex::<String>::index(e);
-
         let values = e
             .value
             .iter()
@@ -52,7 +47,6 @@ impl DynamicEnumDescriptor {
             path: path.clone(),
             enum_index,
             _values: values,
-            indices,
         }
     }
 
