@@ -67,7 +67,7 @@ impl GeneratedEnumDescriptor {
                 (_, MessageOrEnum::Message(_)) => panic!("not an enum"),
             };
 
-        let indices = EnumIndex::<&'static str>::index::<&'static str>(proto);
+        let indices = EnumIndex::<&'static str>::index(proto);
 
         GeneratedEnumDescriptor {
             full_name: compute_full_name(

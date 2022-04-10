@@ -10,12 +10,15 @@ pub(crate) struct EnumIndex<S: Hash + Eq> {
 }
 
 impl<S: Hash + Eq> EnumIndex<S> {
-    pub fn index<'a, T: From<&'a str> + Hash + Eq>(proto: &'a EnumDescriptorProto) -> EnumIndex<T> {
+    pub fn index<'a>(proto: &'a EnumDescriptorProto) -> EnumIndex<S>
+    where
+        S: From<&'a str>,
+    {
         let mut index_by_name = HashMap::new();
         let mut index_by_number = HashMap::new();
         for (i, v) in proto.value.iter().enumerate() {
             index_by_number.insert(v.number(), i);
-            index_by_name.insert(T::from(v.name()), i);
+            index_by_name.insert(S::from(v.name()), i);
         }
 
         EnumIndex {
