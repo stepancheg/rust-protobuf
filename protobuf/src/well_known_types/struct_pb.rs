@@ -629,6 +629,9 @@ pub mod value {
 
     impl crate::Oneof for Kind {
     }
+
+    impl crate::OneofFull for Kind {
+    }
 }
 
 ///  `ListValue` is a wrapper around a repeated field of values.
