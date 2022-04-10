@@ -3,6 +3,7 @@
 use std::collections::HashSet;
 
 use protobuf::descriptor::field_descriptor_proto;
+use protobuf::descriptor::file_options;
 use protobuf::reflect::FieldDescriptor;
 use protobuf_parse::ProtobufAbsPath;
 
@@ -169,6 +170,7 @@ pub(crate) struct OneofGen<'a> {
     message: &'a MessageGen<'a>,
     pub oneof: OneofWithContext<'a>,
     customize: CustomizeElemCtx<'a>,
+    lite_runtime: bool,
 }
 
 impl<'a> OneofGen<'a> {
@@ -178,10 +180,20 @@ impl<'a> OneofGen<'a> {
         parent_customize: &CustomizeElemCtx<'a>,
     ) -> OneofGen<'a> {
         let customize = parent_customize.child(&Customize::default(), &oneof.oneof);
+        let lite_runtime = customize.for_elem.lite_runtime.unwrap_or_else(|| {
+            oneof
+                .message
+                .file_descriptor()
+                .options
+                .get_or_default()
+                .optimize_for()
+                == file_options::OptimizeMode::LITE_RUNTIME
+        });
         OneofGen {
             message,
             oneof,
             customize,
+            lite_runtime,
         }
     }
 
@@ -274,9 +286,26 @@ impl<'a> OneofGen<'a> {
         );
     }
 
+    fn write_impl_oneof_full(&self, w: &mut CodeWriter) {
+        w.impl_for_block(
+            &format!(
+                "{}::OneofFull",
+                protobuf_crate_path(&self.customize.for_elem)
+            ),
+            self.oneof.rust_name().ident.to_string(),
+            |_w| {
+                // nothing here yet. TODO: generate `descriptor` function.
+            },
+        )
+    }
+
     pub fn write(&self, w: &mut CodeWriter) {
         self.write_enum(w);
         w.write_line("");
         self.write_impl_oneof(w);
+        if !self.lite_runtime {
+            w.write_line("");
+            self.write_impl_oneof_full(w);
+        }
     }
 }
