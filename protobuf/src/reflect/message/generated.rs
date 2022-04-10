@@ -92,11 +92,11 @@ pub(crate) struct NonMapMessageDescriptor {
 
 #[derive(Debug)]
 pub(crate) struct GeneratedMessageDescriptor {
-    pub non_map: Option<NonMapMessageDescriptor>,
+    pub(crate) non_map: Option<NonMapMessageDescriptor>,
 }
 
 impl GeneratedMessageDescriptor {
-    pub fn new_map_entry() -> GeneratedMessageDescriptor {
+    pub(crate) fn new_map_entry() -> GeneratedMessageDescriptor {
         GeneratedMessageDescriptor { non_map: None }
     }
 
@@ -128,7 +128,7 @@ impl GeneratedMessageDescriptor {
         })
     }
 
-    pub fn non_map(&self) -> &NonMapMessageDescriptor {
+    pub(crate) fn non_map(&self) -> &NonMapMessageDescriptor {
         match &self.non_map {
             Some(non_map) => non_map,
             None => panic!("map message"),
