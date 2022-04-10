@@ -175,7 +175,7 @@ impl<'a> Scope<'a> {
         if self.path.is_empty() {
             self.file_scope.file_descriptor.enums().collect()
         } else {
-            self.path.last().unwrap().enums().collect()
+            self.path.last().unwrap().nested_enums().collect()
         }
     }
 

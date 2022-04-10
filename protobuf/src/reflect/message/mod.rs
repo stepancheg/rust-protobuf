@@ -96,7 +96,7 @@ impl MessageDescriptor {
     }
 
     /// Get enums declared in this message.
-    pub fn enums(&self) -> impl Iterator<Item = EnumDescriptor> + '_ {
+    pub fn nested_enums(&self) -> impl Iterator<Item = EnumDescriptor> + '_ {
         let first_enum_index = self.index_entry().first_enum_index;
         self.proto()
             .enum_type
@@ -370,7 +370,7 @@ mod test {
     #[cfg_attr(miri, ignore)] // Too slow on Miri.
     fn nested_enums() {
         assert!(FieldDescriptorProto::descriptor_static()
-            .enums()
+            .nested_enums()
             .collect::<Vec<_>>()
             .contains(&Type::enum_descriptor()));
     }
