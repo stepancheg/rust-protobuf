@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 use protobuf::descriptor::FileDescriptorProto;
 use protobuf::reflect::EnumDescriptor;
 use protobuf::reflect::EnumValueDescriptor;
@@ -5,7 +7,6 @@ use protobuf::reflect::FieldDescriptor;
 use protobuf::reflect::FileDescriptor;
 use protobuf::reflect::MessageDescriptor;
 use protobuf::reflect::OneofDescriptor;
-use protobuf::reflect::Syntax;
 use protobuf_parse::ProtobufAbsPath;
 use protobuf_parse::ProtobufAbsPathRef;
 use protobuf_parse::ProtobufIdentRef;
@@ -71,13 +72,17 @@ pub(crate) struct FileScope<'a> {
     pub file_descriptor: &'a FileDescriptor,
 }
 
+impl<'a> Deref for FileScope<'a> {
+    type Target = FileDescriptor;
+
+    fn deref(&self) -> &Self::Target {
+        self.file_descriptor
+    }
+}
+
 impl<'a> FileScope<'a> {
     fn package(&self) -> ProtobufAbsPath {
         ProtobufAbsPath::package_from_file_descriptor(self.file_descriptor)
-    }
-
-    pub fn syntax(&self) -> Syntax {
-        self.file_descriptor.syntax()
     }
 
     pub fn to_scope(&self) -> Scope<'a> {
