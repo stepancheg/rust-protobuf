@@ -133,10 +133,6 @@ impl<'a> MessageGen<'a> {
         })
     }
 
-    fn index_in_file(&self) -> u32 {
-        self.file_index.messsage_to_index[&self.message.message]
-    }
-
     pub fn file_and_mod(&self) -> FileAndMod {
         self.message
             .scope
@@ -441,7 +437,10 @@ impl<'a> MessageGen<'a> {
                 ));
                 w.indented(|w| {
                     w.write_line(&format!("\"{}\",", self.message.name_to_package()));
-                    w.write_line(&format!("{},", self.index_in_file()));
+                    w.write_line(&format!(
+                        "{},",
+                        self.message.message.index_in_file_for_codegen()
+                    ));
                     w.write_line("fields,");
                 });
                 w.write_line(")");
