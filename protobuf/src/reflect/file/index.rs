@@ -15,7 +15,7 @@ pub(crate) struct FileIndexMessageEntry {
     pub full_name: String,
     pub enclosing_message: Option<usize>,
     pub nested_messages: Vec<usize>,
-    pub _nested_enums: Vec<usize>,
+    pub nested_enums: Vec<usize>,
     pub map_entry: bool,
     pub first_enum_index: usize,
 }
@@ -101,7 +101,7 @@ impl FileIndex {
             full_name: String::new(),
             enclosing_message: parent,
             nested_messages: Vec::with_capacity(message.nested_type.len()),
-            _nested_enums: Vec::with_capacity(message.enum_type.len()), // TODO
+            nested_enums: Vec::with_capacity(message.enum_type.len()),
             map_entry: message.options.get_or_default().map_entry(),
             first_enum_index: self.enums.len(),
         });
@@ -112,6 +112,9 @@ impl FileIndex {
                 _enum_index: self.enums.len(),
                 name_to_package: concat_paths(&name_to_package, e.name()),
             });
+            self.messages[message_index]
+                .nested_enums
+                .push(self.enums.len() - 1);
         }
 
         for (i, nested) in message.nested_type.iter().enumerate() {

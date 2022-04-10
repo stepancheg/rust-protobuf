@@ -30,7 +30,6 @@ use crate::gen::scope::FieldWithContext;
 use crate::gen::scope::MessageOrEnumWithScope;
 use crate::gen::scope::MessageWithScope;
 use crate::gen::scope::RootScope;
-use crate::gen::scope::WithScope;
 
 mod accessor;
 

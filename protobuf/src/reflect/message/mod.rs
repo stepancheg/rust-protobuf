@@ -107,6 +107,14 @@ impl MessageDescriptor {
             .map(|i| MessageDescriptor::new(self.file_descriptor.clone(), *i))
     }
 
+    /// Enums declared in this messages.
+    pub fn nested_enums(&self) -> impl Iterator<Item = EnumDescriptor> + '_ {
+        self.index_entry()
+            .nested_enums
+            .iter()
+            .map(|i| EnumDescriptor::new(self.file_descriptor.clone(), *i))
+    }
+
     /// Get a message containing this message, or `None` if this message is declared at file level.
     pub fn enclosing_message(&self) -> Option<MessageDescriptor> {
         self.index_entry()
@@ -351,7 +359,10 @@ pub(crate) enum MessageDescriptorImplRef<'a> {
 #[cfg(test)]
 mod test {
     use crate::descriptor::descriptor_proto::ExtensionRange;
+    use crate::descriptor::field_descriptor_proto::Type;
     use crate::descriptor::DescriptorProto;
+    use crate::descriptor::FieldDescriptorProto;
+    use crate::EnumFull;
     use crate::MessageFull;
 
     #[test]
@@ -361,6 +372,15 @@ mod test {
             .nested_messages()
             .collect::<Vec<_>>()
             .contains(&ExtensionRange::descriptor_static()));
+    }
+
+    #[test]
+    #[cfg_attr(miri, ignore)] // Too slow on Miri.
+    fn nested_enums() {
+        assert!(FieldDescriptorProto::descriptor_static()
+            .nested_enums()
+            .collect::<Vec<_>>()
+            .contains(&Type::enum_descriptor()));
     }
 
     #[test]
