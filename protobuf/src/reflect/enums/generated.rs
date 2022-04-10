@@ -1,8 +1,6 @@
 //! Generated code support for enum descriptors.
 
 use std::any::TypeId;
-use std::fmt;
-use std::marker;
 
 use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::FileDescriptorProto;
@@ -13,30 +11,8 @@ use crate::reflect::name::compute_full_name;
 use crate::EnumFull;
 use crate::EnumOrUnknown;
 
-pub(crate) trait GetEnumDescriptor: Send + Sync + 'static {
-    #[cfg(not(rustc_nightly))]
-    unsafe fn copy_to(&self, value: i32, dest: *mut ());
-}
-
-impl<'a> fmt::Debug for &'a dyn GetEnumDescriptor {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("GetEnumDescriptor").finish()
-    }
-}
-
-pub(crate) struct GetEnumDescriptorImpl<E: EnumFull>(marker::PhantomData<E>);
-
-impl<E: EnumFull> GetEnumDescriptor for GetEnumDescriptorImpl<E> {
-    #[cfg(not(rustc_nightly))]
-    unsafe fn copy_to(&self, value: i32, dest: *mut ()) {
-        let e = E::from_i32(value).expect("unknown value");
-        (&e as *const E).copy_to(dest as *mut E, 1);
-    }
-}
-
 #[doc(hidden)]
 pub struct GeneratedEnumDescriptorData {
-    get_descriptor: &'static dyn GetEnumDescriptor,
     name_in_file: &'static str,
     type_id: TypeId,
     enum_or_unknown_type_id: TypeId,
@@ -51,7 +27,6 @@ impl GeneratedEnumDescriptorData {
     {
         GeneratedEnumDescriptorData {
             index_in_file,
-            get_descriptor: &GetEnumDescriptorImpl(marker::PhantomData::<E>),
             name_in_file,
             type_id: TypeId::of::<E>(),
             enum_or_unknown_type_id: TypeId::of::<EnumOrUnknown<E>>(),
@@ -69,9 +44,6 @@ pub(crate) struct GeneratedEnumDescriptor {
     pub(crate) _enum_or_unknown_type_id: TypeId,
 
     pub indices: EnumIndex<&'static str>,
-
-    #[allow(dead_code)]
-    pub(crate) get_descriptor: &'static dyn GetEnumDescriptor,
 }
 
 impl GeneratedEnumDescriptor {
@@ -84,7 +56,6 @@ impl GeneratedEnumDescriptor {
             name_in_file,
             type_id,
             enum_or_unknown_type_id,
-            get_descriptor,
             index_in_file,
         } = data;
 
@@ -108,7 +79,6 @@ impl GeneratedEnumDescriptor {
             type_id,
             _enum_or_unknown_type_id: enum_or_unknown_type_id,
             indices,
-            get_descriptor,
         }
     }
 }
