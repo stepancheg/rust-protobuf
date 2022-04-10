@@ -40,8 +40,8 @@ fn _assert_send_sync() {
 impl fmt::Debug for EnumValueDescriptor {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_struct("EnumValueDescriptor")
-            // TODO: add something
-            .field("value", &"...")
+            .field("enum_descriptor", &self.enum_descriptor)
+            .field("name", &self.name())
             .finish()
     }
 }
