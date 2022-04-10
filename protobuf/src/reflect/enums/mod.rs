@@ -1,5 +1,6 @@
 use std::any::TypeId;
 use std::fmt;
+use std::fmt::Formatter;
 use std::hash::Hash;
 
 use crate::descriptor::EnumDescriptorProto;
@@ -36,6 +37,12 @@ impl fmt::Debug for EnumValueDescriptor {
             .field("enum_descriptor", &self.enum_descriptor)
             .field("name", &self.name())
             .finish()
+    }
+}
+
+impl fmt::Display for EnumValueDescriptor {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.full_name())
     }
 }
 
@@ -101,6 +108,12 @@ impl EnumValueDescriptor {
 pub struct EnumDescriptor {
     file_descriptor: FileDescriptor,
     index: usize,
+}
+
+impl fmt::Display for EnumDescriptor {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.full_name())
+    }
 }
 
 impl fmt::Debug for EnumDescriptor {
@@ -268,6 +281,7 @@ enum EnumDescriptorImplRef<'a> {
 
 #[cfg(test)]
 mod test {
+    use crate::descriptor::field_descriptor_proto::Label;
     use crate::descriptor::field_descriptor_proto::Type;
     use crate::descriptor::FieldDescriptorProto;
     use crate::well_known_types::NullValue;
@@ -282,5 +296,25 @@ mod test {
             Type::enum_descriptor().enclosing_message()
         );
         assert_eq!(None, NullValue::enum_descriptor().enclosing_message());
+    }
+
+    #[test]
+    fn to_string() {
+        assert_eq!(
+            "google.protobuf.FieldDescriptorProto.Label",
+            Label::enum_descriptor().to_string()
+        );
+        assert_eq!(
+            "google.protobuf.FieldDescriptorProto.Label",
+            Label::enum_descriptor().full_name()
+        );
+        assert_eq!(
+            "google.protobuf.FieldDescriptorProto.Label.LABEL_REPEATED",
+            Label::LABEL_REPEATED.descriptor().to_string()
+        );
+        assert_eq!(
+            "google.protobuf.FieldDescriptorProto.Label.LABEL_REPEATED",
+            Label::LABEL_REPEATED.descriptor().full_name()
+        );
     }
 }
