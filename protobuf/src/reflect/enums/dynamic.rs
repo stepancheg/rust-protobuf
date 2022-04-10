@@ -6,15 +6,11 @@ use crate::reflect::message::path::MessagePath;
 use crate::reflect::name::append_path;
 
 #[derive(Debug)]
-pub(crate) struct DynamicEnumValueDescriptor {}
-
-#[derive(Debug)]
 pub(crate) struct DynamicEnumDescriptor {
     pub full_name: String,
     file_descriptor_proto: Arc<FileDescriptorProto>,
     path: MessagePath,
     enum_index: usize,
-    pub(crate) _values: Vec<DynamicEnumValueDescriptor>,
 }
 
 impl DynamicEnumDescriptor {
@@ -35,18 +31,11 @@ impl DynamicEnumDescriptor {
         };
         append_path(&mut full_name, e.name());
 
-        let values = e
-            .value
-            .iter()
-            .map(|_| DynamicEnumValueDescriptor {})
-            .collect();
-
         DynamicEnumDescriptor {
             full_name,
             file_descriptor_proto: proto,
             path: path.clone(),
             enum_index,
-            _values: values,
         }
     }
 
