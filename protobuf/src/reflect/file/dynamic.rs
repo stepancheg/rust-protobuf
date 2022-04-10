@@ -9,14 +9,16 @@ use crate::reflect::file::fds::fds_extend_with_public;
 use crate::reflect::file::index::FileIndex;
 use crate::reflect::message::dynamic::DynamicMessageDescriptor;
 use crate::reflect::message::path::MessagePath;
+use crate::reflect::oneof::dynamic::DynamicOneofDescriptor;
 use crate::reflect::FileDescriptor;
 
 #[derive(Debug)]
 pub(crate) struct DynamicFileDescriptor {
-    pub proto: Arc<FileDescriptorProto>,
-    pub messages: Vec<DynamicMessageDescriptor>,
-    pub enums: Vec<DynamicEnumDescriptor>,
-    pub common: FileDescriptorCommon,
+    pub(crate) proto: Arc<FileDescriptorProto>,
+    pub(crate) messages: Vec<DynamicMessageDescriptor>,
+    pub(crate) enums: Vec<DynamicEnumDescriptor>,
+    pub(crate) oneofs: Vec<DynamicOneofDescriptor>,
+    pub(crate) common: FileDescriptorCommon,
 }
 
 impl DynamicFileDescriptor {
@@ -46,11 +48,18 @@ impl DynamicFileDescriptor {
             })
             .collect::<crate::Result<Vec<_>>>()?;
 
+        let oneofs = index
+            .oneofs
+            .iter()
+            .map(|_| DynamicOneofDescriptor {})
+            .collect();
+
         let common = FileDescriptorCommon::new(index, dependencies, &proto)?;
 
         Ok(DynamicFileDescriptor {
             messages,
             enums: Self::enums(&proto),
+            oneofs,
             proto,
             common,
         })

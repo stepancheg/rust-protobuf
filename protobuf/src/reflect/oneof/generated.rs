@@ -1,3 +1,4 @@
+use crate::descriptor::FileDescriptorProto;
 use crate::OneofFull;
 
 #[doc(hidden)]
@@ -13,5 +14,19 @@ impl GeneratedOneofDescriptorData {
         E: OneofFull,
     {
         GeneratedOneofDescriptorData {}
+    }
+}
+
+#[derive(Debug)]
+pub(crate) struct GeneratedOneofDescriptor {}
+
+impl GeneratedOneofDescriptor {
+    pub(crate) fn new(
+        data: GeneratedOneofDescriptorData,
+        expected_index: usize,
+        file_descriptor_proto: &'static FileDescriptorProto,
+    ) -> GeneratedOneofDescriptor {
+        let _ = (data, expected_index, file_descriptor_proto);
+        GeneratedOneofDescriptor {}
     }
 }

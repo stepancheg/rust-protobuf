@@ -1,6 +1,10 @@
+pub(crate) mod dynamic;
 pub(crate) mod generated;
 
 use crate::descriptor::OneofDescriptorProto;
+use crate::reflect::file::FileDescriptorImpl;
+use crate::reflect::oneof::dynamic::DynamicOneofDescriptor;
+use crate::reflect::oneof::generated::GeneratedOneofDescriptor;
 use crate::reflect::FieldDescriptor;
 use crate::reflect::MessageDescriptor;
 
@@ -9,6 +13,11 @@ use crate::reflect::MessageDescriptor;
 pub struct OneofDescriptor {
     pub(crate) message_descriptor: MessageDescriptor,
     pub(crate) index: usize,
+}
+
+pub(crate) enum OneofDescriptorImplRef<'a> {
+    Generated(&'static GeneratedOneofDescriptor),
+    Dynamic(&'a DynamicOneofDescriptor),
 }
 
 impl OneofDescriptor {
@@ -20,6 +29,18 @@ impl OneofDescriptor {
     /// Oneof name as specified in `.proto` file.
     pub fn name(&self) -> &str {
         self.proto().name()
+    }
+
+    #[allow(dead_code)]
+    pub(crate) fn _get_impl(&self) -> OneofDescriptorImplRef {
+        match &self.message_descriptor.file_descriptor.imp {
+            FileDescriptorImpl::Generated(g) => {
+                OneofDescriptorImplRef::Generated(&g.oneofs[self.index])
+            }
+            FileDescriptorImpl::Dynamic(d) => {
+                OneofDescriptorImplRef::Dynamic(&d.oneofs[self.index])
+            }
+        }
     }
 
     /// This oneof is not present in sources.

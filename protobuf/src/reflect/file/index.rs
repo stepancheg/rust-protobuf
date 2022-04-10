@@ -29,12 +29,16 @@ pub(crate) struct FileIndexEnumEntry {
 }
 
 #[derive(Debug)]
+pub(crate) struct FileIndexOneofEntry {}
+
+#[derive(Debug)]
 pub(crate) struct FileIndex {
     pub(crate) messages: Vec<FileIndexMessageEntry>,
     pub(crate) message_by_name_to_package: HashMap<String, usize>,
     pub(crate) top_level_messages: Vec<usize>,
     pub(crate) enums: Vec<FileIndexEnumEntry>,
     pub(crate) enums_by_name_to_package: HashMap<String, usize>,
+    pub(crate) oneofs: Vec<FileIndexOneofEntry>,
     pub(crate) services: Vec<ServiceIndex>,
 }
 
@@ -49,6 +53,7 @@ impl FileIndex {
             enums: Vec::new(),
             top_level_messages: Vec::with_capacity(file.message_type.len()),
             enums_by_name_to_package: HashMap::new(),
+            oneofs: Vec::new(),
             services: Vec::new(),
         };
 

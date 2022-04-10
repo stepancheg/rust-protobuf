@@ -31,7 +31,7 @@ pub(crate) mod path;
 /// Used for reflection.
 #[derive(Clone, Eq, PartialEq, Hash)]
 pub struct MessageDescriptor {
-    file_descriptor: FileDescriptor,
+    pub(crate) file_descriptor: FileDescriptor,
     index: usize,
 }
 
