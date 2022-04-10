@@ -2,7 +2,6 @@
 
 use std::any::TypeId;
 
-use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
@@ -36,7 +35,6 @@ impl GeneratedEnumDescriptorData {
 #[derive(Debug)]
 pub(crate) struct GeneratedEnumDescriptor {
     pub(crate) full_name: String,
-    pub(crate) proto: &'static EnumDescriptorProto,
     /// Type id of `<E>`
     pub(crate) type_id: TypeId,
     /// Type id of `<ProtobufEnumOrUnknown<E>>`
@@ -70,7 +68,6 @@ impl GeneratedEnumDescriptor {
                 &path_to_package,
                 proto.name(),
             ),
-            proto,
             type_id,
             _enum_or_unknown_type_id: enum_or_unknown_type_id,
         }

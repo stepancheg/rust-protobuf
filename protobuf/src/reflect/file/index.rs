@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::FileDescriptorProto;
+use crate::reflect::enums::path::EnumPath;
 use crate::reflect::field::index::FieldIndex;
 use crate::reflect::file::building::FileDescriptorBuilding;
 use crate::reflect::file::fds::fds_extend_with_public;
@@ -35,8 +36,7 @@ pub(crate) struct MessageFieldsIndex {
 
 #[derive(Debug)]
 pub(crate) struct EnumIndex {
-    pub(crate) _message_path: MessagePath,
-    pub(crate) _enum_index: usize,
+    pub(crate) enum_path: EnumPath,
     pub(crate) name_to_package: String,
     pub(crate) enclosing_message: Option<usize>,
     pub(crate) index_by_name: HashMap<String, usize>,
@@ -45,8 +45,7 @@ pub(crate) struct EnumIndex {
 
 impl EnumIndex {
     pub(crate) fn new(
-        _message_path: MessagePath,
-        _enum_index: usize,
+        enum_path: EnumPath,
         name_to_package: String,
         enclosing_message: Option<usize>,
         proto: &EnumDescriptorProto,
@@ -58,8 +57,7 @@ impl EnumIndex {
             index_by_name.insert(v.name().to_owned(), i);
         }
         EnumIndex {
-            _message_path,
-            _enum_index,
+            enum_path,
             name_to_package,
             enclosing_message,
             index_by_name,
@@ -100,10 +98,12 @@ impl FileIndex {
         };
 
         // Top-level enums start with zero
-        for (_, e) in file.enum_type.iter().enumerate() {
+        for (i, e) in file.enum_type.iter().enumerate() {
             index.enums.push(EnumIndex::new(
-                MessagePath(Vec::new()),
-                index.enums.len(),
+                EnumPath {
+                    message_path: MessagePath::default(),
+                    enum_index: i,
+                },
                 e.name().to_owned(),
                 None,
                 e,
@@ -159,10 +159,12 @@ impl FileIndex {
             message_index: MessageFieldsIndex::default(),
         });
 
-        for (_, e) in message.enum_type.iter().enumerate() {
+        for (i, e) in message.enum_type.iter().enumerate() {
             self.enums.push(EnumIndex::new(
-                path.clone(),
-                self.enums.len(),
+                EnumPath {
+                    message_path: path.clone(),
+                    enum_index: i,
+                },
                 concat_paths(&name_to_package, e.name()),
                 Some(message_index),
                 e,

@@ -1,8 +1,8 @@
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 
-#[derive(Clone, Debug)]
-pub(crate) struct MessagePath(pub Vec<usize>);
+#[derive(Clone, Debug, Default)]
+pub(crate) struct MessagePath(pub(crate) Vec<usize>);
 
 impl MessagePath {
     pub(crate) fn push(&mut self, index: usize) {

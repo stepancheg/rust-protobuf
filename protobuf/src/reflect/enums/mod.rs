@@ -16,6 +16,7 @@ use crate::EnumFull;
 
 pub(crate) mod dynamic;
 pub(crate) mod generated;
+pub(crate) mod path;
 
 /// Description for enum variant.
 ///
@@ -152,10 +153,9 @@ impl EnumDescriptor {
 
     /// Descriptor objects which defined this enum.
     pub fn proto(&self) -> &EnumDescriptorProto {
-        match self.get_impl() {
-            EnumDescriptorImplRef::Generated(g) => &g.proto,
-            EnumDescriptorImplRef::Dynamic(d) => d.proto(),
-        }
+        self.index_entry()
+            .enum_path
+            .eval(self.file_descriptor.proto())
     }
 
     /// Enum name as given in `.proto` file
