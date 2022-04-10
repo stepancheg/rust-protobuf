@@ -4,8 +4,8 @@ use protobuf::descriptor::*;
 
 use crate::customize::ctx::CustomizeElemCtx;
 use crate::customize::rustproto_proto::customize_from_rustproto_for_enum;
-use crate::gen::code_writer::*;
-use crate::gen::file_index::FileIndex;
+use crate::gen::code_writer::CodeWriter;
+use crate::gen::code_writer::Visibility;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::protoc_insertion_point::write_protoc_insertion_point_for_enum;
 use crate::gen::protoc_insertion_point::write_protoc_insertion_point_for_enum_value;
@@ -54,7 +54,6 @@ impl<'a> EnumValueGen<'a> {
 // Codegen for enum definition
 pub(crate) struct EnumGen<'a> {
     enum_with_scope: &'a EnumWithScope<'a>,
-    file_index: &'a FileIndex,
     type_name: RustIdentWithPath,
     lite_runtime: bool,
     customize: CustomizeElemCtx<'a>,
@@ -65,7 +64,6 @@ pub(crate) struct EnumGen<'a> {
 impl<'a> EnumGen<'a> {
     pub fn new(
         enum_with_scope: &'a EnumWithScope<'a>,
-        file_index: &'a FileIndex,
         customize: &CustomizeElemCtx<'a>,
         _root_scope: &RootScope,
         path: &'a [i32],
@@ -91,12 +89,7 @@ impl<'a> EnumGen<'a> {
             customize,
             path,
             info,
-            file_index,
         }
-    }
-
-    fn index_in_file(&self) -> u32 {
-        self.file_index.enum_to_index[&self.enum_with_scope.en]
     }
 
     fn allow_alias(&self) -> bool {
@@ -305,7 +298,7 @@ impl<'a> EnumGen<'a> {
                     .rust_path_to_file()
                     .to_reverse()
                     .append_ident("file_descriptor".into()),
-                self.index_in_file(),
+                self.enum_with_scope.en.index_in_file_for_codegen(),
             ));
         });
     }
@@ -366,7 +359,7 @@ impl<'a> EnumGen<'a> {
                     protobuf_crate_path(&self.customize.for_elem),
                     self.type_name,
                     self.enum_with_scope.name_to_package(),
-                    self.index_in_file(),
+                    self.enum_with_scope.en.index_in_file_for_codegen(),
                 ));
             },
         );

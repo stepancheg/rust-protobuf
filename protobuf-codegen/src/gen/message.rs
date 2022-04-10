@@ -13,7 +13,6 @@ use crate::gen::enums::*;
 use crate::gen::field::FieldGen;
 use crate::gen::field::FieldKind;
 use crate::gen::file_and_mod::FileAndMod;
-use crate::gen::file_index::FileIndex;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::oneof::OneofGen;
 use crate::gen::oneof::OneofVariantGen;
@@ -62,7 +61,6 @@ pub(crate) struct MessageGen<'a> {
     file_descriptor: &'a FileDescriptor,
     message_descriptor: MessageDescriptor,
     pub message: &'a MessageWithScope<'a>,
-    file_index: &'a FileIndex,
     pub root_scope: &'a RootScope<'a>,
     type_name: RustIdentWithPath,
     pub fields: Vec<FieldGen<'a>>,
@@ -76,7 +74,6 @@ impl<'a> MessageGen<'a> {
     pub fn new(
         file_descriptor: &'a FileDescriptor,
         message: &'a MessageWithScope<'a>,
-        file_index: &'a FileIndex,
         root_scope: &'a RootScope<'a>,
         parent_customize: &CustomizeElemCtx<'a>,
         path: &'a [i32],
@@ -122,7 +119,6 @@ impl<'a> MessageGen<'a> {
             message_descriptor,
             file_descriptor,
             message,
-            file_index,
             root_scope,
             type_name: message.rust_name().to_path(),
             fields,
@@ -731,7 +727,6 @@ impl<'a> MessageGen<'a> {
                     MessageGen::new(
                         &self.file_descriptor,
                         nested,
-                        self.file_index,
                         self.root_scope,
                         &self.customize,
                         &path,
@@ -763,7 +758,6 @@ impl<'a> MessageGen<'a> {
                     first = false;
                     EnumGen::new(
                         enum_type,
-                        self.file_index,
                         &self.customize,
                         self.root_scope,
                         &path,
