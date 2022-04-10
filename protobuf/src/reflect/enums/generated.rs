@@ -43,7 +43,7 @@ pub(crate) struct GeneratedEnumDescriptor {
     /// Type id of `<ProtobufEnumOrUnknown<E>>`
     pub(crate) _enum_or_unknown_type_id: TypeId,
 
-    pub indices: EnumIndex<&'static str>,
+    pub(crate) indices: EnumIndex<&'static str>,
 }
 
 impl GeneratedEnumDescriptor {
