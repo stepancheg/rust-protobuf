@@ -29,7 +29,7 @@ pub(crate) mod path;
 /// Dynamic representation of message type.
 ///
 /// Used for reflection.
-#[derive(Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq, Hash)]
 pub struct MessageDescriptor {
     file_descriptor: FileDescriptor,
     index: usize,
