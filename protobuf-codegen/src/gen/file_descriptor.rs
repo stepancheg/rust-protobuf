@@ -6,7 +6,7 @@ use protobuf::Message;
 use crate::gen::code_writer::CodeWriter;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::paths::proto_path_to_fn_file_descriptor;
-use crate::gen::rust::EXPR_VEC_NEW;
+use crate::gen::rust::expr_vec_with_capacity;
 use crate::gen::scope::FileScope;
 use crate::gen::scope::WithScope;
 use crate::Customize;
@@ -54,8 +54,12 @@ fn write_file_descriptor(
                 "let file_descriptor = file_descriptor_lazy.get(|| {",
                 "});",
                 |w| {
-                    w.write_line(&format!("let mut deps = {};", EXPR_VEC_NEW));
-                    for f in &file_descriptor.proto().dependency {
+                    let deps = &file_descriptor.proto().dependency;
+                    w.write_line(&format!(
+                        "let mut deps = {};",
+                        expr_vec_with_capacity(&format!("{}", deps.len()))
+                    ));
+                    for f in deps {
                         w.write_line(&format!(
                             "deps.push({}());",
                             proto_path_to_fn_file_descriptor(f, customize)
@@ -64,19 +68,24 @@ fn write_file_descriptor(
 
                     let scope = FileScope { file_descriptor };
 
-                    w.write_line(&format!("let mut messages = {};", EXPR_VEC_NEW));
-                    for m in scope.find_messages_except_map() {
-                        if m.is_map() {
-                            continue;
-                        }
+                    let messages = scope.find_messages_except_map();
+                    w.write_line(&format!(
+                        "let mut messages = {};",
+                        expr_vec_with_capacity(&format!("{}", messages.len()))
+                    ));
+                    for m in &messages {
                         w.write_line(&format!(
                             "messages.push({}::generated_message_descriptor_data());",
                             m.rust_name_to_file(),
                         ));
                     }
 
-                    w.write_line(&format!("let mut enums = {};", EXPR_VEC_NEW));
-                    for e in scope.find_enums() {
+                    let enums = scope.find_enums();
+                    w.write_line(&format!(
+                        "let mut enums = {};",
+                        expr_vec_with_capacity(&format!("{}", enums.len()))
+                    ));
+                    for e in &enums {
                         w.write_line(&format!(
                             "enums.push({}::generated_enum_descriptor_data());",
                             e.rust_name_to_file(),
