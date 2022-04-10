@@ -802,6 +802,13 @@ impl crate::EnumFull for NullValue {
     fn enum_descriptor() -> crate::reflect::EnumDescriptor {
         crate::reflect::EnumDescriptor::new_generated_2(file_descriptor(), 0)
     }
+
+    fn descriptor(&self) -> crate::reflect::EnumValueDescriptor {
+        let index = match self {
+            NullValue::NULL_VALUE => 0,
+        };
+        Self::enum_descriptor().value_by_index(index)
+    }
 }
 
 impl ::std::default::Default for NullValue {

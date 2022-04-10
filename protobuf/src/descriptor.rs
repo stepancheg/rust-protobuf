@@ -2264,6 +2264,30 @@ pub mod field_descriptor_proto {
         fn enum_descriptor() -> crate::reflect::EnumDescriptor {
             crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 0)
         }
+
+        fn descriptor(&self) -> crate::reflect::EnumValueDescriptor {
+            let index = match self {
+                Type::TYPE_DOUBLE => 0,
+                Type::TYPE_FLOAT => 1,
+                Type::TYPE_INT64 => 2,
+                Type::TYPE_UINT64 => 3,
+                Type::TYPE_INT32 => 4,
+                Type::TYPE_FIXED64 => 5,
+                Type::TYPE_FIXED32 => 6,
+                Type::TYPE_BOOL => 7,
+                Type::TYPE_STRING => 8,
+                Type::TYPE_GROUP => 9,
+                Type::TYPE_MESSAGE => 10,
+                Type::TYPE_BYTES => 11,
+                Type::TYPE_UINT32 => 12,
+                Type::TYPE_ENUM => 13,
+                Type::TYPE_SFIXED32 => 14,
+                Type::TYPE_SFIXED64 => 15,
+                Type::TYPE_SINT32 => 16,
+                Type::TYPE_SINT64 => 17,
+            };
+            Self::enum_descriptor().value_by_index(index)
+        }
     }
 
     // Note, `Default` is implemented although default value is not 0
@@ -2316,6 +2340,15 @@ pub mod field_descriptor_proto {
     impl crate::EnumFull for Label {
         fn enum_descriptor() -> crate::reflect::EnumDescriptor {
             crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 1)
+        }
+
+        fn descriptor(&self) -> crate::reflect::EnumValueDescriptor {
+            let index = match self {
+                Label::LABEL_OPTIONAL => 0,
+                Label::LABEL_REQUIRED => 1,
+                Label::LABEL_REPEATED => 2,
+            };
+            Self::enum_descriptor().value_by_index(index)
         }
     }
 
@@ -4912,6 +4945,15 @@ pub mod file_options {
         fn enum_descriptor() -> crate::reflect::EnumDescriptor {
             crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 2)
         }
+
+        fn descriptor(&self) -> crate::reflect::EnumValueDescriptor {
+            let index = match self {
+                OptimizeMode::SPEED => 0,
+                OptimizeMode::CODE_SIZE => 1,
+                OptimizeMode::LITE_RUNTIME => 2,
+            };
+            Self::enum_descriptor().value_by_index(index)
+        }
     }
 
     // Note, `Default` is implemented although default value is not 0
@@ -5666,6 +5708,15 @@ pub mod field_options {
         fn enum_descriptor() -> crate::reflect::EnumDescriptor {
             crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 3)
         }
+
+        fn descriptor(&self) -> crate::reflect::EnumValueDescriptor {
+            let index = match self {
+                CType::STRING => 0,
+                CType::CORD => 1,
+                CType::STRING_PIECE => 2,
+            };
+            Self::enum_descriptor().value_by_index(index)
+        }
     }
 
     impl ::std::default::Default for CType {
@@ -5717,6 +5768,15 @@ pub mod field_options {
     impl crate::EnumFull for JSType {
         fn enum_descriptor() -> crate::reflect::EnumDescriptor {
             crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 4)
+        }
+
+        fn descriptor(&self) -> crate::reflect::EnumValueDescriptor {
+            let index = match self {
+                JSType::JS_NORMAL => 0,
+                JSType::JS_STRING => 1,
+                JSType::JS_NUMBER => 2,
+            };
+            Self::enum_descriptor().value_by_index(index)
         }
     }
 
@@ -6673,6 +6733,15 @@ pub mod method_options {
     impl crate::EnumFull for IdempotencyLevel {
         fn enum_descriptor() -> crate::reflect::EnumDescriptor {
             crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 5)
+        }
+
+        fn descriptor(&self) -> crate::reflect::EnumValueDescriptor {
+            let index = match self {
+                IdempotencyLevel::IDEMPOTENCY_UNKNOWN => 0,
+                IdempotencyLevel::NO_SIDE_EFFECTS => 1,
+                IdempotencyLevel::IDEMPOTENT => 2,
+            };
+            Self::enum_descriptor().value_by_index(index)
         }
     }
 

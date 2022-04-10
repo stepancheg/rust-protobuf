@@ -202,10 +202,15 @@ impl EnumDescriptor {
             EnumDescriptorImplRef::Generated(g) => *g.indices.index_by_number.get(&number)?,
             EnumDescriptorImplRef::Dynamic(d) => *d.indices.index_by_number.get(&number)?,
         };
-        Some(EnumValueDescriptor {
+        Some(self.value_by_index(index))
+    }
+
+    /// Get enum variant by index (as declared in `.proto` file).
+    pub fn value_by_index(&self, index: usize) -> EnumValueDescriptor {
+        EnumValueDescriptor {
             enum_descriptor: self.clone(),
             index,
-        })
+        }
     }
 
     /// Default enum value (first variant)

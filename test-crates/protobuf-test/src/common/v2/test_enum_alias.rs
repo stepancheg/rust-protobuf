@@ -27,7 +27,6 @@ fn test_enum_in_message() {
     test_serialize_deserialize_with_dynamic("08 0a", &m);
 }
 
-#[ignore] // TODO: fix this test and enable it.
 #[test]
 fn descriptor() {
     assert_eq!("A", EnumWithAlias::A.descriptor().name());

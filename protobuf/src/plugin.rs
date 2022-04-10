@@ -1155,6 +1155,14 @@ pub mod code_generator_response {
         fn enum_descriptor() -> crate::reflect::EnumDescriptor {
             crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 0)
         }
+
+        fn descriptor(&self) -> crate::reflect::EnumValueDescriptor {
+            let index = match self {
+                Feature::FEATURE_NONE => 0,
+                Feature::FEATURE_PROTO3_OPTIONAL => 1,
+            };
+            Self::enum_descriptor().value_by_index(index)
+        }
     }
 
     impl ::std::default::Default for Feature {

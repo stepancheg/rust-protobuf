@@ -285,12 +285,14 @@ impl<'a> EnumGen<'a> {
             ),
             &format!("{}", type_name),
             |w| {
-                self.write_enum_descriptor(w);
+                self.write_impl_enum_full_fn_enum_descriptor(w);
+                w.write_line("");
+                self.write_impl_enum_full_fn_descriptor(w);
             },
         );
     }
 
-    fn write_enum_descriptor(&self, w: &mut CodeWriter) {
+    fn write_impl_enum_full_fn_enum_descriptor(&self, w: &mut CodeWriter) {
         let sig = format!(
             "enum_descriptor() -> {}::reflect::EnumDescriptor",
             protobuf_crate_path(&self.customize.for_elem)
@@ -306,6 +308,27 @@ impl<'a> EnumGen<'a> {
                     .append_ident("file_descriptor".into()),
                 self.index_in_file(),
             ));
+        });
+    }
+
+    fn write_impl_enum_full_fn_descriptor(&self, w: &mut CodeWriter) {
+        let sig = format!(
+            "descriptor(&self) -> {}::reflect::EnumValueDescriptor",
+            protobuf_crate_path(&self.customize.for_elem)
+        );
+        w.def_fn(&sig, |w| {
+            if self.allow_alias() {
+                w.write_line("let index = *self as usize;");
+            } else {
+                w.write_line("let index = match self {");
+                w.indented(|w| {
+                    for (i, value) in self.values_all().into_iter().enumerate() {
+                        w.write_line(&format!("{}::{} => {},", self.type_name, value.rust_name_inner(), i));
+                    }
+                });
+                w.write_line("};");
+            }
+            w.write_line(&format!("Self::enum_descriptor().value_by_index(index)"));
         });
     }
 

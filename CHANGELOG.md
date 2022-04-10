@@ -13,6 +13,7 @@ Stable versions are 2.xx still supported.
 * replace `fn Enum::values()` with `const Enum::VALUES`
 * remove `EnumFull::enum_descriptor()`, does not provide much value over `enum_descriptor_static`
 * rename `EnumFull::enum_descriptor_static` -> `enum_descriptor`
+* fix `EnumFull::descriptor` for enums with `allow_alias`
 
 ## [3.0.0-alpha.9] - 2022-04-04
 

@@ -7,12 +7,7 @@ use crate::Enum;
 /// This trait provides access to runtime reflection.
 pub trait EnumFull: Enum {
     /// Get enum value descriptor.
-    fn descriptor(&self) -> EnumValueDescriptor {
-        // TODO: multiple enum variants may have the same number.
-        Self::enum_descriptor()
-            .value_by_number(self.value())
-            .unwrap()
-    }
+    fn descriptor(&self) -> EnumValueDescriptor;
 
     /// Get enum descriptor by type.
     fn enum_descriptor() -> EnumDescriptor;
