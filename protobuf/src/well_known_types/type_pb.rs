@@ -667,7 +667,7 @@ pub mod field {
     }
 
     impl crate::EnumFull for Kind {
-        fn enum_descriptor_static() -> crate::reflect::EnumDescriptor {
+        fn enum_descriptor() -> crate::reflect::EnumDescriptor {
             crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 1)
         }
     }
@@ -724,7 +724,7 @@ pub mod field {
     }
 
     impl crate::EnumFull for Cardinality {
-        fn enum_descriptor_static() -> crate::reflect::EnumDescriptor {
+        fn enum_descriptor() -> crate::reflect::EnumDescriptor {
             crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 2)
         }
     }
@@ -1322,7 +1322,7 @@ impl crate::Enum for Syntax {
 }
 
 impl crate::EnumFull for Syntax {
-    fn enum_descriptor_static() -> crate::reflect::EnumDescriptor {
+    fn enum_descriptor() -> crate::reflect::EnumDescriptor {
         crate::reflect::EnumDescriptor::new_generated_2(file_descriptor(), 0)
     }
 }

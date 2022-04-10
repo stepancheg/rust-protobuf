@@ -186,7 +186,7 @@ fn test_nested_message() {
 fn test_nested_enum() {
     assert_eq!(
         "test_reflect.WithNestedMessage.NestedEnum",
-        with_nested_message::NestedEnum::enum_descriptor_static().full_name()
+        with_nested_message::NestedEnum::enum_descriptor().full_name()
     );
 }
 

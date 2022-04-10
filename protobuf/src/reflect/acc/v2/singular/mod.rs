@@ -144,12 +144,12 @@ impl SingularFieldAccessorHolder {
         Self::new(
             move |m| {
                 let value = (get)(m);
-                value.map(|v| ReflectValueRef::Enum(E::enum_descriptor_static(), v.value()))
+                value.map(|v| ReflectValueRef::Enum(E::enum_descriptor(), v.value()))
             },
             |_m| panic!("cannot get mutable pointer"),
             move |m, value| match value {
                 ReflectValueBox::Enum(e, v) => {
-                    assert_eq!(E::enum_descriptor_static(), e);
+                    assert_eq!(E::enum_descriptor(), e);
                     (set)(m, EnumOrUnknown::from_i32(v));
                 }
                 _ => panic!("expecting enum value"),

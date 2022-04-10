@@ -695,19 +695,19 @@ where
     where
         Self: Sized,
     {
-        RuntimeTypeBox::Enum(E::enum_descriptor_static())
+        RuntimeTypeBox::Enum(E::enum_descriptor())
     }
 
     fn default_value_ref() -> ReflectValueRef<'static> {
         ReflectValueRef::Enum(
-            E::enum_descriptor_static(),
-            E::enum_descriptor_static().first_value().value(),
+            E::enum_descriptor(),
+            E::enum_descriptor().first_value().value(),
         )
     }
 
     fn from_value_box(value_box: ReflectValueBox) -> Result<EnumOrUnknown<E>, ReflectValueBox> {
         match value_box {
-            ReflectValueBox::Enum(d, v) if d == E::enum_descriptor_static() => {
+            ReflectValueBox::Enum(d, v) if d == E::enum_descriptor() => {
                 Ok(EnumOrUnknown::from_i32(v))
             }
             b => Err(b),
@@ -715,15 +715,15 @@ where
     }
 
     fn into_value_box(value: EnumOrUnknown<E>) -> ReflectValueBox {
-        ReflectValueBox::Enum(E::enum_descriptor_static(), value.value())
+        ReflectValueBox::Enum(E::enum_descriptor(), value.value())
     }
 
     fn into_static_value_ref(value: EnumOrUnknown<E>) -> ReflectValueRef<'static> {
-        ReflectValueRef::Enum(E::enum_descriptor_static(), value.value())
+        ReflectValueRef::Enum(E::enum_descriptor(), value.value())
     }
 
     fn as_ref(value: &EnumOrUnknown<E>) -> ReflectValueRef {
-        ReflectValueRef::Enum(E::enum_descriptor_static(), value.value())
+        ReflectValueRef::Enum(E::enum_descriptor(), value.value())
     }
 
     fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {

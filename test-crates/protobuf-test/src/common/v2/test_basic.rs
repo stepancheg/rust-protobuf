@@ -214,7 +214,7 @@ fn test_message_descriptor() {
 
 #[test]
 fn test_enum_descriptor() {
-    let d = TestEnumDescriptor::enum_descriptor_static();
+    let d = TestEnumDescriptor::enum_descriptor();
     assert_eq!("TestEnumDescriptor", d.name());
     assert_eq!(
         "TestEnumDescriptor",

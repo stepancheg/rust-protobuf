@@ -9,11 +9,11 @@ pub trait EnumFull: Enum {
     /// Get enum value descriptor.
     fn descriptor(&self) -> EnumValueDescriptor {
         // TODO: multiple enum variants may have the same number.
-        Self::enum_descriptor_static()
+        Self::enum_descriptor()
             .value_by_number(self.value())
             .unwrap()
     }
 
     /// Get enum descriptor by type.
-    fn enum_descriptor_static() -> EnumDescriptor;
+    fn enum_descriptor() -> EnumDescriptor;
 }

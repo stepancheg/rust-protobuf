@@ -66,8 +66,8 @@ impl<E: Enum> EnumOrUnknown<E> {
 
 impl<E: EnumFull> EnumOrUnknown<E> {
     /// Get enum descriptor by type.
-    pub fn enum_descriptor_static() -> EnumDescriptor {
-        E::enum_descriptor_static()
+    pub fn enum_descriptor() -> EnumDescriptor {
+        E::enum_descriptor()
     }
 }
 

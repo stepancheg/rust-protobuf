@@ -49,7 +49,7 @@ fn deserialize_enum_or_unknown<'de, E: EnumFull, D: serde::Deserializer<'de>>(
         where
             R: serde::de::Error,
         {
-            match E::enum_descriptor_static().value_by_name(v) {
+            match E::enum_descriptor().value_by_name(v) {
                 Some(v) => Ok(Some(EnumOrUnknown::from_i32(v.value()))),
                 None => Err(serde::de::Error::custom(format!(
                     "unknown enum value: {}",

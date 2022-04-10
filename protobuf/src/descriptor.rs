@@ -2261,7 +2261,7 @@ pub mod field_descriptor_proto {
     }
 
     impl crate::EnumFull for Type {
-        fn enum_descriptor_static() -> crate::reflect::EnumDescriptor {
+        fn enum_descriptor() -> crate::reflect::EnumDescriptor {
             crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 0)
         }
     }
@@ -2314,7 +2314,7 @@ pub mod field_descriptor_proto {
     }
 
     impl crate::EnumFull for Label {
-        fn enum_descriptor_static() -> crate::reflect::EnumDescriptor {
+        fn enum_descriptor() -> crate::reflect::EnumDescriptor {
             crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 1)
         }
     }
@@ -4909,7 +4909,7 @@ pub mod file_options {
     }
 
     impl crate::EnumFull for OptimizeMode {
-        fn enum_descriptor_static() -> crate::reflect::EnumDescriptor {
+        fn enum_descriptor() -> crate::reflect::EnumDescriptor {
             crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 2)
         }
     }
@@ -5663,7 +5663,7 @@ pub mod field_options {
     }
 
     impl crate::EnumFull for CType {
-        fn enum_descriptor_static() -> crate::reflect::EnumDescriptor {
+        fn enum_descriptor() -> crate::reflect::EnumDescriptor {
             crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 3)
         }
     }
@@ -5715,7 +5715,7 @@ pub mod field_options {
     }
 
     impl crate::EnumFull for JSType {
-        fn enum_descriptor_static() -> crate::reflect::EnumDescriptor {
+        fn enum_descriptor() -> crate::reflect::EnumDescriptor {
             crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 4)
         }
     }
@@ -6671,7 +6671,7 @@ pub mod method_options {
     }
 
     impl crate::EnumFull for IdempotencyLevel {
-        fn enum_descriptor_static() -> crate::reflect::EnumDescriptor {
+        fn enum_descriptor() -> crate::reflect::EnumDescriptor {
             crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 5)
         }
     }

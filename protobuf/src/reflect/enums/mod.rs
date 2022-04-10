@@ -93,7 +93,7 @@ impl EnumValueDescriptor {
     /// # }
     /// ```
     pub fn cast<E: EnumFull>(&self) -> Option<E> {
-        if self.enum_descriptor != E::enum_descriptor_static() {
+        if self.enum_descriptor != E::enum_descriptor() {
             return None;
         }
         E::from_i32(self.value())
@@ -159,7 +159,7 @@ impl EnumDescriptor {
 
     /// Get `EnumDescriptor` object for given enum type
     pub fn for_type<E: EnumFull>() -> EnumDescriptor {
-        E::enum_descriptor_static()
+        E::enum_descriptor()
     }
 
     #[doc(hidden)]
@@ -233,7 +233,7 @@ impl EnumDescriptor {
     ///
     /// # if !cfg!(miri) {
     /// # // TODO: figure out why
-    /// let descriptor: EnumDescriptor = Label::enum_descriptor_static();
+    /// let descriptor: EnumDescriptor = Label::enum_descriptor();
     ///
     /// assert!(descriptor.is::<Label>())
     /// }

@@ -1152,7 +1152,7 @@ pub mod code_generator_response {
     }
 
     impl crate::EnumFull for Feature {
-        fn enum_descriptor_static() -> crate::reflect::EnumDescriptor {
+        fn enum_descriptor() -> crate::reflect::EnumDescriptor {
             crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 0)
         }
     }

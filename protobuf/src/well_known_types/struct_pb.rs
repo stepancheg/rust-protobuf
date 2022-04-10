@@ -799,7 +799,7 @@ impl crate::Enum for NullValue {
 }
 
 impl crate::EnumFull for NullValue {
-    fn enum_descriptor_static() -> crate::reflect::EnumDescriptor {
+    fn enum_descriptor() -> crate::reflect::EnumDescriptor {
         crate::reflect::EnumDescriptor::new_generated_2(file_descriptor(), 0)
     }
 }

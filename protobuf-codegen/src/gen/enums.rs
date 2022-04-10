@@ -285,14 +285,14 @@ impl<'a> EnumGen<'a> {
             ),
             &format!("{}", type_name),
             |w| {
-                self.write_enum_descriptor_static(w);
+                self.write_enum_descriptor(w);
             },
         );
     }
 
-    fn write_enum_descriptor_static(&self, w: &mut CodeWriter) {
+    fn write_enum_descriptor(&self, w: &mut CodeWriter) {
         let sig = format!(
-            "enum_descriptor_static() -> {}::reflect::EnumDescriptor",
+            "enum_descriptor() -> {}::reflect::EnumDescriptor",
             protobuf_crate_path(&self.customize.for_elem)
         );
         w.def_fn(&sig, |w| {
