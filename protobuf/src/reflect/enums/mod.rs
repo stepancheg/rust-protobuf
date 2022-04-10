@@ -114,8 +114,7 @@ impl fmt::Debug for EnumDescriptor {
         f.debug_struct("EnumDescriptor")
             // TODO
             //.field("full_name", &self.full_name)
-            .field("..", &"..")
-            .finish()
+            .finish_non_exhaustive()
     }
 }
 

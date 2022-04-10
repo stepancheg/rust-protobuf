@@ -43,9 +43,7 @@ impl fmt::Display for MessageDescriptor {
 
 impl fmt::Debug for MessageDescriptor {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("MessageDescriptor")
-            // TODO: add smth
-            .finish()
+        f.debug_struct("MessageDescriptor").finish_non_exhaustive()
     }
 }
 
