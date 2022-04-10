@@ -58,6 +58,8 @@ pub use self::map::ReflectMapRef;
 pub use self::message::generated::GeneratedMessageDescriptorData;
 pub use self::message::message_ref::MessageRef;
 pub use self::message::MessageDescriptor;
+#[doc(hidden)]
+pub use self::oneof::generated::GeneratedOneofDescriptorData;
 pub use self::oneof::OneofDescriptor;
 pub use self::reflect_eq::ReflectEq;
 pub use self::reflect_eq::ReflectEqMode;

@@ -1,3 +1,5 @@
+pub(crate) mod generated;
+
 use crate::descriptor::OneofDescriptorProto;
 use crate::reflect::FieldDescriptor;
 use crate::reflect::MessageDescriptor;

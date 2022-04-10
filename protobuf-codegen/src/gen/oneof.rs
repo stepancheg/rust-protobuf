@@ -10,6 +10,7 @@ use protobuf_parse::ProtobufAbsPath;
 use crate::customize::ctx::CustomizeElemCtx;
 use crate::customize::Customize;
 use crate::gen::code_writer::CodeWriter;
+use crate::gen::code_writer::Visibility;
 use crate::gen::field::rust_variant_name_for_protobuf_oneof_field_name;
 use crate::gen::field::FieldElem;
 use crate::gen::field::FieldGen;
@@ -299,6 +300,38 @@ impl<'a> OneofGen<'a> {
         )
     }
 
+    fn write_generated_oneof_descriptor_data(&self, w: &mut CodeWriter) {
+        let sig = format!(
+            "generated_oneof_descriptor_data() -> {}::reflect::GeneratedOneofDescriptorData",
+            protobuf_crate_path(&self.customize.for_elem)
+        );
+        w.fn_block(
+            Visibility::Path(self.oneof.message.scope.rust_path_to_file().to_reverse()),
+            &sig,
+            |w| {
+                w.write_line(&format!(
+                    "{}::reflect::GeneratedOneofDescriptorData::new_2::<{}>(\"{}\", {})",
+                    protobuf_crate_path(&self.customize.for_elem),
+                    &self.oneof.rust_name().ident,
+                    &format!(
+                        "{}.{}",
+                        self.message.message.message.name_to_package(),
+                        self.oneof.oneof.name()
+                    ),
+                    1234567, // TODO
+                ));
+            },
+        );
+    }
+
+    fn write_impl_self(&self, w: &mut CodeWriter) {
+        w.impl_self_block(&format!("{}", &self.oneof.rust_name().ident), |w| {
+            if !self.lite_runtime {
+                self.write_generated_oneof_descriptor_data(w);
+            }
+        });
+    }
+
     pub fn write(&self, w: &mut CodeWriter) {
         self.write_enum(w);
         w.write_line("");
@@ -307,5 +340,7 @@ impl<'a> OneofGen<'a> {
             w.write_line("");
             self.write_impl_oneof_full(w);
         }
+        w.write_line("");
+        self.write_impl_self(w);
     }
 }
