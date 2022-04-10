@@ -97,14 +97,9 @@ impl MessageDescriptor {
 
     /// Get enums declared in this message.
     pub fn nested_enums(&self) -> impl Iterator<Item = EnumDescriptor> + '_ {
-        let first_enum_index = self.index_entry().first_enum_index;
-        self.proto()
-            .enum_type
-            .iter()
-            .enumerate()
-            .map(move |(i, _)| {
-                EnumDescriptor::new(self.file_descriptor.clone(), first_enum_index + i)
-            })
+        let index_entry = self.index_entry();
+        (index_entry.first_enum_index..(index_entry.first_enum_index + index_entry.enum_count))
+            .map(|i| EnumDescriptor::new(self.file_descriptor.clone(), i))
     }
 
     /// Get a message containing this message, or `None` if this message is declared at file level.
