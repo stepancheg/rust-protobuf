@@ -97,7 +97,7 @@ impl<'a> EnumGen<'a> {
     }
 
     fn index_in_file(&self) -> u32 {
-        self.file_index.enum_to_index[&self.enum_with_scope.protobuf_name_to_package()]
+        self.file_index.enum_to_index[&self.enum_with_scope.en]
     }
 
     fn allow_alias(&self) -> bool {

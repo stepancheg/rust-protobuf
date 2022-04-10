@@ -134,7 +134,7 @@ impl<'a> MessageGen<'a> {
     }
 
     fn index_in_file(&self) -> u32 {
-        self.file_index.messsage_to_index[&self.message.protobuf_name_to_package()]
+        self.file_index.messsage_to_index[&self.message.message]
     }
 
     pub fn file_and_mod(&self) -> FileAndMod {

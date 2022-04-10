@@ -1,13 +1,13 @@
 use std::collections::HashMap;
 
-use protobuf_parse::ProtobufRelPath;
+use protobuf::reflect::EnumDescriptor;
+use protobuf::reflect::MessageDescriptor;
 
 use crate::gen::scope::FileScope;
-use crate::gen::scope::WithScope;
 
 pub(crate) struct FileIndex {
-    pub(crate) messsage_to_index: HashMap<ProtobufRelPath, u32>,
-    pub(crate) enum_to_index: HashMap<ProtobufRelPath, u32>,
+    pub(crate) messsage_to_index: HashMap<MessageDescriptor, u32>,
+    pub(crate) enum_to_index: HashMap<EnumDescriptor, u32>,
 }
 
 impl FileIndex {
@@ -16,16 +16,14 @@ impl FileIndex {
             messsage_to_index: file_scope
                 .find_messages()
                 .into_iter()
-                .map(|m| m.protobuf_name_to_package())
                 .enumerate()
-                .map(|(i, n)| (n, i as u32))
+                .map(|(i, n)| (n.message, i as u32))
                 .collect(),
             enum_to_index: file_scope
                 .find_enums()
                 .into_iter()
-                .map(|m| m.protobuf_name_to_package())
                 .enumerate()
-                .map(|(i, n)| (n, i as u32))
+                .map(|(i, n)| (n.en, i as u32))
                 .collect(),
         }
     }
