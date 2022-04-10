@@ -31,7 +31,7 @@ pub(crate) struct MessageFactoryImpl<M>(pub marker::PhantomData<M>);
 
 impl<M> MessageFactory for MessageFactoryImpl<M>
 where
-    M: 'static + MessageFull + Default + Clone + PartialEq,
+    M: MessageFull,
 {
     fn new_instance(&self) -> Box<dyn MessageDyn> {
         let m: M = Default::default();
