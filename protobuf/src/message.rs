@@ -13,7 +13,7 @@ use crate::UnknownFields;
 /// Note, by default all generated messages also implement [`MessageFull`](crate::MessageFull)
 /// trait which provides access to reflection and features which depend on reflection
 /// (text format and JSON serialization).
-pub trait Message: Default + Clone + Send + Sync + Sized + 'static {
+pub trait Message: Default + Clone + Send + Sync + Sized + PartialEq + 'static {
     /// Message name as specified in `.proto` file.
     ///
     /// Message name can be accessed using

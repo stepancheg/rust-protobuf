@@ -16,6 +16,7 @@ Stable versions are 2.xx still supported.
 * fix `EnumFull::descriptor` for enums with `allow_alias`
 * rename `MessageDescriptor::enums` to `nested_enums`
 * add `EnumDescriptor::enclosing_message()`
+* `Message` now requires `PartialEq`
 
 ## [3.0.0-alpha.9] - 2022-04-04
 
