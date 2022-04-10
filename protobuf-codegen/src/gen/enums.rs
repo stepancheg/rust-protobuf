@@ -311,19 +311,35 @@ impl<'a> EnumGen<'a> {
         });
     }
 
+    fn rust_enum_descriptor_is_enum_index(&self) -> bool {
+        if self.allow_alias() {
+            false
+        } else {
+            self.values_all()
+                .into_iter()
+                .enumerate()
+                .all(|(i, value)| (i as i32) == value.number())
+        }
+    }
+
     fn write_impl_enum_full_fn_descriptor(&self, w: &mut CodeWriter) {
         let sig = format!(
             "descriptor(&self) -> {}::reflect::EnumValueDescriptor",
             protobuf_crate_path(&self.customize.for_elem)
         );
         w.def_fn(&sig, |w| {
-            if self.allow_alias() {
+            if self.rust_enum_descriptor_is_enum_index() {
                 w.write_line("let index = *self as usize;");
             } else {
                 w.write_line("let index = match self {");
                 w.indented(|w| {
                     for (i, value) in self.values_all().into_iter().enumerate() {
-                        w.write_line(&format!("{}::{} => {},", self.type_name, value.rust_name_inner(), i));
+                        w.write_line(&format!(
+                            "{}::{} => {},",
+                            self.type_name,
+                            value.rust_name_inner(),
+                            i
+                        ));
                     }
                 });
                 w.write_line("};");

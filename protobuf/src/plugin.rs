@@ -1157,10 +1157,7 @@ pub mod code_generator_response {
         }
 
         fn descriptor(&self) -> crate::reflect::EnumValueDescriptor {
-            let index = match self {
-                Feature::FEATURE_NONE => 0,
-                Feature::FEATURE_PROTO3_OPTIONAL => 1,
-            };
+            let index = *self as usize;
             Self::enum_descriptor().value_by_index(index)
         }
     }

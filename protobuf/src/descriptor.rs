@@ -5710,11 +5710,7 @@ pub mod field_options {
         }
 
         fn descriptor(&self) -> crate::reflect::EnumValueDescriptor {
-            let index = match self {
-                CType::STRING => 0,
-                CType::CORD => 1,
-                CType::STRING_PIECE => 2,
-            };
+            let index = *self as usize;
             Self::enum_descriptor().value_by_index(index)
         }
     }
@@ -5771,11 +5767,7 @@ pub mod field_options {
         }
 
         fn descriptor(&self) -> crate::reflect::EnumValueDescriptor {
-            let index = match self {
-                JSType::JS_NORMAL => 0,
-                JSType::JS_STRING => 1,
-                JSType::JS_NUMBER => 2,
-            };
+            let index = *self as usize;
             Self::enum_descriptor().value_by_index(index)
         }
     }
@@ -6736,11 +6728,7 @@ pub mod method_options {
         }
 
         fn descriptor(&self) -> crate::reflect::EnumValueDescriptor {
-            let index = match self {
-                IdempotencyLevel::IDEMPOTENCY_UNKNOWN => 0,
-                IdempotencyLevel::NO_SIDE_EFFECTS => 1,
-                IdempotencyLevel::IDEMPOTENT => 2,
-            };
+            let index = *self as usize;
             Self::enum_descriptor().value_by_index(index)
         }
     }

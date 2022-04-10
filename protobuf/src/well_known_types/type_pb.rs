@@ -672,27 +672,7 @@ pub mod field {
         }
 
         fn descriptor(&self) -> crate::reflect::EnumValueDescriptor {
-            let index = match self {
-                Kind::TYPE_UNKNOWN => 0,
-                Kind::TYPE_DOUBLE => 1,
-                Kind::TYPE_FLOAT => 2,
-                Kind::TYPE_INT64 => 3,
-                Kind::TYPE_UINT64 => 4,
-                Kind::TYPE_INT32 => 5,
-                Kind::TYPE_FIXED64 => 6,
-                Kind::TYPE_FIXED32 => 7,
-                Kind::TYPE_BOOL => 8,
-                Kind::TYPE_STRING => 9,
-                Kind::TYPE_GROUP => 10,
-                Kind::TYPE_MESSAGE => 11,
-                Kind::TYPE_BYTES => 12,
-                Kind::TYPE_UINT32 => 13,
-                Kind::TYPE_ENUM => 14,
-                Kind::TYPE_SFIXED32 => 15,
-                Kind::TYPE_SFIXED64 => 16,
-                Kind::TYPE_SINT32 => 17,
-                Kind::TYPE_SINT64 => 18,
-            };
+            let index = *self as usize;
             Self::enum_descriptor().value_by_index(index)
         }
     }
@@ -754,12 +734,7 @@ pub mod field {
         }
 
         fn descriptor(&self) -> crate::reflect::EnumValueDescriptor {
-            let index = match self {
-                Cardinality::CARDINALITY_UNKNOWN => 0,
-                Cardinality::CARDINALITY_OPTIONAL => 1,
-                Cardinality::CARDINALITY_REQUIRED => 2,
-                Cardinality::CARDINALITY_REPEATED => 3,
-            };
+            let index = *self as usize;
             Self::enum_descriptor().value_by_index(index)
         }
     }
@@ -1362,10 +1337,7 @@ impl crate::EnumFull for Syntax {
     }
 
     fn descriptor(&self) -> crate::reflect::EnumValueDescriptor {
-        let index = match self {
-            Syntax::SYNTAX_PROTO2 => 0,
-            Syntax::SYNTAX_PROTO3 => 1,
-        };
+        let index = *self as usize;
         Self::enum_descriptor().value_by_index(index)
     }
 }

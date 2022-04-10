@@ -804,9 +804,7 @@ impl crate::EnumFull for NullValue {
     }
 
     fn descriptor(&self) -> crate::reflect::EnumValueDescriptor {
-        let index = match self {
-            NullValue::NULL_VALUE => 0,
-        };
+        let index = *self as usize;
         Self::enum_descriptor().value_by_index(index)
     }
 }
