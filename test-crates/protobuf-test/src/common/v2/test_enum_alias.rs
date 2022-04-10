@@ -1,4 +1,5 @@
 use protobuf::Enum;
+use protobuf::EnumFull;
 use protobuf_test_common::*;
 
 use super::test_enum_alias_pb::*;
@@ -24,4 +25,11 @@ fn test_enum_in_message() {
     let mut m = TestEnumWithAlias::new();
     m.set_en(EnumWithAlias::A);
     test_serialize_deserialize_with_dynamic("08 0a", &m);
+}
+
+#[ignore] // TODO: fix this test and enable it.
+#[test]
+fn descriptor() {
+    assert_eq!("A", EnumWithAlias::A.descriptor().name());
+    assert_eq!("A_AGAIN", EnumWithAlias::A_AGAIN.descriptor().name());
 }

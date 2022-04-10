@@ -8,6 +8,7 @@ use crate::Enum;
 pub trait EnumFull: Enum {
     /// Get enum value descriptor.
     fn descriptor(&self) -> EnumValueDescriptor {
+        // TODO: multiple enum variants may have the same number.
         self.enum_descriptor()
             .value_by_number(self.value())
             .unwrap()
