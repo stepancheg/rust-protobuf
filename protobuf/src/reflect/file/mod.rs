@@ -11,7 +11,7 @@ use crate::reflect::field::FieldDescriptorImpl;
 use crate::reflect::file::common::FileDescriptorCommon;
 use crate::reflect::file::dynamic::DynamicFileDescriptor;
 use crate::reflect::file::fds::FdsBuilder;
-use crate::reflect::file::index::FileIndexEnumEntry;
+use crate::reflect::file::index::EnumIndex;
 use crate::reflect::file::index::MessageIndex;
 use crate::reflect::name::protobuf_name_starts_with_package;
 use crate::reflect::service::ServiceDescriptor;
@@ -93,7 +93,7 @@ impl FileDescriptor {
         &self.index().index.messages[index]
     }
 
-    pub(crate) fn enum_index_entry(&self, index: usize) -> &FileIndexEnumEntry {
+    pub(crate) fn enum_index_entry(&self, index: usize) -> &EnumIndex {
         &self.index().index.enums[index]
     }
 

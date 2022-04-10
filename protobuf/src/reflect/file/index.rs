@@ -34,7 +34,7 @@ pub(crate) struct MessageFieldsIndex {
 }
 
 #[derive(Debug)]
-pub(crate) struct FileIndexEnumEntry {
+pub(crate) struct EnumIndex {
     pub(crate) _message_path: MessagePath,
     pub(crate) _enum_index: usize,
     pub(crate) name_to_package: String,
@@ -43,21 +43,21 @@ pub(crate) struct FileIndexEnumEntry {
     pub(crate) index_by_number: HashMap<i32, usize>,
 }
 
-impl FileIndexEnumEntry {
+impl EnumIndex {
     pub(crate) fn new(
         _message_path: MessagePath,
         _enum_index: usize,
         name_to_package: String,
         enclosing_message: Option<usize>,
         proto: &EnumDescriptorProto,
-    ) -> FileIndexEnumEntry {
+    ) -> EnumIndex {
         let mut index_by_name = HashMap::new();
         let mut index_by_number = HashMap::new();
         for (i, v) in proto.value.iter().enumerate() {
             index_by_number.insert(v.number(), i);
             index_by_name.insert(v.name().to_owned(), i);
         }
-        FileIndexEnumEntry {
+        EnumIndex {
             _message_path,
             _enum_index,
             name_to_package,
@@ -76,7 +76,7 @@ pub(crate) struct FileIndex {
     pub(crate) messages: Vec<MessageIndex>,
     pub(crate) message_by_name_to_package: HashMap<String, usize>,
     pub(crate) top_level_messages: Vec<usize>,
-    pub(crate) enums: Vec<FileIndexEnumEntry>,
+    pub(crate) enums: Vec<EnumIndex>,
     pub(crate) enums_by_name_to_package: HashMap<String, usize>,
     pub(crate) oneofs: Vec<FileIndexOneofEntry>,
     pub(crate) services: Vec<ServiceIndex>,
@@ -101,7 +101,7 @@ impl FileIndex {
 
         // Top-level enums start with zero
         for (_, e) in file.enum_type.iter().enumerate() {
-            index.enums.push(FileIndexEnumEntry::new(
+            index.enums.push(EnumIndex::new(
                 MessagePath(Vec::new()),
                 index.enums.len(),
                 e.name().to_owned(),
@@ -160,7 +160,7 @@ impl FileIndex {
         });
 
         for (_, e) in message.enum_type.iter().enumerate() {
-            self.enums.push(FileIndexEnumEntry::new(
+            self.enums.push(EnumIndex::new(
                 path.clone(),
                 self.enums.len(),
                 concat_paths(&name_to_package, e.name()),
