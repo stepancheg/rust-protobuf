@@ -2,9 +2,7 @@ use std::collections::HashMap;
 
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::enums::generated::GeneratedEnumDescriptor;
-use crate::reflect::file::building::FileDescriptorBuilding;
 use crate::reflect::file::common::FileDescriptorCommon;
-use crate::reflect::file::fds::fds_extend_with_public;
 use crate::reflect::file::index::FileIndex;
 use crate::reflect::message::generated::GeneratedMessageDescriptor;
 use crate::reflect::oneof::generated::GeneratedOneofDescriptor;
@@ -57,12 +55,6 @@ impl GeneratedFileDescriptor {
             .map(|m| (m.protobuf_name_to_package, m))
             .collect();
 
-        let file_descriptor_building = FileDescriptorBuilding {
-            current_file_index: &index,
-            current_file_descriptor: file_descriptor_proto,
-            deps_with_public: &fds_extend_with_public(dependencies.clone()),
-        };
-
         let messages = index
             .messages
             .iter()
@@ -73,13 +65,7 @@ impl GeneratedFileDescriptor {
                     let message = messages
                         .remove(message_index.name_to_package.as_str())
                         .unwrap();
-                    GeneratedMessageDescriptor::new(
-                        message,
-                        file_descriptor_proto,
-                        &index,
-                        &file_descriptor_building,
-                    )
-                    .unwrap()
+                    GeneratedMessageDescriptor::new(message, file_descriptor_proto, &index).unwrap()
                 }
             })
             .collect();

@@ -4,7 +4,7 @@ use crate::descriptor::DescriptorProto;
 use crate::reflect::field::index::FieldIndex;
 use crate::reflect::file::building::FileDescriptorBuilding;
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub(crate) struct MessageIndex {
     pub(crate) fields: Vec<FieldIndex>,
     pub(crate) field_index_by_name: HashMap<String, usize>,

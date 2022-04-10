@@ -3,11 +3,8 @@ use std::sync::Arc;
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::enums::dynamic::DynamicEnumDescriptor;
-use crate::reflect::file::building::FileDescriptorBuilding;
 use crate::reflect::file::common::FileDescriptorCommon;
-use crate::reflect::file::fds::fds_extend_with_public;
 use crate::reflect::file::index::FileIndex;
-use crate::reflect::message::dynamic::DynamicMessageDescriptor;
 use crate::reflect::message::path::MessagePath;
 use crate::reflect::oneof::dynamic::DynamicOneofDescriptor;
 use crate::reflect::FileDescriptor;
@@ -15,7 +12,6 @@ use crate::reflect::FileDescriptor;
 #[derive(Debug)]
 pub(crate) struct DynamicFileDescriptor {
     pub(crate) proto: Arc<FileDescriptorProto>,
-    pub(crate) messages: Vec<DynamicMessageDescriptor>,
     pub(crate) enums: Vec<DynamicEnumDescriptor>,
     pub(crate) oneofs: Vec<DynamicOneofDescriptor>,
     pub(crate) common: FileDescriptorCommon,
@@ -30,24 +26,6 @@ impl DynamicFileDescriptor {
 
         let index = FileIndex::index(&*proto, &dependencies)?;
 
-        let file_descriptor_building = FileDescriptorBuilding {
-            current_file_index: &index,
-            current_file_descriptor: &proto,
-            deps_with_public: &fds_extend_with_public(dependencies.clone()),
-        };
-
-        let messages = index
-            .messages
-            .iter()
-            .map(|message_index_entry| {
-                DynamicMessageDescriptor::new(
-                    &*proto,
-                    &message_index_entry.path,
-                    &file_descriptor_building,
-                )
-            })
-            .collect::<crate::Result<Vec<_>>>()?;
-
         let oneofs = index
             .oneofs
             .iter()
@@ -57,7 +35,6 @@ impl DynamicFileDescriptor {
         let common = FileDescriptorCommon::new(index, dependencies, &proto)?;
 
         Ok(DynamicFileDescriptor {
-            messages,
             enums: Self::enums(&proto),
             oneofs,
             proto,

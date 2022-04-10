@@ -82,6 +82,13 @@ impl FileDescriptor {
         }
     }
 
+    pub(crate) fn generated_index(&self) -> &'static FileDescriptorCommon {
+        match &self.imp {
+            FileDescriptorImpl::Generated(g) => &g.common,
+            FileDescriptorImpl::Dynamic(..) => panic!("not generated"),
+        }
+    }
+
     pub(crate) fn message_index_entry(&self, index: usize) -> &FileIndexMessageEntry {
         &self.index().index.messages[index]
     }

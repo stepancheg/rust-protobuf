@@ -260,7 +260,7 @@ impl FieldDescriptor {
             MessageDescriptorImplRef::Generated(g) => {
                 FieldDescriptorImplRef::Generated(&g.non_map().fields[index].accessor)
             }
-            MessageDescriptorImplRef::Dynamic(_) => {
+            MessageDescriptorImplRef::Dynamic => {
                 FieldDescriptorImplRef::Dynamic(DynamicFieldDescriptorRef { field: self })
             }
         }

@@ -3,6 +3,8 @@ use std::collections::HashMap;
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::file::building::FileDescriptorBuilding;
+use crate::reflect::file::fds::fds_extend_with_public;
+use crate::reflect::message::index::MessageIndex;
 use crate::reflect::message::path::MessagePath;
 use crate::reflect::name::concat_paths;
 use crate::reflect::service::index::ServiceIndex;
@@ -18,6 +20,7 @@ pub(crate) struct FileIndexMessageEntry {
     pub(crate) map_entry: bool,
     pub(crate) first_enum_index: usize,
     pub(crate) enum_count: usize,
+    pub(crate) message_index: MessageIndex,
 }
 
 #[derive(Debug)]
@@ -47,6 +50,8 @@ impl FileIndex {
         file: &FileDescriptorProto,
         deps: &[FileDescriptor],
     ) -> crate::Result<FileIndex> {
+        let deps_with_public = fds_extend_with_public(deps.to_vec());
+
         let mut index = FileIndex {
             messages: Vec::new(),
             message_by_name_to_package: HashMap::new(),
@@ -88,6 +93,8 @@ impl FileIndex {
             index.services.push(service_index);
         }
 
+        index.build_message_index(file, &deps_with_public)?;
+
         Ok(index)
     }
 
@@ -111,6 +118,7 @@ impl FileIndex {
             map_entry: message.options.get_or_default().map_entry(),
             first_enum_index: self.enums.len(),
             enum_count: message.enum_type.len(),
+            message_index: MessageIndex::default(),
         });
 
         for (_, e) in message.enum_type.iter().enumerate() {
@@ -159,5 +167,23 @@ impl FileIndex {
             .enumerate()
             .map(|(i, e)| (e.name_to_package.to_owned(), i))
             .collect();
+    }
+
+    fn build_message_index(
+        &mut self,
+        file: &FileDescriptorProto,
+        deps_with_public: &[FileDescriptor],
+    ) -> crate::Result<()> {
+        for i in 0..self.messages.len() {
+            let message_proto = self.messages[i].path.eval(file).unwrap();
+            let building = FileDescriptorBuilding {
+                current_file_descriptor: file,
+                current_file_index: self,
+                deps_with_public,
+            };
+            let message_index = MessageIndex::index(message_proto, &building)?;
+            self.messages[i].message_index = message_index;
+        }
+        Ok(())
     }
 }

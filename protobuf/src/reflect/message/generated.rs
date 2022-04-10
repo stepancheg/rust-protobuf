@@ -8,11 +8,9 @@ use crate::descriptor::FileDescriptorProto;
 use crate::message_dyn::MessageDyn;
 use crate::message_full::MessageFull;
 use crate::reflect::acc::FieldAccessor;
-use crate::reflect::file::building::FileDescriptorBuilding;
 use crate::reflect::file::index::FileIndex;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
-use crate::reflect::message::index::MessageIndex;
 
 /// Sized to dynamic reflection operations.
 pub(crate) trait MessageFactory: Send + Sync + 'static {
@@ -90,8 +88,6 @@ pub(crate) struct NonMapMessageDescriptor {
     pub(crate) factory: &'static dyn MessageFactory,
 
     pub(crate) fields: Vec<FieldAccessor>,
-
-    pub(crate) index: MessageIndex,
 }
 
 #[derive(Debug)]
@@ -108,7 +104,6 @@ impl GeneratedMessageDescriptor {
         data: GeneratedMessageDescriptorData,
         file_descriptor_proto: &'static FileDescriptorProto,
         _file_index: &FileIndex,
-        building: &FileDescriptorBuilding,
     ) -> crate::Result<GeneratedMessageDescriptor> {
         let GeneratedMessageDescriptorData {
             protobuf_name_to_package,
@@ -128,14 +123,8 @@ impl GeneratedMessageDescriptor {
             field_proto_by_name.insert(field_proto.name(), field_proto);
         }
 
-        let index = MessageIndex::index(proto, building)?;
-
         Ok(GeneratedMessageDescriptor {
-            non_map: Some(NonMapMessageDescriptor {
-                factory,
-                fields,
-                index,
-            }),
+            non_map: Some(NonMapMessageDescriptor { factory, fields }),
         })
     }
 
