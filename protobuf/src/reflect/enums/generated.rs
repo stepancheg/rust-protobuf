@@ -3,9 +3,6 @@
 use std::any::TypeId;
 
 use crate::descriptor::FileDescriptorProto;
-use crate::reflect::find_message_or_enum::find_message_or_enum;
-use crate::reflect::find_message_or_enum::MessageOrEnum;
-use crate::reflect::name::compute_full_name;
 use crate::EnumFull;
 use crate::EnumOrUnknown;
 
@@ -34,7 +31,6 @@ impl GeneratedEnumDescriptorData {
 
 #[derive(Debug)]
 pub(crate) struct GeneratedEnumDescriptor {
-    pub(crate) full_name: String,
     /// Type id of `<E>`
     pub(crate) type_id: TypeId,
     /// Type id of `<ProtobufEnumOrUnknown<E>>`
@@ -42,7 +38,7 @@ pub(crate) struct GeneratedEnumDescriptor {
 }
 
 impl GeneratedEnumDescriptor {
-    pub fn new(
+    pub(crate) fn new(
         data: GeneratedEnumDescriptorData,
         expected_index: usize,
         file_descriptor_proto: &'static FileDescriptorProto,
@@ -56,18 +52,9 @@ impl GeneratedEnumDescriptor {
 
         assert!(expected_index == index_in_file);
 
-        let (path_to_package, proto) =
-            match find_message_or_enum(file_descriptor_proto, name_in_file).unwrap() {
-                (path_to_package, MessageOrEnum::Enum(e)) => (path_to_package, e),
-                (_, MessageOrEnum::Message(_)) => panic!("not an enum"),
-            };
+        let _ = (name_in_file, file_descriptor_proto);
 
         GeneratedEnumDescriptor {
-            full_name: compute_full_name(
-                file_descriptor_proto.package(),
-                &path_to_package,
-                proto.name(),
-            ),
             type_id,
             _enum_or_unknown_type_id: enum_or_unknown_type_id,
         }

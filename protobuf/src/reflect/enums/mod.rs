@@ -6,7 +6,6 @@ use std::hash::Hash;
 use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::EnumValueDescriptorProto;
 use crate::enums::Enum;
-use crate::reflect::enums::dynamic::DynamicEnumDescriptor;
 use crate::reflect::enums::generated::GeneratedEnumDescriptor;
 use crate::reflect::file::index::EnumIndex;
 use crate::reflect::file::FileDescriptorImpl;
@@ -14,7 +13,6 @@ use crate::reflect::FileDescriptor;
 use crate::reflect::MessageDescriptor;
 use crate::EnumFull;
 
-pub(crate) mod dynamic;
 pub(crate) mod generated;
 pub(crate) mod path;
 
@@ -147,7 +145,7 @@ impl EnumDescriptor {
             FileDescriptorImpl::Generated(g) => {
                 EnumDescriptorImplRef::Generated(&g.enums[self.index])
             }
-            FileDescriptorImpl::Dynamic(d) => EnumDescriptorImplRef::Dynamic(&d.enums[self.index]),
+            FileDescriptorImpl::Dynamic(..) => EnumDescriptorImplRef::Dynamic,
         }
     }
 
@@ -169,10 +167,7 @@ impl EnumDescriptor {
 
     /// Fully qualified protobuf name of enum
     pub fn full_name(&self) -> &str {
-        match self.get_impl() {
-            EnumDescriptorImplRef::Generated(g) => &g.full_name,
-            EnumDescriptorImplRef::Dynamic(d) => &d.full_name,
-        }
+        &self.index_entry().full_name
     }
 
     /// Get `EnumDescriptor` object for given enum type
@@ -269,14 +264,14 @@ impl EnumDescriptor {
     pub fn is<E: Enum>(&self) -> bool {
         match self.get_impl() {
             EnumDescriptorImplRef::Generated(g) => g.type_id == TypeId::of::<E>(),
-            EnumDescriptorImplRef::Dynamic(..) => false,
+            EnumDescriptorImplRef::Dynamic => false,
         }
     }
 }
 
-enum EnumDescriptorImplRef<'a> {
+enum EnumDescriptorImplRef {
     Generated(&'static GeneratedEnumDescriptor),
-    Dynamic(&'a DynamicEnumDescriptor),
+    Dynamic,
 }
 
 #[cfg(test)]

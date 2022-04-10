@@ -9,18 +9,6 @@ impl MessagePath {
         self.0.push(index);
     }
 
-    pub(crate) fn pop(&mut self) -> Option<usize> {
-        self.0.pop()
-    }
-
-    pub(crate) fn len(&self) -> usize {
-        self.0.len()
-    }
-
-    pub(crate) fn is_empty(&self) -> bool {
-        self.0.is_empty()
-    }
-
     pub(crate) fn eval_path<'a>(&self, file: &'a FileDescriptorProto) -> Vec<&'a DescriptorProto> {
         let mut r = Vec::new();
         if self.0.len() != 0 {

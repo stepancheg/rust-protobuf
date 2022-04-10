@@ -38,6 +38,7 @@ pub(crate) struct MessageFieldsIndex {
 pub(crate) struct EnumIndex {
     pub(crate) enum_path: EnumPath,
     pub(crate) name_to_package: String,
+    pub(crate) full_name: String,
     pub(crate) enclosing_message: Option<usize>,
     pub(crate) index_by_name: HashMap<String, usize>,
     pub(crate) index_by_number: HashMap<i32, usize>,
@@ -49,6 +50,7 @@ impl EnumIndex {
         name_to_package: String,
         enclosing_message: Option<usize>,
         proto: &EnumDescriptorProto,
+        file: &FileDescriptorProto,
     ) -> EnumIndex {
         let mut index_by_name = HashMap::new();
         let mut index_by_number = HashMap::new();
@@ -56,8 +58,10 @@ impl EnumIndex {
             index_by_number.insert(v.number(), i);
             index_by_name.insert(v.name().to_owned(), i);
         }
+        let full_name = concat_paths(file.package(), &name_to_package);
         EnumIndex {
             enum_path,
+            full_name,
             name_to_package,
             enclosing_message,
             index_by_name,
@@ -107,6 +111,7 @@ impl FileIndex {
                 e.name().to_owned(),
                 None,
                 e,
+                file,
             ));
         }
 
@@ -168,6 +173,7 @@ impl FileIndex {
                 concat_paths(&name_to_package, e.name()),
                 Some(message_index),
                 e,
+                file,
             ));
         }
 
