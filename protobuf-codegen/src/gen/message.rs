@@ -390,7 +390,7 @@ impl<'a> MessageGen<'a> {
         });
     }
 
-    fn write_descriptor_static_new(&self, w: &mut CodeWriter) {
+    fn write_impl_message_fn_descriptor_static(&self, w: &mut CodeWriter) {
         let sig = format!(
             "descriptor_static() -> {}::reflect::MessageDescriptor",
             protobuf_crate_path(&self.customize.for_elem)
@@ -519,7 +519,7 @@ impl<'a> MessageGen<'a> {
             ),
             &format!("{}", self.type_name),
             |w| {
-                self.write_descriptor_static_new(w);
+                self.write_impl_message_fn_descriptor_static(w);
             },
         );
     }
