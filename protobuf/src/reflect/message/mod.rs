@@ -250,8 +250,8 @@ impl MessageDescriptor {
     }
 
     /// Get message oneof by name (**not implemented**).
-    pub fn oneof_by_nane(&self) -> OneofDescriptor {
-        unimplemented!()
+    pub fn oneof_by_name(&self, name: &str) -> Option<OneofDescriptor> {
+        self.all_oneofs().find(|oneof| oneof.name() == name)
     }
 
     /// Message field descriptors.

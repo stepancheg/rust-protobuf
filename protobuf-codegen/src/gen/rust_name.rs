@@ -29,6 +29,10 @@ impl RustIdent {
     pub fn to_path(&self) -> RustIdentWithPath {
         RustIdentWithPath::from(&self.0)
     }
+
+    pub(crate) fn into_rel_path(self) -> RustRelativePath {
+        RustRelativePath::from_components([self])
+    }
 }
 
 impl fmt::Display for RustIdent {

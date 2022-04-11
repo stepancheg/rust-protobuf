@@ -301,9 +301,23 @@ impl<'a> OneofGen<'a> {
                 ),
                 &protobuf_crate_path(&self.customize.for_elem).to_string(),
             );
-            // self.oneof.message.rust_name_to_file().
-            // TODO: generate it
-            w.unimplemented();
+            let message_type = make_path(
+                &self
+                    .oneof
+                    .message
+                    .scope()
+                    .rust_path_to_file()
+                    .append(self.oneof.message.mod_name().into_rel_path())
+                    .into_path(),
+                &self.oneof.message.rust_name_to_file(),
+            );
+            let expr = format!(
+                "<{} as {}::MessageFull>::descriptor().oneof_by_name(\"{}\").unwrap()",
+                message_type,
+                protobuf_crate_path(&self.customize.for_elem),
+                self.oneof.oneof.name()
+            );
+            w.write_line(&format!("descriptor.get(|| {}).clone()", expr));
         });
     }
 

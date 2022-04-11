@@ -1,3 +1,4 @@
+use protobuf::OneofFull;
 use protobuf_test_common::*;
 
 use super::test_oneof_basic_pb::*;
@@ -60,4 +61,9 @@ fn test_types() {
     t(|o| o.set_bytes_field(vec![99, 100]));
     t(|o| o.set_enum_field(EnumForOneof::A));
     t(|o| o.mut_message_field().set_f(22));
+}
+
+#[test]
+fn reflection() {
+    assert_eq!("one", test_oneof::One::descriptor().name());
 }
