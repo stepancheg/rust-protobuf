@@ -638,7 +638,7 @@ impl<'a> FieldGen<'a> {
     }
 
     fn tag_size(&self) -> u32 {
-        rt::tag_size(self.proto_field.number()) as u32
+        rt::tag_size(self.proto_field.number() as u32) as u32
     }
 
     fn is_singular(&self) -> bool {
@@ -1488,7 +1488,7 @@ impl<'a> FieldGen<'a> {
     }
 
     fn tag_with_wire_type(&self, wire_type: WireType) -> u32 {
-        (self.proto_field.number() << 3) + (wire_type as u32)
+        ((self.proto_field.number() as u32) << 3) + (wire_type as u32)
     }
 
     fn tag(&self) -> u32 {

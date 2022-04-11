@@ -520,6 +520,14 @@ pub(crate) struct FieldWithContext<'a> {
     pub message: MessageWithScope<'a>,
 }
 
+impl<'a> Deref for FieldWithContext<'a> {
+    type Target = FieldDescriptor;
+
+    fn deref(&self) -> &Self::Target {
+        &self.field
+    }
+}
+
 impl<'a> FieldWithContext<'a> {
     pub fn is_oneof(&self) -> bool {
         self.field.containing_oneof().is_some()
@@ -533,15 +541,6 @@ impl<'a> FieldWithContext<'a> {
             }),
             None => None,
         }
-    }
-
-    pub fn number(&self) -> u32 {
-        self.field.proto().number() as u32
-    }
-
-    /// Shortcut
-    pub fn name(&self) -> &str {
-        self.field.name()
     }
 }
 
