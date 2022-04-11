@@ -252,6 +252,11 @@ impl MessageDescriptor {
         self.all_oneofs().filter(|oneof| !oneof.is_synthetic())
     }
 
+    /// Get message oneof by name (**not implemented**).
+    pub fn oneof_by_nane(&self) -> OneofDescriptor {
+        unimplemented!()
+    }
+
     /// Message field descriptors.
     pub fn fields<'a>(&'a self) -> impl Iterator<Item = FieldDescriptor> + 'a {
         (0..self.index().fields.len()).map(move |index| FieldDescriptor {
