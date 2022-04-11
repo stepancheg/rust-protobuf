@@ -20,7 +20,6 @@ use crate::error::WireError;
 use crate::io::buf_read_or_reader::BufReadOrReader;
 use crate::io::input_buf::InputBuf;
 use crate::io::input_source::InputSource;
-use crate::misc::vec_spare_capacity_mut;
 
 // If an input stream is constructed with a `Read`, we create a
 // `BufReader` with an internal buffer of this size.
@@ -331,7 +330,7 @@ impl<'ignore> BufReadIter<'ignore> {
             target.reserve_exact(count);
 
             unsafe {
-                self.read_exact(&mut vec_spare_capacity_mut(target)[..count])?;
+                self.read_exact(&mut target.spare_capacity_mut()[..count])?;
                 target.set_len(count);
             }
         }

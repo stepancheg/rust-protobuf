@@ -8,7 +8,6 @@ use std::slice;
 use crate::byteorder::LITTLE_ENDIAN;
 use crate::error::ProtobufError;
 use crate::misc::maybe_uninit_write_slice;
-use crate::misc::vec_spare_capacity_mut;
 use crate::rt::vec_packed_enum_or_unknown_data_size;
 use crate::rt::vec_packed_fixed_data_size;
 use crate::rt::vec_packed_varint_data_size;
@@ -122,7 +121,7 @@ impl<'a> CodedOutputStream<'a> {
         // SAFETY: we are not using the `buffer_storage`
         // except for initializing the `buffer` field.
         // See `buffer` field documentation.
-        let buffer = vec_spare_capacity_mut(&mut buffer_storage);
+        let buffer = buffer_storage.spare_capacity_mut();
         let buffer: *mut [MaybeUninit<u8>] = buffer;
 
         CodedOutputStream {
@@ -212,7 +211,7 @@ impl<'a> CodedOutputStream<'a> {
                 assert!(vec_len + self.pos_within_buf <= vec.capacity());
                 vec.set_len(vec_len + self.pos_within_buf);
                 vec.reserve(1);
-                self.buffer = vec_spare_capacity_mut(vec);
+                self.buffer = vec.spare_capacity_mut();
                 self.pos_of_buffer_start += self.pos_within_buf as u64;
                 self.pos_within_buf = 0;
             },
@@ -241,7 +240,7 @@ impl<'a> CodedOutputStream<'a> {
                 unsafe {
                     vec.set_len(vec_len + self.pos_within_buf);
                 }
-                self.buffer = vec_spare_capacity_mut(vec);
+                self.buffer = vec.spare_capacity_mut();
                 self.pos_of_buffer_start += self.pos_within_buf as u64;
                 self.pos_within_buf = 0;
                 Ok(())
@@ -296,7 +295,7 @@ impl<'a> CodedOutputStream<'a> {
             OutputTarget::Vec(ref mut vec) => {
                 assert!(self.pos_within_buf == 0);
                 vec.extend(bytes);
-                self.buffer = vec_spare_capacity_mut(vec);
+                self.buffer = vec.spare_capacity_mut();
                 self.pos_of_buffer_start += bytes.len() as u64;
             }
         }
