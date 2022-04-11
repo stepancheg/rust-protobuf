@@ -631,6 +631,9 @@ pub mod value {
     }
 
     impl crate::OneofFull for Kind {
+        fn descriptor() -> crate::reflect::OneofDescriptor {
+            unimplemented!();
+        }
     }
 
     impl Kind {

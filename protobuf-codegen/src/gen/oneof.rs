@@ -287,6 +287,17 @@ impl<'a> OneofGen<'a> {
         );
     }
 
+    fn write_impl_oneof_full_fn_descriptor(&self, w: &mut CodeWriter) {
+        let sig = format!(
+            "descriptor() -> {}::reflect::OneofDescriptor",
+            protobuf_crate_path(&self.customize.for_elem),
+        );
+        w.def_fn(&sig, |w| {
+            // TODO: generate it
+            w.unimplemented();
+        });
+    }
+
     fn write_impl_oneof_full(&self, w: &mut CodeWriter) {
         w.impl_for_block(
             &format!(
@@ -294,9 +305,7 @@ impl<'a> OneofGen<'a> {
                 protobuf_crate_path(&self.customize.for_elem)
             ),
             self.oneof.rust_name().ident.to_string(),
-            |_w| {
-                // nothing here yet. TODO: generate `descriptor` function.
-            },
+            |w| self.write_impl_oneof_full_fn_descriptor(w),
         )
     }
 
