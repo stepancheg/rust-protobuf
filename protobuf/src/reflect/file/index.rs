@@ -22,6 +22,8 @@ pub(crate) struct MessageIndex {
     pub(crate) map_entry: bool,
     pub(crate) first_enum_index: usize,
     pub(crate) enum_count: usize,
+    pub(crate) first_oneof_index: usize,
+    pub(crate) oneof_count: usize,
     pub(crate) message_index: MessageFieldsIndex,
 }
 
@@ -71,7 +73,10 @@ impl EnumIndex {
 }
 
 #[derive(Debug)]
-pub(crate) struct FileIndexOneofEntry {}
+pub(crate) struct OneofIndex {
+    pub(crate) containing_message: usize,
+    pub(crate) index_in_containing_message: usize,
+}
 
 #[derive(Debug)]
 pub(crate) struct FileIndex {
@@ -80,8 +85,7 @@ pub(crate) struct FileIndex {
     pub(crate) top_level_messages: Vec<usize>,
     pub(crate) enums: Vec<EnumIndex>,
     pub(crate) enums_by_name_to_package: HashMap<String, usize>,
-    #[allow(dead_code)] // TODO: use to implement `OneofDescriptor`
-    pub(crate) oneofs: Vec<FileIndexOneofEntry>,
+    pub(crate) oneofs: Vec<OneofIndex>,
     pub(crate) services: Vec<ServiceIndex>,
 }
 
@@ -162,6 +166,8 @@ impl FileIndex {
             map_entry: message.options.get_or_default().map_entry(),
             first_enum_index: self.enums.len(),
             enum_count: message.enum_type.len(),
+            first_oneof_index: self.oneofs.len(),
+            oneof_count: message.oneof_decl.len(),
             message_index: MessageFieldsIndex::default(),
         });
 
@@ -176,6 +182,13 @@ impl FileIndex {
                 e,
                 file,
             ));
+        }
+
+        for (i, _oneof) in message.oneof_decl.iter().enumerate() {
+            self.oneofs.push(OneofIndex {
+                containing_message: message_index,
+                index_in_containing_message: i,
+            });
         }
 
         for (i, nested) in message.nested_type.iter().enumerate() {

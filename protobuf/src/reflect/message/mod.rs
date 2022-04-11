@@ -7,7 +7,6 @@ use crate::message_dyn::MessageDyn;
 use crate::message_full::MessageFull;
 use crate::reflect::dynamic::DynamicMessage;
 use crate::reflect::field::FieldDescriptorImpl;
-use crate::reflect::file::index::MessageFieldsIndex;
 use crate::reflect::file::index::MessageIndex;
 use crate::reflect::file::FileDescriptorImpl;
 use crate::reflect::message::generated::GeneratedMessageDescriptor;
@@ -29,7 +28,7 @@ pub(crate) mod path;
 #[derive(Clone, Eq, PartialEq, Hash)]
 pub struct MessageDescriptor {
     pub(crate) file_descriptor: FileDescriptor,
-    index: usize,
+    pub(crate) index: usize,
 }
 
 impl fmt::Display for MessageDescriptor {
@@ -237,13 +236,11 @@ impl MessageDescriptor {
 
     /// Nested oneofs including synthetic.
     pub fn all_oneofs<'a>(&'a self) -> impl Iterator<Item = OneofDescriptor> + 'a {
-        self.proto()
-            .oneof_decl
-            .iter()
-            .enumerate()
-            .map(move |(index, _)| OneofDescriptor {
-                message_descriptor: self.clone(),
-                index,
+        let index_entry = self.index_entry();
+        (index_entry.first_oneof_index..index_entry.first_oneof_index + index_entry.oneof_count)
+            .map(move |i| OneofDescriptor {
+                file_descriptor: self.file_descriptor.clone(),
+                index: i,
             })
     }
 
@@ -259,24 +256,24 @@ impl MessageDescriptor {
 
     /// Message field descriptors.
     pub fn fields<'a>(&'a self) -> impl Iterator<Item = FieldDescriptor> + 'a {
-        (0..self.index().fields.len()).map(move |index| FieldDescriptor {
+        (0..self.index().message_index.fields.len()).map(move |index| FieldDescriptor {
             imp: FieldDescriptorImpl::Field(self.clone(), index),
         })
     }
 
     /// Extension fields.
     pub fn extensions(&self) -> impl Iterator<Item = FieldDescriptor> + '_ {
-        (0..self.index().extensions.len()).map(move |index| FieldDescriptor {
+        (0..self.index().message_index.extensions.len()).map(move |index| FieldDescriptor {
             imp: FieldDescriptorImpl::ExtensionInMessage(self.clone(), index),
         })
     }
 
-    pub(crate) fn index(&self) -> &MessageFieldsIndex {
-        &self.file_descriptor.index().index.messages[self.index].message_index
+    pub(crate) fn index(&self) -> &MessageIndex {
+        &self.file_descriptor.index().index.messages[self.index]
     }
 
-    pub(crate) fn generated_index(&self) -> &'static MessageFieldsIndex {
-        &self.file_descriptor.generated_index().index.messages[self.index].message_index
+    pub(crate) fn generated_index(&self) -> &'static MessageIndex {
+        &self.file_descriptor.generated_index().index.messages[self.index]
     }
 
     /// Find message field by protobuf field name
@@ -284,7 +281,7 @@ impl MessageDescriptor {
     /// Note: protobuf field name might be different for Rust field name.
     // TODO: return value, not pointer, pointer is not compatible with dynamic message
     pub fn field_by_name(&self, name: &str) -> Option<FieldDescriptor> {
-        let &index = self.index().field_index_by_name.get(name)?;
+        let &index = self.index().message_index.field_index_by_name.get(name)?;
         Some(FieldDescriptor {
             imp: FieldDescriptorImpl::Field(self.clone(), index),
         })
@@ -292,7 +289,11 @@ impl MessageDescriptor {
 
     /// Find message field by field name or field JSON name
     pub fn field_by_name_or_json_name<'a>(&'a self, name: &str) -> Option<FieldDescriptor> {
-        let &index = self.index().field_index_by_name_or_json_name.get(name)?;
+        let &index = self
+            .index()
+            .message_index
+            .field_index_by_name_or_json_name
+            .get(name)?;
         Some(FieldDescriptor {
             imp: FieldDescriptorImpl::Field(self.clone(), index),
         })
@@ -300,7 +301,11 @@ impl MessageDescriptor {
 
     /// Find message field by field name
     pub fn field_by_number(&self, number: u32) -> Option<FieldDescriptor> {
-        let &index = self.index().field_index_by_number.get(&number)?;
+        let &index = self
+            .index()
+            .message_index
+            .field_index_by_number
+            .get(&number)?;
         Some(FieldDescriptor {
             imp: FieldDescriptorImpl::Field(self.clone(), index),
         })

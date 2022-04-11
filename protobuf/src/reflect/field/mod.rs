@@ -155,12 +155,13 @@ impl FieldDescriptor {
 
     /// Oneof descriptor containing this field. Do not skip synthetic oneofs.
     pub fn containing_oneof_including_synthetic(&self) -> Option<OneofDescriptor> {
-        if let FieldDescriptorImpl::Field(m, _) = &self.imp {
+        if let FieldDescriptorImpl::Field(..) = &self.imp {
             let proto = self.proto();
             if proto.has_oneof_index() {
                 Some(OneofDescriptor {
-                    message_descriptor: m.clone(),
-                    index: proto.oneof_index() as usize,
+                    file_descriptor: self.file_descriptor().clone(),
+                    index: self.containing_message().index().first_oneof_index
+                        + proto.oneof_index() as usize,
                 })
             } else {
                 None
@@ -184,7 +185,7 @@ impl FieldDescriptor {
     pub fn containing_message(&self) -> MessageDescriptor {
         match &self.imp {
             FieldDescriptorImpl::Field(m, _) => m.clone(),
-            FieldDescriptorImpl::ExtensionInMessage(m, i) => m.index().extensions[*i]
+            FieldDescriptorImpl::ExtensionInMessage(m, i) => m.index().message_index.extensions[*i]
                 .extendee
                 .as_ref()
                 .unwrap()
@@ -199,8 +200,10 @@ impl FieldDescriptor {
 
     fn index(&self) -> &FieldIndex {
         match &self.imp {
-            FieldDescriptorImpl::Field(m, i) => &m.index().fields[*i],
-            FieldDescriptorImpl::ExtensionInMessage(m, i) => &m.index().extensions[*i],
+            FieldDescriptorImpl::Field(m, i) => &m.index().message_index.fields[*i],
+            FieldDescriptorImpl::ExtensionInMessage(m, i) => {
+                &m.index().message_index.extensions[*i]
+            }
             FieldDescriptorImpl::ExtensionInFile(f, i) => &f.index().extensions[*i],
         }
     }
@@ -213,7 +216,7 @@ impl FieldDescriptor {
                 DynamicMessage::downcast_ref(m).descriptor.index()
             }
         };
-        &message_index.fields[index]
+        &message_index.message_index.fields[index]
     }
 
     /// JSON field name.
