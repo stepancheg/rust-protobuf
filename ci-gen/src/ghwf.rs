@@ -142,7 +142,10 @@ impl Into<(String, Yaml)> for Job {
             ("runs-on", Yaml::string(format!("{}", self.runs_on))),
         ];
         if let Some(timeout_minutes) = self.timeout_minutes {
-            entries.push(("timeout-minutes", Yaml::string(format!("{}", timeout_minutes))));
+            entries.push((
+                "timeout-minutes",
+                Yaml::string(format!("{}", timeout_minutes)),
+            ));
         }
         if !self.env.is_empty() {
             entries.push(("env", Yaml::map(self.env)));
