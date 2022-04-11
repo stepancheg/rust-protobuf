@@ -293,6 +293,15 @@ impl<'a> OneofGen<'a> {
             protobuf_crate_path(&self.customize.for_elem),
         );
         w.def_fn(&sig, |w| {
+            w.lazy_static(
+                "descriptor",
+                &format!(
+                    "{}::reflect::OneofDescriptor",
+                    protobuf_crate_path(&self.customize.for_elem),
+                ),
+                &protobuf_crate_path(&self.customize.for_elem).to_string(),
+            );
+            // self.oneof.message.rust_name_to_file().
             // TODO: generate it
             w.unimplemented();
         });
