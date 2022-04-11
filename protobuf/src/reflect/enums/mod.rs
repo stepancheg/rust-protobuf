@@ -170,6 +170,11 @@ impl EnumDescriptor {
         &self.index_entry().full_name
     }
 
+    /// Name relative to the package where the message is declared.
+    pub fn name_to_package(&self) -> &str {
+        &self.index_entry().name_to_package
+    }
+
     /// Get `EnumDescriptor` object for given enum type
     pub fn for_type<E: EnumFull>() -> EnumDescriptor {
         E::enum_descriptor()

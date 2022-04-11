@@ -9,11 +9,11 @@ use crate::customize::ctx::CustomizeElemCtx;
 use crate::customize::ctx::SpecialFieldPseudoDescriptor;
 use crate::customize::rustproto_proto::customize_from_rustproto_for_message;
 use crate::gen::code_writer::*;
+use crate::gen::descriptor::write_fn_descriptor;
 use crate::gen::enums::*;
 use crate::gen::field::FieldGen;
 use crate::gen::field::FieldKind;
 use crate::gen::file_and_mod::FileAndMod;
-use crate::gen::file_descriptor::file_descriptor_call_expr;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::oneof::OneofGen;
 use crate::gen::oneof::OneofVariantGen;
@@ -392,26 +392,12 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_impl_message_full_fn_descriptor(&self, w: &mut CodeWriter) {
-        let sig = format!(
-            "descriptor() -> {}::reflect::MessageDescriptor",
-            protobuf_crate_path(&self.customize.for_elem)
+        write_fn_descriptor(
+            &self.message.message,
+            self.message.scope(),
+            &self.customize.for_elem,
+            w,
         );
-        w.def_fn(&sig, |w| {
-            let expr = format!(
-                "{}.message_by_package_relative_name(\"{}\").unwrap()",
-                file_descriptor_call_expr(self.message.scope()),
-                self.message.message.name_to_package()
-            );
-            w.lazy_static(
-                "descriptor",
-                &format!(
-                    "{}::reflect::MessageDescriptor",
-                    protobuf_crate_path(&self.customize.for_elem)
-                ),
-                &protobuf_crate_path(&self.customize.for_elem).to_string(),
-            );
-            w.write_line(&format!("descriptor.get(|| {}).clone()", expr));
-        });
     }
 
     fn write_generated_message_descriptor_data(&self, w: &mut CodeWriter) {

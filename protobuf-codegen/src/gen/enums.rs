@@ -6,7 +6,7 @@ use crate::customize::ctx::CustomizeElemCtx;
 use crate::customize::rustproto_proto::customize_from_rustproto_for_enum;
 use crate::gen::code_writer::CodeWriter;
 use crate::gen::code_writer::Visibility;
-use crate::gen::file_descriptor::file_descriptor_call_expr;
+use crate::gen::descriptor::write_fn_descriptor;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::protoc_insertion_point::write_protoc_insertion_point_for_enum;
 use crate::gen::protoc_insertion_point::write_protoc_insertion_point_for_enum_value;
@@ -286,18 +286,12 @@ impl<'a> EnumGen<'a> {
     }
 
     fn write_impl_enum_full_fn_enum_descriptor(&self, w: &mut CodeWriter) {
-        let sig = format!(
-            "enum_descriptor() -> {}::reflect::EnumDescriptor",
-            protobuf_crate_path(&self.customize.for_elem)
+        write_fn_descriptor(
+            &self.enum_with_scope.en,
+            self.enum_with_scope.scope(),
+            &self.customize.for_elem,
+            w,
         );
-        w.def_fn(&sig, |w| {
-            w.write_line(&format!(
-                "{}::reflect::EnumDescriptor::new_generated_2({}, {})",
-                protobuf_crate_path(&self.customize.for_elem),
-                file_descriptor_call_expr(self.enum_with_scope.scope()),
-                self.enum_with_scope.en.index_in_file_for_codegen(),
-            ));
-        });
     }
 
     fn rust_enum_descriptor_is_enum_index(&self) -> bool {
