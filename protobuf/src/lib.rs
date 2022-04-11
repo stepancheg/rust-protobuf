@@ -70,6 +70,7 @@ pub mod descriptor;
 pub mod plugin;
 pub mod rustproto;
 
+mod byteorder;
 mod coded_input_stream;
 mod coded_output_stream;
 mod enum_full;

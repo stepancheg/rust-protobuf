@@ -5,6 +5,7 @@ use std::mem::MaybeUninit;
 use std::ptr;
 use std::slice;
 
+use crate::byteorder::LITTLE_ENDIAN;
 use crate::error::ProtobufError;
 use crate::misc::maybe_uninit_write_slice;
 use crate::misc::vec_spare_capacity_mut;
@@ -645,6 +646,7 @@ impl<'a> CodedOutputStream<'a> {
 
     /// Write repeated packed float values.
     pub fn write_repeated_packed_float_no_tag(&mut self, values: &[f32]) -> crate::Result<()> {
+        // TODO: can we bitcast to bytes?
         for v in values {
             self.write_float_no_tag(*v)?;
         }
@@ -669,6 +671,7 @@ impl<'a> CodedOutputStream<'a> {
 
     /// Write repeated packed double values.
     pub fn write_repeated_packed_double_no_tag(&mut self, values: &[f64]) -> crate::Result<()> {
+        // TODO: can we bitcast to bytes?
         for v in values {
             self.write_double_no_tag(*v)?;
         }
@@ -693,9 +696,15 @@ impl<'a> CodedOutputStream<'a> {
 
     /// Write repeated packed fixed32 values.
     pub fn write_repeated_packed_fixed32_no_tag(&mut self, values: &[u32]) -> crate::Result<()> {
-        // TODO: these can be memcopied.
-        for v in values {
-            self.write_fixed32_no_tag(*v)?;
+        if LITTLE_ENDIAN {
+            // SAFETY: it is safe to transmute integer to bytes.
+            let bytes =
+                unsafe { slice::from_raw_parts(values.as_ptr() as *const u8, values.len() * 4) };
+            self.write_raw_bytes(bytes)?;
+        } else {
+            for v in values {
+                self.write_fixed32_no_tag(*v)?;
+            }
         }
         Ok(())
     }
@@ -718,8 +727,15 @@ impl<'a> CodedOutputStream<'a> {
 
     /// Write repeated packed fixed64 values.
     pub fn write_repeated_packed_fixed64_no_tag(&mut self, values: &[u64]) -> crate::Result<()> {
-        for v in values {
-            self.write_fixed64_no_tag(*v)?;
+        if LITTLE_ENDIAN {
+            // SAFETY: it is safe to transmute integer to bytes.
+            let bytes =
+                unsafe { slice::from_raw_parts(values.as_ptr() as *const u8, values.len() * 8) };
+            self.write_raw_bytes(bytes)?;
+        } else {
+            for v in values {
+                self.write_fixed64_no_tag(*v)?;
+            }
         }
         Ok(())
     }
@@ -742,8 +758,15 @@ impl<'a> CodedOutputStream<'a> {
 
     /// Write repeated packed sfixed32 values.
     pub fn write_repeated_packed_sfixed32_no_tag(&mut self, values: &[i32]) -> crate::Result<()> {
-        for v in values {
-            self.write_sfixed32_no_tag(*v)?;
+        if LITTLE_ENDIAN {
+            // SAFETY: it is safe to transmute integer to bytes.
+            let bytes =
+                unsafe { slice::from_raw_parts(values.as_ptr() as *const u8, values.len() * 4) };
+            self.write_raw_bytes(bytes)?;
+        } else {
+            for v in values {
+                self.write_sfixed32_no_tag(*v)?;
+            }
         }
         Ok(())
     }
@@ -766,8 +789,15 @@ impl<'a> CodedOutputStream<'a> {
 
     /// Write repeated packed sfixed64 values.
     pub fn write_repeated_packed_sfixed64_no_tag(&mut self, values: &[i64]) -> crate::Result<()> {
-        for v in values {
-            self.write_sfixed64_no_tag(*v)?;
+        if LITTLE_ENDIAN {
+            // SAFETY: it is safe to transmute integer to bytes.
+            let bytes =
+                unsafe { slice::from_raw_parts(values.as_ptr() as *const u8, values.len() * 8) };
+            self.write_raw_bytes(bytes)?;
+        } else {
+            for v in values {
+                self.write_sfixed64_no_tag(*v)?;
+            }
         }
         Ok(())
     }
