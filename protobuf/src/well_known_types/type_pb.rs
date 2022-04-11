@@ -686,7 +686,7 @@ pub mod field {
 
     impl Kind {
         pub(in super) fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
-            crate::reflect::GeneratedEnumDescriptorData::new_2::<Kind>("Field.Kind", 1)
+            crate::reflect::GeneratedEnumDescriptorData::new::<Kind>("Field.Kind")
         }
     }
 
@@ -749,7 +749,7 @@ pub mod field {
 
     impl Cardinality {
         pub(in super) fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
-            crate::reflect::GeneratedEnumDescriptorData::new_2::<Cardinality>("Field.Cardinality", 2)
+            crate::reflect::GeneratedEnumDescriptorData::new::<Cardinality>("Field.Cardinality")
         }
     }
 }
@@ -1353,7 +1353,7 @@ impl ::std::default::Default for Syntax {
 
 impl Syntax {
     fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
-        crate::reflect::GeneratedEnumDescriptorData::new_2::<Syntax>("Syntax", 0)
+        crate::reflect::GeneratedEnumDescriptorData::new::<Syntax>("Syntax")
     }
 }
 

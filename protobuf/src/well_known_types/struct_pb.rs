@@ -824,7 +824,7 @@ impl ::std::default::Default for NullValue {
 
 impl NullValue {
     fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
-        crate::reflect::GeneratedEnumDescriptorData::new_2::<NullValue>("NullValue", 0)
+        crate::reflect::GeneratedEnumDescriptorData::new::<NullValue>("NullValue")
     }
 }
 

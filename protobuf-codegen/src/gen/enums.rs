@@ -346,11 +346,10 @@ impl<'a> EnumGen<'a> {
             &sig,
             |w| {
                 w.write_line(&format!(
-                    "{}::reflect::GeneratedEnumDescriptorData::new_2::<{}>(\"{}\", {})",
+                    "{}::reflect::GeneratedEnumDescriptorData::new::<{}>(\"{}\")",
                     protobuf_crate_path(&self.customize.for_elem),
                     self.type_name,
                     self.enum_with_scope.name_to_package(),
-                    self.enum_with_scope.en.index_in_file_for_codegen(),
                 ));
             },
         );

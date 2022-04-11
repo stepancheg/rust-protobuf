@@ -2300,7 +2300,7 @@ pub mod field_descriptor_proto {
 
     impl Type {
         pub(in super) fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
-            crate::reflect::GeneratedEnumDescriptorData::new_2::<Type>("FieldDescriptorProto.Type", 0)
+            crate::reflect::GeneratedEnumDescriptorData::new::<Type>("FieldDescriptorProto.Type")
         }
     }
 
@@ -2363,7 +2363,7 @@ pub mod field_descriptor_proto {
 
     impl Label {
         pub(in super) fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
-            crate::reflect::GeneratedEnumDescriptorData::new_2::<Label>("FieldDescriptorProto.Label", 1)
+            crate::reflect::GeneratedEnumDescriptorData::new::<Label>("FieldDescriptorProto.Label")
         }
     }
 }
@@ -4968,7 +4968,7 @@ pub mod file_options {
 
     impl OptimizeMode {
         pub(in super) fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
-            crate::reflect::GeneratedEnumDescriptorData::new_2::<OptimizeMode>("FileOptions.OptimizeMode", 2)
+            crate::reflect::GeneratedEnumDescriptorData::new::<OptimizeMode>("FileOptions.OptimizeMode")
         }
     }
 }
@@ -5727,7 +5727,7 @@ pub mod field_options {
 
     impl CType {
         pub(in super) fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
-            crate::reflect::GeneratedEnumDescriptorData::new_2::<CType>("FieldOptions.CType", 3)
+            crate::reflect::GeneratedEnumDescriptorData::new::<CType>("FieldOptions.CType")
         }
     }
 
@@ -5785,7 +5785,7 @@ pub mod field_options {
 
     impl JSType {
         pub(in super) fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
-            crate::reflect::GeneratedEnumDescriptorData::new_2::<JSType>("FieldOptions.JSType", 4)
+            crate::reflect::GeneratedEnumDescriptorData::new::<JSType>("FieldOptions.JSType")
         }
     }
 }
@@ -6747,7 +6747,7 @@ pub mod method_options {
 
     impl IdempotencyLevel {
         pub(in super) fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
-            crate::reflect::GeneratedEnumDescriptorData::new_2::<IdempotencyLevel>("MethodOptions.IdempotencyLevel", 5)
+            crate::reflect::GeneratedEnumDescriptorData::new::<IdempotencyLevel>("MethodOptions.IdempotencyLevel")
         }
     }
 }

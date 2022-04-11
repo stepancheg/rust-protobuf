@@ -73,7 +73,7 @@ impl GeneratedFileDescriptor {
         let enums = enums
             .into_iter()
             .enumerate()
-            .map(|(i, e)| GeneratedEnumDescriptor::new(e, i, file_descriptor_proto))
+            .map(|(_i, e)| GeneratedEnumDescriptor::new(e, file_descriptor_proto))
             .collect();
 
         let oneofs = oneofs

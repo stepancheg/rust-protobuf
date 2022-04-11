@@ -11,17 +11,15 @@ pub struct GeneratedEnumDescriptorData {
     name_in_file: &'static str,
     type_id: TypeId,
     enum_or_unknown_type_id: TypeId,
-    index_in_file: usize,
 }
 
 impl GeneratedEnumDescriptorData {
     #[doc(hidden)]
-    pub fn new_2<E>(name_in_file: &'static str, index_in_file: usize) -> GeneratedEnumDescriptorData
+    pub fn new<E>(name_in_file: &'static str) -> GeneratedEnumDescriptorData
     where
         E: EnumFull,
     {
         GeneratedEnumDescriptorData {
-            index_in_file,
             name_in_file,
             type_id: TypeId::of::<E>(),
             enum_or_unknown_type_id: TypeId::of::<EnumOrUnknown<E>>(),
@@ -40,17 +38,13 @@ pub(crate) struct GeneratedEnumDescriptor {
 impl GeneratedEnumDescriptor {
     pub(crate) fn new(
         data: GeneratedEnumDescriptorData,
-        expected_index: usize,
         file_descriptor_proto: &'static FileDescriptorProto,
     ) -> GeneratedEnumDescriptor {
         let GeneratedEnumDescriptorData {
             name_in_file,
             type_id,
             enum_or_unknown_type_id,
-            index_in_file,
         } = data;
-
-        assert!(expected_index == index_in_file);
 
         let _ = (name_in_file, file_descriptor_proto);
 

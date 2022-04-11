@@ -1171,7 +1171,7 @@ pub mod code_generator_response {
 
     impl Feature {
         pub(in super) fn generated_enum_descriptor_data() -> crate::reflect::GeneratedEnumDescriptorData {
-            crate::reflect::GeneratedEnumDescriptorData::new_2::<Feature>("CodeGeneratorResponse.Feature", 0)
+            crate::reflect::GeneratedEnumDescriptorData::new::<Feature>("CodeGeneratorResponse.Feature")
         }
     }
 }
