@@ -196,7 +196,7 @@ fn test_default_instance() {
 
 #[test]
 fn test_message_descriptor() {
-    assert_eq!("TestDescriptor", TestDescriptor::descriptor_static().name());
+    assert_eq!("TestDescriptor", TestDescriptor::descriptor().name());
 
     let d = reflect::MessageDescriptor::for_type::<TestDescriptor>();
     assert_eq!("TestDescriptor", d.name());

@@ -338,7 +338,7 @@ fn test_ignore_unknown_fields() {
 
 #[test]
 fn test_reflect() {
-    for m in special_messages(&TestTypes::descriptor_static()) {
+    for m in special_messages(&TestTypes::descriptor()) {
         test_json_message(&*m);
     }
 }

@@ -43,7 +43,7 @@ pub trait MessageDyn: Any + fmt::Debug + fmt::Display + Send + Sync + 'static {
 
 impl<M: MessageFull> MessageDyn for M {
     fn descriptor_dyn(&self) -> MessageDescriptor {
-        M::descriptor_static()
+        M::descriptor()
     }
 
     fn merge_from_dyn(&mut self, is: &mut CodedInputStream) -> crate::Result<()> {

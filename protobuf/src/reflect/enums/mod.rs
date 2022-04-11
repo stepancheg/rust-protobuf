@@ -287,7 +287,7 @@ mod test {
     #[cfg_attr(miri, ignore)] // Too slow on Miri.
     fn enclosing_message() {
         assert_eq!(
-            Some(FieldDescriptorProto::descriptor_static()),
+            Some(FieldDescriptorProto::descriptor()),
             Type::enum_descriptor().enclosing_message()
         );
         assert_eq!(None, NullValue::enum_descriptor().enclosing_message());

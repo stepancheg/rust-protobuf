@@ -15,6 +15,7 @@ Stable versions are 2.xx still supported.
 * rename `EnumFull::enum_descriptor_static` -> `enum_descriptor`
 * fix `EnumFull::descriptor` for enums with `allow_alias`
 * rename `MessageDescriptor::enums` to `nested_enums`
+* rename `MessageDescriptor::descriptor_static` to `descriptor`
 * add `EnumDescriptor::enclosing_message()`
 * `Message` now requires `PartialEq`
 

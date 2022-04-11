@@ -22,18 +22,15 @@ fn test_dynamic() {
     m1.set_i(10);
     let any = Any::pack_dyn(&m1).unwrap();
     assert_eq!("type.googleapis.com/test_any.MessageOne", any.type_url);
-    assert!(any.is_dyn(&MessageOne::descriptor_static()));
-    assert!(!any.is_dyn(&MessageTwo::descriptor_static()));
+    assert!(any.is_dyn(&MessageOne::descriptor()));
+    assert!(!any.is_dyn(&MessageTwo::descriptor()));
     assert_eq!(
         m1,
-        *any.unpack_dyn(&MessageOne::descriptor_static())
+        *any.unpack_dyn(&MessageOne::descriptor())
             .unwrap()
             .unwrap()
             .downcast_box::<MessageOne>()
             .unwrap()
     );
-    assert!(any
-        .unpack_dyn(&MessageTwo::descriptor_static())
-        .unwrap()
-        .is_none());
+    assert!(any.unpack_dyn(&MessageTwo::descriptor()).unwrap().is_none());
 }

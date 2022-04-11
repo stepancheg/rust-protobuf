@@ -751,7 +751,7 @@ where
     where
         Self: Sized,
     {
-        RuntimeTypeBox::Message(M::descriptor_static())
+        RuntimeTypeBox::Message(M::descriptor())
     }
 
     fn default_value_ref() -> ReflectValueRef<'static> {

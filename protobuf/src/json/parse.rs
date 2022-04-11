@@ -916,7 +916,7 @@ pub fn parse_from_str_with_options<M: MessageFull>(
     json: &str,
     parse_options: &ParseOptions,
 ) -> ParseResult<M> {
-    let m = parse_dynamic_from_str_with_options(&M::descriptor_static(), json, parse_options)?;
+    let m = parse_dynamic_from_str_with_options(&M::descriptor(), json, parse_options)?;
     Ok(*m.downcast_box().unwrap())
 }
 

@@ -417,7 +417,7 @@ impl<'a> OptionResoler<'a> {
     {
         self.custom_option_ext_step(
             scope,
-            &M::descriptor_static(),
+            &M::descriptor(),
             options.mut_unknown_fields(),
             &option_name.0[0],
             &option_name.0[1..],
@@ -671,17 +671,17 @@ impl<'a> OptionResoler<'a> {
     where
         M: MessageFull,
     {
-        if M::descriptor_static().full_name() == "google.protobuf.FieldOptions" {
+        if M::descriptor().full_name() == "google.protobuf.FieldOptions" {
             if option.get() == "default" || option.get() == "json_name" {
                 // some options are written to non-options message and handled outside
                 return Ok(());
             }
         }
-        match M::descriptor_static().field_by_name(option.get()) {
+        match M::descriptor().field_by_name(option.get()) {
             Some(field) => {
                 if field.is_repeated_or_map() {
                     return Err(OptionResolverError::BuiltinOptionPointsToNonSingularField(
-                        M::descriptor_static().full_name().to_owned(),
+                        M::descriptor().full_name().to_owned(),
                         option.get().to_owned(),
                     )
                     .into());
@@ -695,7 +695,7 @@ impl<'a> OptionResoler<'a> {
             }
             None => {
                 return Err(OptionResolverError::BuiltinOptionNotFound(
-                    M::descriptor_static().full_name().to_owned(),
+                    M::descriptor().full_name().to_owned(),
                     option.get().to_owned(),
                 )
                 .into())

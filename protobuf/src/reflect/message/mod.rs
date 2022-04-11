@@ -76,7 +76,7 @@ impl MessageDescriptor {
 
     /// Get a message descriptor for given message type
     pub fn for_type<M: MessageFull>() -> MessageDescriptor {
-        M::descriptor_static()
+        M::descriptor()
     }
 
     #[doc(hidden)]
@@ -344,16 +344,16 @@ mod test {
     #[test]
     #[cfg_attr(miri, ignore)] // Too slow on Miri.
     fn nested_messages() {
-        assert!(DescriptorProto::descriptor_static()
+        assert!(DescriptorProto::descriptor()
             .nested_messages()
             .collect::<Vec<_>>()
-            .contains(&ExtensionRange::descriptor_static()));
+            .contains(&ExtensionRange::descriptor()));
     }
 
     #[test]
     #[cfg_attr(miri, ignore)] // Too slow on Miri.
     fn nested_enums() {
-        assert!(FieldDescriptorProto::descriptor_static()
+        assert!(FieldDescriptorProto::descriptor()
             .nested_enums()
             .collect::<Vec<_>>()
             .contains(&Type::enum_descriptor()));
@@ -363,12 +363,9 @@ mod test {
     #[cfg_attr(miri, ignore)] // Too slow on Miri.
     fn enclosing_message() {
         assert_eq!(
-            Some(DescriptorProto::descriptor_static()),
-            ExtensionRange::descriptor_static().enclosing_message()
+            Some(DescriptorProto::descriptor()),
+            ExtensionRange::descriptor().enclosing_message()
         );
-        assert_eq!(
-            None,
-            DescriptorProto::descriptor_static().enclosing_message()
-        );
+        assert_eq!(None, DescriptorProto::descriptor().enclosing_message());
     }
 }

@@ -537,7 +537,7 @@ mod test {
     #[test]
     #[cfg_attr(miri, ignore)]
     fn display() {
-        let field = DescriptorProto::descriptor_static()
+        let field = DescriptorProto::descriptor()
             .field_by_name("enum_type")
             .unwrap();
         assert_eq!(

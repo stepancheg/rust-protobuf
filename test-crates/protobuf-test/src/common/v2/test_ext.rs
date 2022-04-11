@@ -4,7 +4,7 @@ use super::test_ext_pb::*;
 
 #[test]
 fn test_get() {
-    let descriptor = MyMessage::descriptor_static();
+    let descriptor = MyMessage::descriptor();
     let message = descriptor.proto().options.get_or_default();
     assert_eq!(10.5, exts::double_field.get(message).unwrap_or_default());
     assert_eq!(-8.5, exts::float_field.get(message).unwrap_or_default());

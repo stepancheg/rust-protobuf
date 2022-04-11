@@ -390,9 +390,9 @@ impl<'a> MessageGen<'a> {
         });
     }
 
-    fn write_impl_message_full_fn_descriptor_static(&self, w: &mut CodeWriter) {
+    fn write_impl_message_full_fn_descriptor(&self, w: &mut CodeWriter) {
         let sig = format!(
-            "descriptor_static() -> {}::reflect::MessageDescriptor",
+            "descriptor() -> {}::reflect::MessageDescriptor",
             protobuf_crate_path(&self.customize.for_elem)
         );
         w.def_fn(&sig, |w| {
@@ -531,7 +531,7 @@ impl<'a> MessageGen<'a> {
             ),
             &format!("{}", self.type_name),
             |w| {
-                self.write_impl_message_full_fn_descriptor_static(w);
+                self.write_impl_message_full_fn_descriptor(w);
             },
         );
     }

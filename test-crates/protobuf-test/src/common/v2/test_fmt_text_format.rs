@@ -35,115 +35,109 @@ fn test_rust_identifier() {
 
 #[test]
 fn test_empty() {
-    test_text_format_str_descriptor("", &TestTypes::descriptor_static());
+    test_text_format_str_descriptor("", &TestTypes::descriptor());
 }
 
 #[test]
 fn test_enum() {
-    test_text_format_str_descriptor("test_enum_singular: DARK", &TestTypes::descriptor_static());
+    test_text_format_str_descriptor("test_enum_singular: DARK", &TestTypes::descriptor());
 
     test_text_format_str_descriptor(
         "test_enum_repeated: DARK test_enum_repeated: LIGHT test_enum_repeated: LIGHT",
-        &TestTypes::descriptor_static(),
+        &TestTypes::descriptor(),
     );
 }
 
 #[test]
 fn test_int() {
-    test_text_format_str_descriptor("uint32_singular: 98", &TestTypes::descriptor_static());
-    test_text_format_str_descriptor("uint64_singular: 100", &TestTypes::descriptor_static());
+    test_text_format_str_descriptor("uint32_singular: 98", &TestTypes::descriptor());
+    test_text_format_str_descriptor("uint64_singular: 100", &TestTypes::descriptor());
 
-    test_text_format_str_descriptor("int32_singular: 98", &TestTypes::descriptor_static());
-    test_text_format_str_descriptor("int64_singular: 100", &TestTypes::descriptor_static());
-    test_text_format_str_descriptor("int32_singular: -98", &TestTypes::descriptor_static());
-    test_text_format_str_descriptor("int64_singular: -100", &TestTypes::descriptor_static());
+    test_text_format_str_descriptor("int32_singular: 98", &TestTypes::descriptor());
+    test_text_format_str_descriptor("int64_singular: 100", &TestTypes::descriptor());
+    test_text_format_str_descriptor("int32_singular: -98", &TestTypes::descriptor());
+    test_text_format_str_descriptor("int64_singular: -100", &TestTypes::descriptor());
 
-    test_text_format_str_descriptor("fixed32_singular: 98", &TestTypes::descriptor_static());
-    test_text_format_str_descriptor("fixed64_singular: 100", &TestTypes::descriptor_static());
-    test_text_format_str_descriptor("sfixed32_singular: 98", &TestTypes::descriptor_static());
-    test_text_format_str_descriptor("sfixed64_singular: 100", &TestTypes::descriptor_static());
-    test_text_format_str_descriptor("sfixed32_singular: -98", &TestTypes::descriptor_static());
-    test_text_format_str_descriptor("sfixed64_singular: -100", &TestTypes::descriptor_static());
+    test_text_format_str_descriptor("fixed32_singular: 98", &TestTypes::descriptor());
+    test_text_format_str_descriptor("fixed64_singular: 100", &TestTypes::descriptor());
+    test_text_format_str_descriptor("sfixed32_singular: 98", &TestTypes::descriptor());
+    test_text_format_str_descriptor("sfixed64_singular: 100", &TestTypes::descriptor());
+    test_text_format_str_descriptor("sfixed32_singular: -98", &TestTypes::descriptor());
+    test_text_format_str_descriptor("sfixed64_singular: -100", &TestTypes::descriptor());
 
     test_text_format_str_descriptor(
         "int32_repeated: 98 int32_repeated: -99",
-        &TestTypes::descriptor_static(),
+        &TestTypes::descriptor(),
     );
 }
 
 #[test]
 fn test_parse_float() {
-    test_text_format_str_descriptor("float_singular: 98.5", &TestTypes::descriptor_static());
-    test_text_format_str_descriptor("float_singular: -99.5", &TestTypes::descriptor_static());
-    test_text_format_str_descriptor("float_singular: -99", &TestTypes::descriptor_static());
-    test_text_format_str_descriptor("double_singular: 98.5", &TestTypes::descriptor_static());
-    test_text_format_str_descriptor("double_singular: -99.5", &TestTypes::descriptor_static());
-    test_text_format_str_descriptor("double_singular: 99", &TestTypes::descriptor_static());
+    test_text_format_str_descriptor("float_singular: 98.5", &TestTypes::descriptor());
+    test_text_format_str_descriptor("float_singular: -99.5", &TestTypes::descriptor());
+    test_text_format_str_descriptor("float_singular: -99", &TestTypes::descriptor());
+    test_text_format_str_descriptor("double_singular: 98.5", &TestTypes::descriptor());
+    test_text_format_str_descriptor("double_singular: -99.5", &TestTypes::descriptor());
+    test_text_format_str_descriptor("double_singular: 99", &TestTypes::descriptor());
 }
 
 #[test]
 fn test_bool() {
-    test_text_format_str_descriptor("bool_singular: true", &TestTypes::descriptor_static());
-    test_text_format_str_descriptor("bool_singular: false", &TestTypes::descriptor_static());
+    test_text_format_str_descriptor("bool_singular: true", &TestTypes::descriptor());
+    test_text_format_str_descriptor("bool_singular: false", &TestTypes::descriptor());
     test_text_format_str_descriptor(
         "bool_repeated: false bool_repeated: false bool_repeated: true",
-        &TestTypes::descriptor_static(),
+        &TestTypes::descriptor(),
     );
 }
 
 #[test]
 fn test_string_bytes() {
-    test_text_format_str_descriptor("string_singular: \"\"", &TestTypes::descriptor_static());
-    test_text_format_str_descriptor("string_singular: \"a b\"", &TestTypes::descriptor_static());
-    test_text_format_str_descriptor(
-        "string_singular: \"a\\nb\"",
-        &TestTypes::descriptor_static(),
-    );
+    test_text_format_str_descriptor("string_singular: \"\"", &TestTypes::descriptor());
+    test_text_format_str_descriptor("string_singular: \"a b\"", &TestTypes::descriptor());
+    test_text_format_str_descriptor("string_singular: \"a\\nb\"", &TestTypes::descriptor());
 
-    test_text_format_str_descriptor("bytes_singular: \"\"", &TestTypes::descriptor_static());
-    test_text_format_str_descriptor("bytes_singular: \"a b\"", &TestTypes::descriptor_static());
-    test_text_format_str_descriptor("bytes_singular: \"a\\nb\"", &TestTypes::descriptor_static());
-    test_text_format_str_descriptor(
-        "bytes_singular: \"a\\xfeb\"",
-        &TestTypes::descriptor_static(),
-    );
+    test_text_format_str_descriptor("bytes_singular: \"\"", &TestTypes::descriptor());
+    test_text_format_str_descriptor("bytes_singular: \"a b\"", &TestTypes::descriptor());
+    test_text_format_str_descriptor("bytes_singular: \"a\\nb\"", &TestTypes::descriptor());
+    test_text_format_str_descriptor("bytes_singular: \"a\\xfeb\"", &TestTypes::descriptor());
 
     test_text_format_str_descriptor(
         "string_repeated: \"ab\" bytes_repeated: \"cd\" string_repeated: \"ef\"",
-        &TestTypes::descriptor_static(),
+        &TestTypes::descriptor(),
     );
 
     test_text_format_str_descriptor(
         "string_singular: \"quote\\\"newline\\nbackslash\\\\del\\177\"",
-        &TestTypes::descriptor_static(),
+        &TestTypes::descriptor(),
     );
 }
 
 #[test]
 fn test_message() {
-    test_text_format_str_descriptor("test_message_singular {}", &TestTypes::descriptor_static());
+    test_text_format_str_descriptor("test_message_singular {}", &TestTypes::descriptor());
 
     test_text_format_str_descriptor(
         "test_message_singular { value: 10 }",
-        &TestTypes::descriptor_static(),
+        &TestTypes::descriptor(),
     );
 
     test_text_format_str_descriptor(
         "test_message_repeated { value: 10 } test_message_repeated { value: 20 }",
-        &TestTypes::descriptor_static(),
+        &TestTypes::descriptor(),
     );
 
-    test_text_format_str_descriptor("test_message_singular <>", &TestTypes::descriptor_static());
+    test_text_format_str_descriptor("test_message_singular <>", &TestTypes::descriptor());
 
     test_text_format_str_descriptor(
         "test_message_singular < value: 10 >",
-        &TestTypes::descriptor_static(),
+        &TestTypes::descriptor(),
     );
 
     assert!(
         parse_using_rust_protobuf(
             "test_message_singular < value: 10 }",
-            &TestTypes::descriptor_static()
+            &TestTypes::descriptor()
         )
         .is_err(),
         "Parsing a message with mismatched message start and terminator symbols should fail."
@@ -152,7 +146,7 @@ fn test_message() {
     assert!(
         parse_using_rust_protobuf(
             "test_message_singular { value: 10 >",
-            &TestTypes::descriptor_static()
+            &TestTypes::descriptor()
         )
         .is_err(),
         "Parsing a message with mismatched message start and terminator symbols should fail."

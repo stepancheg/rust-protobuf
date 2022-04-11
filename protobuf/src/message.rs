@@ -17,7 +17,7 @@ pub trait Message: Default + Clone + Send + Sync + Sized + PartialEq + 'static {
     /// Message name as specified in `.proto` file.
     ///
     /// Message name can be accessed using
-    /// [`MessageFull::descriptor_static`](crate::MessageFull::descriptor_static),
+    /// [`MessageFull::descriptor`](crate::MessageFull::descriptor),
     /// but when lite runtime is requested, this field can be used.
     const NAME: &'static str;
 

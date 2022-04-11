@@ -178,7 +178,7 @@ fn test_map() {
 fn test_nested_message() {
     assert_eq!(
         "test_reflect.WithNestedMessage.NestedMessage",
-        with_nested_message::NestedMessage::descriptor_static().full_name()
+        with_nested_message::NestedMessage::descriptor().full_name()
     );
 }
 
@@ -257,7 +257,7 @@ fn test_get_reflect_map() {
 
 #[test]
 fn test_json_name() {
-    let descriptor = M::descriptor_static();
+    let descriptor = M::descriptor();
     let field_descriptor = descriptor.field_by_name("sub_m").unwrap();
     // Note that we intentionally do not call `descriptor.json_name()`, since
     // that will compute a JSON name if one is not already present in the proto.

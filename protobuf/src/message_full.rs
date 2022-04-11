@@ -30,12 +30,12 @@ pub trait MessageFull: Message + ProtobufValue + fmt::Debug + fmt::Display {
     /// ```
     /// # use protobuf::MessageFull;
     /// # fn foo<MyMessage: MessageFull>() {
-    /// let descriptor = MyMessage::descriptor_static();
+    /// let descriptor = MyMessage::descriptor();
     /// assert_eq!("MyMessage", descriptor.name());
     /// # }
     /// ```
     // TODO: rename to `descriptor`.
-    fn descriptor_static() -> MessageDescriptor;
+    fn descriptor() -> MessageDescriptor;
 
     /// Reflective equality.
     ///

@@ -20,7 +20,7 @@ fn field_types() {
 
 #[test]
 fn reflect_all_oneofs() {
-    let descriptor = TestOptionalProto3::descriptor_static();
+    let descriptor = TestOptionalProto3::descriptor();
     let oneofs = descriptor.all_oneofs().collect::<Vec<_>>();
     assert!(oneofs.len() > 1);
     assert!(!oneofs[0].is_synthetic());
@@ -39,7 +39,7 @@ fn reflect_all_oneofs() {
 
 #[test]
 fn reflect_oneofs() {
-    let descriptor = TestOptionalProto3::descriptor_static();
+    let descriptor = TestOptionalProto3::descriptor();
     let oneofs = descriptor.oneofs().collect::<Vec<_>>();
     assert_eq!(1, oneofs.len());
     assert!(!oneofs[0].is_synthetic());

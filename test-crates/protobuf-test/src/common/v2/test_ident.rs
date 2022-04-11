@@ -11,5 +11,5 @@ fn test() {
 fn test_reflect() {
     message_Self::new();
     // instantiate reflection
-    assert_eq!("Self", message_Self::descriptor_static().name());
+    assert_eq!("Self", message_Self::descriptor().name());
 }

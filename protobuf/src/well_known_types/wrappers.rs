@@ -134,7 +134,7 @@ impl crate::Message for DoubleValue {
 }
 
 impl crate::MessageFull for DoubleValue {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 0)
     }
 }
@@ -262,7 +262,7 @@ impl crate::Message for FloatValue {
 }
 
 impl crate::MessageFull for FloatValue {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 1)
     }
 }
@@ -390,7 +390,7 @@ impl crate::Message for Int64Value {
 }
 
 impl crate::MessageFull for Int64Value {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 2)
     }
 }
@@ -518,7 +518,7 @@ impl crate::Message for UInt64Value {
 }
 
 impl crate::MessageFull for UInt64Value {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 3)
     }
 }
@@ -646,7 +646,7 @@ impl crate::Message for Int32Value {
 }
 
 impl crate::MessageFull for Int32Value {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 4)
     }
 }
@@ -774,7 +774,7 @@ impl crate::Message for UInt32Value {
 }
 
 impl crate::MessageFull for UInt32Value {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 5)
     }
 }
@@ -902,7 +902,7 @@ impl crate::Message for BoolValue {
 }
 
 impl crate::MessageFull for BoolValue {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 6)
     }
 }
@@ -1030,7 +1030,7 @@ impl crate::Message for StringValue {
 }
 
 impl crate::MessageFull for StringValue {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 7)
     }
 }
@@ -1158,7 +1158,7 @@ impl crate::Message for BytesValue {
 }
 
 impl crate::MessageFull for BytesValue {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 8)
     }
 }

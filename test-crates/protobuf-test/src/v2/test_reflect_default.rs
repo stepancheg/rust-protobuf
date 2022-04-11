@@ -7,7 +7,7 @@ use super::test_reflect_default_pb::*;
 fn test_regular() {
     let m = TestReflectDefault::new();
 
-    let descriptor = TestReflectDefault::descriptor_static();
+    let descriptor = TestReflectDefault::descriptor();
 
     let i = descriptor.field_by_name("i").unwrap();
     assert_eq!(10, i.get_singular_field_or_default(&m).to_i32().unwrap());
@@ -28,7 +28,7 @@ fn test_regular() {
 fn test_oneof() {
     let m = TestReflectDefault::new();
 
-    let descriptor = TestReflectDefault::descriptor_static();
+    let descriptor = TestReflectDefault::descriptor();
 
     let i = descriptor.field_by_name("oi").unwrap();
     assert_eq!(10, i.get_singular_field_or_default(&m).to_i32().unwrap());

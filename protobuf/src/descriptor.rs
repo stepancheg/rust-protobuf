@@ -138,7 +138,7 @@ impl crate::Message for FileDescriptorSet {
 }
 
 impl crate::MessageFull for FileDescriptorSet {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 0)
     }
 }
@@ -622,7 +622,7 @@ impl crate::Message for FileDescriptorProto {
 }
 
 impl crate::MessageFull for FileDescriptorProto {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 1)
     }
 }
@@ -995,7 +995,7 @@ impl crate::Message for DescriptorProto {
 }
 
 impl crate::MessageFull for DescriptorProto {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 2)
     }
 }
@@ -1201,7 +1201,7 @@ pub mod descriptor_proto {
     }
 
     impl crate::MessageFull for ExtensionRange {
-        fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        fn descriptor() -> crate::reflect::MessageDescriptor {
             crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 3)
         }
     }
@@ -1384,7 +1384,7 @@ pub mod descriptor_proto {
     }
 
     impl crate::MessageFull for ReservedRange {
-        fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        fn descriptor() -> crate::reflect::MessageDescriptor {
             crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 4)
         }
     }
@@ -1516,7 +1516,7 @@ impl crate::Message for ExtensionRangeOptions {
 }
 
 impl crate::MessageFull for ExtensionRangeOptions {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 5)
     }
 }
@@ -2149,7 +2149,7 @@ impl crate::Message for FieldDescriptorProto {
 }
 
 impl crate::MessageFull for FieldDescriptorProto {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 6)
     }
 }
@@ -2536,7 +2536,7 @@ impl crate::Message for OneofDescriptorProto {
 }
 
 impl crate::MessageFull for OneofDescriptorProto {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 7)
     }
 }
@@ -2792,7 +2792,7 @@ impl crate::Message for EnumDescriptorProto {
 }
 
 impl crate::MessageFull for EnumDescriptorProto {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 8)
     }
 }
@@ -2980,7 +2980,7 @@ pub mod enum_descriptor_proto {
     }
 
     impl crate::MessageFull for EnumReservedRange {
-        fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        fn descriptor() -> crate::reflect::MessageDescriptor {
             crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 9)
         }
     }
@@ -3203,7 +3203,7 @@ impl crate::Message for EnumValueDescriptorProto {
 }
 
 impl crate::MessageFull for EnumValueDescriptorProto {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 10)
     }
 }
@@ -3412,7 +3412,7 @@ impl crate::Message for ServiceDescriptorProto {
 }
 
 impl crate::MessageFull for ServiceDescriptorProto {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 11)
     }
 }
@@ -3783,7 +3783,7 @@ impl crate::Message for MethodDescriptorProto {
 }
 
 impl crate::MessageFull for MethodDescriptorProto {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 12)
     }
 }
@@ -4889,7 +4889,7 @@ impl crate::Message for FileOptions {
 }
 
 impl crate::MessageFull for FileOptions {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 13)
     }
 }
@@ -5241,7 +5241,7 @@ impl crate::Message for MessageOptions {
 }
 
 impl crate::MessageFull for MessageOptions {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 14)
     }
 }
@@ -5653,7 +5653,7 @@ impl crate::Message for FieldOptions {
 }
 
 impl crate::MessageFull for FieldOptions {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 15)
     }
 }
@@ -5901,7 +5901,7 @@ impl crate::Message for OneofOptions {
 }
 
 impl crate::MessageFull for OneofOptions {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 16)
     }
 }
@@ -6112,7 +6112,7 @@ impl crate::Message for EnumOptions {
 }
 
 impl crate::MessageFull for EnumOptions {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 17)
     }
 }
@@ -6284,7 +6284,7 @@ impl crate::Message for EnumValueOptions {
 }
 
 impl crate::MessageFull for EnumValueOptions {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 18)
     }
 }
@@ -6456,7 +6456,7 @@ impl crate::Message for ServiceOptions {
 }
 
 impl crate::MessageFull for ServiceOptions {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 19)
     }
 }
@@ -6668,7 +6668,7 @@ impl crate::Message for MethodOptions {
 }
 
 impl crate::MessageFull for MethodOptions {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 20)
     }
 }
@@ -7142,7 +7142,7 @@ impl crate::Message for UninterpretedOption {
 }
 
 impl crate::MessageFull for UninterpretedOption {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 21)
     }
 }
@@ -7352,7 +7352,7 @@ pub mod uninterpreted_option {
     }
 
     impl crate::MessageFull for NamePart {
-        fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        fn descriptor() -> crate::reflect::MessageDescriptor {
             crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 22)
         }
     }
@@ -7485,7 +7485,7 @@ impl crate::Message for SourceCodeInfo {
 }
 
 impl crate::MessageFull for SourceCodeInfo {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 23)
     }
 }
@@ -7762,7 +7762,7 @@ pub mod source_code_info {
     }
 
     impl crate::MessageFull for Location {
-        fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        fn descriptor() -> crate::reflect::MessageDescriptor {
             crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 24)
         }
     }
@@ -7898,7 +7898,7 @@ impl crate::Message for GeneratedCodeInfo {
 }
 
 impl crate::MessageFull for GeneratedCodeInfo {
-    fn descriptor_static() -> crate::reflect::MessageDescriptor {
+    fn descriptor() -> crate::reflect::MessageDescriptor {
         crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 25)
     }
 }
@@ -8161,7 +8161,7 @@ pub mod generated_code_info {
     }
 
     impl crate::MessageFull for Annotation {
-        fn descriptor_static() -> crate::reflect::MessageDescriptor {
+        fn descriptor() -> crate::reflect::MessageDescriptor {
             crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 26)
         }
     }

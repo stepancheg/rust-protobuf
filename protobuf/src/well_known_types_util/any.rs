@@ -66,7 +66,7 @@ impl Any {
 
     /// Check if `Any` contains a message of given type.
     pub fn is<M: MessageFull>(&self) -> bool {
-        self.is_dyn(&M::descriptor_static())
+        self.is_dyn(&M::descriptor())
     }
 
     /// Check if `Any` contains a message of given type.
