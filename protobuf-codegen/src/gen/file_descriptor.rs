@@ -8,6 +8,7 @@ use crate::gen::inside::protobuf_crate_path;
 use crate::gen::paths::proto_path_to_fn_file_descriptor;
 use crate::gen::rust::expr_vec_with_capacity;
 use crate::gen::scope::FileScope;
+use crate::gen::scope::Scope;
 use crate::gen::scope::WithScope;
 use crate::Customize;
 
@@ -173,4 +174,15 @@ pub(crate) fn write_file_descriptor_data(
     );
     w.write_line("");
     write_file_descriptor(file, &customize, w);
+}
+
+/// Code to generate call `module::file_descriptor()`.
+pub(crate) fn file_descriptor_call_expr(scope: &Scope) -> String {
+    format!(
+        "{}()",
+        scope
+            .rust_path_to_file()
+            .to_reverse()
+            .append_ident("file_descriptor".into())
+    )
 }

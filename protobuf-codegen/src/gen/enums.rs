@@ -6,6 +6,7 @@ use crate::customize::ctx::CustomizeElemCtx;
 use crate::customize::rustproto_proto::customize_from_rustproto_for_enum;
 use crate::gen::code_writer::CodeWriter;
 use crate::gen::code_writer::Visibility;
+use crate::gen::file_descriptor::file_descriptor_call_expr;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::protoc_insertion_point::write_protoc_insertion_point_for_enum;
 use crate::gen::protoc_insertion_point::write_protoc_insertion_point_for_enum_value;
@@ -291,13 +292,9 @@ impl<'a> EnumGen<'a> {
         );
         w.def_fn(&sig, |w| {
             w.write_line(&format!(
-                "{}::reflect::EnumDescriptor::new_generated_2({}(), {})",
+                "{}::reflect::EnumDescriptor::new_generated_2({}, {})",
                 protobuf_crate_path(&self.customize.for_elem),
-                self.enum_with_scope
-                    .scope()
-                    .rust_path_to_file()
-                    .to_reverse()
-                    .append_ident("file_descriptor".into()),
+                file_descriptor_call_expr(self.enum_with_scope.scope()),
                 self.enum_with_scope.en.index_in_file_for_codegen(),
             ));
         });

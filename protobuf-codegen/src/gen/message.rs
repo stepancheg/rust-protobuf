@@ -13,6 +13,7 @@ use crate::gen::enums::*;
 use crate::gen::field::FieldGen;
 use crate::gen::field::FieldKind;
 use crate::gen::file_and_mod::FileAndMod;
+use crate::gen::file_descriptor::file_descriptor_call_expr;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::oneof::OneofGen;
 use crate::gen::oneof::OneofVariantGen;
@@ -396,17 +397,9 @@ impl<'a> MessageGen<'a> {
             protobuf_crate_path(&self.customize.for_elem)
         );
         w.def_fn(&sig, |w| {
-            let file_descriptor_expr = format!(
-                "{}()",
-                self.message
-                    .scope()
-                    .rust_path_to_file()
-                    .to_reverse()
-                    .append_ident("file_descriptor".into())
-            );
             let expr = format!(
                 "{}.message_by_package_relative_name(\"{}\").unwrap()",
-                file_descriptor_expr,
+                file_descriptor_call_expr(self.message.scope()),
                 self.message.message.name_to_package()
             );
             w.lazy_static(
