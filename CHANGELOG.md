@@ -5,6 +5,8 @@ Stable versions are 2.xx still supported.
 
 ## [3] - Unreleased
 
+## [3.0.0-alpha.10] - 2022-04-11
+
 * remove `expose_oneof` codegen option (it is on by default for a long time)
 * remove unused serde-related options from `rustproto.proto`
 * in generated code, enum variant names are converted to camel case
