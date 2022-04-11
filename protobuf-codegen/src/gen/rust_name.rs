@@ -169,12 +169,9 @@ impl RustPath {
         self.path.remove_first()
     }
 
-    pub fn to_reverse(&self) -> RustPath {
+    pub fn to_reverse(&self) -> RustRelativePath {
         assert!(!self.absolute);
-        RustPath {
-            absolute: false,
-            path: self.path.to_reverse(),
-        }
+        self.path.to_reverse()
     }
 
     pub fn prepend_ident(&mut self, ident: RustIdent) {

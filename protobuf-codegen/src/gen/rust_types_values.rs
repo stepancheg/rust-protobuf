@@ -500,7 +500,7 @@ fn make_path_to_path(source: &RustPath, dest: &RustPath) -> RustPath {
         source.remove_first().unwrap();
         dest.remove_first().unwrap();
     }
-    source.to_reverse().append(dest)
+    source.to_reverse().into_path().append(dest)
 }
 
 pub(crate) fn make_path(source: &RustPath, dest: &RustIdentWithPath) -> RustIdentWithPath {
