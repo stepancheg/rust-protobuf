@@ -632,7 +632,8 @@ pub mod value {
 
     impl crate::OneofFull for Kind {
         fn descriptor() -> crate::reflect::OneofDescriptor {
-            unimplemented!();
+            static descriptor: crate::rt::Lazy<crate::reflect::OneofDescriptor> = crate::rt::Lazy::new();
+            descriptor.get(|| <super::Value as crate::MessageFull>::descriptor().oneof_by_name("kind").unwrap()).clone()
         }
     }
 
