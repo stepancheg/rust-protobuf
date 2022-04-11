@@ -139,7 +139,10 @@ impl<'a> FileScope<'a> {
     pub fn find_messages_except_map(&self) -> Vec<MessageWithScope<'a>> {
         self.find_messages()
             .into_iter()
-            .filter(|m| !m.is_map())
+            .filter(|m| {
+                // TODO: do not unwrap
+                !m.is_map().unwrap()
+            })
             .collect()
     }
 
@@ -403,26 +406,25 @@ impl<'a> MessageWithScope<'a> {
     }
 
     /** Need to generate a mod for message nested objects. */
-    pub fn need_mod(&self) -> bool {
+    pub fn need_mod(&self) -> anyhow::Result<bool> {
         for nested in self.to_scope().messages() {
-            if nested.is_map() {
+            if nested.is_map()? {
                 continue;
             }
-            return true;
+            return Ok(true);
         }
         if !self.to_scope().enums().is_empty() {
-            return true;
+            return Ok(true);
         }
         if !self.message.all_oneofs().next().is_none() {
-            return true;
+            return Ok(true);
         }
-        false
+        Ok(false)
     }
 
     /// This message is a special message which is a map.
-    pub fn is_map(&self) -> bool {
-        // TODO: do not unwrap
-        map_entry(self).unwrap().is_some()
+    pub fn is_map(&self) -> anyhow::Result<bool> {
+        Ok(map_entry(self)?.is_some())
     }
 }
 

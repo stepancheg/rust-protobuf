@@ -673,7 +673,7 @@ impl<'a> MessageGen<'a> {
             .into_iter()
             .filter(|nested| {
                 // ignore map entries, because they are not used in map fields
-                !nested.is_map()
+                !nested.is_map().unwrap() // TODO: do not unwrap
             })
             .collect();
         let nested_enums = self.message.to_scope().enums();

@@ -136,7 +136,8 @@ pub(crate) fn gen_well_known_types_mod(
 
             for m in file_scope.to_scope().messages() {
                 w.write_line(&format!("pub use self::{}::{};", rust_mod, m.rust_name()));
-                if m.need_mod() {
+                // TODO: do not unwrap
+                if m.need_mod().unwrap() {
                     // Does not correctly export oneofs,
                     // but that's not an issue for well_known_types
                     w.write_line(&format!("pub use self::{}::{};", rust_mod, m.mod_name()));
