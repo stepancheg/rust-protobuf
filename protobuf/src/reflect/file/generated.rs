@@ -55,6 +55,9 @@ impl GeneratedFileDescriptor {
             .map(|m| (m.protobuf_name_to_package, m))
             .collect();
 
+        let mut enums: HashMap<&str, GeneratedEnumDescriptorData> =
+            enums.into_iter().map(|e| (e.name_in_file, e)).collect();
+
         let messages = index
             .messages
             .iter()
@@ -70,10 +73,13 @@ impl GeneratedFileDescriptor {
             })
             .collect();
 
-        let enums = enums
-            .into_iter()
-            .enumerate()
-            .map(|(_i, e)| GeneratedEnumDescriptor::new(e, file_descriptor_proto))
+        let enums = index
+            .enums
+            .iter()
+            .map(|enum_index| {
+                let en = enums.remove(enum_index.name_to_package.as_str()).unwrap();
+                GeneratedEnumDescriptor::new(en, file_descriptor_proto)
+            })
             .collect();
 
         let oneofs = oneofs

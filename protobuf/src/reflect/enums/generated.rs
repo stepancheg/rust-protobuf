@@ -8,7 +8,7 @@ use crate::EnumOrUnknown;
 
 #[doc(hidden)]
 pub struct GeneratedEnumDescriptorData {
-    name_in_file: &'static str,
+    pub(crate) name_in_file: &'static str,
     type_id: TypeId,
     enum_or_unknown_type_id: TypeId,
 }
