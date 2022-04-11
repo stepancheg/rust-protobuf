@@ -299,6 +299,7 @@ mod test {
     }
 
     #[test]
+    #[cfg_attr(miri, ignore)] // Too slow on Miri.
     fn to_string() {
         assert_eq!(
             "google.protobuf.FieldDescriptorProto.Label",
