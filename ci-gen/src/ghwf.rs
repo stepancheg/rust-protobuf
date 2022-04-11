@@ -122,6 +122,7 @@ pub struct Job {
     pub name: String,
     pub runs_on: Env,
     pub steps: Vec<Step>,
+    pub timeout_minutes: Option<u64>,
     pub env: Vec<(String, String)>,
 }
 
@@ -140,6 +141,9 @@ impl Into<(String, Yaml)> for Job {
             ("name", Yaml::string(self.name)),
             ("runs-on", Yaml::string(format!("{}", self.runs_on))),
         ];
+        if let Some(timeout_minutes) = self.timeout_minutes {
+            entries.push(("timeout-minutes", Yaml::string(format!("{}", timeout_minutes))));
+        }
         if !self.env.is_empty() {
             entries.push(("env", Yaml::map(self.env)));
         }

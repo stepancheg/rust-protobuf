@@ -195,6 +195,7 @@ fn miri_test_job() -> Job {
         runs_on: LINUX.ghwf.to_owned(),
         steps,
         env,
+        timeout_minutes: Some(5),
         ..Job::default()
     }
 }
