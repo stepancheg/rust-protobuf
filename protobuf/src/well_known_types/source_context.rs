@@ -54,9 +54,8 @@ impl SourceContext {
             |m: &SourceContext| { &m.file_name },
             |m: &mut SourceContext| { &mut m.file_name },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<SourceContext>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<SourceContext>(
             "SourceContext",
-            0,
             fields,
         )
     }

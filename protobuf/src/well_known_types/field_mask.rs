@@ -51,9 +51,8 @@ impl FieldMask {
             |m: &FieldMask| { &m.paths },
             |m: &mut FieldMask| { &mut m.paths },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<FieldMask>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<FieldMask>(
             "FieldMask",
-            0,
             fields,
         )
     }

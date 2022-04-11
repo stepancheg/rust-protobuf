@@ -66,9 +66,8 @@ impl Duration {
             |m: &Duration| { &m.nanos },
             |m: &mut Duration| { &mut m.nanos },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<Duration>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<Duration>(
             "Duration",
-            0,
             fields,
         )
     }

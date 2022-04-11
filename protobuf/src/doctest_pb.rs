@@ -42,9 +42,8 @@ impl MyMessage {
 
     fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
         let mut fields = ::std::vec::Vec::with_capacity(0);
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<MyMessage>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<MyMessage>(
             "MyMessage",
-            0,
             fields,
         )
     }

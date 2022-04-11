@@ -167,9 +167,8 @@ impl Version {
             |m: &Version| { &m.suffix },
             |m: &mut Version| { &mut m.suffix },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<Version>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<Version>(
             "Version",
-            0,
             fields,
         )
     }
@@ -402,9 +401,8 @@ impl CodeGeneratorRequest {
             |m: &CodeGeneratorRequest| { &m.compiler_version },
             |m: &mut CodeGeneratorRequest| { &mut m.compiler_version },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<CodeGeneratorRequest>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<CodeGeneratorRequest>(
             "CodeGeneratorRequest",
-            1,
             fields,
         )
     }
@@ -652,9 +650,8 @@ impl CodeGeneratorResponse {
             |m: &CodeGeneratorResponse| { &m.file },
             |m: &mut CodeGeneratorResponse| { &mut m.file },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<CodeGeneratorResponse>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<CodeGeneratorResponse>(
             "CodeGeneratorResponse",
-            2,
             fields,
         )
     }
@@ -989,9 +986,8 @@ pub mod code_generator_response {
                 |m: &File| { &m.generated_code_info },
                 |m: &mut File| { &mut m.generated_code_info },
             ));
-            crate::reflect::GeneratedMessageDescriptorData::new_2::<File>(
+            crate::reflect::GeneratedMessageDescriptorData::new::<File>(
                 "CodeGeneratorResponse.File",
-                3,
                 fields,
             )
         }

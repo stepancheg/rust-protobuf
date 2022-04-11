@@ -86,9 +86,8 @@ impl Any {
             |m: &Any| { &m.value },
             |m: &mut Any| { &mut m.value },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<Any>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<Any>(
             "Any",
-            0,
             fields,
         )
     }

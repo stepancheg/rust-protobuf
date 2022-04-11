@@ -64,9 +64,8 @@ impl Timestamp {
             |m: &Timestamp| { &m.nanos },
             |m: &mut Timestamp| { &mut m.nanos },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<Timestamp>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<Timestamp>(
             "Timestamp",
-            0,
             fields,
         )
     }

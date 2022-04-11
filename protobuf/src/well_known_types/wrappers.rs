@@ -54,9 +54,8 @@ impl DoubleValue {
             |m: &DoubleValue| { &m.value },
             |m: &mut DoubleValue| { &mut m.value },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<DoubleValue>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<DoubleValue>(
             "DoubleValue",
-            0,
             fields,
         )
     }
@@ -183,9 +182,8 @@ impl FloatValue {
             |m: &FloatValue| { &m.value },
             |m: &mut FloatValue| { &mut m.value },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<FloatValue>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<FloatValue>(
             "FloatValue",
-            1,
             fields,
         )
     }
@@ -312,9 +310,8 @@ impl Int64Value {
             |m: &Int64Value| { &m.value },
             |m: &mut Int64Value| { &mut m.value },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<Int64Value>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<Int64Value>(
             "Int64Value",
-            2,
             fields,
         )
     }
@@ -441,9 +438,8 @@ impl UInt64Value {
             |m: &UInt64Value| { &m.value },
             |m: &mut UInt64Value| { &mut m.value },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<UInt64Value>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<UInt64Value>(
             "UInt64Value",
-            3,
             fields,
         )
     }
@@ -570,9 +566,8 @@ impl Int32Value {
             |m: &Int32Value| { &m.value },
             |m: &mut Int32Value| { &mut m.value },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<Int32Value>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<Int32Value>(
             "Int32Value",
-            4,
             fields,
         )
     }
@@ -699,9 +694,8 @@ impl UInt32Value {
             |m: &UInt32Value| { &m.value },
             |m: &mut UInt32Value| { &mut m.value },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<UInt32Value>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<UInt32Value>(
             "UInt32Value",
-            5,
             fields,
         )
     }
@@ -828,9 +822,8 @@ impl BoolValue {
             |m: &BoolValue| { &m.value },
             |m: &mut BoolValue| { &mut m.value },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<BoolValue>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<BoolValue>(
             "BoolValue",
-            6,
             fields,
         )
     }
@@ -957,9 +950,8 @@ impl StringValue {
             |m: &StringValue| { &m.value },
             |m: &mut StringValue| { &mut m.value },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<StringValue>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<StringValue>(
             "StringValue",
-            7,
             fields,
         )
     }
@@ -1086,9 +1078,8 @@ impl BytesValue {
             |m: &BytesValue| { &m.value },
             |m: &mut BytesValue| { &mut m.value },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<BytesValue>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<BytesValue>(
             "BytesValue",
-            8,
             fields,
         )
     }

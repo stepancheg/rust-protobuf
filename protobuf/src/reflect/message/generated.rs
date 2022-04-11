@@ -69,9 +69,8 @@ impl GeneratedMessageDescriptorData {
     ///
     /// This function is not a part of public API.
     #[doc(hidden)]
-    pub fn new_2<M: MessageFull>(
+    pub fn new<M: MessageFull>(
         protobuf_name_to_package: &'static str,
-        _index: u32,
         fields: Vec<FieldAccessor>,
     ) -> GeneratedMessageDescriptorData {
         let factory = &MessageFactoryImpl(marker::PhantomData::<M>);

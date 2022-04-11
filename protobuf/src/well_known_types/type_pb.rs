@@ -92,9 +92,8 @@ impl Type {
             |m: &Type| { &m.syntax },
             |m: &mut Type| { &mut m.syntax },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<Type>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<Type>(
             "Type",
-            0,
             fields,
         )
     }
@@ -366,9 +365,8 @@ impl Field {
             |m: &Field| { &m.default_value },
             |m: &mut Field| { &mut m.default_value },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<Field>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<Field>(
             "Field",
-            1,
             fields,
         )
     }
@@ -819,9 +817,8 @@ impl Enum {
             |m: &Enum| { &m.syntax },
             |m: &mut Enum| { &mut m.syntax },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<Enum>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<Enum>(
             "Enum",
-            2,
             fields,
         )
     }
@@ -1024,9 +1021,8 @@ impl EnumValue {
             |m: &EnumValue| { &m.options },
             |m: &mut EnumValue| { &mut m.options },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<EnumValue>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<EnumValue>(
             "EnumValue",
-            3,
             fields,
         )
     }
@@ -1194,9 +1190,8 @@ impl Option {
             |m: &Option| { &m.value },
             |m: &mut Option| { &mut m.value },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<Option>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<Option>(
             "Option",
-            4,
             fields,
         )
     }

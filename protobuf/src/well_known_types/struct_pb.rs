@@ -59,9 +59,8 @@ impl Struct {
             |m: &Struct| { &m.fields },
             |m: &mut Struct| { &mut m.fields },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<Struct>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<Struct>(
             "Struct",
-            0,
             fields,
         )
     }
@@ -442,9 +441,8 @@ impl Value {
             Value::mut_list_value,
             Value::set_list_value,
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<Value>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<Value>(
             "Value",
-            2,
             fields,
         )
     }
@@ -675,9 +673,8 @@ impl ListValue {
             |m: &ListValue| { &m.values },
             |m: &mut ListValue| { &mut m.values },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<ListValue>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<ListValue>(
             "ListValue",
-            3,
             fields,
         )
     }

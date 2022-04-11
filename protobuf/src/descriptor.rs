@@ -52,9 +52,8 @@ impl FileDescriptorSet {
             |m: &FileDescriptorSet| { &m.file },
             |m: &mut FileDescriptorSet| { &mut m.file },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<FileDescriptorSet>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<FileDescriptorSet>(
             "FileDescriptorSet",
-            0,
             fields,
         )
     }
@@ -380,9 +379,8 @@ impl FileDescriptorProto {
             |m: &FileDescriptorProto| { &m.syntax },
             |m: &mut FileDescriptorProto| { &mut m.syntax },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<FileDescriptorProto>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<FileDescriptorProto>(
             "FileDescriptorProto",
-            1,
             fields,
         )
     }
@@ -770,9 +768,8 @@ impl DescriptorProto {
             |m: &DescriptorProto| { &m.reserved_name },
             |m: &mut DescriptorProto| { &mut m.reserved_name },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<DescriptorProto>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<DescriptorProto>(
             "DescriptorProto",
-            2,
             fields,
         )
     }
@@ -1096,9 +1093,8 @@ pub mod descriptor_proto {
                 |m: &ExtensionRange| { &m.options },
                 |m: &mut ExtensionRange| { &mut m.options },
             ));
-            crate::reflect::GeneratedMessageDescriptorData::new_2::<ExtensionRange>(
+            crate::reflect::GeneratedMessageDescriptorData::new::<ExtensionRange>(
                 "DescriptorProto.ExtensionRange",
-                3,
                 fields,
             )
         }
@@ -1297,9 +1293,8 @@ pub mod descriptor_proto {
                 |m: &ReservedRange| { &m.end },
                 |m: &mut ReservedRange| { &mut m.end },
             ));
-            crate::reflect::GeneratedMessageDescriptorData::new_2::<ReservedRange>(
+            crate::reflect::GeneratedMessageDescriptorData::new::<ReservedRange>(
                 "DescriptorProto.ReservedRange",
-                4,
                 fields,
             )
         }
@@ -1435,9 +1430,8 @@ impl ExtensionRangeOptions {
             |m: &ExtensionRangeOptions| { &m.uninterpreted_option },
             |m: &mut ExtensionRangeOptions| { &mut m.uninterpreted_option },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<ExtensionRangeOptions>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<ExtensionRangeOptions>(
             "ExtensionRangeOptions",
-            5,
             fields,
         )
     }
@@ -1959,9 +1953,8 @@ impl FieldDescriptorProto {
             |m: &FieldDescriptorProto| { &m.proto3_optional },
             |m: &mut FieldDescriptorProto| { &mut m.proto3_optional },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<FieldDescriptorProto>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<FieldDescriptorProto>(
             "FieldDescriptorProto",
-            6,
             fields,
         )
     }
@@ -2448,9 +2441,8 @@ impl OneofDescriptorProto {
             |m: &OneofDescriptorProto| { &m.options },
             |m: &mut OneofDescriptorProto| { &mut m.options },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<OneofDescriptorProto>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<OneofDescriptorProto>(
             "OneofDescriptorProto",
-            7,
             fields,
         )
     }
@@ -2660,9 +2652,8 @@ impl EnumDescriptorProto {
             |m: &EnumDescriptorProto| { &m.reserved_name },
             |m: &mut EnumDescriptorProto| { &mut m.reserved_name },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<EnumDescriptorProto>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<EnumDescriptorProto>(
             "EnumDescriptorProto",
-            8,
             fields,
         )
     }
@@ -2900,9 +2891,8 @@ pub mod enum_descriptor_proto {
                 |m: &EnumReservedRange| { &m.end },
                 |m: &mut EnumReservedRange| { &mut m.end },
             ));
-            crate::reflect::GeneratedMessageDescriptorData::new_2::<EnumReservedRange>(
+            crate::reflect::GeneratedMessageDescriptorData::new::<EnumReservedRange>(
                 "EnumDescriptorProto.EnumReservedRange",
-                9,
                 fields,
             )
         }
@@ -3107,9 +3097,8 @@ impl EnumValueDescriptorProto {
             |m: &EnumValueDescriptorProto| { &m.options },
             |m: &mut EnumValueDescriptorProto| { &mut m.options },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<EnumValueDescriptorProto>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<EnumValueDescriptorProto>(
             "EnumValueDescriptorProto",
-            10,
             fields,
         )
     }
@@ -3311,9 +3300,8 @@ impl ServiceDescriptorProto {
             |m: &ServiceDescriptorProto| { &m.options },
             |m: &mut ServiceDescriptorProto| { &mut m.options },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<ServiceDescriptorProto>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<ServiceDescriptorProto>(
             "ServiceDescriptorProto",
-            11,
             fields,
         )
     }
@@ -3656,9 +3644,8 @@ impl MethodDescriptorProto {
             |m: &MethodDescriptorProto| { &m.server_streaming },
             |m: &mut MethodDescriptorProto| { &mut m.server_streaming },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<MethodDescriptorProto>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<MethodDescriptorProto>(
             "MethodDescriptorProto",
-            12,
             fields,
         )
     }
@@ -4598,9 +4585,8 @@ impl FileOptions {
             |m: &FileOptions| { &m.uninterpreted_option },
             |m: &mut FileOptions| { &mut m.uninterpreted_option },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<FileOptions>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<FileOptions>(
             "FileOptions",
-            13,
             fields,
         )
     }
@@ -5128,9 +5114,8 @@ impl MessageOptions {
             |m: &MessageOptions| { &m.uninterpreted_option },
             |m: &mut MessageOptions| { &mut m.uninterpreted_option },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<MessageOptions>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<MessageOptions>(
             "MessageOptions",
-            14,
             fields,
         )
     }
@@ -5519,9 +5504,8 @@ impl FieldOptions {
             |m: &FieldOptions| { &m.uninterpreted_option },
             |m: &mut FieldOptions| { &mut m.uninterpreted_option },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<FieldOptions>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<FieldOptions>(
             "FieldOptions",
-            15,
             fields,
         )
     }
@@ -5836,9 +5820,8 @@ impl OneofOptions {
             |m: &OneofOptions| { &m.uninterpreted_option },
             |m: &mut OneofOptions| { &mut m.uninterpreted_option },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<OneofOptions>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<OneofOptions>(
             "OneofOptions",
-            16,
             fields,
         )
     }
@@ -6026,9 +6009,8 @@ impl EnumOptions {
             |m: &EnumOptions| { &m.uninterpreted_option },
             |m: &mut EnumOptions| { &mut m.uninterpreted_option },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<EnumOptions>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<EnumOptions>(
             "EnumOptions",
-            17,
             fields,
         )
     }
@@ -6210,9 +6192,8 @@ impl EnumValueOptions {
             |m: &EnumValueOptions| { &m.uninterpreted_option },
             |m: &mut EnumValueOptions| { &mut m.uninterpreted_option },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<EnumValueOptions>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<EnumValueOptions>(
             "EnumValueOptions",
-            18,
             fields,
         )
     }
@@ -6383,9 +6364,8 @@ impl ServiceOptions {
             |m: &ServiceOptions| { &m.uninterpreted_option },
             |m: &mut ServiceOptions| { &mut m.uninterpreted_option },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<ServiceOptions>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<ServiceOptions>(
             "ServiceOptions",
-            19,
             fields,
         )
     }
@@ -6585,9 +6565,8 @@ impl MethodOptions {
             |m: &MethodOptions| { &m.uninterpreted_option },
             |m: &mut MethodOptions| { &mut m.uninterpreted_option },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<MethodOptions>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<MethodOptions>(
             "MethodOptions",
-            20,
             fields,
         )
     }
@@ -7017,9 +6996,8 @@ impl UninterpretedOption {
             |m: &UninterpretedOption| { &m.aggregate_value },
             |m: &mut UninterpretedOption| { &mut m.aggregate_value },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<UninterpretedOption>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<UninterpretedOption>(
             "UninterpretedOption",
-            21,
             fields,
         )
     }
@@ -7283,9 +7261,8 @@ pub mod uninterpreted_option {
                 |m: &NamePart| { &m.is_extension },
                 |m: &mut NamePart| { &mut m.is_extension },
             ));
-            crate::reflect::GeneratedMessageDescriptorData::new_2::<NamePart>(
+            crate::reflect::GeneratedMessageDescriptorData::new::<NamePart>(
                 "UninterpretedOption.NamePart",
-                22,
                 fields,
             )
         }
@@ -7428,9 +7405,8 @@ impl SourceCodeInfo {
             |m: &SourceCodeInfo| { &m.location },
             |m: &mut SourceCodeInfo| { &mut m.location },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<SourceCodeInfo>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<SourceCodeInfo>(
             "SourceCodeInfo",
-            23,
             fields,
         )
     }
@@ -7666,9 +7642,8 @@ pub mod source_code_info {
                 |m: &Location| { &m.leading_detached_comments },
                 |m: &mut Location| { &mut m.leading_detached_comments },
             ));
-            crate::reflect::GeneratedMessageDescriptorData::new_2::<Location>(
+            crate::reflect::GeneratedMessageDescriptorData::new::<Location>(
                 "SourceCodeInfo.Location",
-                24,
                 fields,
             )
         }
@@ -7843,9 +7818,8 @@ impl GeneratedCodeInfo {
             |m: &GeneratedCodeInfo| { &m.annotation },
             |m: &mut GeneratedCodeInfo| { &mut m.annotation },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<GeneratedCodeInfo>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<GeneratedCodeInfo>(
             "GeneratedCodeInfo",
-            25,
             fields,
         )
     }
@@ -8079,9 +8053,8 @@ pub mod generated_code_info {
                 |m: &Annotation| { &m.end },
                 |m: &mut Annotation| { &mut m.end },
             ));
-            crate::reflect::GeneratedMessageDescriptorData::new_2::<Annotation>(
+            crate::reflect::GeneratedMessageDescriptorData::new::<Annotation>(
                 "GeneratedCodeInfo.Annotation",
-                26,
                 fields,
             )
         }

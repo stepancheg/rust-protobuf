@@ -130,9 +130,8 @@ impl Api {
             |m: &Api| { &m.syntax },
             |m: &mut Api| { &mut m.syntax },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<Api>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<Api>(
             "Api",
-            0,
             fields,
         )
     }
@@ -395,9 +394,8 @@ impl Method {
             |m: &Method| { &m.syntax },
             |m: &mut Method| { &mut m.syntax },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<Method>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<Method>(
             "Method",
-            1,
             fields,
         )
     }
@@ -602,9 +600,8 @@ impl Mixin {
             |m: &Mixin| { &m.root },
             |m: &mut Mixin| { &mut m.root },
         ));
-        crate::reflect::GeneratedMessageDescriptorData::new_2::<Mixin>(
+        crate::reflect::GeneratedMessageDescriptorData::new::<Mixin>(
             "Mixin",
-            2,
             fields,
         )
     }

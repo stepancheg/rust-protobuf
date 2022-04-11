@@ -418,16 +418,12 @@ impl<'a> MessageGen<'a> {
                     field.write_descriptor_field("fields", w);
                 }
                 w.write_line(&format!(
-                    "{}::reflect::GeneratedMessageDescriptorData::new_2::<{}>(",
+                    "{}::reflect::GeneratedMessageDescriptorData::new::<{}>(",
                     protobuf_crate_path(&self.customize.for_elem),
                     self.type_name,
                 ));
                 w.indented(|w| {
                     w.write_line(&format!("\"{}\",", self.message.name_to_package()));
-                    w.write_line(&format!(
-                        "{},",
-                        self.message.message.index_in_file_for_codegen()
-                    ));
                     w.write_line("fields,");
                 });
                 w.write_line(")");
