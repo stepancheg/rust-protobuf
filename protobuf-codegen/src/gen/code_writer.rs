@@ -143,6 +143,17 @@ impl<'a> CodeWriter<'a> {
         self.write_line(&format!("{}.get({})", name, init));
     }
 
+    pub(crate) fn lazy_static_decl_get(
+        &mut self,
+        name: &str,
+        ty: &str,
+        protobuf_crate_path: &str,
+        init: impl FnOnce(&mut CodeWriter),
+    ) {
+        self.lazy_static(name, ty, protobuf_crate_path);
+        self.block(&format!("{}.get(|| {{", name), "})", init);
+    }
+
     pub(crate) fn block<F>(&mut self, first_line: &str, last_line: &str, cb: F)
     where
         F: FnOnce(&mut CodeWriter),

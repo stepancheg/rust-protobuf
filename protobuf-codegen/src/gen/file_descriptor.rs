@@ -155,20 +155,20 @@ pub(crate) fn write_file_descriptor_data(
             protobuf_crate_path(customize)
         ),
         |w| {
-            w.lazy_static(
+            w.lazy_static_decl_get(
                 "file_descriptor_proto_lazy",
                 &format!(
                     "{}::descriptor::FileDescriptorProto",
                     protobuf_crate_path(customize)
                 ),
                 &format!("{}", protobuf_crate_path(customize)),
+                |w| {
+                    w.write_line(&format!(
+                        "{}::Message::parse_from_bytes(file_descriptor_proto_data).unwrap()",
+                        protobuf_crate_path(customize)
+                    ));
+                },
             );
-            w.block("file_descriptor_proto_lazy.get(|| {", "})", |w| {
-                w.write_line(&format!(
-                    "{}::Message::parse_from_bytes(file_descriptor_proto_data).unwrap()",
-                    protobuf_crate_path(customize)
-                ));
-            });
         },
     );
     w.write_line("");
