@@ -132,7 +132,8 @@ impl crate::Message for FieldMask {
 
 impl crate::MessageFull for FieldMask {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 0)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("FieldMask").unwrap()).clone()
     }
 }
 

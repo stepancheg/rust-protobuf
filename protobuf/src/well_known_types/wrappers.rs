@@ -135,7 +135,8 @@ impl crate::Message for DoubleValue {
 
 impl crate::MessageFull for DoubleValue {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 0)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("DoubleValue").unwrap()).clone()
     }
 }
 
@@ -263,7 +264,8 @@ impl crate::Message for FloatValue {
 
 impl crate::MessageFull for FloatValue {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 1)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("FloatValue").unwrap()).clone()
     }
 }
 
@@ -391,7 +393,8 @@ impl crate::Message for Int64Value {
 
 impl crate::MessageFull for Int64Value {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 2)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("Int64Value").unwrap()).clone()
     }
 }
 
@@ -519,7 +522,8 @@ impl crate::Message for UInt64Value {
 
 impl crate::MessageFull for UInt64Value {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 3)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("UInt64Value").unwrap()).clone()
     }
 }
 
@@ -647,7 +651,8 @@ impl crate::Message for Int32Value {
 
 impl crate::MessageFull for Int32Value {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 4)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("Int32Value").unwrap()).clone()
     }
 }
 
@@ -775,7 +780,8 @@ impl crate::Message for UInt32Value {
 
 impl crate::MessageFull for UInt32Value {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 5)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("UInt32Value").unwrap()).clone()
     }
 }
 
@@ -903,7 +909,8 @@ impl crate::Message for BoolValue {
 
 impl crate::MessageFull for BoolValue {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 6)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("BoolValue").unwrap()).clone()
     }
 }
 
@@ -1031,7 +1038,8 @@ impl crate::Message for StringValue {
 
 impl crate::MessageFull for StringValue {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 7)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("StringValue").unwrap()).clone()
     }
 }
 
@@ -1159,7 +1167,8 @@ impl crate::Message for BytesValue {
 
 impl crate::MessageFull for BytesValue {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 8)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("BytesValue").unwrap()).clone()
     }
 }
 

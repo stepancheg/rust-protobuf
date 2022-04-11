@@ -139,7 +139,8 @@ impl crate::Message for FileDescriptorSet {
 
 impl crate::MessageFull for FileDescriptorSet {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 0)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("FileDescriptorSet").unwrap()).clone()
     }
 }
 
@@ -623,7 +624,8 @@ impl crate::Message for FileDescriptorProto {
 
 impl crate::MessageFull for FileDescriptorProto {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 1)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("FileDescriptorProto").unwrap()).clone()
     }
 }
 
@@ -996,7 +998,8 @@ impl crate::Message for DescriptorProto {
 
 impl crate::MessageFull for DescriptorProto {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 2)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("DescriptorProto").unwrap()).clone()
     }
 }
 
@@ -1095,7 +1098,7 @@ pub mod descriptor_proto {
             ));
             crate::reflect::GeneratedMessageDescriptorData::new_2::<ExtensionRange>(
                 "DescriptorProto.ExtensionRange",
-                21,
+                3,
                 fields,
             )
         }
@@ -1202,7 +1205,8 @@ pub mod descriptor_proto {
 
     impl crate::MessageFull for ExtensionRange {
         fn descriptor() -> crate::reflect::MessageDescriptor {
-            crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 3)
+            static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+            descriptor.get(|| super::file_descriptor().message_by_package_relative_name("DescriptorProto.ExtensionRange").unwrap()).clone()
         }
     }
 
@@ -1295,7 +1299,7 @@ pub mod descriptor_proto {
             ));
             crate::reflect::GeneratedMessageDescriptorData::new_2::<ReservedRange>(
                 "DescriptorProto.ReservedRange",
-                22,
+                4,
                 fields,
             )
         }
@@ -1385,7 +1389,8 @@ pub mod descriptor_proto {
 
     impl crate::MessageFull for ReservedRange {
         fn descriptor() -> crate::reflect::MessageDescriptor {
-            crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 4)
+            static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+            descriptor.get(|| super::file_descriptor().message_by_package_relative_name("DescriptorProto.ReservedRange").unwrap()).clone()
         }
     }
 
@@ -1432,7 +1437,7 @@ impl ExtensionRangeOptions {
         ));
         crate::reflect::GeneratedMessageDescriptorData::new_2::<ExtensionRangeOptions>(
             "ExtensionRangeOptions",
-            3,
+            5,
             fields,
         )
     }
@@ -1517,7 +1522,8 @@ impl crate::Message for ExtensionRangeOptions {
 
 impl crate::MessageFull for ExtensionRangeOptions {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 5)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("ExtensionRangeOptions").unwrap()).clone()
     }
 }
 
@@ -1955,7 +1961,7 @@ impl FieldDescriptorProto {
         ));
         crate::reflect::GeneratedMessageDescriptorData::new_2::<FieldDescriptorProto>(
             "FieldDescriptorProto",
-            4,
+            6,
             fields,
         )
     }
@@ -2150,7 +2156,8 @@ impl crate::Message for FieldDescriptorProto {
 
 impl crate::MessageFull for FieldDescriptorProto {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 6)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("FieldDescriptorProto").unwrap()).clone()
     }
 }
 
@@ -2262,7 +2269,8 @@ pub mod field_descriptor_proto {
 
     impl crate::EnumFull for Type {
         fn enum_descriptor() -> crate::reflect::EnumDescriptor {
-            crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 0)
+            static descriptor: crate::rt::Lazy<crate::reflect::EnumDescriptor> = crate::rt::Lazy::new();
+            descriptor.get(|| super::file_descriptor().enum_by_package_relative_name("FieldDescriptorProto.Type").unwrap()).clone()
         }
 
         fn descriptor(&self) -> crate::reflect::EnumValueDescriptor {
@@ -2339,7 +2347,8 @@ pub mod field_descriptor_proto {
 
     impl crate::EnumFull for Label {
         fn enum_descriptor() -> crate::reflect::EnumDescriptor {
-            crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 1)
+            static descriptor: crate::rt::Lazy<crate::reflect::EnumDescriptor> = crate::rt::Lazy::new();
+            descriptor.get(|| super::file_descriptor().enum_by_package_relative_name("FieldDescriptorProto.Label").unwrap()).clone()
         }
 
         fn descriptor(&self) -> crate::reflect::EnumValueDescriptor {
@@ -2441,7 +2450,7 @@ impl OneofDescriptorProto {
         ));
         crate::reflect::GeneratedMessageDescriptorData::new_2::<OneofDescriptorProto>(
             "OneofDescriptorProto",
-            5,
+            7,
             fields,
         )
     }
@@ -2537,7 +2546,8 @@ impl crate::Message for OneofDescriptorProto {
 
 impl crate::MessageFull for OneofDescriptorProto {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 7)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("OneofDescriptorProto").unwrap()).clone()
     }
 }
 
@@ -2652,7 +2662,7 @@ impl EnumDescriptorProto {
         ));
         crate::reflect::GeneratedMessageDescriptorData::new_2::<EnumDescriptorProto>(
             "EnumDescriptorProto",
-            6,
+            8,
             fields,
         )
     }
@@ -2793,7 +2803,8 @@ impl crate::Message for EnumDescriptorProto {
 
 impl crate::MessageFull for EnumDescriptorProto {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 8)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("EnumDescriptorProto").unwrap()).clone()
     }
 }
 
@@ -2891,7 +2902,7 @@ pub mod enum_descriptor_proto {
             ));
             crate::reflect::GeneratedMessageDescriptorData::new_2::<EnumReservedRange>(
                 "EnumDescriptorProto.EnumReservedRange",
-                23,
+                9,
                 fields,
             )
         }
@@ -2981,7 +2992,8 @@ pub mod enum_descriptor_proto {
 
     impl crate::MessageFull for EnumReservedRange {
         fn descriptor() -> crate::reflect::MessageDescriptor {
-            crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 9)
+            static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+            descriptor.get(|| super::file_descriptor().message_by_package_relative_name("EnumDescriptorProto.EnumReservedRange").unwrap()).clone()
         }
     }
 
@@ -3097,7 +3109,7 @@ impl EnumValueDescriptorProto {
         ));
         crate::reflect::GeneratedMessageDescriptorData::new_2::<EnumValueDescriptorProto>(
             "EnumValueDescriptorProto",
-            7,
+            10,
             fields,
         )
     }
@@ -3204,7 +3216,8 @@ impl crate::Message for EnumValueDescriptorProto {
 
 impl crate::MessageFull for EnumValueDescriptorProto {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 10)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("EnumValueDescriptorProto").unwrap()).clone()
     }
 }
 
@@ -3300,7 +3313,7 @@ impl ServiceDescriptorProto {
         ));
         crate::reflect::GeneratedMessageDescriptorData::new_2::<ServiceDescriptorProto>(
             "ServiceDescriptorProto",
-            8,
+            11,
             fields,
         )
     }
@@ -3413,7 +3426,8 @@ impl crate::Message for ServiceDescriptorProto {
 
 impl crate::MessageFull for ServiceDescriptorProto {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 11)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("ServiceDescriptorProto").unwrap()).clone()
     }
 }
 
@@ -3644,7 +3658,7 @@ impl MethodDescriptorProto {
         ));
         crate::reflect::GeneratedMessageDescriptorData::new_2::<MethodDescriptorProto>(
             "MethodDescriptorProto",
-            9,
+            12,
             fields,
         )
     }
@@ -3784,7 +3798,8 @@ impl crate::Message for MethodDescriptorProto {
 
 impl crate::MessageFull for MethodDescriptorProto {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 12)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("MethodDescriptorProto").unwrap()).clone()
     }
 }
 
@@ -4585,7 +4600,7 @@ impl FileOptions {
         ));
         crate::reflect::GeneratedMessageDescriptorData::new_2::<FileOptions>(
             "FileOptions",
-            10,
+            13,
             fields,
         )
     }
@@ -4890,7 +4905,8 @@ impl crate::Message for FileOptions {
 
 impl crate::MessageFull for FileOptions {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 13)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("FileOptions").unwrap()).clone()
     }
 }
 
@@ -4943,7 +4959,8 @@ pub mod file_options {
 
     impl crate::EnumFull for OptimizeMode {
         fn enum_descriptor() -> crate::reflect::EnumDescriptor {
-            crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 2)
+            static descriptor: crate::rt::Lazy<crate::reflect::EnumDescriptor> = crate::rt::Lazy::new();
+            descriptor.get(|| super::file_descriptor().enum_by_package_relative_name("FileOptions.OptimizeMode").unwrap()).clone()
         }
 
         fn descriptor(&self) -> crate::reflect::EnumValueDescriptor {
@@ -5113,7 +5130,7 @@ impl MessageOptions {
         ));
         crate::reflect::GeneratedMessageDescriptorData::new_2::<MessageOptions>(
             "MessageOptions",
-            11,
+            14,
             fields,
         )
     }
@@ -5242,7 +5259,8 @@ impl crate::Message for MessageOptions {
 
 impl crate::MessageFull for MessageOptions {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 14)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("MessageOptions").unwrap()).clone()
     }
 }
 
@@ -5503,7 +5521,7 @@ impl FieldOptions {
         ));
         crate::reflect::GeneratedMessageDescriptorData::new_2::<FieldOptions>(
             "FieldOptions",
-            12,
+            15,
             fields,
         )
     }
@@ -5654,7 +5672,8 @@ impl crate::Message for FieldOptions {
 
 impl crate::MessageFull for FieldOptions {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 15)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("FieldOptions").unwrap()).clone()
     }
 }
 
@@ -5706,7 +5725,8 @@ pub mod field_options {
 
     impl crate::EnumFull for CType {
         fn enum_descriptor() -> crate::reflect::EnumDescriptor {
-            crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 3)
+            static descriptor: crate::rt::Lazy<crate::reflect::EnumDescriptor> = crate::rt::Lazy::new();
+            descriptor.get(|| super::file_descriptor().enum_by_package_relative_name("FieldOptions.CType").unwrap()).clone()
         }
 
         fn descriptor(&self) -> crate::reflect::EnumValueDescriptor {
@@ -5763,7 +5783,8 @@ pub mod field_options {
 
     impl crate::EnumFull for JSType {
         fn enum_descriptor() -> crate::reflect::EnumDescriptor {
-            crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 4)
+            static descriptor: crate::rt::Lazy<crate::reflect::EnumDescriptor> = crate::rt::Lazy::new();
+            descriptor.get(|| super::file_descriptor().enum_by_package_relative_name("FieldOptions.JSType").unwrap()).clone()
         }
 
         fn descriptor(&self) -> crate::reflect::EnumValueDescriptor {
@@ -5817,7 +5838,7 @@ impl OneofOptions {
         ));
         crate::reflect::GeneratedMessageDescriptorData::new_2::<OneofOptions>(
             "OneofOptions",
-            13,
+            16,
             fields,
         )
     }
@@ -5902,7 +5923,8 @@ impl crate::Message for OneofOptions {
 
 impl crate::MessageFull for OneofOptions {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 16)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("OneofOptions").unwrap()).clone()
     }
 }
 
@@ -6006,7 +6028,7 @@ impl EnumOptions {
         ));
         crate::reflect::GeneratedMessageDescriptorData::new_2::<EnumOptions>(
             "EnumOptions",
-            14,
+            17,
             fields,
         )
     }
@@ -6113,7 +6135,8 @@ impl crate::Message for EnumOptions {
 
 impl crate::MessageFull for EnumOptions {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 17)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("EnumOptions").unwrap()).clone()
     }
 }
 
@@ -6189,7 +6212,7 @@ impl EnumValueOptions {
         ));
         crate::reflect::GeneratedMessageDescriptorData::new_2::<EnumValueOptions>(
             "EnumValueOptions",
-            15,
+            18,
             fields,
         )
     }
@@ -6285,7 +6308,8 @@ impl crate::Message for EnumValueOptions {
 
 impl crate::MessageFull for EnumValueOptions {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 18)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("EnumValueOptions").unwrap()).clone()
     }
 }
 
@@ -6361,7 +6385,7 @@ impl ServiceOptions {
         ));
         crate::reflect::GeneratedMessageDescriptorData::new_2::<ServiceOptions>(
             "ServiceOptions",
-            16,
+            19,
             fields,
         )
     }
@@ -6457,7 +6481,8 @@ impl crate::Message for ServiceOptions {
 
 impl crate::MessageFull for ServiceOptions {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 19)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("ServiceOptions").unwrap()).clone()
     }
 }
 
@@ -6562,7 +6587,7 @@ impl MethodOptions {
         ));
         crate::reflect::GeneratedMessageDescriptorData::new_2::<MethodOptions>(
             "MethodOptions",
-            17,
+            20,
             fields,
         )
     }
@@ -6669,7 +6694,8 @@ impl crate::Message for MethodOptions {
 
 impl crate::MessageFull for MethodOptions {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 20)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("MethodOptions").unwrap()).clone()
     }
 }
 
@@ -6724,7 +6750,8 @@ pub mod method_options {
 
     impl crate::EnumFull for IdempotencyLevel {
         fn enum_descriptor() -> crate::reflect::EnumDescriptor {
-            crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 5)
+            static descriptor: crate::rt::Lazy<crate::reflect::EnumDescriptor> = crate::rt::Lazy::new();
+            descriptor.get(|| super::file_descriptor().enum_by_package_relative_name("MethodOptions.IdempotencyLevel").unwrap()).clone()
         }
 
         fn descriptor(&self) -> crate::reflect::EnumValueDescriptor {
@@ -6992,7 +7019,7 @@ impl UninterpretedOption {
         ));
         crate::reflect::GeneratedMessageDescriptorData::new_2::<UninterpretedOption>(
             "UninterpretedOption",
-            18,
+            21,
             fields,
         )
     }
@@ -7143,7 +7170,8 @@ impl crate::Message for UninterpretedOption {
 
 impl crate::MessageFull for UninterpretedOption {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 21)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("UninterpretedOption").unwrap()).clone()
     }
 }
 
@@ -7257,7 +7285,7 @@ pub mod uninterpreted_option {
             ));
             crate::reflect::GeneratedMessageDescriptorData::new_2::<NamePart>(
                 "UninterpretedOption.NamePart",
-                24,
+                22,
                 fields,
             )
         }
@@ -7353,7 +7381,8 @@ pub mod uninterpreted_option {
 
     impl crate::MessageFull for NamePart {
         fn descriptor() -> crate::reflect::MessageDescriptor {
-            crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 22)
+            static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+            descriptor.get(|| super::file_descriptor().message_by_package_relative_name("UninterpretedOption.NamePart").unwrap()).clone()
         }
     }
 
@@ -7401,7 +7430,7 @@ impl SourceCodeInfo {
         ));
         crate::reflect::GeneratedMessageDescriptorData::new_2::<SourceCodeInfo>(
             "SourceCodeInfo",
-            19,
+            23,
             fields,
         )
     }
@@ -7486,7 +7515,8 @@ impl crate::Message for SourceCodeInfo {
 
 impl crate::MessageFull for SourceCodeInfo {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 23)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("SourceCodeInfo").unwrap()).clone()
     }
 }
 
@@ -7638,7 +7668,7 @@ pub mod source_code_info {
             ));
             crate::reflect::GeneratedMessageDescriptorData::new_2::<Location>(
                 "SourceCodeInfo.Location",
-                25,
+                24,
                 fields,
             )
         }
@@ -7763,7 +7793,8 @@ pub mod source_code_info {
 
     impl crate::MessageFull for Location {
         fn descriptor() -> crate::reflect::MessageDescriptor {
-            crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 24)
+            static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+            descriptor.get(|| super::file_descriptor().message_by_package_relative_name("SourceCodeInfo.Location").unwrap()).clone()
         }
     }
 
@@ -7814,7 +7845,7 @@ impl GeneratedCodeInfo {
         ));
         crate::reflect::GeneratedMessageDescriptorData::new_2::<GeneratedCodeInfo>(
             "GeneratedCodeInfo",
-            20,
+            25,
             fields,
         )
     }
@@ -7899,7 +7930,8 @@ impl crate::Message for GeneratedCodeInfo {
 
 impl crate::MessageFull for GeneratedCodeInfo {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 25)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("GeneratedCodeInfo").unwrap()).clone()
     }
 }
 
@@ -8162,7 +8194,8 @@ pub mod generated_code_info {
 
     impl crate::MessageFull for Annotation {
         fn descriptor() -> crate::reflect::MessageDescriptor {
-            crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 26)
+            static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+            descriptor.get(|| super::file_descriptor().message_by_package_relative_name("GeneratedCodeInfo.Annotation").unwrap()).clone()
         }
     }
 

@@ -133,7 +133,8 @@ impl crate::Message for Struct {
 
 impl crate::MessageFull for Struct {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 0)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("Struct").unwrap()).clone()
     }
 }
 
@@ -443,7 +444,7 @@ impl Value {
         ));
         crate::reflect::GeneratedMessageDescriptorData::new_2::<Value>(
             "Value",
-            1,
+            2,
             fields,
         )
     }
@@ -592,7 +593,8 @@ impl crate::Message for Value {
 
 impl crate::MessageFull for Value {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 2)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("Value").unwrap()).clone()
     }
 }
 
@@ -632,6 +634,12 @@ pub mod value {
 
     impl crate::OneofFull for Kind {
     }
+
+    impl Kind {
+        fn generated_oneof_descriptor_data() -> crate::reflect::GeneratedOneofDescriptorData {
+            crate::reflect::GeneratedOneofDescriptorData::new_2::<Kind>("Value.kind", 1234567)
+        }
+    }
 }
 
 ///  `ListValue` is a wrapper around a repeated field of values.
@@ -669,7 +677,7 @@ impl ListValue {
         ));
         crate::reflect::GeneratedMessageDescriptorData::new_2::<ListValue>(
             "ListValue",
-            2,
+            3,
             fields,
         )
     }
@@ -754,7 +762,8 @@ impl crate::Message for ListValue {
 
 impl crate::MessageFull for ListValue {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 3)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("ListValue").unwrap()).clone()
     }
 }
 
@@ -800,7 +809,8 @@ impl crate::Enum for NullValue {
 
 impl crate::EnumFull for NullValue {
     fn enum_descriptor() -> crate::reflect::EnumDescriptor {
-        crate::reflect::EnumDescriptor::new_generated_2(file_descriptor(), 0)
+        static descriptor: crate::rt::Lazy<crate::reflect::EnumDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().enum_by_package_relative_name("NullValue").unwrap()).clone()
     }
 
     fn descriptor(&self) -> crate::reflect::EnumValueDescriptor {

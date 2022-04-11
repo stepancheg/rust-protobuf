@@ -158,7 +158,8 @@ impl crate::Message for Duration {
 
 impl crate::MessageFull for Duration {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 0)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("Duration").unwrap()).clone()
     }
 }
 

@@ -281,7 +281,8 @@ impl crate::Message for Version {
 
 impl crate::MessageFull for Version {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 0)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("Version").unwrap()).clone()
     }
 }
 
@@ -527,7 +528,8 @@ impl crate::Message for CodeGeneratorRequest {
 
 impl crate::MessageFull for CodeGeneratorRequest {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 1)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("CodeGeneratorRequest").unwrap()).clone()
     }
 }
 
@@ -759,7 +761,8 @@ impl crate::Message for CodeGeneratorResponse {
 
 impl crate::MessageFull for CodeGeneratorResponse {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 2)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("CodeGeneratorResponse").unwrap()).clone()
     }
 }
 
@@ -1106,7 +1109,8 @@ pub mod code_generator_response {
 
     impl crate::MessageFull for File {
         fn descriptor() -> crate::reflect::MessageDescriptor {
-            crate::reflect::MessageDescriptor::new_generated_2(super::file_descriptor(), 3)
+            static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+            descriptor.get(|| super::file_descriptor().message_by_package_relative_name("CodeGeneratorResponse.File").unwrap()).clone()
         }
     }
 
@@ -1153,7 +1157,8 @@ pub mod code_generator_response {
 
     impl crate::EnumFull for Feature {
         fn enum_descriptor() -> crate::reflect::EnumDescriptor {
-            crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 0)
+            static descriptor: crate::rt::Lazy<crate::reflect::EnumDescriptor> = crate::rt::Lazy::new();
+            descriptor.get(|| super::file_descriptor().enum_by_package_relative_name("CodeGeneratorResponse.Feature").unwrap()).clone()
         }
 
         fn descriptor(&self) -> crate::reflect::EnumValueDescriptor {

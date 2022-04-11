@@ -246,7 +246,8 @@ impl crate::Message for Type {
 
 impl crate::MessageFull for Type {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 0)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("Type").unwrap()).clone()
     }
 }
 
@@ -551,7 +552,8 @@ impl crate::Message for Field {
 
 impl crate::MessageFull for Field {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 1)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("Field").unwrap()).clone()
     }
 }
 
@@ -668,7 +670,8 @@ pub mod field {
 
     impl crate::EnumFull for Kind {
         fn enum_descriptor() -> crate::reflect::EnumDescriptor {
-            crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 1)
+            static descriptor: crate::rt::Lazy<crate::reflect::EnumDescriptor> = crate::rt::Lazy::new();
+            descriptor.get(|| super::file_descriptor().enum_by_package_relative_name("Field.Kind").unwrap()).clone()
         }
 
         fn descriptor(&self) -> crate::reflect::EnumValueDescriptor {
@@ -730,7 +733,8 @@ pub mod field {
 
     impl crate::EnumFull for Cardinality {
         fn enum_descriptor() -> crate::reflect::EnumDescriptor {
-            crate::reflect::EnumDescriptor::new_generated_2(super::file_descriptor(), 2)
+            static descriptor: crate::rt::Lazy<crate::reflect::EnumDescriptor> = crate::rt::Lazy::new();
+            descriptor.get(|| super::file_descriptor().enum_by_package_relative_name("Field.Cardinality").unwrap()).clone()
         }
 
         fn descriptor(&self) -> crate::reflect::EnumValueDescriptor {
@@ -958,7 +962,8 @@ impl crate::Message for Enum {
 
 impl crate::MessageFull for Enum {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 2)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("Enum").unwrap()).clone()
     }
 }
 
@@ -1128,7 +1133,8 @@ impl crate::Message for EnumValue {
 
 impl crate::MessageFull for EnumValue {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 3)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("EnumValue").unwrap()).clone()
     }
 }
 
@@ -1286,7 +1292,8 @@ impl crate::Message for Option {
 
 impl crate::MessageFull for Option {
     fn descriptor() -> crate::reflect::MessageDescriptor {
-        crate::reflect::MessageDescriptor::new_generated_2(file_descriptor(), 4)
+        static descriptor: crate::rt::Lazy<crate::reflect::MessageDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().message_by_package_relative_name("Option").unwrap()).clone()
     }
 }
 
@@ -1333,7 +1340,8 @@ impl crate::Enum for Syntax {
 
 impl crate::EnumFull for Syntax {
     fn enum_descriptor() -> crate::reflect::EnumDescriptor {
-        crate::reflect::EnumDescriptor::new_generated_2(file_descriptor(), 0)
+        static descriptor: crate::rt::Lazy<crate::reflect::EnumDescriptor> = crate::rt::Lazy::new();
+        descriptor.get(|| file_descriptor().enum_by_package_relative_name("Syntax").unwrap()).clone()
     }
 
     fn descriptor(&self) -> crate::reflect::EnumValueDescriptor {
