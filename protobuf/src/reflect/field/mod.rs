@@ -139,9 +139,14 @@ impl FieldDescriptor {
         }
     }
 
-    /// Field name as specified in `.proto` file
+    /// Field name as specified in `.proto` file.
     pub fn name(&self) -> &str {
         self.proto().name()
+    }
+
+    /// Field number as specified in `.proto` file.
+    pub fn number(&self) -> i32 {
+        self.proto().number()
     }
 
     /// Fully qualified name of the field: fully qualified name of the declaring type
