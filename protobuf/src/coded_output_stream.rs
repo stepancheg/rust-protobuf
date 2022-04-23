@@ -1,6 +1,7 @@
 use std::fmt;
 use std::io;
 use std::io::Write;
+use std::marker::PhantomData;
 use std::mem::MaybeUninit;
 use std::ptr;
 use std::slice;
@@ -69,9 +70,7 @@ enum OutputTarget<'a> {
     /// The buffer is passed as `&[u8]` to `CodedOutputStream` constructor
     /// and immediately converted to `buffer` field of `CodedOutputStream`,
     /// it is not needed to be stored here.
-    /// Lifetime parameter of `CodedOutputStream` guarantees the buffer is valid
-    /// during the lifetime of `CodedOutputStream`.
-    Bytes,
+    Bytes(PhantomData<&'a mut [u8]>),
 }
 
 impl<'a> fmt::Debug for OutputTarget<'a> {
@@ -87,7 +86,7 @@ impl<'a> fmt::Debug for OutputTarget<'a> {
                 .field("len", &vec.len())
                 .field("cap", &vec.capacity())
                 .finish_non_exhaustive(),
-            OutputTarget::Bytes => f.debug_tuple("Bytes").finish(),
+            OutputTarget::Bytes(_) => f.debug_tuple("Bytes").finish(),
         }
     }
 }
@@ -140,7 +139,7 @@ impl<'a> CodedOutputStream<'a> {
         let buffer =
             ptr::slice_from_raw_parts_mut(bytes.as_mut_ptr() as *mut MaybeUninit<u8>, bytes.len());
         CodedOutputStream {
-            target: OutputTarget::Bytes,
+            target: OutputTarget::Bytes(PhantomData),
             buffer,
             pos_within_buf: 0,
             pos_of_buffer_start: 0,
@@ -175,7 +174,7 @@ impl<'a> CodedOutputStream<'a> {
     /// If underlying write has no EOF
     pub fn check_eof(&self) {
         match self.target {
-            OutputTarget::Bytes => {
+            OutputTarget::Bytes(_) => {
                 assert_eq!(self.buffer().len() as u64, self.pos_within_buf as u64);
             }
             OutputTarget::Write(..) | OutputTarget::Vec(..) => {
@@ -215,7 +214,7 @@ impl<'a> CodedOutputStream<'a> {
                 self.pos_of_buffer_start += self.pos_within_buf as u64;
                 self.pos_within_buf = 0;
             },
-            OutputTarget::Bytes => {
+            OutputTarget::Bytes(_) => {
                 return Err(ProtobufError::IoError(io::Error::new(
                     io::ErrorKind::Other,
                     "given slice is too small to serialize the message",
@@ -233,7 +232,7 @@ impl<'a> CodedOutputStream<'a> {
     /// before destructor.
     pub fn flush(&mut self) -> crate::Result<()> {
         match &mut self.target {
-            OutputTarget::Bytes => Ok(()),
+            OutputTarget::Bytes(_) => Ok(()),
             OutputTarget::Vec(vec) => {
                 let vec_len = vec.len();
                 assert!(vec_len + self.pos_within_buf <= vec.capacity());
@@ -286,7 +285,7 @@ impl<'a> CodedOutputStream<'a> {
         }
 
         match self.target {
-            OutputTarget::Bytes => {
+            OutputTarget::Bytes(_) => {
                 unreachable!();
             }
             OutputTarget::Write(ref mut write, _) => {
