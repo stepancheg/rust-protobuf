@@ -63,7 +63,6 @@ pub(crate) struct MessageGen<'a> {
     message_descriptor: MessageDescriptor,
     pub message: &'a MessageWithScope<'a>,
     pub root_scope: &'a RootScope<'a>,
-    type_name: RustIdentWithPath,
     pub fields: Vec<FieldGen<'a>>,
     pub lite_runtime: bool,
     customize: CustomizeElemCtx<'a>,
@@ -121,13 +120,16 @@ impl<'a> MessageGen<'a> {
             file_descriptor,
             message,
             root_scope,
-            type_name: message.rust_name().to_path(),
             fields,
             lite_runtime,
             customize,
             path,
             info,
         })
+    }
+
+    fn rust_name(&self) -> RustIdent {
+        self.message.rust_name()
     }
 
     pub fn file_and_mod(&self) -> FileAndMod {
@@ -257,15 +259,19 @@ impl<'a> MessageGen<'a> {
     fn write_default_instance_lazy(&self, w: &mut CodeWriter) {
         w.lazy_static_decl_get_simple(
             "instance",
-            &format!("{}", self.type_name),
-            &format!("{}::new", self.type_name),
+            &format!("{}", self.rust_name()),
+            &format!("{}::new", self.rust_name()),
             &format!("{}", protobuf_crate_path(&self.customize.for_elem)),
         );
     }
 
     fn write_default_instance_static(&self, w: &mut CodeWriter) {
         w.stmt_block(
-            &format!("static instance: {} = {}", self.type_name, self.type_name),
+            &format!(
+                "static instance: {} = {}",
+                self.rust_name(),
+                self.rust_name()
+            ),
             |w| {
                 for f in &self.fields_except_oneof_and_group() {
                     w.field_entry(
@@ -291,7 +297,7 @@ impl<'a> MessageGen<'a> {
 
     fn write_default_instance(&self, w: &mut CodeWriter) {
         w.def_fn(
-            &format!("default_instance() -> &'static {}", self.type_name),
+            &format!("default_instance() -> &'static {}", self.rust_name()),
             |w| {
                 let has_map_field = self.fields.iter().any(|f| match f.kind {
                     FieldKind::Map(..) => true,
@@ -338,8 +344,8 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_impl_self(&self, w: &mut CodeWriter) {
-        w.impl_self_block(&format!("{}", self.type_name), |w| {
-            w.pub_fn(&format!("new() -> {}", self.type_name), |w| {
+        w.impl_self_block(&format!("{}", self.rust_name()), |w| {
+            w.pub_fn(&format!("new() -> {}", self.rust_name()), |w| {
                 w.write_line("::std::default::Default::default()");
             });
 
@@ -420,7 +426,7 @@ impl<'a> MessageGen<'a> {
                 w.write_line(&format!(
                     "{}::reflect::GeneratedMessageDescriptorData::new::<{}>(",
                     protobuf_crate_path(&self.customize.for_elem),
-                    self.type_name,
+                    self.rust_name(),
                 ));
                 w.indented(|w| {
                     w.write_line(&format!("\"{}\",", self.message.name_to_package()));
@@ -463,7 +469,7 @@ impl<'a> MessageGen<'a> {
     fn write_impl_message(&self, w: &mut CodeWriter) {
         w.impl_for_block(
             &format!("{}::Message", protobuf_crate_path(&self.customize.for_elem),),
-            &format!("{}", self.type_name),
+            &format!("{}", self.rust_name()),
             |w| {
                 w.write_line(&format!(
                     "const NAME: &'static str = \"{}\";",
@@ -482,8 +488,8 @@ impl<'a> MessageGen<'a> {
                 w.write_line("");
                 self.write_unknown_fields(w);
                 w.write_line("");
-                w.def_fn(&format!("new() -> {}", self.type_name), |w| {
-                    w.write_line(&format!("{}::new()", self.type_name));
+                w.def_fn(&format!("new() -> {}", self.rust_name()), |w| {
+                    w.write_line(&format!("{}::new()", self.rust_name()));
                 });
                 w.write_line("");
                 w.def_fn("clear(&mut self)", |w| {
@@ -504,7 +510,7 @@ impl<'a> MessageGen<'a> {
                 "{}::MessageFull",
                 protobuf_crate_path(&self.customize.for_elem),
             ),
-            &format!("{}", self.type_name),
+            &format!("{}", self.rust_name()),
             |w| {
                 self.write_impl_message_full_fn_descriptor(w);
             },
@@ -517,7 +523,7 @@ impl<'a> MessageGen<'a> {
                 "{}::reflect::ProtobufValue",
                 protobuf_crate_path(&self.customize.for_elem)
             ),
-            &format!("{}", self.type_name),
+            &format!("{}", self.rust_name()),
             |w| {
                 w.write_line(&format!(
                     "type RuntimeType = {}::reflect::runtime_types::RuntimeTypeMessage<Self>;",
@@ -528,17 +534,21 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_impl_display(&self, w: &mut CodeWriter) {
-        w.impl_for_block("::std::fmt::Display", &format!("{}", self.type_name), |w| {
-            w.def_fn(
-                "fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result",
-                |w| {
-                    w.write_line(&format!(
-                        "{}::text_format::fmt(self, f)",
-                        protobuf_crate_path(&self.customize.for_elem)
-                    ));
-                },
-            );
-        });
+        w.impl_for_block(
+            "::std::fmt::Display",
+            &format!("{}", self.rust_name()),
+            |w| {
+                w.def_fn(
+                    "fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result",
+                    |w| {
+                        w.write_line(&format!(
+                            "{}::text_format::fmt(self, f)",
+                            protobuf_crate_path(&self.customize.for_elem)
+                        ));
+                    },
+                );
+            },
+        );
     }
 
     fn supports_derive_partial_eq(&self) -> bool {
@@ -559,7 +569,7 @@ impl<'a> MessageGen<'a> {
             &self.customize.for_elem,
             &self.message_descriptor,
         );
-        w.pub_struct(&format!("{}", self.type_name), |w| {
+        w.pub_struct(&format!("{}", self.rust_name()), |w| {
             if !self.fields_except_oneof().is_empty() {
                 w.comment("message fields");
                 for field in self.fields_except_oneof() {
@@ -609,12 +619,12 @@ impl<'a> MessageGen<'a> {
         w.impl_args_for_block(
             &["'a"],
             "::std::default::Default",
-            &format!("&'a {}", self.type_name),
+            &format!("&'a {}", self.rust_name()),
             |w| {
-                w.def_fn(&format!("default() -> &'a {}", self.type_name), |w| {
+                w.def_fn(&format!("default() -> &'a {}", self.rust_name()), |w| {
                     w.write_line(&format!(
                         "<{} as {}::Message>::default_instance()",
-                        self.type_name,
+                        self.rust_name(),
                         protobuf_crate_path(&self.customize.for_elem),
                     ));
                 });
@@ -625,7 +635,7 @@ impl<'a> MessageGen<'a> {
     fn write_dummy_impl_partial_eq(&self, w: &mut CodeWriter) {
         w.impl_for_block(
             "::std::cmp::PartialEq",
-            &format!("{}", self.type_name),
+            &format!("{}", self.rust_name()),
             |w| {
                 w.def_fn("eq(&self, _: &Self) -> bool", |w| {
                     w.comment("https://github.com/rust-lang/rust/issues/40119");
