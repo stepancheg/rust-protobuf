@@ -139,7 +139,7 @@ impl FileDescriptor {
 
     /// Extension fields.
     pub fn extensions(&self) -> impl Iterator<Item = FieldDescriptor> + '_ {
-        (0..self.index().extensions.len()).map(move |index| FieldDescriptor {
+        (0..self.index().index.extensions.len()).map(move |index| FieldDescriptor {
             imp: FieldDescriptorImpl::ExtensionInFile(self.clone(), index),
         })
     }

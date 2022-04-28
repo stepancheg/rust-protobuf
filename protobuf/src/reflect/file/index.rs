@@ -90,6 +90,7 @@ pub(crate) struct FileIndex {
     pub(crate) enums_by_name_to_package: HashMap<String, usize>,
     pub(crate) oneofs: Vec<OneofIndex>,
     pub(crate) services: Vec<ServiceIndex>,
+    pub(crate) extensions: Vec<FieldIndex>,
 }
 
 impl FileIndex {
@@ -108,6 +109,7 @@ impl FileIndex {
             enums_by_name_to_package: HashMap::new(),
             oneofs: Vec::new(),
             services: Vec::new(),
+            extensions: Vec::new(),
         };
 
         // Top-level enums start with zero
@@ -146,6 +148,21 @@ impl FileIndex {
         }
 
         index.build_message_index(file, &deps_with_public)?;
+
+        index.extensions = file
+            .extension
+            .iter()
+            .map(|ext| {
+                FieldIndex::index(
+                    ext,
+                    &FileDescriptorBuilding {
+                        current_file_descriptor: file,
+                        current_file_index: &index,
+                        deps_with_public: &deps_with_public,
+                    },
+                )
+            })
+            .collect::<crate::Result<Vec<_>>>()?;
 
         Ok(index)
     }
