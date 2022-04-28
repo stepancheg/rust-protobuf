@@ -250,7 +250,7 @@ impl<'a> MessageGen<'a> {
                 };
                 variant.field.write_write_element(w, "os", &v);
             });
-            w.write_line("os.write_unknown_fields(self.unknown_fields())?;");
+            w.write_line("os.write_unknown_fields(self.special_fields.unknown_fields())?;");
             w.write_line("::std::result::Result::Ok(())");
         });
     }
@@ -334,7 +334,7 @@ impl<'a> MessageGen<'a> {
                 variant.field.write_element_size(w, v, vtype, "my_size");
             });
             w.write_line(&format!(
-                "my_size += {}::rt::unknown_fields_size(self.unknown_fields());",
+                "my_size += {}::rt::unknown_fields_size(self.special_fields.unknown_fields());",
                 protobuf_crate_path(&self.customize.for_elem)
             ));
             w.write_line("self.special_fields.cached_size().set(my_size as u32);");
@@ -394,7 +394,7 @@ impl<'a> MessageGen<'a> {
                         f.write_merge_from_field_case_block(w);
                     }
                     w.case_block("tag", |w| {
-                        w.write_line(&format!("{}::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;", protobuf_crate_path(&self.customize.for_elem)));
+                        w.write_line(&format!("{}::rt::read_unknown_or_skip_group(tag, is, self.special_fields.mut_unknown_fields())?;", protobuf_crate_path(&self.customize.for_elem)));
                     });
                 });
             });
