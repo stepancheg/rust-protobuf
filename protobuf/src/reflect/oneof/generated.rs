@@ -1,15 +1,17 @@
 use crate::OneofFull;
 
 #[doc(hidden)]
-pub struct GeneratedOneofDescriptorData {}
+pub struct GeneratedOneofDescriptorData {
+    pub(crate) name: &'static str,
+}
 
 impl GeneratedOneofDescriptorData {
     #[doc(hidden)]
-    pub fn new<O>(_name_in_message: &'static str) -> GeneratedOneofDescriptorData
+    pub fn new<O>(name: &'static str) -> GeneratedOneofDescriptorData
     where
         O: OneofFull,
     {
-        GeneratedOneofDescriptorData {}
+        GeneratedOneofDescriptorData { name }
     }
 }
 

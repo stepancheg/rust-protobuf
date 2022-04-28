@@ -40,13 +40,16 @@ impl GeneratedFileDescriptor {
 
         let mut oneofs = Vec::new();
         for oneof in &common.oneofs {
+            let message = &common.messages[oneof.containing_message];
+            let message_proto = message.path.eval(file_descriptor_proto).unwrap();
+            let oneof_proto = &message_proto.oneof_decl[oneof.index_in_containing_message];
+            let message = messages.get(message.name_to_package.as_str()).unwrap();
+            let oneof_data = &message.oneofs.iter().find(|o| o.name == oneof_proto.name());
             if oneof.synthetic {
+                assert!(oneof_data.is_none());
                 oneofs.push(GeneratedOneofDescriptor::new_synthetic())
             } else {
-                let message = &common.messages[oneof.containing_message];
-                let message = messages.get(message.name_to_package.as_str()).unwrap();
-                let oneof = &message.oneofs[oneof.index_in_containing_message];
-                let oneof = GeneratedOneofDescriptor::new(oneof);
+                let oneof = GeneratedOneofDescriptor::new(oneof_data.unwrap());
                 oneofs.push(oneof);
             }
         }
