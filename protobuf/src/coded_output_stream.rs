@@ -651,7 +651,6 @@ impl<'a> CodedOutputStream<'a> {
                 unsafe { slice::from_raw_parts(values.as_ptr() as *const u8, values.len() * 4) };
             self.write_raw_bytes(bytes)
         } else {
-            // TODO: can we bitcast to bytes?
             for v in values {
                 self.write_float_no_tag(*v)?;
             }
@@ -683,7 +682,6 @@ impl<'a> CodedOutputStream<'a> {
                 unsafe { slice::from_raw_parts(values.as_ptr() as *const u8, values.len() * 8) };
             self.write_raw_bytes(bytes)
         } else {
-            // TODO: can we bitcast to bytes?
             for v in values {
                 self.write_double_no_tag(*v)?;
             }
