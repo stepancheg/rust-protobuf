@@ -263,12 +263,16 @@ impl FileDescriptor {
         }
     }
 
+    fn common(&self) -> &FileDescriptorCommon {
+        match &self.imp {
+            FileDescriptorImpl::Generated(g) => &g.common,
+            FileDescriptorImpl::Dynamic(d) => &d.common,
+        }
+    }
+
     /// Direct dependencies of this file.
     pub fn deps(&self) -> &[FileDescriptor] {
-        match &self.imp {
-            FileDescriptorImpl::Generated(g) => &g.common.dependencies,
-            FileDescriptorImpl::Dynamic(d) => &d.common.dependencies,
-        }
+        &self.common().index.dependencies
     }
 
     /// Subset of dependencies which are public

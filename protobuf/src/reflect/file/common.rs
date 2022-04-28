@@ -8,8 +8,6 @@ use crate::reflect::FileDescriptor;
 #[derive(Debug)]
 pub(crate) struct FileDescriptorCommon {
     pub(crate) index: FileIndex,
-    /// Direct dependencies of this file.
-    pub(crate) dependencies: Vec<FileDescriptor>,
     pub(crate) extensions: Vec<FieldIndex>,
 }
 
@@ -18,9 +16,9 @@ impl FileDescriptorCommon {
         dependencies: Vec<FileDescriptor>,
         current_file_descriptor: &FileDescriptorProto,
     ) -> crate::Result<FileDescriptorCommon> {
-        let index = FileIndex::index(current_file_descriptor, &dependencies)?;
+        let index = FileIndex::index(current_file_descriptor, dependencies)?;
 
-        let deps_with_public = fds_extend_with_public(dependencies.clone());
+        let deps_with_public = fds_extend_with_public(index.dependencies.clone());
         let building = FileDescriptorBuilding {
             current_file_descriptor,
             current_file_index: &index,
@@ -33,10 +31,6 @@ impl FileDescriptorCommon {
             .map(|ext| FieldIndex::index(ext, &building))
             .collect::<crate::Result<Vec<_>>>()?;
 
-        Ok(FileDescriptorCommon {
-            index,
-            dependencies,
-            extensions,
-        })
+        Ok(FileDescriptorCommon { index, extensions })
     }
 }

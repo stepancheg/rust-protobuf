@@ -80,6 +80,9 @@ pub(crate) struct OneofIndex {
 
 #[derive(Debug)]
 pub(crate) struct FileIndex {
+    /// Direct dependencies of this file.
+    pub(crate) dependencies: Vec<FileDescriptor>,
+    /// All messages in this file.
     pub(crate) messages: Vec<MessageIndex>,
     pub(crate) message_by_name_to_package: HashMap<String, usize>,
     pub(crate) top_level_messages: Vec<usize>,
@@ -92,11 +95,12 @@ pub(crate) struct FileIndex {
 impl FileIndex {
     pub(crate) fn index(
         file: &FileDescriptorProto,
-        deps: &[FileDescriptor],
+        dependencies: Vec<FileDescriptor>,
     ) -> crate::Result<FileIndex> {
-        let deps_with_public = fds_extend_with_public(deps.to_vec());
+        let deps_with_public = fds_extend_with_public(dependencies.clone());
 
         let mut index = FileIndex {
+            dependencies,
             messages: Vec::new(),
             message_by_name_to_package: HashMap::new(),
             enums: Vec::new(),
@@ -135,7 +139,7 @@ impl FileIndex {
                 &FileDescriptorBuilding {
                     current_file_descriptor: file,
                     current_file_index: &index,
-                    deps_with_public: deps,
+                    deps_with_public: &deps_with_public,
                 },
             )?;
             index.services.push(service_index);
