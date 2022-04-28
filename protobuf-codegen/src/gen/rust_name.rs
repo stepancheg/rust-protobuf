@@ -139,6 +139,7 @@ impl fmt::Display for RustRelativePath {
 
 impl From<&'_ str> for RustRelativePath {
     fn from(s: &str) -> Self {
+        assert!(!s.starts_with("::"), "path is absolute: {:?}", s);
         RustRelativePath {
             path: s.split("::").map(RustIdent::from).collect(),
         }
