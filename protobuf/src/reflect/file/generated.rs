@@ -3,7 +3,6 @@ use std::collections::HashMap;
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::enums::generated::GeneratedEnumDescriptor;
 use crate::reflect::file::common::FileDescriptorCommon;
-use crate::reflect::file::index::FileIndex;
 use crate::reflect::message::generated::GeneratedMessageDescriptor;
 use crate::reflect::oneof::generated::GeneratedOneofDescriptor;
 use crate::reflect::FileDescriptor;
@@ -29,9 +28,7 @@ impl GeneratedFileDescriptor {
         messages: Vec<GeneratedMessageDescriptorData>,
         enums: Vec<GeneratedEnumDescriptorData>,
     ) -> GeneratedFileDescriptor {
-        let index = FileIndex::index(file_descriptor_proto, &dependencies).unwrap();
-
-        let common = FileDescriptorCommon::new(index, dependencies, file_descriptor_proto).unwrap();
+        let common = FileDescriptorCommon::new(dependencies, file_descriptor_proto).unwrap();
 
         let mut messages: HashMap<&str, GeneratedMessageDescriptorData> = messages
             .into_iter()

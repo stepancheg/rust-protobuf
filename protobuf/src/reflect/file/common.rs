@@ -15,10 +15,11 @@ pub(crate) struct FileDescriptorCommon {
 
 impl FileDescriptorCommon {
     pub(crate) fn new(
-        index: FileIndex,
         dependencies: Vec<FileDescriptor>,
         current_file_descriptor: &FileDescriptorProto,
     ) -> crate::Result<FileDescriptorCommon> {
+        let index = FileIndex::index(current_file_descriptor, &dependencies)?;
+
         let deps_with_public = fds_extend_with_public(dependencies.clone());
         let building = FileDescriptorBuilding {
             current_file_descriptor,
