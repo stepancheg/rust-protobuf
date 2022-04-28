@@ -269,11 +269,11 @@ impl MessageDescriptor {
     }
 
     pub(crate) fn index(&self) -> &MessageIndex {
-        &self.file_descriptor.index().index.messages[self.index]
+        &self.file_descriptor.common().messages[self.index]
     }
 
     pub(crate) fn generated_index(&self) -> &'static MessageIndex {
-        &self.file_descriptor.generated_index().index.messages[self.index]
+        &self.file_descriptor.generated_index().messages[self.index]
     }
 
     /// Find message field by protobuf field name

@@ -8,7 +8,7 @@ use crate::descriptor::FileDescriptorProto;
 use crate::message_dyn::MessageDyn;
 use crate::message_full::MessageFull;
 use crate::reflect::acc::FieldAccessor;
-use crate::reflect::file::index::FileIndex;
+use crate::reflect::file::index::FileDescriptorCommon;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
 use crate::reflect::GeneratedOneofDescriptorData;
@@ -124,7 +124,7 @@ impl GeneratedMessageDescriptor {
     pub(crate) fn new(
         data: GeneratedMessageDescriptorData,
         file_descriptor_proto: &'static FileDescriptorProto,
-        _file_index: &FileIndex,
+        _file_index: &FileDescriptorCommon,
     ) -> crate::Result<GeneratedMessageDescriptor> {
         let GeneratedMessageDescriptorData {
             protobuf_name_to_package,

@@ -28,7 +28,7 @@ impl ServiceDescriptor {
     }
 
     fn index(&self) -> &ServiceIndex {
-        &self.file_descriptor.index().index.services[self.index]
+        &self.file_descriptor.common().services[self.index]
     }
 
     /// Proto snippet describing this service.

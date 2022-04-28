@@ -195,7 +195,7 @@ impl FieldDescriptor {
                 .as_ref()
                 .unwrap()
                 .resolve_message(self.file_descriptor()),
-            FieldDescriptorImpl::ExtensionInFile(file, i) => file.index().index.extensions[*i]
+            FieldDescriptorImpl::ExtensionInFile(file, i) => file.common().extensions[*i]
                 .extendee
                 .as_ref()
                 .unwrap()
@@ -209,7 +209,7 @@ impl FieldDescriptor {
             FieldDescriptorImpl::ExtensionInMessage(m, i) => {
                 &m.index().message_index.extensions[*i]
             }
-            FieldDescriptorImpl::ExtensionInFile(f, i) => &f.index().index.extensions[*i],
+            FieldDescriptorImpl::ExtensionInFile(f, i) => &f.common().extensions[*i],
         }
     }
 

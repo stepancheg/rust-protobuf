@@ -48,7 +48,7 @@ impl OneofDescriptor {
     }
 
     fn index_entry(&self) -> &OneofIndex {
-        &self.file_descriptor.index().index.oneofs[self.index]
+        &self.file_descriptor.common().oneofs[self.index]
     }
 
     /// Message which contains this oneof.

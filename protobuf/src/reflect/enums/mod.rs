@@ -211,7 +211,7 @@ impl EnumDescriptor {
 
     /// Find enum variant by name
     pub fn value_by_name(&self, name: &str) -> Option<EnumValueDescriptor> {
-        let index = *self.file_descriptor.index().index.enums[self.index]
+        let index = *self.file_descriptor.common().enums[self.index]
             .index_by_name
             .get(name)?;
         Some(EnumValueDescriptor {
@@ -222,7 +222,7 @@ impl EnumDescriptor {
 
     /// Find enum variant by number
     pub fn value_by_number(&self, number: i32) -> Option<EnumValueDescriptor> {
-        let index = *self.file_descriptor.index().index.enums[self.index]
+        let index = *self.file_descriptor.common().enums[self.index]
             .index_by_number
             .get(&number)?;
         Some(self.value_by_index(index))

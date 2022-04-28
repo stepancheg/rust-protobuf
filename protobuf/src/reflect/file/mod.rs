@@ -8,10 +8,10 @@ use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::error::ReflectError;
 use crate::reflect::field::FieldDescriptorImpl;
-use crate::reflect::file::common::FileDescriptorCommon;
 use crate::reflect::file::dynamic::DynamicFileDescriptor;
 use crate::reflect::file::fds::FdsBuilder;
 use crate::reflect::file::index::EnumIndex;
+use crate::reflect::file::index::FileDescriptorCommon;
 use crate::reflect::file::index::MessageIndex;
 use crate::reflect::name::protobuf_name_starts_with_package;
 use crate::reflect::service::ServiceDescriptor;
@@ -22,7 +22,6 @@ use crate::reflect::MessageDescriptor;
 use crate::reflect::Syntax;
 
 pub(crate) mod building;
-pub(crate) mod common;
 pub(crate) mod dynamic;
 pub(crate) mod fds;
 pub(crate) mod generated;
@@ -75,7 +74,7 @@ pub struct FileDescriptor {
 }
 
 impl FileDescriptor {
-    pub(crate) fn index(&self) -> &FileDescriptorCommon {
+    pub(crate) fn common(&self) -> &FileDescriptorCommon {
         match &self.imp {
             FileDescriptorImpl::Generated(g) => &g.common,
             FileDescriptorImpl::Dynamic(d) => &d.common,
@@ -90,11 +89,11 @@ impl FileDescriptor {
     }
 
     pub(crate) fn message_index_entry(&self, index: usize) -> &MessageIndex {
-        &self.index().index.messages[index]
+        &self.common().messages[index]
     }
 
     pub(crate) fn enum_index_entry(&self, index: usize) -> &EnumIndex {
-        &self.index().index.enums[index]
+        &self.common().enums[index]
     }
 
     pub(crate) fn message_proto(&self, index: usize) -> &DescriptorProto {
@@ -112,8 +111,7 @@ impl FileDescriptor {
     // TODO: return iterator.
     /// Get top-level messages.
     pub fn messages(&self) -> impl Iterator<Item = MessageDescriptor> + '_ {
-        self.index()
-            .index
+        self.common()
             .top_level_messages
             .iter()
             .map(|i| MessageDescriptor::new(self.clone(), *i))
@@ -139,7 +137,7 @@ impl FileDescriptor {
 
     /// Extension fields.
     pub fn extensions(&self) -> impl Iterator<Item = FieldDescriptor> + '_ {
-        (0..self.index().index.extensions.len()).map(move |index| FieldDescriptor {
+        (0..self.common().extensions.len()).map(move |index| FieldDescriptor {
             imp: FieldDescriptorImpl::ExtensionInFile(self.clone(), index),
         })
     }
@@ -148,8 +146,7 @@ impl FileDescriptor {
     ///
     /// Only search in the current file, not in any dependencies.
     pub fn message_by_package_relative_name(&self, name: &str) -> Option<MessageDescriptor> {
-        self.index()
-            .index
+        self.common()
             .message_by_name_to_package
             .get(name)
             .map(|&index| MessageDescriptor::new(self.clone(), index))
@@ -159,8 +156,7 @@ impl FileDescriptor {
     ///
     /// Only search in the current file, not in any dependencies.
     pub fn enum_by_package_relative_name(&self, name: &str) -> Option<EnumDescriptor> {
-        self.index()
-            .index
+        self.common()
             .enums_by_name_to_package
             .get(name)
             .map(|&index| EnumDescriptor::new(self.clone(), index))
@@ -263,16 +259,9 @@ impl FileDescriptor {
         }
     }
 
-    fn common(&self) -> &FileDescriptorCommon {
-        match &self.imp {
-            FileDescriptorImpl::Generated(g) => &g.common,
-            FileDescriptorImpl::Dynamic(d) => &d.common,
-        }
-    }
-
     /// Direct dependencies of this file.
     pub fn deps(&self) -> &[FileDescriptor] {
-        &self.common().index.dependencies
+        &self.common().dependencies
     }
 
     /// Subset of dependencies which are public
