@@ -100,21 +100,14 @@ impl FileDescriptorCommon {
     ) -> crate::Result<FileDescriptorCommon> {
         let deps_with_public = fds_extend_with_public(dependencies.clone());
 
-        let mut index = FileDescriptorCommon {
-            dependencies,
-            messages: Vec::new(),
-            message_by_name_to_package: HashMap::new(),
-            enums: Vec::new(),
-            top_level_messages: Vec::with_capacity(file.message_type.len()),
-            enums_by_name_to_package: HashMap::new(),
-            oneofs: Vec::new(),
-            services: Vec::new(),
-            extensions: Vec::new(),
-        };
+        let mut messages = Vec::new();
+        let mut enums = Vec::new();
+        let mut oneofs = Vec::new();
+        let mut top_level_messages = Vec::new();
 
         // Top-level enums start with zero
         for (i, e) in file.enum_type.iter().enumerate() {
-            index.enums.push(EnumIndex::new(
+            enums.push(EnumIndex::new(
                 EnumPath {
                     message_path: MessagePath::default(),
                     enum_index: i,
@@ -128,28 +121,47 @@ impl FileDescriptorCommon {
 
         for (i, message) in file.message_type.iter().enumerate() {
             let path = MessagePath(vec![i]);
-            let message_index = index.index_message_and_inners(file, message, &path, None, "");
-            index.top_level_messages.push(message_index);
+            let message_index = Self::index_message_and_inners(
+                file,
+                message,
+                &path,
+                None,
+                "",
+                &mut messages,
+                &mut enums,
+                &mut oneofs,
+            );
+            top_level_messages.push(message_index);
         }
 
-        index.build_message_by_name_to_package();
-        index.build_enum_by_name_to_package();
+        let message_by_name_to_package = Self::build_message_by_name_to_package(&messages);
+        let enums_by_name_to_package = Self::build_enum_by_name_to_package(&enums);
+
+        let mut services = Vec::new();
 
         for service in &file.service {
             let service_index = ServiceIndex::index(
                 service,
                 &FileDescriptorBuilding {
                     current_file_descriptor: file,
-                    current_file_index: &index,
                     deps_with_public: &deps_with_public,
+                    message_by_name_to_package: &message_by_name_to_package,
+                    messages: &messages,
+                    enums_by_name_to_package: &enums_by_name_to_package,
                 },
             )?;
-            index.services.push(service_index);
+            services.push(service_index);
         }
 
-        index.build_message_index(file, &deps_with_public)?;
+        Self::build_message_index(
+            file,
+            &deps_with_public,
+            &mut messages,
+            &message_by_name_to_package,
+            &enums_by_name_to_package,
+        )?;
 
-        index.extensions = file
+        let extensions = file
             .extension
             .iter()
             .map(|ext| {
@@ -157,43 +169,57 @@ impl FileDescriptorCommon {
                     ext,
                     &FileDescriptorBuilding {
                         current_file_descriptor: file,
-                        current_file_index: &index,
                         deps_with_public: &deps_with_public,
+                        message_by_name_to_package: &message_by_name_to_package,
+                        messages: &messages,
+                        enums_by_name_to_package: &enums_by_name_to_package,
                     },
                 )
             })
             .collect::<crate::Result<Vec<_>>>()?;
 
-        Ok(index)
+        Ok(FileDescriptorCommon {
+            dependencies,
+            messages,
+            message_by_name_to_package,
+            enums,
+            top_level_messages,
+            enums_by_name_to_package,
+            oneofs,
+            services,
+            extensions,
+        })
     }
 
     fn index_message_and_inners(
-        &mut self,
         file: &FileDescriptorProto,
         message: &DescriptorProto,
         path: &MessagePath,
         parent: Option<usize>,
         parent_name_to_package: &str,
+        messages: &mut Vec<MessageIndex>,
+        enums: &mut Vec<EnumIndex>,
+        oneofs: &mut Vec<OneofIndex>,
     ) -> usize {
         let name_to_package = concat_paths(parent_name_to_package, message.name());
 
-        let message_index = self.messages.len();
-        self.messages.push(MessageIndex {
+        let message_index = messages.len();
+        messages.push(MessageIndex {
             path: path.clone(),
             name_to_package: String::new(),
             full_name: String::new(),
             enclosing_message: parent,
             nested_messages: Vec::with_capacity(message.nested_type.len()),
             map_entry: message.options.get_or_default().map_entry(),
-            first_enum_index: self.enums.len(),
+            first_enum_index: enums.len(),
             enum_count: message.enum_type.len(),
-            first_oneof_index: self.oneofs.len(),
+            first_oneof_index: oneofs.len(),
             oneof_count: message.oneof_decl.len(),
             message_index: MessageFieldsIndex::default(),
         });
 
         for (i, e) in message.enum_type.iter().enumerate() {
-            self.enums.push(EnumIndex::new(
+            enums.push(EnumIndex::new(
                 EnumPath {
                     message_path: path.clone(),
                     enum_index: i,
@@ -206,7 +232,7 @@ impl FileDescriptorCommon {
         }
 
         for (i, _oneof) in message.oneof_decl.iter().enumerate() {
-            self.oneofs.push(OneofIndex {
+            oneofs.push(OneofIndex {
                 containing_message: message_index,
                 index_in_containing_message: i,
             });
@@ -215,56 +241,59 @@ impl FileDescriptorCommon {
         for (i, nested) in message.nested_type.iter().enumerate() {
             let mut nested_path = path.clone();
             nested_path.push(i);
-            let nested_index = self.index_message_and_inners(
+            let nested_index = Self::index_message_and_inners(
                 file,
                 nested,
                 &nested_path,
                 Some(message_index),
                 &name_to_package,
+                messages,
+                enums,
+                oneofs,
             );
-            self.messages[message_index]
-                .nested_messages
-                .push(nested_index);
+            messages[message_index].nested_messages.push(nested_index);
         }
 
-        self.messages[message_index].full_name = concat_paths(file.package(), &name_to_package);
-        self.messages[message_index].name_to_package = name_to_package;
+        messages[message_index].full_name = concat_paths(file.package(), &name_to_package);
+        messages[message_index].name_to_package = name_to_package;
 
         message_index
     }
 
-    fn build_message_by_name_to_package(&mut self) {
-        self.message_by_name_to_package = self
-            .messages
+    fn build_message_by_name_to_package(messages: &[MessageIndex]) -> HashMap<String, usize> {
+        messages
             .iter()
             .enumerate()
             .map(|(i, m)| (m.name_to_package.to_owned(), i))
-            .collect();
+            .collect()
     }
 
-    fn build_enum_by_name_to_package(&mut self) {
-        self.enums_by_name_to_package = self
-            .enums
+    fn build_enum_by_name_to_package(enums: &[EnumIndex]) -> HashMap<String, usize> {
+        enums
             .iter()
             .enumerate()
             .map(|(i, e)| (e.name_to_package.to_owned(), i))
-            .collect();
+            .collect()
     }
 
     fn build_message_index(
-        &mut self,
         file: &FileDescriptorProto,
         deps_with_public: &[FileDescriptor],
+        messages: &mut [MessageIndex],
+        message_by_name_to_package: &HashMap<String, usize>,
+        enums_by_name_to_package: &HashMap<String, usize>,
     ) -> crate::Result<()> {
-        for i in 0..self.messages.len() {
-            let message_proto = self.messages[i].path.eval(file).unwrap();
+        for i in 0..messages.len() {
+            let message_proto = messages[i].path.eval(file).unwrap();
             let building = FileDescriptorBuilding {
                 current_file_descriptor: file,
-                current_file_index: self,
                 deps_with_public,
+                message_by_name_to_package,
+                messages,
+                enums_by_name_to_package,
             };
             let message_index = Self::index_message(message_proto, &building)?;
-            self.messages[i].message_index = message_index;
+            messages[i].message_index = message_index;
         }
         Ok(())
     }
