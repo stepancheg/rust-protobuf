@@ -645,11 +645,18 @@ impl<'a> CodedOutputStream<'a> {
 
     /// Write repeated packed float values.
     pub fn write_repeated_packed_float_no_tag(&mut self, values: &[f32]) -> crate::Result<()> {
-        // TODO: can we bitcast to bytes?
-        for v in values {
-            self.write_float_no_tag(*v)?;
+        if LITTLE_ENDIAN {
+            // SAFETY: it is safe to transmute floats to bytes.
+            let bytes =
+                unsafe { slice::from_raw_parts(values.as_ptr() as *const u8, values.len() * 4) };
+            self.write_raw_bytes(bytes)
+        } else {
+            // TODO: can we bitcast to bytes?
+            for v in values {
+                self.write_float_no_tag(*v)?;
+            }
+            Ok(())
         }
-        Ok(())
     }
 
     /// Write field header and data for repeated packed float.
@@ -670,11 +677,18 @@ impl<'a> CodedOutputStream<'a> {
 
     /// Write repeated packed double values.
     pub fn write_repeated_packed_double_no_tag(&mut self, values: &[f64]) -> crate::Result<()> {
-        // TODO: can we bitcast to bytes?
-        for v in values {
-            self.write_double_no_tag(*v)?;
+        if LITTLE_ENDIAN {
+            // SAFETY: it is safe to transmute doubles to bytes.
+            let bytes =
+                unsafe { slice::from_raw_parts(values.as_ptr() as *const u8, values.len() * 8) };
+            self.write_raw_bytes(bytes)
+        } else {
+            // TODO: can we bitcast to bytes?
+            for v in values {
+                self.write_double_no_tag(*v)?;
+            }
+            Ok(())
         }
-        Ok(())
     }
 
     /// Write field header and data for repeated packed double.
