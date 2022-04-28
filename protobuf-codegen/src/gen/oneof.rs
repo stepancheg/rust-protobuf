@@ -22,6 +22,7 @@ use crate::gen::protoc_insertion_point::write_protoc_insertion_point_for_oneof_f
 use crate::gen::rust_name::RustIdent;
 use crate::gen::rust_name::RustIdentWithPath;
 use crate::gen::rust_name::RustPath;
+use crate::gen::rust_name::RustRelativePath;
 use crate::gen::rust_types_values::make_path;
 use crate::gen::rust_types_values::RustType;
 use crate::gen::scope::OneofVariantWithContext;
@@ -99,7 +100,7 @@ impl<'a> OneofField<'a> {
         }
     }
 
-    pub fn variant_path(&self, reference: &RustPath) -> RustIdentWithPath {
+    pub fn variant_path(&self, reference: &RustRelativePath) -> RustIdentWithPath {
         make_path(
             reference,
             &self
@@ -132,15 +133,7 @@ impl<'a> OneofVariantGen<'a> {
             field: field.clone(),
             _path: format!(
                 "{}::{}",
-                oneof.type_name_relative(
-                    &oneof
-                        .oneof
-                        .message
-                        .scope
-                        .rust_path_to_file()
-                        .clone()
-                        .into_path()
-                ),
+                oneof.type_name_relative(&oneof.oneof.message.scope.rust_path_to_file()),
                 field.rust_name
             ),
             oneof_field: OneofField::parse(
@@ -159,8 +152,7 @@ impl<'a> OneofVariantGen<'a> {
     pub fn path(&self, reference: &FileAndMod) -> RustPath {
         RustPath::from(format!(
             "{}::{}",
-            self.oneof
-                .type_name_relative(&reference.relative_mod.clone().into_path()),
+            self.oneof.type_name_relative(&reference.relative_mod),
             self.oneof_field.oneof_variant_rust_name,
         ))
     }
@@ -198,7 +190,7 @@ impl<'a> OneofGen<'a> {
         }
     }
 
-    pub fn type_name_relative(&self, source: &RustPath) -> RustIdentWithPath {
+    pub fn type_name_relative(&self, source: &RustRelativePath) -> RustIdentWithPath {
         make_path(source, &self.oneof.rust_name())
     }
 
@@ -235,8 +227,7 @@ impl<'a> OneofGen<'a> {
                     .message
                     .scope
                     .file_and_mod(self.customize.for_elem.clone())
-                    .relative_mod
-                    .into_path(),
+                    .relative_mod,
             )
             .clone(),
         )))
@@ -307,8 +298,7 @@ impl<'a> OneofGen<'a> {
                     .message
                     .scope()
                     .rust_path_to_file()
-                    .append(self.oneof.message.mod_name().into_rel_path())
-                    .into_path(),
+                    .append(self.oneof.message.mod_name().into_rel_path()),
                 &self.oneof.message.rust_name_to_file(),
             );
             let expr = format!(

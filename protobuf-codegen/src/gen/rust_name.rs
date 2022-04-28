@@ -154,11 +154,6 @@ impl RustPath {
         self.absolute
     }
 
-    pub fn is_empty(&self) -> bool {
-        assert!(!self.absolute);
-        self.path.is_empty()
-    }
-
     pub fn with_ident(self, ident: RustIdent) -> RustIdentWithPath {
         RustIdentWithPath { path: self, ident }
     }
@@ -171,11 +166,6 @@ impl RustPath {
     pub fn remove_first(&mut self) -> Option<RustIdent> {
         assert!(!self.absolute);
         self.path.remove_first()
-    }
-
-    pub fn to_reverse(&self) -> RustRelativePath {
-        assert!(!self.absolute);
-        self.path.to_reverse()
     }
 
     pub fn prepend_ident(&mut self, ident: RustIdent) {

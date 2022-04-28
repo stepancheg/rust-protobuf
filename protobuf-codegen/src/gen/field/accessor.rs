@@ -86,15 +86,7 @@ impl FieldGen<'_> {
     fn accessor_fn_oneof_enum(&self, oneof: &OneofField, en: &FieldElemEnum) -> AccessorFn {
         let message = self.proto_field.message.rust_name();
 
-        let variant_path = oneof.variant_path(
-            &self
-                .proto_field
-                .message
-                .scope
-                .rust_path_to_file()
-                .clone()
-                .into_path(),
-        );
+        let variant_path = oneof.variant_path(&self.proto_field.message.scope.rust_path_to_file());
 
         let getter = CodeWriter::with_no_error(|w| {
             w.expr_block(

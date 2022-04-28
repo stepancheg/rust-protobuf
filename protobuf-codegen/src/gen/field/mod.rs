@@ -1268,7 +1268,7 @@ impl<'a> FieldGen<'a> {
             FieldKind::Oneof(oneof_field) => {
                 let cond = format!(
                     "Some({}(ref {}))",
-                    oneof_field.variant_path(&file_and_mod.relative_mod.clone().into_path()),
+                    oneof_field.variant_path(&file_and_mod.relative_mod),
                     varn
                 );
                 w.if_let_stmt(
@@ -1366,15 +1366,7 @@ impl<'a> FieldGen<'a> {
                 w.write_line(format!(
                     "self.{} = ::std::option::Option::Some({}({}))",
                     oneof.oneof_field_name,
-                    oneof.variant_path(
-                        &self
-                            .proto_field
-                            .message
-                            .scope
-                            .rust_path_to_file()
-                            .clone()
-                            .into_path()
-                    ),
+                    oneof.variant_path(&self.proto_field.message.scope.rust_path_to_file()),
                     // TODO: default from .proto is not needed here (?)
                     self.element_default_value_rust()
                         .into_type(
@@ -1521,15 +1513,7 @@ impl<'a> FieldGen<'a> {
             w.write_line(&format!(
                 "self.{} = ::std::option::Option::Some({}({}));",
                 o.oneof_field_name,
-                o.variant_path(
-                    &self
-                        .proto_field
-                        .message
-                        .scope
-                        .rust_path_to_file()
-                        .clone()
-                        .into_path()
-                ),
+                o.variant_path(&self.proto_field.message.scope.rust_path_to_file()),
                 maybe_boxed.value
             )); // TODO: into_type
         })
@@ -1924,15 +1908,7 @@ impl<'a> FieldGen<'a> {
             w.case_expr(
                 format!(
                     "::std::option::Option::Some({}({}))",
-                    o.variant_path(
-                        &self
-                            .proto_field
-                            .message
-                            .scope
-                            .rust_path_to_file()
-                            .clone()
-                            .into_path()
-                    ),
+                    o.variant_path(&self.proto_field.message.scope.rust_path_to_file()),
                     refv
                 ),
                 vtype.into_target(&get_xxx_return_type, "v", &self.customize),
@@ -2008,13 +1984,7 @@ impl<'a> FieldGen<'a> {
                             format!(
                                 "::std::option::Option::Some({}(..))",
                                 oneof.variant_path(
-                                    &self
-                                        .proto_field
-                                        .message
-                                        .scope
-                                        .rust_path_to_file()
-                                        .clone()
-                                        .into_path()
+                                    &self.proto_field.message.scope.rust_path_to_file()
                                 )
                             ),
                             "true",
@@ -2067,15 +2037,7 @@ impl<'a> FieldGen<'a> {
                         w.write_line(&format!(
                             "self.{} = ::std::option::Option::Some({}({}))",
                             oneof.oneof_field_name,
-                            oneof.variant_path(
-                                &self
-                                    .proto_field
-                                    .message
-                                    .scope
-                                    .rust_path_to_file()
-                                    .clone()
-                                    .into_path()
-                            ),
+                            oneof.variant_path(&self.proto_field.message.scope.rust_path_to_file()),
                             v
                         ));
                     }
@@ -2148,15 +2110,7 @@ impl<'a> FieldGen<'a> {
                     w.if_let_else_stmt(
                         &format!(
                             "::std::option::Option::Some({}(_))",
-                            o.variant_path(
-                                &self
-                                    .proto_field
-                                    .message
-                                    .scope
-                                    .rust_path_to_file()
-                                    .clone()
-                                    .into_path()
-                            )
+                            o.variant_path(&self.proto_field.message.scope.rust_path_to_file())
                         )[..],
                         &self_field_oneof[..],
                         |w| {
@@ -2164,15 +2118,7 @@ impl<'a> FieldGen<'a> {
                             w.write_line(&format!(
                                 "{} = ::std::option::Option::Some({}({}));",
                                 self_field_oneof,
-                                o.variant_path(
-                                    &self
-                                        .proto_field
-                                        .message
-                                        .scope
-                                        .rust_path_to_file()
-                                        .clone()
-                                        .into_path()
-                                ),
+                                o.variant_path(&self.proto_field.message.scope.rust_path_to_file()),
                                 self.element_default_value_rust()
                                     .into_type(
                                         o.rust_type(
@@ -2194,15 +2140,7 @@ impl<'a> FieldGen<'a> {
                         w.case_expr(
                             format!(
                                 "::std::option::Option::Some({}(ref mut v))",
-                                o.variant_path(
-                                    &self
-                                        .proto_field
-                                        .message
-                                        .scope
-                                        .rust_path_to_file()
-                                        .clone()
-                                        .into_path()
-                                )
+                                o.variant_path(&self.proto_field.message.scope.rust_path_to_file())
                             ),
                             "v",
                         );
@@ -2249,15 +2187,7 @@ impl<'a> FieldGen<'a> {
                 w.case_expr(
                     format!(
                         "::std::option::Option::Some({}(v))",
-                        o.variant_path(
-                            &self
-                                .proto_field
-                                .message
-                                .scope
-                                .rust_path_to_file()
-                                .clone()
-                                .into_path()
-                        )
+                        o.variant_path(&self.proto_field.message.scope.rust_path_to_file())
                     ),
                     &converted.value,
                 );

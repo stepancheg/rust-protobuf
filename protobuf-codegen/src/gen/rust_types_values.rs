@@ -12,6 +12,7 @@ use crate::gen::rust::EXPR_VEC_NEW;
 use crate::gen::rust_name::RustIdent;
 use crate::gen::rust_name::RustIdentWithPath;
 use crate::gen::rust_name::RustPath;
+use crate::gen::rust_name::RustRelativePath;
 use crate::gen::scope::RootScope;
 use crate::gen::scope::WithScope;
 use crate::gen::strx::capitalize;
@@ -487,12 +488,10 @@ fn is_descriptor_proto(file: &FileDescriptorProto) -> bool {
     file.package() == "google.protobuf" && file_last_component(file.name()) == "descriptor.proto"
 }
 
-fn make_path_to_path(source: &RustPath, dest: &RustPath) -> RustPath {
+fn make_path_to_path(source: &RustRelativePath, dest: &RustPath) -> RustPath {
     if dest.is_absolute() {
         return dest.clone();
     }
-
-    assert!(!source.is_absolute());
 
     let mut source = source.clone();
     let mut dest = dest.clone();
@@ -503,7 +502,7 @@ fn make_path_to_path(source: &RustPath, dest: &RustPath) -> RustPath {
     source.to_reverse().into_path().append(dest)
 }
 
-pub(crate) fn make_path(source: &RustPath, dest: &RustIdentWithPath) -> RustIdentWithPath {
+pub(crate) fn make_path(source: &RustRelativePath, dest: &RustIdentWithPath) -> RustIdentWithPath {
     make_path_to_path(source, &dest.path).with_ident(dest.ident.clone())
 }
 
@@ -514,10 +513,7 @@ pub(crate) fn message_or_enum_to_rust_relative(
     let same_file = message_or_enum.file_descriptor().name() == current.file;
     if same_file {
         // field type is a message or enum declared in the same file
-        make_path(
-            &current.relative_mod.clone().into_path(),
-            &message_or_enum.rust_name_to_file(),
-        )
+        make_path(&current.relative_mod, &message_or_enum.rust_name_to_file())
     } else if let Some(name) = is_well_known_type_full(&message_or_enum.name_absolute()) {
         // Well-known types are included in rust-protobuf library
         // https://developers.google.com/protocol-buffers/docs/reference/google.protobuf
