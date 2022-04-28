@@ -32,7 +32,7 @@ use crate::UnknownValueRef;
 // `CodedOutputStream` wraps `BufWriter`, it often skips double buffering.
 const OUTPUT_STREAM_BUFFER_SIZE: usize = 8 * 1024;
 
-pub trait WithCodedOutputStream {
+pub(crate) trait WithCodedOutputStream {
     fn with_coded_output_stream<T, F>(self, cb: F) -> crate::Result<T>
     where
         F: FnOnce(&mut CodedOutputStream) -> crate::Result<T>;
@@ -223,10 +223,6 @@ impl<'a> CodedOutputStream<'a> {
         //   * `CodedOutputStream` has invariant that `position <= buffer.len()`.
         //   * `buffer` is filled up to `position`.
         unsafe { slice::from_raw_parts_mut(buffer as *mut u8, position) }
-    }
-
-    fn filled_buffer(&self) -> &[u8] {
-        Self::filled_buffer_impl(self.buffer, self.pos_within_buf)
     }
 
     fn refresh_buffer(&mut self) -> crate::Result<()> {
