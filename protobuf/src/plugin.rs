@@ -27,15 +27,15 @@
 pub struct Version {
     // message fields
     // @@protoc_insertion_point(field:google.protobuf.compiler.Version.major)
-    major: ::std::option::Option<i32>,
+    pub major: ::std::option::Option<i32>,
     // @@protoc_insertion_point(field:google.protobuf.compiler.Version.minor)
-    minor: ::std::option::Option<i32>,
+    pub minor: ::std::option::Option<i32>,
     // @@protoc_insertion_point(field:google.protobuf.compiler.Version.patch)
-    patch: ::std::option::Option<i32>,
+    pub patch: ::std::option::Option<i32>,
     ///  A suffix for alpha, beta or rc release, e.g., "alpha-1", "rc2". It should
     ///  be empty for mainline stable releases.
     // @@protoc_insertion_point(field:google.protobuf.compiler.Version.suffix)
-    suffix: ::std::option::Option<::std::string::String>,
+    pub suffix: ::std::option::Option<::std::string::String>,
     // special fields
     // @@protoc_insertion_point(special_field:google.protobuf.compiler.Version.special_fields)
     pub special_fields: crate::SpecialFields,
@@ -309,7 +309,7 @@ pub struct CodeGeneratorRequest {
     pub file_to_generate: ::std::vec::Vec<::std::string::String>,
     ///  The generator parameter passed on the command-line.
     // @@protoc_insertion_point(field:google.protobuf.compiler.CodeGeneratorRequest.parameter)
-    parameter: ::std::option::Option<::std::string::String>,
+    pub parameter: ::std::option::Option<::std::string::String>,
     ///  FileDescriptorProtos for all files in files_to_generate and everything
     ///  they import.  The files will appear in topological order, so each file
     ///  appears before any file that imports it.
@@ -559,11 +559,11 @@ pub struct CodeGeneratorResponse {
     ///  unparseable -- should be reported by writing a message to stderr and
     ///  exiting with a non-zero status code.
     // @@protoc_insertion_point(field:google.protobuf.compiler.CodeGeneratorResponse.error)
-    error: ::std::option::Option<::std::string::String>,
+    pub error: ::std::option::Option<::std::string::String>,
     ///  A bitmask of supported features that the code generator supports.
     ///  This is a bitwise "or" of values from the Feature enum.
     // @@protoc_insertion_point(field:google.protobuf.compiler.CodeGeneratorResponse.supported_features)
-    supported_features: ::std::option::Option<u64>,
+    pub supported_features: ::std::option::Option<u64>,
     // @@protoc_insertion_point(field:google.protobuf.compiler.CodeGeneratorResponse.file)
     pub file: ::std::vec::Vec<code_generator_response::File>,
     // special fields
@@ -798,7 +798,7 @@ pub mod code_generator_response {
         ///  this writing protoc does not optimize for this -- it will read the entire
         ///  CodeGeneratorResponse before writing files to disk.
         // @@protoc_insertion_point(field:google.protobuf.compiler.CodeGeneratorResponse.File.name)
-        name: ::std::option::Option<::std::string::String>,
+        pub name: ::std::option::Option<::std::string::String>,
         ///  If non-empty, indicates that the named file should already exist, and the
         ///  content here is to be inserted into that file at a defined insertion
         ///  point.  This feature allows a code generator to extend the output
@@ -837,10 +837,10 @@ pub mod code_generator_response {
         ///
         ///  If |insertion_point| is present, |name| must also be present.
         // @@protoc_insertion_point(field:google.protobuf.compiler.CodeGeneratorResponse.File.insertion_point)
-        insertion_point: ::std::option::Option<::std::string::String>,
+        pub insertion_point: ::std::option::Option<::std::string::String>,
         ///  The file contents.
         // @@protoc_insertion_point(field:google.protobuf.compiler.CodeGeneratorResponse.File.content)
-        content: ::std::option::Option<::std::string::String>,
+        pub content: ::std::option::Option<::std::string::String>,
         ///  Information describing the file content being inserted. If an insertion
         ///  point is used, this information will be appropriately offset and inserted
         ///  into the code generation metadata for the generated files.
