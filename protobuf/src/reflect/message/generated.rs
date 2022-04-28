@@ -70,25 +70,6 @@ impl GeneratedMessageDescriptorData {
     ///
     /// This function is not a part of public API.
     #[doc(hidden)]
-    pub fn new<M: MessageFull>(
-        protobuf_name_to_package: &'static str,
-        fields: Vec<FieldAccessor>,
-    ) -> GeneratedMessageDescriptorData {
-        let factory = &MessageFactoryImpl(marker::PhantomData::<M>);
-        GeneratedMessageDescriptorData {
-            protobuf_name_to_package,
-            fields,
-            factory,
-        }
-    }
-
-    /// Construct a new message descriptor.
-    ///
-    /// This operation is called from generated code and rarely
-    /// need to be called directly.
-    ///
-    /// This function is not a part of public API.
-    #[doc(hidden)]
     pub fn new_2<M: MessageFull>(
         protobuf_name_to_package: &'static str,
         fields: Vec<FieldAccessor>,
