@@ -3,10 +3,8 @@ syntax = "proto2";
 package test_tokio_bytes_default_value;
 
 import "rustproto.proto";
-
 option (rustproto.tokio_bytes_all) = true;
 option (rustproto.tokio_bytes_for_string_all) = true;
-option (rustproto.generate_accessors_all) = true;
 
 message TestTokioBytesDefaultValues {
     optional string s = 1 [default = "sss"];

@@ -1,7 +1,6 @@
 syntax = "proto2";
 
 import "rustproto.proto";
-option (rustproto.generate_accessors_all) = true;
 
 message MessageForTestGetter {
     optional uint32 i = 1;

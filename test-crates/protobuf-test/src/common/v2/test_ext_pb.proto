@@ -3,8 +3,6 @@ syntax = "proto2";
 package test_ext;
 
 import "google/protobuf/descriptor.proto";
-import "rustproto.proto";
-option (rustproto.generate_accessors_all) = true;
 
 
 message SubM {

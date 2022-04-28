@@ -1,8 +1,5 @@
 syntax = "proto2";
 
-import "rustproto.proto";
-option (rustproto.generate_accessors_all) = true;
-
 message Issue564 {
   enum TestEnum {
     TEST_ENUM_VALUE_A = 0;

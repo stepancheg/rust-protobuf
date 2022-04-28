@@ -516,8 +516,6 @@ pub(crate) struct FieldGen<'a> {
     pub proto_type: field_descriptor_proto::Type,
     wire_type: WireType,
     pub kind: FieldKind<'a>,
-    pub generate_accessors: bool,
-    pub generate_getter: bool,
     customize: Customize,
     path: Vec<i32>,
     info: Option<&'a SourceCodeInfo>,
@@ -537,25 +535,6 @@ impl<'a> FieldGen<'a> {
                 &field.field,
             )
             .for_elem;
-
-        let syntax = field.message.scope.file_scope.syntax();
-
-        let field_may_have_custom_default_value = syntax == Syntax::Proto2
-            && field.field.proto().label() != field_descriptor_proto::Label::LABEL_REPEATED
-            && field.field.proto().field_type() != field_descriptor_proto::Type::TYPE_MESSAGE;
-
-        let default_expose_field = !field_may_have_custom_default_value;
-        let expose_field = customize.expose_fields.unwrap_or(default_expose_field);
-
-        let default_generate_accessors = !expose_field;
-        let generate_accessors = customize
-            .generate_accessors
-            .unwrap_or(default_generate_accessors)
-            || field.is_oneof();
-
-        let default_generate_getter = generate_accessors || field_may_have_custom_default_value;
-        let generate_getter =
-            customize.generate_getter.unwrap_or(default_generate_getter) || field.is_oneof();
 
         let kind = match field.field.runtime_field_type() {
             RuntimeFieldType::Map(..) => {
@@ -619,8 +598,6 @@ impl<'a> FieldGen<'a> {
             wire_type: WireType::for_type(field.field.proto().field_type()),
             proto_field: field,
             kind,
-            generate_accessors,
-            generate_getter,
             customize,
             path,
             info,
@@ -2270,20 +2247,12 @@ impl<'a> FieldGen<'a> {
     }
 
     pub fn write_message_single_field_accessors(&self, w: &mut CodeWriter) {
-        if self.generate_accessors || self.generate_getter {
-            w.write_line("");
-            let reconstruct_def = self.reconstruct_def();
-            w.comment(&(reconstruct_def + ";"));
-        }
+        w.write_line("");
+        let reconstruct_def = self.reconstruct_def();
+        w.comment(&(reconstruct_def + ";"));
 
-        if self.generate_getter {
-            w.write_line("");
-            self.write_message_field_get(w);
-        }
-
-        if !self.generate_accessors {
-            return;
-        }
+        w.write_line("");
+        self.write_message_field_get(w);
 
         w.write_line("");
         let clear_field_func = self.clear_field_func();
