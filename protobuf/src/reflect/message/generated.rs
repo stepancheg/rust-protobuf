@@ -1,6 +1,5 @@
 //! Generated messages reflection support.
 
-use std::collections::HashMap;
 use std::fmt;
 use std::marker;
 
@@ -60,6 +59,7 @@ pub struct GeneratedMessageDescriptorData {
     pub(crate) protobuf_name_to_package: &'static str,
     pub(crate) fields: Vec<FieldAccessor>,
     pub(crate) factory: &'static dyn MessageFactory,
+    pub(crate) oneofs: Vec<GeneratedOneofDescriptorData>,
 }
 
 impl GeneratedMessageDescriptorData {
@@ -75,12 +75,12 @@ impl GeneratedMessageDescriptorData {
         fields: Vec<FieldAccessor>,
         oneofs: Vec<GeneratedOneofDescriptorData>,
     ) -> GeneratedMessageDescriptorData {
-        let _ = oneofs; // TODO: use
         let factory = &MessageFactoryImpl(marker::PhantomData::<M>);
         GeneratedMessageDescriptorData {
             protobuf_name_to_package,
             fields,
             factory,
+            oneofs,
         }
     }
 }
@@ -106,11 +106,12 @@ impl GeneratedMessageDescriptor {
         data: GeneratedMessageDescriptorData,
         file_descriptor_proto: &'static FileDescriptorProto,
         _file_index: &FileDescriptorCommon,
-    ) -> crate::Result<GeneratedMessageDescriptor> {
+    ) -> GeneratedMessageDescriptor {
         let GeneratedMessageDescriptorData {
             protobuf_name_to_package,
             fields,
             factory,
+            oneofs,
         } = data;
 
         let (_path_to_package, proto) =
@@ -120,14 +121,11 @@ impl GeneratedMessageDescriptor {
                 None => panic!("not found"),
             };
 
-        let mut field_proto_by_name = HashMap::new();
-        for field_proto in &proto.field {
-            field_proto_by_name.insert(field_proto.name(), field_proto);
-        }
+        assert_eq!(oneofs.len(), proto.oneof_decl.len());
 
-        Ok(GeneratedMessageDescriptor {
+        GeneratedMessageDescriptor {
             non_map: Some(NonMapMessageDescriptor { factory, fields }),
-        })
+        }
     }
 
     pub(crate) fn non_map(&self) -> &NonMapMessageDescriptor {
