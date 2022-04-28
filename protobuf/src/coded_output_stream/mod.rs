@@ -1,6 +1,6 @@
+mod output_target;
 pub(crate) mod with;
 
-use std::fmt;
 use std::io;
 use std::io::Write;
 use std::mem::MaybeUninit;
@@ -8,6 +8,7 @@ use std::ptr;
 use std::slice;
 
 use crate::byteorder::LITTLE_ENDIAN;
+use crate::coded_output_stream::output_target::OutputTarget;
 use crate::error::ProtobufError;
 use crate::misc::maybe_uninit_write_slice;
 use crate::rt::vec_packed_enum_or_unknown_data_size;
@@ -33,36 +34,6 @@ use crate::UnknownValueRef;
 // Equal to the default buffer size of `BufWriter`, so when
 // `CodedOutputStream` wraps `BufWriter`, it often skips double buffering.
 const OUTPUT_STREAM_BUFFER_SIZE: usize = 8 * 1024;
-
-/// Output buffer/writer for `CodedOutputStream`.
-enum OutputTarget<'a> {
-    Write(&'a mut dyn Write, Vec<u8>),
-    Vec(&'a mut Vec<u8>),
-    /// The buffer is passed as `&[u8]` to `CodedOutputStream` constructor
-    /// and immediately converted to `buffer` field of `CodedOutputStream`,
-    /// it is not needed to be stored here.
-    /// Lifetime parameter of `CodedOutputStream` guarantees the buffer is valid
-    /// during the lifetime of `CodedOutputStream`.
-    Bytes,
-}
-
-impl<'a> fmt::Debug for OutputTarget<'a> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            OutputTarget::Write(_w, vec) => f
-                .debug_struct("Write")
-                .field("buf_len", &vec.len())
-                .field("buf_cap", &vec.capacity())
-                .finish_non_exhaustive(),
-            OutputTarget::Vec(vec) => f
-                .debug_struct("Vec")
-                .field("len", &vec.len())
-                .field("cap", &vec.capacity())
-                .finish_non_exhaustive(),
-            OutputTarget::Bytes => f.debug_tuple("Bytes").finish(),
-        }
-    }
-}
 
 /// Buffered write with handy utilities
 #[derive(Debug)]
