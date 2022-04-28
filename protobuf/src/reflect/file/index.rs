@@ -77,6 +77,8 @@ impl EnumIndex {
 pub(crate) struct OneofIndex {
     pub(crate) containing_message: usize,
     pub(crate) index_in_containing_message: usize,
+    /// Synthetic oneof for proto3 optional field.
+    pub(crate) synthetic: bool,
 }
 
 #[derive(Debug)]
@@ -233,9 +235,16 @@ impl FileDescriptorCommon {
         }
 
         for (i, _oneof) in message.oneof_decl.iter().enumerate() {
+            let fields: Vec<_> = message
+                .field
+                .iter()
+                .filter(|f| f.has_oneof_index() && f.oneof_index() == i as i32)
+                .collect();
+            let synthetic = fields.len() == 1 && fields[0].proto3_optional();
             oneofs.push(OneofIndex {
                 containing_message: message_index,
                 index_in_containing_message: i,
+                synthetic,
             });
         }
 

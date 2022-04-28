@@ -17,6 +17,11 @@ impl GeneratedOneofDescriptorData {
 pub(crate) struct GeneratedOneofDescriptor {}
 
 impl GeneratedOneofDescriptor {
+    /// Synthetic oneof for proto3 optional field.
+    pub(crate) fn new_synthetic() -> GeneratedOneofDescriptor {
+        GeneratedOneofDescriptor {}
+    }
+
     pub(crate) fn new(_data: &GeneratedOneofDescriptorData) -> GeneratedOneofDescriptor {
         GeneratedOneofDescriptor {}
     }

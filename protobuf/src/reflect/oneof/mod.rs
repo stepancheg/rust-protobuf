@@ -61,17 +61,7 @@ impl OneofDescriptor {
 
     /// This oneof is not present in sources.
     pub fn is_synthetic(&self) -> bool {
-        let mut count = 0;
-        for field in self.fields() {
-            if count > 1 {
-                return false;
-            }
-            if !field.proto().proto3_optional() {
-                return false;
-            }
-            count += 1;
-        }
-        count == 1
+        self.index_entry().synthetic
     }
 
     /// Fully qualified name of oneof (fully qualified name of enclosing message

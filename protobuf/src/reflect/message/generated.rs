@@ -111,17 +111,15 @@ impl GeneratedMessageDescriptor {
             protobuf_name_to_package,
             fields,
             factory,
-            oneofs,
+            oneofs: _,
         } = data;
 
-        let (_path_to_package, proto) =
+        let (_path_to_package, _proto) =
             match find_message_or_enum(file_descriptor_proto, protobuf_name_to_package) {
                 Some((path_to_package, MessageOrEnum::Message(m))) => (path_to_package, m),
                 Some((_, MessageOrEnum::Enum(_))) => panic!("not a message"),
                 None => panic!("not found"),
             };
-
-        assert_eq!(oneofs.len(), proto.oneof_decl.len());
 
         GeneratedMessageDescriptor {
             non_map: Some(NonMapMessageDescriptor { factory, fields }),
