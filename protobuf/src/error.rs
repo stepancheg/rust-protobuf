@@ -61,6 +61,9 @@ pub(crate) enum ProtobufError {
     /// Not all required fields of message set.
     #[error("Message `{}` is missing required fields", .0)]
     MessageNotInitialized(String),
+    /// Message is too large.
+    #[error("Message `{0}` is too large: {1} bytes")]
+    MessageTooLarge(String, u64),
     /// Protobuf type and runtime types mismatch.
     #[error("Protobuf type and runtime types are not compatible")]
     IncompatibleProtobufTypeAndRuntimeType,

@@ -60,7 +60,11 @@ pub trait Message: Default + Clone + Send + Sync + Sized + PartialEq + 'static {
         self.check_initialized()?;
 
         // cache sizes
-        self.compute_size();
+        let size = self.compute_size();
+        if size > u32::MAX as u64 {
+            // Protobuf message size cannot exceed `u32::MAX`.
+            return Err(ProtobufError::MessageTooLarge(Self::NAME.to_owned(), size).into());
+        }
         // TODO: reserve additional
         self.write_to_with_cached_sizes(os)?;
 
