@@ -529,6 +529,10 @@ impl<'a> Deref for FieldWithContext<'a> {
 }
 
 impl<'a> FieldWithContext<'a> {
+    pub fn is_oneof(&self) -> bool {
+        self.field.containing_oneof().is_some()
+    }
+
     pub fn oneof(&self) -> Option<OneofWithContext<'a>> {
         match self.field.containing_oneof() {
             Some(oneof) => Some(OneofWithContext {

@@ -1,0 +1,29 @@
+syntax = "proto2";
+
+import "rustproto.proto";
+
+package test_generate_accessors;
+
+message FooBar {}
+
+message WithAccessors {
+    option (rustproto.generate_accessors) = true;
+
+    optional int32 i = 1;
+    optional string s = 2;
+    optional FooBar f = 3;
+    repeated int32 is = 11;
+    optional string ss = 12;
+    optional FooBar fs = 13;
+}
+
+message WithoutAccessors {
+    option (rustproto.generate_accessors) = false;
+
+    optional int32 i = 1;
+    optional string s = 2;
+    optional FooBar f = 3;
+    repeated int32 is = 11;
+    optional string ss = 12;
+    optional FooBar fs = 13;
+}

@@ -1,5 +1,8 @@
 syntax = "proto2";
 
+import "rustproto.proto";
+option (rustproto.generate_accessors_all) = true;
+
 message TestSync {
     optional int32 int32_field = 3;
 }

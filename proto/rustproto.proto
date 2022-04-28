@@ -11,6 +11,12 @@ import "google/protobuf/descriptor.proto";
 package rustproto;
 
 extend google.protobuf.FileOptions {
+    // When true all fields are public, and not accessors generated
+    optional bool expose_fields_all = 17003;
+    // When false, `get_`, `set_`, `mut_` etc. accessors are not generated
+    optional bool generate_accessors_all = 17004;
+    // When false, `get_` is not generated even if `syntax = "proto2"`
+    optional bool generate_getter_all = 17005;
     // Use `bytes::Bytes` for `bytes` fields
     optional bool tokio_bytes_all = 17011;
     // Use `bytes::Bytes` for `string` fields
@@ -21,6 +27,12 @@ extend google.protobuf.FileOptions {
 }
 
 extend google.protobuf.MessageOptions {
+    // When true all fields are public, and not accessors generated
+    optional bool expose_fields = 17003;
+    // When false, `get_`, `set_`, `mut_` etc. accessors are not generated
+    optional bool generate_accessors = 17004;
+    // When false, `get_` is not generated even if `syntax = "proto2"`
+    optional bool generate_getter = 17005;
     // Use `bytes::Bytes` for `bytes` fields
     optional bool tokio_bytes = 17011;
     // Use `bytes::Bytes` for `string` fields
@@ -28,6 +40,12 @@ extend google.protobuf.MessageOptions {
 }
 
 extend google.protobuf.FieldOptions {
+    // When true all fields are public, and not accessors generated
+    optional bool expose_fields_field = 17003;
+    // When false, `get_`, `set_`, `mut_` etc. accessors are not generated
+    optional bool generate_accessors_field = 17004;
+    // When false, `get_` is not generated even if `syntax = "proto2"`
+    optional bool generate_getter_field = 17005;
     // Use `bytes::Bytes` for `bytes` fields
     optional bool tokio_bytes_field = 17011;
     // Use `bytes::Bytes` for `string` fields

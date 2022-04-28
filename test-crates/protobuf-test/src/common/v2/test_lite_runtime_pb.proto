@@ -1,5 +1,9 @@
 syntax = "proto2";
 
+import "rustproto.proto";
+option (rustproto.generate_accessors_all) = true;
+
+
 package test_lite_runtime;
 
 option optimize_for = LITE_RUNTIME;
