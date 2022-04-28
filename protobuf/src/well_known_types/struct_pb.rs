@@ -109,12 +109,12 @@ impl crate::Message for Struct {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> Struct {
@@ -563,12 +563,12 @@ impl crate::Message for Value {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> Value {
@@ -742,12 +742,12 @@ impl crate::Message for ListValue {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> ListValue {

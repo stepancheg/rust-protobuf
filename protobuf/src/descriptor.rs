@@ -112,12 +112,12 @@ impl crate::Message for FileDescriptorSet {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> FileDescriptorSet {
@@ -576,12 +576,12 @@ impl crate::Message for FileDescriptorProto {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> FileDescriptorProto {
@@ -955,12 +955,12 @@ impl crate::Message for DescriptorProto {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> DescriptorProto {
@@ -1177,12 +1177,12 @@ pub mod descriptor_proto {
             self.special_fields.cached_size().get()
         }
 
-        fn unknown_fields(&self) -> &crate::UnknownFields {
-            self.special_fields.unknown_fields()
+        fn special_fields(&self) -> &crate::SpecialFields {
+            &self.special_fields
         }
 
-        fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-            self.special_fields.mut_unknown_fields()
+        fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+            &mut self.special_fields
         }
 
         fn new() -> ExtensionRange {
@@ -1364,12 +1364,12 @@ pub mod descriptor_proto {
             self.special_fields.cached_size().get()
         }
 
-        fn unknown_fields(&self) -> &crate::UnknownFields {
-            self.special_fields.unknown_fields()
+        fn special_fields(&self) -> &crate::SpecialFields {
+            &self.special_fields
         }
 
-        fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-            self.special_fields.mut_unknown_fields()
+        fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+            &mut self.special_fields
         }
 
         fn new() -> ReservedRange {
@@ -1500,12 +1500,12 @@ impl crate::Message for ExtensionRangeOptions {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> ExtensionRangeOptions {
@@ -2115,12 +2115,12 @@ impl crate::Message for FieldDescriptorProto {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> FieldDescriptorProto {
@@ -2524,12 +2524,12 @@ impl crate::Message for OneofDescriptorProto {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> OneofDescriptorProto {
@@ -2776,12 +2776,12 @@ impl crate::Message for EnumDescriptorProto {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> EnumDescriptorProto {
@@ -2972,12 +2972,12 @@ pub mod enum_descriptor_proto {
             self.special_fields.cached_size().get()
         }
 
-        fn unknown_fields(&self) -> &crate::UnknownFields {
-            self.special_fields.unknown_fields()
+        fn special_fields(&self) -> &crate::SpecialFields {
+            &self.special_fields
         }
 
-        fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-            self.special_fields.mut_unknown_fields()
+        fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+            &mut self.special_fields
         }
 
         fn new() -> EnumReservedRange {
@@ -3195,12 +3195,12 @@ impl crate::Message for EnumValueDescriptorProto {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> EnumValueDescriptorProto {
@@ -3406,12 +3406,12 @@ impl crate::Message for ServiceDescriptorProto {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> ServiceDescriptorProto {
@@ -3773,12 +3773,12 @@ impl crate::Message for MethodDescriptorProto {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> MethodDescriptorProto {
@@ -4851,12 +4851,12 @@ impl crate::Message for FileOptions {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> FileOptions {
@@ -5238,12 +5238,12 @@ impl crate::Message for MessageOptions {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> MessageOptions {
@@ -5648,12 +5648,12 @@ impl crate::Message for FieldOptions {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> FieldOptions {
@@ -5912,12 +5912,12 @@ impl crate::Message for OneofOptions {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> OneofOptions {
@@ -6121,12 +6121,12 @@ impl crate::Message for EnumOptions {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> EnumOptions {
@@ -6297,12 +6297,12 @@ impl crate::Message for EnumValueOptions {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> EnumValueOptions {
@@ -6471,12 +6471,12 @@ impl crate::Message for ServiceOptions {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> ServiceOptions {
@@ -6683,12 +6683,12 @@ impl crate::Message for MethodOptions {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> MethodOptions {
@@ -7152,12 +7152,12 @@ impl crate::Message for UninterpretedOption {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> UninterpretedOption {
@@ -7374,12 +7374,12 @@ pub mod uninterpreted_option {
             self.special_fields.cached_size().get()
         }
 
-        fn unknown_fields(&self) -> &crate::UnknownFields {
-            self.special_fields.unknown_fields()
+        fn special_fields(&self) -> &crate::SpecialFields {
+            &self.special_fields
         }
 
-        fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-            self.special_fields.mut_unknown_fields()
+        fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+            &mut self.special_fields
         }
 
         fn new() -> NamePart {
@@ -7511,12 +7511,12 @@ impl crate::Message for SourceCodeInfo {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> SourceCodeInfo {
@@ -7782,12 +7782,12 @@ pub mod source_code_info {
             self.special_fields.cached_size().get()
         }
 
-        fn unknown_fields(&self) -> &crate::UnknownFields {
-            self.special_fields.unknown_fields()
+        fn special_fields(&self) -> &crate::SpecialFields {
+            &self.special_fields
         }
 
-        fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-            self.special_fields.mut_unknown_fields()
+        fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+            &mut self.special_fields
         }
 
         fn new() -> Location {
@@ -7928,12 +7928,12 @@ impl crate::Message for GeneratedCodeInfo {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> GeneratedCodeInfo {
@@ -8187,12 +8187,12 @@ pub mod generated_code_info {
             self.special_fields.cached_size().get()
         }
 
-        fn unknown_fields(&self) -> &crate::UnknownFields {
-            self.special_fields.unknown_fields()
+        fn special_fields(&self) -> &crate::SpecialFields {
+            &self.special_fields
         }
 
-        fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-            self.special_fields.mut_unknown_fields()
+        fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+            &mut self.special_fields
         }
 
         fn new() -> Annotation {

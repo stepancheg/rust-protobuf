@@ -248,12 +248,12 @@ impl crate::Message for Version {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> Version {
@@ -496,12 +496,12 @@ impl crate::Message for CodeGeneratorRequest {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> CodeGeneratorRequest {
@@ -732,12 +732,12 @@ impl crate::Message for CodeGeneratorResponse {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> CodeGeneratorResponse {
@@ -1079,12 +1079,12 @@ pub mod code_generator_response {
             self.special_fields.cached_size().get()
         }
 
-        fn unknown_fields(&self) -> &crate::UnknownFields {
-            self.special_fields.unknown_fields()
+        fn special_fields(&self) -> &crate::SpecialFields {
+            &self.special_fields
         }
 
-        fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-            self.special_fields.mut_unknown_fields()
+        fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+            &mut self.special_fields
         }
 
         fn new() -> File {

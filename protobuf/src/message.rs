@@ -6,6 +6,7 @@ use crate::error::ProtobufError;
 use crate::wire_format::check_message_size;
 use crate::CodedInputStream;
 use crate::CodedOutputStream;
+use crate::SpecialFields;
 use crate::UnknownFields;
 
 /// Trait which is implemented by all generated message.
@@ -183,10 +184,19 @@ pub trait Message: Default + Clone + Send + Sync + Sized + PartialEq + 'static {
 
     // TODO: replace accessor with special fields
 
+    /// Special fields (unknown fields and cached size).
+    fn special_fields(&self) -> &SpecialFields;
+    /// Special fields (unknown fields and cached size).
+    fn mut_special_fields(&mut self) -> &mut SpecialFields;
+
     /// Get a reference to unknown fields.
-    fn unknown_fields(&self) -> &UnknownFields;
+    fn unknown_fields(&self) -> &UnknownFields {
+        &self.special_fields().unknown_fields()
+    }
     /// Get a mutable reference to unknown fields.
-    fn mut_unknown_fields(&mut self) -> &mut UnknownFields;
+    fn mut_unknown_fields(&mut self) -> &mut UnknownFields {
+        self.mut_special_fields().mut_unknown_fields()
+    }
 
     /// Create an empty message object.
     ///

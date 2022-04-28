@@ -365,19 +365,19 @@ impl<'a> MessageGen<'a> {
 
     fn write_unknown_fields(&self, w: &mut CodeWriter) {
         let sig = format!(
-            "unknown_fields(&self) -> &{}::UnknownFields",
+            "special_fields(&self) -> &{}::SpecialFields",
             protobuf_crate_path(&self.customize.for_elem)
         );
         w.def_fn(&sig, |w| {
-            w.write_line("self.special_fields.unknown_fields()");
+            w.write_line("&self.special_fields");
         });
         w.write_line("");
         let sig = format!(
-            "mut_unknown_fields(&mut self) -> &mut {}::UnknownFields",
+            "mut_special_fields(&mut self) -> &mut {}::SpecialFields",
             protobuf_crate_path(&self.customize.for_elem)
         );
         w.def_fn(&sig, |w| {
-            w.write_line("self.special_fields.mut_unknown_fields()");
+            w.write_line("&mut self.special_fields");
         });
     }
 

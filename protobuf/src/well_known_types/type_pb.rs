@@ -209,12 +209,12 @@ impl crate::Message for Type {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> Type {
@@ -508,12 +508,12 @@ impl crate::Message for Field {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> Field {
@@ -929,12 +929,12 @@ impl crate::Message for Enum {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> Enum {
@@ -1105,12 +1105,12 @@ impl crate::Message for EnumValue {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> EnumValue {
@@ -1267,12 +1267,12 @@ impl crate::Message for Option {
         self.special_fields.cached_size().get()
     }
 
-    fn unknown_fields(&self) -> &crate::UnknownFields {
-        self.special_fields.unknown_fields()
+    fn special_fields(&self) -> &crate::SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields(&mut self) -> &mut crate::UnknownFields {
-        self.special_fields.mut_unknown_fields()
+    fn mut_special_fields(&mut self) -> &mut crate::SpecialFields {
+        &mut self.special_fields
     }
 
     fn new() -> Option {
