@@ -92,12 +92,26 @@ impl<'a> CodedOutputStream<'a> {
 
     /// `CodedOutputStream` which writes directly to `Vec<u8>`.
     pub fn vec(vec: &'a mut Vec<u8>) -> CodedOutputStream<'a> {
-        let buffer: *mut [MaybeUninit<u8>] = &mut [];
+        let buffer: *mut [MaybeUninit<u8>] = vec.spare_capacity_mut();
         CodedOutputStream {
             target: OutputTarget::Vec(vec),
             buffer,
             pos_within_buf: 0,
             pos_of_buffer_start: 0,
+        }
+    }
+
+    #[inline]
+    fn assertions(&mut self) {
+        debug_assert!(self.pos_within_buf <= self.buffer().len());
+        match &mut self.target {
+            OutputTarget::Write(_, v) => {
+                debug_assert!(ptr::eq(v.spare_capacity_mut(), self.buffer()));
+            }
+            OutputTarget::Bytes => {}
+            OutputTarget::Vec(v) => {
+                debug_assert!(ptr::eq(v.spare_capacity_mut(), self.buffer()));
+            }
         }
     }
 
@@ -110,10 +124,16 @@ impl<'a> CodedOutputStream<'a> {
         if additional as usize <= remaining_in_buf {
             return Ok(());
         }
-        match self.target {
+        match &mut self.target {
             OutputTarget::Write(..) => Ok(()),
-            OutputTarget::Vec(..) => {
-                // TODO: implement
+            OutputTarget::Vec(v) => {
+                let reserve = (additional as usize)
+                    .checked_add(self.pos_within_buf)
+                    .unwrap();
+                v.reserve(reserve);
+                self.buffer = v.spare_capacity_mut();
+                // `self.pos_within_buf` remains unchanged.
+                self.assertions();
                 Ok(())
             }
             OutputTarget::Bytes => {
@@ -192,6 +212,7 @@ impl<'a> CodedOutputStream<'a> {
                 .into());
             }
         }
+        self.assertions();
         Ok(())
     }
 
@@ -212,6 +233,7 @@ impl<'a> CodedOutputStream<'a> {
                 self.buffer = vec.spare_capacity_mut();
                 self.pos_of_buffer_start += self.pos_within_buf as u64;
                 self.pos_within_buf = 0;
+                self.assertions();
                 Ok(())
             }
             OutputTarget::Write(..) => self.refresh_buffer(),
