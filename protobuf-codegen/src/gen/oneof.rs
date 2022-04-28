@@ -338,15 +338,10 @@ impl<'a> OneofGen<'a> {
             &sig,
             |w| {
                 w.write_line(&format!(
-                    "{}::reflect::GeneratedOneofDescriptorData::new_2::<{}>(\"{}\", {})",
+                    "{}::reflect::GeneratedOneofDescriptorData::new::<{}>(\"{}\")",
                     protobuf_crate_path(&self.customize.for_elem),
                     &self.oneof.rust_name().ident,
-                    &format!(
-                        "{}.{}",
-                        self.message.message.message.name_to_package(),
-                        self.oneof.oneof.name()
-                    ),
-                    1234567, // TODO
+                    self.oneof.oneof.name(),
                 ));
             },
         );
