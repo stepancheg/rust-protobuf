@@ -3,7 +3,7 @@ use std::any::TypeId;
 use std::fmt;
 use std::io::Write;
 
-use crate::coded_output_stream::WithCodedOutputStream;
+use crate::coded_output_stream::with::WithCodedOutputStream;
 use crate::error::ProtobufError;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectEqMode;

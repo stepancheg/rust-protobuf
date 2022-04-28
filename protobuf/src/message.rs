@@ -1,7 +1,7 @@
 use std::io::Read;
 use std::io::Write;
 
-use crate::coded_output_stream::WithCodedOutputStream;
+use crate::coded_output_stream::with::WithCodedOutputStream;
 use crate::error::ProtobufError;
 use crate::wire_format::check_message_size;
 use crate::CodedInputStream;

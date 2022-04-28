@@ -1,3 +1,5 @@
+pub(crate) mod with;
+
 use std::fmt;
 use std::io;
 use std::io::Write;
@@ -31,36 +33,6 @@ use crate::UnknownValueRef;
 // Equal to the default buffer size of `BufWriter`, so when
 // `CodedOutputStream` wraps `BufWriter`, it often skips double buffering.
 const OUTPUT_STREAM_BUFFER_SIZE: usize = 8 * 1024;
-
-pub(crate) trait WithCodedOutputStream {
-    fn with_coded_output_stream<T, F>(self, cb: F) -> crate::Result<T>
-    where
-        F: FnOnce(&mut CodedOutputStream) -> crate::Result<T>;
-}
-
-impl<'a> WithCodedOutputStream for &'a mut (dyn Write + 'a) {
-    fn with_coded_output_stream<T, F>(self, cb: F) -> crate::Result<T>
-    where
-        F: FnOnce(&mut CodedOutputStream) -> crate::Result<T>,
-    {
-        let mut os = CodedOutputStream::new(self);
-        let r = cb(&mut os)?;
-        os.flush()?;
-        Ok(r)
-    }
-}
-
-impl<'a> WithCodedOutputStream for &'a mut Vec<u8> {
-    fn with_coded_output_stream<T, F>(mut self, cb: F) -> crate::Result<T>
-    where
-        F: FnOnce(&mut CodedOutputStream) -> crate::Result<T>,
-    {
-        let mut os = CodedOutputStream::vec(&mut self);
-        let r = cb(&mut os)?;
-        os.flush()?;
-        Ok(r)
-    }
-}
 
 /// Output buffer/writer for `CodedOutputStream`.
 enum OutputTarget<'a> {
