@@ -31,6 +31,8 @@ impl GeneratedFileDescriptor {
     ) -> GeneratedFileDescriptor {
         let index = FileIndex::index(file_descriptor_proto, &dependencies).unwrap();
 
+        let common = FileDescriptorCommon::new(index, dependencies, file_descriptor_proto).unwrap();
+
         let mut messages: HashMap<&str, GeneratedMessageDescriptorData> = messages
             .into_iter()
             .map(|m| (m.protobuf_name_to_package, m))
@@ -39,7 +41,8 @@ impl GeneratedFileDescriptor {
         let mut enums: HashMap<&str, GeneratedEnumDescriptorData> =
             enums.into_iter().map(|e| (e.name_in_file, e)).collect();
 
-        let messages = index
+        let messages = common
+            .index
             .messages
             .iter()
             .map(|message_index| {
@@ -49,12 +52,14 @@ impl GeneratedFileDescriptor {
                     let message = messages
                         .remove(message_index.name_to_package.as_str())
                         .unwrap();
-                    GeneratedMessageDescriptor::new(message, file_descriptor_proto, &index).unwrap()
+                    GeneratedMessageDescriptor::new(message, file_descriptor_proto, &common.index)
+                        .unwrap()
                 }
             })
             .collect();
 
-        let enums = index
+        let enums = common
+            .index
             .enums
             .iter()
             .map(|enum_index| {
@@ -69,8 +74,6 @@ impl GeneratedFileDescriptor {
         //     .map(|(i, o)| GeneratedOneofDescriptor::new(o, i, file_descriptor_proto))
         //     .collect();
         let oneofs = Vec::new();
-
-        let common = FileDescriptorCommon::new(index, dependencies, file_descriptor_proto).unwrap();
 
         GeneratedFileDescriptor {
             proto: file_descriptor_proto,
