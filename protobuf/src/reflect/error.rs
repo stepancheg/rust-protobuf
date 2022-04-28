@@ -6,4 +6,6 @@ pub(crate) enum ReflectError {
     DependencyNotFound(String, String, String),
     #[error("Non-unique dependencies given: {}", .0)]
     NonUniqueDependencies(String),
+    #[error("Non-unique field name: `{0}`")]
+    NonUniqueFieldName(String),
 }

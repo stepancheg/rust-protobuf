@@ -4,6 +4,7 @@ use crate::descriptor::DescriptorProto;
 use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::enums::path::EnumPath;
+use crate::reflect::error::ReflectError;
 use crate::reflect::field::index::FieldIndex;
 use crate::reflect::file::building::FileDescriptorBuilding;
 use crate::reflect::file::fds::fds_extend_with_public;
@@ -314,16 +315,26 @@ impl FileDescriptorCommon {
         for (i, f) in proto.field.iter().enumerate() {
             let field_index = &fields[i];
 
-            assert!(index_by_number.insert(f.number() as u32, i).is_none());
-            assert!(index_by_name.insert(f.name().to_owned(), i).is_none());
-            assert!(index_by_name_or_json_name
+            if index_by_number.insert(f.number() as u32, i).is_some() {
+                return Err(ReflectError::NonUniqueFieldName(f.name().to_owned()).into());
+            }
+            if index_by_name.insert(f.name().to_owned(), i).is_some() {
+                return Err(ReflectError::NonUniqueFieldName(f.name().to_owned()).into());
+            }
+            if index_by_name_or_json_name
                 .insert(f.name().to_owned(), i)
-                .is_none());
+                .is_some()
+            {
+                return Err(ReflectError::NonUniqueFieldName(f.name().to_owned()).into());
+            }
 
             if field_index.json_name != f.name() {
-                assert!(index_by_name_or_json_name
+                if index_by_name_or_json_name
                     .insert(field_index.json_name.clone(), i)
-                    .is_none());
+                    .is_some()
+                {
+                    return Err(ReflectError::NonUniqueFieldName(f.name().to_owned()).into());
+                }
             }
         }
 
