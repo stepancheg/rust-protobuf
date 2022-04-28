@@ -516,7 +516,6 @@ pub(crate) struct FieldGen<'a> {
     pub proto_type: field_descriptor_proto::Type,
     wire_type: WireType,
     pub kind: FieldKind<'a>,
-    pub expose_field: bool,
     pub generate_accessors: bool,
     pub generate_getter: bool,
     customize: Customize,
@@ -620,7 +619,6 @@ impl<'a> FieldGen<'a> {
             wire_type: WireType::for_type(field.field.proto().field_type()),
             proto_field: field,
             kind,
-            expose_field,
             generate_accessors,
             generate_getter,
             customize,
@@ -1106,23 +1104,6 @@ impl<'a> FieldGen<'a> {
         as_option_type.value(format!("{}.as_ref()", self.self_field()))
     }
 
-    /// Field visibility in message struct
-    fn visibility(&self) -> Visibility {
-        if self.expose_field {
-            Visibility::Public
-        } else {
-            match self.kind {
-                FieldKind::Repeated(..) => Visibility::Default,
-                FieldKind::Singular(SingularField { ref flag, .. }) => match *flag {
-                    SingularFieldFlag::WithFlag { .. } => Visibility::Default,
-                    SingularFieldFlag::WithoutFlag => Visibility::Public,
-                },
-                FieldKind::Map(..) => Visibility::Public,
-                FieldKind::Oneof(..) => unreachable!(),
-            }
-        }
-    }
-
     pub fn write_struct_field(&self, w: &mut CodeWriter) {
         if self.proto_type == field_descriptor_proto::Type::TYPE_GROUP {
             w.comment(&format!("{}: <group>", &self.rust_name));
@@ -1130,9 +1111,8 @@ impl<'a> FieldGen<'a> {
             w.all_documentation(self.info, &self.path);
 
             write_protoc_insertion_point_for_field(w, &self.customize, &self.proto_field.field);
-            let vis = self.visibility();
             w.field_decl_vis(
-                vis,
+                Visibility::Public,
                 self.rust_name.get(),
                 &self
                     .full_storage_type(
