@@ -64,6 +64,9 @@ pub(crate) enum ProtobufError {
     /// Message is too large.
     #[error("Message `{0}` is too large: {1} bytes")]
     MessageTooLarge(String, u64),
+    /// Message is too large.
+    #[error("Provided buffer has not enough capacity to write message `{0}`")]
+    BufferHasNotEnoughCapacity(String),
     /// Protobuf type and runtime types mismatch.
     #[error("Protobuf type and runtime types are not compatible")]
     IncompatibleProtobufTypeAndRuntimeType,

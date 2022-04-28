@@ -65,7 +65,7 @@ pub trait Message: Default + Clone + Send + Sync + Sized + PartialEq + 'static {
             // Protobuf message size cannot exceed `u32::MAX`.
             return Err(ProtobufError::MessageTooLarge(Self::NAME.to_owned(), size).into());
         }
-        // TODO: reserve additional
+        os.reserve_additional(size as u32, Self::NAME)?;
         self.write_to_with_cached_sizes(os)?;
 
         Ok(())

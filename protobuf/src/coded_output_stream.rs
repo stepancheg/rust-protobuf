@@ -158,6 +158,27 @@ impl<'a> CodedOutputStream<'a> {
         }
     }
 
+    pub(crate) fn reserve_additional(
+        &mut self,
+        additional: u32,
+        message: &str,
+    ) -> crate::Result<()> {
+        let remaining_in_buf = self.remaining_in_buf();
+        if additional as usize <= remaining_in_buf {
+            return Ok(());
+        }
+        match self.target {
+            OutputTarget::Write(..) => Ok(()),
+            OutputTarget::Vec(..) => {
+                // TODO: implement
+                Ok(())
+            }
+            OutputTarget::Bytes => {
+                Err(ProtobufError::BufferHasNotEnoughCapacity(message.to_owned()).into())
+            }
+        }
+    }
+
     /// Total number of bytes written to this stream.
     ///
     /// This number may be larger than the actual number of bytes written to the underlying stream,
@@ -191,12 +212,21 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     #[inline(always)]
+    fn remaining_in_buf(&self) -> usize {
+        self.buffer().len() - self.pos_within_buf
+    }
+
+    #[inline(always)]
     fn filled_buffer_impl<'s>(buffer: *mut [MaybeUninit<u8>], position: usize) -> &'s [u8] {
         // SAFETY: this function is safe assuming `buffer` and `position`
         //   are `self.buffer` and `safe.position`:
         //   * `CodedOutputStream` has invariant that `position <= buffer.len()`.
         //   * `buffer` is filled up to `position`.
         unsafe { slice::from_raw_parts_mut(buffer as *mut u8, position) }
+    }
+
+    fn filled_buffer(&self) -> &[u8] {
+        Self::filled_buffer_impl(self.buffer, self.pos_within_buf)
     }
 
     fn refresh_buffer(&mut self) -> crate::Result<()> {
@@ -261,7 +291,7 @@ impl<'a> CodedOutputStream<'a> {
 
     /// Write bytes
     pub fn write_raw_bytes(&mut self, bytes: &[u8]) -> crate::Result<()> {
-        if bytes.len() <= self.buffer().len() - self.pos_within_buf {
+        if bytes.len() <= self.remaining_in_buf() {
             let bottom = self.pos_within_buf as usize;
             let top = bottom + (bytes.len() as usize);
             // SAFETY: see the `buffer` field documentation about invariants.
