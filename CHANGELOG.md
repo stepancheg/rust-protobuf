@@ -5,6 +5,8 @@ Stable versions are 2.xx still supported.
 
 ## [3] - Unreleased
 
+* all fields are public now in generated messages
+
 ## [3.0.0-alpha.10] - 2022-04-11
 
 * remove `expose_oneof` codegen option (it is on by default for a long time)
