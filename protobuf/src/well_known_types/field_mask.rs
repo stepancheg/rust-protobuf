@@ -74,7 +74,7 @@ impl crate::Message for FieldMask {
                     self.paths.push(is.read_string()?);
                 },
                 tag => {
-                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.special_fields.mut_unknown_fields())?;
                 },
             };
         }
@@ -88,7 +88,7 @@ impl crate::Message for FieldMask {
         for value in &self.paths {
             my_size += crate::rt::string_size(1, &value);
         };
-        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
@@ -97,7 +97,7 @@ impl crate::Message for FieldMask {
         for v in &self.paths {
             os.write_string(1, &v)?;
         };
-        os.write_unknown_fields(self.unknown_fields())?;
+        os.write_unknown_fields(self.special_fields.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 

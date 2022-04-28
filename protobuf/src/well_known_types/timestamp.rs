@@ -90,7 +90,7 @@ impl crate::Message for Timestamp {
                     self.nanos = is.read_int32()?;
                 },
                 tag => {
-                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.special_fields.mut_unknown_fields())?;
                 },
             };
         }
@@ -107,7 +107,7 @@ impl crate::Message for Timestamp {
         if self.nanos != 0 {
             my_size += crate::rt::value_size(2, self.nanos, crate::rt::WireType::Varint);
         }
-        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
@@ -119,7 +119,7 @@ impl crate::Message for Timestamp {
         if self.nanos != 0 {
             os.write_int32(2, self.nanos)?;
         }
-        os.write_unknown_fields(self.unknown_fields())?;
+        os.write_unknown_fields(self.special_fields.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 

@@ -199,7 +199,7 @@ impl crate::Message for Version {
                     self.suffix = ::std::option::Option::Some(is.read_string()?);
                 },
                 tag => {
-                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.special_fields.mut_unknown_fields())?;
                 },
             };
         }
@@ -222,7 +222,7 @@ impl crate::Message for Version {
         if let Some(v) = self.suffix.as_ref() {
             my_size += crate::rt::string_size(4, &v);
         }
-        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
@@ -240,7 +240,7 @@ impl crate::Message for Version {
         if let Some(v) = self.suffix.as_ref() {
             os.write_string(4, v)?;
         }
-        os.write_unknown_fields(self.unknown_fields())?;
+        os.write_unknown_fields(self.special_fields.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -445,7 +445,7 @@ impl crate::Message for CodeGeneratorRequest {
                     crate::rt::read_singular_message_into_field(is, &mut self.compiler_version)?;
                 },
                 tag => {
-                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.special_fields.mut_unknown_fields())?;
                 },
             };
         }
@@ -470,7 +470,7 @@ impl crate::Message for CodeGeneratorRequest {
             let len = v.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         }
-        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
@@ -488,7 +488,7 @@ impl crate::Message for CodeGeneratorRequest {
         if let Some(v) = self.compiler_version.as_ref() {
             crate::rt::write_message_field_with_cached_size(3, v, os)?;
         }
-        os.write_unknown_fields(self.unknown_fields())?;
+        os.write_unknown_fields(self.special_fields.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -688,7 +688,7 @@ impl crate::Message for CodeGeneratorResponse {
                     self.file.push(is.read_message()?);
                 },
                 tag => {
-                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.special_fields.mut_unknown_fields())?;
                 },
             };
         }
@@ -709,7 +709,7 @@ impl crate::Message for CodeGeneratorResponse {
             let len = value.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
-        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
@@ -724,7 +724,7 @@ impl crate::Message for CodeGeneratorResponse {
         for v in &self.file {
             crate::rt::write_message_field_with_cached_size(15, v, os)?;
         };
-        os.write_unknown_fields(self.unknown_fields())?;
+        os.write_unknown_fields(self.special_fields.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -1029,7 +1029,7 @@ pub mod code_generator_response {
                         crate::rt::read_singular_message_into_field(is, &mut self.generated_code_info)?;
                     },
                     tag => {
-                        crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
+                        crate::rt::read_unknown_or_skip_group(tag, is, self.special_fields.mut_unknown_fields())?;
                     },
                 };
             }
@@ -1053,7 +1053,7 @@ pub mod code_generator_response {
                 let len = v.compute_size();
                 my_size += 2 + crate::rt::compute_raw_varint64_size(len) + len;
             }
-            my_size += crate::rt::unknown_fields_size(self.unknown_fields());
+            my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
             self.special_fields.cached_size().set(my_size as u32);
             my_size
         }
@@ -1071,7 +1071,7 @@ pub mod code_generator_response {
             if let Some(v) = self.generated_code_info.as_ref() {
                 crate::rt::write_message_field_with_cached_size(16, v, os)?;
             }
-            os.write_unknown_fields(self.unknown_fields())?;
+            os.write_unknown_fields(self.special_fields.unknown_fields())?;
             ::std::result::Result::Ok(())
         }
 

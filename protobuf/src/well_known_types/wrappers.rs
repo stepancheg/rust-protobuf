@@ -77,7 +77,7 @@ impl crate::Message for DoubleValue {
                     self.value = is.read_double()?;
                 },
                 tag => {
-                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.special_fields.mut_unknown_fields())?;
                 },
             };
         }
@@ -91,7 +91,7 @@ impl crate::Message for DoubleValue {
         if self.value != 0. {
             my_size += 9;
         }
-        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
@@ -100,7 +100,7 @@ impl crate::Message for DoubleValue {
         if self.value != 0. {
             os.write_double(1, self.value)?;
         }
-        os.write_unknown_fields(self.unknown_fields())?;
+        os.write_unknown_fields(self.special_fields.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -207,7 +207,7 @@ impl crate::Message for FloatValue {
                     self.value = is.read_float()?;
                 },
                 tag => {
-                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.special_fields.mut_unknown_fields())?;
                 },
             };
         }
@@ -221,7 +221,7 @@ impl crate::Message for FloatValue {
         if self.value != 0. {
             my_size += 5;
         }
-        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
@@ -230,7 +230,7 @@ impl crate::Message for FloatValue {
         if self.value != 0. {
             os.write_float(1, self.value)?;
         }
-        os.write_unknown_fields(self.unknown_fields())?;
+        os.write_unknown_fields(self.special_fields.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -337,7 +337,7 @@ impl crate::Message for Int64Value {
                     self.value = is.read_int64()?;
                 },
                 tag => {
-                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.special_fields.mut_unknown_fields())?;
                 },
             };
         }
@@ -351,7 +351,7 @@ impl crate::Message for Int64Value {
         if self.value != 0 {
             my_size += crate::rt::value_size(1, self.value, crate::rt::WireType::Varint);
         }
-        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
@@ -360,7 +360,7 @@ impl crate::Message for Int64Value {
         if self.value != 0 {
             os.write_int64(1, self.value)?;
         }
-        os.write_unknown_fields(self.unknown_fields())?;
+        os.write_unknown_fields(self.special_fields.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -467,7 +467,7 @@ impl crate::Message for UInt64Value {
                     self.value = is.read_uint64()?;
                 },
                 tag => {
-                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.special_fields.mut_unknown_fields())?;
                 },
             };
         }
@@ -481,7 +481,7 @@ impl crate::Message for UInt64Value {
         if self.value != 0 {
             my_size += crate::rt::value_size(1, self.value, crate::rt::WireType::Varint);
         }
-        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
@@ -490,7 +490,7 @@ impl crate::Message for UInt64Value {
         if self.value != 0 {
             os.write_uint64(1, self.value)?;
         }
-        os.write_unknown_fields(self.unknown_fields())?;
+        os.write_unknown_fields(self.special_fields.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -597,7 +597,7 @@ impl crate::Message for Int32Value {
                     self.value = is.read_int32()?;
                 },
                 tag => {
-                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.special_fields.mut_unknown_fields())?;
                 },
             };
         }
@@ -611,7 +611,7 @@ impl crate::Message for Int32Value {
         if self.value != 0 {
             my_size += crate::rt::value_size(1, self.value, crate::rt::WireType::Varint);
         }
-        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
@@ -620,7 +620,7 @@ impl crate::Message for Int32Value {
         if self.value != 0 {
             os.write_int32(1, self.value)?;
         }
-        os.write_unknown_fields(self.unknown_fields())?;
+        os.write_unknown_fields(self.special_fields.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -727,7 +727,7 @@ impl crate::Message for UInt32Value {
                     self.value = is.read_uint32()?;
                 },
                 tag => {
-                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.special_fields.mut_unknown_fields())?;
                 },
             };
         }
@@ -741,7 +741,7 @@ impl crate::Message for UInt32Value {
         if self.value != 0 {
             my_size += crate::rt::value_size(1, self.value, crate::rt::WireType::Varint);
         }
-        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
@@ -750,7 +750,7 @@ impl crate::Message for UInt32Value {
         if self.value != 0 {
             os.write_uint32(1, self.value)?;
         }
-        os.write_unknown_fields(self.unknown_fields())?;
+        os.write_unknown_fields(self.special_fields.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -857,7 +857,7 @@ impl crate::Message for BoolValue {
                     self.value = is.read_bool()?;
                 },
                 tag => {
-                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.special_fields.mut_unknown_fields())?;
                 },
             };
         }
@@ -871,7 +871,7 @@ impl crate::Message for BoolValue {
         if self.value != false {
             my_size += 2;
         }
-        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
@@ -880,7 +880,7 @@ impl crate::Message for BoolValue {
         if self.value != false {
             os.write_bool(1, self.value)?;
         }
-        os.write_unknown_fields(self.unknown_fields())?;
+        os.write_unknown_fields(self.special_fields.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -987,7 +987,7 @@ impl crate::Message for StringValue {
                     self.value = is.read_string()?;
                 },
                 tag => {
-                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.special_fields.mut_unknown_fields())?;
                 },
             };
         }
@@ -1001,7 +1001,7 @@ impl crate::Message for StringValue {
         if !self.value.is_empty() {
             my_size += crate::rt::string_size(1, &self.value);
         }
-        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
@@ -1010,7 +1010,7 @@ impl crate::Message for StringValue {
         if !self.value.is_empty() {
             os.write_string(1, &self.value)?;
         }
-        os.write_unknown_fields(self.unknown_fields())?;
+        os.write_unknown_fields(self.special_fields.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -1117,7 +1117,7 @@ impl crate::Message for BytesValue {
                     self.value = is.read_bytes()?;
                 },
                 tag => {
-                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.special_fields.mut_unknown_fields())?;
                 },
             };
         }
@@ -1131,7 +1131,7 @@ impl crate::Message for BytesValue {
         if !self.value.is_empty() {
             my_size += crate::rt::bytes_size(1, &self.value);
         }
-        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
@@ -1140,7 +1140,7 @@ impl crate::Message for BytesValue {
         if !self.value.is_empty() {
             os.write_bytes(1, &self.value)?;
         }
-        os.write_unknown_fields(self.unknown_fields())?;
+        os.write_unknown_fields(self.special_fields.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 

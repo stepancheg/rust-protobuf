@@ -191,7 +191,7 @@ impl crate::Message for Api {
                     self.syntax = is.read_enum_or_unknown()?;
                 },
                 tag => {
-                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.special_fields.mut_unknown_fields())?;
                 },
             };
         }
@@ -227,7 +227,7 @@ impl crate::Message for Api {
         if self.syntax != crate::EnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2) {
             my_size += crate::rt::enum_or_unknown_size(7, self.syntax);
         }
-        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
@@ -254,7 +254,7 @@ impl crate::Message for Api {
         if self.syntax != crate::EnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2) {
             os.write_enum(7, crate::EnumOrUnknown::value(&self.syntax))?;
         }
-        os.write_unknown_fields(self.unknown_fields())?;
+        os.write_unknown_fields(self.special_fields.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -442,7 +442,7 @@ impl crate::Message for Method {
                     self.syntax = is.read_enum_or_unknown()?;
                 },
                 tag => {
-                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.special_fields.mut_unknown_fields())?;
                 },
             };
         }
@@ -475,7 +475,7 @@ impl crate::Message for Method {
         if self.syntax != crate::EnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2) {
             my_size += crate::rt::enum_or_unknown_size(7, self.syntax);
         }
-        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
@@ -502,7 +502,7 @@ impl crate::Message for Method {
         if self.syntax != crate::EnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2) {
             os.write_enum(7, crate::EnumOrUnknown::value(&self.syntax))?;
         }
-        os.write_unknown_fields(self.unknown_fields())?;
+        os.write_unknown_fields(self.special_fields.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
@@ -630,7 +630,7 @@ impl crate::Message for Mixin {
                     self.root = is.read_string()?;
                 },
                 tag => {
-                    crate::rt::read_unknown_or_skip_group(tag, is, self.mut_unknown_fields())?;
+                    crate::rt::read_unknown_or_skip_group(tag, is, self.special_fields.mut_unknown_fields())?;
                 },
             };
         }
@@ -647,7 +647,7 @@ impl crate::Message for Mixin {
         if !self.root.is_empty() {
             my_size += crate::rt::string_size(2, &self.root);
         }
-        my_size += crate::rt::unknown_fields_size(self.unknown_fields());
+        my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
         my_size
     }
@@ -659,7 +659,7 @@ impl crate::Message for Mixin {
         if !self.root.is_empty() {
             os.write_string(2, &self.root)?;
         }
-        os.write_unknown_fields(self.unknown_fields())?;
+        os.write_unknown_fields(self.special_fields.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
 
