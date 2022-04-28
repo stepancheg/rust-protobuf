@@ -2,7 +2,6 @@ use std::any::Any;
 use std::any::TypeId;
 use std::fmt;
 
-use crate::cached_size::CachedSize;
 use crate::descriptor::field_descriptor_proto::Type;
 use crate::message_dyn::MessageDyn;
 use crate::reflect::dynamic::map::DynamicMap;
@@ -40,6 +39,7 @@ use crate::text_format;
 use crate::wire_format::WireType;
 use crate::CodedInputStream;
 use crate::CodedOutputStream;
+use crate::SpecialFields;
 use crate::UnknownFields;
 
 pub(crate) mod map;
@@ -87,8 +87,7 @@ pub(crate) struct DynamicMessage {
     /// Fields by index in the description.
     /// This field is lazy-init: it is empty when created.
     fields: Box<[DynamicFieldValue]>,
-    unknown_fields: UnknownFields,
-    _cached_size: CachedSize,
+    special_fields: SpecialFields,
 }
 
 impl DynamicMessage {
@@ -96,8 +95,7 @@ impl DynamicMessage {
         DynamicMessage {
             descriptor,
             fields: Vec::new().into_boxed_slice(),
-            unknown_fields: UnknownFields::new(),
-            _cached_size: CachedSize::new(),
+            special_fields: SpecialFields::new(),
         }
     }
 
@@ -250,7 +248,7 @@ impl DynamicMessage {
             }
         }
 
-        handler.unknown_fields(&self.unknown_fields)?;
+        handler.unknown_fields(&self.special_fields.unknown_fields())?;
         Ok(())
     }
 }
@@ -333,7 +331,7 @@ impl MessageDyn for DynamicMessage {
                         field,
                         wire_type,
                         is,
-                        &mut self.unknown_fields,
+                        &mut self.special_fields.mut_unknown_fields(),
                     )?;
                     continue;
                 }
@@ -478,12 +476,12 @@ impl MessageDyn for DynamicMessage {
         handler.m_size
     }
 
-    fn unknown_fields_dyn(&self) -> &UnknownFields {
-        &self.unknown_fields
+    fn special_fields_dyn(&self) -> &SpecialFields {
+        &self.special_fields
     }
 
-    fn mut_unknown_fields_dyn(&mut self) -> &mut UnknownFields {
-        &mut self.unknown_fields
+    fn mut_special_fields_dyn(&mut self) -> &mut SpecialFields {
+        &mut self.special_fields
     }
 }
 

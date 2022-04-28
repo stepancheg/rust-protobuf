@@ -11,6 +11,7 @@ use crate::wire_format::check_message_size;
 use crate::CodedInputStream;
 use crate::CodedOutputStream;
 use crate::MessageFull;
+use crate::SpecialFields;
 use crate::UnknownFields;
 
 /// Dynamic-dispatch version of either generated message or dynamic message.
@@ -35,10 +36,10 @@ pub trait MessageDyn: Any + fmt::Debug + fmt::Display + Send + Sync + 'static {
     /// Always returns `true` for protobuf 3.
     fn is_initialized_dyn(&self) -> bool;
 
-    /// Get a reference to unknown fields.
-    fn unknown_fields_dyn(&self) -> &UnknownFields;
-    /// Get a mutable reference to unknown fields.
-    fn mut_unknown_fields_dyn(&mut self) -> &mut UnknownFields;
+    /// Get a reference to special fields.
+    fn special_fields_dyn(&self) -> &SpecialFields;
+    /// Get a mutable reference to special fields.
+    fn mut_special_fields_dyn(&mut self) -> &mut SpecialFields;
 }
 
 impl<M: MessageFull> MessageDyn for M {
@@ -62,12 +63,12 @@ impl<M: MessageFull> MessageDyn for M {
         self.is_initialized()
     }
 
-    fn unknown_fields_dyn(&self) -> &UnknownFields {
-        self.unknown_fields()
+    fn special_fields_dyn(&self) -> &SpecialFields {
+        self.special_fields()
     }
 
-    fn mut_unknown_fields_dyn(&mut self) -> &mut UnknownFields {
-        self.mut_unknown_fields()
+    fn mut_special_fields_dyn(&mut self) -> &mut SpecialFields {
+        self.mut_special_fields()
     }
 }
 
@@ -173,6 +174,15 @@ impl dyn MessageDyn {
         let mut v = Vec::new();
         v.with_coded_output_stream(|os| self.write_length_delimited_to_dyn(os))?;
         Ok(v)
+    }
+
+    /// Get a reference to unknown fields.
+    pub fn unknown_fields_dyn(&self) -> &UnknownFields {
+        self.special_fields_dyn().unknown_fields()
+    }
+    /// Get a mutable reference to unknown fields.
+    pub fn mut_unknown_fields_dyn(&mut self) -> &mut UnknownFields {
+        self.mut_special_fields_dyn().mut_unknown_fields()
     }
 
     /// Downcast `Box<dyn Message>` to specific message type.
