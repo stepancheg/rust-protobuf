@@ -215,7 +215,7 @@ impl FieldGen<'_> {
         }
     }
 
-    pub fn write_descriptor_field(&self, fields_var: &str, w: &mut CodeWriter) {
+    pub fn write_push_accessor(&self, fields_var: &str, w: &mut CodeWriter) {
         let accessor_fn = self.accessor_fn();
         w.write_line(&format!(
             "{}.push({}::reflect::rt::v2::{}(",

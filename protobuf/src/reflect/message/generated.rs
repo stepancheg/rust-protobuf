@@ -11,6 +11,7 @@ use crate::reflect::acc::FieldAccessor;
 use crate::reflect::file::index::FileIndex;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
+use crate::reflect::GeneratedOneofDescriptorData;
 
 /// Sized to dynamic reflection operations.
 pub(crate) trait MessageFactory: Send + Sync + 'static {
@@ -73,6 +74,27 @@ impl GeneratedMessageDescriptorData {
         protobuf_name_to_package: &'static str,
         fields: Vec<FieldAccessor>,
     ) -> GeneratedMessageDescriptorData {
+        let factory = &MessageFactoryImpl(marker::PhantomData::<M>);
+        GeneratedMessageDescriptorData {
+            protobuf_name_to_package,
+            fields,
+            factory,
+        }
+    }
+
+    /// Construct a new message descriptor.
+    ///
+    /// This operation is called from generated code and rarely
+    /// need to be called directly.
+    ///
+    /// This function is not a part of public API.
+    #[doc(hidden)]
+    pub fn new_2<M: MessageFull>(
+        protobuf_name_to_package: &'static str,
+        fields: Vec<FieldAccessor>,
+        oneofs: Vec<GeneratedOneofDescriptorData>,
+    ) -> GeneratedMessageDescriptorData {
+        let _ = oneofs; // TODO: use
         let factory = &MessageFactoryImpl(marker::PhantomData::<M>);
         GeneratedMessageDescriptorData {
             protobuf_name_to_package,

@@ -328,7 +328,13 @@ impl<'a> OneofGen<'a> {
             protobuf_crate_path(&self.customize.for_elem)
         );
         w.fn_block(
-            Visibility::Path(self.oneof.message.scope.rust_path_to_file().to_reverse()),
+            Visibility::Path(
+                self.oneof
+                    .rust_name()
+                    .path
+                    .into_relative_or_panic()
+                    .to_reverse(),
+            ),
             &sig,
             |w| {
                 w.write_line(&format!(

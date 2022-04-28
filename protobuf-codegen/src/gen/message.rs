@@ -24,6 +24,7 @@ use crate::gen::rust::is_rust_keyword;
 use crate::gen::rust::EXPR_NONE;
 use crate::gen::rust_name::RustIdent;
 use crate::gen::rust_name::RustIdentWithPath;
+use crate::gen::rust_name::RustRelativePath;
 use crate::gen::rust_types_values::*;
 use crate::gen::scope::MessageWithScope;
 use crate::gen::scope::RootScope;
@@ -130,6 +131,10 @@ impl<'a> MessageGen<'a> {
 
     fn rust_name(&self) -> RustIdent {
         self.message.rust_name()
+    }
+
+    fn mod_name(&self) -> RustRelativePath {
+        self.message.scope.rust_path_to_file()
     }
 
     pub fn file_and_mod(&self) -> FileAndMod {
@@ -416,21 +421,33 @@ impl<'a> MessageGen<'a> {
             &sig,
             |w| {
                 let fields = self.fields_except_group();
+                let oneofs = self.oneofs();
                 w.write_line(&format!(
                     "let mut fields = {};",
                     expr_vec_with_capacity(&format!("{}", fields.len()))
                 ));
+                w.write_line(&format!(
+                    "let mut oneofs = {};",
+                    expr_vec_with_capacity(&format!("{}", oneofs.len()))
+                ));
                 for field in fields {
-                    field.write_descriptor_field("fields", w);
+                    field.write_push_accessor("fields", w);
+                }
+                for oneof in oneofs {
+                    w.write_line(&format!(
+                        "oneofs.push({}::generated_oneof_descriptor_data());",
+                        oneof.type_name_relative(&self.mod_name())
+                    ));
                 }
                 w.write_line(&format!(
-                    "{}::reflect::GeneratedMessageDescriptorData::new::<{}>(",
+                    "{}::reflect::GeneratedMessageDescriptorData::new_2::<{}>(",
                     protobuf_crate_path(&self.customize.for_elem),
                     self.rust_name(),
                 ));
                 w.indented(|w| {
                     w.write_line(&format!("\"{}\",", self.message.name_to_package()));
                     w.write_line("fields,");
+                    w.write_line("oneofs,");
                 });
                 w.write_line(")");
             },

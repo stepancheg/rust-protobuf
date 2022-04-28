@@ -193,6 +193,11 @@ impl RustPath {
     pub fn append_with_ident(self, path: RustIdentWithPath) -> RustIdentWithPath {
         self.append(path.path).with_ident(path.ident)
     }
+
+    pub fn into_relative_or_panic(self) -> RustRelativePath {
+        assert!(!self.absolute);
+        self.path
+    }
 }
 
 impl From<&'_ str> for RustPath {
