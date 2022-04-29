@@ -19,7 +19,7 @@ use crate::gen::inside::protobuf_crate_path;
 use crate::gen::message::MessageGen;
 use crate::gen::protoc_insertion_point::write_protoc_insertion_point_for_oneof;
 use crate::gen::protoc_insertion_point::write_protoc_insertion_point_for_oneof_field;
-use crate::gen::rust_name::RustIdent;
+use crate::gen::rust::ident::RustIdent;
 use crate::gen::rust_name::RustIdentWithPath;
 use crate::gen::rust_name::RustPath;
 use crate::gen::rust_name::RustRelativePath;

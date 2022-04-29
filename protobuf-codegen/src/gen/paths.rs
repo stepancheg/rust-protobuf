@@ -1,6 +1,6 @@
 use crate::gen::inside::protobuf_crate_path;
+use crate::gen::rust::ident::RustIdent;
 use crate::gen::rust::keywords::is_rust_keyword;
-use crate::gen::rust_name::RustIdent;
 use crate::gen::rust_name::RustPath;
 use crate::gen::strx;
 use crate::gen::well_known_types::WELL_KNOWN_TYPES_PROTO_FILE_FULL_NAMES;
@@ -71,9 +71,8 @@ pub(crate) fn proto_path_to_fn_file_descriptor(
 
 #[cfg(test)]
 mod test {
-
     use super::proto_path_to_rust_mod;
-    use crate::gen::rust_name::RustIdent;
+    use crate::gen::rust::ident::RustIdent;
 
     #[test]
     fn test_mod_path_proto_ext() {
