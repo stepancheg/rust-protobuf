@@ -30,6 +30,10 @@ message Outer {
     message fn {}
 }
 
+enum const {
+    extern = 0;
+}
+
 // oneof named keywords
 
 message TestType {
