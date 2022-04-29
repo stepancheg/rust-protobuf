@@ -55,7 +55,7 @@ impl<'a> ExtGen<'a> {
                 },
                 self.root_scope,
             );
-            match self.field.field_type() {
+            match self.field.type_() {
                 field_descriptor_proto::Type::TYPE_MESSAGE => {
                     ProtobufTypeGen::Message(RustTypeMessage(rust_name_relative))
                 }
@@ -65,7 +65,7 @@ impl<'a> ExtGen<'a> {
                 t => panic!("unknown type: {:?}", t),
             }
         } else {
-            ProtobufTypeGen::Primitive(self.field.field_type(), PrimitiveTypeVariant::Default)
+            ProtobufTypeGen::Primitive(self.field.type_(), PrimitiveTypeVariant::Default)
         }
     }
 
@@ -107,7 +107,7 @@ pub(crate) fn write_extensions(
     w.write_line("/// Extension fields");
     w.pub_mod("exts", |w| {
         for field in &file.proto().extension {
-            if field.field_type() == field_descriptor_proto::Type::TYPE_GROUP {
+            if field.type_() == field_descriptor_proto::Type::TYPE_GROUP {
                 continue;
             }
 

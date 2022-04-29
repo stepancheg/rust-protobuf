@@ -203,7 +203,7 @@ fn normalize_field(field: &mut FieldDescriptorProto) {
     field.options.mut_or_insert_default();
 
     if field.has_default_value() {
-        if field.field_type() == field_descriptor_proto::Type::TYPE_FLOAT {
+        if field.type_() == field_descriptor_proto::Type::TYPE_FLOAT {
             field.set_default_value(format!(
                 "{}",
                 parse_protobuf_float(field.default_value()).unwrap()

@@ -100,7 +100,7 @@ fn field_type_protobuf_name<'a>(field: &'a FieldDescriptorProto) -> &'a str {
     if field.has_type_name() {
         field.type_name()
     } else {
-        type_protobuf_name(field.field_type())
+        type_protobuf_name(field.type_())
     }
 }
 
@@ -457,12 +457,12 @@ fn field_elem<'a>(
         unreachable!();
     }
 
-    if field.field.proto().field_type() == field_descriptor_proto::Type::TYPE_GROUP {
+    if field.field.proto().type_() == field_descriptor_proto::Type::TYPE_GROUP {
         FieldElem::Group
     } else if field.field.proto().has_type_name() {
         let message_or_enum = root_scope
             .find_message_or_enum(&ProtobufAbsPath::from(field.field.proto().type_name()));
-        match (field.field.proto().field_type(), message_or_enum) {
+        match (field.field.proto().type_(), message_or_enum) {
             (
                 field_descriptor_proto::Type::TYPE_MESSAGE,
                 MessageOrEnumWithScope::Message(message),
@@ -480,13 +480,13 @@ fn field_elem<'a>(
                 };
                 FieldElem::Enum(FieldElemEnum { default_value })
             }
-            _ => panic!("unknown named type: {:?}", field.field.proto().field_type()),
+            _ => panic!("unknown named type: {:?}", field.field.proto().type_()),
         }
-    } else if field.field.proto().has_field_type() {
+    } else if field.field.proto().has_type() {
         let tokio_for_bytes = customize.tokio_bytes.unwrap_or(false);
         let tokio_for_string = customize.tokio_bytes_for_string.unwrap_or(false);
 
-        let elem = match field.field.proto().field_type() {
+        let elem = match field.field.proto().type_() {
             field_descriptor_proto::Type::TYPE_STRING if tokio_for_string => FieldElem::Primitive(
                 field_descriptor_proto::Type::TYPE_STRING,
                 PrimitiveTypeVariant::TokioBytes,
@@ -543,7 +543,7 @@ impl<'a> FieldGen<'a> {
 
         let field_may_have_custom_default_value = syntax == Syntax::Proto2
             && field.field.proto().label() != field_descriptor_proto::Label::LABEL_REPEATED
-            && field.field.proto().field_type() != field_descriptor_proto::Type::TYPE_MESSAGE;
+            && field.field.proto().type_() != field_descriptor_proto::Type::TYPE_MESSAGE;
 
         let default_expose_field = !field_may_have_custom_default_value;
         let expose_field = customize.expose_fields.unwrap_or(default_expose_field);
@@ -589,15 +589,14 @@ impl<'a> FieldGen<'a> {
                     FieldKind::Oneof(OneofField::parse(&oneof, &field.field, elem, root_scope))
                 } else {
                     let flag = if field.message.scope.file_scope.syntax() == Syntax::Proto3
-                        && field.field.proto().field_type()
-                            != field_descriptor_proto::Type::TYPE_MESSAGE
+                        && field.field.proto().type_() != field_descriptor_proto::Type::TYPE_MESSAGE
                         && !field.field.proto().proto3_optional()
                     {
                         SingularFieldFlag::WithoutFlag
                     } else {
                         let required = field.field.proto().label()
                             == field_descriptor_proto::Label::LABEL_REQUIRED;
-                        let option_kind = match field.field.proto().field_type() {
+                        let option_kind = match field.field.proto().type_() {
                             field_descriptor_proto::Type::TYPE_MESSAGE => OptionKind::MessageField,
                             _ => OptionKind::Option,
                         };
@@ -616,8 +615,8 @@ impl<'a> FieldGen<'a> {
             _root_scope: root_scope,
             syntax: field.message.message.file_descriptor().syntax(),
             rust_name: rust_field_name_for_protobuf_field_name(&field.field.name()),
-            proto_type: field.field.proto().field_type(),
-            wire_type: WireType::for_type(field.field.proto().field_type()),
+            proto_type: field.field.proto().type_(),
+            wire_type: WireType::for_type(field.field.proto().type_()),
             proto_field: field,
             kind,
             generate_accessors,

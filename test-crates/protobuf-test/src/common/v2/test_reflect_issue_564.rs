@@ -11,7 +11,7 @@ fn visit_fields(mes: &dyn MessageDyn) {
     let descriptor = mes.descriptor_dyn();
     for field in descriptor.fields() {
         if field.has_field(mes) {
-            match field.proto().field_type() {
+            match field.proto().type_() {
                 field_descriptor_proto::Type::TYPE_ENUM => {
                     match field.get_singular(mes) {
                         Some(ReflectValueRef::Enum(e, value)) => {

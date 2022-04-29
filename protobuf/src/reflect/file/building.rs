@@ -96,7 +96,7 @@ impl<'a> FileDescriptorBuilding<'a> {
         &self,
         field: &FieldDescriptorProto,
     ) -> crate::Result<ForwardProtobufTypeBox> {
-        Ok(match field.field_type() {
+        Ok(match field.type_() {
             field_descriptor_proto::Type::TYPE_MESSAGE
             | field_descriptor_proto::Type::TYPE_GROUP => {
                 self.resolve_message(field.type_name())?

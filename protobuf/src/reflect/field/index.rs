@@ -114,7 +114,7 @@ impl FieldIndex {
         field: &FieldDescriptorProto,
         building: &FileDescriptorBuilding,
     ) -> FieldDefaultValue {
-        FieldDefaultValue::ReflectValueBox(match field.field_type() {
+        FieldDefaultValue::ReflectValueBox(match field.type_() {
             t @ field_descriptor_proto::Type::TYPE_GROUP
             | t @ field_descriptor_proto::Type::TYPE_MESSAGE => {
                 panic!("{:?} cannot have a default value", t)

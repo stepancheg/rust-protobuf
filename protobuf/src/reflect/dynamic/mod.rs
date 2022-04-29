@@ -213,7 +213,7 @@ impl DynamicMessage {
                     if let Some(v) = field_desc.get_singular(self) {
                         // Ignore default value for proto3.
                         if !is_proto3 || v.is_non_zero() {
-                            handler.field(field_desc.proto().field_type(), field_number, &v)?;
+                            handler.field(field_desc.proto().type_(), field_number, &v)?;
                         }
                     }
                 }
@@ -221,14 +221,14 @@ impl DynamicMessage {
                     let repeated = field_desc.get_repeated(self);
                     if field_desc.proto().options.get_or_default().packed() {
                         handler.repeated_packed(
-                            field_desc.proto().field_type(),
+                            field_desc.proto().type_(),
                             field_number,
                             &repeated,
                         )?;
                     } else {
                         for i in 0..repeated.len() {
                             let v = repeated.get(i);
-                            handler.field(field_desc.proto().field_type(), field_number, &v)?;
+                            handler.field(field_desc.proto().type_(), field_number, &v)?;
                         }
                     }
                 }
@@ -338,12 +338,12 @@ impl MessageDyn for DynamicMessage {
             };
             match field_desc.runtime_field_type() {
                 RuntimeFieldType::Singular(rtb) => {
-                    let pt = ProtobufTypeBox::new(rtb, field_desc.proto().field_type())?;
+                    let pt = ProtobufTypeBox::new(rtb, field_desc.proto().type_())?;
                     let value = pt.read(is, wire_type)?;
                     self.set_field(&field_desc, value);
                 }
                 RuntimeFieldType::Repeated(rtb) => {
-                    let pt = ProtobufTypeBox::new(rtb, field_desc.proto().field_type())?;
+                    let pt = ProtobufTypeBox::new(rtb, field_desc.proto().type_())?;
                     let mut repeated = self.mut_repeated(&field_desc);
                     pt.read_repeated_into(is, wire_type, &mut repeated)?;
                 }

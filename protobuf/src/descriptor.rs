@@ -1533,7 +1533,7 @@ pub struct FieldDescriptorProto {
     ///  If type_name is set, this need not be set.  If both this and type_name
     ///  are set, this must be one of TYPE_ENUM, TYPE_MESSAGE or TYPE_GROUP.
     // @@protoc_insertion_point(field:google.protobuf.FieldDescriptorProto.type)
-    pub field_type: ::std::option::Option<crate::EnumOrUnknown<field_descriptor_proto::Type>>,
+    pub type_: ::std::option::Option<crate::EnumOrUnknown<field_descriptor_proto::Type>>,
     ///  For message and enum types, this is the name of the type.  If the name
     ///  starts with a '.', it is fully-qualified.  Otherwise, C++-like scoping
     ///  rules are used to find the type (i.e. first the nested types within this
@@ -1682,24 +1682,24 @@ impl FieldDescriptorProto {
 
     // optional .google.protobuf.FieldDescriptorProto.Type type = 5;
 
-    pub fn field_type(&self) -> field_descriptor_proto::Type {
-        match self.field_type {
+    pub fn type_(&self) -> field_descriptor_proto::Type {
+        match self.type_ {
             Some(e) => e.enum_value_or(field_descriptor_proto::Type::TYPE_DOUBLE),
             None => field_descriptor_proto::Type::TYPE_DOUBLE,
         }
     }
 
-    pub fn clear_field_type(&mut self) {
-        self.field_type = ::std::option::Option::None;
+    pub fn clear_type_(&mut self) {
+        self.type_ = ::std::option::Option::None;
     }
 
-    pub fn has_field_type(&self) -> bool {
-        self.field_type.is_some()
+    pub fn has_type(&self) -> bool {
+        self.type_.is_some()
     }
 
     // Param is passed by value, moved
-    pub fn set_field_type(&mut self, v: field_descriptor_proto::Type) {
-        self.field_type = ::std::option::Option::Some(crate::EnumOrUnknown::new(v));
+    pub fn set_type(&mut self, v: field_descriptor_proto::Type) {
+        self.type_ = ::std::option::Option::Some(crate::EnumOrUnknown::new(v));
     }
 
     // optional string type_name = 6;
@@ -1904,8 +1904,8 @@ impl FieldDescriptorProto {
         ));
         fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "type",
-            |m: &FieldDescriptorProto| { &m.field_type },
-            |m: &mut FieldDescriptorProto| { &mut m.field_type },
+            |m: &FieldDescriptorProto| { &m.type_ },
+            |m: &mut FieldDescriptorProto| { &mut m.type_ },
         ));
         fields.push(crate::reflect::rt::v2::make_option_accessor::<_, _>(
             "type_name",
@@ -1975,7 +1975,7 @@ impl crate::Message for FieldDescriptorProto {
                     self.label = ::std::option::Option::Some(is.read_enum_or_unknown()?);
                 },
                 40 => {
-                    self.field_type = ::std::option::Option::Some(is.read_enum_or_unknown()?);
+                    self.type_ = ::std::option::Option::Some(is.read_enum_or_unknown()?);
                 },
                 50 => {
                     self.type_name = ::std::option::Option::Some(is.read_string()?);
@@ -2019,7 +2019,7 @@ impl crate::Message for FieldDescriptorProto {
         if let Some(v) = self.label {
             my_size += crate::rt::enum_or_unknown_size(4, v);
         }
-        if let Some(v) = self.field_type {
+        if let Some(v) = self.type_ {
             my_size += crate::rt::enum_or_unknown_size(5, v);
         }
         if let Some(v) = self.type_name.as_ref() {
@@ -2059,7 +2059,7 @@ impl crate::Message for FieldDescriptorProto {
         if let Some(v) = self.label {
             os.write_enum(4, crate::EnumOrUnknown::value(&v))?;
         }
-        if let Some(v) = self.field_type {
+        if let Some(v) = self.type_ {
             os.write_enum(5, crate::EnumOrUnknown::value(&v))?;
         }
         if let Some(v) = self.type_name.as_ref() {
@@ -2103,7 +2103,7 @@ impl crate::Message for FieldDescriptorProto {
         self.name = ::std::option::Option::None;
         self.number = ::std::option::Option::None;
         self.label = ::std::option::Option::None;
-        self.field_type = ::std::option::Option::None;
+        self.type_ = ::std::option::Option::None;
         self.type_name = ::std::option::Option::None;
         self.extendee = ::std::option::Option::None;
         self.default_value = ::std::option::Option::None;
@@ -2119,7 +2119,7 @@ impl crate::Message for FieldDescriptorProto {
             name: ::std::option::Option::None,
             number: ::std::option::Option::None,
             label: ::std::option::Option::None,
-            field_type: ::std::option::Option::None,
+            type_: ::std::option::Option::None,
             type_name: ::std::option::Option::None,
             extendee: ::std::option::Option::None,
             default_value: ::std::option::Option::None,

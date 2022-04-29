@@ -66,7 +66,7 @@ enum TypeResolved {
 
 impl TypeResolved {
     fn from_field(field: &FieldDescriptorProto) -> TypeResolved {
-        match field.field_type() {
+        match field.type_() {
             Type::TYPE_DOUBLE => TypeResolved::Double,
             Type::TYPE_FLOAT => TypeResolved::Float,
             Type::TYPE_INT64 => TypeResolved::Int64,
@@ -156,7 +156,7 @@ impl<'a> Resolver<'a> {
         output.set_number(number);
 
         let t = self.field_type(&scope, name, field_type)?;
-        output.set_field_type(t.type_enum());
+        output.set_type(t.type_enum());
         if let Some(t_name) = t.type_name() {
             output.set_type_name(t_name.path.clone());
         }
@@ -385,7 +385,7 @@ impl<'a> Resolver<'a> {
         }
 
         let t = self.field_type(scope, &input.t.name, &input.t.typ)?;
-        output.set_field_type(t.type_enum());
+        output.set_type(t.type_enum());
         if let Some(t_name) = t.type_name() {
             output.set_type_name(t_name.path.clone());
         }
@@ -393,7 +393,7 @@ impl<'a> Resolver<'a> {
         output.set_number(input.t.number);
         // TODO: move default to option parser
         if let Some(ref default) = input.t.options.as_slice().by_name("default") {
-            let default = match output.field_type() {
+            let default = match output.type_() {
                 protobuf::descriptor::field_descriptor_proto::Type::TYPE_STRING => {
                     if let &model::ProtobufConstant::String(ref s) = default {
                         s.decode_utf8()?
