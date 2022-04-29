@@ -289,7 +289,17 @@ impl MessageDyn for DynamicMessage {
     }
 
     fn is_initialized_dyn(&self) -> bool {
-        // TODO: this check can be much faster for proto3 without contained proto2 messages.
+        // All fields are optional in proto3.
+        // TODO: this check can be faster if this message and dependencies fields are optional.
+        if self
+            .descriptor
+            .file_descriptor
+            .common()
+            .self_and_all_deps_proto3
+        {
+            return true;
+        }
+
         for f in self.descriptor.fields() {
             let fv = self.get_reflect(&f);
             match fv {

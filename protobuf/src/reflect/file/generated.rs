@@ -1,4 +1,6 @@
 use std::collections::HashMap;
+use std::fmt;
+use std::fmt::Formatter;
 
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::enums::generated::GeneratedEnumDescriptor;
@@ -11,13 +13,20 @@ use crate::reflect::GeneratedMessageDescriptorData;
 
 /// Reflection for objects defined in `.proto` file (messages, enums, etc).
 #[doc(hidden)]
-#[derive(Debug)]
 pub struct GeneratedFileDescriptor {
     pub(crate) proto: &'static FileDescriptorProto,
     pub(crate) messages: Vec<GeneratedMessageDescriptor>,
     pub(crate) enums: Vec<GeneratedEnumDescriptor>,
     pub(crate) oneofs: Vec<GeneratedOneofDescriptor>,
     pub(crate) common: FileDescriptorCommon,
+}
+
+impl fmt::Debug for GeneratedFileDescriptor {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        f.debug_struct("GeneratedFileDescriptor")
+            .field("proto.name", &self.proto.name())
+            .finish_non_exhaustive()
+    }
 }
 
 impl GeneratedFileDescriptor {

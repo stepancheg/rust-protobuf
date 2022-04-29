@@ -7,11 +7,13 @@ use crate::reflect::enums::path::EnumPath;
 use crate::reflect::error::ReflectError;
 use crate::reflect::field::index::FieldIndex;
 use crate::reflect::file::building::FileDescriptorBuilding;
+use crate::reflect::file::fds::all_deps;
 use crate::reflect::file::fds::fds_extend_with_public;
 use crate::reflect::message::path::MessagePath;
 use crate::reflect::name::concat_paths;
 use crate::reflect::service::index::ServiceIndex;
 use crate::reflect::FileDescriptor;
+use crate::reflect::Syntax;
 
 #[derive(Debug)]
 pub(crate) struct MessageIndex {
@@ -86,6 +88,8 @@ pub(crate) struct OneofIndex {
 pub(crate) struct FileDescriptorCommon {
     /// Direct dependencies of this file.
     pub(crate) dependencies: Vec<FileDescriptor>,
+    /// This descriptor and all dependencies use `syntax = "proto3"`.
+    pub(crate) self_and_all_deps_proto3: bool,
     /// All messages in this file.
     pub(crate) messages: Vec<MessageIndex>,
     pub(crate) message_by_name_to_package: HashMap<String, usize>,
@@ -182,8 +186,13 @@ impl FileDescriptorCommon {
             })
             .collect::<crate::Result<Vec<_>>>()?;
 
+        let all_deps = all_deps(&dependencies);
+        let self_and_all_deps_proto3 = Syntax::parse(file.syntax()) == Some(Syntax::Proto3)
+            && all_deps.iter().all(|fd| fd.syntax() == Syntax::Proto3);
+
         Ok(FileDescriptorCommon {
             dependencies,
+            self_and_all_deps_proto3,
             messages,
             message_by_name_to_package,
             enums,

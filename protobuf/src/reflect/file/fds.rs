@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::collections::HashSet;
+use std::hash::Hash;
 
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::FileDescriptor;
@@ -81,4 +82,47 @@ pub(crate) fn fds_extend_with_public(file_descriptors: Vec<FileDescriptor>) -> V
         r.push(f);
     }
     r
+}
+
+fn all_deps_impl<T: Clone + Eq + Hash>(input: &[T], deps: impl Fn(&T) -> Vec<T>) -> Vec<T> {
+    let mut visited = HashSet::new();
+
+    let mut r = Vec::new();
+    let mut stack: Vec<T> = input.iter().rev().cloned().collect();
+
+    while let Some(f) = stack.pop() {
+        if !visited.insert(f.clone()) {
+            continue;
+        }
+
+        stack.extend(deps(&f).into_iter());
+
+        r.push(f);
+    }
+    r
+}
+
+pub(crate) fn all_deps(file_descriptor: &[FileDescriptor]) -> Vec<FileDescriptor> {
+    all_deps_impl(file_descriptor, |f| f.deps().to_vec())
+}
+
+#[cfg(test)]
+mod test {
+    use crate::reflect::FileDescriptor;
+
+    #[test]
+    fn all_deps() {
+        assert_eq!(Vec::<FileDescriptor>::new(), super::all_deps(&[]));
+    }
+
+    #[test]
+    fn all_deps_impl() {
+        let mut all_deps = super::all_deps_impl(&["A", "B"], |&x| match x {
+            "A" => vec!["B", "C"],
+            "C" => vec!["D"],
+            _ => vec![],
+        });
+        all_deps.sort();
+        assert_eq!(vec!["A", "B", "C", "D"], all_deps);
+    }
 }
