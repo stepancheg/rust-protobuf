@@ -1952,8 +1952,16 @@ impl<'a> FieldGen<'a> {
         }
     }
 
-    fn has_name(&self) -> String {
-        format!("has_{}", self.rust_name)
+    fn has_name(&self) -> RustIdent {
+        RustIdent::new(&format!("has_{}", self.rust_name.get()))
+    }
+
+    fn set_name(&self) -> RustIdent {
+        RustIdent::new(&format!("set_{}", self.rust_name.get()))
+    }
+
+    fn mut_name(&self) -> RustIdent {
+        RustIdent::new(&format!("mut_{}", self.rust_name.get()))
     }
 
     fn write_message_field_has(&self, w: &mut CodeWriter) {
@@ -1991,11 +1999,10 @@ impl<'a> FieldGen<'a> {
                 .file_and_mod(self.customize.clone()),
         );
         w.comment("Param is passed by value, moved");
-        let ref name = self.rust_name;
         w.pub_fn(
             &format!(
-                "set_{}(&mut self, v: {})",
-                name,
+                "{}(&mut self, v: {})",
+                self.set_name(),
                 set_xxx_param_type.to_code(&self.customize)
             ),
             |w| {
@@ -2081,8 +2088,8 @@ impl<'a> FieldGen<'a> {
         }
         let fn_def = match mut_xxx_return_type {
             RustType::Ref(ref param) => format!(
-                "mut_{}(&mut self) -> &mut {}",
-                self.rust_name,
+                "{}(&mut self) -> &mut {}",
+                self.mut_name(),
                 param.to_code(&self.customize)
             ),
             _ => panic!(

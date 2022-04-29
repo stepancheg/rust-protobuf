@@ -30,7 +30,7 @@ fn test_pretty() {
 #[test]
 fn test_rust_identifier() {
     let mut m = TestTextFormatRustIdentifier::new();
-    m.set_const_(true);
+    m.set_const(true);
     assert_eq!("const: true", &*format!("{}", m));
 }
 

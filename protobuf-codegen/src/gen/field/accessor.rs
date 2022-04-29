@@ -46,19 +46,19 @@ impl FieldGen<'_> {
     fn make_accessor_fns_has_get_set(&self) -> Vec<String> {
         let message = self.proto_field.message.rust_name();
         vec![
-            format!("{}::has_{}", message, self.rust_name),
+            format!("{}::{}", message, self.has_name()),
             format!("{}::{}", message, self.rust_name),
-            format!("{}::set_{}", message, self.rust_name),
+            format!("{}::{}", message, self.set_name()),
         ]
     }
 
     fn make_accessor_fns_has_get_mut_set(&self) -> Vec<String> {
         let message = self.proto_field.message.rust_name();
         vec![
-            format!("{}::has_{}", message, self.rust_name),
+            format!("{}::{}", message, self.has_name()),
             format!("{}::{}", message, self.rust_name),
-            format!("{}::mut_{}", message, self.rust_name),
-            format!("{}::set_{}", message, self.rust_name),
+            format!("{}::{}", message, self.mut_name()),
+            format!("{}::{}", message, self.set_name()),
         ]
     }
 

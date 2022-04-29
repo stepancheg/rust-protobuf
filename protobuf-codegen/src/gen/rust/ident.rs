@@ -19,6 +19,10 @@ impl RustIdent {
         RustIdent(s.to_owned())
     }
 
+    pub(crate) fn get(&self) -> &str {
+        &self.0
+    }
+
     pub fn into_string(self) -> String {
         self.0
     }
