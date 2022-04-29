@@ -19,8 +19,7 @@ use crate::gen::file_and_mod::FileAndMod;
 use crate::gen::map::map_entry;
 use crate::gen::message::message_name_to_nested_mod_name;
 use crate::gen::paths::proto_path_to_rust_mod;
-use crate::gen::rust;
-use crate::gen::rust::is_rust_keyword;
+use crate::gen::rust::keywords::is_rust_keyword;
 use crate::gen::rust_name::RustIdent;
 use crate::gen::rust_name::RustIdentWithPath;
 use crate::gen::rust_name::RustRelativePath;
@@ -464,7 +463,7 @@ pub(crate) struct EnumValueWithContext<'a> {
 impl<'a> EnumValueWithContext<'a> {
     pub fn rust_name(&self) -> RustIdent {
         let mut r = String::new();
-        if rust::is_rust_keyword(self.proto.proto().name()) {
+        if is_rust_keyword(self.proto.proto().name()) {
             r.push_str("value_");
         }
         r.push_str(self.proto.name());

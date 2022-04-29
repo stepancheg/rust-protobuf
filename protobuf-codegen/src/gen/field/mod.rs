@@ -20,6 +20,7 @@ use crate::gen::message::RustTypeMessage;
 use crate::gen::oneof::OneofField;
 use crate::gen::protoc_insertion_point::write_protoc_insertion_point_for_field;
 use crate::gen::rust;
+use crate::gen::rust::keywords::is_rust_keyword;
 use crate::gen::rust::EXPR_NONE;
 use crate::gen::rust::EXPR_VEC_NEW;
 use crate::gen::rust_name::RustIdent;
@@ -2326,7 +2327,7 @@ impl<'a> FieldGen<'a> {
 }
 
 pub(crate) fn rust_field_name_for_protobuf_field_name(name: &str) -> RustIdent {
-    if rust::is_rust_keyword(name) {
+    if is_rust_keyword(name) {
         return RustIdent::new(&format!("field_{}", name));
     } else {
         RustIdent::new(name)
@@ -2335,7 +2336,7 @@ pub(crate) fn rust_field_name_for_protobuf_field_name(name: &str) -> RustIdent {
 
 pub(crate) fn rust_variant_name_for_protobuf_oneof_field_name(name: &str) -> RustIdent {
     let name = camel_case(name);
-    if rust::is_rust_keyword(&name) {
+    if is_rust_keyword(&name) {
         return RustIdent::new(&format!("Variant{}", name));
     } else {
         RustIdent::new(&name)

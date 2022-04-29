@@ -1,5 +1,5 @@
 use crate::gen::inside::protobuf_crate_path;
-use crate::gen::rust;
+use crate::gen::rust::keywords::is_rust_keyword;
 use crate::gen::rust_name::RustIdent;
 use crate::gen::rust_name::RustPath;
 use crate::gen::strx;
@@ -37,7 +37,7 @@ pub(crate) fn proto_path_to_rust_mod(path: &str) -> RustIdent {
         })
         .collect::<String>();
 
-    let name = if rust::is_rust_keyword(&name) {
+    let name = if is_rust_keyword(&name) {
         format!("{}_pb", name)
     } else {
         name
