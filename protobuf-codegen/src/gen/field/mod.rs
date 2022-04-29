@@ -19,8 +19,9 @@ use crate::gen::map::map_entry;
 use crate::gen::message::RustTypeMessage;
 use crate::gen::oneof::OneofField;
 use crate::gen::protoc_insertion_point::write_protoc_insertion_point_for_field;
-use crate::gen::rust;
 use crate::gen::rust::keywords::is_rust_keyword;
+use crate::gen::rust::quote::quote_escape_bytes;
+use crate::gen::rust::quote::quote_escape_str;
 use crate::gen::rust::snippets::EXPR_NONE;
 use crate::gen::rust::snippets::EXPR_VEC_NEW;
 use crate::gen::rust_name::RustIdent;
@@ -828,8 +829,8 @@ impl<'a> FieldGen<'a> {
             ReflectValueRef::I64(v) => format!("{}i64", v),
             ReflectValueRef::U32(v) => format!("{}u32", v),
             ReflectValueRef::U64(v) => format!("{}u64", v),
-            ReflectValueRef::String(v) => rust::quote_escape_str(v),
-            ReflectValueRef::Bytes(v) => rust::quote_escape_bytes(v),
+            ReflectValueRef::String(v) => quote_escape_str(v),
+            ReflectValueRef::Bytes(v) => quote_escape_bytes(v),
             ReflectValueRef::F32(v) => Self::defaut_value_from_proto_float(v as f64, "f32"),
             ReflectValueRef::F64(v) => Self::defaut_value_from_proto_float(v as f64, "f64"),
             ReflectValueRef::Enum(_e, _v) => {
