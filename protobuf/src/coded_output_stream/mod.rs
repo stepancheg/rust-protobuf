@@ -91,27 +91,12 @@ impl<'a> CodedOutputStream<'a> {
         }
     }
 
-    #[inline]
-    fn assertions(&mut self) {
-        self.buffer.assertions();
-        match &mut self.target {
-            OutputTarget::Write(_, v) => {
-                debug_assert!(ptr::eq(v.spare_capacity_mut(), self.buffer.buffer()));
-            }
-            OutputTarget::Bytes => {}
-            OutputTarget::Vec(v) => {
-                debug_assert!(ptr::eq(v.spare_capacity_mut(), self.buffer.buffer()));
-            }
-        }
-    }
-
     pub(crate) fn reserve_additional(
         &mut self,
         additional: u32,
         message: &str,
     ) -> crate::Result<()> {
-        let remaining_in_buf = self.buffer.unfilled_len();
-        if additional as usize <= remaining_in_buf {
+        if additional as usize <= self.buffer.unfilled_len() {
             return Ok(());
         }
         match &mut self.target {
@@ -123,7 +108,6 @@ impl<'a> CodedOutputStream<'a> {
                 v.reserve(reserve);
                 // `pos_within_buf` remains unchanged.
                 self.buffer.replace_buffer_keep_pos(v.spare_capacity_mut());
-                self.assertions();
                 Ok(())
             }
             OutputTarget::Bytes => {
@@ -184,7 +168,6 @@ impl<'a> CodedOutputStream<'a> {
                 .into());
             }
         }
-        self.assertions();
         Ok(())
     }
 
@@ -204,7 +187,6 @@ impl<'a> CodedOutputStream<'a> {
                 }
                 self.pos_of_buffer_start += self.buffer.pos_within_buf() as u64;
                 self.buffer = OutputBuffer::new(vec.spare_capacity_mut());
-                self.assertions();
                 Ok(())
             }
             OutputTarget::Write(..) => self.refresh_buffer(),

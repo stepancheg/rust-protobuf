@@ -89,11 +89,6 @@ impl OutputBuffer {
     }
 
     #[inline]
-    pub(crate) fn assertions(&self) {
-        debug_assert!(self.pos_within_buf <= self.buffer().len());
-    }
-
-    #[inline]
     pub(crate) unsafe fn write_byte(&mut self, b: u8) {
         debug_assert!(self.unfilled_len() >= 1);
         // SAFETY: caller is responsible for ensuring that byte fits in the buffer.
