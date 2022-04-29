@@ -2029,21 +2029,33 @@ impl<'a> FieldGen<'a> {
         );
     }
 
-    fn write_message_field_mut_singular(&self, s: &SingularField, w: &mut CodeWriter) {
-        match s {
-            SingularField {
-                flag: SingularFieldFlag::WithFlag { .. },
-                ..
-            } => {
+    fn write_message_field_mut_singular_with_flag(
+        &self,
+        s: &SingularField,
+        option_kind: OptionKind,
+        w: &mut CodeWriter,
+    ) {
+        let self_field = self.self_field();
+        match option_kind {
+            OptionKind::MessageField => w.write_line(&format!("{}.mut_or_default()", self_field)),
+            OptionKind::Option => {
                 self.write_if_self_field_is_none(w, |w| {
                     self.write_self_field_assign_default(
                         &SingularOrOneofField::Singular(s.clone()),
                         w,
                     );
                 });
-                let self_field = self.self_field();
                 w.write_line(&format!("{}.as_mut().unwrap()", self_field));
             }
+        }
+    }
+
+    fn write_message_field_mut_singular(&self, s: &SingularField, w: &mut CodeWriter) {
+        match s {
+            s @ SingularField {
+                flag: SingularFieldFlag::WithFlag { option_kind, .. },
+                ..
+            } => self.write_message_field_mut_singular_with_flag(s, *option_kind, w),
             SingularField {
                 flag: SingularFieldFlag::WithoutFlag,
                 ..
