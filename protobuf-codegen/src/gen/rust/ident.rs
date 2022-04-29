@@ -38,6 +38,9 @@ impl RustIdent {
 
 impl fmt::Display for RustIdent {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // Rust-protobuf uses `_` suffix to escape identifiers instead of raw identifiers
+        // because some identifiers cannot be escaped as raw identifiers,
+        // e.g. `r#self` is not a valid raw identifier.
         if is_rust_keyword(&self.0) {
             write!(f, "{}_", self.0)
         } else {
