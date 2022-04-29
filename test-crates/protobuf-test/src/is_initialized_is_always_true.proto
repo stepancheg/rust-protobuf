@@ -1,0 +1,90 @@
+syntax = "proto2";
+
+import "is_initialized_is_always_true_dep.proto";
+
+// YES
+message Empty {}
+
+// NO
+message Required {
+    required int32 x = 1;
+}
+
+// NO
+message Extensions {
+    extensions 100 to max;
+}
+
+// YES
+message SelfCycle {
+    optional SelfCycle self = 1;
+}
+
+// NO
+message DependsOnRequired {
+    optional Required req = 1;
+}
+
+// Cycles.
+
+// YES
+message NonTrivialOptionalCycleA {
+    optional NonTrivialOptionalCycleB b = 1;
+}
+
+// YES
+message NonTrivialOptionalCycleB {
+    optional NonTrivialOptionalCycleA a = 1;
+}
+
+// NO
+message NonTrivialRequiredCycleA {
+    required NonTrivialRequiredCycleB b = 1;
+}
+
+// NO
+message NonTrivialRequiredCycleB {
+    optional NonTrivialRequiredCycleA a = 1;
+}
+
+// YES
+message LongCycle1 {
+    optional LongCycle2 b = 1;
+}
+
+// YES
+message LongCycle2 {
+    optional LongCycle3 c = 1;
+}
+
+// YES
+message LongCycle3 {
+    optional LongCycle1 a = 1;
+}
+
+// NO
+message LongCycleNot1 {
+    optional LongCycleNot2 b = 1;
+}
+
+// NO
+message LongCycleNot2 {
+    required LongCycleNot3 c = 1;
+}
+
+// NO
+message LongCycleNot3 {
+    optional LongCycleNot1 a = 1;
+}
+
+// Deps from another file.
+
+// YES
+message DepAlwaysTrueFromAnotherFile {
+    optional DepAlwaysTrue dep = 1;
+}
+
+// NO
+message DepNotAlwaysTrueFromAnotherFile {
+    optional DepNotAlwaysTrue dep = 1;
+}

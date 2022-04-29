@@ -9,6 +9,7 @@ use crate::reflect::field::index::FieldIndex;
 use crate::reflect::file::building::FileDescriptorBuilding;
 use crate::reflect::file::fds::all_deps;
 use crate::reflect::file::fds::fds_extend_with_public;
+use crate::reflect::message::is_initialized_is_always_true::compute_is_initialized_is_always_true;
 use crate::reflect::message::path::MessagePath;
 use crate::reflect::name::concat_paths;
 use crate::reflect::service::index::ServiceIndex;
@@ -29,6 +30,7 @@ pub(crate) struct MessageIndex {
     pub(crate) first_oneof_index: usize,
     pub(crate) oneof_count: usize,
     pub(crate) message_index: MessageFieldsIndex,
+    pub(crate) is_initialized_is_always_true: bool,
 }
 
 #[derive(Debug, Default)]
@@ -190,6 +192,8 @@ impl FileDescriptorCommon {
         let self_and_all_deps_proto3 = Syntax::of_file(file) == Syntax::Proto3
             && all_deps.iter().all(|fd| fd.syntax() == Syntax::Proto3);
 
+        compute_is_initialized_is_always_true(&mut messages, file);
+
         Ok(FileDescriptorCommon {
             dependencies,
             self_and_all_deps_proto3,
@@ -230,6 +234,8 @@ impl FileDescriptorCommon {
             first_oneof_index: oneofs.len(),
             oneof_count: message.oneof_decl.len(),
             message_index: MessageFieldsIndex::default(),
+            // Initialized later.
+            is_initialized_is_always_true: false,
         });
 
         for (i, e) in message.enum_type.iter().enumerate() {

@@ -1,0 +1,7 @@
+syntax = "proto2";
+
+message DepAlwaysTrue {}
+
+message DepNotAlwaysTrue {
+  required int32 a = 1;
+}

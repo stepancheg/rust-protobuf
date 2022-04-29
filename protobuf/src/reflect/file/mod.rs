@@ -248,6 +248,7 @@ impl FileDescriptor {
     }
 
     /// Create a set of file descriptors from individual file descriptors.
+    // TODO: add deps parameter.
     pub fn new_dynamic_fds(protos: Vec<FileDescriptorProto>) -> crate::Result<Vec<FileDescriptor>> {
         FdsBuilder::build(protos)
     }

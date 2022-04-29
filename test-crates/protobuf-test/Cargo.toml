@@ -1,0 +1,21 @@
+[package]
+name = "protobuf-test"
+version = "0.0.0"
+authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
+publish = false
+edition = "2021"
+description = """
+Common code of protobuf tests
+"""
+
+[lib]
+doctest = false
+bench = false
+
+[dependencies]
+regex = "1.5.5"
+
+protobuf = { path = "../../protobuf" }
+protobuf-parse = { path = "../../protobuf-parse" }
+
+protobuf-test-common = { path = "../protobuf-test-common" }

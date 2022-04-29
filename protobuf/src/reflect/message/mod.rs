@@ -19,6 +19,7 @@ use crate::reflect::OneofDescriptor;
 use crate::CodedInputStream;
 
 pub(crate) mod generated;
+pub(crate) mod is_initialized_is_always_true;
 pub(crate) mod message_ref;
 pub(crate) mod path;
 
@@ -127,6 +128,12 @@ impl MessageDescriptor {
             "message is map entry: {}",
             self.full_name()
         );
+    }
+
+    /// Message is considered always initialized.
+    #[doc(hidden)]
+    pub fn is_initialized_is_always_true(&self) -> bool {
+        self.index().is_initialized_is_always_true
     }
 
     /// New empty message.
