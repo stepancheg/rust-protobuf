@@ -77,7 +77,7 @@ impl<'a> ExtGen<'a> {
         };
         let field_type = format!("{}::ext::{}", protobuf_crate_path(&self.customize), suffix);
         w.pub_const(
-            rust_field_name_for_protobuf_field_name(self.field.name()).get(),
+            &rust_field_name_for_protobuf_field_name(self.field.name()).to_string(),
             &format!(
                 "{}<{}, {}>",
                 field_type,

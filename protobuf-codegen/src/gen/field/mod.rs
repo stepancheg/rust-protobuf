@@ -1115,7 +1115,7 @@ impl<'a> FieldGen<'a> {
             write_protoc_insertion_point_for_field(w, &self.customize, &self.proto_field.field);
             w.field_decl_vis(
                 Visibility::Public,
-                self.rust_name.get(),
+                &self.rust_name.to_string(),
                 &self
                     .full_storage_type(
                         &self

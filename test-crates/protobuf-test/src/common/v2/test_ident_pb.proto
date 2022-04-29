@@ -18,7 +18,9 @@ message Message { }
 
 // rust keywords
 
-message struct { }
+message struct {
+    message NestedInStruct {}
+}
 
 message Self {
     optional string s = 1;

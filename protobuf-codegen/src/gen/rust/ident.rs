@@ -16,12 +16,7 @@ impl RustIdent {
         assert!(!s.contains(":"), "{}", s);
         assert!(!s.contains(" "), "{}", s);
         assert!(!s.contains("#"), "{}", s);
-        assert!(!is_rust_keyword(s), "{}", s);
         RustIdent(s.to_owned())
-    }
-
-    pub fn get(&self) -> &str {
-        &self.0
     }
 
     pub fn into_string(self) -> String {

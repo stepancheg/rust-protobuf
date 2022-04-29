@@ -21,7 +21,6 @@ use crate::gen::protoc_insertion_point::write_protoc_insertion_point_for_message
 use crate::gen::protoc_insertion_point::write_protoc_insertion_point_for_special_field;
 use crate::gen::rust::ident::RustIdent;
 use crate::gen::rust::ident_with_path::RustIdentWithPath;
-use crate::gen::rust::keywords::is_rust_keyword;
 use crate::gen::rust::rel_path::RustRelativePath;
 use crate::gen::rust::snippets::expr_vec_with_capacity;
 use crate::gen::rust::snippets::EXPR_NONE;
@@ -274,13 +273,13 @@ impl<'a> MessageGen<'a> {
             |w| {
                 for f in &self.fields_except_oneof_and_group() {
                     w.field_entry(
-                        f.rust_name.get(),
+                        &f.rust_name.to_string(),
                         &f.kind
                             .default(&self.customize.for_elem, &self.file_and_mod(), true),
                     );
                 }
                 for o in &self.oneofs() {
-                    w.field_entry(o.oneof.field_name().get(), EXPR_NONE);
+                    w.field_entry(&o.oneof.field_name().to_string(), EXPR_NONE);
                 }
                 w.field_entry(
                     "special_fields",
@@ -703,7 +702,7 @@ impl<'a> MessageGen<'a> {
                 "/// Nested message and enums of message `{}`",
                 self.message.message.name()
             ));
-            w.pub_mod(mod_name.get(), |w| {
+            w.pub_mod(&mod_name.to_string(), |w| {
                 let mut first = true;
 
                 for oneof in &oneofs {
@@ -777,9 +776,6 @@ impl<'a> MessageGen<'a> {
 }
 
 pub(crate) fn message_name_to_nested_mod_name(message_name: &str) -> RustIdent {
-    let mut mod_name = snake_case(message_name);
-    if is_rust_keyword(&mod_name) {
-        mod_name.insert_str(0, "mod_");
-    }
+    let mod_name = snake_case(message_name);
     RustIdent::new(&mod_name)
 }
