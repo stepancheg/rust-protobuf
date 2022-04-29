@@ -431,8 +431,8 @@ fn v3() {
 fn interop() {
     test_diff_in(
         "../..",
-        "interop/cxx",
-        "interop/cxx",
+        "test-crates/interop/cxx",
+        "test-crates/interop/cxx",
         should_skip_with_marker,
     );
 }

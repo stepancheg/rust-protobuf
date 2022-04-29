@@ -109,7 +109,10 @@ fn job(channel: RustToolchain, os: Os, features: Features) -> Job {
     steps.extend(install_protobuf::install_protobuf(os));
 
     if os != WINDOWS {
-        steps.push(Step::run("Compile interop", "interop/cxx/compile.sh"));
+        steps.push(Step::run(
+            "Compile interop",
+            "test-crates/interop/cxx/compile.sh",
+        ));
     }
 
     // * Nothing works on Windows

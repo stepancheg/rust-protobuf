@@ -54,8 +54,8 @@ fn generate_in_v2_v3() {
 fn generate_interop() {
     codegen()
         .out_dir("src/interop")
-        .includes(&["../../interop/cxx", "../../proto"])
-        .input("../../interop/cxx/interop_pb.proto")
+        .includes(&["../../test-crates/interop/cxx", "../../proto"])
+        .input("../../test-crates/interop/cxx/interop_pb.proto")
         .run_from_script();
 }
 

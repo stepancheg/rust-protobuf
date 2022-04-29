@@ -35,7 +35,7 @@ jobs:
               run: protoc --version
               shell: bash
             - name: Compile interop
-              run: interop/cxx/compile.sh
+              run: test-crates/interop/cxx/compile.sh
               shell: bash
             - name: Regenerate
               run: protobuf/regenerate.sh
@@ -80,7 +80,7 @@ jobs:
               run: protoc --version
               shell: bash
             - name: Compile interop
-              run: interop/cxx/compile.sh
+              run: test-crates/interop/cxx/compile.sh
               shell: bash
             - name: Regenerate
               run: protobuf/regenerate.sh
@@ -125,7 +125,7 @@ jobs:
               run: protoc --version
               shell: bash
             - name: Compile interop
-              run: interop/cxx/compile.sh
+              run: test-crates/interop/cxx/compile.sh
               shell: bash
             - name: protobuf-test
               uses: actions-rs/cargo@v1
@@ -167,7 +167,7 @@ jobs:
               run: protoc --version
               shell: bash
             - name: Compile interop
-              run: interop/cxx/compile.sh
+              run: test-crates/interop/cxx/compile.sh
               shell: bash
             - name: Test all
               run: cargo test --all --all-targets --all-features
