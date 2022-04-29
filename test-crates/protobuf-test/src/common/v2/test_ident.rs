@@ -9,7 +9,7 @@ fn test() {
 
 #[test]
 fn test_reflect() {
-    message_Self::new();
+    Self_::new();
     // instantiate reflection
-    assert_eq!("Self", message_Self::descriptor().name());
+    assert_eq!("Self", Self_::descriptor().name());
 }

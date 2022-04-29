@@ -21,7 +21,6 @@ use crate::gen::message::message_name_to_nested_mod_name;
 use crate::gen::paths::proto_path_to_rust_mod;
 use crate::gen::rust::ident::RustIdent;
 use crate::gen::rust::ident_with_path::RustIdentWithPath;
-use crate::gen::rust::keywords::is_rust_keyword;
 use crate::gen::rust::rel_path::RustRelativePath;
 use crate::gen::strx::capitalize;
 
@@ -322,12 +321,7 @@ pub(crate) trait WithScope<'a> {
 
     // rust type name of this descriptor
     fn rust_name(&self) -> RustIdent {
-        let mut rust_name = capitalize(&self.name());
-
-        if is_rust_keyword(&rust_name) {
-            rust_name.insert_str(0, self.escape_prefix());
-        }
-
+        let rust_name = capitalize(&self.name());
         RustIdent::new(&rust_name)
     }
 
