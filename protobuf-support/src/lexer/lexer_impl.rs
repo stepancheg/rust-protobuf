@@ -3,15 +3,16 @@ use std::convert::TryFrom;
 use std::num::ParseFloatError;
 use std::num::ParseIntError;
 
-use super::float;
-use super::loc::Loc;
-use super::loc::FIRST_COL;
-use super::str_lit::StrLit;
-use super::str_lit::StrLitDecodeError;
-use super::token::Token;
-use super::token::TokenWithLocation;
-use super::ParserLanguage;
-use crate::text_format::lexer::JsonNumberLit;
+use crate::lexer::float;
+use crate::lexer::float::ProtobufFloatParseError;
+use crate::lexer::json_number_lit::JsonNumberLit;
+use crate::lexer::loc::Loc;
+use crate::lexer::loc::FIRST_COL;
+use crate::lexer::parser_language::ParserLanguage;
+use crate::lexer::str_lit::StrLit;
+use crate::lexer::str_lit::StrLitDecodeError;
+use crate::lexer::token::Token;
+use crate::lexer::token::TokenWithLocation;
 
 #[derive(Debug, thiserror::Error)]
 pub enum LexerError {
@@ -61,8 +62,8 @@ impl From<ParseFloatError> for LexerError {
     }
 }
 
-impl From<float::ProtobufFloatParseError> for LexerError {
-    fn from(_: float::ProtobufFloatParseError) -> Self {
+impl From<ProtobufFloatParseError> for LexerError {
+    fn from(_: ProtobufFloatParseError) -> Self {
         LexerError::IncorrectFloatLit
     }
 }

@@ -10,6 +10,8 @@
 //! please [consider creating an issue](https://github.com/stepancheg/rust-protobuf/issues/new),
 //! until that this crate is considered to have **no stable API**.
 
+extern crate core;
+
 mod case_convert;
 mod parse_and_typecheck;
 mod parser;

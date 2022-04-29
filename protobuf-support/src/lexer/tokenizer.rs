@@ -1,11 +1,11 @@
-use crate::text_format::lexer::Lexer;
-use crate::text_format::lexer::LexerError;
-use crate::text_format::lexer::Loc;
-use crate::text_format::lexer::ParserLanguage;
-use crate::text_format::lexer::StrLit;
-use crate::text_format::lexer::StrLitDecodeError;
-use crate::text_format::lexer::Token;
-use crate::text_format::lexer::TokenWithLocation;
+use crate::lexer::lexer_impl::Lexer;
+use crate::lexer::lexer_impl::LexerError;
+use crate::lexer::loc::Loc;
+use crate::lexer::parser_language::ParserLanguage;
+use crate::lexer::str_lit::StrLit;
+use crate::lexer::str_lit::StrLitDecodeError;
+use crate::lexer::token::Token;
+use crate::lexer::token::TokenWithLocation;
 
 #[derive(Debug, thiserror::Error)]
 pub enum TokenizerError {

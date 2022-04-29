@@ -216,8 +216,7 @@ pub fn fmt(m: &dyn MessageDyn, f: &mut fmt::Formatter) -> fmt::Result {
 
 #[cfg(test)]
 mod test {
-
-    use crate::text_format::lexer::StrLit;
+    use protobuf_support::lexer::str_lit::StrLit;
 
     fn escape(data: &[u8]) -> String {
         let mut s = String::with_capacity(data.len() * 4);

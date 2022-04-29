@@ -1,9 +1,9 @@
-use super::lexer_impl::LexerError;
-use super::lexer_impl::LexerResult;
-use super::loc::Loc;
-use super::num_lit::NumLit;
-use super::str_lit::StrLit;
-use crate::text_format::lexer::JsonNumberLit;
+use crate::lexer::json_number_lit::JsonNumberLit;
+use crate::lexer::lexer_impl::LexerError;
+use crate::lexer::lexer_impl::LexerResult;
+use crate::lexer::loc::Loc;
+use crate::lexer::num_lit::NumLit;
+use crate::lexer::str_lit::StrLit;
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Token {

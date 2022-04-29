@@ -1,6 +1,15 @@
 use std::num::ParseFloatError;
 use std::num::ParseIntError;
 
+use protobuf_support::lexer::json_number_lit::JsonNumberLit;
+use protobuf_support::lexer::lexer_impl::Lexer;
+use protobuf_support::lexer::lexer_impl::LexerError;
+use protobuf_support::lexer::loc::Loc;
+use protobuf_support::lexer::parser_language::ParserLanguage;
+use protobuf_support::lexer::token::Token;
+use protobuf_support::lexer::tokenizer::Tokenizer;
+use protobuf_support::lexer::tokenizer::TokenizerError;
+
 use super::base64;
 use super::float;
 use super::rfc_3339;
@@ -15,14 +24,6 @@ use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::RuntimeFieldType;
 use crate::reflect::RuntimeTypeBox;
-use crate::text_format::lexer::JsonNumberLit;
-use crate::text_format::lexer::Lexer;
-use crate::text_format::lexer::LexerError;
-use crate::text_format::lexer::Loc;
-use crate::text_format::lexer::ParserLanguage;
-use crate::text_format::lexer::Token;
-use crate::text_format::lexer::Tokenizer;
-use crate::text_format::lexer::TokenizerError;
 use crate::well_known_types::value;
 use crate::well_known_types::Any;
 use crate::well_known_types::BoolValue;

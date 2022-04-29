@@ -23,6 +23,7 @@ thiserror = "1.0.30"
 indexmap  = "1.8.0"
 
 protobuf = { path = "../protobuf", version = "=3.0.0-alpha.10" }
+protobuf-support = { path = "../protobuf-support", version = "=3.0.0-alpha.10" }
 
 [lib]
 # TODO: figure out what to do with bundled linked_hash_map

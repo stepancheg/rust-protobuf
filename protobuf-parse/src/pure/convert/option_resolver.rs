@@ -10,10 +10,10 @@ use protobuf::descriptor::ServiceDescriptorProto;
 use protobuf::reflect::FieldDescriptor;
 use protobuf::reflect::FileDescriptor;
 use protobuf::reflect::MessageDescriptor;
-use protobuf::text_format::lexer::StrLitDecodeError;
 use protobuf::MessageFull;
 use protobuf::UnknownFields;
 use protobuf::UnknownValue;
+use protobuf_support::lexer::str_lit::StrLitDecodeError;
 
 use crate::model;
 use crate::model::ProtobufConstant;

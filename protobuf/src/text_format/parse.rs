@@ -1,5 +1,12 @@
 use std::str;
 
+use protobuf_support::lexer::int;
+use protobuf_support::lexer::loc::Loc;
+use protobuf_support::lexer::parser_language::ParserLanguage;
+use protobuf_support::lexer::str_lit::StrLitDecodeError;
+use protobuf_support::lexer::tokenizer::Tokenizer;
+use protobuf_support::lexer::tokenizer::TokenizerError;
+
 use crate::message_dyn::MessageDyn;
 use crate::message_full::MessageFull;
 use crate::reflect::EnumDescriptor;
@@ -8,12 +15,6 @@ use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::RuntimeFieldType;
 use crate::reflect::RuntimeTypeBox;
-use crate::text_format::lexer::int;
-use crate::text_format::lexer::Loc;
-use crate::text_format::lexer::ParserLanguage;
-use crate::text_format::lexer::StrLitDecodeError;
-use crate::text_format::lexer::Tokenizer;
-use crate::text_format::lexer::TokenizerError;
 
 #[derive(Debug, thiserror::Error)]
 pub enum ParseErrorWithoutLoc {

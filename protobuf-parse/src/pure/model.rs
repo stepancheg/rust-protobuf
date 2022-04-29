@@ -10,10 +10,9 @@ use std::ops::Deref;
 use indexmap::IndexMap;
 use protobuf::reflect::ReflectValueBox;
 use protobuf::reflect::RuntimeTypeBox;
-use protobuf::text_format::lexer::float;
-use protobuf::text_format::lexer::float::format_protobuf_float;
-use protobuf::text_format::lexer::Loc;
-use protobuf::text_format::lexer::StrLit;
+use protobuf_support::lexer::float::format_protobuf_float;
+use protobuf_support::lexer::loc::Loc;
+use protobuf_support::lexer::str_lit::StrLit;
 
 use crate::model;
 use crate::proto_path::ProtoPathBuf;
@@ -450,7 +449,7 @@ impl ProtobufConstant {
         match *self {
             ProtobufConstant::U64(u) => u.to_string(),
             ProtobufConstant::I64(i) => i.to_string(),
-            ProtobufConstant::F64(f) => float::format_protobuf_float(f),
+            ProtobufConstant::F64(f) => format_protobuf_float(f),
             ProtobufConstant::Bool(b) => b.to_string(),
             ProtobufConstant::Ident(ref i) => format!("{}", i),
             ProtobufConstant::String(ref s) => s.quoted(),

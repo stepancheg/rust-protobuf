@@ -1,13 +1,13 @@
 use std::str;
 
-use protobuf::text_format::lexer::int;
-use protobuf::text_format::lexer::LexerError;
-use protobuf::text_format::lexer::NumLit;
-use protobuf::text_format::lexer::ParserLanguage;
-use protobuf::text_format::lexer::StrLitDecodeError;
-use protobuf::text_format::lexer::Token;
-use protobuf::text_format::lexer::Tokenizer;
-use protobuf::text_format::lexer::TokenizerError;
+use protobuf_support::lexer::int;
+use protobuf_support::lexer::lexer_impl::LexerError;
+use protobuf_support::lexer::num_lit::NumLit;
+use protobuf_support::lexer::parser_language::ParserLanguage;
+use protobuf_support::lexer::str_lit::StrLitDecodeError;
+use protobuf_support::lexer::token::Token;
+use protobuf_support::lexer::tokenizer::Tokenizer;
+use protobuf_support::lexer::tokenizer::TokenizerError;
 
 use crate::model::AnyTypeUrl;
 use crate::model::ProtobufConstantMessageFieldName;

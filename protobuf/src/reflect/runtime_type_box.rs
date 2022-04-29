@@ -1,13 +1,14 @@
 use std::fmt;
 
+use protobuf_support::lexer::float::parse_protobuf_float;
+use protobuf_support::lexer::str_lit::StrLit;
+
 use crate::descriptor::field_descriptor_proto;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::MessageRef;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
-use crate::text_format;
-use crate::text_format::lexer::float::parse_protobuf_float;
 
 /// Runtime representation of elementary protobuf type.
 #[derive(Debug, Clone, Eq, PartialEq)]
@@ -110,7 +111,7 @@ impl RuntimeTypeBox {
             RuntimeTypeBox::String => ReflectValueBox::String(value.to_owned()),
             // For bytes, contains the C escaped value.  All bytes >= 128 are escaped
             RuntimeTypeBox::VecU8 => ReflectValueBox::Bytes(
-                text_format::lexer::StrLit {
+                StrLit {
                     escaped: value.to_owned(),
                 }
                 .decode_bytes()

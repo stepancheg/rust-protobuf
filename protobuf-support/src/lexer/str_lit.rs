@@ -1,8 +1,8 @@
 use std::fmt;
 use std::string::FromUtf8Error;
 
-use super::lexer_impl::Lexer;
-use crate::text_format::lexer::ParserLanguage;
+use crate::lexer::lexer_impl::Lexer;
+use crate::lexer::parser_language::ParserLanguage;
 
 #[derive(Debug, thiserror::Error)]
 pub enum StrLitDecodeError {
@@ -61,7 +61,7 @@ impl StrLit {
 
 #[cfg(test)]
 mod test {
-    use crate::text_format::lexer::StrLit;
+    use crate::lexer::str_lit::StrLit;
 
     #[test]
     fn decode_utf8() {
