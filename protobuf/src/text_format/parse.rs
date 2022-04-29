@@ -106,7 +106,7 @@ impl<'a> Parser<'a> {
             Ok(int::neg(int_lit)?)
         } else {
             let int_lit = self.tokenizer.next_int_lit()?;
-            if int_lit > i64::max_value() as u64 {
+            if int_lit > i64::MAX as u64 {
                 return Err(ParseErrorWithoutLoc::IntegerOverflow);
             }
             Ok(int_lit as i64)
