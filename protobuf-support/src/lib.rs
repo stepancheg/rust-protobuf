@@ -5,3 +5,4 @@
 
 pub mod json_name;
 pub mod lexer;
+pub mod text_format;
