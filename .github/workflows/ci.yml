@@ -319,6 +319,9 @@ jobs:
             - name: sync-readme protobuf-parse
               run: cd protobuf-parse && cargo sync-readme --check
               shell: bash
+            - name: sync-readme protobuf-support
+              run: cd protobuf-support && cargo sync-readme --check
+              shell: bash
     self-check:
         name: CI self-check
         runs-on: ubuntu-latest
