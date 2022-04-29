@@ -299,8 +299,6 @@ pub(crate) trait WithScope<'a> {
     // message or enum name
     fn name(&self) -> &ProtobufIdentRef;
 
-    fn escape_prefix(&self) -> &'static str;
-
     fn name_to_package(&self) -> String {
         let mut r = self.scope().prefix();
         r.push_str(&self.name());
@@ -351,10 +349,6 @@ pub(crate) struct MessageWithScope<'a> {
 impl<'a> WithScope<'a> for MessageWithScope<'a> {
     fn scope(&self) -> &Scope<'a> {
         &self.scope
-    }
-
-    fn escape_prefix(&self) -> &'static str {
-        "message_"
     }
 
     fn name(&self) -> &ProtobufIdentRef {
@@ -469,10 +463,6 @@ impl<'a> WithScope<'a> for EnumWithScope<'a> {
     fn name(&self) -> &ProtobufIdentRef {
         ProtobufIdentRef::new(self.en.name())
     }
-
-    fn escape_prefix(&self) -> &'static str {
-        "enum_"
-    }
 }
 
 pub(crate) enum MessageOrEnumWithScope<'a> {
@@ -485,13 +475,6 @@ impl<'a> WithScope<'a> for MessageOrEnumWithScope<'a> {
         match self {
             &MessageOrEnumWithScope::Message(ref m) => m.scope(),
             &MessageOrEnumWithScope::Enum(ref e) => e.scope(),
-        }
-    }
-
-    fn escape_prefix(&self) -> &'static str {
-        match self {
-            &MessageOrEnumWithScope::Message(ref m) => m.escape_prefix(),
-            &MessageOrEnumWithScope::Enum(ref e) => e.escape_prefix(),
         }
     }
 
