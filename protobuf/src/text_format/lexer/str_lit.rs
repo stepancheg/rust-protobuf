@@ -2,22 +2,14 @@ use std::fmt;
 use std::string::FromUtf8Error;
 
 use super::lexer_impl::Lexer;
-use super::lexer_impl::LexerError;
 use crate::text_format::lexer::ParserLanguage;
 
 #[derive(Debug, thiserror::Error)]
 pub enum StrLitDecodeError {
     #[error(transparent)]
     FromUtf8Error(#[from] FromUtf8Error),
-    // TODO: be more specific
     #[error("String literal decode error")]
     OtherError,
-}
-
-impl From<LexerError> for StrLitDecodeError {
-    fn from(_: LexerError) -> Self {
-        StrLitDecodeError::OtherError
-    }
 }
 
 pub type StrLitDecodeResult<T> = Result<T, StrLitDecodeError>;
@@ -40,7 +32,11 @@ impl StrLit {
         let mut lexer = Lexer::new(&self.escaped, ParserLanguage::Json);
         let mut r = Vec::new();
         while !lexer.eof() {
-            r.push(lexer.next_byte_value()?);
+            r.push(
+                lexer
+                    .next_byte_value()
+                    .map_err(|_| StrLitDecodeError::OtherError)?,
+            );
         }
         Ok(String::from_utf8(r)?)
     }
@@ -49,7 +45,11 @@ impl StrLit {
         let mut lexer = Lexer::new(&self.escaped, ParserLanguage::Json);
         let mut r = Vec::new();
         while !lexer.eof() {
-            r.push(lexer.next_byte_value()?);
+            r.push(
+                lexer
+                    .next_byte_value()
+                    .map_err(|_| StrLitDecodeError::OtherError)?,
+            );
         }
         Ok(r)
     }
