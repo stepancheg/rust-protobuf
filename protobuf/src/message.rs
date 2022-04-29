@@ -51,7 +51,9 @@ pub trait Message: Default + Clone + Send + Sync + Sized + PartialEq + 'static {
     /// Get size previously computed by `compute_size`.
     ///
     /// Note if message size exceeds u32, the cached size is stored truncated.
-    fn cached_size(&self) -> u32;
+    fn cached_size(&self) -> u32 {
+        self.special_fields().cached_size().get()
+    }
 
     /// Write the message to the stream.
     ///
