@@ -1,6 +1,6 @@
 [package]
 name = "protobuf-parse"
-version = "3.0.0-alpha.10"
+version = "3.0.0-alpha.11"
 edition = "2021"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 license = "MIT"
@@ -22,8 +22,8 @@ anyhow    = "1.0.53"
 thiserror = "1.0.30"
 indexmap  = "1.8.0"
 
-protobuf = { path = "../protobuf", version = "=3.0.0-alpha.10" }
-protobuf-support = { path = "../protobuf-support", version = "=3.0.0-alpha.10" }
+protobuf = { path = "../protobuf", version = "=3.0.0-alpha.11" }
+protobuf-support = { path = "../protobuf-support", version = "=3.0.0-alpha.11" }
 
 [lib]
 # TODO: figure out what to do with bundled linked_hash_map
