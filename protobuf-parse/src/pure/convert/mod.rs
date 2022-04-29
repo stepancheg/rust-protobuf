@@ -11,7 +11,7 @@ use protobuf::descriptor::FieldDescriptorProto;
 use protobuf::descriptor::OneofDescriptorProto;
 use protobuf::reflect::FileDescriptor;
 use protobuf_support::json_name::json_name;
-use protobuf_support::text_format::quote_bytes_to;
+use protobuf_support::text_format::escape_bytes_to;
 
 use crate::case_convert::camel_case;
 use crate::path::fs_path_to_proto_path;
@@ -404,7 +404,7 @@ impl<'a> Resolver<'a> {
                 protobuf::descriptor::field_descriptor_proto::Type::TYPE_BYTES => {
                     if let &model::ProtobufConstant::String(ref s) = default {
                         let mut buf = String::new();
-                        quote_bytes_to(&s.decode_bytes()?, &mut buf);
+                        escape_bytes_to(&s.decode_bytes()?, &mut buf);
                         buf
                     } else {
                         return Err(ConvertError::DefaultValueIsNotStringLiteral.into());

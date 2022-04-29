@@ -1,4 +1,4 @@
-pub fn quote_bytes_to(bytes: &[u8], buf: &mut String) {
+pub fn escape_bytes_to(bytes: &[u8], buf: &mut String) {
     for &c in bytes {
         match c {
             b'\n' => buf.push_str(r"\n"),
@@ -18,20 +18,20 @@ pub fn quote_bytes_to(bytes: &[u8], buf: &mut String) {
     }
 }
 
-pub fn quote_escape_bytes_to(bytes: &[u8], buf: &mut String) {
+pub fn quote_bytes_to(bytes: &[u8], buf: &mut String) {
     buf.push('"');
-    quote_bytes_to(bytes, buf);
+    escape_bytes_to(bytes, buf);
     buf.push('"');
 }
 
 #[cfg(test)]
 mod test {
     use crate::lexer::str_lit::StrLit;
-    use crate::text_format::quote_bytes_to;
+    use crate::text_format::escape_bytes_to;
 
     fn escape(data: &[u8]) -> String {
         let mut s = String::with_capacity(data.len() * 4);
-        quote_bytes_to(data, &mut s);
+        escape_bytes_to(data, &mut s);
         s
     }
 

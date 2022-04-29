@@ -1,7 +1,7 @@
 use std::fmt;
 use std::fmt::Write;
 
-use protobuf_support::text_format::quote_escape_bytes_to;
+use protobuf_support::text_format::quote_bytes_to;
 
 use crate::message_dyn::MessageDyn;
 use crate::reflect::MessageRef;
@@ -10,7 +10,7 @@ use crate::reflect::ReflectValueRef;
 
 fn print_str_to(s: &str, buf: &mut String) {
     // TODO: keep printable Unicode
-    quote_escape_bytes_to(s.as_bytes(), buf);
+    quote_bytes_to(s.as_bytes(), buf);
 }
 
 fn do_indent(buf: &mut String, pretty: bool, indent: usize) {
@@ -79,7 +79,7 @@ fn print_field<F: FieldName>(
         }
         ReflectValueRef::Bytes(b) => {
             buf.push_str(": ");
-            quote_escape_bytes_to(b, buf);
+            quote_bytes_to(b, buf);
         }
         ReflectValueRef::I32(v) => {
             write!(buf, ": {}", v).unwrap();
