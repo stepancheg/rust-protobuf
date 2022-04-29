@@ -5,6 +5,8 @@ Stable versions are 2.xx still supported.
 
 ## [3] - Unreleased
 
+## [3.0.0-alpha.11] - 2022-04-29
+
 * all fields are public now in generated messages
 * `protobuf-support` crate added. This crate contains utilities shared by other protobuf crates.
   This crate has no public API.
