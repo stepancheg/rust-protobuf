@@ -61,10 +61,7 @@ pub trait Message: Default + Clone + Send + Sync + Sized + PartialEq + 'static {
 
         // cache sizes
         let size = self.compute_size();
-        if size > u32::MAX as u64 {
-            // Protobuf message size cannot exceed `u32::MAX`.
-            return Err(ProtobufError::MessageTooLarge(Self::NAME.to_owned(), size).into());
-        }
+        let size = check_message_size(size)?;
         os.reserve_additional(size as u32, Self::NAME)?;
         self.write_to_with_cached_sizes(os)?;
 
@@ -76,7 +73,10 @@ pub trait Message: Default + Clone + Send + Sync + Sized + PartialEq + 'static {
     fn write_length_delimited_to(&self, os: &mut CodedOutputStream) -> crate::Result<()> {
         let size = self.compute_size();
         let size = check_message_size(size)?;
-        os.write_raw_varint32(size as u32)?;
+
+        os.reserve_additional_for_length_delimited(size, Self::NAME)?;
+
+        os.write_raw_varint32(size)?;
 
         let written = os.total_bytes_written();
 
@@ -164,11 +164,10 @@ pub trait Message: Default + Clone + Send + Sync + Sized + PartialEq + 'static {
 
         let size = self.compute_size() as usize;
         let mut v = Vec::with_capacity(size);
-        {
-            let mut os = CodedOutputStream::vec(&mut v);
-            self.write_to_with_cached_sizes(&mut os)?;
-            os.flush()?;
-        }
+        let mut os = CodedOutputStream::vec(&mut v);
+        self.write_to_with_cached_sizes(&mut os)?;
+        os.flush()?;
+        drop(os);
         Ok(v)
     }
 

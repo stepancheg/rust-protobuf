@@ -10,11 +10,11 @@ pub(crate) const TAG_TYPE_MASK: u32 = (1u32 << TAG_TYPE_BITS as usize) - 1;
 /// Max possible field number
 pub(crate) const FIELD_NUMBER_MAX: u32 = 0x1fffffff;
 
-const MAX_VARINT_ENCODED_SIZE: u64 = i32::MAX as u64;
+pub(crate) const MAX_MESSAGE_SIZE: u64 = i32::MAX as u64;
 
 #[inline]
 pub(crate) fn check_message_size(size: u64) -> crate::Result<u32> {
-    if size <= MAX_VARINT_ENCODED_SIZE {
+    if size <= MAX_MESSAGE_SIZE {
         Ok(size as u32)
     } else {
         #[cold]

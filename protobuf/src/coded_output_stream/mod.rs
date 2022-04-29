@@ -18,10 +18,12 @@ use crate::rt::vec_packed_varint_data_size;
 use crate::rt::vec_packed_varint_zigzag_data_size;
 use crate::varint::encode::encode_varint32;
 use crate::varint::encode::encode_varint64;
+use crate::varint::encode::encoded_varint64_len;
 use crate::varint::MAX_VARINT_ENCODED_LEN;
 use crate::wire_format;
 use crate::wire_format::check_message_size;
 use crate::wire_format::WireType;
+use crate::wire_format::MAX_MESSAGE_SIZE;
 use crate::zigzag::encode_zig_zag_32;
 use crate::zigzag::encode_zig_zag_64;
 use crate::Enum;
@@ -114,6 +116,22 @@ impl<'a> CodedOutputStream<'a> {
                 Err(ProtobufError::BufferHasNotEnoughCapacity(message.to_owned()).into())
             }
         }
+    }
+
+    pub(crate) fn reserve_additional_for_length_delimited(
+        &mut self,
+        size: u32,
+        message: &str,
+    ) -> crate::Result<()> {
+        debug_assert!(
+            size <= MAX_MESSAGE_SIZE as u32,
+            "Caller of this function is responsible to guarantee \
+            that message size does not exceed; size: {}, MAX_MESSAGE_SIZE: {}",
+            size,
+            MAX_MESSAGE_SIZE,
+        );
+        let reserve = size + encoded_varint64_len(size as u64) as u32;
+        self.reserve_additional(reserve, message)
     }
 
     /// Total number of bytes written to this stream.

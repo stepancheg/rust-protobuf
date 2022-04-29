@@ -131,17 +131,14 @@ impl dyn MessageDyn {
     pub fn write_to_bytes_dyn(&self) -> crate::Result<Vec<u8>> {
         self.check_initialized_dyn()?;
 
-        let size = self.compute_size_dyn() as usize;
-        let mut v = Vec::with_capacity(size);
-        // skip zerofill
-        unsafe {
-            v.set_len(size);
-        }
-        {
-            let mut os = CodedOutputStream::bytes(&mut v);
-            self.write_to_with_cached_sizes_dyn(&mut os)?;
-            os.check_eof();
-        }
+        let size = self.compute_size_dyn();
+        let size = check_message_size(size)?;
+        let mut v = Vec::new();
+        let mut os = CodedOutputStream::vec(&mut v);
+        os.reserve_additional(size, self.descriptor_dyn().name())?;
+        self.write_to_with_cached_sizes_dyn(&mut os)?;
+        os.flush()?;
+        drop(os);
         Ok(v)
     }
 
@@ -150,6 +147,7 @@ impl dyn MessageDyn {
     pub fn write_length_delimited_to_dyn(&self, os: &mut CodedOutputStream) -> crate::Result<()> {
         let size = self.compute_size_dyn();
         let size = check_message_size(size)?;
+        os.reserve_additional_for_length_delimited(size, self.descriptor_dyn().name())?;
         os.write_raw_varint32(size)?;
 
         let pos = os.total_bytes_written();
