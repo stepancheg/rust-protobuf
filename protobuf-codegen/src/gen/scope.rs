@@ -463,12 +463,7 @@ pub(crate) struct EnumValueWithContext<'a> {
 impl<'a> EnumValueWithContext<'a> {
     pub fn rust_name(&self) -> RustIdent {
         // TODO: camel case or something.
-        let mut r = String::new();
-        if is_rust_keyword(self.proto.proto().name()) {
-            r.push_str("value_");
-        }
-        r.push_str(self.proto.name());
-        RustIdent::new(&r)
+        RustIdent::new(self.proto.name())
     }
 }
 

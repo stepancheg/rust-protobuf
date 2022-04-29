@@ -35,7 +35,7 @@ impl RustIdent {
 impl fmt::Display for RustIdent {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         if is_rust_keyword(&self.0) {
-            write!(f, "r#{}", self.0)
+            write!(f, "{}_", self.0)
         } else {
             write!(f, "{}", self.0)
         }

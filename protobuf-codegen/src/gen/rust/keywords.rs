@@ -57,10 +57,29 @@ static RUST_KEYWORDS: &'static [&'static str] = &[
     "macro",
 ];
 
+// https://internals.rust-lang.org/t/raw-identifiers-dont-work-for-all-identifiers/9094/3
+#[cfg_attr(rustfmt, rustfmt_skip)]
+static RUST_KEYWORDS_WHICH_CANNOT_BE_RAW: &'static [&'static str] = &[
+    "super",
+    "self",
+    "Self",
+    "extern",
+    "crate",
+];
+
 pub(crate) fn parse_rust_keyword(word: &str) -> Option<&'static str> {
     RUST_KEYWORDS.iter().cloned().find(|&kw| kw == word)
 }
 
 pub(crate) fn is_rust_keyword(ident: &str) -> bool {
     parse_rust_keyword(ident).is_some()
+}
+
+#[allow(dead_code)]
+pub(crate) fn is_rust_keyword_which_cannot_be_raw(ident: &str) -> bool {
+    RUST_KEYWORDS_WHICH_CANNOT_BE_RAW
+        .iter()
+        .cloned()
+        .find(|&kw| kw == ident)
+        .is_some()
 }
