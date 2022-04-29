@@ -2328,11 +2328,7 @@ impl<'a> FieldGen<'a> {
 }
 
 pub(crate) fn rust_field_name_for_protobuf_field_name(name: &str) -> RustIdent {
-    if is_rust_keyword(name) {
-        return RustIdent::new(&format!("field_{}", name));
-    } else {
-        RustIdent::new(name)
-    }
+    RustIdent::new(name)
 }
 
 pub(crate) fn rust_variant_name_for_protobuf_oneof_field_name(name: &str) -> RustIdent {
