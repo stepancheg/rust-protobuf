@@ -97,6 +97,7 @@ impl FileDescriptor {
     }
 
     pub(crate) fn message_proto(&self, index: usize) -> &DescriptorProto {
+        // TODO: this should be faster.
         self.message_index_entry(index)
             .path
             .eval(self.proto())

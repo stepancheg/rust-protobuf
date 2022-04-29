@@ -102,8 +102,9 @@ impl dyn MessageDyn {
         self.check_initialized_dyn()?;
 
         // cache sizes
-        self.compute_size_dyn();
-        // TODO: reserve additional
+        let size = self.compute_size_dyn();
+        let size = check_message_size(size)?;
+        os.reserve_additional(size, self.descriptor_dyn().name())?;
         self.write_to_with_cached_sizes_dyn(os)?;
 
         Ok(())
