@@ -2340,9 +2340,5 @@ pub(crate) fn rust_field_name_for_protobuf_field_name(name: &str) -> RustIdent {
 
 pub(crate) fn rust_variant_name_for_protobuf_oneof_field_name(name: &str) -> RustIdent {
     let name = camel_case(name);
-    if is_rust_keyword(&name) {
-        return RustIdent::new(&format!("Variant{}", name));
-    } else {
-        RustIdent::new(&name)
-    }
+    RustIdent::new(&name)
 }
