@@ -250,7 +250,7 @@ impl<'a> Scope<'a> {
     }
 
     pub fn rust_path_to_file(&self) -> RustRelativePath {
-        RustRelativePath::from_components(
+        RustRelativePath::from_idents(
             self.path
                 .iter()
                 .map(|m| message_name_to_nested_mod_name(m.name())),

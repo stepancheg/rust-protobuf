@@ -1,10 +1,11 @@
 use std::fmt;
 
 use crate::gen::rust::ident_with_path::RustIdentWithPath;
+use crate::gen::rust::keywords::is_rust_keyword;
 use crate::gen::rust::rel_path::RustRelativePath;
 
 /// Valid Rust identifier
-#[derive(Eq, PartialEq, Debug, Clone)]
+#[derive(Eq, PartialEq, Debug, Clone, Hash)]
 pub(crate) struct RustIdent(String);
 
 impl RustIdent {
@@ -13,11 +14,10 @@ impl RustIdent {
         assert!(!s.contains("/"), "{}", s);
         assert!(!s.contains("."), "{}", s);
         assert!(!s.contains(":"), "{}", s);
+        assert!(!s.contains(" "), "{}", s);
+        assert!(!s.contains("#"), "{}", s);
+        assert!(!is_rust_keyword(s), "{}", s);
         RustIdent(s.to_owned())
-    }
-
-    pub fn super_ident() -> RustIdent {
-        RustIdent::new("super")
     }
 
     pub fn get(&self) -> &str {
@@ -33,13 +33,17 @@ impl RustIdent {
     }
 
     pub(crate) fn into_rel_path(self) -> RustRelativePath {
-        RustRelativePath::from_components([self])
+        RustRelativePath::from_idents([self])
     }
 }
 
 impl fmt::Display for RustIdent {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Display::fmt(&self.get(), f)
+        if is_rust_keyword(&self.0) {
+            write!(f, "r#{}", self.0)
+        } else {
+            write!(f, "{}", self.0)
+        }
     }
 }
 

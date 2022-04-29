@@ -57,6 +57,10 @@ static RUST_KEYWORDS: &'static [&'static str] = &[
     "macro",
 ];
 
+pub(crate) fn parse_rust_keyword(word: &str) -> Option<&'static str> {
+    RUST_KEYWORDS.iter().cloned().find(|&kw| kw == word)
+}
+
 pub(crate) fn is_rust_keyword(ident: &str) -> bool {
-    RUST_KEYWORDS.contains(&ident)
+    parse_rust_keyword(ident).is_some()
 }

@@ -1,5 +1,6 @@
 use std::fmt;
 
+use crate::gen::rust::component::RustPathComponent;
 use crate::gen::rust::ident::RustIdent;
 use crate::gen::rust::path::RustPath;
 
@@ -12,7 +13,13 @@ pub(crate) struct RustIdentWithPath {
 impl RustIdentWithPath {
     pub fn new(s: String) -> RustIdentWithPath {
         let mut path = RustPath::from(s);
-        let ident = path.path.path.pop().unwrap();
+        let ident = match path.path.path.pop() {
+            None => panic!("empty path"),
+            Some(RustPathComponent::Ident(ident)) => ident,
+            Some(RustPathComponent::Keyword(kw)) => {
+                panic!("last path component is a keyword: {}", kw)
+            }
+        };
         RustIdentWithPath { path, ident }
     }
 

@@ -7,6 +7,7 @@ use crate::customize::Customize;
 use crate::gen::file_and_mod::FileAndMod;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::message::RustTypeMessage;
+use crate::gen::rust::component::RustPathComponent;
 use crate::gen::rust::ident::RustIdent;
 use crate::gen::rust::ident_with_path::RustIdentWithPath;
 use crate::gen::rust::path::RustPath;
@@ -534,7 +535,7 @@ pub(crate) fn message_or_enum_to_rust_relative(
             .relative_mod
             .to_reverse()
             .into_path()
-            .append_ident(RustIdent::super_ident())
+            .append_component(RustPathComponent::SUPER)
             .append_with_ident(message_or_enum.rust_name_with_file())
     }
 }

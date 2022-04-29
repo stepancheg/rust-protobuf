@@ -1,5 +1,6 @@
 use std::fmt;
 
+use crate::gen::rust::component::RustPathComponent;
 use crate::gen::rust::ident::RustIdent;
 use crate::gen::rust::ident_with_path::RustIdentWithPath;
 use crate::gen::rust::rel_path::RustRelativePath;
@@ -23,12 +24,12 @@ impl RustPath {
         RustIdentWithPath { path: self, ident }
     }
 
-    pub fn first(&self) -> Option<RustIdent> {
+    pub fn first(&self) -> Option<RustPathComponent> {
         assert!(!self.absolute);
         self.path.first()
     }
 
-    pub fn remove_first(&mut self) -> Option<RustIdent> {
+    pub fn remove_first(&mut self) -> Option<RustPathComponent> {
         assert!(!self.absolute);
         self.path.remove_first()
     }
@@ -49,9 +50,13 @@ impl RustPath {
         }
     }
 
-    pub fn append_ident(mut self, ident: RustIdent) -> RustPath {
-        self.path.path.push(ident);
+    pub(crate) fn append_component(mut self, component: RustPathComponent) -> RustPath {
+        self.path.path.push(component);
         self
+    }
+
+    pub fn append_ident(self, ident: RustIdent) -> RustPath {
+        self.append_component(RustPathComponent::Ident(ident))
     }
 
     pub fn append_with_ident(self, path: RustIdentWithPath) -> RustIdentWithPath {
