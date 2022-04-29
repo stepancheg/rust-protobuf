@@ -148,14 +148,6 @@ impl<T: Default> MessageField<T> {
     pub fn unwrap_or_default(self) -> T {
         *self.0.unwrap_or_default()
     }
-
-    /// Set object to `Some(T::default())`.
-    // TODO: inline
-    #[inline]
-    pub fn set_default(&mut self) -> &mut T {
-        *self = MessageField::some(Default::default());
-        self.as_mut().unwrap()
-    }
 }
 
 impl<M: Message> MessageField<M> {

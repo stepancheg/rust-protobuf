@@ -1,4 +1,5 @@
 use protobuf::text_format::print_to_string;
+use protobuf::MessageField;
 use protobuf::MessageFull;
 use protobuf_test_common::*;
 
@@ -215,7 +216,7 @@ fn test_singular() {
         m.set_test_enum_singular(TestEnum::DARK)
     });
     t("test_message_singular {}", |m| {
-        m.test_message_singular.set_default();
+        m.test_message_singular = MessageField::some(Default::default())
     });
 }
 
