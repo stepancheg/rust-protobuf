@@ -18,4 +18,5 @@ message Triangle {
   string description = 1;
   Color color = 2;
   Properties properties = 3;
+  int32 struct = 4;
 }
