@@ -255,12 +255,6 @@ impl<'a> MessageGen<'a> {
         });
     }
 
-    fn write_cached_size_getter(&self, w: &mut CodeWriter) {
-        w.def_fn("cached_size(&self) -> u32", |w| {
-            w.write_line("self.special_fields.cached_size().get()");
-        });
-    }
-
     fn write_default_instance_lazy(&self, w: &mut CodeWriter) {
         w.lazy_static_decl_get_simple(
             "instance",
@@ -500,8 +494,6 @@ impl<'a> MessageGen<'a> {
                 self.write_compute_size(w);
                 w.write_line("");
                 self.write_write_to_with_cached_sizes(w);
-                w.write_line("");
-                self.write_cached_size_getter(w);
                 w.write_line("");
                 self.write_unknown_fields(w);
                 w.write_line("");
