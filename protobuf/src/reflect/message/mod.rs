@@ -51,14 +51,6 @@ impl MessageDescriptor {
         }
     }
 
-    /// Get internal index.
-    ///
-    /// Only needed for codegen.
-    #[doc(hidden)]
-    pub fn index_in_file_for_codegen(&self) -> usize {
-        self.index
-    }
-
     /// Get underlying `DescriptorProto` object.
     pub fn proto(&self) -> &DescriptorProto {
         self.file_descriptor.message_proto(self.index)
