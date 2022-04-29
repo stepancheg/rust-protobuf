@@ -83,7 +83,7 @@ impl DynamicFieldValue {
 
 #[derive(Debug, Clone)]
 pub(crate) struct DynamicMessage {
-    pub(crate) descriptor: MessageDescriptor,
+    descriptor: MessageDescriptor,
     /// Fields by index in the description.
     /// This field is lazy-init: it is empty when created.
     fields: Box<[DynamicFieldValue]>,
@@ -97,6 +97,10 @@ impl DynamicMessage {
             fields: Vec::new().into_boxed_slice(),
             special_fields: SpecialFields::new(),
         }
+    }
+
+    pub(crate) fn descriptor(&self) -> &MessageDescriptor {
+        &self.descriptor
     }
 
     fn init_fields(&mut self) {

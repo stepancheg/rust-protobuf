@@ -218,7 +218,7 @@ impl FieldDescriptor {
         let message_index = match self.singular() {
             SingularFieldAccessorRef::Generated(..) => descriptor.generated_index(),
             SingularFieldAccessorRef::Dynamic(..) => {
-                DynamicMessage::downcast_ref(m).descriptor.index()
+                DynamicMessage::downcast_ref(m).descriptor().index()
             }
         };
         &message_index.message_index.fields[index]
