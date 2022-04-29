@@ -473,15 +473,15 @@ pub(crate) enum MessageOrEnumWithScope<'a> {
 impl<'a> WithScope<'a> for MessageOrEnumWithScope<'a> {
     fn scope(&self) -> &Scope<'a> {
         match self {
-            &MessageOrEnumWithScope::Message(ref m) => m.scope(),
-            &MessageOrEnumWithScope::Enum(ref e) => e.scope(),
+            MessageOrEnumWithScope::Message(m) => m.scope(),
+            MessageOrEnumWithScope::Enum(e) => e.scope(),
         }
     }
 
     fn name(&self) -> &ProtobufIdentRef {
         match self {
-            &MessageOrEnumWithScope::Message(ref m) => m.name(),
-            &MessageOrEnumWithScope::Enum(ref e) => e.name(),
+            MessageOrEnumWithScope::Message(m) => m.name(),
+            MessageOrEnumWithScope::Enum(e) => e.name(),
         }
     }
 }
