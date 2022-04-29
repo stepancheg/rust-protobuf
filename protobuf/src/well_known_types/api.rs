@@ -935,7 +935,7 @@ pub fn file_descriptor() -> crate::reflect::FileDescriptor {
     let file_descriptor = file_descriptor_lazy.get(|| {
         let mut deps = ::std::vec::Vec::with_capacity(2);
         deps.push(crate::well_known_types::file_descriptors::source_context());
-        deps.push(crate::well_known_types::file_descriptors::type_pb());
+        deps.push(crate::well_known_types::file_descriptors::type_());
         let mut messages = ::std::vec::Vec::with_capacity(3);
         messages.push(Api::generated_message_descriptor_data());
         messages.push(Method::generated_message_descriptor_data());

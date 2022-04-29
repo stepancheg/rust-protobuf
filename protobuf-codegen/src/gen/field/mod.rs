@@ -21,7 +21,6 @@ use crate::gen::oneof::OneofField;
 use crate::gen::protoc_insertion_point::write_protoc_insertion_point_for_field;
 use crate::gen::rust::ident::RustIdent;
 use crate::gen::rust::ident_with_path::RustIdentWithPath;
-use crate::gen::rust::keywords::is_rust_keyword;
 use crate::gen::rust::quote::quote_escape_bytes;
 use crate::gen::rust::quote::quote_escape_str;
 use crate::gen::rust::snippets::EXPR_NONE;

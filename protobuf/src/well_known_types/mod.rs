@@ -57,8 +57,8 @@ pub mod file_descriptors {
     pub use super::empty::file_descriptor as empty;
     pub use super::field_mask::file_descriptor as field_mask;
     pub use super::source_context::file_descriptor as source_context;
-    pub use super::struct_pb::file_descriptor as struct_pb;
+    pub use super::struct_pb::file_descriptor as struct_;
     pub use super::timestamp::file_descriptor as timestamp;
-    pub use super::type_pb::file_descriptor as type_pb;
+    pub use super::type_pb::file_descriptor as type_;
     pub use super::wrappers::file_descriptor as wrappers;
 }

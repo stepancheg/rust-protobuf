@@ -1,6 +1,5 @@
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::rust::ident::RustIdent;
-use crate::gen::rust::keywords::is_rust_keyword;
 use crate::gen::rust::path::RustPath;
 use crate::gen::strx;
 use crate::gen::well_known_types::WELL_KNOWN_TYPES_PROTO_FILE_FULL_NAMES;
@@ -37,12 +36,7 @@ pub(crate) fn proto_path_to_rust_mod(path: &str) -> RustIdent {
         })
         .collect::<String>();
 
-    let name = if is_rust_keyword(&name) {
-        format!("{}_pb", name)
-    } else {
-        name
-    };
-    RustIdent::from(name)
+    RustIdent::new(&name)
 }
 
 /// Used in protobuf-codegen-identical-test
