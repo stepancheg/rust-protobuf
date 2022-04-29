@@ -9,8 +9,8 @@ use crate::gen::field::rust_field_name_for_protobuf_field_name;
 use crate::gen::file_and_mod::FileAndMod;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::message::RustTypeMessage;
+use crate::gen::rust::ident_with_path::RustIdentWithPath;
 use crate::gen::rust::rel_path::RustRelativePath;
-use crate::gen::rust_name::RustIdentWithPath;
 use crate::gen::rust_types_values::*;
 use crate::gen::scope::RootScope;
 

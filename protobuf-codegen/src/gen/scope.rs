@@ -20,9 +20,9 @@ use crate::gen::map::map_entry;
 use crate::gen::message::message_name_to_nested_mod_name;
 use crate::gen::paths::proto_path_to_rust_mod;
 use crate::gen::rust::ident::RustIdent;
+use crate::gen::rust::ident_with_path::RustIdentWithPath;
 use crate::gen::rust::keywords::is_rust_keyword;
 use crate::gen::rust::rel_path::RustRelativePath;
-use crate::gen::rust_name::RustIdentWithPath;
 use crate::gen::strx::capitalize;
 
 pub(crate) struct RootScope<'a> {
