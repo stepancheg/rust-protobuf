@@ -10,7 +10,7 @@ use crate::gen::descriptor::write_fn_descriptor;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::protoc_insertion_point::write_protoc_insertion_point_for_enum;
 use crate::gen::protoc_insertion_point::write_protoc_insertion_point_for_enum_value;
-use crate::gen::rust::EXPR_NONE;
+use crate::gen::rust::snippets::EXPR_NONE;
 use crate::gen::rust_name::RustIdent;
 use crate::gen::rust_name::RustIdentWithPath;
 use crate::gen::scope::EnumValueWithContext;

@@ -6,7 +6,7 @@ use protobuf::Message;
 use crate::gen::code_writer::CodeWriter;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::paths::proto_path_to_fn_file_descriptor;
-use crate::gen::rust::expr_vec_with_capacity;
+use crate::gen::rust::snippets::expr_vec_with_capacity;
 use crate::gen::scope::FileScope;
 use crate::gen::scope::Scope;
 use crate::gen::scope::WithScope;
