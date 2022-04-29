@@ -1,7 +1,8 @@
+use protobuf_support::json_name::json_name;
+
 use crate::descriptor::field_descriptor_proto;
 use crate::descriptor::field_descriptor_proto::Type;
 use crate::descriptor::FieldDescriptorProto;
-use crate::json::json_name;
 use crate::reflect::field::protobuf_field_type::ProtobufFieldType;
 use crate::reflect::file::building::FileDescriptorBuilding;
 use crate::reflect::protobuf_type_box::ProtobufTypeBox;

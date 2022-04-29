@@ -3,14 +3,11 @@
 
 mod base64;
 mod float;
-mod json_name;
 mod parse;
 mod print;
 mod rfc_3339;
 mod well_known_wrapper;
 
-#[doc(hidden)]
-pub use self::json_name::json_name;
 pub use self::parse::merge_from_str;
 pub use self::parse::merge_from_str_with_options;
 pub use self::parse::parse_dynamic_from_str;

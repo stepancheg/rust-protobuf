@@ -9,9 +9,9 @@ use protobuf::descriptor::field_descriptor_proto;
 use protobuf::descriptor::field_descriptor_proto::Type;
 use protobuf::descriptor::FieldDescriptorProto;
 use protobuf::descriptor::OneofDescriptorProto;
-use protobuf::json::json_name;
 use protobuf::reflect::FileDescriptor;
 use protobuf::text_format::quote_bytes_to;
+use protobuf_support::json_name::json_name;
 
 use crate::case_convert::camel_case;
 use crate::path::fs_path_to_proto_path;
