@@ -121,9 +121,9 @@ fn normalize_file_descriptor(desc: &mut FileDescriptorProto) {
     }
 
     for desc in &mut desc.extension {
-        desc.options.mut_or_default();
+        desc.options.mut_or_insert_default();
     }
-    desc.options.mut_or_default();
+    desc.options.mut_or_insert_default();
 
     for service in &mut desc.service {
         normalize_service(service);
@@ -132,21 +132,21 @@ fn normalize_file_descriptor(desc: &mut FileDescriptorProto) {
     // for unittest_custom_options.proto where a custom option
     // is an extension. Probably nobody outside of Google uses it.
     desc.options
-        .mut_or_default()
+        .mut_or_insert_default()
         .mut_unknown_fields()
         .remove(15478479);
 }
 
 fn normalize_enum_descriptor(desc: &mut EnumDescriptorProto) {
-    desc.options.mut_or_default();
+    desc.options.mut_or_insert_default();
 
     for value in &mut desc.value {
-        value.options.mut_or_default();
+        value.options.mut_or_insert_default();
     }
 }
 
 fn normalize_oneof_descriptor(desc: &mut OneofDescriptorProto) {
-    desc.options.mut_or_default();
+    desc.options.mut_or_insert_default();
 }
 
 fn normalize_descriptor(desc: &mut DescriptorProto) {
@@ -160,11 +160,11 @@ fn normalize_descriptor(desc: &mut DescriptorProto) {
         normalize_oneof_descriptor(desc);
     }
 
-    desc.options.mut_or_default();
+    desc.options.mut_or_insert_default();
 
     // group are not supported
     desc.options
-        .mut_or_default()
+        .mut_or_insert_default()
         .mut_unknown_fields()
         .remove(7636463);
 
@@ -173,7 +173,7 @@ fn normalize_descriptor(desc: &mut DescriptorProto) {
     }
 
     for ext in &mut desc.extension {
-        ext.options.mut_or_default();
+        ext.options.mut_or_insert_default();
     }
 
     for ext in &mut desc.extension_range {
@@ -188,7 +188,7 @@ fn normalize_descriptor(desc: &mut DescriptorProto) {
 }
 
 fn normalize_method(method: &mut MethodDescriptorProto) {
-    method.options.mut_or_default();
+    method.options.mut_or_insert_default();
 }
 
 fn normalize_service(service: &mut ServiceDescriptorProto) {
@@ -196,11 +196,11 @@ fn normalize_service(service: &mut ServiceDescriptorProto) {
         normalize_method(m);
     }
 
-    service.options.mut_or_default();
+    service.options.mut_or_insert_default();
 }
 
 fn normalize_field(field: &mut FieldDescriptorProto) {
-    field.options.mut_or_default();
+    field.options.mut_or_insert_default();
 
     if field.has_default_value() {
         if field.field_type() == field_descriptor_proto::Type::TYPE_FLOAT {

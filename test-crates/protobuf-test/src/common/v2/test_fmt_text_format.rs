@@ -265,7 +265,9 @@ fn test_repeated_multiple() {
 #[test]
 fn test_complex_message() {
     t("test_message_singular {value: 30}", |m| {
-        m.test_message_singular.mut_or_default().set_value(30)
+        m.test_message_singular
+            .mut_or_insert_default()
+            .set_value(30)
     });
 }
 

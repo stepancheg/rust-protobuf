@@ -157,7 +157,7 @@ impl<M: Message> MessageField<M> {
     }
 
     /// Get a mutable reference to contained value, initialize if not initialized yet.
-    pub fn mut_or_default(&mut self) -> &mut M {
+    pub fn mut_or_insert_default(&mut self) -> &mut M {
         if self.is_none() {
             *self = MessageField::some(Default::default());
         }
@@ -181,7 +181,7 @@ impl<M: Message> Deref for MessageField<M> {
 #[cfg(no)]
 impl<M: Message> DerefMut for MessageField<M> {
     fn deref_mut(&mut self) -> &mut Self::Target {
-        self.mut_or_default()
+        self.mut_or_insert_default()
     }
 }
 

@@ -129,7 +129,7 @@ fn test_wrappers() {
 #[test]
 fn test_any() {
     let mut m = TestFmtJsonWellKnownTypes::new();
-    m.any_value.mut_or_default();
+    m.any_value.mut_or_insert_default();
     // TODO
 }
 

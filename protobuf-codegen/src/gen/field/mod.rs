@@ -2037,7 +2037,9 @@ impl<'a> FieldGen<'a> {
     ) {
         let self_field = self.self_field();
         match option_kind {
-            OptionKind::MessageField => w.write_line(&format!("{}.mut_or_default()", self_field)),
+            OptionKind::MessageField => {
+                w.write_line(&format!("{}.mut_or_insert_default()", self_field))
+            }
             OptionKind::Option => {
                 self.write_if_self_field_is_none(w, |w| {
                     self.write_self_field_assign_default(

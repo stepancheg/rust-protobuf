@@ -177,7 +177,7 @@ impl<'a> Resolver<'a> {
     ) -> anyhow::Result<protobuf::descriptor::DescriptorProto> {
         let mut output = protobuf::descriptor::DescriptorProto::new();
 
-        output.options.mut_or_default().set_map_entry(true);
+        output.options.mut_or_insert_default().set_map_entry(true);
         output.set_name(Resolver::map_entry_name_for_field_name(field_name).into_string());
         output
             .field
