@@ -186,8 +186,6 @@ pub trait Message: Default + Clone + Send + Sync + Sized + PartialEq + 'static {
         Ok(v)
     }
 
-    // TODO: replace accessor with special fields
-
     /// Special fields (unknown fields and cached size).
     fn special_fields(&self) -> &SpecialFields;
     /// Special fields (unknown fields and cached size).
