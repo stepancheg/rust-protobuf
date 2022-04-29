@@ -15,6 +15,7 @@ use std::io;
 use std::path::Path;
 use std::path::PathBuf;
 use std::process;
+use std::process::Stdio;
 
 use log::info;
 
@@ -22,8 +23,10 @@ use log::info;
 enum Error {
     #[error("protoc command exited with non-zero code")]
     ProtocNonZero,
-    #[error("protoc command `{0}` exited with non-zero code")]
+    #[error("protoc command {0} exited with non-zero code")]
     ProtocNamedNonZero(String),
+    #[error("protoc command {0} exited with non-zero code; stderr: {1:?}")]
+    ProtocNamedNonZeroStderr(String, String),
     #[error("input is empty")]
     InputIsEmpty,
     #[error("output is empty")]
@@ -42,7 +45,7 @@ enum Error {
 
 /// `Protoc --descriptor_set_out...` args
 #[derive(Debug)]
-pub struct DescriptorSetOutArgs {
+pub(crate) struct DescriptorSetOutArgs {
     protoc: Protoc,
     /// `--file_descriptor_out=...` param
     out: Option<PathBuf>,
@@ -54,6 +57,8 @@ pub struct DescriptorSetOutArgs {
     include_imports: bool,
     /// Extra command line flags (like `--experimental_allow_proto3_optional`)
     extra_args: Vec<OsString>,
+    /// Capture stderr instead of inheriting it.
+    capture_stderr: bool,
 }
 
 impl DescriptorSetOutArgs {
@@ -111,6 +116,12 @@ impl DescriptorSetOutArgs {
         self
     }
 
+    /// Capture stderr instead of inheriting it.
+    pub(crate) fn capture_stderr(&mut self, capture_stderr: bool) -> &mut Self {
+        self.capture_stderr = capture_stderr;
+        self
+    }
+
     /// Execute `protoc --descriptor_set_out=`
     pub fn write_descriptor_set(&self) -> anyhow::Result<()> {
         if self.inputs.is_empty() {
@@ -142,7 +153,7 @@ impl DescriptorSetOutArgs {
         cmd_args.extend(include_imports_flag);
         cmd_args.extend(self.inputs.iter().map(|path| path.as_os_str().to_owned()));
         cmd_args.extend(self.extra_args.iter().cloned());
-        self.protoc.run_with_args(cmd_args)
+        self.protoc.run_with_args(cmd_args, self.capture_stderr)
     }
 }
 
@@ -154,7 +165,7 @@ pub(crate) struct Protoc {
 
 impl Protoc {
     /// New `protoc` command from `$PATH`
-    pub fn from_env_path() -> Protoc {
+    pub(crate) fn from_env_path() -> Protoc {
         match which::which("protoc") {
             Ok(path) => Protoc {
                 exec: path.into_os_string(),
@@ -180,14 +191,14 @@ impl Protoc {
     /// let protoc = protoc::Protoc::from_path(
     ///     protoc_bin_vendored::protoc_bin_path().unwrap());
     /// ```
-    pub fn from_path(path: impl AsRef<OsStr>) -> Protoc {
+    pub(crate) fn from_path(path: impl AsRef<OsStr>) -> Protoc {
         Protoc {
             exec: path.as_ref().to_owned(),
         }
     }
 
     /// Check `protoc` command found and valid
-    pub fn _check(&self) -> anyhow::Result<()> {
+    pub(crate) fn _check(&self) -> anyhow::Result<()> {
         self.version()?;
         Ok(())
     }
@@ -200,7 +211,7 @@ impl Protoc {
     }
 
     /// Obtain `protoc` version
-    pub fn version(&self) -> anyhow::Result<Version> {
+    pub(crate) fn version(&self) -> anyhow::Result<Version> {
         let child = self.spawn(
             process::Command::new(&self.exec)
                 .stdin(process::Stdio::null())
@@ -236,22 +247,35 @@ impl Protoc {
     }
 
     /// Execute `protoc` command with given args, check it completed correctly.
-    fn run_with_args(&self, args: Vec<OsString>) -> anyhow::Result<()> {
+    fn run_with_args(&self, args: Vec<OsString>, capture_stderr: bool) -> anyhow::Result<()> {
         let mut cmd = process::Command::new(&self.exec);
         cmd.stdin(process::Stdio::null());
         cmd.args(args);
 
+        if capture_stderr {
+            cmd.stderr(Stdio::piped());
+        }
+
         let mut child = self.spawn(&mut cmd)?;
 
-        if !child.wait()?.success() {
-            return Err(Error::ProtocNamedNonZero(format!("{:?}", cmd)).into());
+        if capture_stderr {
+            let output = child.wait_with_output()?;
+            if !output.status.success() {
+                let stderr = String::from_utf8_lossy(&output.stderr);
+                let stderr = stderr.trim_end().to_owned();
+                return Err(Error::ProtocNamedNonZeroStderr(format!("{:?}", cmd), stderr).into());
+            }
+        } else {
+            if !child.wait()?.success() {
+                return Err(Error::ProtocNamedNonZero(format!("{:?}", cmd)).into());
+            }
         }
 
         Ok(())
     }
 
     /// Get default DescriptorSetOutArgs for this command.
-    pub fn descriptor_set_out_args(&self) -> DescriptorSetOutArgs {
+    pub(crate) fn descriptor_set_out_args(&self) -> DescriptorSetOutArgs {
         DescriptorSetOutArgs {
             protoc: self.clone(),
             out: None,
@@ -259,6 +283,7 @@ impl Protoc {
             inputs: Vec::new(),
             include_imports: false,
             extra_args: Vec::new(),
+            capture_stderr: false,
         }
     }
 }

@@ -34,6 +34,7 @@ pub(crate) fn parse_and_typecheck(parser: &Parser) -> anyhow::Result<ParsedAndTy
         .out(&temp_file)
         .include_imports(true)
         .extra_args(&parser.protoc_extra_args)
+        .capture_stderr(parser.capture_stderr)
         .write_descriptor_set()?;
 
     let version = protoc.version()?;

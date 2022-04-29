@@ -16,6 +16,7 @@ members = [
     "test-crates/perftest/vs-cxx",
     "test-crates/protobuf-codegen-identical-test",
     "test-crates/protobuf-codegen-pure-test",
+    "test-crates/protobuf-parse-error-test",
     "test-crates/protobuf-fuzz",
     "test-crates/protobuf-test",
     "test-crates/protobuf-test-common",

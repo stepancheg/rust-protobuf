@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+// expected protoc: Extension ranges are not allowed in proto3
+// expected pure: Not allowed in this context: extensions
+
+message FooBar {
+  extensions 1000 to max;
+}

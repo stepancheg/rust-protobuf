@@ -252,6 +252,13 @@ impl MessageBodyParseMode {
             MessageBodyParseMode::ExtendProto2 | MessageBodyParseMode::ExtendProto3 => false,
         }
     }
+
+    fn is_extensions_allowed(&self) -> bool {
+        match self {
+            MessageBodyParseMode::MessageProto2 => true,
+            _ => false,
+        }
+    }
 }
 
 #[derive(Default)]
@@ -948,11 +955,6 @@ impl<'a> Parser<'a> {
                     continue;
                 }
 
-                if let Some(extension_ranges) = self.next_extensions_opt()? {
-                    r.extension_ranges.extend(extension_ranges);
-                    continue;
-                }
-
                 if let Some(extensions) = self.next_extend_opt()? {
                     r.extensions.extend(extensions);
                     continue;
@@ -970,10 +972,18 @@ impl<'a> Parser<'a> {
             } else {
                 self.tokenizer.next_ident_if_eq_error("reserved")?;
                 self.tokenizer.next_ident_if_eq_error("oneof")?;
-                self.tokenizer.next_ident_if_eq_error("extensions")?;
                 self.tokenizer.next_ident_if_eq_error("extend")?;
                 self.tokenizer.next_ident_if_eq_error("message")?;
                 self.tokenizer.next_ident_if_eq_error("enum")?;
+            }
+
+            if mode.is_extensions_allowed() {
+                if let Some(extension_ranges) = self.next_extensions_opt()? {
+                    r.extension_ranges.extend(extension_ranges);
+                    continue;
+                }
+            } else {
+                self.tokenizer.next_ident_if_eq_error("extensions")?;
             }
 
             if mode.is_option_allowed() {

@@ -1,0 +1,19 @@
+[package]
+name = "protobuf-parse-error-test"
+version = "0.0.0"
+authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
+publish = false
+edition = "2021"
+
+[lib]
+doctest = false
+bench = false
+
+[dependencies]
+tempfile = "3.2.0"
+
+protoc-bin-vendored = "=3.0.0"
+
+protobuf-parse = { path = "../../protobuf-parse" }
+protobuf-test-common = { path = "../../test-crates/protobuf-test-common" }
+protobuf = { path = "../../protobuf" }

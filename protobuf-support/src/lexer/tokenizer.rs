@@ -18,6 +18,8 @@ pub enum TokenizerError {
     // TODO: too broad
     #[error("Incorrect input")]
     IncorrectInput,
+    #[error("Not allowed in this context: {0}")]
+    NotAllowedInThisContext(&'static str),
     #[error("Unexpected end of input")]
     UnexpectedEof,
     #[error("Expecting string literal")]
@@ -184,9 +186,10 @@ impl<'a> Tokenizer<'a> {
         }
     }
 
-    pub fn next_ident_if_eq_error(&mut self, word: &str) -> TokenizerResult<()> {
+    pub fn next_ident_if_eq_error(&mut self, word: &'static str) -> TokenizerResult<()> {
         if self.clone().next_ident_if_eq(word)? {
-            return Err(TokenizerError::IncorrectInput);
+            // TODO: which context?
+            return Err(TokenizerError::NotAllowedInThisContext(word));
         }
         Ok(())
     }

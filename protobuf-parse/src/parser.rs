@@ -20,6 +20,7 @@ pub struct Parser {
     pub(crate) inputs: Vec<PathBuf>,
     pub(crate) protoc: Option<PathBuf>,
     pub(crate) protoc_extra_args: Vec<OsString>,
+    pub(crate) capture_stderr: bool,
 }
 
 impl Parser {
@@ -84,6 +85,15 @@ impl Parser {
         args: impl IntoIterator<Item = impl AsRef<OsStr>>,
     ) -> &mut Self {
         self.protoc_extra_args = args.into_iter().map(|s| s.as_ref().to_owned()).collect();
+        self
+    }
+
+    /// Capture stderr and return it in error.
+    ///
+    /// This option applies only to `protoc` parser.
+    /// By default `protoc` stderr is inherited from this process stderr.
+    pub fn capture_stderr(&mut self) -> &mut Self {
+        self.capture_stderr = true;
         self
     }
 
