@@ -1,3 +1,4 @@
+mod buffer;
 mod output_target;
 pub(crate) mod with;
 
@@ -8,9 +9,9 @@ use std::ptr;
 use std::slice;
 
 use crate::byteorder::LITTLE_ENDIAN;
+use crate::coded_output_stream::buffer::OutputBuffer;
 use crate::coded_output_stream::output_target::OutputTarget;
 use crate::error::ProtobufError;
-use crate::misc::maybe_uninit_write_slice;
 use crate::rt::vec_packed_enum_or_unknown_data_size;
 use crate::rt::vec_packed_fixed_data_size;
 use crate::rt::vec_packed_varint_data_size;
@@ -39,15 +40,7 @@ const OUTPUT_STREAM_BUFFER_SIZE: usize = 8 * 1024;
 #[derive(Debug)]
 pub struct CodedOutputStream<'a> {
     target: OutputTarget<'a>,
-    // Actual buffer is owned by `OutputTarget`,
-    // and here we alias the buffer so access to the buffer is branchless:
-    // access does not require switch by actual target type: `&[], `Vec`, `Write` etc.
-    // We don't access the actual buffer in `OutputTarget` except when
-    // we initialize `buffer` field here.
-    buffer: *mut [MaybeUninit<u8>],
-    /// Position within the buffer.
-    /// Always correct.
-    pos_within_buf: usize,
+    buffer: OutputBuffer,
     /// Absolute position of the buffer start.
     pos_of_buffer_start: u64,
 }
@@ -64,13 +57,11 @@ impl<'a> CodedOutputStream<'a> {
         // SAFETY: we are not using the `buffer_storage`
         // except for initializing the `buffer` field.
         // See `buffer` field documentation.
-        let buffer = buffer_storage.spare_capacity_mut();
-        let buffer: *mut [MaybeUninit<u8>] = buffer;
+        let buffer = OutputBuffer::new(buffer_storage.spare_capacity_mut());
 
         CodedOutputStream {
             target: OutputTarget::Write(writer, buffer_storage),
             buffer,
-            pos_within_buf: 0,
             pos_of_buffer_start: 0,
         }
     }
@@ -82,35 +73,34 @@ impl<'a> CodedOutputStream<'a> {
         // SAFETY: it is safe to cast from &mut [u8] to &mut [MaybeUninit<u8>].
         let buffer =
             ptr::slice_from_raw_parts_mut(bytes.as_mut_ptr() as *mut MaybeUninit<u8>, bytes.len());
+        let buffer = OutputBuffer::new(buffer);
         CodedOutputStream {
             target: OutputTarget::Bytes,
             buffer,
-            pos_within_buf: 0,
             pos_of_buffer_start: 0,
         }
     }
 
     /// `CodedOutputStream` which writes directly to `Vec<u8>`.
     pub fn vec(vec: &'a mut Vec<u8>) -> CodedOutputStream<'a> {
-        let buffer: *mut [MaybeUninit<u8>] = vec.spare_capacity_mut();
+        let buffer = OutputBuffer::new(vec.spare_capacity_mut());
         CodedOutputStream {
             target: OutputTarget::Vec(vec),
             buffer,
-            pos_within_buf: 0,
             pos_of_buffer_start: 0,
         }
     }
 
     #[inline]
     fn assertions(&mut self) {
-        debug_assert!(self.pos_within_buf <= self.buffer().len());
+        self.buffer.assertions();
         match &mut self.target {
             OutputTarget::Write(_, v) => {
-                debug_assert!(ptr::eq(v.spare_capacity_mut(), self.buffer()));
+                debug_assert!(ptr::eq(v.spare_capacity_mut(), self.buffer.buffer()));
             }
             OutputTarget::Bytes => {}
             OutputTarget::Vec(v) => {
-                debug_assert!(ptr::eq(v.spare_capacity_mut(), self.buffer()));
+                debug_assert!(ptr::eq(v.spare_capacity_mut(), self.buffer.buffer()));
             }
         }
     }
@@ -120,7 +110,7 @@ impl<'a> CodedOutputStream<'a> {
         additional: u32,
         message: &str,
     ) -> crate::Result<()> {
-        let remaining_in_buf = self.remaining_in_buf();
+        let remaining_in_buf = self.buffer.unfilled_len();
         if additional as usize <= remaining_in_buf {
             return Ok(());
         }
@@ -128,11 +118,11 @@ impl<'a> CodedOutputStream<'a> {
             OutputTarget::Write(..) => Ok(()),
             OutputTarget::Vec(v) => {
                 let reserve = (additional as usize)
-                    .checked_add(self.pos_within_buf)
+                    .checked_add(self.buffer.pos_within_buf())
                     .unwrap();
                 v.reserve(reserve);
-                self.buffer = v.spare_capacity_mut();
-                // `self.pos_within_buf` remains unchanged.
+                // `pos_within_buf` remains unchanged.
+                self.buffer.replace_buffer_keep_pos(v.spare_capacity_mut());
                 self.assertions();
                 Ok(())
             }
@@ -149,7 +139,7 @@ impl<'a> CodedOutputStream<'a> {
     ///
     /// The number may be inaccurate if there was an error during the write.
     pub fn total_bytes_written(&self) -> u64 {
-        self.pos_of_buffer_start + self.pos_within_buf as u64
+        self.pos_of_buffer_start + self.buffer.pos_within_buf() as u64
     }
 
     /// Check if EOF is reached.
@@ -160,7 +150,10 @@ impl<'a> CodedOutputStream<'a> {
     pub fn check_eof(&self) {
         match self.target {
             OutputTarget::Bytes => {
-                assert_eq!(self.buffer().len() as u64, self.pos_within_buf as u64);
+                assert_eq!(
+                    self.buffer.buffer().len() as u64,
+                    self.buffer.pos_within_buf() as u64
+                );
             }
             OutputTarget::Write(..) | OutputTarget::Vec(..) => {
                 panic!("must not be called with Writer or Vec");
@@ -168,41 +161,20 @@ impl<'a> CodedOutputStream<'a> {
         }
     }
 
-    #[inline(always)]
-    fn buffer(&self) -> &[MaybeUninit<u8>] {
-        // SAFETY: see the `buffer` field documentation about invariants.
-        unsafe { &*(self.buffer as *mut [MaybeUninit<u8>]) }
-    }
-
-    #[inline(always)]
-    fn remaining_in_buf(&self) -> usize {
-        self.buffer().len() - self.pos_within_buf
-    }
-
-    #[inline(always)]
-    fn filled_buffer_impl<'s>(buffer: *mut [MaybeUninit<u8>], position: usize) -> &'s [u8] {
-        // SAFETY: this function is safe assuming `buffer` and `position`
-        //   are `self.buffer` and `safe.position`:
-        //   * `CodedOutputStream` has invariant that `position <= buffer.len()`.
-        //   * `buffer` is filled up to `position`.
-        unsafe { slice::from_raw_parts_mut(buffer as *mut u8, position) }
-    }
-
     fn refresh_buffer(&mut self) -> crate::Result<()> {
         match self.target {
             OutputTarget::Write(ref mut write, _) => {
-                write.write_all(Self::filled_buffer_impl(self.buffer, self.pos_within_buf))?;
-                self.pos_of_buffer_start += self.pos_within_buf as u64;
-                self.pos_within_buf = 0;
+                write.write_all(self.buffer.filled())?;
+                self.pos_of_buffer_start += self.buffer.pos_within_buf() as u64;
+                self.buffer.rewind();
             }
             OutputTarget::Vec(ref mut vec) => unsafe {
                 let vec_len = vec.len();
-                assert!(vec_len + self.pos_within_buf <= vec.capacity());
-                vec.set_len(vec_len + self.pos_within_buf);
+                assert!(vec_len + self.buffer.pos_within_buf() <= vec.capacity());
+                vec.set_len(vec_len + self.buffer.pos_within_buf());
                 vec.reserve(1);
-                self.buffer = vec.spare_capacity_mut();
-                self.pos_of_buffer_start += self.pos_within_buf as u64;
-                self.pos_within_buf = 0;
+                self.pos_of_buffer_start += self.buffer.pos_within_buf() as u64;
+                self.buffer = OutputBuffer::new(vec.spare_capacity_mut());
             },
             OutputTarget::Bytes => {
                 return Err(ProtobufError::IoError(io::Error::new(
@@ -226,13 +198,12 @@ impl<'a> CodedOutputStream<'a> {
             OutputTarget::Bytes => Ok(()),
             OutputTarget::Vec(vec) => {
                 let vec_len = vec.len();
-                assert!(vec_len + self.pos_within_buf <= vec.capacity());
+                assert!(vec_len + self.buffer.pos_within_buf() <= vec.capacity());
                 unsafe {
-                    vec.set_len(vec_len + self.pos_within_buf);
+                    vec.set_len(vec_len + self.buffer.pos_within_buf());
                 }
-                self.buffer = vec.spare_capacity_mut();
-                self.pos_of_buffer_start += self.pos_within_buf as u64;
-                self.pos_within_buf = 0;
+                self.pos_of_buffer_start += self.buffer.pos_within_buf() as u64;
+                self.buffer = OutputBuffer::new(vec.spare_capacity_mut());
                 self.assertions();
                 Ok(())
             }
@@ -242,37 +213,28 @@ impl<'a> CodedOutputStream<'a> {
 
     /// Write a byte
     pub fn write_raw_byte(&mut self, byte: u8) -> crate::Result<()> {
-        if self.pos_within_buf as usize == self.buffer().len() {
+        if self.buffer.unfilled_len() == 0 {
             self.refresh_buffer()?;
         }
-        unsafe { (&mut *self.buffer)[self.pos_within_buf as usize].write(byte) };
-        self.pos_within_buf += 1;
+        unsafe { self.buffer.write_byte(byte) };
         Ok(())
     }
 
     /// Write bytes
     pub fn write_raw_bytes(&mut self, bytes: &[u8]) -> crate::Result<()> {
-        if bytes.len() <= self.remaining_in_buf() {
-            let bottom = self.pos_within_buf as usize;
-            let top = bottom + (bytes.len() as usize);
-            // SAFETY: see the `buffer` field documentation about invariants.
-            let buffer = unsafe { &mut (&mut *self.buffer)[bottom..top] };
-            maybe_uninit_write_slice(buffer, bytes);
-            self.pos_within_buf += bytes.len();
+        if bytes.len() <= self.buffer.unfilled_len() {
+            // SAFETY: we've just checked that there's enough space in the buffer.
+            unsafe { self.buffer.write_bytes(bytes) };
             return Ok(());
         }
 
         self.refresh_buffer()?;
 
-        assert!(self.pos_within_buf == 0);
+        assert!(self.buffer.pos_within_buf() == 0);
 
-        if self.pos_within_buf + bytes.len() < self.buffer().len() {
-            // SAFETY: see the `buffer` field documentation about invariants.
-            let buffer = unsafe {
-                &mut (&mut *self.buffer)[self.pos_within_buf..self.pos_within_buf + bytes.len()]
-            };
-            maybe_uninit_write_slice(buffer, bytes);
-            self.pos_within_buf += bytes.len();
+        if bytes.len() <= self.buffer.unfilled_len() {
+            // SAFETY: we've just checked that there's enough space in the buffer.
+            unsafe { self.buffer.write_bytes(bytes) };
             return Ok(());
         }
 
@@ -284,9 +246,9 @@ impl<'a> CodedOutputStream<'a> {
                 write.write_all(bytes)?;
             }
             OutputTarget::Vec(ref mut vec) => {
-                assert!(self.pos_within_buf == 0);
+                assert!(self.buffer.pos_within_buf() == 0);
                 vec.extend(bytes);
-                self.buffer = vec.spare_capacity_mut();
+                self.buffer = OutputBuffer::new(vec.spare_capacity_mut());
                 self.pos_of_buffer_start += bytes.len() as u64;
             }
         }
@@ -300,11 +262,12 @@ impl<'a> CodedOutputStream<'a> {
 
     /// Write varint
     pub fn write_raw_varint32(&mut self, value: u32) -> crate::Result<()> {
-        if self.buffer().len() - self.pos_within_buf >= 5 {
+        if self.buffer.unfilled_len() >= 5 {
             // fast path
-            let len =
-                unsafe { encode_varint32(value, &mut (&mut *self.buffer)[self.pos_within_buf..]) };
-            self.pos_within_buf += len;
+            unsafe {
+                let len = encode_varint32(value, self.buffer.unfilled());
+                self.buffer.advance(len);
+            };
             Ok(())
         } else {
             // slow path
@@ -318,11 +281,12 @@ impl<'a> CodedOutputStream<'a> {
 
     /// Write varint
     pub fn write_raw_varint64(&mut self, value: u64) -> crate::Result<()> {
-        if self.buffer().len() - self.pos_within_buf >= MAX_VARINT_ENCODED_LEN {
+        if self.buffer.unfilled_len() >= MAX_VARINT_ENCODED_LEN {
             // fast path
-            let len =
-                unsafe { encode_varint64(value, &mut (&mut *self.buffer)[self.pos_within_buf..]) };
-            self.pos_within_buf += len;
+            unsafe {
+                let len = encode_varint64(value, self.buffer.unfilled());
+                self.buffer.advance(len);
+            };
             Ok(())
         } else {
             // slow path
