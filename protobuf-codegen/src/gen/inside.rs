@@ -1,5 +1,5 @@
 use crate::customize::Customize;
-use crate::gen::rust_name::RustPath;
+use crate::gen::rust::path::RustPath;
 
 /// Path to `protobuf` crate, different when `.proto` file is
 /// used inside or outside of protobuf crate.

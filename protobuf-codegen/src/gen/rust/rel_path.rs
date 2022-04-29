@@ -2,7 +2,7 @@ use std::fmt;
 use std::iter;
 
 use crate::gen::rust::ident::RustIdent;
-use crate::gen::rust_name::RustPath;
+use crate::gen::rust::path::RustPath;
 
 #[derive(Default, Eq, PartialEq, Debug, Clone)]
 pub(crate) struct RustRelativePath {

@@ -1,7 +1,7 @@
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::rust::ident::RustIdent;
 use crate::gen::rust::keywords::is_rust_keyword;
-use crate::gen::rust_name::RustPath;
+use crate::gen::rust::path::RustPath;
 use crate::gen::strx;
 use crate::gen::well_known_types::WELL_KNOWN_TYPES_PROTO_FILE_FULL_NAMES;
 use crate::Customize;
