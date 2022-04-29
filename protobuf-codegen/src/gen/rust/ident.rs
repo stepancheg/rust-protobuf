@@ -1,7 +1,7 @@
 use std::fmt;
 
+use crate::gen::rust::rel_path::RustRelativePath;
 use crate::gen::rust_name::RustIdentWithPath;
-use crate::gen::rust_name::RustRelativePath;
 
 /// Valid Rust identifier
 #[derive(Eq, PartialEq, Debug, Clone)]

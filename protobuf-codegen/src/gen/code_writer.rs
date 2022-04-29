@@ -1,6 +1,6 @@
 use std::convert::Infallible;
 
-use crate::gen::rust_name::RustRelativePath;
+use crate::gen::rust::rel_path::RustRelativePath;
 
 /// Field visibility.
 pub(crate) enum Visibility {

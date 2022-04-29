@@ -21,10 +21,10 @@ use crate::gen::protoc_insertion_point::write_protoc_insertion_point_for_message
 use crate::gen::protoc_insertion_point::write_protoc_insertion_point_for_special_field;
 use crate::gen::rust::ident::RustIdent;
 use crate::gen::rust::keywords::is_rust_keyword;
+use crate::gen::rust::rel_path::RustRelativePath;
 use crate::gen::rust::snippets::expr_vec_with_capacity;
 use crate::gen::rust::snippets::EXPR_NONE;
 use crate::gen::rust_name::RustIdentWithPath;
-use crate::gen::rust_name::RustRelativePath;
 use crate::gen::rust_types_values::*;
 use crate::gen::scope::MessageWithScope;
 use crate::gen::scope::RootScope;
