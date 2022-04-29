@@ -16,6 +16,7 @@ use crate::reflect::FileDescriptor;
 #[derive(Debug)]
 pub(crate) struct MessageIndex {
     pub(crate) path: MessagePath,
+    pub(crate) name: String,
     pub(crate) name_to_package: String,
     pub(crate) full_name: String,
     pub(crate) enclosing_message: Option<usize>,
@@ -209,6 +210,7 @@ impl FileDescriptorCommon {
         let message_index = messages.len();
         messages.push(MessageIndex {
             path: path.clone(),
+            name: message.name().to_owned(),
             name_to_package: String::new(),
             full_name: String::new(),
             enclosing_message: parent,
