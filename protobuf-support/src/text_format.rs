@@ -24,12 +24,6 @@ pub fn quote_escape_bytes_to(bytes: &[u8], buf: &mut String) {
     buf.push('"');
 }
 
-pub fn quote_escape_bytes(bytes: &[u8]) -> String {
-    let mut r = String::new();
-    quote_escape_bytes_to(bytes, &mut r);
-    r
-}
-
 #[cfg(test)]
 mod test {
     use crate::lexer::str_lit::StrLit;
