@@ -750,7 +750,11 @@ impl<'a> FieldGen<'a> {
                     let f = match self.proto_type {
                         Type::TYPE_SINT32 => "sint32_size",
                         Type::TYPE_SINT64 => "sint64_size",
-                        _ => "varint_size",
+                        Type::TYPE_INT32 => "varint_size",
+                        Type::TYPE_INT64 => "varint_size",
+                        Type::TYPE_UINT32 => "varint_size",
+                        Type::TYPE_UINT64 => "varint_size",
+                        t => unreachable!("unexpected type: {:?}", t),
                     };
                     format!(
                         "{}::rt::{f}({}, {})",
