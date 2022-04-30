@@ -973,8 +973,9 @@ impl<'a> FieldGen<'a> {
                             t => t.clone(),
                         };
                         format!(
-                            "{tag_size} + {}::rt::enum_or_unknown_size_no_tag({})",
+                            "{}::rt::enum_or_unknown_size({}, {})",
                             protobuf_crate_path(&self.customize),
+                            self.proto_field.number(),
                             var_type.into_target(&param_type, var, &self.customize)
                         )
                     }
