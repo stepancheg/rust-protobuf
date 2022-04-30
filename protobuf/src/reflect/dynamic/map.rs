@@ -1,5 +1,6 @@
 use std::collections::hash_map;
 use std::collections::HashMap;
+use std::fmt;
 use std::hash::Hash;
 
 use crate::reflect::map::ReflectMap;
@@ -67,13 +68,19 @@ impl Maps {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub(crate) struct DynamicMap {
     /// Type of value.
     ///
     /// Type of key is defined by the maps key.
     value: RuntimeTypeBox,
     maps: Maps,
+}
+
+impl fmt::Debug for DynamicMap {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Debug::fmt(&self.maps, f)
+    }
 }
 
 impl DynamicMap {
