@@ -187,7 +187,7 @@ impl FileDescriptorCommon {
             .collect::<crate::Result<Vec<_>>>()?;
 
         let all_deps = all_deps(&dependencies);
-        let self_and_all_deps_proto3 = Syntax::parse(file.syntax()) == Some(Syntax::Proto3)
+        let self_and_all_deps_proto3 = Syntax::of_file(file) == Syntax::Proto3
             && all_deps.iter().all(|fd| fd.syntax() == Syntax::Proto3);
 
         Ok(FileDescriptorCommon {

@@ -1,3 +1,5 @@
+use crate::descriptor::FileDescriptorProto;
+
 /// `.proto` file syntax.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum Syntax {
@@ -14,5 +16,9 @@ impl Syntax {
             "proto3" => Some(Syntax::Proto3),
             _ => None,
         }
+    }
+
+    pub(crate) fn of_file(file: &FileDescriptorProto) -> Syntax {
+        Syntax::parse(file.syntax()).unwrap_or(Syntax::Proto2)
     }
 }
