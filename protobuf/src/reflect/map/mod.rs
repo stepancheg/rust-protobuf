@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 use crate::reflect::dynamic::map::DynamicMap;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
@@ -8,7 +10,7 @@ use crate::reflect::RuntimeTypeBox;
 mod generated;
 
 /// Implemented for `HashMap` with appropriate keys and values
-pub(crate) trait ReflectMap: Send + Sync + 'static {
+pub(crate) trait ReflectMap: Debug + Send + Sync + 'static {
     fn reflect_iter(&self) -> ReflectMapIter;
 
     fn len(&self) -> usize;
@@ -59,14 +61,14 @@ impl<'a> IntoIterator for &'a dyn ReflectMap {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 enum ReflectMapRefImpl<'a> {
     Generated(&'a dyn ReflectMap),
     DynamicEmpty(DynamicMap),
 }
 
 /// Dynamic reference to `map` field
-#[derive(Clone)] // TODO: add `Debug`
+#[derive(Clone, Debug)]
 pub struct ReflectMapRef<'a> {
     imp: ReflectMapRefImpl<'a>,
 }
