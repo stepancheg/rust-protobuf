@@ -17,8 +17,6 @@ pub use crate::reflect::type_dynamic::ProtobufTypeDynamic;
 use crate::reflect::type_dynamic::ProtobufTypeDynamicImpl;
 use crate::reflect::ProtobufValue;
 use crate::rt;
-use crate::rt::compute_sint32_size;
-use crate::rt::compute_sint64_size;
 use crate::unknown::UnknownValues;
 use crate::wire_format::WireType;
 use crate::zigzag::decode_zig_zag_32;
@@ -349,7 +347,7 @@ impl ProtobufType for ProtobufTypeSint32 {
     }
 
     fn compute_size(value: &i32) -> u64 {
-        compute_sint32_size(*value)
+        rt::value_varint_zigzag_size_no_tag(*value)
     }
 
     fn write_with_cached_size(
@@ -375,7 +373,7 @@ impl ProtobufType for ProtobufTypeSint64 {
     }
 
     fn compute_size(value: &i64) -> u64 {
-        compute_sint64_size(*value)
+        rt::value_varint_zigzag_size_no_tag(*value)
     }
 
     fn write_with_cached_size(

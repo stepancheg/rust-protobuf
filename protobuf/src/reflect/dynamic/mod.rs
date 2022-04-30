@@ -25,14 +25,13 @@ use crate::reflect::Syntax;
 use crate::rt::bytes_size;
 use crate::rt::compute_raw_varint32_size;
 use crate::rt::compute_raw_varint64_size;
-use crate::rt::compute_sint32_size;
-use crate::rt::compute_sint64_size;
 use crate::rt::map::read_map_template;
 use crate::rt::string_size;
 use crate::rt::tag_size;
 use crate::rt::unknown_fields_size;
 use crate::rt::unsorted::read_unknown_or_skip_group_with_tag_unpacked;
 use crate::rt::value_size;
+use crate::rt::value_varint_zigzag_size;
 use crate::rt::vec_packed_fixed_size;
 use crate::rt::vec_packed_varint_size;
 use crate::rt::vec_packed_varint_zigzag_size;
@@ -561,11 +560,11 @@ fn compute_singular_size(proto_type: Type, field_number: u32, v: &ReflectValueRe
         }
         Type::TYPE_SINT32 => {
             let typed_v = v.to_i32().unwrap();
-            tag_size(field_number) + compute_sint32_size(typed_v)
+            value_varint_zigzag_size(field_number, typed_v)
         }
         Type::TYPE_SINT64 => {
             let typed_v = v.to_i64().unwrap();
-            tag_size(field_number) + compute_sint64_size(typed_v)
+            value_varint_zigzag_size(field_number, typed_v)
         }
         Type::TYPE_FIXED32 => tag_size(field_number) + 4,
         Type::TYPE_FIXED64 => tag_size(field_number) + 8,
