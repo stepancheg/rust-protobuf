@@ -107,9 +107,13 @@ fn field_type_protobuf_name<'a>(field: &'a FieldDescriptorProto) -> &'a str {
 // size of value for type, None if variable
 fn field_type_size(field_type: field_descriptor_proto::Type) -> Option<u32> {
     match field_type {
-        field_descriptor_proto::Type::TYPE_BOOL => Some(1),
-        t if WireType::for_type(t) == WireType::Fixed32 => Some(4),
-        t if WireType::for_type(t) == WireType::Fixed64 => Some(8),
+        Type::TYPE_BOOL => Some(1),
+        Type::TYPE_FIXED32 => Some(4),
+        Type::TYPE_FIXED64 => Some(8),
+        Type::TYPE_SFIXED32 => Some(4),
+        Type::TYPE_SFIXED64 => Some(8),
+        Type::TYPE_FLOAT => Some(4),
+        Type::TYPE_DOUBLE => Some(8),
         _ => None,
     }
 }

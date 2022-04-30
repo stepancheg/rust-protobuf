@@ -92,12 +92,12 @@ pub(crate) struct Tag {
 
 impl Tag {
     /// Fold tag to a number to be serialized.
-    pub fn value(self) -> u32 {
+    pub(crate) fn value(self) -> u32 {
         (self.field_number << TAG_TYPE_BITS) | (self.wire_type as u32)
     }
 
     /// Extract wire type and field number from integer tag
-    pub fn new(value: u32) -> crate::Result<Tag> {
+    pub(crate) fn new(value: u32) -> crate::Result<Tag> {
         let wire_type = WireType::new(value & TAG_TYPE_MASK);
         if wire_type.is_none() {
             return Err(WireError::IncorrectTag(value).into());
@@ -117,7 +117,7 @@ impl Tag {
     /// # Panics
     ///
     /// If field number is outside of valid range.
-    pub fn make(field_number: u32, wire_type: WireType) -> Tag {
+    pub(crate) fn make(field_number: u32, wire_type: WireType) -> Tag {
         assert!(field_number > 0 && field_number <= FIELD_NUMBER_MAX);
         Tag {
             field_number,
@@ -126,7 +126,7 @@ impl Tag {
     }
 
     /// Get field number and wire type
-    pub fn unpack(self) -> (u32, WireType) {
+    pub(crate) fn unpack(self) -> (u32, WireType) {
         (self.field_number(), self.wire_type())
     }
 
@@ -136,7 +136,7 @@ impl Tag {
     }
 
     /// Get field number
-    pub fn field_number(self) -> u32 {
+    pub(crate) fn field_number(self) -> u32 {
         self.field_number
     }
 }
