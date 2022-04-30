@@ -1,4 +1,6 @@
+use std::fmt;
 use std::fmt::Debug;
+use std::fmt::Formatter;
 
 use crate::reflect::dynamic::map::DynamicMap;
 use crate::reflect::reflect_eq::ReflectEq;
@@ -61,22 +63,42 @@ impl<'a> IntoIterator for &'a dyn ReflectMap {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 enum ReflectMapRefImpl<'a> {
     Generated(&'a dyn ReflectMap),
     DynamicEmpty(DynamicMap),
 }
 
+impl<'a> fmt::Debug for ReflectMapRefImpl<'a> {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        match self {
+            ReflectMapRefImpl::Generated(m) => fmt::Debug::fmt(m, f),
+            ReflectMapRefImpl::DynamicEmpty(m) => fmt::Debug::fmt(m, f),
+        }
+    }
+}
+
 /// Dynamic reference to `map` field
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub struct ReflectMapRef<'a> {
     imp: ReflectMapRefImpl<'a>,
 }
 
 /// Dynamic mutable reference to `map` field
-#[derive(Debug)]
 pub struct ReflectMapMut<'a> {
     map: &'a mut dyn ReflectMap,
+}
+
+impl<'a> fmt::Debug for ReflectMapRef<'a> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        fmt::Debug::fmt(&self.imp, f)
+    }
+}
+
+impl<'a> fmt::Debug for ReflectMapMut<'a> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        fmt::Debug::fmt(&self.map, f)
+    }
 }
 
 impl<'a> ReflectMapRef<'a> {
