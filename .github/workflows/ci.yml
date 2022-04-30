@@ -127,11 +127,11 @@ jobs:
             - name: Compile interop
               run: test-crates/interop/cxx/compile.sh
               shell: bash
-            - name: protobuf-test
+            - name: protobuf-codegen-protoc-test
               uses: actions-rs/cargo@v1
               with:
                   command: test
-                  args: --manifest-path=test-crates/protobuf-test/Cargo.toml --features=with-bytes
+                  args: --manifest-path=test-crates/protobuf-codegen-protoc-test/Cargo.toml --features=with-bytes
             - name: protobuf-codegen-pure-test
               uses: actions-rs/cargo@v1
               with:

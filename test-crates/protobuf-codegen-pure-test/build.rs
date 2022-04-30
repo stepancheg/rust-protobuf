@@ -28,7 +28,7 @@ fn copy_test<P1: AsRef<Path>, P2: AsRef<Path>>(src: P1, dst: P2) {
 
 fn copy_from_protobuf_test(path: &str) {
     copy_test(
-        &format!("../../test-crates/protobuf-test/{}", path),
+        &format!("../../test-crates/protobuf-codegen-protoc-test/{}", path),
         &format!("{}", path),
     )
 }
@@ -63,7 +63,7 @@ fn classify_file_name(dir: &str, name: &str) -> FileNameClass {
 
 // Copy tests from `protobuf-test` directory to the same directory here
 fn copy_tests(dir: &str) {
-    let src_dir = format!("../../test-crates/protobuf-test/{}", dir);
+    let src_dir = format!("../../test-crates/protobuf-codegen-protoc-test/{}", dir);
     for entry in fs::read_dir(&src_dir).expect(&format!("read_dir {}", src_dir)) {
         let file_name = entry.expect("entry").file_name().into_string().unwrap();
 
@@ -119,14 +119,14 @@ fn generate_include_generated() {
     Codegen::new()
         .pure()
         .out_dir(dir)
-        .input("../../test-crates/protobuf-test/src/include_generated/v2.proto")
-        .input("../../test-crates/protobuf-test/src/include_generated/v3.proto")
-        .include("../../test-crates/protobuf-test/src/include_generated")
+        .input("../../test-crates/protobuf-codegen-protoc-test/src/include_generated/v2.proto")
+        .input("../../test-crates/protobuf-codegen-protoc-test/src/include_generated/v3.proto")
+        .include("../../test-crates/protobuf-codegen-protoc-test/src/include_generated")
         .run_from_script();
 }
 
 fn generate_pb_rs() {
-    print_rerun_if_changed_recursively("../../test-crates/protobuf-test");
+    print_rerun_if_changed_recursively("../../test-crates/protobuf-codegen-protoc-test");
 
     copy_tests("src/v2");
     gen_in_dir("src/v2", "src/v2");

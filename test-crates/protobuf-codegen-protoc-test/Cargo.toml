@@ -1,9 +1,10 @@
 [package]
-name = "protobuf-test"
+name = "protobuf-codegen-protoc-test"
 version = "0.0.0"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 publish = false
 edition = "2021"
+description = "Test protoc codegen"
 
 [lib]
 doctest = false

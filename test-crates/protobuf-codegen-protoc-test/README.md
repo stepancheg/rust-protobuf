@@ -10,7 +10,7 @@ which is not enabled by default.
 `./test.sh` is to be used from [travis-ci](https://travis-ci.org/stepancheg/rust-protobuf/),
 and not needed for local development.
 
-`cargo test` executes [`build.rs`](https://github.com/stepancheg/rust-protobuf/blob/master/protobuf-test/build.rs) script,
+`cargo test` executes [`build.rs`](https://github.com/stepancheg/rust-protobuf/blob/master/protobuf-codegen-protoc-test/build.rs) script,
 which generates `.rs` files from `.proto` and `mod.rs` files for certain folder.
 
 ## Test contents

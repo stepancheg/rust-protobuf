@@ -124,9 +124,9 @@ fn job(channel: RustToolchain, os: Os, features: Features) -> Job {
     match features {
         Features::Specific(..) => {
             steps.push(cargo_test(
-                "protobuf-test",
+                "protobuf-codegen-protoc-test",
                 &format!(
-                    "--manifest-path=test-crates/protobuf-test/Cargo.toml{}",
+                    "--manifest-path=test-crates/protobuf-codegen-protoc-test/Cargo.toml{}",
                     features.flag_suffix()
                 ),
             ));
