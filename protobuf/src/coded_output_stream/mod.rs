@@ -953,14 +953,12 @@ impl<'a> CodedOutputStream<'a> {
     }
 
     /// Write repeated packed enum values.
+    #[inline]
     pub fn write_repeated_packed_enum_or_unknown_no_tag<E: Enum>(
         &mut self,
         values: &[EnumOrUnknown<E>],
     ) -> crate::Result<()> {
-        for v in values {
-            self.write_enum_or_unknown_no_tag(*v)?;
-        }
-        Ok(())
+        self.write_repeated_packed_int32_no_tag(EnumOrUnknown::cast_to_values(values))
     }
 
     /// Write field header and data for repeated packed enum.
