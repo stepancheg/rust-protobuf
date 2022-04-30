@@ -20,7 +20,6 @@ pub use packed::vec_packed_double_size;
 pub use packed::vec_packed_enum_or_unknown_size;
 pub use packed::vec_packed_fixed32_size;
 pub use packed::vec_packed_fixed64_size;
-pub use packed::vec_packed_fixed_size;
 pub use packed::vec_packed_float_size;
 pub use packed::vec_packed_int32_size;
 pub use packed::vec_packed_int64_size;

@@ -102,7 +102,7 @@ pub(crate) fn vec_packed_fixed_data_size<V: ProtobufFixed>(vec: &[V]) -> u64 {
 
 /// Compute field size (data plus header) of fixed encoding of repeated field.
 #[inline]
-pub fn vec_packed_fixed_size<V: ProtobufFixed>(field_number: u32, vec: &[V]) -> u64 {
+fn vec_packed_fixed_size<V: ProtobufFixed>(field_number: u32, vec: &[V]) -> u64 {
     if vec.is_empty() {
         0
     } else {
