@@ -238,19 +238,9 @@ pub fn bytes_size_no_tag(bytes: &[u8]) -> u64 {
     compute_raw_varint64_size(bytes.len() as u64) + bytes.len() as u64
 }
 
-/// Size of encoded bytes field.
-pub fn bytes_size(field_number: u32, bytes: &[u8]) -> u64 {
-    tag_size(field_number) + bytes_size_no_tag(bytes)
-}
-
 /// Size of encoded string field.
 pub fn string_size_no_tag(s: &str) -> u64 {
     bytes_size_no_tag(s.as_bytes())
-}
-
-/// Size of encoded string field.
-pub fn string_size(field_number: u32, s: &str) -> u64 {
-    tag_size(field_number) + string_size_no_tag(s)
 }
 
 /// Read singular `message` field.

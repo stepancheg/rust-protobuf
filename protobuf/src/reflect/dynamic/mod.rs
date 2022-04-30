@@ -22,13 +22,13 @@ use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::reflect::RuntimeFieldType;
 use crate::reflect::Syntax;
-use crate::rt::bytes_size;
+use crate::rt::bytes_size_no_tag;
 use crate::rt::compute_raw_varint32_size;
 use crate::rt::compute_raw_varint64_size;
 use crate::rt::map::read_map_template;
 use crate::rt::sint32_size_no_tag;
 use crate::rt::sint64_size_no_tag;
-use crate::rt::string_size;
+use crate::rt::string_size_no_tag;
 use crate::rt::tag_size;
 use crate::rt::unknown_fields_size;
 use crate::rt::unsorted::read_unknown_or_skip_group_with_tag_unpacked;
@@ -582,11 +582,11 @@ fn compute_singular_size(proto_type: Type, field_number: u32, v: &ReflectValueRe
         }
         Type::TYPE_STRING => {
             let typed_v = v.to_str().unwrap();
-            string_size(field_number, typed_v)
+            tag_size(field_number) + string_size_no_tag(typed_v)
         }
         Type::TYPE_BYTES => {
             let typed_v = v.to_bytes().unwrap();
-            bytes_size(field_number, typed_v)
+            tag_size(field_number) + bytes_size_no_tag(typed_v)
         }
         Type::TYPE_FLOAT => tag_size(field_number) + 4,
         Type::TYPE_DOUBLE => tag_size(field_number) + 8,
