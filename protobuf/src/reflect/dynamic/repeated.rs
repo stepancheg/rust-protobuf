@@ -30,7 +30,18 @@ pub(crate) enum DynamicRepeated {
 
 impl ReflectRepeated for DynamicRepeated {
     fn reflect_iter(&self) -> ReflectRepeatedIter {
-        unimplemented!()
+        match self {
+            DynamicRepeated::U32(v) => ReflectRepeatedIter::new_slice(&v),
+            DynamicRepeated::U64(v) => ReflectRepeatedIter::new_slice(&v),
+            DynamicRepeated::I32(v) => ReflectRepeatedIter::new_slice(&v),
+            DynamicRepeated::I64(v) => ReflectRepeatedIter::new_slice(&v),
+            DynamicRepeated::F32(v) => ReflectRepeatedIter::new_slice(&v),
+            DynamicRepeated::F64(v) => ReflectRepeatedIter::new_slice(&v),
+            DynamicRepeated::Bool(v) => ReflectRepeatedIter::new_slice(&v),
+            DynamicRepeated::String(v) => ReflectRepeatedIter::new_slice(&v),
+            DynamicRepeated::Bytes(v) => ReflectRepeatedIter::new_slice(&v),
+            _ => unimplemented!(),
+        }
     }
 
     fn len(&self) -> usize {
