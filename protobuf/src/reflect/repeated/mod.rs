@@ -1,11 +1,14 @@
+pub(crate) mod iter;
+
 use std::any::TypeId;
 use std::fmt;
 use std::mem;
-use std::slice;
 
 use crate::reflect::dynamic::repeated::DynamicRepeated;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
+use crate::reflect::repeated::iter::ReflectRepeatedIter;
+use crate::reflect::repeated::iter::ReflectRepeatedIterImplSlice;
 use crate::reflect::value::value_ref::ReflectValueRef;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
@@ -57,9 +60,7 @@ pub(crate) trait ReflectRepeated: Sync + 'static + fmt::Debug {
 
 impl<V: ProtobufValue> ReflectRepeated for Vec<V> {
     fn reflect_iter<'a>(&'a self) -> ReflectRepeatedIter<'a> {
-        ReflectRepeatedIter {
-            imp: Box::new(ReflectRepeatedIterImplSlice::<'a, V> { iter: self.iter() }),
-        }
+        ReflectRepeatedIter::new(ReflectRepeatedIterImplSlice::<'a, V> { iter: self.iter() })
     }
 
     fn len(&self) -> usize {
@@ -124,9 +125,7 @@ impl<V: ProtobufValue> ReflectRepeated for Vec<V> {
 // useless
 impl<V: ProtobufValue> ReflectRepeated for [V] {
     fn reflect_iter<'a>(&'a self) -> ReflectRepeatedIter<'a> {
-        ReflectRepeatedIter {
-            imp: Box::new(ReflectRepeatedIterImplSlice::<'a, V> { iter: self.iter() }),
-        }
+        ReflectRepeatedIter::new(ReflectRepeatedIterImplSlice::<'a, V> { iter: self.iter() })
     }
 
     fn len(&self) -> usize {
@@ -219,34 +218,6 @@ impl<V: ProtobufValue> ReflectRepeated for [V] {
         } else {
             panic!("not f64");
         }
-    }
-}
-
-trait ReflectRepeatedIterTrait<'a> {
-    fn next(&mut self) -> Option<ReflectValueRef<'a>>;
-}
-
-struct ReflectRepeatedIterImplSlice<'a, V: ProtobufValue + 'static> {
-    iter: slice::Iter<'a, V>,
-}
-
-impl<'a, V: ProtobufValue + 'static> ReflectRepeatedIterTrait<'a>
-    for ReflectRepeatedIterImplSlice<'a, V>
-{
-    fn next(&mut self) -> Option<ReflectValueRef<'a>> {
-        self.iter.next().map(ProtobufValue::as_ref)
-    }
-}
-
-pub struct ReflectRepeatedIter<'a> {
-    imp: Box<dyn ReflectRepeatedIterTrait<'a> + 'a>,
-}
-
-impl<'a> Iterator for ReflectRepeatedIter<'a> {
-    type Item = ReflectValueRef<'a>;
-
-    fn next(&mut self) -> Option<ReflectValueRef<'a>> {
-        self.imp.next()
     }
 }
 
