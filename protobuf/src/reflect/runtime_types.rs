@@ -3,7 +3,6 @@
 use std::collections::HashMap;
 use std::fmt;
 use std::marker;
-use std::mem;
 
 #[cfg(feature = "bytes")]
 use bytes::Bytes;
@@ -735,9 +734,7 @@ where
     }
 
     fn cast_to_enum_values(values: &[EnumOrUnknown<E>]) -> &[i32] {
-        assert_eq!(mem::size_of::<i32>(), mem::size_of::<EnumOrUnknown<E>>());
-        // SAFETY: `ProtobufEnumOrUnknown<E>` is transparent as `i32`.
-        unsafe { mem::transmute(values) }
+        EnumOrUnknown::cast_to_values(values)
     }
 }
 

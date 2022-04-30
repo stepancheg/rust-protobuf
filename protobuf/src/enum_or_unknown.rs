@@ -1,5 +1,6 @@
 use std::fmt;
 use std::marker::PhantomData;
+use std::mem;
 
 use crate::reflect::runtime_types::RuntimeTypeEnumOrUnknown;
 use crate::reflect::EnumDescriptor;
@@ -61,6 +62,12 @@ impl<E: Enum> EnumOrUnknown<E> {
     /// Return given enum value if value is unknown.
     pub fn enum_value_or(&self, map_unknown: E) -> E {
         self.enum_value().unwrap_or(map_unknown)
+    }
+
+    pub(crate) fn cast_to_values(enums: &[EnumOrUnknown<E>]) -> &[i32] {
+        assert_eq!(mem::size_of::<EnumOrUnknown<E>>(), mem::size_of::<i32>());
+        // SAFETY: `EnumOrUnknown` is `repr(C)`.
+        unsafe { std::slice::from_raw_parts(enums.as_ptr() as *const i32, enums.len()) }
     }
 }
 
