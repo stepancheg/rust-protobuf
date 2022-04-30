@@ -36,6 +36,7 @@ pub use unknown_or_group::unknown_fields_size;
 pub use crate::cached_size::CachedSize;
 pub use crate::lazy::Lazy;
 use crate::varint::encode::encoded_varint64_len;
+use crate::varint::generic::ProtobufVarint;
 pub use crate::wire_format::WireType;
 use crate::zigzag::ProtobufVarintZigzag;
 
@@ -47,44 +48,6 @@ pub fn compute_raw_varint64_size(value: u64) -> u64 {
 /// Given `u32` value compute varint encoded length.
 pub(crate) fn compute_raw_varint32_size(value: u32) -> u64 {
     compute_raw_varint64_size(value as u64)
-}
-
-/// Helper trait implemented by integer types which could be encoded as varint.
-pub trait ProtobufVarint {
-    /// Size of self when encoded as varint.
-    fn len_varint(&self) -> u64;
-}
-
-impl ProtobufVarint for u64 {
-    fn len_varint(&self) -> u64 {
-        compute_raw_varint64_size(*self)
-    }
-}
-
-impl ProtobufVarint for u32 {
-    fn len_varint(&self) -> u64 {
-        (*self as u64).len_varint()
-    }
-}
-
-impl ProtobufVarint for i64 {
-    fn len_varint(&self) -> u64 {
-        // same as length of u64
-        (*self as u64).len_varint()
-    }
-}
-
-impl ProtobufVarint for i32 {
-    fn len_varint(&self) -> u64 {
-        // sign-extend and then compute
-        (*self as i64).len_varint()
-    }
-}
-
-impl ProtobufVarint for bool {
-    fn len_varint(&self) -> u64 {
-        1
-    }
 }
 
 /// Compute tag size. Size of tag does not depend on wire type.

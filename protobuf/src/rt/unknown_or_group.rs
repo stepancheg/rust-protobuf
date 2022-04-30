@@ -1,6 +1,6 @@
 use crate::rt::bytes_size_no_tag;
+use crate::rt::compute_raw_varint64_size;
 use crate::rt::tag_size;
-use crate::rt::ProtobufVarint;
 use crate::wire_format::Tag;
 use crate::wire_format::WireType;
 use crate::CodedInputStream;
@@ -25,7 +25,7 @@ pub fn unknown_fields_size(unknown_fields: &UnknownFields) -> u64 {
 
         r += tag_size(number) * values.varint.len() as u64;
         for varint in &values.varint {
-            r += varint.len_varint();
+            r += compute_raw_varint64_size(*varint);
         }
 
         r += tag_size(number) * values.length_delimited.len() as u64;

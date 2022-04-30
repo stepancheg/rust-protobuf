@@ -1,7 +1,7 @@
 use crate::fixed::ProtobufFixed;
 use crate::rt::compute_raw_varint32_size;
 use crate::rt::tag_size;
-use crate::rt::ProtobufVarint;
+use crate::varint::generic::ProtobufVarint;
 use crate::zigzag::ProtobufVarintZigzag;
 use crate::Enum;
 use crate::EnumOrUnknown;
