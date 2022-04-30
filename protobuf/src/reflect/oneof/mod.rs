@@ -72,6 +72,7 @@ impl OneofDescriptor {
 
     /// Fields in this oneof.
     pub fn fields<'a>(&'a self) -> impl Iterator<Item = FieldDescriptor> + 'a {
+        // TODO: cache.
         self.containing_message()
             .fields()
             .filter(move |f| f.containing_oneof_including_synthetic().as_ref() == Some(self))

@@ -152,7 +152,6 @@ impl DynamicMessage {
         assert_eq!(&self.descriptor, descriptor);
         self.init_fields();
         self.clear_oneof_group_fields_except(field);
-        // TODO: reset oneof group fields
         match &mut self.fields[index] {
             DynamicFieldValue::Singular(f) => f.mut_or_default(),
             _ => panic!("Not a singular field"),
@@ -166,7 +165,7 @@ impl DynamicMessage {
         let (descriptor, index) = field.regular();
         assert_eq!(&self.descriptor, descriptor);
         self.init_fields();
-        // TODO: reset oneof group fields
+        self.clear_oneof_group_fields_except(field);
         match &mut self.fields[index] {
             DynamicFieldValue::Repeated(r) => ReflectRepeatedMut::new(r),
             _ => panic!("Not a repeated field: {}", field),
@@ -177,7 +176,7 @@ impl DynamicMessage {
         let (descriptor, index) = field.regular();
         assert_eq!(&self.descriptor, descriptor);
         self.init_fields();
-        // TODO: reset oneof group fields
+        self.clear_oneof_group_fields_except(field);
         match &mut self.fields[index] {
             DynamicFieldValue::Map(m) => ReflectMapMut::new(m),
             _ => panic!("Not a map field: {}", field),
@@ -188,7 +187,7 @@ impl DynamicMessage {
         let (descriptor, index) = field.regular();
         assert_eq!(&self.descriptor, descriptor);
         self.init_fields();
-        // TODO: reset oneof group fields
+        self.clear_oneof_group_fields_except(field);
         match &mut self.fields[index] {
             DynamicFieldValue::Singular(s) => s.set(value),
             _ => panic!("Not a singular field: {}", field),
