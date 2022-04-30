@@ -490,10 +490,10 @@ impl crate::Message for FileDescriptorProto {
             my_size += 1 + crate::rt::string_size_no_tag(&value);
         };
         for value in &self.public_dependency {
-            my_size += 1 + crate::rt::value_size_no_tag(*value, crate::rt::WireType::Varint);
+            my_size += 1 + crate::rt::varint_size_no_tag(*value);
         };
         for value in &self.weak_dependency {
-            my_size += 1 + crate::rt::value_size_no_tag(*value, crate::rt::WireType::Varint);
+            my_size += 1 + crate::rt::varint_size_no_tag(*value);
         };
         for value in &self.message_type {
             let len = value.compute_size();
@@ -1133,10 +1133,10 @@ pub mod descriptor_proto {
         fn compute_size(&self) -> u64 {
             let mut my_size = 0;
             if let Some(v) = self.start {
-                my_size += 1 + crate::rt::value_size_no_tag(v, crate::rt::WireType::Varint);
+                my_size += 1 + crate::rt::varint_size_no_tag(v);
             }
             if let Some(v) = self.end {
-                my_size += 1 + crate::rt::value_size_no_tag(v, crate::rt::WireType::Varint);
+                my_size += 1 + crate::rt::varint_size_no_tag(v);
             }
             if let Some(v) = self.options.as_ref() {
                 let len = v.compute_size();
@@ -1323,10 +1323,10 @@ pub mod descriptor_proto {
         fn compute_size(&self) -> u64 {
             let mut my_size = 0;
             if let Some(v) = self.start {
-                my_size += 1 + crate::rt::value_size_no_tag(v, crate::rt::WireType::Varint);
+                my_size += 1 + crate::rt::varint_size_no_tag(v);
             }
             if let Some(v) = self.end {
-                my_size += 1 + crate::rt::value_size_no_tag(v, crate::rt::WireType::Varint);
+                my_size += 1 + crate::rt::varint_size_no_tag(v);
             }
             my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
             self.special_fields.cached_size().set(my_size as u32);
@@ -2014,7 +2014,7 @@ impl crate::Message for FieldDescriptorProto {
             my_size += 1 + crate::rt::string_size_no_tag(&v);
         }
         if let Some(v) = self.number {
-            my_size += 1 + crate::rt::value_size_no_tag(v, crate::rt::WireType::Varint);
+            my_size += 1 + crate::rt::varint_size_no_tag(v);
         }
         if let Some(v) = self.label {
             my_size += 1 + crate::rt::enum_or_unknown_size_no_tag(v);
@@ -2032,7 +2032,7 @@ impl crate::Message for FieldDescriptorProto {
             my_size += 1 + crate::rt::string_size_no_tag(&v);
         }
         if let Some(v) = self.oneof_index {
-            my_size += 1 + crate::rt::value_size_no_tag(v, crate::rt::WireType::Varint);
+            my_size += 1 + crate::rt::varint_size_no_tag(v);
         }
         if let Some(v) = self.json_name.as_ref() {
             my_size += 1 + crate::rt::string_size_no_tag(&v);
@@ -2911,10 +2911,10 @@ pub mod enum_descriptor_proto {
         fn compute_size(&self) -> u64 {
             let mut my_size = 0;
             if let Some(v) = self.start {
-                my_size += 1 + crate::rt::value_size_no_tag(v, crate::rt::WireType::Varint);
+                my_size += 1 + crate::rt::varint_size_no_tag(v);
             }
             if let Some(v) = self.end {
-                my_size += 1 + crate::rt::value_size_no_tag(v, crate::rt::WireType::Varint);
+                my_size += 1 + crate::rt::varint_size_no_tag(v);
             }
             my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
             self.special_fields.cached_size().set(my_size as u32);
@@ -3126,7 +3126,7 @@ impl crate::Message for EnumValueDescriptorProto {
             my_size += 1 + crate::rt::string_size_no_tag(&v);
         }
         if let Some(v) = self.number {
-            my_size += 1 + crate::rt::value_size_no_tag(v, crate::rt::WireType::Varint);
+            my_size += 1 + crate::rt::varint_size_no_tag(v);
         }
         if let Some(v) = self.options.as_ref() {
             let len = v.compute_size();
@@ -7019,10 +7019,10 @@ impl crate::Message for UninterpretedOption {
             my_size += 1 + crate::rt::string_size_no_tag(&v);
         }
         if let Some(v) = self.positive_int_value {
-            my_size += 1 + crate::rt::value_size_no_tag(v, crate::rt::WireType::Varint);
+            my_size += 1 + crate::rt::varint_size_no_tag(v);
         }
         if let Some(v) = self.negative_int_value {
-            my_size += 1 + crate::rt::value_size_no_tag(v, crate::rt::WireType::Varint);
+            my_size += 1 + crate::rt::varint_size_no_tag(v);
         }
         if let Some(v) = self.double_value {
             my_size += 9;
@@ -8044,10 +8044,10 @@ pub mod generated_code_info {
                 my_size += 1 + crate::rt::string_size_no_tag(&v);
             }
             if let Some(v) = self.begin {
-                my_size += 1 + crate::rt::value_size_no_tag(v, crate::rt::WireType::Varint);
+                my_size += 1 + crate::rt::varint_size_no_tag(v);
             }
             if let Some(v) = self.end {
-                my_size += 1 + crate::rt::value_size_no_tag(v, crate::rt::WireType::Varint);
+                my_size += 1 + crate::rt::varint_size_no_tag(v);
             }
             my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
             self.special_fields.cached_size().set(my_size as u32);

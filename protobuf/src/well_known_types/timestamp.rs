@@ -102,10 +102,10 @@ impl crate::Message for Timestamp {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if self.seconds != 0 {
-            my_size += 1 + crate::rt::value_size_no_tag(self.seconds, crate::rt::WireType::Varint);
+            my_size += 1 + crate::rt::varint_size_no_tag(self.seconds);
         }
         if self.nanos != 0 {
-            my_size += 1 + crate::rt::value_size_no_tag(self.nanos, crate::rt::WireType::Varint);
+            my_size += 1 + crate::rt::varint_size_no_tag(self.nanos);
         }
         my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
