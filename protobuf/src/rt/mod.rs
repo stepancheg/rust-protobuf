@@ -23,7 +23,6 @@ pub use packed::vec_packed_sint32_size;
 pub use packed::vec_packed_sint64_size;
 pub use packed::vec_packed_uint32_size;
 pub use packed::vec_packed_uint64_size;
-pub use packed::vec_packed_varint_size;
 pub use repeated::read_repeated_packed_enum_or_unknown_into;
 pub use unknown_or_group::read_unknown_or_skip_group;
 pub use unknown_or_group::unknown_fields_size;

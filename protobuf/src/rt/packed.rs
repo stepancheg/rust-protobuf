@@ -25,7 +25,7 @@ pub(crate) fn vec_packed_enum_or_unknown_data_size<E: Enum>(vec: &[EnumOrUnknown
 
 /// Size of serialized data with length prefix and tag
 #[inline]
-pub fn vec_packed_varint_size<T: ProtobufVarint>(field_number: u32, vec: &[T]) -> u64 {
+fn vec_packed_varint_size<T: ProtobufVarint>(field_number: u32, vec: &[T]) -> u64 {
     if vec.is_empty() {
         0
     } else {

@@ -33,9 +33,12 @@ use crate::rt::unknown_or_group::read_unknown_or_skip_group_with_tag_unpacked;
 use crate::rt::value_size;
 use crate::rt::value_varint_zigzag_size;
 use crate::rt::vec_packed_fixed_size;
+use crate::rt::vec_packed_int32_size;
+use crate::rt::vec_packed_int64_size;
 use crate::rt::vec_packed_sint32_size;
 use crate::rt::vec_packed_sint64_size;
-use crate::rt::vec_packed_varint_size;
+use crate::rt::vec_packed_uint32_size;
+use crate::rt::vec_packed_uint64_size;
 use crate::text_format;
 use crate::wire_format::WireType;
 use crate::CodedInputStream;
@@ -594,10 +597,10 @@ fn compute_repeated_packed_size(
     v: &ReflectRepeatedRef,
 ) -> u64 {
     match proto_type {
-        Type::TYPE_INT32 => vec_packed_varint_size(field_number, v.data_i32()),
-        Type::TYPE_INT64 => vec_packed_varint_size(field_number, v.data_i64()),
-        Type::TYPE_UINT32 => vec_packed_varint_size(field_number, v.data_u32()),
-        Type::TYPE_UINT64 => vec_packed_varint_size(field_number, v.data_u64()),
+        Type::TYPE_INT32 => vec_packed_int32_size(field_number, v.data_i32()),
+        Type::TYPE_INT64 => vec_packed_int64_size(field_number, v.data_i64()),
+        Type::TYPE_UINT32 => vec_packed_uint32_size(field_number, v.data_u32()),
+        Type::TYPE_UINT64 => vec_packed_uint64_size(field_number, v.data_u64()),
         Type::TYPE_SINT32 => vec_packed_sint32_size(field_number, v.data_i32()),
         Type::TYPE_SINT64 => vec_packed_sint64_size(field_number, v.data_i64()),
         Type::TYPE_FIXED32 => vec_packed_fixed_size(field_number, v.data_u32()),
@@ -609,7 +612,7 @@ fn compute_repeated_packed_size(
         Type::TYPE_BOOL => vec_packed_fixed_size(field_number, v.data_bool()),
         Type::TYPE_STRING => panic!("strings cannot be packed"),
         Type::TYPE_BYTES => panic!("bytes cannot be packed"),
-        Type::TYPE_ENUM => vec_packed_varint_size(field_number, v.data_enum_values()),
+        Type::TYPE_ENUM => vec_packed_int32_size(field_number, v.data_enum_values()),
         Type::TYPE_MESSAGE => panic!("messages cannot be packed"),
         Type::TYPE_GROUP => panic!("groups cannot be packed"),
     }
