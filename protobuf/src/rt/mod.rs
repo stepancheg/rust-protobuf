@@ -200,6 +200,7 @@ pub fn vec_packed_fixed_size<V: ProtobufFixed>(field_number: u32, vec: &[V]) -> 
 }
 
 /// Compute tag size. Size of tag does not depend on wire type.
+#[inline]
 pub fn tag_size(field_number: u32) -> u64 {
     encoded_varint64_len((field_number as u64) << 3) as u64
 }
@@ -225,7 +226,7 @@ pub(crate) fn value_varint_zigzag_size_no_tag<T: ProtobufVarintZigzag>(value: T)
 
 /// Length of value when encoding with zigzag encoding with tag
 #[inline]
-pub fn value_varint_zigzag_size<T: ProtobufVarintZigzag>(field_number: u32, value: T) -> u64 {
+pub(crate) fn value_varint_zigzag_size<T: ProtobufVarintZigzag>(field_number: u32, value: T) -> u64 {
     tag_size(field_number) + value_varint_zigzag_size_no_tag(value)
 }
 

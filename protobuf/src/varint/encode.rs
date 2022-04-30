@@ -90,6 +90,7 @@ pub(crate) fn encode_varint32(mut value: u32, buf: &mut [MaybeUninit<u8>]) -> us
 }
 
 /// Encoded size of u64 value.
+#[inline]
 pub(crate) fn encoded_varint64_len(value: u64) -> usize {
     if value == 0 {
         1
