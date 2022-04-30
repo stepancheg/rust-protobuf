@@ -34,12 +34,10 @@ pub use unknown_or_group::read_unknown_or_skip_group;
 pub use unknown_or_group::unknown_fields_size;
 
 pub use crate::cached_size::CachedSize;
-use crate::enums::Enum;
 pub use crate::lazy::Lazy;
 use crate::varint::encode::encoded_varint64_len;
 pub use crate::wire_format::WireType;
 use crate::zigzag::ProtobufVarintZigzag;
-use crate::EnumOrUnknown;
 
 /// Given `u64` value compute varint encoded length.
 pub fn compute_raw_varint64_size(value: u64) -> u64 {
@@ -125,16 +123,6 @@ pub fn sint32_size(field_number: u32, value: i32) -> u64 {
 #[inline]
 pub fn sint64_size(field_number: u32, value: i64) -> u64 {
     value_varint_zigzag_size(field_number, value)
-}
-
-fn enum_or_unknown_size_no_tag<E: Enum>(value: EnumOrUnknown<E>) -> u64 {
-    value.value().len_varint() as u64
-}
-
-/// Size of encoded enum field value.
-#[inline]
-pub fn enum_or_unknown_size<E: Enum>(field_number: u32, value: EnumOrUnknown<E>) -> u64 {
-    tag_size(field_number) + enum_or_unknown_size_no_tag(value)
 }
 
 /// Size of encoded bytes field.
