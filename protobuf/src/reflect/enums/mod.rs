@@ -170,14 +170,6 @@ impl EnumDescriptor {
         E::enum_descriptor()
     }
 
-    #[doc(hidden)]
-    pub fn new_generated_2(file_descriptor: FileDescriptor, index: usize) -> EnumDescriptor {
-        EnumDescriptor {
-            file_descriptor,
-            index,
-        }
-    }
-
     /// Get a message containing this message, or `None` if this message is declared at file level.
     pub fn enclosing_message(&self) -> Option<MessageDescriptor> {
         self.index_entry()

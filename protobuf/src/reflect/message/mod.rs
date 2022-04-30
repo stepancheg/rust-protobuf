@@ -71,11 +71,6 @@ impl MessageDescriptor {
         M::descriptor()
     }
 
-    #[doc(hidden)]
-    pub fn new_generated_2(file_descriptor: FileDescriptor, index: usize) -> MessageDescriptor {
-        MessageDescriptor::new(file_descriptor, index)
-    }
-
     /// Messages declared in this messages.
     pub fn nested_messages(&self) -> impl Iterator<Item = MessageDescriptor> + '_ {
         self.index_entry()
