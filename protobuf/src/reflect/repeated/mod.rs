@@ -1,5 +1,6 @@
 pub(crate) mod iter;
 
+use std::any::type_name;
 use std::any::TypeId;
 use std::fmt;
 use std::mem;
@@ -58,6 +59,15 @@ pub(crate) trait ReflectRepeated: Sync + 'static + fmt::Debug {
     fn data_f64(&self) -> &[f64];
 }
 
+fn data_impl<V: ProtobufValue, X: ProtobufValue>(v: &Vec<V>) -> &[X] {
+    if TypeId::of::<Vec<V>>() == TypeId::of::<Vec<X>>() {
+        // Safety: we've just checked types
+        unsafe { mem::transmute(v.as_slice()) }
+    } else {
+        panic!("not {}", type_name::<X>());
+    }
+}
+
 impl<V: ProtobufValue> ReflectRepeated for Vec<V> {
     fn reflect_iter<'a>(&'a self) -> ReflectRepeatedIter<'a> {
         ReflectRepeatedIter::new(ReflectRepeatedIterImplSlice::<'a, V> { iter: self.iter() })
@@ -90,134 +100,35 @@ impl<V: ProtobufValue> ReflectRepeated for Vec<V> {
     }
 
     fn data_enum_values(&self) -> &[i32] {
-        self.as_slice().data_enum_values()
-    }
-
-    fn data_bool(&self) -> &[bool] {
-        self.as_slice().data_bool()
-    }
-
-    fn data_i32(&self) -> &[i32] {
-        self.as_slice().data_i32()
-    }
-
-    fn data_u32(&self) -> &[u32] {
-        self.as_slice().data_u32()
-    }
-
-    fn data_i64(&self) -> &[i64] {
-        self.as_slice().data_i64()
-    }
-
-    fn data_u64(&self) -> &[u64] {
-        self.as_slice().data_u64()
-    }
-
-    fn data_f32(&self) -> &[f32] {
-        self.as_slice().data_f32()
-    }
-
-    fn data_f64(&self) -> &[f64] {
-        self.as_slice().data_f64()
-    }
-}
-
-// useless
-impl<V: ProtobufValue> ReflectRepeated for [V] {
-    fn reflect_iter<'a>(&'a self) -> ReflectRepeatedIter<'a> {
-        ReflectRepeatedIter::new(ReflectRepeatedIterImplSlice::<'a, V> { iter: self.iter() })
-    }
-
-    fn len(&self) -> usize {
-        <[_]>::len(self)
-    }
-
-    fn get(&self, index: usize) -> ReflectValueRef {
-        V::as_ref(&self[index])
-    }
-
-    fn set(&mut self, index: usize, value: ReflectValueBox) {
-        let value = value.downcast().expect("wrong type");
-        self[index] = value;
-    }
-
-    fn push(&mut self, _value: ReflectValueBox) {
-        panic!("push is not possible for [V]");
-    }
-
-    fn clear(&mut self) {
-        panic!("clear is not possible for [V]");
-    }
-
-    fn element_type(&self) -> RuntimeTypeBox {
-        V::runtime_type_box()
-    }
-
-    fn data_enum_values(&self) -> &[i32] {
         V::cast_to_enum_values(&self)
     }
 
     fn data_bool(&self) -> &[bool] {
-        if TypeId::of::<Self>() == TypeId::of::<[bool]>() {
-            // Safety: we've just checked types
-            unsafe { mem::transmute(self) }
-        } else {
-            panic!("not bool");
-        }
+        data_impl(self)
     }
 
     fn data_i32(&self) -> &[i32] {
-        if TypeId::of::<Self>() == TypeId::of::<[i32]>() {
-            // Safety: we've just checked types
-            unsafe { mem::transmute(self) }
-        } else {
-            panic!("not i32");
-        }
+        data_impl(self)
     }
 
     fn data_u32(&self) -> &[u32] {
-        if TypeId::of::<Self>() == TypeId::of::<[u32]>() {
-            // Safety: we've just checked types
-            unsafe { mem::transmute(self) }
-        } else {
-            panic!("not u32");
-        }
+        data_impl(self)
     }
 
     fn data_i64(&self) -> &[i64] {
-        if TypeId::of::<Self>() == TypeId::of::<[i64]>() {
-            // Safety: we've just checked types
-            unsafe { mem::transmute(self) }
-        } else {
-            panic!("not i64");
-        }
+        data_impl(self)
     }
 
     fn data_u64(&self) -> &[u64] {
-        if TypeId::of::<Self>() == TypeId::of::<[u64]>() {
-            // Safety: we've just checked types
-            unsafe { mem::transmute(self) }
-        } else {
-            panic!("not u64");
-        }
+        data_impl(self)
     }
 
     fn data_f32(&self) -> &[f32] {
-        if TypeId::of::<Self>() == TypeId::of::<[f32]>() {
-            // Safety: we've just checked types
-            unsafe { mem::transmute(self) }
-        } else {
-            panic!("not f32");
-        }
+        data_impl(self)
     }
 
     fn data_f64(&self) -> &[f64] {
-        if TypeId::of::<Self>() == TypeId::of::<[f64]>() {
-            // Safety: we've just checked types
-            unsafe { mem::transmute(self) }
-        } else {
-            panic!("not f64");
-        }
+        data_impl(self)
     }
 }
 
