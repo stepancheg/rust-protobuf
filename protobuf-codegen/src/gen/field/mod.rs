@@ -953,68 +953,65 @@ impl<'a> FieldGen<'a> {
 
         match field_type_size(self.proto_type) {
             Some(data_size) => format!("{}", data_size + self.tag_size()),
-            None => {
-                let tag_size = self.tag_size();
-                match self.proto_type {
-                    field_descriptor_proto::Type::TYPE_MESSAGE => panic!("not a single-liner"),
-                    // We are not inlining `bytes_size` here,
-                    // assuming the compiler is smart enough to do it for us.
-                    // https://rust.godbolt.org/z/GrKa5zxq6
-                    field_descriptor_proto::Type::TYPE_BYTES => format!(
-                        "{}::rt::bytes_size({}, &{})",
+            None => match self.proto_type {
+                field_descriptor_proto::Type::TYPE_MESSAGE => panic!("not a single-liner"),
+                // We are not inlining `bytes_size` here,
+                // assuming the compiler is smart enough to do it for us.
+                // https://rust.godbolt.org/z/GrKa5zxq6
+                field_descriptor_proto::Type::TYPE_BYTES => format!(
+                    "{}::rt::bytes_size({}, &{})",
+                    protobuf_crate_path(&self.customize),
+                    self.proto_field.number(),
+                    var
+                ),
+                field_descriptor_proto::Type::TYPE_STRING => format!(
+                    "{}::rt::string_size({}, &{})",
+                    protobuf_crate_path(&self.customize),
+                    self.proto_field.number(),
+                    var
+                ),
+                field_descriptor_proto::Type::TYPE_ENUM => {
+                    let param_type = match var_type {
+                        &RustType::Ref(ref t) => (**t).clone(),
+                        t => t.clone(),
+                    };
+                    format!(
+                        "{}::rt::enum_or_unknown_size({}, {})",
                         protobuf_crate_path(&self.customize),
                         self.proto_field.number(),
-                        var
-                    ),
-                    field_descriptor_proto::Type::TYPE_STRING => format!(
-                        "{}::rt::string_size({}, &{})",
-                        protobuf_crate_path(&self.customize),
-                        self.proto_field.number(),
-                        var
-                    ),
-                    field_descriptor_proto::Type::TYPE_ENUM => {
-                        let param_type = match var_type {
-                            &RustType::Ref(ref t) => (**t).clone(),
-                            t => t.clone(),
+                        var_type.into_target(&param_type, var, &self.customize)
+                    )
+                }
+                _ => {
+                    let param_type = match var_type {
+                        &RustType::Ref(ref t) => (**t).clone(),
+                        t => t.clone(),
+                    };
+                    if self.proto_type.is_s_varint() {
+                        let f = match self.proto_type {
+                            field_descriptor_proto::Type::TYPE_SINT32 => "value_sint32_size",
+                            field_descriptor_proto::Type::TYPE_SINT64 => "value_sint64_size",
+                            _ => unreachable!(),
                         };
                         format!(
-                            "{}::rt::enum_or_unknown_size({}, {})",
+                            "{}::rt::{}({}, {})",
                             protobuf_crate_path(&self.customize),
+                            f,
                             self.proto_field.number(),
                             var_type.into_target(&param_type, var, &self.customize)
                         )
-                    }
-                    _ => {
-                        let param_type = match var_type {
-                            &RustType::Ref(ref t) => (**t).clone(),
-                            t => t.clone(),
-                        };
-                        if self.proto_type.is_s_varint() {
-                            let f = match self.proto_type {
-                                field_descriptor_proto::Type::TYPE_SINT32 => "sint32_size_no_tag",
-                                field_descriptor_proto::Type::TYPE_SINT64 => "sint64_size_no_tag",
-                                _ => unreachable!(),
-                            };
-                            format!(
-                                "{} + {}::rt::{}({})",
-                                tag_size,
-                                protobuf_crate_path(&self.customize),
-                                f,
-                                var_type.into_target(&param_type, var, &self.customize)
-                            )
-                        } else {
-                            format!(
-                                "{}::rt::value_size({}, {}, {}::rt::WireType::{:?})",
-                                protobuf_crate_path(&self.customize),
-                                self.proto_field.number(),
-                                var_type.into_target(&param_type, var, &self.customize),
-                                protobuf_crate_path(&self.customize),
-                                self.wire_type
-                            )
-                        }
+                    } else {
+                        format!(
+                            "{}::rt::value_size({}, {}, {}::rt::WireType::{:?})",
+                            protobuf_crate_path(&self.customize),
+                            self.proto_field.number(),
+                            var_type.into_target(&param_type, var, &self.customize),
+                            protobuf_crate_path(&self.customize),
+                            self.wire_type
+                        )
                     }
                 }
-            }
+            },
         }
     }
 

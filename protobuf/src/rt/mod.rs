@@ -38,13 +38,11 @@ pub(crate) fn compute_raw_varint32_size(value: u32) -> u64 {
     compute_raw_varint64_size(value as u64)
 }
 
-/// Size of encoded `sint32` value.
-pub fn sint32_size_no_tag(value: i32) -> u64 {
+pub(crate) fn compute_sint32_size(value: i32) -> u64 {
     compute_raw_varint32_size(encode_zig_zag_32(value))
 }
 
-/// Size of encoded `sint64` value.
-pub fn sint64_size_no_tag(value: i64) -> u64 {
+pub(crate) fn compute_sint64_size(value: i64) -> u64 {
     compute_raw_varint64_size(encode_zig_zag_64(value))
 }
 
@@ -226,6 +224,16 @@ fn value_size_no_tag<T: ProtobufVarint>(value: T, wt: WireType) -> u64 {
 /// Integer value size when encoded as specified wire type.
 pub fn value_size<T: ProtobufVarint>(field_number: u32, value: T, wt: WireType) -> u64 {
     tag_size(field_number) + value_size_no_tag(value, wt)
+}
+
+/// Length of value when encoding with zigzag encoding with tag
+pub fn value_sint32_size(field_number: u32, value: i32) -> u64 {
+    tag_size(field_number) + compute_sint32_size(value)
+}
+
+/// Length of value when encoding with zigzag encoding with tag
+pub fn value_sint64_size(field_number: u32, value: i64) -> u64 {
+    tag_size(field_number) + compute_sint64_size(value)
 }
 
 fn enum_or_unknown_size_no_tag<E: Enum>(value: EnumOrUnknown<E>) -> u64 {
