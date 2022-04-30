@@ -492,7 +492,7 @@ impl crate::Message for Value {
         if let ::std::option::Option::Some(ref v) = self.kind {
             match v {
                 &value::Kind::NullValue(v) => {
-                    my_size += crate::rt::varint_size(1, v.value());
+                    my_size += crate::rt::int32_size(1, v.value());
                 },
                 &value::Kind::NumberValue(v) => {
                     my_size += 9;

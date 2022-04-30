@@ -160,7 +160,7 @@ impl crate::Message for Type {
             my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         }
         if self.syntax != crate::EnumOrUnknown::new(Syntax::SYNTAX_PROTO2) {
-            my_size += crate::rt::varint_size(6, self.syntax.value());
+            my_size += crate::rt::int32_size(6, self.syntax.value());
         }
         my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
@@ -410,13 +410,13 @@ impl crate::Message for Field {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if self.kind != crate::EnumOrUnknown::new(field::Kind::TYPE_UNKNOWN) {
-            my_size += crate::rt::varint_size(1, self.kind.value());
+            my_size += crate::rt::int32_size(1, self.kind.value());
         }
         if self.cardinality != crate::EnumOrUnknown::new(field::Cardinality::CARDINALITY_UNKNOWN) {
-            my_size += crate::rt::varint_size(2, self.cardinality.value());
+            my_size += crate::rt::int32_size(2, self.cardinality.value());
         }
         if self.number != 0 {
-            my_size += crate::rt::varint_size(3, self.number);
+            my_size += crate::rt::int32_size(3, self.number);
         }
         if !self.name.is_empty() {
             my_size += crate::rt::string_size(4, &self.name);
@@ -425,7 +425,7 @@ impl crate::Message for Field {
             my_size += crate::rt::string_size(6, &self.type_url);
         }
         if self.oneof_index != 0 {
-            my_size += crate::rt::varint_size(7, self.oneof_index);
+            my_size += crate::rt::int32_size(7, self.oneof_index);
         }
         if self.packed != false {
             my_size += 2;
@@ -855,7 +855,7 @@ impl crate::Message for Enum {
             my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         }
         if self.syntax != crate::EnumOrUnknown::new(Syntax::SYNTAX_PROTO2) {
-            my_size += crate::rt::varint_size(5, self.syntax.value());
+            my_size += crate::rt::int32_size(5, self.syntax.value());
         }
         my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
@@ -1024,7 +1024,7 @@ impl crate::Message for EnumValue {
             my_size += crate::rt::string_size(1, &self.name);
         }
         if self.number != 0 {
-            my_size += crate::rt::varint_size(2, self.number);
+            my_size += crate::rt::int32_size(2, self.number);
         }
         for value in &self.options {
             let len = value.compute_size();

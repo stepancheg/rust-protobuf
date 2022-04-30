@@ -205,7 +205,7 @@ impl crate::Message for Api {
             my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         if self.syntax != crate::EnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2) {
-            my_size += crate::rt::varint_size(7, self.syntax.value());
+            my_size += crate::rt::int32_size(7, self.syntax.value());
         }
         my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
@@ -444,7 +444,7 @@ impl crate::Message for Method {
             my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         if self.syntax != crate::EnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2) {
-            my_size += crate::rt::varint_size(7, self.syntax.value());
+            my_size += crate::rt::int32_size(7, self.syntax.value());
         }
         my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);

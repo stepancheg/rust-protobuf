@@ -490,10 +490,10 @@ impl crate::Message for FileDescriptorProto {
             my_size += crate::rt::string_size(3, &value);
         };
         for value in &self.public_dependency {
-            my_size += crate::rt::varint_size(10, *value);
+            my_size += crate::rt::int32_size(10, *value);
         };
         for value in &self.weak_dependency {
-            my_size += crate::rt::varint_size(11, *value);
+            my_size += crate::rt::int32_size(11, *value);
         };
         for value in &self.message_type {
             let len = value.compute_size();
@@ -1133,10 +1133,10 @@ pub mod descriptor_proto {
         fn compute_size(&self) -> u64 {
             let mut my_size = 0;
             if let Some(v) = self.start {
-                my_size += crate::rt::varint_size(1, v);
+                my_size += crate::rt::int32_size(1, v);
             }
             if let Some(v) = self.end {
-                my_size += crate::rt::varint_size(2, v);
+                my_size += crate::rt::int32_size(2, v);
             }
             if let Some(v) = self.options.as_ref() {
                 let len = v.compute_size();
@@ -1323,10 +1323,10 @@ pub mod descriptor_proto {
         fn compute_size(&self) -> u64 {
             let mut my_size = 0;
             if let Some(v) = self.start {
-                my_size += crate::rt::varint_size(1, v);
+                my_size += crate::rt::int32_size(1, v);
             }
             if let Some(v) = self.end {
-                my_size += crate::rt::varint_size(2, v);
+                my_size += crate::rt::int32_size(2, v);
             }
             my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
             self.special_fields.cached_size().set(my_size as u32);
@@ -2014,13 +2014,13 @@ impl crate::Message for FieldDescriptorProto {
             my_size += crate::rt::string_size(1, &v);
         }
         if let Some(v) = self.number {
-            my_size += crate::rt::varint_size(3, v);
+            my_size += crate::rt::int32_size(3, v);
         }
         if let Some(v) = self.label {
-            my_size += crate::rt::varint_size(4, v.value());
+            my_size += crate::rt::int32_size(4, v.value());
         }
         if let Some(v) = self.type_ {
-            my_size += crate::rt::varint_size(5, v.value());
+            my_size += crate::rt::int32_size(5, v.value());
         }
         if let Some(v) = self.type_name.as_ref() {
             my_size += crate::rt::string_size(6, &v);
@@ -2032,7 +2032,7 @@ impl crate::Message for FieldDescriptorProto {
             my_size += crate::rt::string_size(7, &v);
         }
         if let Some(v) = self.oneof_index {
-            my_size += crate::rt::varint_size(9, v);
+            my_size += crate::rt::int32_size(9, v);
         }
         if let Some(v) = self.json_name.as_ref() {
             my_size += crate::rt::string_size(10, &v);
@@ -2911,10 +2911,10 @@ pub mod enum_descriptor_proto {
         fn compute_size(&self) -> u64 {
             let mut my_size = 0;
             if let Some(v) = self.start {
-                my_size += crate::rt::varint_size(1, v);
+                my_size += crate::rt::int32_size(1, v);
             }
             if let Some(v) = self.end {
-                my_size += crate::rt::varint_size(2, v);
+                my_size += crate::rt::int32_size(2, v);
             }
             my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
             self.special_fields.cached_size().set(my_size as u32);
@@ -3126,7 +3126,7 @@ impl crate::Message for EnumValueDescriptorProto {
             my_size += crate::rt::string_size(1, &v);
         }
         if let Some(v) = self.number {
-            my_size += crate::rt::varint_size(2, v);
+            my_size += crate::rt::int32_size(2, v);
         }
         if let Some(v) = self.options.as_ref() {
             let len = v.compute_size();
@@ -4674,7 +4674,7 @@ impl crate::Message for FileOptions {
             my_size += 3;
         }
         if let Some(v) = self.optimize_for {
-            my_size += crate::rt::varint_size(9, v.value());
+            my_size += crate::rt::int32_size(9, v.value());
         }
         if let Some(v) = self.go_package.as_ref() {
             my_size += crate::rt::string_size(11, &v);
@@ -5532,13 +5532,13 @@ impl crate::Message for FieldOptions {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if let Some(v) = self.ctype {
-            my_size += crate::rt::varint_size(1, v.value());
+            my_size += crate::rt::int32_size(1, v.value());
         }
         if let Some(v) = self.packed {
             my_size += 2;
         }
         if let Some(v) = self.jstype {
-            my_size += crate::rt::varint_size(6, v.value());
+            my_size += crate::rt::int32_size(6, v.value());
         }
         if let Some(v) = self.lazy {
             my_size += 2;
@@ -6574,7 +6574,7 @@ impl crate::Message for MethodOptions {
             my_size += 3;
         }
         if let Some(v) = self.idempotency_level {
-            my_size += crate::rt::varint_size(34, v.value());
+            my_size += crate::rt::int32_size(34, v.value());
         }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
@@ -7019,10 +7019,10 @@ impl crate::Message for UninterpretedOption {
             my_size += crate::rt::string_size(3, &v);
         }
         if let Some(v) = self.positive_int_value {
-            my_size += crate::rt::varint_size(4, v);
+            my_size += crate::rt::uint64_size(4, v);
         }
         if let Some(v) = self.negative_int_value {
-            my_size += crate::rt::varint_size(5, v);
+            my_size += crate::rt::int64_size(5, v);
         }
         if let Some(v) = self.double_value {
             my_size += 9;
@@ -8038,10 +8038,10 @@ pub mod generated_code_info {
                 my_size += crate::rt::string_size(2, &v);
             }
             if let Some(v) = self.begin {
-                my_size += crate::rt::varint_size(3, v);
+                my_size += crate::rt::int32_size(3, v);
             }
             if let Some(v) = self.end {
-                my_size += crate::rt::varint_size(4, v);
+                my_size += crate::rt::int32_size(4, v);
             }
             my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
             self.special_fields.cached_size().set(my_size as u32);
