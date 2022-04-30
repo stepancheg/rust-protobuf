@@ -130,7 +130,6 @@ fn print_to_internal(m: &MessageRef, buf: &mut String, pretty: bool, indent: usi
                 }
             }
             ReflectFieldRef::Repeated(repeated) => {
-                // TODO: do not print zeros for v3
                 for v in repeated {
                     print_field(buf, pretty, indent, &mut first, f.name(), v);
                 }
