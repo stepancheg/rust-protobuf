@@ -996,14 +996,17 @@ impl<'a> FieldGen<'a> {
                                 _ => unreachable!(),
                             };
                             format!(
-                                "{tag_size} + {}::rt::{f}({})",
+                                "{} + {}::rt::{}({})",
+                                tag_size,
                                 protobuf_crate_path(&self.customize),
+                                f,
                                 var_type.into_target(&param_type, var, &self.customize)
                             )
                         } else {
                             format!(
-                                "{tag_size} + {}::rt::value_size_no_tag({}, {}::rt::WireType::{:?})",
+                                "{}::rt::value_size({}, {}, {}::rt::WireType::{:?})",
                                 protobuf_crate_path(&self.customize),
+                                self.proto_field.number(),
                                 var_type.into_target(&param_type, var, &self.customize),
                                 protobuf_crate_path(&self.customize),
                                 self.wire_type
