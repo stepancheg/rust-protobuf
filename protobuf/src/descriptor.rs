@@ -2017,10 +2017,10 @@ impl crate::Message for FieldDescriptorProto {
             my_size += crate::rt::varint_size(3, v);
         }
         if let Some(v) = self.label {
-            my_size += crate::rt::enum_or_unknown_size(4, v);
+            my_size += crate::rt::varint_size(4, v.value());
         }
         if let Some(v) = self.type_ {
-            my_size += crate::rt::enum_or_unknown_size(5, v);
+            my_size += crate::rt::varint_size(5, v.value());
         }
         if let Some(v) = self.type_name.as_ref() {
             my_size += crate::rt::string_size(6, &v);
@@ -4674,7 +4674,7 @@ impl crate::Message for FileOptions {
             my_size += 3;
         }
         if let Some(v) = self.optimize_for {
-            my_size += crate::rt::enum_or_unknown_size(9, v);
+            my_size += crate::rt::varint_size(9, v.value());
         }
         if let Some(v) = self.go_package.as_ref() {
             my_size += crate::rt::string_size(11, &v);
@@ -5532,13 +5532,13 @@ impl crate::Message for FieldOptions {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if let Some(v) = self.ctype {
-            my_size += crate::rt::enum_or_unknown_size(1, v);
+            my_size += crate::rt::varint_size(1, v.value());
         }
         if let Some(v) = self.packed {
             my_size += 2;
         }
         if let Some(v) = self.jstype {
-            my_size += crate::rt::enum_or_unknown_size(6, v);
+            my_size += crate::rt::varint_size(6, v.value());
         }
         if let Some(v) = self.lazy {
             my_size += 2;
@@ -6574,7 +6574,7 @@ impl crate::Message for MethodOptions {
             my_size += 3;
         }
         if let Some(v) = self.idempotency_level {
-            my_size += crate::rt::enum_or_unknown_size(34, v);
+            my_size += crate::rt::varint_size(34, v.value());
         }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
