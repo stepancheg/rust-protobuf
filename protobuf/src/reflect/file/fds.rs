@@ -1,67 +1,48 @@
 use std::collections::HashMap;
 use std::collections::HashSet;
+use std::mem;
+
+use protobuf_support::toposort::toposort;
 
 use crate::descriptor::FileDescriptorProto;
+use crate::reflect::error::ReflectError;
 use crate::reflect::FileDescriptor;
 
-pub(crate) struct FdsBuilder {
-    names: Vec<String>,
-    unprocessed: HashMap<String, FileDescriptorProto>,
-    processed: HashMap<String, FileDescriptor>,
-}
-
-impl FdsBuilder {
-    fn process_one(&mut self) -> crate::Result<()> {
-        let (n, deps) = self
-            .unprocessed
-            .iter()
-            .find_map(|(n, p)| {
-                let deps: Result<Vec<FileDescriptor>, ()> = p
-                    .dependency
-                    .iter()
-                    .map(|n| match self.processed.get(n) {
-                        Some(d) => Ok(d.clone()),
-                        None => {
-                            assert!(
-                                self.unprocessed.get(n).is_some(),
-                                "unsatisfied dependency: {}",
-                                n
-                            );
-                            Err(())
-                        }
-                    })
-                    .collect();
-                deps.ok().map(|deps| (n, deps))
-            })
-            .unwrap();
-        let n = n.clone();
-        let proto = self.unprocessed.remove(&n).unwrap();
-        self.processed
-            .insert(n.clone(), FileDescriptor::new_dynamic(proto, deps)?);
-        Ok(())
-    }
-
-    pub(crate) fn build(protos: Vec<FileDescriptorProto>) -> crate::Result<Vec<FileDescriptor>> {
-        let mut builder = FdsBuilder {
-            names: protos.iter().map(|p| p.name().to_owned()).collect(),
-            unprocessed: protos
-                .into_iter()
-                .map(|p| (p.name().to_owned(), p))
-                .collect(),
-            processed: HashMap::new(),
-        };
-
-        while !builder.unprocessed.is_empty() {
-            builder.process_one()?;
+pub(crate) fn build_fds(protos: Vec<FileDescriptorProto>) -> crate::Result<Vec<FileDescriptor>> {
+    let mut index_by_name: HashMap<&str, usize> = HashMap::new();
+    for (i, proto) in protos.iter().enumerate() {
+        let prev = index_by_name.insert(proto.name(), i);
+        if prev.is_some() {
+            return Err(ReflectError::NonUniqueFileDescriptor(proto.name().to_owned()).into());
         }
-
-        let mut processed = builder.processed;
-        Ok(builder
-            .names
-            .iter()
-            .map(|n| processed.remove(n).unwrap())
-            .collect())
     }
+
+    let sorted = match toposort(0..protos.len(), |&i| {
+        protos[i]
+            .dependency
+            .iter()
+            .filter_map(|d| index_by_name.get(d.as_str()).copied())
+    }) {
+        Ok(s) => s,
+        Err(_) => return Err(ReflectError::CycleInFileDescriptors.into()),
+    };
+
+    let mut built_descriptors_by_index = vec![None; protos.len()];
+
+    let mut protos: Vec<Option<FileDescriptorProto>> = protos.into_iter().map(Some).collect();
+
+    let mut all_descriptors = Vec::new();
+    for f in sorted {
+        let proto = mem::take(&mut protos[f]).unwrap();
+        let d = FileDescriptor::new_dynamic(proto, all_descriptors.clone())?;
+        all_descriptors.push(d.clone());
+        built_descriptors_by_index[f] = Some(d);
+    }
+
+    Ok(built_descriptors_by_index
+        .into_iter()
+        .map(Option::unwrap)
+        .collect())
 }
 
 pub(crate) fn fds_extend_with_public(file_descriptors: Vec<FileDescriptor>) -> Vec<FileDescriptor> {

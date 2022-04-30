@@ -8,4 +8,8 @@ pub(crate) enum ReflectError {
     NonUniqueDependencies(String),
     #[error("Non-unique field name: `{0}`")]
     NonUniqueFieldName(String),
+    #[error("Non-unique file descriptor: `{0}`")]
+    NonUniqueFileDescriptor(String),
+    #[error("Cycle in provided file descriptors")]
+    CycleInFileDescriptors,
 }

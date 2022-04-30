@@ -9,7 +9,7 @@ use crate::descriptor::FileDescriptorProto;
 use crate::reflect::error::ReflectError;
 use crate::reflect::field::FieldDescriptorImpl;
 use crate::reflect::file::dynamic::DynamicFileDescriptor;
-use crate::reflect::file::fds::FdsBuilder;
+use crate::reflect::file::fds::build_fds;
 use crate::reflect::file::index::EnumIndex;
 use crate::reflect::file::index::FileDescriptorCommon;
 use crate::reflect::file::index::MessageIndex;
@@ -250,7 +250,7 @@ impl FileDescriptor {
     /// Create a set of file descriptors from individual file descriptors.
     // TODO: add deps parameter.
     pub fn new_dynamic_fds(protos: Vec<FileDescriptorProto>) -> crate::Result<Vec<FileDescriptor>> {
-        FdsBuilder::build(protos)
+        build_fds(protos)
     }
 
     /// `.proto` data for this file.
