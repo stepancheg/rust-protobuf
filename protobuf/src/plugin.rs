@@ -659,11 +659,6 @@ impl crate::Message for CodeGeneratorResponse {
     const NAME: &'static str = "CodeGeneratorResponse";
 
     fn is_initialized(&self) -> bool {
-        for v in &self.file {
-            if !v.is_initialized() {
-                return false;
-            }
-        };
         true
     }
 
@@ -993,11 +988,6 @@ pub mod code_generator_response {
         const NAME: &'static str = "File";
 
         fn is_initialized(&self) -> bool {
-            for v in &self.generated_code_info {
-                if !v.is_initialized() {
-                    return false;
-                }
-            };
             true
         }
 

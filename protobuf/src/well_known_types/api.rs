@@ -143,26 +143,6 @@ impl crate::Message for Api {
     const NAME: &'static str = "Api";
 
     fn is_initialized(&self) -> bool {
-        for v in &self.methods {
-            if !v.is_initialized() {
-                return false;
-            }
-        };
-        for v in &self.options {
-            if !v.is_initialized() {
-                return false;
-            }
-        };
-        for v in &self.source_context {
-            if !v.is_initialized() {
-                return false;
-            }
-        };
-        for v in &self.mixins {
-            if !v.is_initialized() {
-                return false;
-            }
-        };
         true
     }
 
@@ -405,11 +385,6 @@ impl crate::Message for Method {
     const NAME: &'static str = "Method";
 
     fn is_initialized(&self) -> bool {
-        for v in &self.options {
-            if !v.is_initialized() {
-                return false;
-            }
-        };
         true
     }
 

@@ -7372,11 +7372,6 @@ impl crate::Message for SourceCodeInfo {
     const NAME: &'static str = "SourceCodeInfo";
 
     fn is_initialized(&self) -> bool {
-        for v in &self.location {
-            if !v.is_initialized() {
-                return false;
-            }
-        };
         true
     }
 
@@ -7781,11 +7776,6 @@ impl crate::Message for GeneratedCodeInfo {
     const NAME: &'static str = "GeneratedCodeInfo";
 
     fn is_initialized(&self) -> bool {
-        for v in &self.annotation {
-            if !v.is_initialized() {
-                return false;
-            }
-        };
         true
     }
 

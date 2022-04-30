@@ -453,16 +453,6 @@ impl crate::Message for Value {
     const NAME: &'static str = "Value";
 
     fn is_initialized(&self) -> bool {
-        if let Some(value::Kind::StructValue(ref v)) = self.kind {
-            if !v.is_initialized() {
-                return false;
-            }
-        }
-        if let Some(value::Kind::ListValue(ref v)) = self.kind {
-            if !v.is_initialized() {
-                return false;
-            }
-        }
         true
     }
 
@@ -687,11 +677,6 @@ impl crate::Message for ListValue {
     const NAME: &'static str = "ListValue";
 
     fn is_initialized(&self) -> bool {
-        for v in &self.values {
-            if !v.is_initialized() {
-                return false;
-            }
-        };
         true
     }
 
