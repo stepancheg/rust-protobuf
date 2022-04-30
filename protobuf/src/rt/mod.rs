@@ -31,7 +31,8 @@ use crate::enums::Enum;
 pub use crate::lazy::Lazy;
 use crate::varint::encode::encoded_varint64_len;
 pub use crate::wire_format::WireType;
-use crate::zigzag::*;
+use crate::zigzag::encode_zig_zag_32;
+use crate::zigzag::encode_zig_zag_64;
 use crate::EnumOrUnknown;
 
 /// Given `u64` value compute varint encoded length.
