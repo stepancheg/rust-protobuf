@@ -130,14 +130,6 @@ impl EnumDescriptor {
         }
     }
 
-    /// Get internal index.
-    ///
-    /// Only needed for codegen.
-    #[doc(hidden)]
-    pub fn index_in_file_for_codegen(&self) -> usize {
-        self.index
-    }
-
     fn get_impl(&self) -> EnumDescriptorImplRef {
         match &self.file_descriptor.imp {
             FileDescriptorImpl::Generated(g) => {
