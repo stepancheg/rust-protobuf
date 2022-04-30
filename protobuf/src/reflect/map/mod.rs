@@ -2,13 +2,14 @@ use std::fmt;
 use std::fmt::Debug;
 use std::fmt::Formatter;
 
-use crate::reflect::dynamic::map::DynamicMap;
+use crate::reflect::map::empty::DynamicEmptyMap;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::reflect::RuntimeTypeBox;
 
+mod empty;
 mod generated;
 
 /// Implemented for `HashMap` with appropriate keys and values
@@ -66,7 +67,7 @@ impl<'a> IntoIterator for &'a dyn ReflectMap {
 #[derive(Clone)]
 enum ReflectMapRefImpl<'a> {
     Generated(&'a dyn ReflectMap),
-    DynamicEmpty(DynamicMap),
+    DynamicEmpty(DynamicEmptyMap),
 }
 
 impl<'a> fmt::Debug for ReflectMapRefImpl<'a> {
@@ -110,8 +111,7 @@ impl<'a> ReflectMapRef<'a> {
 
     pub(crate) fn new_empty(key: RuntimeTypeBox, value: RuntimeTypeBox) -> ReflectMapRef<'a> {
         ReflectMapRef {
-            // TODO: this might be a bit expensive.
-            imp: ReflectMapRefImpl::DynamicEmpty(DynamicMap::new(key, value)),
+            imp: ReflectMapRefImpl::DynamicEmpty(DynamicEmptyMap::new(key, value)),
         }
     }
 
