@@ -416,7 +416,7 @@ impl crate::Message for Field {
             my_size += 1 + crate::rt::enum_or_unknown_size_no_tag(self.cardinality);
         }
         if self.number != 0 {
-            my_size += 1 + crate::rt::varint_size_no_tag(self.number);
+            my_size += 1 + crate::rt::int32_size_no_tag(self.number);
         }
         if !self.name.is_empty() {
             my_size += 1 + crate::rt::string_size_no_tag(&self.name);
@@ -425,7 +425,7 @@ impl crate::Message for Field {
             my_size += 1 + crate::rt::string_size_no_tag(&self.type_url);
         }
         if self.oneof_index != 0 {
-            my_size += 1 + crate::rt::varint_size_no_tag(self.oneof_index);
+            my_size += 1 + crate::rt::int32_size_no_tag(self.oneof_index);
         }
         if self.packed != false {
             my_size += 2;
@@ -1024,7 +1024,7 @@ impl crate::Message for EnumValue {
             my_size += 1 + crate::rt::string_size_no_tag(&self.name);
         }
         if self.number != 0 {
-            my_size += 1 + crate::rt::varint_size_no_tag(self.number);
+            my_size += 1 + crate::rt::int32_size_no_tag(self.number);
         }
         for value in &self.options {
             let len = value.compute_size();
