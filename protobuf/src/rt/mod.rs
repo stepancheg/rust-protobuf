@@ -196,6 +196,16 @@ pub(crate) fn vec_packed_fixed_data_size<V: ProtobufFixed>(vec: &[V]) -> u64 {
 }
 
 /// Compute field size (data plus header) of fixed encoding of repeated field.
+pub fn vec_packed_fixed_size<V: ProtobufFixed>(field_number: u32, vec: &[V]) -> u64 {
+    if vec.is_empty() {
+        0
+    } else {
+        let data_size = vec_packed_fixed_data_size::<V>(vec);
+        tag_size(field_number) + data_size.len_varint() + data_size
+    }
+}
+
+/// Compute field size (data plus header) of fixed encoding of repeated field.
 pub fn vec_packed_fixed_size_no_tag<V: ProtobufFixed>(vec: &[V]) -> u64 {
     let data_size = vec_packed_fixed_data_size::<V>(vec);
     data_size.len_varint() + data_size
