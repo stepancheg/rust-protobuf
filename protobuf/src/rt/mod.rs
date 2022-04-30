@@ -95,21 +95,6 @@ pub fn tag_size(field_number: u32) -> u64 {
     encoded_varint64_len((field_number as u64) << 3) as u64
 }
 
-fn value_size_no_tag<T: ProtobufVarint>(value: T, wt: WireType) -> u64 {
-    match wt {
-        WireType::Fixed64 => 8,
-        WireType::Fixed32 => 4,
-        WireType::Varint => value.len_varint(),
-        _ => panic!(),
-    }
-}
-
-/// Integer value size when encoded as specified wire type.
-#[inline]
-pub fn value_size<T: ProtobufVarint>(field_number: u32, value: T, wt: WireType) -> u64 {
-    tag_size(field_number) + value_size_no_tag(value, wt)
-}
-
 /// Integer value size when encoded.
 #[inline]
 pub fn varint_size<T: ProtobufVarint>(field_number: u32, value: T) -> u64 {

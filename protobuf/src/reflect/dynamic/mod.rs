@@ -30,8 +30,8 @@ use crate::rt::string_size;
 use crate::rt::tag_size;
 use crate::rt::unknown_fields_size;
 use crate::rt::unknown_or_group::read_unknown_or_skip_group_with_tag_unpacked;
-use crate::rt::value_size;
 use crate::rt::value_varint_zigzag_size;
+use crate::rt::varint_size;
 use crate::rt::vec_packed_bool_size;
 use crate::rt::vec_packed_double_size;
 use crate::rt::vec_packed_fixed32_size;
@@ -542,7 +542,7 @@ fn compute_singular_size(proto_type: Type, field_number: u32, v: &ReflectValueRe
     match proto_type {
         Type::TYPE_ENUM => {
             let enum_v = v.to_enum_value().unwrap();
-            value_size(field_number, enum_v, WireType::Varint)
+            varint_size(field_number, enum_v)
         }
         Type::TYPE_MESSAGE => {
             let msg_v = v.to_message().unwrap();
@@ -554,19 +554,19 @@ fn compute_singular_size(proto_type: Type, field_number: u32, v: &ReflectValueRe
         }
         Type::TYPE_UINT32 => {
             let typed_v = v.to_u32().unwrap();
-            value_size(field_number, typed_v, WireType::Varint)
+            varint_size(field_number, typed_v)
         }
         Type::TYPE_UINT64 => {
             let typed_v = v.to_u64().unwrap();
-            value_size(field_number, typed_v, WireType::Varint)
+            varint_size(field_number, typed_v)
         }
         Type::TYPE_INT32 => {
             let typed_v = v.to_i32().unwrap();
-            value_size(field_number, typed_v, WireType::Varint)
+            varint_size(field_number, typed_v)
         }
         Type::TYPE_INT64 => {
             let typed_v = v.to_i64().unwrap();
-            value_size(field_number, typed_v, WireType::Varint)
+            varint_size(field_number, typed_v)
         }
         Type::TYPE_SINT32 => {
             let typed_v = v.to_i32().unwrap();
@@ -580,10 +580,7 @@ fn compute_singular_size(proto_type: Type, field_number: u32, v: &ReflectValueRe
         Type::TYPE_FIXED64 => tag_size(field_number) + 8,
         Type::TYPE_SFIXED32 => tag_size(field_number) + 4,
         Type::TYPE_SFIXED64 => tag_size(field_number) + 8,
-        Type::TYPE_BOOL => {
-            let typed_v = v.to_bool().unwrap();
-            value_size(field_number, typed_v, WireType::Varint)
-        }
+        Type::TYPE_BOOL => tag_size(field_number) + 1,
         Type::TYPE_STRING => {
             let typed_v = v.to_str().unwrap();
             string_size(field_number, typed_v)
