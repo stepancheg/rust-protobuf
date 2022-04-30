@@ -224,8 +224,21 @@ pub(crate) fn value_varint_zigzag_size_no_tag<T: ProtobufVarintZigzag>(value: T)
 }
 
 /// Length of value when encoding with zigzag encoding with tag
+#[inline]
 pub fn value_varint_zigzag_size<T: ProtobufVarintZigzag>(field_number: u32, value: T) -> u64 {
     tag_size(field_number) + value_varint_zigzag_size_no_tag(value)
+}
+
+/// Size of serialized `sint32` field.
+#[inline]
+pub fn sint32_size(field_number: u32, value: i32) -> u64 {
+    value_varint_zigzag_size(field_number, value)
+}
+
+/// Size of serialized `sint64` field.
+#[inline]
+pub fn sint64_size(field_number: u32, value: i64) -> u64 {
+    value_varint_zigzag_size(field_number, value)
 }
 
 fn enum_or_unknown_size_no_tag<E: Enum>(value: EnumOrUnknown<E>) -> u64 {
