@@ -12,7 +12,7 @@ use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::reflect::RuntimeTypeBox;
 
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 enum Maps {
     U32(HashMap<u32, ReflectValueBox>),
     I32(HashMap<i32, ReflectValueBox>),
@@ -20,6 +20,19 @@ enum Maps {
     I64(HashMap<i64, ReflectValueBox>),
     Bool(HashMap<bool, ReflectValueBox>),
     String(HashMap<String, ReflectValueBox>),
+}
+
+impl fmt::Debug for Maps {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Maps::U32(map) => fmt::Debug::fmt(map, f),
+            Maps::I32(map) => fmt::Debug::fmt(map, f),
+            Maps::U64(map) => fmt::Debug::fmt(map, f),
+            Maps::I64(map) => fmt::Debug::fmt(map, f),
+            Maps::Bool(map) => fmt::Debug::fmt(map, f),
+            Maps::String(map) => fmt::Debug::fmt(map, f),
+        }
+    }
 }
 
 impl Maps {
