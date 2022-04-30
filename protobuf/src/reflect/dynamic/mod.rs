@@ -281,7 +281,6 @@ impl fmt::Display for DynamicMessage {
     }
 }
 
-// TODO: implement PartialEq, Default
 impl MessageDyn for DynamicMessage {
     fn descriptor_dyn(&self) -> MessageDescriptor {
         self.descriptor.clone()
