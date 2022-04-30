@@ -498,7 +498,7 @@ impl crate::Message for Value {
                     my_size += 9;
                 },
                 &value::Kind::StringValue(ref v) => {
-                    my_size += 1 + crate::rt::string_size_no_tag(&v);
+                    my_size += crate::rt::string_size(3, &v);
                 },
                 &value::Kind::BoolValue(v) => {
                     my_size += 2;

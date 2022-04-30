@@ -124,10 +124,10 @@ impl crate::Message for Any {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if !self.type_url.is_empty() {
-            my_size += 1 + crate::rt::string_size_no_tag(&self.type_url);
+            my_size += crate::rt::string_size(1, &self.type_url);
         }
         if !self.value.is_empty() {
-            my_size += 1 + crate::rt::bytes_size_no_tag(&self.value);
+            my_size += crate::rt::bytes_size(2, &self.value);
         }
         my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
