@@ -110,3 +110,45 @@ pub fn vec_packed_fixed_size<V: ProtobufFixed>(field_number: u32, vec: &[V]) -> 
         tag_size(field_number) + data_size.len_varint() + data_size
     }
 }
+
+/// Compute data size of fixed encoding of repeated field data.
+#[inline]
+pub fn vec_packed_fixed32_size(field_number: u32, vec: &[u32]) -> u64 {
+    vec_packed_fixed_size(field_number, vec)
+}
+
+/// Compute data size of fixed encoding of repeated field data.
+#[inline]
+pub fn vec_packed_fixed64_size(field_number: u32, vec: &[u64]) -> u64 {
+    vec_packed_fixed_size(field_number, vec)
+}
+
+/// Compute data size of fixed encoding of repeated field data.
+#[inline]
+pub fn vec_packed_sfixed32_size(field_number: u32, vec: &[i32]) -> u64 {
+    vec_packed_fixed_size(field_number, vec)
+}
+
+/// Compute data size of fixed encoding of repeated field data.
+#[inline]
+pub fn vec_packed_sfixed64_size(field_number: u32, vec: &[i64]) -> u64 {
+    vec_packed_fixed_size(field_number, vec)
+}
+
+/// Compute data size of fixed encoding of repeated field data.
+#[inline]
+pub fn vec_packed_float_size(field_number: u32, vec: &[f32]) -> u64 {
+    vec_packed_fixed_size(field_number, vec)
+}
+
+/// Compute data size of fixed encoding of repeated field data.
+#[inline]
+pub fn vec_packed_double_size(field_number: u32, vec: &[f64]) -> u64 {
+    vec_packed_fixed_size(field_number, vec)
+}
+
+/// Compute data size of fixed encoding of repeated field data.
+#[inline]
+pub fn vec_packed_bool_size(field_number: u32, vec: &[bool]) -> u64 {
+    vec_packed_fixed_size(field_number, vec)
+}
