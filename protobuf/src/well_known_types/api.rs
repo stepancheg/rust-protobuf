@@ -183,7 +183,7 @@ impl crate::Message for Api {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if !self.name.is_empty() {
-            my_size += crate::rt::string_size(1, &self.name);
+            my_size += 1 + crate::rt::string_size_no_tag(&self.name);
         }
         for value in &self.methods {
             let len = value.compute_size();
@@ -194,7 +194,7 @@ impl crate::Message for Api {
             my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
         if !self.version.is_empty() {
-            my_size += crate::rt::string_size(4, &self.version);
+            my_size += 1 + crate::rt::string_size_no_tag(&self.version);
         }
         if let Some(v) = self.source_context.as_ref() {
             let len = v.compute_size();
@@ -425,16 +425,16 @@ impl crate::Message for Method {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if !self.name.is_empty() {
-            my_size += crate::rt::string_size(1, &self.name);
+            my_size += 1 + crate::rt::string_size_no_tag(&self.name);
         }
         if !self.request_type_url.is_empty() {
-            my_size += crate::rt::string_size(2, &self.request_type_url);
+            my_size += 1 + crate::rt::string_size_no_tag(&self.request_type_url);
         }
         if self.request_streaming != false {
             my_size += 2;
         }
         if !self.response_type_url.is_empty() {
-            my_size += crate::rt::string_size(4, &self.response_type_url);
+            my_size += 1 + crate::rt::string_size_no_tag(&self.response_type_url);
         }
         if self.response_streaming != false {
             my_size += 2;
@@ -609,10 +609,10 @@ impl crate::Message for Mixin {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if !self.name.is_empty() {
-            my_size += crate::rt::string_size(1, &self.name);
+            my_size += 1 + crate::rt::string_size_no_tag(&self.name);
         }
         if !self.root.is_empty() {
-            my_size += crate::rt::string_size(2, &self.root);
+            my_size += 1 + crate::rt::string_size_no_tag(&self.root);
         }
         my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
