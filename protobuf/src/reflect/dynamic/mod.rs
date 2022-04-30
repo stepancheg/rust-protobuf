@@ -25,13 +25,17 @@ use crate::reflect::Syntax;
 use crate::rt::bytes_size;
 use crate::rt::compute_raw_varint32_size;
 use crate::rt::compute_raw_varint64_size;
+use crate::rt::int32_size;
+use crate::rt::int64_size;
 use crate::rt::map::read_map_template;
+use crate::rt::sint32_size;
+use crate::rt::sint64_size;
 use crate::rt::string_size;
 use crate::rt::tag_size;
+use crate::rt::uint32_size;
+use crate::rt::uint64_size;
 use crate::rt::unknown_fields_size;
 use crate::rt::unknown_or_group::read_unknown_or_skip_group_with_tag_unpacked;
-use crate::rt::value_varint_zigzag_size;
-use crate::rt::varint_size;
 use crate::rt::vec_packed_bool_size;
 use crate::rt::vec_packed_double_size;
 use crate::rt::vec_packed_fixed32_size;
@@ -542,7 +546,7 @@ fn compute_singular_size(proto_type: Type, field_number: u32, v: &ReflectValueRe
     match proto_type {
         Type::TYPE_ENUM => {
             let enum_v = v.to_enum_value().unwrap();
-            varint_size(field_number, enum_v)
+            int32_size(field_number, enum_v)
         }
         Type::TYPE_MESSAGE => {
             let msg_v = v.to_message().unwrap();
@@ -554,27 +558,27 @@ fn compute_singular_size(proto_type: Type, field_number: u32, v: &ReflectValueRe
         }
         Type::TYPE_UINT32 => {
             let typed_v = v.to_u32().unwrap();
-            varint_size(field_number, typed_v)
+            uint32_size(field_number, typed_v)
         }
         Type::TYPE_UINT64 => {
             let typed_v = v.to_u64().unwrap();
-            varint_size(field_number, typed_v)
+            uint64_size(field_number, typed_v)
         }
         Type::TYPE_INT32 => {
             let typed_v = v.to_i32().unwrap();
-            varint_size(field_number, typed_v)
+            int32_size(field_number, typed_v)
         }
         Type::TYPE_INT64 => {
             let typed_v = v.to_i64().unwrap();
-            varint_size(field_number, typed_v)
+            int64_size(field_number, typed_v)
         }
         Type::TYPE_SINT32 => {
             let typed_v = v.to_i32().unwrap();
-            value_varint_zigzag_size(field_number, typed_v)
+            sint32_size(field_number, typed_v)
         }
         Type::TYPE_SINT64 => {
             let typed_v = v.to_i64().unwrap();
-            value_varint_zigzag_size(field_number, typed_v)
+            sint64_size(field_number, typed_v)
         }
         Type::TYPE_FIXED32 => tag_size(field_number) + 4,
         Type::TYPE_FIXED64 => tag_size(field_number) + 8,

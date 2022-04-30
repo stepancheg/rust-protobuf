@@ -95,7 +95,7 @@ pub fn tag_size(field_number: u32) -> u64 {
 
 /// Integer value size when encoded.
 #[inline]
-pub fn varint_size<T: ProtobufVarint>(field_number: u32, value: T) -> u64 {
+fn varint_size<T: ProtobufVarint>(field_number: u32, value: T) -> u64 {
     tag_size(field_number) + value.len_varint()
 }
 
@@ -130,10 +130,7 @@ pub(crate) fn value_varint_zigzag_size_no_tag<T: ProtobufVarintZigzag>(value: T)
 
 /// Length of value when encoding with zigzag encoding with tag
 #[inline]
-pub(crate) fn value_varint_zigzag_size<T: ProtobufVarintZigzag>(
-    field_number: u32,
-    value: T,
-) -> u64 {
+fn value_varint_zigzag_size<T: ProtobufVarintZigzag>(field_number: u32, value: T) -> u64 {
     tag_size(field_number) + value_varint_zigzag_size_no_tag(value)
 }
 
