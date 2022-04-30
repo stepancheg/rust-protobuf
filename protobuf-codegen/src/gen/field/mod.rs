@@ -1,3 +1,9 @@
+mod accessor;
+mod option_kind;
+mod repeated;
+mod singular;
+pub(crate) mod type_ext;
+
 use protobuf::descriptor::field_descriptor_proto::Type;
 use protobuf::descriptor::*;
 use protobuf::reflect::ReflectValueRef;
@@ -13,6 +19,11 @@ use crate::customize::rustproto_proto::customize_from_rustproto_for_field;
 use crate::customize::Customize;
 use crate::gen::code_writer::CodeWriter;
 use crate::gen::code_writer::Visibility;
+use crate::gen::field::option_kind::OptionKind;
+use crate::gen::field::repeated::RepeatedField;
+use crate::gen::field::singular::SingularField;
+use crate::gen::field::singular::SingularFieldFlag;
+use crate::gen::field::type_ext::TypeExt;
 use crate::gen::file_and_mod::FileAndMod;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::map::map_entry;
@@ -24,242 +35,23 @@ use crate::gen::rust::ident_with_path::RustIdentWithPath;
 use crate::gen::rust::quote::quote_escape_bytes;
 use crate::gen::rust::quote::quote_escape_str;
 use crate::gen::rust::snippets::EXPR_NONE;
-use crate::gen::rust::snippets::EXPR_VEC_NEW;
-use crate::gen::rust_types_values::*;
+use crate::gen::rust_types_values::message_or_enum_to_rust_relative;
+use crate::gen::rust_types_values::rust_name;
+use crate::gen::rust_types_values::PrimitiveTypeVariant;
+use crate::gen::rust_types_values::ProtobufTypeGen;
+use crate::gen::rust_types_values::RustType;
+use crate::gen::rust_types_values::RustValueTyped;
 use crate::gen::scope::EnumValueWithContext;
 use crate::gen::scope::FieldWithContext;
 use crate::gen::scope::MessageOrEnumWithScope;
 use crate::gen::scope::MessageWithScope;
 use crate::gen::scope::RootScope;
 
-mod accessor;
-
-fn type_is_copy(field_type: field_descriptor_proto::Type) -> bool {
-    match field_type {
-        field_descriptor_proto::Type::TYPE_MESSAGE
-        | field_descriptor_proto::Type::TYPE_STRING
-        | field_descriptor_proto::Type::TYPE_BYTES => false,
-        _ => true,
-    }
-}
-
-trait FieldDescriptorProtoTypeExt {
-    fn read(&self, is: &str, primitive_type_variant: PrimitiveTypeVariant) -> String;
-    fn is_s_varint(&self) -> bool;
-}
-
-impl FieldDescriptorProtoTypeExt for field_descriptor_proto::Type {
-    fn read(&self, is: &str, primitive_type_variant: PrimitiveTypeVariant) -> String {
-        match *self {
-            field_descriptor_proto::Type::TYPE_ENUM => format!("{}.read_enum_or_unknown()", is),
-            _ => match primitive_type_variant {
-                PrimitiveTypeVariant::Default => format!("{}.read_{}()", is, protobuf_name(*self)),
-                PrimitiveTypeVariant::TokioBytes => {
-                    let protobuf_name = match self {
-                        field_descriptor_proto::Type::TYPE_STRING => "chars",
-                        _ => protobuf_name(*self),
-                    };
-                    format!("{}.read_tokio_{}()", is, protobuf_name)
-                }
-            },
-        }
-    }
-
-    /// True if self is signed integer with zigzag encoding
-    fn is_s_varint(&self) -> bool {
-        match *self {
-            field_descriptor_proto::Type::TYPE_SINT32
-            | field_descriptor_proto::Type::TYPE_SINT64 => true,
-            _ => false,
-        }
-    }
-}
-
-fn type_protobuf_name(field_type: field_descriptor_proto::Type) -> &'static str {
-    match field_type {
-        Type::TYPE_INT32 => "int32",
-        Type::TYPE_INT64 => "int64",
-        Type::TYPE_UINT32 => "uint32",
-        Type::TYPE_UINT64 => "uint64",
-        Type::TYPE_SINT32 => "sint32",
-        Type::TYPE_SINT64 => "sint64",
-        Type::TYPE_BOOL => "bool",
-        Type::TYPE_FIXED32 => "fixed32",
-        Type::TYPE_FIXED64 => "fixed64",
-        Type::TYPE_SFIXED32 => "sfixed32",
-        Type::TYPE_SFIXED64 => "sfixed64",
-        Type::TYPE_FLOAT => "float",
-        Type::TYPE_DOUBLE => "double",
-        Type::TYPE_STRING => "string",
-        Type::TYPE_BYTES => "bytes",
-        Type::TYPE_ENUM | Type::TYPE_MESSAGE | Type::TYPE_GROUP => panic!(),
-    }
-}
-
 fn field_type_protobuf_name<'a>(field: &'a FieldDescriptorProto) -> &'a str {
     if field.has_type_name() {
         field.type_name()
     } else {
-        type_protobuf_name(field.type_())
-    }
-}
-
-// size of value for type, None if variable
-fn field_type_size(field_type: field_descriptor_proto::Type) -> Option<u32> {
-    match field_type {
-        Type::TYPE_BOOL => Some(1),
-        Type::TYPE_FIXED32 => Some(4),
-        Type::TYPE_FIXED64 => Some(8),
-        Type::TYPE_SFIXED32 => Some(4),
-        Type::TYPE_SFIXED64 => Some(8),
-        Type::TYPE_FLOAT => Some(4),
-        Type::TYPE_DOUBLE => Some(8),
-        _ => None,
-    }
-}
-
-/// Optional fields can be stored are `Option<T>` or `SingularPtrField<T>`.
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub enum OptionKind {
-    /// Field is `Option<T>`
-    Option,
-    /// Field is `SingularPtrField<T>`
-    MessageField,
-}
-
-impl OptionKind {
-    fn wrap_element(&self, element_type: RustType) -> RustType {
-        let element_type = Box::new(element_type);
-        match self {
-            OptionKind::Option => RustType::Option(element_type),
-            OptionKind::MessageField => RustType::MessageField(element_type),
-        }
-    }
-
-    // Type of `as_ref()` operation
-    fn as_ref_type(&self, element_type: RustType) -> RustType {
-        match self {
-            OptionKind::Option => RustType::Option(Box::new(element_type.ref_type())),
-            OptionKind::MessageField => RustType::MessageField(Box::new(element_type.ref_type())),
-        }
-    }
-
-    fn _as_option_ref(&self, v: &str) -> String {
-        match self {
-            OptionKind::Option | OptionKind::MessageField => format!("{}.as_ref()", v),
-        }
-    }
-
-    fn unwrap_or_else(&self, what: &str, default_value: &str) -> String {
-        match self {
-            _ => format!("{}.unwrap_or_else(|| {})", what, default_value),
-        }
-    }
-
-    fn unwrap_ref_or_else(&self, what: &str, default_value: &str) -> String {
-        match self {
-            _ => format!("{}.unwrap_or_else(|| {})", what, default_value),
-        }
-    }
-
-    fn wrap_value(&self, value: &str, customize: &Customize) -> String {
-        match self {
-            OptionKind::Option => format!("::std::option::Option::Some({})", value),
-            OptionKind::MessageField => format!(
-                "{}::MessageField::some({})",
-                protobuf_crate_path(customize),
-                value
-            ),
-        }
-    }
-}
-
-#[derive(Clone, PartialEq, Eq, Copy)]
-pub enum SingularFieldFlag {
-    // proto2 or proto3 message
-    WithFlag {
-        required: bool,
-        option_kind: OptionKind,
-    },
-    // proto3
-    WithoutFlag,
-}
-
-impl SingularFieldFlag {
-    pub fn is_required(&self) -> bool {
-        match *self {
-            SingularFieldFlag::WithFlag { required, .. } => required,
-            SingularFieldFlag::WithoutFlag => false,
-        }
-    }
-}
-
-#[derive(Clone)]
-pub(crate) struct SingularField<'a> {
-    pub flag: SingularFieldFlag,
-    pub elem: FieldElem<'a>,
-}
-
-impl<'a> SingularField<'a> {
-    fn rust_storage_type(&self, reference: &FileAndMod) -> RustType {
-        match self.flag {
-            SingularFieldFlag::WithFlag { option_kind, .. } => {
-                option_kind.wrap_element(self.elem.rust_storage_elem_type(reference))
-            }
-            SingularFieldFlag::WithoutFlag => self.elem.rust_storage_elem_type(reference),
-        }
-    }
-
-    fn default_value(
-        &self,
-        customize: &Customize,
-        reference: &FileAndMod,
-        const_expr: bool,
-    ) -> String {
-        self.rust_storage_type(reference)
-            .default_value(customize, const_expr)
-    }
-}
-
-/// Repeated field can be `Vec<T>` or `RepeatedField<T>`.
-#[derive(Eq, PartialEq, Copy, Clone)]
-pub enum RepeatedFieldKind {
-    Vec,
-}
-
-impl RepeatedFieldKind {
-    fn wrap_element(&self, element_type: RustType) -> RustType {
-        let element_type = Box::new(element_type);
-        match self {
-            RepeatedFieldKind::Vec => RustType::Vec(element_type),
-        }
-    }
-
-    fn default(&self) -> String {
-        match self {
-            RepeatedFieldKind::Vec => EXPR_VEC_NEW.to_owned(),
-        }
-    }
-}
-
-#[derive(Clone)]
-pub(crate) struct RepeatedField<'a> {
-    pub elem: FieldElem<'a>,
-    pub packed: bool,
-}
-
-impl<'a> RepeatedField<'a> {
-    fn kind(&self) -> RepeatedFieldKind {
-        RepeatedFieldKind::Vec
-    }
-
-    fn rust_type(&self, reference: &FileAndMod) -> RustType {
-        self.kind()
-            .wrap_element(self.elem.rust_storage_elem_type(reference))
-    }
-
-    fn default(&self) -> String {
-        self.kind().default()
+        field.type_().protobuf_name()
     }
 }
 
@@ -283,7 +75,7 @@ pub(crate) enum FieldKind<'a> {
 }
 
 impl<'a> FieldKind<'a> {
-    pub fn default(
+    pub(crate) fn default(
         &self,
         customize: &Customize,
         reference: &FileAndMod,
@@ -313,7 +105,7 @@ impl<'a> SingularOrOneofField<'a> {
     }
 
     // Type of `xxx` function for singular type.
-    pub fn getter_return_type(&self, reference: &FileAndMod) -> RustType {
+    pub(crate) fn getter_return_type(&self, reference: &FileAndMod) -> RustType {
         let elem = self.elem();
         if let FieldElem::Enum(ref en) = elem {
             en.enum_rust_type(reference)
@@ -380,37 +172,35 @@ impl<'a> FieldElemMessage<'a> {
 
 #[derive(Clone, Debug)]
 pub(crate) enum FieldElem<'a> {
-    Primitive(field_descriptor_proto::Type, PrimitiveTypeVariant),
+    Primitive(Type, PrimitiveTypeVariant),
     Message(FieldElemMessage<'a>),
     Enum(FieldElemEnum<'a>),
     Group,
 }
 
 impl<'a> FieldElem<'a> {
-    fn proto_type(&self) -> field_descriptor_proto::Type {
+    fn proto_type(&self) -> Type {
         match *self {
             FieldElem::Primitive(t, ..) => t,
-            FieldElem::Group => field_descriptor_proto::Type::TYPE_GROUP,
-            FieldElem::Message(..) => field_descriptor_proto::Type::TYPE_MESSAGE,
-            FieldElem::Enum(..) => field_descriptor_proto::Type::TYPE_ENUM,
+            FieldElem::Group => Type::TYPE_GROUP,
+            FieldElem::Message(..) => Type::TYPE_MESSAGE,
+            FieldElem::Enum(..) => Type::TYPE_ENUM,
         }
     }
 
     fn is_copy(&self) -> bool {
-        type_is_copy(self.proto_type())
+        self.proto_type().is_copy()
     }
 
-    pub fn rust_storage_elem_type(&self, reference: &FileAndMod) -> RustType {
+    pub(crate) fn rust_storage_elem_type(&self, reference: &FileAndMod) -> RustType {
         match *self {
             FieldElem::Primitive(t, PrimitiveTypeVariant::Default) => rust_name(t),
-            FieldElem::Primitive(
-                field_descriptor_proto::Type::TYPE_STRING,
-                PrimitiveTypeVariant::TokioBytes,
-            ) => RustType::Chars,
-            FieldElem::Primitive(
-                field_descriptor_proto::Type::TYPE_BYTES,
-                PrimitiveTypeVariant::TokioBytes,
-            ) => RustType::Bytes,
+            FieldElem::Primitive(Type::TYPE_STRING, PrimitiveTypeVariant::TokioBytes) => {
+                RustType::Chars
+            }
+            FieldElem::Primitive(Type::TYPE_BYTES, PrimitiveTypeVariant::TokioBytes) => {
+                RustType::Bytes
+            }
             FieldElem::Primitive(.., PrimitiveTypeVariant::TokioBytes) => unreachable!(),
             FieldElem::Group => RustType::Group,
             FieldElem::Message(ref m) => m.rust_type(reference),
@@ -419,7 +209,7 @@ impl<'a> FieldElem<'a> {
     }
 
     // Type of set_xxx function parameter type for singular fields
-    pub fn rust_set_xxx_param_type(&self, reference: &FileAndMod) -> RustType {
+    pub(crate) fn rust_set_xxx_param_type(&self, reference: &FileAndMod) -> RustType {
         if let FieldElem::Enum(ref en) = *self {
             en.enum_rust_type(reference)
         } else {
@@ -518,7 +308,7 @@ pub(crate) struct FieldGen<'a> {
     pub proto_field: FieldWithContext<'a>,
     // field name in generated code
     pub rust_name: RustIdent,
-    pub proto_type: field_descriptor_proto::Type,
+    pub proto_type: Type,
     wire_type: WireType,
     pub kind: FieldKind<'a>,
     pub generate_accessors: bool,
@@ -529,7 +319,7 @@ pub(crate) struct FieldGen<'a> {
 }
 
 impl<'a> FieldGen<'a> {
-    pub fn parse(
+    pub(crate) fn parse(
         field: FieldWithContext<'a>,
         root_scope: &'a RootScope<'a>,
         parent_customize: &CustomizeElemCtx<'a>,
@@ -547,7 +337,7 @@ impl<'a> FieldGen<'a> {
 
         let field_may_have_custom_default_value = syntax == Syntax::Proto2
             && field.field.proto().label() != field_descriptor_proto::Label::LABEL_REPEATED
-            && field.field.proto().type_() != field_descriptor_proto::Type::TYPE_MESSAGE;
+            && field.field.proto().type_() != Type::TYPE_MESSAGE;
 
         let default_expose_field = !field_may_have_custom_default_value;
         let expose_field = customize.expose_fields.unwrap_or(default_expose_field);
@@ -664,8 +454,7 @@ impl<'a> FieldGen<'a> {
         }
     }
 
-    // TODO: drop it
-    pub fn elem(&self) -> &FieldElem {
+    pub(crate) fn elem(&self) -> &FieldElem {
         match self.kind {
             FieldKind::Singular(SingularField { ref elem, .. }) => &elem,
             FieldKind::Repeated(RepeatedField { ref elem, .. }) => &elem,
@@ -675,7 +464,7 @@ impl<'a> FieldGen<'a> {
     }
 
     // type of field in struct
-    pub fn full_storage_type(&self, reference: &FileAndMod) -> RustType {
+    pub(crate) fn full_storage_type(&self, reference: &FileAndMod) -> RustType {
         match self.kind {
             FieldKind::Repeated(ref repeated) => repeated.rust_type(reference),
             FieldKind::Map(MapField {
@@ -700,7 +489,7 @@ impl<'a> FieldGen<'a> {
 
     // suffix `xxx` as in `os.write_xxx_no_tag(..)`
     fn os_write_fn_suffix(&self) -> &str {
-        protobuf_name(self.proto_type)
+        self.proto_type.protobuf_name()
     }
 
     fn os_write_fn_suffix_with_unknown_for_enum(&self) -> &str {
@@ -772,8 +561,8 @@ impl<'a> FieldGen<'a> {
     }
 
     // elem data is not stored in heap
-    pub fn elem_type_is_copy(&self) -> bool {
-        type_is_copy(self.proto_type)
+    pub(crate) fn elem_type_is_copy(&self) -> bool {
+        self.proto_type.is_copy()
     }
 
     fn defaut_value_from_proto_float(f: f64, type_name: &str) -> String {
@@ -883,7 +672,7 @@ impl<'a> FieldGen<'a> {
         }
     }
 
-    pub fn reconstruct_def(&self) -> String {
+    pub(crate) fn reconstruct_def(&self) -> String {
         let prefix = match (self.proto_field.field.proto().label(), self.syntax) {
             (field_descriptor_proto::Label::LABEL_REPEATED, _) => "repeated ",
             (_, Syntax::Proto3) => "",
@@ -899,7 +688,7 @@ impl<'a> FieldGen<'a> {
         )
     }
 
-    pub fn write_clear(&self, w: &mut CodeWriter) {
+    pub(crate) fn write_clear(&self, w: &mut CodeWriter) {
         match self.kind {
             FieldKind::Oneof(ref o) => {
                 w.write_line(&format!(
@@ -926,7 +715,7 @@ impl<'a> FieldGen<'a> {
     fn element_size(&self, var: &str, var_type: &RustType) -> String {
         assert!(!self.is_repeated_packed());
 
-        match field_type_size(self.proto_type) {
+        match self.proto_type.encoded_size() {
             Some(data_size) => format!("{}", data_size + self.tag_size()),
             None => match self.proto_type {
                 field_descriptor_proto::Type::TYPE_MESSAGE => panic!("not a single-liner"),
@@ -990,7 +779,7 @@ impl<'a> FieldGen<'a> {
     }
 
     // output code that writes single element to stream
-    pub fn write_write_element(&self, w: &mut CodeWriter, os: &str, v: &RustValueTyped) {
+    pub(crate) fn write_write_element(&self, w: &mut CodeWriter, os: &str, v: &RustValueTyped) {
         if let FieldKind::Repeated(RepeatedField { packed: true, .. }) = self.kind {
             unreachable!();
         };
@@ -1079,7 +868,7 @@ impl<'a> FieldGen<'a> {
         as_option_type.value(format!("{}.as_ref()", self.self_field()))
     }
 
-    pub fn write_struct_field(&self, w: &mut CodeWriter) {
+    pub(crate) fn write_struct_field(&self, w: &mut CodeWriter) {
         if self.proto_type == field_descriptor_proto::Type::TYPE_GROUP {
             w.comment(&format!("{}: <group>", &self.rust_name));
         } else {
@@ -1191,7 +980,7 @@ impl<'a> FieldGen<'a> {
         }
     }
 
-    pub fn write_if_self_field_is_none<F>(&self, w: &mut CodeWriter, cb: F)
+    pub(crate) fn write_if_self_field_is_none<F>(&self, w: &mut CodeWriter, cb: F)
     where
         F: Fn(&mut CodeWriter),
     {
@@ -1200,7 +989,7 @@ impl<'a> FieldGen<'a> {
     }
 
     // repeated or singular
-    pub fn write_for_self_field<F>(&self, w: &mut CodeWriter, varn: &str, cb: F)
+    pub(crate) fn write_for_self_field<F>(&self, w: &mut CodeWriter, varn: &str, cb: F)
     where
         F: Fn(&mut CodeWriter, &RustType),
     {
@@ -1397,7 +1186,7 @@ impl<'a> FieldGen<'a> {
         )
     }
 
-    pub fn clear_field_func(&self) -> String {
+    pub(crate) fn clear_field_func(&self) -> String {
         format!("clear_{}", self.rust_name)
     }
 
@@ -1540,7 +1329,7 @@ impl<'a> FieldGen<'a> {
                     |w| {
                         w.write_line(&format!(
                             "is.read_repeated_packed_{}_into(&mut self.{})?;",
-                            protobuf_name(self.proto_type),
+                            self.proto_type.protobuf_name(),
                             self.rust_name
                         ));
                     },
@@ -1549,7 +1338,7 @@ impl<'a> FieldGen<'a> {
                     w.write_line(&format!(
                         "self.{}.push(is.read_{}()?);",
                         self.rust_name,
-                        protobuf_name(self.proto_type),
+                        self.proto_type.protobuf_name(),
                     ));
                 });
             }
@@ -1566,7 +1355,7 @@ impl<'a> FieldGen<'a> {
         }
     }
 
-    pub fn write_element_size(
+    pub(crate) fn write_element_size(
         &self,
         w: &mut CodeWriter,
         item_var: &str,
@@ -1596,7 +1385,7 @@ impl<'a> FieldGen<'a> {
         }
     }
 
-    pub fn write_message_write_field(&self, w: &mut CodeWriter) {
+    pub(crate) fn write_message_write_field(&self, w: &mut CodeWriter) {
         match self.kind {
             FieldKind::Singular(ref s) => {
                 self.write_if_let_self_field_is_some(s, w, |v, w| {
@@ -1636,11 +1425,11 @@ impl<'a> FieldGen<'a> {
         };
     }
 
-    pub fn write_message_compute_field_size(&self, sum_var: &str, w: &mut CodeWriter) {
+    pub(crate) fn write_message_compute_field_size(&self, sum_var: &str, w: &mut CodeWriter) {
         match self.kind {
             FieldKind::Singular(ref s) => {
                 self.write_if_let_self_field_is_some(s, w, |v, w| {
-                    match field_type_size(self.proto_type) {
+                    match self.proto_type.encoded_size() {
                         Some(s) => {
                             let tag_size = self.tag_size();
                             w.write_line(&format!("{} += {};", sum_var, (s + tag_size) as isize));
@@ -1652,7 +1441,7 @@ impl<'a> FieldGen<'a> {
                 });
             }
             FieldKind::Repeated(RepeatedField { packed: false, .. }) => {
-                match field_type_size(self.proto_type) {
+                match self.proto_type.encoded_size() {
                     Some(s) => {
                         let tag_size = self.tag_size();
                         let self_field = self.self_field();
@@ -2234,7 +2023,7 @@ impl<'a> FieldGen<'a> {
         );
     }
 
-    pub fn write_message_single_field_accessors(&self, w: &mut CodeWriter) {
+    pub(crate) fn write_message_single_field_accessors(&self, w: &mut CodeWriter) {
         if self.generate_accessors || self.generate_getter {
             w.write_line("");
             let reconstruct_def = self.reconstruct_def();

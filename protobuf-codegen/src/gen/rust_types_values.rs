@@ -4,6 +4,7 @@ use protobuf::descriptor::*;
 use protobuf_parse::ProtobufAbsPath;
 
 use crate::customize::Customize;
+use crate::gen::field::type_ext::TypeExt;
 use crate::gen::file_and_mod::FileAndMod;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::message::RustTypeMessage;
@@ -420,31 +421,6 @@ impl RustValueTyped {
     }
 }
 
-// protobuf type name for protobuf base type
-pub fn protobuf_name(field_type: field_descriptor_proto::Type) -> &'static str {
-    use field_descriptor_proto::Type;
-    match field_type {
-        Type::TYPE_DOUBLE => "double",
-        Type::TYPE_FLOAT => "float",
-        Type::TYPE_INT32 => "int32",
-        Type::TYPE_INT64 => "int64",
-        Type::TYPE_UINT32 => "uint32",
-        Type::TYPE_UINT64 => "uint64",
-        Type::TYPE_SINT32 => "sint32",
-        Type::TYPE_SINT64 => "sint64",
-        Type::TYPE_FIXED32 => "fixed32",
-        Type::TYPE_FIXED64 => "fixed64",
-        Type::TYPE_SFIXED32 => "sfixed32",
-        Type::TYPE_SFIXED64 => "sfixed64",
-        Type::TYPE_BOOL => "bool",
-        Type::TYPE_STRING => "string",
-        Type::TYPE_BYTES => "bytes",
-        Type::TYPE_ENUM => "enum",
-        Type::TYPE_MESSAGE => "message",
-        Type::TYPE_GROUP => "group",
-    }
-}
-
 // rust type for protobuf base type
 pub(crate) fn rust_name(field_type: field_descriptor_proto::Type) -> RustType {
     use field_descriptor_proto::Type;
@@ -575,7 +551,7 @@ impl ProtobufTypeGen {
             &ProtobufTypeGen::Primitive(t, PrimitiveTypeVariant::Default) => format!(
                 "{}::reflect::types::ProtobufType{}",
                 protobuf_crate_path(customize),
-                capitalize(protobuf_name(t))
+                capitalize(t.protobuf_name())
             ),
             &ProtobufTypeGen::Primitive(
                 field_descriptor_proto::Type::TYPE_BYTES,
