@@ -33,8 +33,9 @@ use crate::rt::unknown_or_group::read_unknown_or_skip_group_with_tag_unpacked;
 use crate::rt::value_size;
 use crate::rt::value_varint_zigzag_size;
 use crate::rt::vec_packed_fixed_size;
+use crate::rt::vec_packed_sint32_size;
+use crate::rt::vec_packed_sint64_size;
 use crate::rt::vec_packed_varint_size;
-use crate::rt::vec_packed_varint_zigzag_size;
 use crate::text_format;
 use crate::wire_format::WireType;
 use crate::CodedInputStream;
@@ -597,8 +598,8 @@ fn compute_repeated_packed_size(
         Type::TYPE_INT64 => vec_packed_varint_size(field_number, v.data_i64()),
         Type::TYPE_UINT32 => vec_packed_varint_size(field_number, v.data_u32()),
         Type::TYPE_UINT64 => vec_packed_varint_size(field_number, v.data_u64()),
-        Type::TYPE_SINT32 => vec_packed_varint_zigzag_size(field_number, v.data_i32()),
-        Type::TYPE_SINT64 => vec_packed_varint_zigzag_size(field_number, v.data_i64()),
+        Type::TYPE_SINT32 => vec_packed_sint32_size(field_number, v.data_i32()),
+        Type::TYPE_SINT64 => vec_packed_sint64_size(field_number, v.data_i64()),
         Type::TYPE_FIXED32 => vec_packed_fixed_size(field_number, v.data_u32()),
         Type::TYPE_FIXED64 => vec_packed_fixed_size(field_number, v.data_u64()),
         Type::TYPE_SFIXED32 => vec_packed_fixed_size(field_number, v.data_i32()),
