@@ -1387,7 +1387,11 @@ impl<'a> FieldGen<'a> {
             Type::TYPE_ENUM => "vec_packed_enum_or_unknown_size",
             Type::TYPE_SINT32 => "vec_packed_sint32_size",
             Type::TYPE_SINT64 => "vec_packed_sint64_size",
-            _ => "vec_packed_varint_size",
+            Type::TYPE_INT32 => "vec_packed_varint_size",
+            Type::TYPE_INT64 => "vec_packed_varint_size",
+            Type::TYPE_UINT32 => "vec_packed_varint_size",
+            Type::TYPE_UINT64 => "vec_packed_varint_size",
+            _ => unreachable!(),
         };
         format!(
             "{}::rt::{fn_name}({}, &{})",
