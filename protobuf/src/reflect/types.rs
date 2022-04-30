@@ -653,7 +653,7 @@ impl<E: Enum> ProtobufType for ProtobufTypeEnumOrUnknown<E> {
     }
 
     fn compute_size(value: &EnumOrUnknown<E>) -> u64 {
-        rt::compute_raw_varint32_size(value.value() as u32) // TODO: wrap
+        ProtobufTypeInt32::compute_size(&value.value())
     }
 
     fn write_with_cached_size(
