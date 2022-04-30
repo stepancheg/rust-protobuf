@@ -38,11 +38,6 @@ pub fn compute_raw_varint32_size(value: u32) -> u64 {
     compute_raw_varint64_size(value as u64)
 }
 
-/// Given `usize` value compute varint encoded length.
-pub fn compute_raw_varint_usize_size(value: usize) -> u64 {
-    compute_raw_varint64_size(value as u64)
-}
-
 /// Fixed size integers.
 pub trait ProtobufFixed {
     /// Size of this fixed type in bytes.
