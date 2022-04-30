@@ -1387,10 +1387,10 @@ impl<'a> FieldGen<'a> {
     }
 
     fn self_field_vec_packed_fixed_size(&self) -> String {
-        let tag_size = self.tag_size();
         format!(
-            "{tag_size} + {}::rt::vec_packed_fixed_size_no_tag(&{})",
+            "{}::rt::vec_packed_fixed_size({}, &{})",
             protobuf_crate_path(&self.customize),
+            self.proto_field.number(),
             self.self_field()
         )
     }

@@ -205,12 +205,6 @@ pub fn vec_packed_fixed_size<V: ProtobufFixed>(field_number: u32, vec: &[V]) -> 
     }
 }
 
-/// Compute field size (data plus header) of fixed encoding of repeated field.
-pub fn vec_packed_fixed_size_no_tag<V: ProtobufFixed>(vec: &[V]) -> u64 {
-    let data_size = vec_packed_fixed_data_size::<V>(vec);
-    data_size.len_varint() + data_size
-}
-
 /// Compute tag size. Size of tag does not depend on wire type.
 pub fn tag_size(field_number: u32) -> u64 {
     encoded_varint64_len((field_number as u64) << 3) as u64
