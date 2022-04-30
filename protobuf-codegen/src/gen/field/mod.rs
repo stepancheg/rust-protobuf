@@ -767,11 +767,6 @@ impl<'a> FieldGen<'a> {
         }
     }
 
-    // fixed size type?
-    fn is_fixed(&self) -> bool {
-        field_type_size(self.proto_type).is_some()
-    }
-
     // elem data is not stored in heap
     pub fn elem_type_is_copy(&self) -> bool {
         type_is_copy(self.proto_type)
@@ -1372,17 +1367,7 @@ impl<'a> FieldGen<'a> {
         }
     }
 
-    fn self_field_vec_packed_fixed_size(&self) -> String {
-        format!(
-            "{}::rt::vec_packed_fixed_size({}, &{})",
-            protobuf_crate_path(&self.customize),
-            self.proto_field.number(),
-            self.self_field()
-        )
-    }
-
-    fn self_field_vec_packed_varint_size(&self) -> String {
-        assert!(!self.is_fixed());
+    fn self_field_vec_packed_size(&self) -> String {
         let fn_name = match self.proto_type {
             Type::TYPE_ENUM => "vec_packed_enum_or_unknown_size",
             Type::TYPE_SINT32 => "vec_packed_sint32_size",
@@ -1391,7 +1376,14 @@ impl<'a> FieldGen<'a> {
             Type::TYPE_INT64 => "vec_packed_varint_size",
             Type::TYPE_UINT32 => "vec_packed_varint_size",
             Type::TYPE_UINT64 => "vec_packed_varint_size",
-            _ => unreachable!(),
+            Type::TYPE_BOOL => "vec_packed_fixed_size",
+            Type::TYPE_FIXED32 => "vec_packed_fixed_size",
+            Type::TYPE_FIXED64 => "vec_packed_fixed_size",
+            Type::TYPE_SFIXED32 => "vec_packed_fixed_size",
+            Type::TYPE_SFIXED64 => "vec_packed_fixed_size",
+            Type::TYPE_FLOAT => "vec_packed_fixed_size",
+            Type::TYPE_DOUBLE => "vec_packed_fixed_size",
+            t => unreachable!("{:?}", t),
         };
         format!(
             "{}::rt::{fn_name}({}, &{})",
@@ -1567,22 +1559,6 @@ impl<'a> FieldGen<'a> {
             FieldKind::Map(..) => self.write_merge_from_map_case_block(w),
             FieldKind::Singular(ref s) => self.write_merge_from_singular_case_block(s, w),
             FieldKind::Repeated(..) => self.write_merge_from_repeated_case_block(w),
-        }
-    }
-
-    fn self_field_vec_packed_size(&self) -> String {
-        match self.kind {
-            FieldKind::Repeated(RepeatedField { packed: true, .. }) => {
-                // zero is filtered outside
-                if self.is_fixed() {
-                    self.self_field_vec_packed_fixed_size()
-                } else {
-                    self.self_field_vec_packed_varint_size()
-                }
-            }
-            _ => {
-                panic!("not packed");
-            }
         }
     }
 
