@@ -764,13 +764,14 @@ impl<'a> FieldGen<'a> {
                             var_type.into_target(&param_type, var, &self.customize)
                         )
                     } else {
+                        assert_eq!(self.wire_type, WireType::Varint);
                         format!(
                             "{}::rt::value_size({}, {}, {}::rt::WireType::{:?})",
                             protobuf_crate_path(&self.customize),
                             self.proto_field.number(),
                             var_type.into_target(&param_type, var, &self.customize),
                             protobuf_crate_path(&self.customize),
-                            self.wire_type
+                            WireType::Varint,
                         )
                     }
                 }
