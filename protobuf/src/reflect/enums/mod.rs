@@ -86,7 +86,6 @@ impl EnumValueDescriptor {
     /// # use protobuf::reflect::EnumValueDescriptor;
     ///
     /// # if !cfg!(miri) {
-    /// # // TODO: Figure out why.
     /// let value: EnumValueDescriptor = NullValue::NULL_VALUE.descriptor();
     /// let null: Option<NullValue> = value.cast();
     /// assert_eq!(Some(NullValue::NULL_VALUE), null);
@@ -118,8 +117,7 @@ impl fmt::Display for EnumDescriptor {
 impl fmt::Debug for EnumDescriptor {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_struct("EnumDescriptor")
-            // TODO
-            //.field("full_name", &self.full_name)
+            .field("full_name", &self.full_name())
             .finish_non_exhaustive()
     }
 }
@@ -260,7 +258,6 @@ impl EnumDescriptor {
     /// # use protobuf::reflect::EnumDescriptor;
     ///
     /// # if !cfg!(miri) {
-    /// # // TODO: figure out why
     /// let descriptor: EnumDescriptor = Label::enum_descriptor();
     ///
     /// assert!(descriptor.is::<Label>())
