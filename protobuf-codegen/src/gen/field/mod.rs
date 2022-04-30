@@ -735,15 +735,11 @@ impl<'a> FieldGen<'a> {
                     var
                 ),
                 Type::TYPE_ENUM => {
-                    let param_type = match var_type {
-                        &RustType::Ref(ref t) => (**t).clone(),
-                        t => t.clone(),
-                    };
                     format!(
-                        "{}::rt::enum_or_unknown_size({}, {})",
+                        "{}::rt::varint_size({}, {}.value())",
                         protobuf_crate_path(&self.customize),
                         self.proto_field.number(),
-                        var_type.into_target(&param_type, var, &self.customize)
+                        var,
                     )
                 }
                 _ => {
