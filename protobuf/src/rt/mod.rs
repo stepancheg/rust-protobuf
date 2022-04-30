@@ -51,12 +51,6 @@ pub(crate) fn compute_raw_varint32_size(value: u32) -> u64 {
     compute_raw_varint64_size(value as u64)
 }
 
-/// Fixed size integers.
-pub trait ProtobufFixed {
-    /// Size of this fixed type in bytes.
-    const LEN: u32;
-}
-
 /// Helper trait implemented by integer types which could be encoded as varint.
 pub trait ProtobufVarint {
     /// Size of self when encoded as varint.
@@ -93,36 +87,6 @@ impl ProtobufVarint for bool {
     fn len_varint(&self) -> u64 {
         1
     }
-}
-
-impl ProtobufFixed for u32 {
-    const LEN: u32 = 4;
-}
-
-impl ProtobufFixed for i32 {
-    const LEN: u32 = 4;
-}
-
-impl ProtobufFixed for u64 {
-    const LEN: u32 = 8;
-}
-
-impl ProtobufFixed for i64 {
-    const LEN: u32 = 8;
-}
-
-impl ProtobufFixed for f32 {
-    const LEN: u32 = 4;
-}
-
-impl ProtobufFixed for f64 {
-    const LEN: u32 = 8;
-}
-
-/// Technically `bool` is not fixed, but it can be considered as fixed
-/// for the purpose of encoding.
-impl ProtobufFixed for bool {
-    const LEN: u32 = 1;
 }
 
 /// Compute tag size. Size of tag does not depend on wire type.

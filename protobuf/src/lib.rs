@@ -99,6 +99,7 @@ mod hex;
 
 mod cached_size;
 mod chars;
+mod fixed;
 mod special;
 mod unknown;
 mod varint;
