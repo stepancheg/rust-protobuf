@@ -234,11 +234,6 @@ pub fn uint64_size_no_tag(value: u64) -> u64 {
     value.len_varint()
 }
 
-/// Size of encoded enum field value.
-pub fn enum_or_unknown_size_no_tag<E: Enum>(value: EnumOrUnknown<E>) -> u64 {
-    value.value().len_varint() as u64
-}
-
 /// Size of encoded bytes field.
 pub fn bytes_size_no_tag(bytes: &[u8]) -> u64 {
     compute_raw_varint64_size(bytes.len() as u64) + bytes.len() as u64
