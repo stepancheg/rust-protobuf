@@ -6,6 +6,7 @@
 
 pub(crate) mod map;
 mod message;
+pub(crate) mod packed;
 pub(crate) mod repeated;
 pub(crate) mod unknown_or_group;
 
@@ -14,6 +15,13 @@ pub use map::read_map_into;
 pub use map::write_map_with_cached_sizes;
 pub use message::read_singular_message_into_field;
 pub use message::write_message_field_with_cached_size;
+pub use packed::vec_packed_enum_or_unknown_data_size;
+pub use packed::vec_packed_enum_or_unknown_size;
+pub use packed::vec_packed_fixed_size;
+pub use packed::vec_packed_varint_data_size;
+pub use packed::vec_packed_varint_size;
+pub use packed::vec_packed_varint_zigzag_data_size;
+pub use packed::vec_packed_varint_zigzag_size;
 pub use repeated::read_repeated_packed_enum_or_unknown_into;
 pub use unknown_or_group::read_unknown_or_skip_group;
 pub use unknown_or_group::unknown_fields_size;
@@ -126,75 +134,6 @@ impl ProtobufFixed for f64 {
 /// for the purpose of encoding.
 impl ProtobufFixed for bool {
     const LEN: u32 = 1;
-}
-
-/// Size of serialized repeated packed field, excluding length and tag.
-pub fn vec_packed_varint_data_size<T: ProtobufVarint>(vec: &[T]) -> u64 {
-    vec.iter()
-        .map(|v| v.len_varint() as u64)
-        .fold(0, |a, i| a + i)
-}
-
-/// Size of serialized repeated packed field, excluding length and tag.
-pub fn vec_packed_varint_zigzag_data_size<T: ProtobufVarintZigzag>(vec: &[T]) -> u64 {
-    vec.iter()
-        .map(|v| v.len_varint_zigzag())
-        .fold(0, |a, i| a + i)
-}
-
-/// Size of serialized repeated packed enum field, excluding length and tag.
-pub fn vec_packed_enum_or_unknown_data_size<E: Enum>(vec: &[EnumOrUnknown<E>]) -> u64 {
-    vec.iter()
-        .map(|e| compute_raw_varint32_size(e.value() as u32))
-        .fold(0, |a, i| a + i)
-}
-
-/// Size of serialized data with length prefix and tag
-pub fn vec_packed_varint_size<T: ProtobufVarint>(field_number: u32, vec: &[T]) -> u64 {
-    if vec.is_empty() {
-        0
-    } else {
-        let data_size = vec_packed_varint_data_size(vec);
-        tag_size(field_number) + data_size.len_varint() + data_size
-    }
-}
-
-/// Size of serialized data with length prefix and tag
-pub fn vec_packed_varint_zigzag_size<T: ProtobufVarintZigzag>(field_number: u32, vec: &[T]) -> u64 {
-    if vec.is_empty() {
-        0
-    } else {
-        let data_size = vec_packed_varint_zigzag_data_size(vec);
-        tag_size(field_number) + data_size.len_varint() + data_size
-    }
-}
-
-/// Size of serialized data with length prefix and tag
-pub fn vec_packed_enum_or_unknown_size<E: Enum>(
-    field_number: u32,
-    vec: &[EnumOrUnknown<E>],
-) -> u64 {
-    if vec.is_empty() {
-        0
-    } else {
-        let data_size = vec_packed_enum_or_unknown_data_size(vec);
-        tag_size(field_number) + data_size.len_varint() + data_size
-    }
-}
-
-/// Compute data size of fixed encoding of repeated field data.
-pub(crate) fn vec_packed_fixed_data_size<V: ProtobufFixed>(vec: &[V]) -> u64 {
-    (vec.len() as u64) * (V::LEN as u64)
-}
-
-/// Compute field size (data plus header) of fixed encoding of repeated field.
-pub fn vec_packed_fixed_size<V: ProtobufFixed>(field_number: u32, vec: &[V]) -> u64 {
-    if vec.is_empty() {
-        0
-    } else {
-        let data_size = vec_packed_fixed_data_size::<V>(vec);
-        tag_size(field_number) + data_size.len_varint() + data_size
-    }
 }
 
 /// Compute tag size. Size of tag does not depend on wire type.
