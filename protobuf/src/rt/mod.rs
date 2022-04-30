@@ -105,8 +105,15 @@ fn value_size_no_tag<T: ProtobufVarint>(value: T, wt: WireType) -> u64 {
 }
 
 /// Integer value size when encoded as specified wire type.
+#[inline]
 pub fn value_size<T: ProtobufVarint>(field_number: u32, value: T, wt: WireType) -> u64 {
     tag_size(field_number) + value_size_no_tag(value, wt)
+}
+
+/// Integer value size when encoded.
+#[inline]
+pub fn varint_size<T: ProtobufVarint>(field_number: u32, value: T) -> u64 {
+    tag_size(field_number) + value.len_varint()
 }
 
 /// Integer value size when encoded as specified wire type.
