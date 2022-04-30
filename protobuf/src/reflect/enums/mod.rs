@@ -55,7 +55,7 @@ impl EnumValueDescriptor {
 
     /// `.proto` object which declared this value.
     pub fn proto(&self) -> &EnumValueDescriptorProto {
-        &self.enum_descriptor.proto().value[self.index as usize]
+        &self.enum_descriptor.proto().value[self.index]
     }
 
     /// Name of enum variant as specified in proto file
