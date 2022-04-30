@@ -6,6 +6,7 @@ Stable versions are 2.xx still supported.
 ## [3] - Unreleased
 
 * keywords are now [escaped with `_` suffix](https://github.com/stepancheg/rust-protobuf/issues/618)
+* generate trivial `is_initialized` functions when possible
 
 ## [3.0.0-alpha.11] - 2022-04-29
 
