@@ -9,7 +9,6 @@ use crate::reflect::dynamic::repeated::DynamicRepeated;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::repeated::iter::ReflectRepeatedIter;
-use crate::reflect::repeated::iter::ReflectRepeatedIterImplSlice;
 use crate::reflect::value::value_ref::ReflectValueRef;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
@@ -70,7 +69,7 @@ fn data_impl<V: ProtobufValue, X: ProtobufValue>(v: &Vec<V>) -> &[X] {
 
 impl<V: ProtobufValue> ReflectRepeated for Vec<V> {
     fn reflect_iter<'a>(&'a self) -> ReflectRepeatedIter<'a> {
-        ReflectRepeatedIter::new(ReflectRepeatedIterImplSlice::<'a, V> { iter: self.iter() })
+        ReflectRepeatedIter::new_slice(self.as_slice())
     }
 
     fn len(&self) -> usize {

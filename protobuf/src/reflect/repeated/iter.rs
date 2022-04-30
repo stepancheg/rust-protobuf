@@ -3,29 +3,29 @@ use std::slice;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueRef;
 
-pub(crate) trait ReflectRepeatedIterTrait<'a> {
+trait ReflectRepeatedIterDyn<'a> {
     fn next(&mut self) -> Option<ReflectValueRef<'a>>;
 }
 
-pub(crate) struct ReflectRepeatedIterImplSlice<'a, V: ProtobufValue + 'static> {
+struct ReflectRepeatedIterImplSlice<'a, V: ProtobufValue + 'static> {
     pub(crate) iter: slice::Iter<'a, V>,
 }
 
-impl<'a, V: ProtobufValue + 'static> ReflectRepeatedIterTrait<'a>
-    for ReflectRepeatedIterImplSlice<'a, V>
-{
+impl<'a, V: ProtobufValue> ReflectRepeatedIterDyn<'a> for ReflectRepeatedIterImplSlice<'a, V> {
     fn next(&mut self) -> Option<ReflectValueRef<'a>> {
         self.iter.next().map(ProtobufValue::as_ref)
     }
 }
 
 pub(crate) struct ReflectRepeatedIter<'a> {
-    imp: Box<dyn ReflectRepeatedIterTrait<'a> + 'a>,
+    imp: Box<dyn ReflectRepeatedIterDyn<'a> + 'a>,
 }
 
 impl<'a> ReflectRepeatedIter<'a> {
-    pub(crate) fn new(imp: impl ReflectRepeatedIterTrait<'a> + 'a) -> ReflectRepeatedIter<'a> {
-        ReflectRepeatedIter { imp: Box::new(imp) }
+    pub(crate) fn new_slice(slice: &'a [impl ProtobufValue]) -> ReflectRepeatedIter<'a> {
+        ReflectRepeatedIter {
+            imp: Box::new(ReflectRepeatedIterImplSlice { iter: slice.iter() }),
+        }
     }
 }
 
