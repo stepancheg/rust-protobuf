@@ -449,28 +449,27 @@ impl<'a> MessageGen<'a> {
 
     fn write_is_initialized(&self, w: &mut CodeWriter) {
         w.def_fn(&format!("is_initialized(&self) -> bool"), |w| {
-            // TODO: use single loop
+            if !self.message.message.is_initialized_is_always_true() {
+                // TODO: use single loop
 
-            for f in self.required_fields() {
-                f.write_if_self_field_is_none(w, |w| {
-                    w.write_line("return false;");
-                });
-            }
-
-            for f in self.message_fields() {
-                if let FieldKind::Map(..) = f.kind {
-                    // TODO: check values
-                    continue;
-                }
-
-                // TODO:
-                // if message is declared in this file and has no message fields,
-                // we could skip the check here
-                f.write_for_self_field(w, "v", |w, _t| {
-                    w.if_stmt("!v.is_initialized()", |w| {
+                for f in self.required_fields() {
+                    f.write_if_self_field_is_none(w, |w| {
                         w.write_line("return false;");
                     });
-                });
+                }
+
+                for f in self.message_fields() {
+                    if let FieldKind::Map(..) = f.kind {
+                        // TODO: check values
+                        continue;
+                    }
+
+                    f.write_for_self_field(w, "v", |w, _t| {
+                        w.if_stmt("!v.is_initialized()", |w| {
+                            w.write_line("return false;");
+                        });
+                    });
+                }
             }
             w.write_line("true");
         });
