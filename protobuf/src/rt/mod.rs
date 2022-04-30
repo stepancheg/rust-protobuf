@@ -4,29 +4,27 @@
 //! so they can be changed any time (provided compatibility with
 //! previously generated code is preserved).
 
-pub use crate::cached_size::CachedSize;
-use crate::coded_input_stream::CodedInputStream;
-use crate::coded_output_stream::CodedOutputStream;
-use crate::enums::Enum;
-use crate::error::Result;
-pub use crate::lazy::Lazy;
-pub use crate::wire_format::WireType;
-use crate::zigzag::*;
-use crate::EnumOrUnknown;
-use crate::Message;
-use crate::MessageField;
-
 pub(crate) mod map;
+mod message;
 pub(crate) mod repeated;
 pub(crate) mod unsorted;
+
 pub use map::compute_map_size;
 pub use map::read_map_into;
 pub use map::write_map_with_cached_sizes;
+pub use message::read_singular_message_into_field;
+pub use message::write_message_field_with_cached_size;
 pub use repeated::read_repeated_packed_enum_or_unknown_into;
 pub use unsorted::read_unknown_or_skip_group;
 pub use unsorted::unknown_fields_size;
 
+pub use crate::cached_size::CachedSize;
+use crate::enums::Enum;
+pub use crate::lazy::Lazy;
 use crate::varint::encode::encoded_varint64_len;
+pub use crate::wire_format::WireType;
+use crate::zigzag::*;
+use crate::EnumOrUnknown;
 
 /// Given `u64` value compute varint encoded length.
 pub fn compute_raw_varint64_size(value: u64) -> u64 {
@@ -226,7 +224,10 @@ pub(crate) fn value_varint_zigzag_size_no_tag<T: ProtobufVarintZigzag>(value: T)
 
 /// Length of value when encoding with zigzag encoding with tag
 #[inline]
-pub(crate) fn value_varint_zigzag_size<T: ProtobufVarintZigzag>(field_number: u32, value: T) -> u64 {
+pub(crate) fn value_varint_zigzag_size<T: ProtobufVarintZigzag>(
+    field_number: u32,
+    value: T,
+) -> u64 {
     tag_size(field_number) + value_varint_zigzag_size_no_tag(value)
 }
 
@@ -272,32 +273,4 @@ pub(crate) fn string_size_no_tag(s: &str) -> u64 {
 #[inline]
 pub fn string_size(field_number: u32, s: &str) -> u64 {
     tag_size(field_number) + string_size_no_tag(s)
-}
-
-/// Read singular `message` field.
-pub fn read_singular_message_into_field<M>(
-    is: &mut CodedInputStream,
-    target: &mut MessageField<M>,
-) -> Result<()>
-where
-    M: Message,
-{
-    let mut m = M::new();
-    is.merge_message(&mut m)?;
-    *target = MessageField::some(m);
-    Ok(())
-}
-
-/// Write message with field number and length to the stream.
-pub fn write_message_field_with_cached_size<M>(
-    field_number: u32,
-    message: &M,
-    os: &mut CodedOutputStream,
-) -> Result<()>
-where
-    M: Message,
-{
-    os.write_tag(field_number, WireType::LengthDelimited)?;
-    os.write_raw_varint32(message.cached_size())?;
-    message.write_to_with_cached_sizes(os)
 }
