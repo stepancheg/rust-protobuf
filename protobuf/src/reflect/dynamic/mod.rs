@@ -32,11 +32,10 @@ use crate::rt::string_size;
 use crate::rt::tag_size;
 use crate::rt::unknown_fields_size;
 use crate::rt::unsorted::read_unknown_or_skip_group_with_tag_unpacked;
-use crate::rt::value_size_no_tag;
+use crate::rt::value_size;
 use crate::rt::vec_packed_fixed_size;
 use crate::rt::vec_packed_varint_size;
 use crate::rt::vec_packed_varint_zigzag_size;
-use crate::rt::ProtobufVarint;
 use crate::text_format;
 use crate::wire_format::WireType;
 use crate::CodedInputStream;
@@ -531,10 +530,6 @@ fn singular_write_to(
 
 /// Compute singular field size
 fn compute_singular_size(proto_type: Type, field_number: u32, v: &ReflectValueRef) -> u64 {
-    fn value_size<T: ProtobufVarint>(field_number: u32, value: T, wt: WireType) -> u64 {
-        tag_size(field_number) + value_size_no_tag(value, wt)
-    }
-
     match proto_type {
         Type::TYPE_ENUM => {
             let enum_v = v.to_enum_value().unwrap();
