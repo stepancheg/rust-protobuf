@@ -289,14 +289,7 @@ impl MessageDyn for DynamicMessage {
     }
 
     fn is_initialized_dyn(&self) -> bool {
-        // All fields are optional in proto3.
-        // TODO: this check can be faster if this message and dependencies fields are optional.
-        if self
-            .descriptor
-            .file_descriptor
-            .common()
-            .self_and_all_deps_proto3
-        {
+        if self.descriptor.is_initialized_is_always_true() {
             return true;
         }
 
