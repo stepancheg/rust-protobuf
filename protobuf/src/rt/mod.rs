@@ -7,7 +7,7 @@
 pub(crate) mod map;
 mod message;
 pub(crate) mod repeated;
-pub(crate) mod unsorted;
+pub(crate) mod unknown_or_group;
 
 pub use map::compute_map_size;
 pub use map::read_map_into;
@@ -15,8 +15,8 @@ pub use map::write_map_with_cached_sizes;
 pub use message::read_singular_message_into_field;
 pub use message::write_message_field_with_cached_size;
 pub use repeated::read_repeated_packed_enum_or_unknown_into;
-pub use unsorted::read_unknown_or_skip_group;
-pub use unsorted::unknown_fields_size;
+pub use unknown_or_group::read_unknown_or_skip_group;
+pub use unknown_or_group::unknown_fields_size;
 
 pub use crate::cached_size::CachedSize;
 use crate::enums::Enum;

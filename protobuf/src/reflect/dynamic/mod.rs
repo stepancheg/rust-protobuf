@@ -29,7 +29,7 @@ use crate::rt::map::read_map_template;
 use crate::rt::string_size;
 use crate::rt::tag_size;
 use crate::rt::unknown_fields_size;
-use crate::rt::unsorted::read_unknown_or_skip_group_with_tag_unpacked;
+use crate::rt::unknown_or_group::read_unknown_or_skip_group_with_tag_unpacked;
 use crate::rt::value_size;
 use crate::rt::value_varint_zigzag_size;
 use crate::rt::vec_packed_fixed_size;
