@@ -646,13 +646,6 @@ impl<'a> FieldGen<'a> {
         }
     }
 
-    fn is_repeated_or_map(&self) -> bool {
-        match self.kind {
-            FieldKind::Repeated(..) | FieldKind::Map(..) => true,
-            _ => false,
-        }
-    }
-
     fn is_repeated_packed(&self) -> bool {
         match self.kind {
             FieldKind::Repeated(RepeatedField { packed: true, .. }) => true,
@@ -1064,11 +1057,6 @@ impl<'a> FieldGen<'a> {
         format!("{}.is_some()", self.self_field())
     }
 
-    fn self_field_is_not_empty(&self) -> String {
-        assert!(self.is_repeated_or_map());
-        format!("!{}.is_empty()", self.self_field())
-    }
-
     fn self_field_is_none(&self) -> String {
         assert!(self.is_singular());
         format!("{}.is_none()", self.self_field())
@@ -1219,15 +1207,6 @@ impl<'a> FieldGen<'a> {
                 }
             },
         }
-    }
-
-    fn write_if_self_field_is_not_empty<F>(&self, w: &mut CodeWriter, cb: F)
-    where
-        F: Fn(&mut CodeWriter),
-    {
-        assert!(self.is_repeated_or_map());
-        let self_field_is_not_empty = self.self_field_is_not_empty();
-        w.if_stmt(self_field_is_not_empty, cb);
     }
 
     pub fn write_if_self_field_is_none<F>(&self, w: &mut CodeWriter, cb: F)
@@ -1730,10 +1709,8 @@ impl<'a> FieldGen<'a> {
                 };
             }
             FieldKind::Repeated(RepeatedField { packed: true, .. }) => {
-                self.write_if_self_field_is_not_empty(w, |w| {
-                    let size_expr = self.self_field_vec_packed_size();
-                    w.write_line(&format!("{} += {};", sum_var, size_expr));
-                });
+                let size_expr = self.self_field_vec_packed_size();
+                w.write_line(&format!("{} += {};", sum_var, size_expr));
             }
             FieldKind::Map(MapField {
                 ref key, ref value, ..
