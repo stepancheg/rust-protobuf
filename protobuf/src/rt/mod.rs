@@ -38,16 +38,6 @@ pub(crate) fn compute_raw_varint32_size(value: u32) -> u64 {
     compute_raw_varint64_size(value as u64)
 }
 
-/// Size of encoded `sint32` value.
-pub fn sint32_size_no_tag(value: i32) -> u64 {
-    compute_raw_varint32_size(encode_zig_zag_32(value))
-}
-
-/// Size of encoded `sint64` value.
-pub fn sint64_size_no_tag(value: i64) -> u64 {
-    compute_raw_varint64_size(encode_zig_zag_64(value))
-}
-
 /// Fixed size integers.
 pub trait ProtobufFixed {
     /// Size of this fixed type in bytes.
@@ -214,19 +204,19 @@ pub fn tag_size(field_number: u32) -> u64 {
     encoded_varint64_len((field_number as u64) << 3) as u64
 }
 
-/// Integer value size when encoded as specified wire type.
-pub fn varint_size_no_tag<T: ProtobufVarint>(value: T) -> u64 {
-    value.len_varint()
+/// Size of encoded `sint32` value.
+pub fn sint32_size_no_tag(value: i32) -> u64 {
+    compute_raw_varint32_size(encode_zig_zag_32(value))
+}
+
+/// Size of encoded `sint64` value.
+pub fn sint64_size_no_tag(value: i64) -> u64 {
+    compute_raw_varint64_size(encode_zig_zag_64(value))
 }
 
 /// Integer value size when encoded as specified wire type.
-pub fn value_size_no_tag<T: ProtobufVarint>(value: T, wt: WireType) -> u64 {
-    match wt {
-        WireType::Fixed64 => 8,
-        WireType::Fixed32 => 4,
-        WireType::Varint => value.len_varint(),
-        _ => panic!(),
-    }
+pub fn varint_size_no_tag<T: ProtobufVarint>(value: T) -> u64 {
+    value.len_varint()
 }
 
 /// Size of encoded enum field value.
