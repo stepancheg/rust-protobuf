@@ -772,23 +772,6 @@ impl<'a> FieldGen<'a> {
         field_type_size(self.proto_type).is_some()
     }
 
-    // must use zigzag encoding?
-    fn is_zigzag(&self) -> bool {
-        match self.proto_type {
-            field_descriptor_proto::Type::TYPE_SINT32
-            | field_descriptor_proto::Type::TYPE_SINT64 => true,
-            _ => false,
-        }
-    }
-
-    // data is enum
-    fn is_enum(&self) -> bool {
-        match self.proto_type {
-            field_descriptor_proto::Type::TYPE_ENUM => true,
-            _ => false,
-        }
-    }
-
     // elem data is not stored in heap
     pub fn elem_type_is_copy(&self) -> bool {
         type_is_copy(self.proto_type)
@@ -1399,21 +1382,16 @@ impl<'a> FieldGen<'a> {
     }
 
     fn self_field_vec_packed_varint_size(&self) -> String {
-        // zero is filtered outside
         assert!(!self.is_fixed());
-        let fn_name = if self.is_enum() {
-            "vec_packed_enum_or_unknown_size"
-        } else {
-            if self.is_zigzag() {
-                "vec_packed_varint_zigzag_size"
-            } else {
-                "vec_packed_varint_size"
-            }
+        let fn_name = match self.proto_type {
+            Type::TYPE_ENUM => "vec_packed_enum_or_unknown_size",
+            Type::TYPE_SINT32 => "vec_packed_sint32_size",
+            Type::TYPE_SINT64 => "vec_packed_sint64_size",
+            _ => "vec_packed_varint_size",
         };
         format!(
-            "{}::rt::{}({}, &{})",
+            "{}::rt::{fn_name}({}, &{})",
             protobuf_crate_path(&self.customize),
-            fn_name,
             self.proto_field.number(),
             self.self_field()
         )

@@ -17,6 +17,8 @@ pub use message::read_singular_message_into_field;
 pub use message::write_message_field_with_cached_size;
 pub use packed::vec_packed_enum_or_unknown_size;
 pub use packed::vec_packed_fixed_size;
+pub use packed::vec_packed_sint32_size;
+pub use packed::vec_packed_sint64_size;
 pub use packed::vec_packed_varint_size;
 pub use packed::vec_packed_varint_zigzag_size;
 pub use repeated::read_repeated_packed_enum_or_unknown_into;
