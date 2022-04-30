@@ -988,9 +988,15 @@ impl<'a> FieldGen<'a> {
                         t => t.clone(),
                     };
                     if self.proto_type.is_s_varint() {
+                        let f = match self.proto_type {
+                            field_descriptor_proto::Type::TYPE_SINT32 => "value_sint32_size",
+                            field_descriptor_proto::Type::TYPE_SINT64 => "value_sint64_size",
+                            _ => unreachable!(),
+                        };
                         format!(
-                            "{}::rt::value_varint_zigzag_size({}, {})",
+                            "{}::rt::{}({}, {})",
                             protobuf_crate_path(&self.customize),
+                            f,
                             self.proto_field.number(),
                             var_type.into_target(&param_type, var, &self.customize)
                         )
