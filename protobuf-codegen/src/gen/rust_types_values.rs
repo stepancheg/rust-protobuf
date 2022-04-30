@@ -375,6 +375,10 @@ impl RustType {
         }))
     }
 
+    pub(crate) fn wrap_ref(&self) -> RustType {
+        RustType::Ref(Box::new(self.clone()))
+    }
+
     pub fn elem_type(&self) -> RustType {
         match self {
             &RustType::Option(ref ty) => (**ty).clone(),

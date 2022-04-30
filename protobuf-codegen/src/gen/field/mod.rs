@@ -1171,15 +1171,23 @@ impl<'a> FieldGen<'a> {
         value: &FieldElem<'a>,
         w: &mut CodeWriter,
     ) {
-        w.write_line(&format!(
-            "{} += {}::rt::compute_map_size::<{}, {}>({}, &{});",
-            sum_var,
-            protobuf_crate_path(&self.customize),
-            key.lib_protobuf_type(&self.file_and_mod()),
-            value.lib_protobuf_type(&self.file_and_mod()),
-            self.proto_field.number(),
-            self.self_field()
-        ));
+        w.for_stmt(&format!("&{}", self.self_field()), "(k, v)", |w| {
+            w.write_line("let mut entry_size = 0;");
+            let k = RustValueTyped {
+                value: "k".to_owned(),
+                rust_type: value.rust_storage_elem_type(&self.file_and_mod()).wrap_ref(),
+            };
+            let v = RustValueTyped {
+                value: "v".to_owned(),
+                rust_type: value.rust_storage_elem_type(&self.file_and_mod()).wrap_ref(),
+            };
+            key.write_element_size(1, &k, "entry_size", &self.customize, w);
+            value.write_element_size(2, &v, "entry_size", &self.customize, w);
+            w.write_line(&format!("{sum_var} += {tag_size} + {protobuf_crate}::rt::compute_raw_varint64_size(entry_size) + entry_size",
+                tag_size = self.tag_size(),
+                protobuf_crate = protobuf_crate_path(&self.customize),
+            ));
+        });
     }
 
     pub(crate) fn write_message_compute_field_size(&self, sum_var: &str, w: &mut CodeWriter) {
