@@ -2017,10 +2017,10 @@ impl crate::Message for FieldDescriptorProto {
             my_size += 1 + crate::rt::int32_size_no_tag(v);
         }
         if let Some(v) = self.label {
-            my_size += 1 + crate::rt::enum_or_unknown_size_no_tag(v);
+            my_size += 1 + crate::rt::int32_size_no_tag(v.value());
         }
         if let Some(v) = self.type_ {
-            my_size += 1 + crate::rt::enum_or_unknown_size_no_tag(v);
+            my_size += 1 + crate::rt::int32_size_no_tag(v.value());
         }
         if let Some(v) = self.type_name.as_ref() {
             my_size += 1 + crate::rt::string_size_no_tag(&v);
@@ -4674,7 +4674,7 @@ impl crate::Message for FileOptions {
             my_size += 3;
         }
         if let Some(v) = self.optimize_for {
-            my_size += 1 + crate::rt::enum_or_unknown_size_no_tag(v);
+            my_size += 1 + crate::rt::int32_size_no_tag(v.value());
         }
         if let Some(v) = self.go_package.as_ref() {
             my_size += 1 + crate::rt::string_size_no_tag(&v);
@@ -5532,13 +5532,13 @@ impl crate::Message for FieldOptions {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if let Some(v) = self.ctype {
-            my_size += 1 + crate::rt::enum_or_unknown_size_no_tag(v);
+            my_size += 1 + crate::rt::int32_size_no_tag(v.value());
         }
         if let Some(v) = self.packed {
             my_size += 2;
         }
         if let Some(v) = self.jstype {
-            my_size += 1 + crate::rt::enum_or_unknown_size_no_tag(v);
+            my_size += 1 + crate::rt::int32_size_no_tag(v.value());
         }
         if let Some(v) = self.lazy {
             my_size += 2;
@@ -6574,7 +6574,7 @@ impl crate::Message for MethodOptions {
             my_size += 3;
         }
         if let Some(v) = self.idempotency_level {
-            my_size += 2 + crate::rt::enum_or_unknown_size_no_tag(v);
+            my_size += 2 + crate::rt::int32_size_no_tag(v.value());
         }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
