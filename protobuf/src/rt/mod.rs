@@ -234,7 +234,7 @@ pub fn enum_or_unknown_size<E: Enum>(field_number: u32, value: EnumOrUnknown<E>)
 }
 
 /// Size of encoded bytes field.
-pub(crate) fn bytes_size_no_tag(bytes: &[u8]) -> u64 {
+pub fn bytes_size_no_tag(bytes: &[u8]) -> u64 {
     compute_raw_varint64_size(bytes.len() as u64) + bytes.len() as u64
 }
 
@@ -244,7 +244,7 @@ pub fn bytes_size(field_number: u32, bytes: &[u8]) -> u64 {
 }
 
 /// Size of encoded string field.
-pub(crate) fn string_size_no_tag(s: &str) -> u64 {
+pub fn string_size_no_tag(s: &str) -> u64 {
     bytes_size_no_tag(s.as_bytes())
 }
 
