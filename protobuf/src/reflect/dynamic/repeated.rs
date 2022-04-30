@@ -1,3 +1,4 @@
+use crate::reflect::repeated::drain_iter::ReflectRepeatedDrainIter;
 use crate::reflect::repeated::iter::ReflectRepeatedIter;
 use crate::reflect::repeated::ReflectRepeated;
 use crate::reflect::EnumDescriptor;
@@ -48,6 +49,27 @@ impl ReflectRepeated for DynamicRepeated {
                 v.iter()
                     .map(|v| ReflectValueRef::Message(MessageRef::new(&**v))),
             ),
+        }
+    }
+
+    fn reflect_drain_iter(&mut self) -> ReflectRepeatedDrainIter {
+        match self {
+            DynamicRepeated::U32(v) => ReflectRepeatedDrainIter::new_vec(v),
+            DynamicRepeated::U64(v) => ReflectRepeatedDrainIter::new_vec(v),
+            DynamicRepeated::I32(v) => ReflectRepeatedDrainIter::new_vec(v),
+            DynamicRepeated::I64(v) => ReflectRepeatedDrainIter::new_vec(v),
+            DynamicRepeated::F32(v) => ReflectRepeatedDrainIter::new_vec(v),
+            DynamicRepeated::F64(v) => ReflectRepeatedDrainIter::new_vec(v),
+            DynamicRepeated::Bool(v) => ReflectRepeatedDrainIter::new_vec(v),
+            DynamicRepeated::String(v) => ReflectRepeatedDrainIter::new_vec(v),
+            DynamicRepeated::Bytes(v) => ReflectRepeatedDrainIter::new_vec(v),
+            DynamicRepeated::Enum(descriptor, v) => ReflectRepeatedDrainIter::new(
+                v.drain(..)
+                    .map(|v| ReflectValueBox::Enum(descriptor.clone(), v)),
+            ),
+            DynamicRepeated::Message(_descriptor, v) => {
+                ReflectRepeatedDrainIter::new(v.drain(..).map(|v| ReflectValueBox::Message(v)))
+            }
         }
     }
 

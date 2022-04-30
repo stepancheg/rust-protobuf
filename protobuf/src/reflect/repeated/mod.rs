@@ -1,3 +1,4 @@
+pub(crate) mod drain_iter;
 pub(crate) mod iter;
 
 use std::any::type_name;
@@ -8,6 +9,7 @@ use std::mem;
 use crate::reflect::dynamic::repeated::DynamicRepeated;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
+use crate::reflect::repeated::drain_iter::ReflectRepeatedDrainIter;
 use crate::reflect::repeated::iter::ReflectRepeatedIter;
 use crate::reflect::value::value_ref::ReflectValueRef;
 use crate::reflect::ProtobufValue;
@@ -16,6 +18,7 @@ use crate::reflect::RuntimeTypeBox;
 
 pub(crate) trait ReflectRepeated: Sync + 'static + fmt::Debug {
     fn reflect_iter(&self) -> ReflectRepeatedIter;
+    fn reflect_drain_iter(&mut self) -> ReflectRepeatedDrainIter;
     fn len(&self) -> usize;
     fn get(&self, index: usize) -> ReflectValueRef;
     /// Set element at index.
@@ -70,6 +73,10 @@ fn data_impl<V: ProtobufValue, X: ProtobufValue>(v: &Vec<V>) -> &[X] {
 impl<V: ProtobufValue> ReflectRepeated for Vec<V> {
     fn reflect_iter<'a>(&'a self) -> ReflectRepeatedIter<'a> {
         ReflectRepeatedIter::new_slice(self.as_slice())
+    }
+
+    fn reflect_drain_iter<'a>(&'a mut self) -> ReflectRepeatedDrainIter<'a> {
+        ReflectRepeatedDrainIter::new_vec(self)
     }
 
     fn len(&self) -> usize {
