@@ -211,13 +211,13 @@ impl crate::Message for Version {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if let Some(v) = self.major {
-            my_size += 1 + crate::rt::value_size_no_tag(v, crate::rt::WireType::Varint);
+            my_size += crate::rt::value_size(1, v, crate::rt::WireType::Varint);
         }
         if let Some(v) = self.minor {
-            my_size += 1 + crate::rt::value_size_no_tag(v, crate::rt::WireType::Varint);
+            my_size += crate::rt::value_size(2, v, crate::rt::WireType::Varint);
         }
         if let Some(v) = self.patch {
-            my_size += 1 + crate::rt::value_size_no_tag(v, crate::rt::WireType::Varint);
+            my_size += crate::rt::value_size(3, v, crate::rt::WireType::Varint);
         }
         if let Some(v) = self.suffix.as_ref() {
             my_size += crate::rt::string_size(4, &v);
@@ -690,7 +690,7 @@ impl crate::Message for CodeGeneratorResponse {
             my_size += crate::rt::string_size(1, &v);
         }
         if let Some(v) = self.supported_features {
-            my_size += 1 + crate::rt::value_size_no_tag(v, crate::rt::WireType::Varint);
+            my_size += crate::rt::value_size(2, v, crate::rt::WireType::Varint);
         }
         for value in &self.file {
             let len = value.compute_size();
