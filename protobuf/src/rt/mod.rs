@@ -158,7 +158,7 @@ pub fn vec_packed_varint_size<T: ProtobufVarint>(field_number: u32, vec: &[T]) -
 }
 
 /// Size of serialized data with length prefix and tag
-pub fn vec_packed_varint_zigzag_size<T: ProtobufVarintZigzag>(field_number: u32, vec: &[T]) -> u64 {
+fn vec_packed_varint_zigzag_size<T: ProtobufVarintZigzag>(field_number: u32, vec: &[T]) -> u64 {
     if vec.is_empty() {
         0
     } else {
