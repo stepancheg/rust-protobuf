@@ -32,6 +32,7 @@ use crate::rt::string_size_no_tag;
 use crate::rt::tag_size;
 use crate::rt::unknown_fields_size;
 use crate::rt::unsorted::read_unknown_or_skip_group_with_tag_unpacked;
+use crate::rt::value_size_no_tag;
 use crate::rt::vec_packed_fixed_size;
 use crate::rt::vec_packed_varint_size;
 use crate::rt::vec_packed_varint_zigzag_size;
@@ -530,16 +531,6 @@ fn singular_write_to(
 
 /// Compute singular field size
 fn compute_singular_size(proto_type: Type, field_number: u32, v: &ReflectValueRef) -> u64 {
-    /// Integer value size when encoded as specified wire type.
-    fn value_size_no_tag<T: ProtobufVarint>(value: T, wt: WireType) -> u64 {
-        match wt {
-            WireType::Fixed64 => 8,
-            WireType::Fixed32 => 4,
-            WireType::Varint => value.len_varint(),
-            _ => panic!(),
-        }
-    }
-
     fn value_size<T: ProtobufVarint>(field_number: u32, value: T, wt: WireType) -> u64 {
         tag_size(field_number) + value_size_no_tag(value, wt)
     }
