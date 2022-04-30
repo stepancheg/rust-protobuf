@@ -32,10 +32,11 @@ use crate::rt::string_size_no_tag;
 use crate::rt::tag_size;
 use crate::rt::unknown_fields_size;
 use crate::rt::unsorted::read_unknown_or_skip_group_with_tag_unpacked;
-use crate::rt::vec_packed_fixed_size;
+use crate::rt::vec_packed_fixed_data_size;
 use crate::rt::vec_packed_sint32_size;
 use crate::rt::vec_packed_sint64_size;
 use crate::rt::vec_packed_varint_size;
+use crate::rt::ProtobufFixed;
 use crate::rt::ProtobufVarint;
 use crate::text_format;
 use crate::wire_format::WireType;
@@ -608,6 +609,16 @@ fn compute_repeated_packed_size(
     field_number: u32,
     v: &ReflectRepeatedRef,
 ) -> u64 {
+    /// Compute field size (data plus header) of fixed encoding of repeated field.
+    fn vec_packed_fixed_size<V: ProtobufFixed>(field_number: u32, vec: &[V]) -> u64 {
+        if vec.is_empty() {
+            0
+        } else {
+            let data_size = vec_packed_fixed_data_size::<V>(vec);
+            tag_size(field_number) + data_size.len_varint() + data_size
+        }
+    }
+
     match proto_type {
         Type::TYPE_INT32 => vec_packed_varint_size(field_number, v.data_i32()),
         Type::TYPE_INT64 => vec_packed_varint_size(field_number, v.data_i64()),
