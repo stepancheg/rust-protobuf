@@ -380,7 +380,6 @@ impl<'a> Parser<'a> {
         name: String,
         descriptor: &EnumDescriptor,
     ) -> ParseResultWithoutLoc<EnumValueDescriptor> {
-        // TODO: can map key be int
         match descriptor.value_by_name(&name) {
             Some(v) => Ok(v),
             None => Err(ParseErrorWithoutLoc(
