@@ -2,7 +2,7 @@ use crate::rt::compute_raw_varint32_size;
 use crate::rt::tag_size;
 use crate::rt::ProtobufFixed;
 use crate::rt::ProtobufVarint;
-use crate::rt::ProtobufVarintZigzag;
+use crate::zigzag::ProtobufVarintZigzag;
 use crate::Enum;
 use crate::EnumOrUnknown;
 

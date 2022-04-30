@@ -1,20 +1,41 @@
 // ZigZag endoging used for efficient transfer of signed integers
 // https://developers.google.com/protocol-buffers/docs/encoding#types
 
-pub fn decode_zig_zag_32(n: u32) -> i32 {
+use crate::rt::compute_raw_varint32_size;
+use crate::rt::compute_raw_varint64_size;
+
+pub(crate) fn decode_zig_zag_32(n: u32) -> i32 {
     ((n >> 1) as i32) ^ (-((n & 1) as i32))
 }
 
-pub fn decode_zig_zag_64(n: u64) -> i64 {
+pub(crate) fn decode_zig_zag_64(n: u64) -> i64 {
     ((n >> 1) as i64) ^ (-((n & 1) as i64))
 }
 
-pub fn encode_zig_zag_32(n: i32) -> u32 {
+pub(crate) fn encode_zig_zag_32(n: i32) -> u32 {
     ((n << 1) ^ (n >> 31)) as u32
 }
 
-pub fn encode_zig_zag_64(n: i64) -> u64 {
+pub(crate) fn encode_zig_zag_64(n: i64) -> u64 {
     ((n << 1) ^ (n >> 63)) as u64
+}
+
+/// Helper trait implemented by integer types which could be encoded as zigzag varint.
+pub(crate) trait ProtobufVarintZigzag {
+    /// Size of self when encoded as zigzag varint.
+    fn len_varint_zigzag(&self) -> u64;
+}
+
+impl ProtobufVarintZigzag for i64 {
+    fn len_varint_zigzag(&self) -> u64 {
+        compute_raw_varint64_size(encode_zig_zag_64(*self))
+    }
+}
+
+impl ProtobufVarintZigzag for i32 {
+    fn len_varint_zigzag(&self) -> u64 {
+        compute_raw_varint32_size(encode_zig_zag_32(*self))
+    }
 }
 
 #[cfg(test)]

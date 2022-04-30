@@ -29,8 +29,7 @@ use crate::enums::Enum;
 pub use crate::lazy::Lazy;
 use crate::varint::encode::encoded_varint64_len;
 pub use crate::wire_format::WireType;
-use crate::zigzag::encode_zig_zag_32;
-use crate::zigzag::encode_zig_zag_64;
+use crate::zigzag::ProtobufVarintZigzag;
 use crate::EnumOrUnknown;
 
 /// Given `u64` value compute varint encoded length.
@@ -55,12 +54,6 @@ pub trait ProtobufVarint {
     fn len_varint(&self) -> u64;
 }
 
-/// Helper trait implemented by integer types which could be encoded as zigzag varint.
-pub trait ProtobufVarintZigzag {
-    /// Size of self when encoded as zigzag varint.
-    fn len_varint_zigzag(&self) -> u64;
-}
-
 impl ProtobufVarint for u64 {
     fn len_varint(&self) -> u64 {
         compute_raw_varint64_size(*self)
@@ -80,22 +73,10 @@ impl ProtobufVarint for i64 {
     }
 }
 
-impl ProtobufVarintZigzag for i64 {
-    fn len_varint_zigzag(&self) -> u64 {
-        compute_raw_varint64_size(encode_zig_zag_64(*self))
-    }
-}
-
 impl ProtobufVarint for i32 {
     fn len_varint(&self) -> u64 {
         // sign-extend and then compute
         (*self as i64).len_varint()
-    }
-}
-
-impl ProtobufVarintZigzag for i32 {
-    fn len_varint_zigzag(&self) -> u64 {
-        compute_raw_varint32_size(encode_zig_zag_32(*self))
     }
 }
 
