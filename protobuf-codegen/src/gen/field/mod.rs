@@ -968,10 +968,14 @@ impl<'a> FieldGen<'a> {
                         var
                     ),
                     field_descriptor_proto::Type::TYPE_ENUM => {
+                        let param_type = match var_type {
+                            &RustType::Ref(ref t) => (**t).clone(),
+                            t => t.clone(),
+                        };
                         format!(
-                            "{tag_size} + {}::rt::int32_size_no_tag({}.value())",
+                            "{tag_size} + {}::rt::enum_or_unknown_size_no_tag({})",
                             protobuf_crate_path(&self.customize),
-                            var,
+                            var_type.into_target(&param_type, var, &self.customize)
                         )
                     }
                     _ => {
