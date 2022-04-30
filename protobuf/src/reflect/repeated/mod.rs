@@ -1,17 +1,17 @@
 pub(crate) mod drain_iter;
 pub(crate) mod iter;
+mod transmute;
 mod vec_downcast;
 
 use std::any::type_name;
-use std::any::TypeId;
 use std::fmt;
-use std::mem;
 
 use crate::reflect::dynamic::repeated::DynamicRepeated;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::repeated::drain_iter::ReflectRepeatedDrainIter;
 use crate::reflect::repeated::iter::ReflectRepeatedIter;
+use crate::reflect::repeated::transmute::transmute_ref_if_eq;
 use crate::reflect::repeated::vec_downcast::VecMutVariant;
 use crate::reflect::value::value_ref::ReflectValueRef;
 use crate::reflect::ProtobufValue;
@@ -67,11 +67,9 @@ pub(crate) trait ReflectRepeated: Sync + 'static + fmt::Debug {
 }
 
 fn data_impl<V: ProtobufValue, X: ProtobufValue>(v: &Vec<V>) -> &[X] {
-    if TypeId::of::<Vec<V>>() == TypeId::of::<Vec<X>>() {
-        // Safety: we've just checked types
-        unsafe { mem::transmute(v.as_slice()) }
-    } else {
-        panic!("not {}", type_name::<X>());
+    match transmute_ref_if_eq::<_, Vec<X>>(v) {
+        Ok(v) => v.as_slice(),
+        Err(_) => panic!("not {}", type_name::<X>()),
     }
 }
 
