@@ -1,5 +1,6 @@
 pub(crate) mod drain_iter;
 pub(crate) mod iter;
+mod vec_downcast;
 
 use std::any::type_name;
 use std::any::TypeId;
@@ -11,6 +12,7 @@ use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::repeated::drain_iter::ReflectRepeatedDrainIter;
 use crate::reflect::repeated::iter::ReflectRepeatedIter;
+use crate::reflect::repeated::vec_downcast::VecMutVariant;
 use crate::reflect::value::value_ref::ReflectValueRef;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
@@ -34,6 +36,9 @@ pub(crate) trait ReflectRepeated: Sync + 'static + fmt::Debug {
     ///
     /// * if the element type does not match the collection element type
     fn push(&mut self, value: ReflectValueBox);
+
+    fn reflect_extend(&mut self, values: ReflectRepeatedMut);
+
     fn clear(&mut self);
     /// Get the collection element type.
     fn element_type(&self) -> RuntimeTypeBox;
@@ -95,6 +100,24 @@ impl<V: ProtobufValue> ReflectRepeated for Vec<V> {
     fn push(&mut self, value: ReflectValueBox) {
         let value = value.downcast().expect("wrong type");
         self.push(value)
+    }
+
+    fn reflect_extend(&mut self, values: ReflectRepeatedMut) {
+        match VecMutVariant::downcast(self) {
+            Some(VecMutVariant::U32(v)) => v.extend(values.repeated.data_u32()),
+            Some(VecMutVariant::U64(v)) => v.extend(values.repeated.data_u64()),
+            Some(VecMutVariant::I32(v)) => v.extend(values.repeated.data_i32()),
+            Some(VecMutVariant::I64(v)) => v.extend(values.repeated.data_i64()),
+            Some(VecMutVariant::F32(v)) => v.extend(values.repeated.data_f32()),
+            Some(VecMutVariant::F64(v)) => v.extend(values.repeated.data_f64()),
+            Some(VecMutVariant::Bool(v)) => v.extend(values.repeated.data_bool()),
+            None => {
+                for value in values.repeated.reflect_drain_iter() {
+                    // Less efficient.
+                    ReflectRepeated::push(self, value);
+                }
+            }
+        }
     }
 
     fn clear(&mut self) {
@@ -170,7 +193,7 @@ pub struct ReflectRepeatedRef<'a> {
 
 /// Dynamic mutable reference to repeated field
 pub struct ReflectRepeatedMut<'a> {
-    repeated: &'a mut dyn ReflectRepeated,
+    pub(crate) repeated: &'a mut dyn ReflectRepeated,
 }
 
 impl<'a> ReflectRepeatedRef<'a> {
@@ -390,6 +413,10 @@ impl<'a> ReflectRepeatedMut<'a> {
     /// If index if out of range or value type does not match container element type
     pub fn push(&mut self, value: ReflectValueBox) {
         self.repeated.push(value);
+    }
+
+    pub(crate) fn extend(&mut self, values: ReflectRepeatedMut) {
+        self.repeated.reflect_extend(values);
     }
 
     /// Self-explanatory

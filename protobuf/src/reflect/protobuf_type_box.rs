@@ -3,6 +3,7 @@ use crate::error::ProtobufError;
 use crate::error::WireError;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::MessageDescriptor;
+use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectRepeatedMut;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::RuntimeTypeBox;
@@ -118,11 +119,8 @@ impl ProtobufTypeBox {
             repeated.push(value);
             Ok(())
         } else if wire_type == WireType::LengthDelimited {
-            fn extend(repeated: &mut ReflectRepeatedMut, v: Vec<impl Into<ReflectValueBox>>) {
-                for v in v {
-                    // TODO: inefficient
-                    repeated.push(v.into());
-                }
+            fn extend<V: ProtobufValue>(repeated: &mut ReflectRepeatedMut, mut v: Vec<V>) {
+                repeated.extend(ReflectRepeatedMut::new(&mut v));
             }
 
             match self.t {

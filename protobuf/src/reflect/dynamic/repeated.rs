@@ -4,6 +4,7 @@ use crate::reflect::repeated::ReflectRepeated;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::MessageRef;
+use crate::reflect::ReflectRepeatedMut;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::reflect::RuntimeTypeBox;
@@ -162,6 +163,24 @@ impl ReflectRepeated for DynamicRepeated {
                 }
                 _ => panic!("Expected message value"),
             },
+        }
+    }
+
+    fn reflect_extend(&mut self, values: ReflectRepeatedMut) {
+        match self {
+            DynamicRepeated::U32(vs) => vs.extend(values.repeated.data_u32()),
+            DynamicRepeated::U64(vs) => vs.extend(values.repeated.data_u64()),
+            DynamicRepeated::I32(vs) => vs.extend(values.repeated.data_i32()),
+            DynamicRepeated::I64(vs) => vs.extend(values.repeated.data_i64()),
+            DynamicRepeated::F32(vs) => vs.extend(values.repeated.data_f32()),
+            DynamicRepeated::F64(vs) => vs.extend(values.repeated.data_f64()),
+            DynamicRepeated::Bool(vs) => vs.extend(values.repeated.data_bool()),
+            _ => {
+                // Default less efficient implementation.
+                for value in values.repeated.reflect_drain_iter() {
+                    self.push(value);
+                }
+            }
         }
     }
 
