@@ -8,7 +8,10 @@ use crate::descriptor::FileDescriptorProto;
 use crate::reflect::error::ReflectError;
 use crate::reflect::FileDescriptor;
 
-pub(crate) fn build_fds(protos: Vec<FileDescriptorProto>) -> crate::Result<Vec<FileDescriptor>> {
+pub(crate) fn build_fds(
+    protos: Vec<FileDescriptorProto>,
+    dependencies: &[FileDescriptor],
+) -> crate::Result<Vec<FileDescriptor>> {
     let mut index_by_name: HashMap<&str, usize> = HashMap::new();
     for (i, proto) in protos.iter().enumerate() {
         let prev = index_by_name.insert(proto.name(), i);
@@ -31,10 +34,10 @@ pub(crate) fn build_fds(protos: Vec<FileDescriptorProto>) -> crate::Result<Vec<F
 
     let mut protos: Vec<Option<FileDescriptorProto>> = protos.into_iter().map(Some).collect();
 
-    let mut all_descriptors = Vec::new();
+    let mut all_descriptors = dependencies.to_vec();
     for f in sorted {
         let proto = mem::take(&mut protos[f]).unwrap();
-        let d = FileDescriptor::new_dynamic(proto, all_descriptors.clone())?;
+        let d = FileDescriptor::new_dynamic(proto, &all_descriptors)?;
         all_descriptors.push(d.clone());
         built_descriptors_by_index[f] = Some(d);
     }

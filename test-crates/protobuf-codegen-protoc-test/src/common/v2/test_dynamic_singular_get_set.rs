@@ -9,7 +9,7 @@ fn dynamic_file_descriptor() -> FileDescriptor {
         test_dynamic_singular_get_set_pb::file_descriptor()
             .proto()
             .clone(),
-        Vec::new(),
+        &[],
     )
     .unwrap()
 }

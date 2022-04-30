@@ -8,7 +8,7 @@ fn dynamic_file_descriptor() -> FileDescriptor {
         test_dynamic_repeated_get_set_pb::file_descriptor()
             .proto()
             .clone(),
-        Vec::new(),
+        &[],
     )
     .unwrap()
 }

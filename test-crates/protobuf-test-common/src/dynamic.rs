@@ -5,9 +5,12 @@ use protobuf::MessageFull;
 
 /// Recreate generated message file descriptor as dynamic descriptor.
 pub fn dynamic_descriptor_for_descriptor<M: MessageFull>() -> MessageDescriptor {
-    let deps = M::descriptor().file_descriptor().deps().to_vec();
-    let dynamic_file_descriptor =
-        FileDescriptor::new_dynamic(M::descriptor().file_descriptor_proto().clone(), deps).unwrap();
+    let file_descriptor = M::descriptor().file_descriptor().clone();
+    let dynamic_file_descriptor = FileDescriptor::new_dynamic(
+        M::descriptor().file_descriptor_proto().clone(),
+        file_descriptor.deps(),
+    )
+    .unwrap();
 
     // Find the dynamic version of the generated message.
     let dynamic_descriptor = dynamic_file_descriptor

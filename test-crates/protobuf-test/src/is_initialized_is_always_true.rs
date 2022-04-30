@@ -11,7 +11,8 @@ fn file_descriptor() -> FileDescriptor {
         .include("src")
         .parse_and_typecheck()
         .unwrap();
-    let file_descriptors = FileDescriptor::new_dynamic_fds(typechecked.file_descriptors).unwrap();
+    let file_descriptors =
+        FileDescriptor::new_dynamic_fds(typechecked.file_descriptors, &[]).unwrap();
     file_descriptors
         .into_iter()
         .find(|fd| fd.proto().name() == "is_initialized_is_always_true.proto")

@@ -115,12 +115,12 @@ where
                 error: e.into(),
             })?;
 
-        let deps = self
+        let deps: Vec<FileDescriptor> = self
             .parsed_files
             .values()
             .map(|v| v.descriptor.clone())
             .collect();
-        let descriptor = FileDescriptor::new_dynamic(descriptor_proto.clone(), deps)?;
+        let descriptor = FileDescriptor::new_dynamic(descriptor_proto.clone(), &deps)?;
 
         self.parsed_files.insert(
             protobuf_path.to_proto_path_buf(),

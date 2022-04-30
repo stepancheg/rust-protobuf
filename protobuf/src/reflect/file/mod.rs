@@ -201,7 +201,7 @@ impl FileDescriptor {
     /// Dynamic message created from [`FileDescriptorProto`] without generated files.
     pub fn new_dynamic(
         proto: FileDescriptorProto,
-        dependencies: Vec<FileDescriptor>,
+        dependencies: &[FileDescriptor],
     ) -> crate::Result<FileDescriptor> {
         // remove undeclared dependencies
         let dependencies_index: HashMap<_, &FileDescriptor> =
@@ -248,9 +248,11 @@ impl FileDescriptor {
     }
 
     /// Create a set of file descriptors from individual file descriptors.
-    // TODO: add deps parameter.
-    pub fn new_dynamic_fds(protos: Vec<FileDescriptorProto>) -> crate::Result<Vec<FileDescriptor>> {
-        build_fds(protos)
+    pub fn new_dynamic_fds(
+        protos: Vec<FileDescriptorProto>,
+        dependencies: &[FileDescriptor],
+    ) -> crate::Result<Vec<FileDescriptor>> {
+        build_fds(protos, dependencies)
     }
 
     /// `.proto` data for this file.

@@ -29,7 +29,7 @@ fn main() {
     let file_descriptor_proto: FileDescriptorProto = file_descriptor_protos.pop().unwrap();
     // Now this `FileDescriptorProto` initialized for reflective access.
     let file_descriptor: FileDescriptor =
-        FileDescriptor::new_dynamic(file_descriptor_proto, vec![]).unwrap();
+        FileDescriptor::new_dynamic(file_descriptor_proto, &[]).unwrap();
     // Find the message.
     let mmm_descriptor = file_descriptor
         .message_by_package_relative_name("Mmm")
