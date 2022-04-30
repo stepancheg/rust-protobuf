@@ -99,6 +99,30 @@ pub fn varint_size<T: ProtobufVarint>(field_number: u32, value: T) -> u64 {
     tag_size(field_number) + value.len_varint()
 }
 
+/// Encoded `int32` size.
+#[inline]
+pub fn int32_size(field_number: u32, value: i32) -> u64 {
+    varint_size(field_number, value)
+}
+
+/// Encoded `int64` size.
+#[inline]
+pub fn int64_size(field_number: u32, value: i64) -> u64 {
+    varint_size(field_number, value)
+}
+
+/// Encoded `uint32` size.
+#[inline]
+pub fn uint32_size(field_number: u32, value: u32) -> u64 {
+    varint_size(field_number, value)
+}
+
+/// Encoded `uint64` size.
+#[inline]
+pub fn uint64_size(field_number: u32, value: u64) -> u64 {
+    varint_size(field_number, value)
+}
+
 /// Integer value size when encoded as specified wire type.
 pub(crate) fn value_varint_zigzag_size_no_tag<T: ProtobufVarintZigzag>(value: T) -> u64 {
     value.len_varint_zigzag()

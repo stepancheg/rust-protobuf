@@ -736,7 +736,7 @@ impl<'a> FieldGen<'a> {
                 ),
                 Type::TYPE_ENUM => {
                     format!(
-                        "{}::rt::varint_size({}, {}.value())",
+                        "{}::rt::int32_size({}, {}.value())",
                         protobuf_crate_path(&self.customize),
                         self.proto_field.number(),
                         var,
@@ -750,10 +750,10 @@ impl<'a> FieldGen<'a> {
                     let f = match self.proto_type {
                         Type::TYPE_SINT32 => "sint32_size",
                         Type::TYPE_SINT64 => "sint64_size",
-                        Type::TYPE_INT32 => "varint_size",
-                        Type::TYPE_INT64 => "varint_size",
-                        Type::TYPE_UINT32 => "varint_size",
-                        Type::TYPE_UINT64 => "varint_size",
+                        Type::TYPE_INT32 => "int32_size",
+                        Type::TYPE_INT64 => "int64_size",
+                        Type::TYPE_UINT32 => "uint32_size",
+                        Type::TYPE_UINT64 => "uint64_size",
                         t => unreachable!("unexpected type: {:?}", t),
                     };
                     format!(
