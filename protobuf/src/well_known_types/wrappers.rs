@@ -341,7 +341,7 @@ impl crate::Message for Int64Value {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if self.value != 0 {
-            my_size += 1 + crate::rt::int64_size_no_tag(self.value);
+            my_size += 1 + crate::rt::varint_size_no_tag(self.value);
         }
         my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
@@ -467,7 +467,7 @@ impl crate::Message for UInt64Value {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if self.value != 0 {
-            my_size += 1 + crate::rt::uint64_size_no_tag(self.value);
+            my_size += 1 + crate::rt::varint_size_no_tag(self.value);
         }
         my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
@@ -593,7 +593,7 @@ impl crate::Message for Int32Value {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if self.value != 0 {
-            my_size += 1 + crate::rt::int32_size_no_tag(self.value);
+            my_size += 1 + crate::rt::varint_size_no_tag(self.value);
         }
         my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
@@ -719,7 +719,7 @@ impl crate::Message for UInt32Value {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if self.value != 0 {
-            my_size += 1 + crate::rt::uint32_size_no_tag(self.value);
+            my_size += 1 + crate::rt::varint_size_no_tag(self.value);
         }
         my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
