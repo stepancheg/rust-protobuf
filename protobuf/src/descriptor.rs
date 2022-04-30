@@ -7641,8 +7641,8 @@ pub mod source_code_info {
         #[allow(unused_variables)]
         fn compute_size(&self) -> u64 {
             let mut my_size = 0;
-            my_size += crate::rt::vec_packed_varint_size(1, &self.path);
-            my_size += crate::rt::vec_packed_varint_size(2, &self.span);
+            my_size += crate::rt::vec_packed_int32_size(1, &self.path);
+            my_size += crate::rt::vec_packed_int32_size(2, &self.span);
             if let Some(v) = self.leading_comments.as_ref() {
                 my_size += crate::rt::string_size(3, &v);
             }
@@ -8033,7 +8033,7 @@ pub mod generated_code_info {
         #[allow(unused_variables)]
         fn compute_size(&self) -> u64 {
             let mut my_size = 0;
-            my_size += crate::rt::vec_packed_varint_size(1, &self.path);
+            my_size += crate::rt::vec_packed_int32_size(1, &self.path);
             if let Some(v) = self.source_file.as_ref() {
                 my_size += crate::rt::string_size(2, &v);
             }
