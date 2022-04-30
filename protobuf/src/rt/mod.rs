@@ -34,7 +34,7 @@ pub fn compute_raw_varint64_size(value: u64) -> u64 {
 }
 
 /// Given `u32` value compute varint encoded length.
-pub fn compute_raw_varint32_size(value: u32) -> u64 {
+pub(crate) fn compute_raw_varint32_size(value: u32) -> u64 {
     compute_raw_varint64_size(value as u64)
 }
 
