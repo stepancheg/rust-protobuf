@@ -224,7 +224,8 @@ pub fn value_size_no_tag<T: ProtobufVarint>(value: T, wt: WireType) -> u64 {
     }
 }
 
-fn enum_or_unknown_size_no_tag<E: Enum>(value: EnumOrUnknown<E>) -> u64 {
+/// Size of encoded enum field value.
+pub fn enum_or_unknown_size_no_tag<E: Enum>(value: EnumOrUnknown<E>) -> u64 {
     value.value().len_varint() as u64
 }
 
