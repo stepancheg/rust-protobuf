@@ -1414,9 +1414,27 @@ impl<'a> FieldGen<'a> {
         };
     }
 
+    fn write_compute_map_field_size(
+        &self,
+        sum_var: &str,
+        key: &FieldElem<'a>,
+        value: &FieldElem<'a>,
+        w: &mut CodeWriter,
+    ) {
+        w.write_line(&format!(
+            "{} += {}::rt::compute_map_size::<{}, {}>({}, &{});",
+            sum_var,
+            protobuf_crate_path(&self.customize),
+            key.lib_protobuf_type(&self.file_and_mod()),
+            value.lib_protobuf_type(&self.file_and_mod()),
+            self.proto_field.number(),
+            self.self_field()
+        ));
+    }
+
     pub(crate) fn write_message_compute_field_size(&self, sum_var: &str, w: &mut CodeWriter) {
-        match self.kind {
-            FieldKind::Singular(ref s) => {
+        match &self.kind {
+            FieldKind::Singular(s) => {
                 self.write_if_let_self_field_is_some(s, w, |v, w| {
                     match self.proto_type.encoded_size() {
                         Some(s) => {
@@ -1452,18 +1470,8 @@ impl<'a> FieldGen<'a> {
                 let size_expr = self.self_field_vec_packed_size();
                 w.write_line(&format!("{} += {};", sum_var, size_expr));
             }
-            FieldKind::Map(MapField {
-                ref key, ref value, ..
-            }) => {
-                w.write_line(&format!(
-                    "{} += {}::rt::compute_map_size::<{}, {}>({}, &{});",
-                    sum_var,
-                    protobuf_crate_path(&self.customize),
-                    key.lib_protobuf_type(&self.file_and_mod()),
-                    value.lib_protobuf_type(&self.file_and_mod()),
-                    self.proto_field.number(),
-                    self.self_field()
-                ));
+            FieldKind::Map(MapField { key, value, .. }) => {
+                self.write_compute_map_field_size(sum_var, key, value, w)
             }
             FieldKind::Oneof(..) => unreachable!(),
         }
