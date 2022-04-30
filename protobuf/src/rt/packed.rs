@@ -34,6 +34,30 @@ pub fn vec_packed_varint_size<T: ProtobufVarint>(field_number: u32, vec: &[T]) -
     }
 }
 
+/// Size of serialized data with length prefix and tag.
+#[inline]
+pub fn vec_packed_int32_size(field_number: u32, vec: &[i32]) -> u64 {
+    vec_packed_varint_size(field_number, vec)
+}
+
+/// Size of serialized data with length prefix and tag.
+#[inline]
+pub fn vec_packed_int64_size(field_number: u32, vec: &[i64]) -> u64 {
+    vec_packed_varint_size(field_number, vec)
+}
+
+/// Size of serialized data with length prefix and tag.
+#[inline]
+pub fn vec_packed_uint32_size(field_number: u32, vec: &[u32]) -> u64 {
+    vec_packed_varint_size(field_number, vec)
+}
+
+/// Size of serialized data with length prefix and tag.
+#[inline]
+pub fn vec_packed_uint64_size(field_number: u32, vec: &[u64]) -> u64 {
+    vec_packed_varint_size(field_number, vec)
+}
+
 /// Size of serialized data with length prefix and tag
 #[inline]
 fn vec_packed_varint_zigzag_size<T: ProtobufVarintZigzag>(field_number: u32, vec: &[T]) -> u64 {
