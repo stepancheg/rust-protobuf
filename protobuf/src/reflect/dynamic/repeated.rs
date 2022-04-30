@@ -40,7 +40,14 @@ impl ReflectRepeated for DynamicRepeated {
             DynamicRepeated::Bool(v) => ReflectRepeatedIter::new_slice(&v),
             DynamicRepeated::String(v) => ReflectRepeatedIter::new_slice(&v),
             DynamicRepeated::Bytes(v) => ReflectRepeatedIter::new_slice(&v),
-            _ => unimplemented!(),
+            DynamicRepeated::Enum(descriptor, v) => ReflectRepeatedIter::new(
+                v.iter()
+                    .map(|v| ReflectValueRef::Enum(descriptor.clone(), *v)),
+            ),
+            DynamicRepeated::Message(_descriptor, v) => ReflectRepeatedIter::new(
+                v.iter()
+                    .map(|v| ReflectValueRef::Message(MessageRef::new(&**v))),
+            ),
         }
     }
 
