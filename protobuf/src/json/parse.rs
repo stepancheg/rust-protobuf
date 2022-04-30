@@ -42,7 +42,7 @@ use crate::well_known_types::Timestamp;
 use crate::well_known_types::UInt32Value;
 use crate::well_known_types::UInt64Value;
 use crate::well_known_types::Value;
-use crate::EnumFull;
+use crate::Enum;
 
 #[derive(Debug, thiserror::Error)]
 enum ParseErrorWithoutLocInner {
@@ -52,8 +52,6 @@ enum ParseErrorWithoutLocInner {
     UnknownFieldName(String),
     #[error("Unknown enum variant name: `{}`", .0)]
     UnknownEnumVariantName(String),
-    #[error("Unknown enum variant number: {}", .0)]
-    UnknownEnumVariantNumber(i32),
     #[error(transparent)]
     FromBase64Error(#[from] FromBase64Error),
     #[error(transparent)]
@@ -360,26 +358,16 @@ impl<'a> Parser<'a> {
         Ok(base64::decode(s)?)
     }
 
-    fn read_enum(
-        &mut self,
-        descriptor: &EnumDescriptor,
-    ) -> ParseResultWithoutLoc<EnumValueDescriptor> {
+    fn read_enum(&mut self, descriptor: &EnumDescriptor) -> ParseResultWithoutLoc<i32> {
         if descriptor.is::<NullValue>() {
-            return Ok(self.read_wk_null_value()?.descriptor());
+            return Ok(self.read_wk_null_value()?.value());
         }
 
         if self.tokenizer.lookahead_is_str_lit()? {
             let name = self.read_string()?;
-            self.parse_enum(name, descriptor)
+            Ok(self.parse_enum(name, descriptor)?.value())
         } else if self.tokenizer.lookahead_is_json_number()? {
-            let number = self.read_i32()?;
-            match descriptor.value_by_number(number) {
-                Some(v) => Ok(v),
-                // TODO: EnumValueOrUnknown
-                None => Err(ParseErrorWithoutLoc(
-                    ParseErrorWithoutLocInner::UnknownEnumVariantNumber(number),
-                )),
-            }
+            self.read_i32()
         } else {
             Err(ParseErrorWithoutLoc(
                 ParseErrorWithoutLocInner::ExpectingStrOrInt,
@@ -426,7 +414,9 @@ impl<'a> Parser<'a> {
             RuntimeTypeBox::Bool => self.read_bool().map(ReflectValueBox::from),
             RuntimeTypeBox::String => self.read_string().map(ReflectValueBox::from),
             RuntimeTypeBox::VecU8 => self.read_bytes().map(ReflectValueBox::from),
-            RuntimeTypeBox::Enum(e) => self.read_enum(&e).map(ReflectValueBox::from),
+            RuntimeTypeBox::Enum(e) => self
+                .read_enum(&e)
+                .map(|v| ReflectValueBox::Enum(e.clone(), v)),
             RuntimeTypeBox::Message(m) => self.read_message(&m).map(ReflectValueBox::from),
         }
     }
