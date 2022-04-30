@@ -492,7 +492,7 @@ impl crate::Message for Value {
         if let ::std::option::Option::Some(ref v) = self.kind {
             match v {
                 &value::Kind::NullValue(v) => {
-                    my_size += 1 + crate::rt::enum_or_unknown_size_no_tag(v);
+                    my_size += crate::rt::enum_or_unknown_size(1, v);
                 },
                 &value::Kind::NumberValue(v) => {
                     my_size += 9;
