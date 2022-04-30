@@ -1,5 +1,5 @@
-use crate::rt::bytes_size_no_tag;
 use crate::rt::compute_raw_varint64_size;
+use crate::rt::singular::bytes_size_no_tag;
 use crate::rt::tag_size;
 use crate::wire_format::Tag;
 use crate::wire_format::WireType;
