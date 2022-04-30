@@ -247,6 +247,7 @@ fn enum_or_unknown_size_no_tag<E: Enum>(value: EnumOrUnknown<E>) -> u64 {
 }
 
 /// Size of encoded enum field value.
+#[inline]
 pub fn enum_or_unknown_size<E: Enum>(field_number: u32, value: EnumOrUnknown<E>) -> u64 {
     tag_size(field_number) + enum_or_unknown_size_no_tag(value)
 }
@@ -257,6 +258,7 @@ pub(crate) fn bytes_size_no_tag(bytes: &[u8]) -> u64 {
 }
 
 /// Size of encoded bytes field.
+#[inline]
 pub fn bytes_size(field_number: u32, bytes: &[u8]) -> u64 {
     tag_size(field_number) + bytes_size_no_tag(bytes)
 }
@@ -267,6 +269,7 @@ pub(crate) fn string_size_no_tag(s: &str) -> u64 {
 }
 
 /// Size of encoded string field.
+#[inline]
 pub fn string_size(field_number: u32, s: &str) -> u64 {
     tag_size(field_number) + string_size_no_tag(s)
 }
