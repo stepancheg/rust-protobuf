@@ -270,15 +270,19 @@ impl MessageDescriptor {
         &self.file_descriptor.generated_index().messages[self.index]
     }
 
+    pub(crate) fn field_by_index(&self, index: usize) -> FieldDescriptor {
+        FieldDescriptor {
+            imp: FieldDescriptorImpl::Field(self.clone(), index),
+        }
+    }
+
     /// Find message field by protobuf field name
     ///
     /// Note: protobuf field name might be different for Rust field name.
     // TODO: return value, not pointer, pointer is not compatible with dynamic message
     pub fn field_by_name(&self, name: &str) -> Option<FieldDescriptor> {
         let &index = self.index().message_index.field_index_by_name.get(name)?;
-        Some(FieldDescriptor {
-            imp: FieldDescriptorImpl::Field(self.clone(), index),
-        })
+        Some(self.field_by_index(index))
     }
 
     /// Find message field by field name or field JSON name
@@ -288,9 +292,7 @@ impl MessageDescriptor {
             .message_index
             .field_index_by_name_or_json_name
             .get(name)?;
-        Some(FieldDescriptor {
-            imp: FieldDescriptorImpl::Field(self.clone(), index),
-        })
+        Some(self.field_by_index(index))
     }
 
     /// Find message field by field name
@@ -300,9 +302,7 @@ impl MessageDescriptor {
             .message_index
             .field_index_by_number
             .get(&number)?;
-        Some(FieldDescriptor {
-            imp: FieldDescriptorImpl::Field(self.clone(), index),
-        })
+        Some(self.field_by_index(index))
     }
 
     /// Parse message from stream.

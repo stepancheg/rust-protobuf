@@ -82,6 +82,7 @@ pub(crate) struct OneofIndex {
     pub(crate) index_in_containing_message: usize,
     /// Synthetic oneof for proto3 optional field.
     pub(crate) synthetic: bool,
+    pub(crate) fields: Vec<usize>,
 }
 
 #[derive(Debug)]
@@ -246,13 +247,15 @@ impl FileDescriptorCommon {
             let fields: Vec<_> = message
                 .field
                 .iter()
-                .filter(|f| f.has_oneof_index() && f.oneof_index() == i as i32)
+                .enumerate()
+                .filter(|(_, f)| f.has_oneof_index() && f.oneof_index() == i as i32)
                 .collect();
-            let synthetic = fields.len() == 1 && fields[0].proto3_optional();
+            let synthetic = fields.len() == 1 && fields[0].1.proto3_optional();
             oneofs.push(OneofIndex {
                 containing_message: message_index,
                 index_in_containing_message: i,
                 synthetic,
+                fields: fields.iter().map(|(i, _)| *i).collect(),
             });
         }
 
