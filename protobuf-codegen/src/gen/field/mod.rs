@@ -718,23 +718,23 @@ impl<'a> FieldGen<'a> {
         match self.proto_type.encoded_size() {
             Some(data_size) => format!("{}", data_size + self.tag_size()),
             None => match self.proto_type {
-                field_descriptor_proto::Type::TYPE_MESSAGE => panic!("not a single-liner"),
+                Type::TYPE_MESSAGE => panic!("not a single-liner"),
                 // We are not inlining `bytes_size` here,
                 // assuming the compiler is smart enough to do it for us.
                 // https://rust.godbolt.org/z/GrKa5zxq6
-                field_descriptor_proto::Type::TYPE_BYTES => format!(
+                Type::TYPE_BYTES => format!(
                     "{}::rt::bytes_size({}, &{})",
                     protobuf_crate_path(&self.customize),
                     self.proto_field.number(),
                     var
                 ),
-                field_descriptor_proto::Type::TYPE_STRING => format!(
+                Type::TYPE_STRING => format!(
                     "{}::rt::string_size({}, &{})",
                     protobuf_crate_path(&self.customize),
                     self.proto_field.number(),
                     var
                 ),
-                field_descriptor_proto::Type::TYPE_ENUM => {
+                Type::TYPE_ENUM => {
                     let param_type = match var_type {
                         &RustType::Ref(ref t) => (**t).clone(),
                         t => t.clone(),
@@ -751,27 +751,17 @@ impl<'a> FieldGen<'a> {
                         &RustType::Ref(ref t) => (**t).clone(),
                         t => t.clone(),
                     };
-                    if self.proto_type.is_s_varint() {
-                        let f = match self.proto_type {
-                            Type::TYPE_SINT32 => "sint32_size",
-                            Type::TYPE_SINT64 => "sint64_size",
-                            _ => unreachable!(),
-                        };
-                        format!(
-                            "{}::rt::{f}({}, {})",
-                            protobuf_crate_path(&self.customize),
-                            self.proto_field.number(),
-                            var_type.into_target(&param_type, var, &self.customize)
-                        )
-                    } else {
-                        assert_eq!(self.wire_type, WireType::Varint);
-                        format!(
-                            "{}::rt::varint_size({}, {})",
-                            protobuf_crate_path(&self.customize),
-                            self.proto_field.number(),
-                            var_type.into_target(&param_type, var, &self.customize),
-                        )
-                    }
+                    let f = match self.proto_type {
+                        Type::TYPE_SINT32 => "sint32_size",
+                        Type::TYPE_SINT64 => "sint64_size",
+                        _ => "varint_size",
+                    };
+                    format!(
+                        "{}::rt::{f}({}, {})",
+                        protobuf_crate_path(&self.customize),
+                        self.proto_field.number(),
+                        var_type.into_target(&param_type, var, &self.customize)
+                    )
                 }
             },
         }
