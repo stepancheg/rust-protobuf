@@ -8,23 +8,19 @@ use crate::EnumOrUnknown;
 
 /// Size of serialized repeated packed field, excluding length and tag.
 pub(crate) fn vec_packed_varint_data_size<T: ProtobufVarint>(vec: &[T]) -> u64 {
-    vec.iter()
-        .map(|v| v.len_varint() as u64)
-        .fold(0, |a, i| a + i)
+    vec.iter().map(|v| v.len_varint() as u64).sum()
 }
 
 /// Size of serialized repeated packed field, excluding length and tag.
 pub(crate) fn vec_packed_varint_zigzag_data_size<T: ProtobufVarintZigzag>(vec: &[T]) -> u64 {
-    vec.iter()
-        .map(|v| v.len_varint_zigzag())
-        .fold(0, |a, i| a + i)
+    vec.iter().map(|v| v.len_varint_zigzag()).sum()
 }
 
 /// Size of serialized repeated packed enum field, excluding length and tag.
 pub(crate) fn vec_packed_enum_or_unknown_data_size<E: Enum>(vec: &[EnumOrUnknown<E>]) -> u64 {
     vec.iter()
         .map(|e| compute_raw_varint32_size(e.value() as u32))
-        .fold(0, |a, i| a + i)
+        .sum()
 }
 
 /// Size of serialized data with length prefix and tag
