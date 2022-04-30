@@ -779,6 +779,15 @@ impl<'a> FieldGen<'a> {
         field_type_size(self.proto_type).is_some()
     }
 
+    // must use zigzag encoding?
+    fn is_zigzag(&self) -> bool {
+        match self.proto_type {
+            field_descriptor_proto::Type::TYPE_SINT32
+            | field_descriptor_proto::Type::TYPE_SINT64 => true,
+            _ => false,
+        }
+    }
+
     // data is enum
     fn is_enum(&self) -> bool {
         match self.proto_type {
@@ -1401,10 +1410,10 @@ impl<'a> FieldGen<'a> {
         let fn_name = if self.is_enum() {
             "vec_packed_enum_or_unknown_size"
         } else {
-            match self.proto_type {
-                Type::TYPE_SINT32 => "vec_packed_sint32_size",
-                Type::TYPE_SINT64 => "vec_packed_sint64_size",
-                _ => "vec_packed_varint_size",
+            if self.is_zigzag() {
+                "vec_packed_varint_zigzag_size"
+            } else {
+                "vec_packed_varint_size"
             }
         };
         format!(
