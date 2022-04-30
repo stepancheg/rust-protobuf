@@ -983,25 +983,20 @@ impl<'a> FieldGen<'a> {
                             &RustType::Ref(ref t) => (**t).clone(),
                             t => t.clone(),
                         };
-                        if self.proto_type.is_s_varint() {
-                            let f = match self.proto_type {
-                                field_descriptor_proto::Type::TYPE_SINT32 => "sint32_size_no_tag",
-                                field_descriptor_proto::Type::TYPE_SINT64 => "sint64_size_no_tag",
-                                _ => unreachable!(),
-                            };
-                            format!(
-                                "{tag_size} + {}::rt::{f}({})",
-                                protobuf_crate_path(&self.customize),
-                                var_type.into_target(&param_type, var, &self.customize)
-                            )
-                        } else {
-                            assert_eq!(self.wire_type, WireType::Varint);
-                            format!(
-                                "{tag_size} + {}::rt::varint_size_no_tag({})",
-                                protobuf_crate_path(&self.customize),
-                                var_type.into_target(&param_type, var, &self.customize),
-                            )
-                        }
+                        let f = match self.proto_type {
+                            field_descriptor_proto::Type::TYPE_SINT32 => "sint32_size_no_tag",
+                            field_descriptor_proto::Type::TYPE_SINT64 => "sint64_size_no_tag",
+                            field_descriptor_proto::Type::TYPE_INT32 => "varint_size_no_tag",
+                            field_descriptor_proto::Type::TYPE_INT64 => "varint_size_no_tag",
+                            field_descriptor_proto::Type::TYPE_UINT32 => "varint_size_no_tag",
+                            field_descriptor_proto::Type::TYPE_UINT64 => "varint_size_no_tag",
+                            _ => unreachable!(),
+                        };
+                        format!(
+                            "{tag_size} + {}::rt::{f}({})",
+                            protobuf_crate_path(&self.customize),
+                            var_type.into_target(&param_type, var, &self.customize)
+                        )
                     }
                 }
             }
