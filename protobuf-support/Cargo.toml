@@ -1,7 +1,7 @@
 [package]
 
 name = "protobuf-support"
-version = "3.0.0-alpha.11"
+version = "3.0.0-alpha.12"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 edition = "2021"
 license = "MIT"
