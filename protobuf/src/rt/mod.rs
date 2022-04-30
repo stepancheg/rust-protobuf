@@ -51,7 +51,7 @@ pub trait ProtobufVarint {
 }
 
 /// Helper trait implemented by integer types which could be encoded as zigzag varint.
-pub(crate) trait ProtobufVarintZigzag {
+pub trait ProtobufVarintZigzag {
     /// Size of self when encoded as zigzag varint.
     fn len_varint_zigzag(&self) -> u64;
 }
@@ -136,7 +136,7 @@ pub fn vec_packed_varint_data_size<T: ProtobufVarint>(vec: &[T]) -> u64 {
 }
 
 /// Size of serialized repeated packed field, excluding length and tag.
-pub(crate) fn vec_packed_varint_zigzag_data_size<T: ProtobufVarintZigzag>(vec: &[T]) -> u64 {
+pub fn vec_packed_varint_zigzag_data_size<T: ProtobufVarintZigzag>(vec: &[T]) -> u64 {
     vec.iter().map(|v| v.len_varint_zigzag()).sum()
 }
 
