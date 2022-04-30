@@ -995,11 +995,12 @@ impl<'a> FieldGen<'a> {
                                 var_type.into_target(&param_type, var, &self.customize)
                             )
                         } else {
-                            assert_eq!(self.wire_type, WireType::Varint);
                             format!(
-                                "{tag_size} + {}::rt::varint_size_no_tag({})",
+                                "{tag_size} + {}::rt::value_size_no_tag({}, {}::rt::WireType::{:?})",
                                 protobuf_crate_path(&self.customize),
                                 var_type.into_target(&param_type, var, &self.customize),
+                                protobuf_crate_path(&self.customize),
+                                self.wire_type
                             )
                         }
                     }
