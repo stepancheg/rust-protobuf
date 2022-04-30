@@ -986,10 +986,10 @@ impl<'a> FieldGen<'a> {
                         let f = match self.proto_type {
                             field_descriptor_proto::Type::TYPE_SINT32 => "sint32_size_no_tag",
                             field_descriptor_proto::Type::TYPE_SINT64 => "sint64_size_no_tag",
-                            field_descriptor_proto::Type::TYPE_INT32 => "int32_size_no_tag",
-                            field_descriptor_proto::Type::TYPE_INT64 => "int64_size_no_tag",
-                            field_descriptor_proto::Type::TYPE_UINT32 => "uint32_size_no_tag",
-                            field_descriptor_proto::Type::TYPE_UINT64 => "uint64_size_no_tag",
+                            field_descriptor_proto::Type::TYPE_INT32 => "varint_size_no_tag",
+                            field_descriptor_proto::Type::TYPE_INT64 => "varint_size_no_tag",
+                            field_descriptor_proto::Type::TYPE_UINT32 => "varint_size_no_tag",
+                            field_descriptor_proto::Type::TYPE_UINT64 => "varint_size_no_tag",
                             _ => unreachable!(),
                         };
                         format!(

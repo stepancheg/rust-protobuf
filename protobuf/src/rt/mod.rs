@@ -214,26 +214,6 @@ pub fn sint64_size_no_tag(value: i64) -> u64 {
     compute_raw_varint64_size(encode_zig_zag_64(value))
 }
 
-/// Size of encoded `int32` value.
-pub fn int32_size_no_tag(value: i32) -> u64 {
-    value.len_varint()
-}
-
-/// Size of encoded `int64` value.
-pub fn int64_size_no_tag(value: i64) -> u64 {
-    value.len_varint()
-}
-
-/// Size of encoded `uint32` value.
-pub fn uint32_size_no_tag(value: u32) -> u64 {
-    value.len_varint()
-}
-
-/// Size of encoded `uint64` value.
-pub fn uint64_size_no_tag(value: u64) -> u64 {
-    value.len_varint()
-}
-
 /// Integer value size when encoded as specified wire type.
 pub fn varint_size_no_tag<T: ProtobufVarint>(value: T) -> u64 {
     value.len_varint()
