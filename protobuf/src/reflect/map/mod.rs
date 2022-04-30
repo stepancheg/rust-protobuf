@@ -74,6 +74,7 @@ pub struct ReflectMapRef<'a> {
 }
 
 /// Dynamic mutable reference to `map` field
+#[derive(Debug)]
 pub struct ReflectMapMut<'a> {
     map: &'a mut dyn ReflectMap,
 }
