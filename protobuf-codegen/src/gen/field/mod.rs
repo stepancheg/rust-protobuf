@@ -267,13 +267,6 @@ impl<'a> FieldGen<'a> {
         }
     }
 
-    fn map(&self) -> &MapField {
-        match self.kind {
-            FieldKind::Map(ref map) => &map,
-            _ => panic!("not a map field: {}", self.reconstruct_def()),
-        }
-    }
-
     pub(crate) fn elem(&self) -> &FieldElem {
         match self.kind {
             FieldKind::Singular(SingularField { ref elem, .. }) => &elem,
@@ -971,10 +964,8 @@ impl<'a> FieldGen<'a> {
     }
 
     // Write `merge_from` part for this map field
-    fn write_merge_from_map_case_block(&self, w: &mut CodeWriter) {
-        let &MapField {
-            ref key, ref value, ..
-        } = self.map();
+    fn write_merge_from_map_case_block(&self, map: &MapField, w: &mut CodeWriter) {
+        let MapField { key, value, .. } = map;
         w.case_block(&format!("{}", self.tag()), |w| {
             w.write_line(&format!(
                 "{}::rt::read_map_into::<{}, {}>(is, &mut {})?;",
@@ -1067,9 +1058,9 @@ impl<'a> FieldGen<'a> {
 
     /// Write `merge_from` part for this field
     pub(crate) fn write_merge_from_field_case_block(&self, w: &mut CodeWriter) {
-        match self.kind {
-            FieldKind::Oneof(ref f) => self.write_merge_from_oneof_case_block(&f, w),
-            FieldKind::Map(..) => self.write_merge_from_map_case_block(w),
+        match &self.kind {
+            FieldKind::Oneof(oneof) => self.write_merge_from_oneof_case_block(oneof, w),
+            FieldKind::Map(map) => self.write_merge_from_map_case_block(map, w),
             FieldKind::Singular(ref s) => self.write_merge_from_singular_case_block(s, w),
             FieldKind::Repeated(..) => self.write_merge_from_repeated_case_block(w),
         }
