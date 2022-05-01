@@ -11,7 +11,6 @@ pub(crate) mod repeated;
 pub(crate) mod singular;
 pub(crate) mod unknown_or_group;
 
-pub use map::compute_map_size;
 pub use map::read_map_into;
 pub use map::write_map_with_cached_sizes;
 pub use message::read_singular_message_into_field;

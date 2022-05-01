@@ -3,35 +3,9 @@ use std::hash::Hash;
 
 use crate::error::WireError;
 use crate::reflect::types::ProtobufType;
-use crate::rt::compute_raw_varint64_size;
-use crate::rt::tag_size;
 use crate::wire_format::WireType;
 use crate::CodedInputStream;
 use crate::CodedOutputStream;
-
-/// Compute serialized size of `map` field and cache nested field sizes.
-pub fn compute_map_size<K, V>(
-    field_number: u32,
-    map: &HashMap<K::ProtobufValue, V::ProtobufValue>,
-) -> u64
-where
-    K: ProtobufType,
-    V: ProtobufType,
-    K::ProtobufValue: Eq + Hash,
-{
-    let mut sum = 0;
-    for (k, v) in map {
-        let key_tag_size = 1;
-        let value_tag_size = 1;
-
-        let key_len = K::compute_size_with_length_delimiter(k);
-        let value_len = V::compute_size_with_length_delimiter(v);
-
-        let entry_len = key_tag_size + key_len + value_tag_size + value_len;
-        sum += tag_size(field_number) + compute_raw_varint64_size(entry_len) + entry_len;
-    }
-    sum
-}
 
 /// Write map, message sizes must be already known.
 pub fn write_map_with_cached_sizes<K, V>(
