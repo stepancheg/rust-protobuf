@@ -3,6 +3,7 @@ use std::fmt;
 use std::fmt::Formatter;
 
 use crate::descriptor::FileDescriptorProto;
+use crate::owning_ref::OwningRef;
 use crate::reflect::enums::generated::GeneratedEnumDescriptor;
 use crate::reflect::file::index::FileDescriptorCommon;
 use crate::reflect::message::generated::GeneratedMessageDescriptor;
@@ -37,7 +38,9 @@ impl GeneratedFileDescriptor {
         messages: Vec<GeneratedMessageDescriptorData>,
         enums: Vec<GeneratedEnumDescriptorData>,
     ) -> GeneratedFileDescriptor {
-        let common = FileDescriptorCommon::new(file_descriptor_proto, dependencies).unwrap();
+        let common =
+            FileDescriptorCommon::new(OwningRef::new_static(file_descriptor_proto), dependencies)
+                .unwrap();
 
         let mut messages: HashMap<&str, GeneratedMessageDescriptorData> = messages
             .into_iter()

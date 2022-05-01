@@ -86,6 +86,7 @@ mod message_field;
 mod message_full;
 mod oneof;
 mod oneof_full;
+mod owning_ref;
 pub mod reflect;
 pub mod rt;
 pub mod text_format;

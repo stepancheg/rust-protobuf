@@ -99,10 +99,7 @@ impl FileDescriptor {
     }
 
     pub(crate) fn message_proto_by_index(&self, index: usize) -> &DescriptorProto {
-        self.common().messages[index]
-            .path
-            .eval(self.proto())
-            .unwrap()
+        &self.common().messages[index].proto
     }
 
     pub(crate) fn enum_index_entry(&self, index: usize) -> &EnumIndex {

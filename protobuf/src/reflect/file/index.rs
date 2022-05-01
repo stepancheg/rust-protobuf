@@ -4,6 +4,7 @@ use std::ops::Range;
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::FileDescriptorProto;
+use crate::owning_ref::OwningRef;
 use crate::reflect::enums::path::EnumPath;
 use crate::reflect::error::ReflectError;
 use crate::reflect::field::index::FieldIndex;
@@ -17,6 +18,7 @@ use crate::reflect::FileDescriptor;
 
 #[derive(Debug)]
 pub(crate) struct MessageIndex {
+    pub(crate) proto: OwningRef<FileDescriptorProto, DescriptorProto>,
     pub(crate) path: MessagePath,
     pub(crate) name: String,
     pub(crate) name_to_package: String,
@@ -128,7 +130,7 @@ impl FileDescriptorCommon {
     }
 
     pub(crate) fn new(
-        file: &FileDescriptorProto,
+        file: OwningRef<FileDescriptorProto, FileDescriptorProto>,
         dependencies: Vec<FileDescriptor>,
     ) -> crate::Result<FileDescriptorCommon> {
         let deps_with_public = fds_extend_with_public(dependencies.clone());
@@ -148,14 +150,17 @@ impl FileDescriptorCommon {
                 e.name().to_owned(),
                 None,
                 e,
-                file,
+                file.owner(),
             ));
         }
 
-        for (i, message) in file.message_type.iter().enumerate() {
+        for (i, message) in file
+            .flat_map(|f| f.message_type.iter().collect())
+            .enumerate()
+        {
             let path = MessagePath(vec![i]);
             let message_index = Self::index_message_and_inners(
-                file,
+                file.owner(),
                 message,
                 &path,
                 None,
@@ -176,7 +181,7 @@ impl FileDescriptorCommon {
             let service_index = ServiceIndex::index(
                 service,
                 &FileDescriptorBuilding {
-                    current_file_descriptor: file,
+                    current_file_descriptor: file.owner(),
                     deps_with_public: &deps_with_public,
                     message_by_name_to_package: &message_by_name_to_package,
                     messages: &messages,
@@ -189,7 +194,7 @@ impl FileDescriptorCommon {
         let mut fields = Vec::new();
 
         Self::build_message_index(
-            file,
+            file.owner(),
             &deps_with_public,
             &mut messages,
             &mut fields,
@@ -203,7 +208,7 @@ impl FileDescriptorCommon {
                 None,
                 ext,
                 &FileDescriptorBuilding {
-                    current_file_descriptor: file,
+                    current_file_descriptor: file.owner(),
                     deps_with_public: &deps_with_public,
                     message_by_name_to_package: &message_by_name_to_package,
                     messages: &messages,
@@ -212,7 +217,7 @@ impl FileDescriptorCommon {
             )?);
         }
 
-        compute_is_initialized_is_always_true(&mut messages, &fields, file);
+        compute_is_initialized_is_always_true(&mut messages, &fields, file.owner());
 
         Ok(FileDescriptorCommon {
             dependencies,
@@ -230,7 +235,7 @@ impl FileDescriptorCommon {
 
     fn index_message_and_inners(
         file: &FileDescriptorProto,
-        message: &DescriptorProto,
+        message: OwningRef<FileDescriptorProto, DescriptorProto>,
         path: &MessagePath,
         parent: Option<usize>,
         parent_name_to_package: &str,
@@ -242,8 +247,9 @@ impl FileDescriptorCommon {
 
         let message_index = messages.len();
         messages.push(MessageIndex {
-            path: path.clone(),
+            proto: message.clone(),
             name: message.name().to_owned(),
+            path: path.clone(),
             name_to_package: String::new(),
             full_name: String::new(),
             enclosing_message: parent,
@@ -287,7 +293,10 @@ impl FileDescriptorCommon {
             });
         }
 
-        for (i, nested) in message.nested_type.iter().enumerate() {
+        for (i, nested) in message
+            .flat_map(|m| m.nested_type.iter().collect())
+            .enumerate()
+        {
             let mut nested_path = path.clone();
             nested_path.push(i);
             let nested_index = Self::index_message_and_inners(

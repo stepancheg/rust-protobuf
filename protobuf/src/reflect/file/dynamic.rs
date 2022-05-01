@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use crate::descriptor::FileDescriptorProto;
+use crate::owning_ref::OwningRef;
 use crate::reflect::file::index::FileDescriptorCommon;
 use crate::reflect::FileDescriptor;
 
@@ -17,7 +18,7 @@ impl DynamicFileDescriptor {
     ) -> crate::Result<DynamicFileDescriptor> {
         let proto = Arc::new(proto);
 
-        let common = FileDescriptorCommon::new(&proto, dependencies)?;
+        let common = FileDescriptorCommon::new(OwningRef::new_arc(proto.clone()), dependencies)?;
 
         Ok(DynamicFileDescriptor { proto, common })
     }
