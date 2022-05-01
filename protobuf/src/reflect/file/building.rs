@@ -72,12 +72,9 @@ impl<'a> FileDescriptorBuilding<'a> {
             field_descriptor_proto::Label::LABEL_REPEATED => {
                 let element = self.resolve_field_element_type(field)?;
                 let type_proto = match &element {
-                    ForwardProtobufTypeBox::CurrentFileMessage(m) => Some(
-                        self.messages[*m]
-                            .path
-                            .eval(self.current_file_descriptor)
-                            .unwrap(),
-                    ),
+                    ForwardProtobufTypeBox::CurrentFileMessage(m) => {
+                        Some(&*self.messages[*m].proto)
+                    }
                     ForwardProtobufTypeBox::ProtobufTypeBox(t) => match t.runtime() {
                         RuntimeType::Message(m) => Some(m.proto()),
                         _ => None,

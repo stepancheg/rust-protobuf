@@ -21,15 +21,17 @@ pub(crate) enum OneofDescriptorImplRef {
 }
 
 impl OneofDescriptor {
+    fn index_entry(&self) -> &OneofIndex {
+        &self.file_descriptor.common().oneofs[self.index]
+    }
+
     /// `.proto` part associated with this descriptor
     pub fn proto(&self) -> &OneofDescriptorProto {
+        let index_entry = self.index_entry();
         let message_descriptor = self
-            .containing_message()
-            .index()
-            .path
-            .eval(self.file_descriptor.proto())
-            .unwrap();
-        &message_descriptor.oneof_decl[self.index_entry().index_in_containing_message]
+            .file_descriptor
+            .message_proto_by_index(index_entry.containing_message);
+        &message_descriptor.oneof_decl[index_entry.index_in_containing_message]
     }
 
     /// Oneof name as specified in `.proto` file.
@@ -45,10 +47,6 @@ impl OneofDescriptor {
             }
             FileDescriptorImpl::Dynamic(..) => OneofDescriptorImplRef::Dynamic,
         }
-    }
-
-    fn index_entry(&self) -> &OneofIndex {
-        &self.file_descriptor.common().oneofs[self.index]
     }
 
     /// Message which contains this oneof.

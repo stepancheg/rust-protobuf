@@ -136,15 +136,13 @@ fn is_initialized_is_always_true_ignoring_deps(
         return true;
     }
 
-    let message_proto = message.path.eval(file).unwrap();
-
     // We don't support extensions properly but if we did,
     // extensions should have been checked for `is_initialized`.
-    if !message_proto.extension_range.is_empty() {
+    if !message.proto.extension_range.is_empty() {
         return false;
     }
 
-    for field in &message_proto.field {
+    for field in &message.proto.field {
         if field.label() == Label::LABEL_REQUIRED {
             return false;
         }

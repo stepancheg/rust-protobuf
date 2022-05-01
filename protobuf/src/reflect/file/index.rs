@@ -10,7 +10,6 @@ use crate::reflect::field::index::FieldIndex;
 use crate::reflect::file::building::FileDescriptorBuilding;
 use crate::reflect::file::fds::fds_extend_with_public;
 use crate::reflect::message::is_initialized_is_always_true::compute_is_initialized_is_always_true;
-use crate::reflect::message::path::MessagePath;
 use crate::reflect::name::concat_paths;
 use crate::reflect::service::index::ServiceIndex;
 use crate::reflect::FileDescriptor;
@@ -18,7 +17,6 @@ use crate::reflect::FileDescriptor;
 #[derive(Debug)]
 pub(crate) struct MessageIndex {
     pub(crate) proto: OwningRef<FileDescriptorProto, DescriptorProto>,
-    pub(crate) path: MessagePath,
     pub(crate) name_to_package: String,
     pub(crate) full_name: String,
     pub(crate) enclosing_message: Option<usize>,
@@ -141,15 +139,10 @@ impl FileDescriptorCommon {
             enums.push(EnumIndex::new(e.name().to_owned(), None, e, file.owner()));
         }
 
-        for (i, message) in file
-            .flat_map(|f| f.message_type.iter().collect())
-            .enumerate()
-        {
-            let path = MessagePath(vec![i]);
+        for message in file.flat_map(|f| f.message_type.iter().collect()) {
             let message_index = Self::index_message_and_inners(
                 file.owner(),
                 message,
-                &path,
                 None,
                 "",
                 &mut messages,
@@ -223,7 +216,7 @@ impl FileDescriptorCommon {
     fn index_message_and_inners(
         file: &FileDescriptorProto,
         message: OwningRef<FileDescriptorProto, DescriptorProto>,
-        path: &MessagePath,
+
         parent: Option<usize>,
         parent_name_to_package: &str,
         messages: &mut Vec<MessageIndex>,
@@ -235,7 +228,6 @@ impl FileDescriptorCommon {
         let message_index = messages.len();
         messages.push(MessageIndex {
             proto: message.clone(),
-            path: path.clone(),
             name_to_package: String::new(),
             full_name: String::new(),
             enclosing_message: parent,
@@ -274,16 +266,10 @@ impl FileDescriptorCommon {
             });
         }
 
-        for (i, nested) in message
-            .flat_map(|m| m.nested_type.iter().collect())
-            .enumerate()
-        {
-            let mut nested_path = path.clone();
-            nested_path.push(i);
+        for nested in message.flat_map(|m| m.nested_type.iter().collect()) {
             let nested_index = Self::index_message_and_inners(
                 file,
                 nested,
-                &nested_path,
                 Some(message_index),
                 &name_to_package,
                 messages,
@@ -324,7 +310,7 @@ impl FileDescriptorCommon {
         enums_by_name_to_package: &HashMap<String, usize>,
     ) -> crate::Result<()> {
         for i in 0..messages.len() {
-            let message_proto = messages[i].path.eval(file).unwrap();
+            let message_proto = &messages[i].proto;
             let building = FileDescriptorBuilding {
                 current_file_descriptor: file,
                 deps_with_public,

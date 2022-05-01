@@ -20,7 +20,6 @@ use crate::CodedInputStream;
 pub(crate) mod generated;
 pub(crate) mod is_initialized_is_always_true;
 pub(crate) mod message_ref;
-pub(crate) mod path;
 
 /// Dynamic representation of message type.
 ///
