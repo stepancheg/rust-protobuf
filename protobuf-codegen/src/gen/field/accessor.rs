@@ -1,11 +1,11 @@
 use crate::gen::code_writer::CodeWriter;
+use crate::gen::field::elem::FieldElem;
+use crate::gen::field::elem::FieldElemEnum;
 use crate::gen::field::option_kind::OptionKind;
 use crate::gen::field::repeated::RepeatedField;
 use crate::gen::field::repeated::RepeatedFieldKind;
 use crate::gen::field::singular::SingularField;
 use crate::gen::field::singular::SingularFieldFlag;
-use crate::gen::field::FieldElem;
-use crate::gen::field::FieldElemEnum;
 use crate::gen::field::FieldGen;
 use crate::gen::field::FieldKind;
 use crate::gen::field::MapField;

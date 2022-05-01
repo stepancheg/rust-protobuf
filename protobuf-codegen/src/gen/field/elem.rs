@@ -1,0 +1,193 @@
+use protobuf::descriptor::field_descriptor_proto::Type;
+use protobuf::reflect::RuntimeFieldType;
+use protobuf_parse::ProtobufAbsPath;
+
+use crate::gen::field::type_ext::TypeExt;
+use crate::gen::file_and_mod::FileAndMod;
+use crate::gen::message::RustTypeMessage;
+use crate::gen::rust::ident_with_path::RustIdentWithPath;
+use crate::gen::rust_types_values::message_or_enum_to_rust_relative;
+use crate::gen::rust_types_values::rust_name;
+use crate::gen::rust_types_values::PrimitiveTypeVariant;
+use crate::gen::rust_types_values::ProtobufTypeGen;
+use crate::gen::rust_types_values::RustType;
+use crate::gen::scope::EnumValueWithContext;
+use crate::gen::scope::FieldWithContext;
+use crate::gen::scope::MessageOrEnumWithScope;
+use crate::gen::scope::MessageWithScope;
+use crate::gen::scope::RootScope;
+use crate::Customize;
+
+#[derive(Clone, Debug)]
+pub(crate) struct FieldElemEnum<'a> {
+    /// Enum default value variant, either from proto or from enum definition
+    default_value: EnumValueWithContext<'a>,
+}
+
+impl<'a> FieldElemEnum<'a> {
+    fn rust_name_relative(&self, reference: &FileAndMod) -> RustIdentWithPath {
+        message_or_enum_to_rust_relative(&self.default_value.en, reference)
+    }
+
+    pub(crate) fn enum_rust_type(&self, reference: &FileAndMod) -> RustType {
+        RustType::Enum(
+            self.rust_name_relative(reference),
+            self.default_value.rust_name(),
+            self.default_value.proto.proto().number(),
+        )
+    }
+
+    fn enum_or_unknown_rust_type(&self, reference: &FileAndMod) -> RustType {
+        RustType::EnumOrUnknown(
+            self.rust_name_relative(reference),
+            self.default_value.rust_name(),
+            self.default_value.proto.proto().number(),
+        )
+    }
+
+    pub(crate) fn default_value_rust_expr(&self, reference: &FileAndMod) -> RustIdentWithPath {
+        self.rust_name_relative(reference)
+            .to_path()
+            .with_ident(self.default_value.rust_name())
+    }
+}
+
+#[derive(Clone, Debug)]
+pub(crate) struct FieldElemMessage<'a> {
+    pub message: MessageWithScope<'a>,
+}
+
+impl<'a> FieldElemMessage<'a> {
+    pub(crate) fn rust_name_relative(&self, reference: &FileAndMod) -> RustTypeMessage {
+        RustTypeMessage(message_or_enum_to_rust_relative(&self.message, reference))
+    }
+
+    fn rust_type(&self, reference: &FileAndMod) -> RustType {
+        RustType::Message(self.rust_name_relative(reference))
+    }
+}
+
+#[derive(Clone, Debug)]
+pub(crate) enum FieldElem<'a> {
+    Primitive(Type, PrimitiveTypeVariant),
+    Message(FieldElemMessage<'a>),
+    Enum(FieldElemEnum<'a>),
+    Group,
+}
+
+impl<'a> FieldElem<'a> {
+    fn proto_type(&self) -> Type {
+        match *self {
+            FieldElem::Primitive(t, ..) => t,
+            FieldElem::Group => Type::TYPE_GROUP,
+            FieldElem::Message(..) => Type::TYPE_MESSAGE,
+            FieldElem::Enum(..) => Type::TYPE_ENUM,
+        }
+    }
+
+    pub(crate) fn is_copy(&self) -> bool {
+        self.proto_type().is_copy()
+    }
+
+    pub(crate) fn rust_storage_elem_type(&self, reference: &FileAndMod) -> RustType {
+        match *self {
+            FieldElem::Primitive(t, PrimitiveTypeVariant::Default) => rust_name(t),
+            FieldElem::Primitive(Type::TYPE_STRING, PrimitiveTypeVariant::TokioBytes) => {
+                RustType::Chars
+            }
+            FieldElem::Primitive(Type::TYPE_BYTES, PrimitiveTypeVariant::TokioBytes) => {
+                RustType::Bytes
+            }
+            FieldElem::Primitive(.., PrimitiveTypeVariant::TokioBytes) => unreachable!(),
+            FieldElem::Group => RustType::Group,
+            FieldElem::Message(ref m) => m.rust_type(reference),
+            FieldElem::Enum(ref en) => en.enum_or_unknown_rust_type(reference),
+        }
+    }
+
+    // Type of set_xxx function parameter type for singular fields
+    pub(crate) fn rust_set_xxx_param_type(&self, reference: &FileAndMod) -> RustType {
+        if let FieldElem::Enum(ref en) = *self {
+            en.enum_rust_type(reference)
+        } else {
+            self.rust_storage_elem_type(reference)
+        }
+    }
+
+    fn protobuf_type_gen(&self, reference: &FileAndMod) -> ProtobufTypeGen {
+        match *self {
+            FieldElem::Primitive(t, v) => ProtobufTypeGen::Primitive(t, v),
+            FieldElem::Message(ref m) => ProtobufTypeGen::Message(m.rust_name_relative(reference)),
+            FieldElem::Enum(ref en) => {
+                ProtobufTypeGen::EnumOrUnknown(en.rust_name_relative(reference))
+            }
+            FieldElem::Group => unreachable!(),
+        }
+    }
+
+    /// implementation of ProtobufType trait
+    pub(crate) fn lib_protobuf_type(&self, reference: &FileAndMod) -> String {
+        self.protobuf_type_gen(reference)
+            .rust_type(&reference.customize)
+    }
+
+    pub(crate) fn primitive_type_variant(&self) -> PrimitiveTypeVariant {
+        match self {
+            &FieldElem::Primitive(_, v) => v,
+            _ => PrimitiveTypeVariant::Default,
+        }
+    }
+}
+
+pub(crate) fn field_elem<'a>(
+    field: &FieldWithContext,
+    root_scope: &'a RootScope<'a>,
+    customize: &Customize,
+) -> FieldElem<'a> {
+    if let RuntimeFieldType::Map(..) = field.field.runtime_field_type() {
+        unreachable!();
+    }
+
+    if field.field.proto().type_() == Type::TYPE_GROUP {
+        FieldElem::Group
+    } else if field.field.proto().has_type_name() {
+        let message_or_enum = root_scope
+            .find_message_or_enum(&ProtobufAbsPath::from(field.field.proto().type_name()));
+        match (field.field.proto().type_(), message_or_enum) {
+            (Type::TYPE_MESSAGE, MessageOrEnumWithScope::Message(message)) => {
+                FieldElem::Message(FieldElemMessage {
+                    message: message.clone(),
+                })
+            }
+            (Type::TYPE_ENUM, MessageOrEnumWithScope::Enum(enum_with_scope)) => {
+                let default_value = if field.field.proto().has_default_value() {
+                    enum_with_scope.value_by_name(field.field.proto().default_value())
+                } else {
+                    enum_with_scope.values()[0].clone()
+                };
+                FieldElem::Enum(FieldElemEnum { default_value })
+            }
+            _ => panic!("unknown named type: {:?}", field.field.proto().type_()),
+        }
+    } else if field.field.proto().has_type() {
+        let tokio_for_bytes = customize.tokio_bytes.unwrap_or(false);
+        let tokio_for_string = customize.tokio_bytes_for_string.unwrap_or(false);
+
+        let elem = match field.field.proto().type_() {
+            Type::TYPE_STRING if tokio_for_string => {
+                FieldElem::Primitive(Type::TYPE_STRING, PrimitiveTypeVariant::TokioBytes)
+            }
+            Type::TYPE_BYTES if tokio_for_bytes => {
+                FieldElem::Primitive(Type::TYPE_BYTES, PrimitiveTypeVariant::TokioBytes)
+            }
+            t => FieldElem::Primitive(t, PrimitiveTypeVariant::Default),
+        };
+
+        elem
+    } else {
+        panic!(
+            "neither type_name, nor field_type specified for field: {}",
+            field.field.name()
+        );
+    }
+}

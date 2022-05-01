@@ -1,4 +1,4 @@
-use crate::gen::field::FieldElem;
+use crate::gen::field::elem::FieldElem;
 use crate::gen::file_and_mod::FileAndMod;
 use crate::gen::rust::snippets::EXPR_VEC_NEW;
 use crate::gen::rust_types_values::RustType;
