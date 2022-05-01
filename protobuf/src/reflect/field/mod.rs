@@ -82,7 +82,11 @@ fn _assert_sync<'a>() {
 #[derive(Eq, PartialEq, Clone)]
 pub(crate) enum FieldDescriptorImpl {
     // Index of field in the message descriptor proto.
-    Field(MessageDescriptor, usize),
+    Field(
+        MessageDescriptor,
+        /// Index of the field in file.
+        usize,
+    ),
     // Index of extension in the file descriptor proto.
     ExtensionInMessage(MessageDescriptor, usize),
     // Index of extension in the file descriptor proto.
@@ -121,7 +125,7 @@ impl fmt::Display for FieldDescriptor {
 impl FieldDescriptor {
     pub(crate) fn regular(&self) -> (&MessageDescriptor, usize) {
         match &self.imp {
-            FieldDescriptorImpl::Field(m, i) => (m, *i),
+            FieldDescriptorImpl::Field(m, i) => (m, *i - m.index().message_index.first_field_index),
             // TODO: implement and remove this function
             _ => unimplemented!("extension fields are not fully supported yet"),
         }
@@ -138,7 +142,9 @@ impl FieldDescriptor {
     /// Get `.proto` description of field
     pub fn proto(&self) -> &FieldDescriptorProto {
         match &self.imp {
-            FieldDescriptorImpl::Field(m, i) => &m.proto().field[*i],
+            FieldDescriptorImpl::Field(m, i) => {
+                &m.proto().field[*i - m.index().message_index.first_field_index]
+            }
             FieldDescriptorImpl::ExtensionInMessage(m, i) => &m.proto().extension[*i],
             FieldDescriptorImpl::ExtensionInFile(file, i) => {
                 &file.proto().extension[*i - file.common().first_extension_field_index]
@@ -203,10 +209,7 @@ impl FieldDescriptor {
 
     fn index(&self) -> &FieldIndex {
         match &self.imp {
-            FieldDescriptorImpl::Field(m, i) => &m
-                .index()
-                .message_index
-                .slice_fields(&self.file_descriptor().common().fields)[*i],
+            FieldDescriptorImpl::Field(_, i) => &self.file_descriptor().common().fields[*i],
             FieldDescriptorImpl::ExtensionInMessage(m, i) => {
                 &m.index().message_index.extensions[*i]
             }
