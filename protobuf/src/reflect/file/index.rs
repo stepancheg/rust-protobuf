@@ -19,7 +19,6 @@ use crate::reflect::FileDescriptor;
 pub(crate) struct MessageIndex {
     pub(crate) proto: OwningRef<FileDescriptorProto, DescriptorProto>,
     pub(crate) path: MessagePath,
-    pub(crate) name: String,
     pub(crate) name_to_package: String,
     pub(crate) full_name: String,
     pub(crate) enclosing_message: Option<usize>,
@@ -237,7 +236,6 @@ impl FileDescriptorCommon {
         let message_index = messages.len();
         messages.push(MessageIndex {
             proto: message.clone(),
-            name: message.name().to_owned(),
             path: path.clone(),
             name_to_package: String::new(),
             full_name: String::new(),

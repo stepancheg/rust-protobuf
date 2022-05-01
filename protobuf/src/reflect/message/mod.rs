@@ -58,7 +58,7 @@ impl MessageDescriptor {
 
     /// Message name as specified in `.proto` file.
     pub fn name(&self) -> &str {
-        &self.index().name
+        self.proto().name()
     }
 
     fn index_entry(&self) -> &MessageIndex {
