@@ -1,7 +1,6 @@
 use std::fmt;
 
 use crate::descriptor::field_descriptor_proto;
-use crate::descriptor::DescriptorProto;
 use crate::descriptor::FieldDescriptorProto;
 use crate::message_dyn::MessageDyn;
 use crate::reflect::acc::v2::map::MapFieldAccessorHolder;
@@ -141,19 +140,7 @@ impl FieldDescriptor {
 
     /// Get `.proto` description of field
     pub fn proto(&self) -> &FieldDescriptorProto {
-        match &self.index().kind {
-            FieldKind::MessageField(_) => {
-                &self.declaring_message_proto().unwrap().field[self.regular_field_index()]
-            }
-            FieldKind::Extension(Some(_), _) => {
-                &self.declaring_message_proto().unwrap().extension
-                    [self.in_message_extension_index()]
-            }
-            FieldKind::Extension(None, _) => {
-                &self.file_descriptor.proto().extension
-                    [self.index - self.file_descriptor.common().first_extension_field_index]
-            }
-        }
+        &self.index().proto
     }
 
     /// Field name as specified in `.proto` file.
@@ -209,16 +196,6 @@ impl FieldDescriptor {
         }
     }
 
-    /// Message which declares this field (for extension, **not** the message we extend).
-    fn declaring_message_proto(&self) -> Option<&DescriptorProto> {
-        match &self.index().kind {
-            FieldKind::MessageField(m) => Some(self.file_descriptor.message_proto_by_index(*m)),
-            FieldKind::Extension(m, _) => {
-                Some(self.file_descriptor.message_proto_by_index(*m.as_ref()?))
-            }
-        }
-    }
-
     /// Message which contains this field.
     ///
     /// For extension fields, this is the message being extended.
@@ -231,39 +208,6 @@ impl FieldDescriptor {
 
     fn index(&self) -> &FieldIndex {
         &self.file_descriptor.common().fields[self.index]
-    }
-
-    // TODO: make these names less confusing.
-    fn regular_field_index(&self) -> usize {
-        match &self.index().kind {
-            FieldKind::MessageField(m) => {
-                self.index
-                    - self
-                        .file_descriptor()
-                        .message_by_index(*m)
-                        .index()
-                        .message_index
-                        .first_field_index
-            }
-            FieldKind::Extension(..) => panic!("not a regular field"),
-        }
-    }
-
-    fn in_message_extension_index(&self) -> usize {
-        match &self.index().kind {
-            FieldKind::MessageField(..) => panic!("not an extension"),
-            FieldKind::Extension(None, _) => panic!("file-level extension"),
-            FieldKind::Extension(Some(m), _) => {
-                self.index
-                    - self
-                        .file_descriptor()
-                        .message_by_index(*m)
-                        .index()
-                        .message_index
-                        .extension_field_range()
-                        .start
-            }
-        }
     }
 
     fn index_with_message_lifetime<'a>(&self, m: &'a dyn MessageDyn) -> &'a FieldIndex {

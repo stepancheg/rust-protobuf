@@ -181,7 +181,7 @@ impl FileDescriptorCommon {
         )?;
 
         let first_extension_field_index = fields.len();
-        for ext in &file.extension {
+        for ext in file.flat_map(|f| f.extension.iter().collect()) {
             fields.push(FieldIndex::index(
                 None,
                 ext,
@@ -322,7 +322,7 @@ impl FileDescriptorCommon {
 
     fn index_message(
         message_index: usize,
-        proto: &DescriptorProto,
+        proto: &OwningRef<FileDescriptorProto, DescriptorProto>,
         building: &FileDescriptorBuilding,
         fields: &mut Vec<FieldIndex>,
     ) -> crate::Result<MessageFieldsIndex> {
@@ -332,7 +332,7 @@ impl FileDescriptorCommon {
 
         let first_field_index = fields.len();
 
-        for field in &proto.field {
+        for field in proto.flat_map(|m| m.field.iter().collect()) {
             fields.push(FieldIndex::index(Some(message_index), field, building)?);
         }
 
@@ -364,7 +364,7 @@ impl FileDescriptorCommon {
             }
         }
 
-        for ext in &proto.extension {
+        for ext in proto.flat_map(|m| m.extension.iter().collect()) {
             fields.push(FieldIndex::index(Some(message_index), ext, building)?);
         }
 

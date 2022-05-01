@@ -3,6 +3,8 @@ use protobuf_support::json_name::json_name;
 use crate::descriptor::field_descriptor_proto;
 use crate::descriptor::field_descriptor_proto::Type;
 use crate::descriptor::FieldDescriptorProto;
+use crate::descriptor::FileDescriptorProto;
+use crate::owning_ref::OwningRef;
 use crate::reflect::field::protobuf_field_type::ProtobufFieldType;
 use crate::reflect::file::building::FileDescriptorBuilding;
 use crate::reflect::protobuf_type_box::ProtobufType;
@@ -95,6 +97,7 @@ pub(crate) enum FieldKind {
 
 #[derive(Debug)]
 pub(crate) struct FieldIndex {
+    pub(crate) proto: OwningRef<FileDescriptorProto, FieldDescriptorProto>,
     pub(crate) kind: FieldKind,
     pub(crate) json_name: String,
     pub(crate) field_type: ForwardProtobufFieldType,
@@ -140,11 +143,11 @@ impl FieldIndex {
 
     pub(crate) fn index(
         containing_message: Option<usize>,
-        field: &FieldDescriptorProto,
+        field: OwningRef<FileDescriptorProto, FieldDescriptorProto>,
         building: &FileDescriptorBuilding,
     ) -> crate::Result<FieldIndex> {
         let default_value = if field.has_default_value() {
-            Some(Self::parse_default_value(field, building))
+            Some(Self::parse_default_value(&field, building))
         } else {
             None
         };
@@ -167,8 +170,9 @@ impl FieldIndex {
             (None, None) => panic!("field must be in a message or an extension"),
         };
 
-        let field_type = building.resolve_field_type(field)?;
+        let field_type = building.resolve_field_type(&field)?;
         Ok(FieldIndex {
+            proto: field,
             kind,
             default_value,
             json_name,
