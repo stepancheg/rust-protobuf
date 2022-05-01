@@ -988,10 +988,7 @@ impl<'a> FieldGen<'a> {
                 ));
             }
             _ => {
-                let read_proc = format!(
-                    "{}?",
-                    self.proto_type.read("is", s.elem.primitive_type_variant())
-                );
+                let read_proc = s.elem.read_one_liner();
                 self.write_self_field_assign_some(w, s, &read_proc);
             }
         })

@@ -274,6 +274,13 @@ impl<'a> FieldElem<'a> {
             }
         }
     }
+
+    pub(crate) fn read_one_liner(&self) -> String {
+        format!(
+            "{}?",
+            self.proto_type().read("is", self.primitive_type_variant())
+        )
+    }
 }
 
 pub(crate) fn field_elem<'a>(
