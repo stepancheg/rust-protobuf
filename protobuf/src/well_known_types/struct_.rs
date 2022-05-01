@@ -79,7 +79,19 @@ impl crate::Message for Struct {
         while let Some(tag) = is.read_raw_tag_or_eof()? {
             match tag {
                 10 => {
-                    crate::rt::read_map_into::<crate::reflect::types::ProtobufTypeString, crate::reflect::types::ProtobufTypeMessage<Value>>(is, &mut self.fields)?;
+                    let len = is.read_raw_varint32()?;
+                    let old_limit = is.push_limit(len as u64)?;
+                    let mut key = ::std::default::Default::default();
+                    let mut value = ::std::default::Default::default();
+                    while let Some(tag) = is.read_raw_tag_or_eof()? {
+                        match tag {
+                            10 => key = is.read_string()?,
+                            18 => value = is.read_message()?,
+                            _ => crate::rt::skip_field_for_tag(tag, is)?,
+                        };
+                    }
+                    is.pop_limit(old_limit);
+                    self.fields.insert(key, value);
                 },
                 tag => {
                     crate::rt::read_unknown_or_skip_group(tag, is, self.special_fields.mut_unknown_fields())?;
