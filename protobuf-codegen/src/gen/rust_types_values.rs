@@ -542,7 +542,21 @@ pub(crate) enum ProtobufTypeGen {
 }
 
 impl ProtobufTypeGen {
-    pub fn rust_type(&self, customize: &Customize) -> String {
+    pub(crate) fn protobuf_value(&self, customize: &Customize) -> String {
+        match self {
+            ProtobufTypeGen::Primitive(t, PrimitiveTypeVariant::Default) => {
+                t.rust_type().to_code(customize)
+            }
+            ProtobufTypeGen::Primitive(_, PrimitiveTypeVariant::TokioBytes) => unimplemented!(),
+            ProtobufTypeGen::Message(m) => m.0.to_string(),
+            ProtobufTypeGen::EnumOrUnknown(e) => format!(
+                "{protobuf_crate}::EnumOrUnknown<{e}>",
+                protobuf_crate = protobuf_crate_path(customize)
+            ),
+        }
+    }
+
+    pub(crate) fn _rust_type(&self, customize: &Customize) -> String {
         match self {
             &ProtobufTypeGen::Primitive(t, PrimitiveTypeVariant::Default) => format!(
                 "{}::reflect::types::ProtobufType{}",

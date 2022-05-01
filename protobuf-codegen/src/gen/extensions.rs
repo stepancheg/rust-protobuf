@@ -75,19 +75,22 @@ impl<'a> ExtGen<'a> {
         } else {
             "ExtFieldOptional"
         };
-        let field_type = format!("{}::ext::{}", protobuf_crate_path(&self.customize), suffix);
+        let field_type = format!(
+            "{protobuf_crate}::ext_new::{suffix}",
+            protobuf_crate = protobuf_crate_path(&self.customize)
+        );
         w.pub_const(
             &rust_field_name_for_protobuf_field_name(self.field.name()).to_string(),
             &format!(
-                "{}<{}, {}>",
-                field_type,
-                self.extendee_rust_name(),
-                self.return_type_gen().rust_type(&self.customize),
+                "{field_type}<{extendee}, {rust_type}>",
+                extendee=self.extendee_rust_name(),
+                rust_type=self.return_type_gen().protobuf_value(&self.customize),
             ),
             &format!(
-                "{} {{ field_number: {}, phantom: ::std::marker::PhantomData }}",
-                field_type,
-                self.field.number()
+                "{field_type}::new({field_number}, {protobuf_crate}::descriptor::field_descriptor_proto::Type::{t:?})",
+                field_number=self.field.number(),
+                protobuf_crate = protobuf_crate_path(&self.customize),
+                t=self.field.type_(),
             ),
         );
     }
@@ -100,6 +103,12 @@ pub(crate) fn write_extensions(
     customize: &CustomizeElemCtx,
 ) {
     if file.proto().extension.is_empty() {
+        return;
+    }
+
+    if customize.for_elem.lite_runtime.unwrap_or(false) {
+        w.write_line("");
+        w.comment("Extension generation with lite runtime is not supported");
         return;
     }
 

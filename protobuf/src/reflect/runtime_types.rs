@@ -9,15 +9,39 @@ use bytes::Bytes;
 
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;
+use crate::descriptor::field_descriptor_proto::Type;
 use crate::enum_or_unknown::EnumOrUnknown;
 use crate::message_full::MessageFull;
 use crate::reflect::runtime_type_box::RuntimeTypeBox;
+use crate::reflect::types::ProtobufType;
+use crate::reflect::types::ProtobufTypeBool;
+use crate::reflect::types::ProtobufTypeBytes;
+use crate::reflect::types::ProtobufTypeDouble;
+use crate::reflect::types::ProtobufTypeEnumOrUnknown;
+use crate::reflect::types::ProtobufTypeFixed32;
+use crate::reflect::types::ProtobufTypeFixed64;
+use crate::reflect::types::ProtobufTypeFloat;
+use crate::reflect::types::ProtobufTypeInt32;
+use crate::reflect::types::ProtobufTypeInt64;
+use crate::reflect::types::ProtobufTypeMessage;
+use crate::reflect::types::ProtobufTypeSfixed32;
+use crate::reflect::types::ProtobufTypeSfixed64;
+use crate::reflect::types::ProtobufTypeSint32;
+use crate::reflect::types::ProtobufTypeSint64;
+use crate::reflect::types::ProtobufTypeString;
+#[cfg(feature = "bytes")]
+use crate::reflect::types::ProtobufTypeTokioBytes;
+#[cfg(feature = "bytes")]
+use crate::reflect::types::ProtobufTypeTokioChars;
+use crate::reflect::types::ProtobufTypeUint32;
+use crate::reflect::types::ProtobufTypeUint64;
 use crate::reflect::value::value_ref::ReflectValueMut;
 use crate::reflect::MessageRef;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::EnumFull;
+use crate::UnknownValues;
 
 /// `RuntimeType` is not implemented by all protobuf types directly
 /// because it's not possible to implement `RuntimeType` for all `Message`
@@ -79,6 +103,9 @@ pub trait RuntimeType: fmt::Debug + Send + Sync + Sized + 'static {
         let _ = values;
         panic!("not enum")
     }
+
+    /// Parse the value from unknown fields.
+    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value>;
 }
 
 /// Runtime type which can be dereferenced.
@@ -188,6 +215,11 @@ impl RuntimeType for RuntimeTypeF32 {
     fn is_non_zero(value: &f32) -> bool {
         *value != 0.0
     }
+
+    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value> {
+        assert_eq!(field_type, Type::TYPE_FLOAT);
+        ProtobufTypeFloat::get_from_unknown(unknown)
+    }
 }
 
 impl RuntimeType for RuntimeTypeF64 {
@@ -230,6 +262,11 @@ impl RuntimeType for RuntimeTypeF64 {
     fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {
         unimplemented!()
     }
+
+    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value> {
+        assert_eq!(field_type, Type::TYPE_DOUBLE);
+        ProtobufTypeDouble::get_from_unknown(unknown)
+    }
 }
 
 impl RuntimeType for RuntimeTypeI32 {
@@ -271,6 +308,15 @@ impl RuntimeType for RuntimeTypeI32 {
 
     fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {
         unimplemented!()
+    }
+
+    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value> {
+        match field_type {
+            Type::TYPE_INT32 => ProtobufTypeInt32::get_from_unknown(unknown),
+            Type::TYPE_SINT32 => ProtobufTypeSint32::get_from_unknown(unknown),
+            Type::TYPE_SFIXED32 => ProtobufTypeSfixed32::get_from_unknown(unknown),
+            _ => panic!("wrong type: {:?}", field_type),
+        }
     }
 }
 impl RuntimeTypeHashable for RuntimeTypeI32 {
@@ -322,6 +368,15 @@ impl RuntimeType for RuntimeTypeI64 {
     fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {
         unimplemented!()
     }
+
+    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value> {
+        match field_type {
+            Type::TYPE_INT64 => ProtobufTypeInt64::get_from_unknown(unknown),
+            Type::TYPE_SINT64 => ProtobufTypeSint64::get_from_unknown(unknown),
+            Type::TYPE_SFIXED64 => ProtobufTypeSfixed64::get_from_unknown(unknown),
+            _ => panic!("wrong type: {:?}", field_type),
+        }
+    }
 }
 impl RuntimeTypeHashable for RuntimeTypeI64 {
     fn hash_map_get<'a, V>(map: &'a HashMap<i64, V>, key: ReflectValueRef) -> Option<&'a V> {
@@ -371,6 +426,14 @@ impl RuntimeType for RuntimeTypeU32 {
 
     fn is_non_zero(value: &u32) -> bool {
         *value != 0
+    }
+
+    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value> {
+        match field_type {
+            Type::TYPE_UINT32 => ProtobufTypeUint32::get_from_unknown(unknown),
+            Type::TYPE_FIXED32 => ProtobufTypeFixed32::get_from_unknown(unknown),
+            _ => panic!("wrong type: {:?}", field_type),
+        }
     }
 }
 impl RuntimeTypeHashable for RuntimeTypeU32 {
@@ -422,6 +485,14 @@ impl RuntimeType for RuntimeTypeU64 {
     fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {
         unimplemented!()
     }
+
+    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value> {
+        match field_type {
+            Type::TYPE_UINT64 => ProtobufTypeUint64::get_from_unknown(unknown),
+            Type::TYPE_FIXED64 => ProtobufTypeFixed64::get_from_unknown(unknown),
+            _ => panic!("wrong type: {:?}", field_type),
+        }
+    }
 }
 impl RuntimeTypeHashable for RuntimeTypeU64 {
     fn hash_map_get<'a, V>(map: &'a HashMap<u64, V>, key: ReflectValueRef) -> Option<&'a V> {
@@ -472,6 +543,11 @@ impl RuntimeType for RuntimeTypeBool {
     fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {
         unimplemented!()
     }
+
+    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value> {
+        assert_eq!(field_type, Type::TYPE_BOOL);
+        ProtobufTypeBool::get_from_unknown(unknown)
+    }
 }
 impl RuntimeTypeHashable for RuntimeTypeBool {
     fn hash_map_get<'a, V>(map: &'a HashMap<bool, V>, key: ReflectValueRef) -> Option<&'a V> {
@@ -517,6 +593,11 @@ impl RuntimeType for RuntimeTypeString {
 
     fn is_non_zero(value: &String) -> bool {
         !value.is_empty()
+    }
+
+    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value> {
+        assert_eq!(field_type, Type::TYPE_STRING);
+        ProtobufTypeString::get_from_unknown(unknown)
     }
 }
 impl RuntimeTypeWithDeref for RuntimeTypeString {
@@ -571,6 +652,11 @@ impl RuntimeType for RuntimeTypeVecU8 {
     fn is_non_zero(value: &Vec<u8>) -> bool {
         !value.is_empty()
     }
+
+    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value> {
+        assert_eq!(field_type, Type::TYPE_BYTES);
+        ProtobufTypeBytes::get_from_unknown(unknown)
+    }
 }
 impl RuntimeTypeWithDeref for RuntimeTypeVecU8 {
     type DerefTarget = [u8];
@@ -618,6 +704,11 @@ impl RuntimeType for RuntimeTypeTokioBytes {
     fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {
         unimplemented!()
     }
+
+    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value> {
+        assert_eq!(field_type, Type::TYPE_BYTES);
+        ProtobufTypeTokioBytes::get_from_unknown(unknown)
+    }
 }
 #[cfg(feature = "bytes")]
 impl RuntimeTypeWithDeref for RuntimeTypeTokioBytes {
@@ -664,6 +755,11 @@ impl RuntimeType for RuntimeTypeTokioChars {
 
     fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {
         unimplemented!()
+    }
+
+    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value> {
+        assert_eq!(field_type, Type::TYPE_STRING);
+        ProtobufTypeTokioChars::get_from_unknown(unknown)
     }
 }
 #[cfg(feature = "bytes")]
@@ -736,6 +832,11 @@ where
     fn cast_to_enum_values(values: &[EnumOrUnknown<E>]) -> &[i32] {
         EnumOrUnknown::cast_to_values(values)
     }
+
+    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value> {
+        assert_eq!(field_type, Type::TYPE_ENUM);
+        ProtobufTypeEnumOrUnknown::<E>::get_from_unknown(unknown)
+    }
 }
 
 impl<M> RuntimeType for RuntimeTypeMessage<M>
@@ -778,5 +879,10 @@ where
 
     fn is_non_zero(_value: &M) -> bool {
         true
+    }
+
+    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value> {
+        assert_eq!(field_type, Type::TYPE_MESSAGE);
+        ProtobufTypeMessage::<M>::get_from_unknown(unknown)
     }
 }

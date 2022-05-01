@@ -78,6 +78,7 @@ mod enum_or_unknown;
 mod enums;
 mod error;
 pub mod ext;
+pub mod ext_new;
 pub mod json;
 mod lazy;
 mod message;
