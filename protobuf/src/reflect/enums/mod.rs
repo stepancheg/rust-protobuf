@@ -40,7 +40,7 @@ impl fmt::Debug for EnumValueDescriptor {
 
 impl fmt::Display for EnumValueDescriptor {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.full_name())
+        write!(f, "{}.{}", self.enum_descriptor, self.name())
     }
 }
 
@@ -64,7 +64,7 @@ impl EnumValueDescriptor {
 
     /// Fully qualified enum value name: fully qualified enum name followed by value name.
     pub fn full_name(&self) -> String {
-        format!("{}.{}", self.enum_descriptor.full_name(), self.name())
+        self.to_string()
     }
 
     /// `i32` value of the enum variant
@@ -204,6 +204,7 @@ impl EnumDescriptor {
 
     /// Get enum variant by index (as declared in `.proto` file).
     pub fn value_by_index(&self, index: usize) -> EnumValueDescriptor {
+        assert!(index < self.proto().value.len());
         EnumValueDescriptor {
             enum_descriptor: self.clone(),
             index,
@@ -220,10 +221,8 @@ impl EnumDescriptor {
 
     /// Find enum variant by number or return default (first) enum value
     pub fn value_by_number_or_default(&self, number: i32) -> EnumValueDescriptor {
-        match self.value_by_number(number) {
-            Some(v) => v,
-            None => self.default_value(),
-        }
+        self.value_by_number(number)
+            .unwrap_or_else(|| self.default_value())
     }
 
     /// Check if this enum descriptor corresponds given enum type
