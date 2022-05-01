@@ -70,7 +70,7 @@ impl GeneratedFileDescriptor {
             .messages
             .iter()
             .map(|message_index| {
-                if message_index.map_entry {
+                if message_index.proto.options.map_entry() {
                     GeneratedMessageDescriptor::new_map_entry()
                 } else {
                     let message = messages
