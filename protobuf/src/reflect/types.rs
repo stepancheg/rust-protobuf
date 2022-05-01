@@ -26,7 +26,7 @@ use crate::EnumOrUnknown;
 use crate::Message;
 
 /// Encapsulate type-specific serialization and conversion logic
-pub trait ProtobufType: Send + Sync + Clone + Sized + 'static {
+pub(crate) trait ProtobufType: Send + Sync + Clone + Sized + 'static {
     /// Rust type for this protobuf type.
     type ProtobufValue: Default;
 
@@ -87,7 +87,7 @@ pub trait ProtobufType: Send + Sync + Clone + Sized + 'static {
 }
 
 /// All fixed size types
-pub trait ProtobufTypeFixed: ProtobufType {
+pub(crate) trait ProtobufTypeFixed: ProtobufType {
     /// Encoded size of value in bytes of this type.
     ///
     /// E. g. it is `4` for `fixed32`

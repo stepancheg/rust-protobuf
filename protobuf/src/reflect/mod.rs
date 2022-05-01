@@ -33,7 +33,7 @@ pub(crate) mod value;
 // TODO: this is referenced from generated code.
 //   Do something about it.
 pub mod runtime_types;
-pub mod types;
+pub(crate) mod types;
 
 pub(crate) mod reflect_eq;
 
