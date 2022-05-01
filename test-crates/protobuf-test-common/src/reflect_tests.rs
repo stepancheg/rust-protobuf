@@ -19,7 +19,7 @@ pub fn value_for_runtime_type(field_type: &RuntimeType) -> ReflectValueBox {
         RuntimeType::Bool => ReflectValueBox::Bool(true),
         RuntimeType::String => ReflectValueBox::String("here".to_owned()),
         RuntimeType::VecU8 => ReflectValueBox::Bytes(b"there".as_ref().to_owned()),
-        RuntimeType::Enum(e) => ReflectValueBox::from(e.first_value()),
+        RuntimeType::Enum(e) => ReflectValueBox::from(e.default_value()),
         RuntimeType::Message(m) => ReflectValueBox::Message(m.new_instance()),
     }
 }

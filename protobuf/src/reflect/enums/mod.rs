@@ -186,11 +186,6 @@ impl EnumDescriptor {
         })
     }
 
-    /// First variant (also default in proto3).
-    pub fn first_value(&self) -> EnumValueDescriptor {
-        self.values().next().unwrap()
-    }
-
     /// Find enum variant by name
     pub fn value_by_name(&self, name: &str) -> Option<EnumValueDescriptor> {
         let index = *self.file_descriptor.common().enums[self.index]
@@ -218,7 +213,7 @@ impl EnumDescriptor {
         }
     }
 
-    /// Default enum value (first variant)
+    /// Default enum value (first variant).
     pub fn default_value(&self) -> EnumValueDescriptor {
         EnumValueDescriptor {
             enum_descriptor: self.clone(),

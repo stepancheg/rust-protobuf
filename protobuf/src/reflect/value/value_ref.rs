@@ -35,7 +35,14 @@ pub enum ReflectValueRef<'a> {
     /// `bytes`
     Bytes(&'a [u8]),
     /// `enum`
-    Enum(EnumDescriptor, i32),
+    Enum(
+        EnumDescriptor,
+        /// Enum value.
+        ///
+        /// Note when `allow_alias` option is enabled, more than one enum variant
+        /// may have the same value.
+        i32,
+    ),
     /// `message`
     Message(MessageRef<'a>),
 }

@@ -786,10 +786,7 @@ where
     }
 
     fn default_value_ref() -> ReflectValueRef<'static> {
-        ReflectValueRef::Enum(
-            E::enum_descriptor(),
-            E::enum_descriptor().first_value().value(),
-        )
+        ReflectValueRef::from(E::enum_descriptor().default_value())
     }
 
     fn from_value_box(value_box: ReflectValueBox) -> Result<EnumOrUnknown<E>, ReflectValueBox> {
