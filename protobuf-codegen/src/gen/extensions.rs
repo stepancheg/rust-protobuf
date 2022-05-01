@@ -76,7 +76,7 @@ impl<'a> ExtGen<'a> {
             "ExtFieldOptional"
         };
         let field_type = format!(
-            "{protobuf_crate}::ext_new::{suffix}",
+            "{protobuf_crate}::ext::{suffix}",
             protobuf_crate = protobuf_crate_path(&self.customize)
         );
         w.pub_const(
