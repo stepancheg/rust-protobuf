@@ -214,7 +214,6 @@ impl FileDescriptorCommon {
     fn index_message_and_inners(
         file: &FileDescriptorProto,
         message: OwningRef<FileDescriptorProto, DescriptorProto>,
-
         parent: Option<usize>,
         parent_name_to_package: &str,
         messages: &mut Vec<MessageIndex>,
@@ -226,8 +225,8 @@ impl FileDescriptorCommon {
         let message_index = messages.len();
         messages.push(MessageIndex {
             proto: message.clone(),
-            name_to_package: String::new(),
-            full_name: String::new(),
+            full_name: concat_paths(file.package(), &name_to_package),
+            name_to_package: name_to_package.clone(),
             enclosing_message: parent,
             nested_messages: Vec::with_capacity(message.nested_type.len()),
             nested_enums: enums.len()..enums.len() + message.enum_type.len(),
@@ -274,9 +273,6 @@ impl FileDescriptorCommon {
             );
             messages[message_index].nested_messages.push(nested_index);
         }
-
-        messages[message_index].full_name = concat_paths(file.package(), &name_to_package);
-        messages[message_index].name_to_package = name_to_package;
 
         message_index
     }
