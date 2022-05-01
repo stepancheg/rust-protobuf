@@ -173,6 +173,7 @@ impl FileDescriptorCommon {
             .iter()
             .map(|ext| {
                 FieldIndex::index(
+                    None,
                     ext,
                     &FileDescriptorBuilding {
                         current_file_descriptor: file,
@@ -313,13 +314,14 @@ impl FileDescriptorCommon {
                 messages,
                 enums_by_name_to_package,
             };
-            let message_index = Self::index_message(message_proto, &building)?;
+            let message_index = Self::index_message(i, message_proto, &building)?;
             messages[i].message_index = message_index;
         }
         Ok(())
     }
 
     fn index_message(
+        message_index: usize,
         proto: &DescriptorProto,
         building: &FileDescriptorBuilding,
     ) -> crate::Result<MessageFieldsIndex> {
@@ -330,7 +332,7 @@ impl FileDescriptorCommon {
         let fields: Vec<FieldIndex> = proto
             .field
             .iter()
-            .map(|f| FieldIndex::index(f, building))
+            .map(|f| FieldIndex::index(Some(message_index), f, building))
             .collect::<crate::Result<_>>()?;
         for (i, f) in proto.field.iter().enumerate() {
             let field_index = &fields[i];
@@ -361,7 +363,7 @@ impl FileDescriptorCommon {
         let extensions: Vec<FieldIndex> = proto
             .extension
             .iter()
-            .map(|f| FieldIndex::index(f, building))
+            .map(|f| FieldIndex::index(Some(message_index), f, building))
             .collect::<crate::Result<Vec<_>>>()?;
 
         Ok(MessageFieldsIndex {

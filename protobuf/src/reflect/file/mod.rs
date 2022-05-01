@@ -92,6 +92,13 @@ impl FileDescriptor {
         &self.common().messages[index]
     }
 
+    pub(crate) fn message_by_index(&self, index: usize) -> MessageDescriptor {
+        MessageDescriptor {
+            file_descriptor: self.clone(),
+            index,
+        }
+    }
+
     pub(crate) fn enum_index_entry(&self, index: usize) -> &EnumIndex {
         &self.common().enums[index]
     }

@@ -81,12 +81,24 @@ pub(crate) enum FieldDefaultValue {
 }
 
 #[derive(Debug)]
+pub(crate) enum FieldKind {
+    MessageField(
+        /// Message index.
+        usize,
+    ),
+    Extension(
+        /// Message index or `None` for file.
+        Option<usize>,
+        ForwardProtobufTypeBox,
+    ),
+}
+
+#[derive(Debug)]
 pub(crate) struct FieldIndex {
+    pub(crate) kind: FieldKind,
     pub(crate) json_name: String,
     pub(crate) field_type: ForwardProtobufFieldType,
     pub(crate) default_value: Option<FieldDefaultValue>,
-    /// `Some` for extensions, `None` for regular fields.
-    pub(crate) extendee: Option<ForwardProtobufTypeBox>,
 }
 
 impl FieldIndex {
@@ -129,6 +141,7 @@ impl FieldIndex {
     }
 
     pub(crate) fn index(
+        containing_message: Option<usize>,
         field: &FieldDescriptorProto,
         building: &FileDescriptorBuilding,
     ) -> crate::Result<FieldIndex> {
@@ -150,11 +163,17 @@ impl FieldIndex {
             None
         };
 
+        let kind = match (containing_message, extendee) {
+            (Some(m), None) => FieldKind::MessageField(m),
+            (m, Some(extendee)) => FieldKind::Extension(m, extendee),
+            (None, None) => panic!("field must be in a message or an extension"),
+        };
+
         let field_type = building.resolve_field_type(field)?;
         Ok(FieldIndex {
+            kind,
             default_value,
             json_name,
-            extendee,
             field_type,
         })
     }

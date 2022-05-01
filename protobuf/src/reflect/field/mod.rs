@@ -11,6 +11,7 @@ use crate::reflect::acc::GeneratedFieldAccessor;
 use crate::reflect::dynamic::DynamicMessage;
 use crate::reflect::field::dynamic::DynamicFieldDescriptorRef;
 use crate::reflect::field::index::FieldIndex;
+use crate::reflect::field::index::FieldKind;
 use crate::reflect::field::protobuf_field_type::ProtobufFieldType;
 use crate::reflect::field::runtime_field_type::RuntimeFieldType;
 use crate::reflect::map::ReflectMapMut;
@@ -188,18 +189,9 @@ impl FieldDescriptor {
     ///
     /// For extension fields, this is the message being extended (**not implemented**).
     pub fn containing_message(&self) -> MessageDescriptor {
-        match &self.imp {
-            FieldDescriptorImpl::Field(m, _) => m.clone(),
-            FieldDescriptorImpl::ExtensionInMessage(m, i) => m.index().message_index.extensions[*i]
-                .extendee
-                .as_ref()
-                .unwrap()
-                .resolve_message(self.file_descriptor()),
-            FieldDescriptorImpl::ExtensionInFile(file, i) => file.common().extensions[*i]
-                .extendee
-                .as_ref()
-                .unwrap()
-                .resolve_message(self.file_descriptor()),
+        match &self.index().kind {
+            FieldKind::MessageField(m) => self.file_descriptor().message_by_index(*m),
+            FieldKind::Extension(_, extendee) => extendee.resolve_message(self.file_descriptor()),
         }
     }
 
