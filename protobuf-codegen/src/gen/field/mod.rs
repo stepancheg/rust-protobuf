@@ -530,59 +530,11 @@ impl<'a> FieldGen<'a> {
     }
 
     // expression that returns size of data is variable
-    fn element_size(&self, var: &str, var_type: &RustType) -> String {
+    fn element_size(&self, var: &RustValueTyped) -> String {
         assert!(!self.is_repeated_packed());
 
-        match self.proto_type.encoded_size() {
-            Some(data_size) => format!("{}", data_size + self.tag_size()),
-            None => match self.proto_type {
-                Type::TYPE_MESSAGE => panic!("not a single-liner"),
-                // We are not inlining `bytes_size` here,
-                // assuming the compiler is smart enough to do it for us.
-                // https://rust.godbolt.org/z/GrKa5zxq6
-                Type::TYPE_BYTES => format!(
-                    "{}::rt::bytes_size({}, &{})",
-                    protobuf_crate_path(&self.customize),
-                    self.proto_field.number(),
-                    var
-                ),
-                Type::TYPE_STRING => format!(
-                    "{}::rt::string_size({}, &{})",
-                    protobuf_crate_path(&self.customize),
-                    self.proto_field.number(),
-                    var
-                ),
-                Type::TYPE_ENUM => {
-                    format!(
-                        "{}::rt::int32_size({}, {}.value())",
-                        protobuf_crate_path(&self.customize),
-                        self.proto_field.number(),
-                        var,
-                    )
-                }
-                _ => {
-                    let param_type = match var_type {
-                        &RustType::Ref(ref t) => (**t).clone(),
-                        t => t.clone(),
-                    };
-                    let f = match self.proto_type {
-                        Type::TYPE_SINT32 => "sint32_size",
-                        Type::TYPE_SINT64 => "sint64_size",
-                        Type::TYPE_INT32 => "int32_size",
-                        Type::TYPE_INT64 => "int64_size",
-                        Type::TYPE_UINT32 => "uint32_size",
-                        Type::TYPE_UINT64 => "uint64_size",
-                        t => unreachable!("unexpected type: {:?}", t),
-                    };
-                    format!(
-                        "{}::rt::{f}({}, {})",
-                        protobuf_crate_path(&self.customize),
-                        self.proto_field.number(),
-                        var_type.into_target(&param_type, var, &self.customize)
-                    )
-                }
-            },
-        }
+        self.elem()
+            .singular_field_size(self.proto_field.number() as u32, var, &self.customize)
     }
 
     // output code that writes single element to stream
@@ -1172,7 +1124,7 @@ impl<'a> FieldGen<'a> {
         assert!(!self.is_repeated_packed());
 
         match self.proto_type {
-            field_descriptor_proto::Type::TYPE_MESSAGE => {
+            Type::TYPE_MESSAGE => {
                 w.write_line(&format!("let len = {}.compute_size();", item_var));
                 let tag_size = self.tag_size();
                 w.write_line(&format!(
@@ -1186,7 +1138,10 @@ impl<'a> FieldGen<'a> {
                 w.write_line(&format!(
                     "{} += {};",
                     sum_var,
-                    self.element_size(item_var, item_var_type)
+                    self.element_size(&RustValueTyped {
+                        value: item_var.to_owned(),
+                        rust_type: item_var_type.clone(),
+                    })
                 ));
             }
         }
@@ -1252,9 +1207,9 @@ impl<'a> FieldGen<'a> {
 
     pub(crate) fn write_message_compute_field_size(&self, sum_var: &str, w: &mut CodeWriter) {
         match &self.kind {
-            FieldKind::Singular(s) => {
+            FieldKind::Singular(s @ SingularField { elem, .. }) => {
                 self.write_if_let_self_field_is_some(s, w, |v, w| {
-                    match self.proto_type.encoded_size() {
+                    match elem.proto_type().encoded_size() {
                         Some(s) => {
                             let tag_size = self.tag_size();
                             w.write_line(&format!("{} += {};", sum_var, (s + tag_size) as isize));
@@ -1265,8 +1220,12 @@ impl<'a> FieldGen<'a> {
                     };
                 });
             }
-            FieldKind::Repeated(RepeatedField { packed: false, .. }) => {
-                match self.proto_type.encoded_size() {
+            FieldKind::Repeated(RepeatedField {
+                packed: false,
+                elem,
+                ..
+            }) => {
+                match elem.proto_type().encoded_size() {
                     Some(s) => {
                         let tag_size = self.tag_size();
                         let self_field = self.self_field();

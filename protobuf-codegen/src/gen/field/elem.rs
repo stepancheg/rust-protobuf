@@ -1,9 +1,11 @@
 use protobuf::descriptor::field_descriptor_proto::Type;
 use protobuf::reflect::RuntimeFieldType;
+use protobuf::rt::tag_size;
 use protobuf_parse::ProtobufAbsPath;
 
 use crate::gen::field::type_ext::TypeExt;
 use crate::gen::file_and_mod::FileAndMod;
+use crate::gen::inside::protobuf_crate_path;
 use crate::gen::message::RustTypeMessage;
 use crate::gen::rust::ident_with_path::RustIdentWithPath;
 use crate::gen::rust_types_values::message_or_enum_to_rust_relative;
@@ -11,6 +13,7 @@ use crate::gen::rust_types_values::rust_name;
 use crate::gen::rust_types_values::PrimitiveTypeVariant;
 use crate::gen::rust_types_values::ProtobufTypeGen;
 use crate::gen::rust_types_values::RustType;
+use crate::gen::rust_types_values::RustValueTyped;
 use crate::gen::scope::EnumValueWithContext;
 use crate::gen::scope::FieldWithContext;
 use crate::gen::scope::MessageOrEnumWithScope;
@@ -76,7 +79,7 @@ pub(crate) enum FieldElem<'a> {
 }
 
 impl<'a> FieldElem<'a> {
-    fn proto_type(&self) -> Type {
+    pub(crate) fn proto_type(&self) -> Type {
         match *self {
             FieldElem::Primitive(t, ..) => t,
             FieldElem::Group => Type::TYPE_GROUP,
@@ -135,6 +138,65 @@ impl<'a> FieldElem<'a> {
         match self {
             &FieldElem::Primitive(_, v) => v,
             _ => PrimitiveTypeVariant::Default,
+        }
+    }
+
+    pub(crate) fn singular_field_size(
+        &self,
+        field_number: u32,
+        var: &RustValueTyped,
+        customize: &Customize,
+    ) -> String {
+        let tag_size = tag_size(field_number);
+        match self.proto_type().encoded_size() {
+            Some(data_size) => format!("{data_size} + {tag_size}"),
+            None => match self.proto_type() {
+                Type::TYPE_MESSAGE => panic!("not a single-liner"),
+                // We are not inlining `bytes_size` here,
+                // assuming the compiler is smart enough to do it for us.
+                // https://rust.godbolt.org/z/GrKa5zxq6
+                Type::TYPE_BYTES => format!(
+                    "{}::rt::bytes_size({}, &{})",
+                    protobuf_crate_path(customize),
+                    field_number,
+                    var.value
+                ),
+                Type::TYPE_STRING => format!(
+                    "{}::rt::string_size({}, &{})",
+                    protobuf_crate_path(customize),
+                    field_number,
+                    var.value
+                ),
+                Type::TYPE_ENUM => {
+                    format!(
+                        "{}::rt::int32_size({}, {}.value())",
+                        protobuf_crate_path(customize),
+                        field_number,
+                        var.value,
+                    )
+                }
+                _ => {
+                    let param_type = match &var.rust_type {
+                        RustType::Ref(t) => (**t).clone(),
+                        t => t.clone(),
+                    };
+                    let f = match self.proto_type() {
+                        Type::TYPE_SINT32 => "sint32_size",
+                        Type::TYPE_SINT64 => "sint64_size",
+                        Type::TYPE_INT32 => "int32_size",
+                        Type::TYPE_INT64 => "int64_size",
+                        Type::TYPE_UINT32 => "uint32_size",
+                        Type::TYPE_UINT64 => "uint64_size",
+                        t => unreachable!("unexpected type: {:?}", t),
+                    };
+                    format!(
+                        "{}::rt::{f}({}, {})",
+                        protobuf_crate_path(customize),
+                        field_number,
+                        var.into_type(param_type, customize).value
+                    )
+                }
+            },
         }
     }
 }
