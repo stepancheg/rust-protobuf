@@ -2,6 +2,7 @@
 
 use std::marker;
 
+use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::types::ProtobufType;
 use crate::reflect::ProtobufValue;
 use crate::reflect::RuntimeTypeBox;
@@ -30,6 +31,6 @@ where
     }
 
     fn runtime_type(&self) -> RuntimeTypeBox {
-        <T::ProtobufValue as ProtobufValue>::runtime_type_box()
+        <T::ProtobufValue as ProtobufValue>::RuntimeType::runtime_type_box()
     }
 }

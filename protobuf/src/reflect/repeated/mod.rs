@@ -13,6 +13,7 @@ use crate::reflect::repeated::drain_iter::ReflectRepeatedDrainIter;
 use crate::reflect::repeated::iter::ReflectRepeatedIter;
 use crate::reflect::repeated::transmute::transmute_ref_if_eq;
 use crate::reflect::repeated::vec_downcast::VecMutVariant;
+use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::value::value_ref::ReflectValueRef;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
@@ -87,7 +88,7 @@ impl<V: ProtobufValue> ReflectRepeated for Vec<V> {
     }
 
     fn get(&self, index: usize) -> ReflectValueRef {
-        V::as_ref(&self[index])
+        V::RuntimeType::as_ref(&self[index])
     }
 
     fn set(&mut self, index: usize, value: ReflectValueBox) {
@@ -123,11 +124,11 @@ impl<V: ProtobufValue> ReflectRepeated for Vec<V> {
     }
 
     fn element_type(&self) -> RuntimeTypeBox {
-        V::runtime_type_box()
+        V::RuntimeType::runtime_type_box()
     }
 
     fn data_enum_values(&self) -> &[i32] {
-        V::cast_to_enum_values(&self)
+        V::RuntimeType::cast_to_enum_values(&self)
     }
 
     fn data_bool(&self) -> &[bool] {

@@ -8,6 +8,7 @@ use crate::reflect::acc::FieldAccessor;
 use crate::reflect::repeated::ReflectRepeated;
 use crate::reflect::repeated::ReflectRepeatedMut;
 use crate::reflect::repeated::ReflectRepeatedRef;
+use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::ProtobufValue;
 use crate::reflect::RuntimeTypeBox;
 
@@ -84,7 +85,7 @@ where
     }
 
     fn element_type(&self) -> RuntimeTypeBox {
-        V::runtime_type_box()
+        V::RuntimeType::runtime_type_box()
     }
 }
 

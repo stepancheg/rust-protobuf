@@ -5,6 +5,7 @@ use std::hash::Hash;
 use crate::reflect::map::ReflectMap;
 use crate::reflect::map::ReflectMapIter;
 use crate::reflect::map::ReflectMapIterTrait;
+use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::runtime_types::RuntimeTypeHashable;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
@@ -30,7 +31,7 @@ where
     }
 
     fn get<'a>(&'a self, key: ReflectValueRef) -> Option<ReflectValueRef<'a>> {
-        <K::RuntimeType as RuntimeTypeHashable>::hash_map_get(self, key).map(V::as_ref)
+        <K::RuntimeType as RuntimeTypeHashable>::hash_map_get(self, key).map(V::RuntimeType::as_ref)
     }
 
     fn insert(&mut self, key: ReflectValueBox, value: ReflectValueBox) {
@@ -44,11 +45,11 @@ where
     }
 
     fn key_type(&self) -> RuntimeTypeBox {
-        K::runtime_type_box()
+        K::RuntimeType::runtime_type_box()
     }
 
     fn value_type(&self) -> RuntimeTypeBox {
-        V::runtime_type_box()
+        V::RuntimeType::runtime_type_box()
     }
 }
 
@@ -61,16 +62,16 @@ impl<'a, K: ProtobufValue + Eq + Hash, V: ProtobufValue> ReflectMapIterTrait<'a>
 {
     fn next(&mut self) -> Option<(ReflectValueRef<'a>, ReflectValueRef<'a>)> {
         match self.iter.next() {
-            Some((k, v)) => Some((K::as_ref(k), V::as_ref(v))),
+            Some((k, v)) => Some((K::RuntimeType::as_ref(k), V::RuntimeType::as_ref(v))),
             None => None,
         }
     }
 
     fn key_type(&self) -> RuntimeTypeBox {
-        K::runtime_type_box()
+        K::RuntimeType::runtime_type_box()
     }
 
     fn value_type(&self) -> RuntimeTypeBox {
-        V::runtime_type_box()
+        V::RuntimeType::runtime_type_box()
     }
 }

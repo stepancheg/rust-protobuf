@@ -124,7 +124,7 @@ impl<'a, K: ProtobufValue + Eq + Hash + 'static> ReflectMapIterTrait<'a>
     fn next(&mut self) -> Option<(ReflectValueRef<'a>, ReflectValueRef<'a>)> {
         self.iter
             .next()
-            .map(|(k, v)| (K::as_ref(k), v.as_value_ref()))
+            .map(|(k, v)| (K::RuntimeType::as_ref(k), v.as_value_ref()))
     }
 
     fn key_type(&self) -> RuntimeTypeBox {

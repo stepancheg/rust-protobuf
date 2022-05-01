@@ -8,6 +8,7 @@ use crate::reflect::acc::v2::AccessorV2;
 use crate::reflect::acc::FieldAccessor;
 use crate::reflect::map::ReflectMapMut;
 use crate::reflect::map::ReflectMapRef;
+use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::runtime_types::RuntimeTypeHashable;
 use crate::reflect::ProtobufValue;
 use crate::reflect::RuntimeTypeBox;
@@ -58,7 +59,10 @@ where
     }
 
     fn element_type(&self) -> (RuntimeTypeBox, RuntimeTypeBox) {
-        (K::runtime_type_box(), V::runtime_type_box())
+        (
+            K::RuntimeType::runtime_type_box(),
+            V::RuntimeType::runtime_type_box(),
+        )
     }
 }
 

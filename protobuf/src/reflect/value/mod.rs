@@ -19,10 +19,6 @@ use crate::reflect::runtime_types::RuntimeTypeTokioChars;
 use crate::reflect::runtime_types::RuntimeTypeU32;
 use crate::reflect::runtime_types::RuntimeTypeU64;
 use crate::reflect::runtime_types::RuntimeTypeVecU8;
-use crate::reflect::value::value_box::ReflectValueBox;
-use crate::reflect::value::value_ref::ReflectValueMut;
-use crate::reflect::value::value_ref::ReflectValueRef;
-use crate::reflect::RuntimeTypeBox;
 
 pub(crate) mod value_box;
 pub(crate) mod value_ref;
@@ -34,65 +30,6 @@ pub(crate) mod value_ref;
 pub trait ProtobufValue: Clone + Default + fmt::Debug + Send + Sync + Sized + 'static {
     /// Actual implementation of type properties.
     type RuntimeType: RuntimeType<Value = Self>;
-
-    // TODO: inline the rest
-
-    /// Dynamic version of the type.
-    fn runtime_type_box() -> RuntimeTypeBox {
-        Self::RuntimeType::runtime_type_box()
-    }
-
-    /// Pointer to a dynamic reference.
-    fn as_ref(value: &Self) -> ReflectValueRef {
-        Self::RuntimeType::as_ref(value)
-    }
-
-    /// Mutable pointer to a dynamic mutable reference.
-    fn as_mut(value: &mut Self) -> ReflectValueMut {
-        Self::RuntimeType::as_mut(value)
-    }
-
-    /// Construct a value from given reflective value.
-    ///
-    /// # Panics
-    ///
-    /// If reflective value is of incompatible type.
-    fn from_value_box(value_box: ReflectValueBox) -> Result<Self, ReflectValueBox> {
-        Self::RuntimeType::from_value_box(value_box)
-    }
-
-    /// Write the value.
-    fn set_from_value_box(target: &mut Self, value_box: ReflectValueBox) {
-        Self::RuntimeType::set_from_value_box(target, value_box)
-    }
-
-    /// Default value for this type.
-    fn default_value_ref() -> ReflectValueRef<'static> {
-        Self::RuntimeType::default_value_ref()
-    }
-
-    /// Convert a value into a ref value if possible.
-    ///
-    /// # Panics
-    ///
-    /// For message and enum.
-    fn into_static_value_ref(value: Self) -> ReflectValueRef<'static> {
-        Self::RuntimeType::into_static_value_ref(value)
-    }
-
-    /// Value is non-default?
-    fn is_non_zero(value: &Self) -> bool {
-        Self::RuntimeType::is_non_zero(value)
-    }
-
-    /// Cast enum element data to integers.
-    ///
-    /// # Panics
-    ///
-    /// If self does not represent an enum.
-    fn cast_to_enum_values(values: &[Self]) -> &[i32] {
-        Self::RuntimeType::cast_to_enum_values(values)
-    }
 }
 
 impl ProtobufValue for u32 {

@@ -1,4 +1,5 @@
 use crate::reflect::message::message_ref::MessageRef;
+use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::value::value_ref::ReflectValueMut;
 use crate::reflect::value::value_ref::ReflectValueRef;
 use crate::reflect::EnumDescriptor;
@@ -149,7 +150,7 @@ impl ReflectValueBox {
     ///
     /// For `enum` `V` can be either `V: ProtobufEnum` or `V: ProtobufEnumOrUnknown<E>`.
     pub fn downcast<V: ProtobufValue>(self) -> Result<V, Self> {
-        V::from_value_box(self)
+        V::RuntimeType::from_value_box(self)
     }
 }
 

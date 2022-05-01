@@ -6,6 +6,7 @@ use crate::message_field::MessageField;
 use crate::message_full::MessageFull;
 use crate::reflect::acc::v2::AccessorV2;
 use crate::reflect::acc::FieldAccessor;
+use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::runtime_types::RuntimeTypeWithDeref;
 use crate::reflect::value::value_ref::ReflectValueMut;
 use crate::reflect::ProtobufValue;
@@ -84,14 +85,14 @@ impl SingularFieldAccessorHolder {
         Self::new(
             move |m| {
                 let v = (get_field)(m);
-                if V::is_non_zero(v) {
-                    Some(V::as_ref(v))
+                if V::RuntimeType::is_non_zero(v) {
+                    Some(V::RuntimeType::as_ref(v))
                 } else {
                     None
                 }
             },
-            move |m| V::as_mut((mut_field)(m)),
-            move |m, value| V::set_from_value_box((mut_field)(m), value),
+            move |m| V::RuntimeType::as_mut((mut_field)(m)),
+            move |m, value| V::RuntimeType::set_from_value_box((mut_field)(m), value),
         )
     }
 
@@ -104,9 +105,11 @@ impl SingularFieldAccessorHolder {
         V: ProtobufValue,
     {
         Self::new(
-            move |m| (get_field)(m).as_ref().map(V::as_ref),
+            move |m| (get_field)(m).as_ref().map(V::RuntimeType::as_ref),
             move |_m| unimplemented!(),
-            move |m, value| *(mut_field)(m) = Some(V::from_value_box(value).expect("wrong type")),
+            move |m, value| {
+                *(mut_field)(m) = Some(V::RuntimeType::from_value_box(value).expect("wrong type"))
+            },
         )
     }
 
@@ -119,16 +122,17 @@ impl SingularFieldAccessorHolder {
         V: MessageFull,
     {
         Self::new(
-            move |m| (get_field)(m).as_ref().map(V::as_ref),
+            move |m| (get_field)(m).as_ref().map(V::RuntimeType::as_ref),
             move |m| {
                 let option = (mut_field)(m);
                 if option.as_ref().is_none() {
                     *option = MessageField::some(V::default());
                 }
-                V::as_mut(option.as_mut().unwrap())
+                V::RuntimeType::as_mut(option.as_mut().unwrap())
             },
             move |m, value| {
-                *(mut_field)(m) = MessageField::some(V::from_value_box(value).expect("wrong type"))
+                *(mut_field)(m) =
+                    MessageField::some(V::RuntimeType::from_value_box(value).expect("wrong type"))
             },
         )
     }
@@ -169,7 +173,7 @@ impl SingularFieldAccessorHolder {
         Self::new(
             move |m| {
                 if (has)(m) {
-                    Some(V::into_static_value_ref((get)(m)))
+                    Some(V::RuntimeType::into_static_value_ref((get)(m)))
                 } else {
                     None
                 }
@@ -217,12 +221,12 @@ impl SingularFieldAccessorHolder {
         Self::new(
             move |m| {
                 if (has_field)(m) {
-                    Some(F::as_ref((get_field)(m)))
+                    Some(F::RuntimeType::as_ref((get_field)(m)))
                 } else {
                     None
                 }
             },
-            move |m| F::as_mut((mut_field)(m)),
+            move |m| F::RuntimeType::as_mut((mut_field)(m)),
             move |m, value| (set_field)(m, value.downcast::<F>().expect("message")),
         )
     }

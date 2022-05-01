@@ -1,3 +1,4 @@
+use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueRef;
 
@@ -14,8 +15,8 @@ impl<'a> ReflectRepeatedIter<'a> {
         }
     }
 
-    pub(crate) fn new_slice(slice: &'a [impl ProtobufValue]) -> ReflectRepeatedIter<'a> {
-        ReflectRepeatedIter::new(slice.into_iter().map(ProtobufValue::as_ref))
+    pub(crate) fn new_slice<V: ProtobufValue>(slice: &'a [V]) -> ReflectRepeatedIter<'a> {
+        ReflectRepeatedIter::new(slice.into_iter().map(V::RuntimeType::as_ref))
     }
 }
 
