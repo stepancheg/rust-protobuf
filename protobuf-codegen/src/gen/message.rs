@@ -240,9 +240,8 @@ impl<'a> MessageGen<'a> {
 
     fn write_write_to_with_cached_sizes(&self, w: &mut CodeWriter) {
         let sig = format!(
-            "write_to_with_cached_sizes(&self, os: &mut {}::CodedOutputStream<'_>) -> {}::Result<()>",
-            protobuf_crate_path(&self.customize.for_elem),
-            protobuf_crate_path(&self.customize.for_elem),
+            "write_to_with_cached_sizes(&self, os: &mut {protobuf_crate}::CodedOutputStream<'_>) -> {protobuf_crate}::Result<()>",
+            protobuf_crate=protobuf_crate_path(&self.customize.for_elem),
         );
         w.def_fn(&sig, |w| {
             // To have access to its methods but not polute the name space.
