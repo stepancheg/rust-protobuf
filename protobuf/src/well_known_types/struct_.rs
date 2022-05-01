@@ -106,7 +106,16 @@ impl crate::Message for Struct {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut crate::CodedOutputStream<'_>) -> crate::Result<()> {
-        crate::rt::write_map_with_cached_sizes::<crate::reflect::types::ProtobufTypeString, crate::reflect::types::ProtobufTypeMessage<Value>>(1, &self.fields, os)?;
+        for (k, v) in &self.fields {
+            let mut entry_size = 0;
+            entry_size += crate::rt::string_size(1, &k);
+            let len = v.cached_size() as u64;
+            entry_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
+            os.write_tag(1, crate::rt::WireType::LengthDelimited)?;
+            os.write_raw_varint32(entry_size as u32)?;
+            os.write_string(1, &k)?;
+            crate::rt::write_message_field_with_cached_size(2, v, os)?;
+        };
         os.write_unknown_fields(self.special_fields.unknown_fields())?;
         ::std::result::Result::Ok(())
     }
