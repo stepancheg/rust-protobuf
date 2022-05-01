@@ -5,7 +5,6 @@ use crate::descriptor::DescriptorProto;
 use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 use crate::owning_ref::OwningRef;
-use crate::reflect::enums::path::EnumPath;
 use crate::reflect::error::ReflectError;
 use crate::reflect::field::index::FieldIndex;
 use crate::reflect::file::building::FileDescriptorBuilding;
@@ -64,7 +63,7 @@ impl MessageFieldsIndex {
 
 #[derive(Debug)]
 pub(crate) struct EnumIndex {
-    pub(crate) enum_path: EnumPath,
+    pub(crate) proto: OwningRef<FileDescriptorProto, EnumDescriptorProto>,
     pub(crate) name_to_package: String,
     pub(crate) full_name: String,
     pub(crate) enclosing_message: Option<usize>,
@@ -74,10 +73,9 @@ pub(crate) struct EnumIndex {
 
 impl EnumIndex {
     pub(crate) fn new(
-        enum_path: EnumPath,
         name_to_package: String,
         enclosing_message: Option<usize>,
-        proto: &EnumDescriptorProto,
+        proto: OwningRef<FileDescriptorProto, EnumDescriptorProto>,
         file: &FileDescriptorProto,
     ) -> EnumIndex {
         let mut index_by_name = HashMap::new();
@@ -88,7 +86,7 @@ impl EnumIndex {
         }
         let full_name = concat_paths(file.package(), &name_to_package);
         EnumIndex {
-            enum_path,
+            proto,
             full_name,
             name_to_package,
             enclosing_message,
@@ -141,17 +139,8 @@ impl FileDescriptorCommon {
         let mut top_level_messages = Vec::new();
 
         // Top-level enums start with zero
-        for (i, e) in file.enum_type.iter().enumerate() {
-            enums.push(EnumIndex::new(
-                EnumPath {
-                    message_path: MessagePath::default(),
-                    enum_index: i,
-                },
-                e.name().to_owned(),
-                None,
-                e,
-                file.owner(),
-            ));
+        for e in file.flat_map(|f| f.enum_type.iter().collect()) {
+            enums.push(EnumIndex::new(e.name().to_owned(), None, e, file.owner()));
         }
 
         for (i, message) in file
@@ -264,12 +253,8 @@ impl FileDescriptorCommon {
             is_initialized_is_always_true: false,
         });
 
-        for (i, e) in message.enum_type.iter().enumerate() {
+        for e in message.flat_map(|m| m.enum_type.iter().collect()) {
             enums.push(EnumIndex::new(
-                EnumPath {
-                    message_path: path.clone(),
-                    enum_index: i,
-                },
                 concat_paths(&name_to_package, e.name()),
                 Some(message_index),
                 e,

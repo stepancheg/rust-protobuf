@@ -14,7 +14,6 @@ use crate::reflect::MessageDescriptor;
 use crate::EnumFull;
 
 pub(crate) mod generated;
-pub(crate) mod path;
 
 /// Description for enum variant.
 ///
@@ -141,9 +140,7 @@ impl EnumDescriptor {
 
     /// Descriptor objects which defined this enum.
     pub fn proto(&self) -> &EnumDescriptorProto {
-        self.index_entry()
-            .enum_path
-            .eval(self.file_descriptor.proto())
+        &self.index_entry().proto
     }
 
     /// Enum name as given in `.proto` file
