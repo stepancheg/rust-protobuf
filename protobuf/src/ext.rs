@@ -17,7 +17,7 @@ use crate::Message;
 /// Optional ext field
 ///
 /// This is initialized from generated code, do not instantiate directly.
-pub struct ExtFieldOptional<M: Message, T: ProtobufValue> {
+pub struct ExtFieldOptional<M, T> {
     /// Extension field number.
     field_number: u32,
     /// Extension field type.
@@ -29,7 +29,7 @@ pub struct ExtFieldOptional<M: Message, T: ProtobufValue> {
 /// Repeated ext field
 ///
 /// This is initialized from generated code, do not instantiate directly.
-pub struct ExtFieldRepeated<M: Message, V: ProtobufValue> {
+pub struct ExtFieldRepeated<M, V> {
     /// Extension field number
     #[allow(dead_code)]
     field_number: u32,
@@ -40,7 +40,7 @@ pub struct ExtFieldRepeated<M: Message, V: ProtobufValue> {
     phantom: PhantomData<(M, V)>,
 }
 
-impl<M: Message, V: ProtobufValue> ExtFieldOptional<M, V> {
+impl<M, V> ExtFieldOptional<M, V> {
     /// Constructor. Called from generated code.
     pub const fn new(field_number: u32, field_type: Type) -> Self {
         ExtFieldOptional {
@@ -49,7 +49,9 @@ impl<M: Message, V: ProtobufValue> ExtFieldOptional<M, V> {
             phantom: PhantomData,
         }
     }
+}
 
+impl<M: Message, V: ProtobufValue> ExtFieldOptional<M, V> {
     /// Get a copy of value from a message.
     ///
     /// Extension data is stored in [`UnknownFields`](crate::UnknownFields).
@@ -60,7 +62,7 @@ impl<M: Message, V: ProtobufValue> ExtFieldOptional<M, V> {
     }
 }
 
-impl<M: Message, V: ProtobufValue> ExtFieldRepeated<M, V> {
+impl<M, V> ExtFieldRepeated<M, V> {
     /// Constructor. Called from generated code.
     pub const fn new(field_number: u32, field_type: Type) -> Self {
         ExtFieldRepeated {
@@ -69,7 +71,9 @@ impl<M: Message, V: ProtobufValue> ExtFieldRepeated<M, V> {
             phantom: PhantomData,
         }
     }
+}
 
+impl<M: Message, V: ProtobufValue> ExtFieldRepeated<M, V> {
     /// Get a copy of value from a message (**not implemented**).
     pub fn get(&self, _m: &M) -> Vec<V> {
         // TODO
