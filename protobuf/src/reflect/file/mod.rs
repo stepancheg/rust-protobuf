@@ -105,6 +105,16 @@ impl FileDescriptor {
         &self.common().enums[index]
     }
 
+    /// The file name.
+    pub fn name(&self) -> &str {
+        self.proto().name()
+    }
+
+    /// Protobuf package.
+    pub fn package(&self) -> &str {
+        self.proto().package()
+    }
+
     /// Syntax of current file.
     pub fn syntax(&self) -> Syntax {
         Syntax::parse(self.proto().syntax()).unwrap_or(Syntax::Proto2)
