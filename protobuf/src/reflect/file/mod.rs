@@ -7,7 +7,6 @@ use std::sync::Arc;
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 use crate::reflect::error::ReflectError;
-use crate::reflect::field::FieldDescriptorImpl;
 use crate::reflect::file::dynamic::DynamicFileDescriptor;
 use crate::reflect::file::fds::build_fds;
 use crate::reflect::file::index::EnumIndex;
@@ -99,16 +98,15 @@ impl FileDescriptor {
         }
     }
 
-    pub(crate) fn enum_index_entry(&self, index: usize) -> &EnumIndex {
-        &self.common().enums[index]
-    }
-
-    pub(crate) fn message_proto(&self, index: usize) -> &DescriptorProto {
-        // TODO: this should be faster.
-        self.message_index_entry(index)
+    pub(crate) fn message_proto_by_index(&self, index: usize) -> &DescriptorProto {
+        self.common().messages[index]
             .path
             .eval(self.proto())
             .unwrap()
+    }
+
+    pub(crate) fn enum_index_entry(&self, index: usize) -> &EnumIndex {
+        &self.common().enums[index]
     }
 
     /// Syntax of current file.
@@ -145,12 +143,12 @@ impl FileDescriptor {
 
     /// Extension fields.
     pub fn extensions(&self) -> impl Iterator<Item = FieldDescriptor> + '_ {
-        let common = self.common();
-        (common.first_extension_field_index..common.fields.len()).map(move |index| {
-            FieldDescriptor {
-                imp: FieldDescriptorImpl::ExtensionInFile(self.clone(), index),
-            }
-        })
+        self.common()
+            .extension_field_range()
+            .map(move |index| FieldDescriptor {
+                file_descriptor: self.clone(),
+                index,
+            })
     }
 
     /// Find message by name relative to the package.

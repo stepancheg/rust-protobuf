@@ -1,6 +1,7 @@
 use std::fmt;
 
 use crate::descriptor::field_descriptor_proto;
+use crate::descriptor::DescriptorProto;
 use crate::descriptor::FieldDescriptorProto;
 use crate::message_dyn::MessageDyn;
 use crate::reflect::acc::v2::map::MapFieldAccessorHolder;
@@ -79,47 +80,40 @@ fn _assert_sync<'a>() {
     _assert_send_sync::<ReflectFieldRef<'a>>();
 }
 
-#[derive(Eq, PartialEq, Clone)]
-pub(crate) enum FieldDescriptorImpl {
-    // Index of field in the message descriptor proto.
-    Field(
-        MessageDescriptor,
-        /// Index of the field in file.
-        usize,
-    ),
-    // Index of extension in the file descriptor proto.
-    ExtensionInMessage(
-        MessageDescriptor,
-        /// Index of the field in file.
-        usize,
-    ),
-    // Index of extension in the file descriptor proto.
-    ExtensionInFile(
-        FileDescriptor,
-        /// Index of the field in file.
-        usize,
-    ),
-}
-
 /// Field descriptor.
 ///
 /// Can be used for runtime reflection.
 #[derive(Eq, PartialEq, Clone)]
 pub struct FieldDescriptor {
-    pub(crate) imp: FieldDescriptorImpl,
+    pub(crate) file_descriptor: FileDescriptor,
+    pub(crate) index: usize,
 }
 
 impl fmt::Display for FieldDescriptor {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match &self.imp {
-            FieldDescriptorImpl::Field(m, ..) | FieldDescriptorImpl::ExtensionInMessage(m, ..) => {
-                write!(f, "{}.{}", m.full_name(), self.name())
-            }
-            FieldDescriptorImpl::ExtensionInFile(file, ..) => {
-                if file.proto().package().is_empty() {
+        match &self.index().kind {
+            FieldKind::MessageField(m) => write!(
+                f,
+                "{}.{}",
+                self.file_descriptor.message_by_index(*m),
+                self.name()
+            ),
+            FieldKind::Extension(Some(m), _) => write!(
+                f,
+                "{}.{}",
+                self.file_descriptor.message_by_index(*m),
+                self.name()
+            ),
+            FieldKind::Extension(None, _) => {
+                if self.file_descriptor.proto().package().is_empty() {
                     write!(f, "{}", self.name())
                 } else {
-                    write!(f, "{}.{}", file.proto().package(), self.name())
+                    write!(
+                        f,
+                        "{}.{}",
+                        self.file_descriptor.proto().package(),
+                        self.name()
+                    )
                 }
             }
         }
@@ -127,33 +121,37 @@ impl fmt::Display for FieldDescriptor {
 }
 
 impl FieldDescriptor {
-    pub(crate) fn regular(&self) -> (&MessageDescriptor, usize) {
-        match &self.imp {
-            FieldDescriptorImpl::Field(m, i) => (m, *i - m.index().message_index.first_field_index),
-            // TODO: implement and remove this function
-            _ => unimplemented!("extension fields are not fully supported yet"),
+    pub(crate) fn regular(&self) -> (MessageDescriptor, usize) {
+        match self.index().kind {
+            FieldKind::MessageField(_) => {
+                let m = self.containing_message();
+                (
+                    m.clone(),
+                    self.index - m.index().message_index.first_field_index,
+                )
+            }
+            // TODO: implement and remove.
+            _ => panic!("regular field"),
         }
     }
 
     pub(crate) fn file_descriptor(&self) -> &FileDescriptor {
-        match &self.imp {
-            FieldDescriptorImpl::Field(m, _) => m.file_descriptor(),
-            FieldDescriptorImpl::ExtensionInMessage(m, _) => m.file_descriptor(),
-            FieldDescriptorImpl::ExtensionInFile(file, _) => file,
-        }
+        &self.file_descriptor
     }
 
     /// Get `.proto` description of field
     pub fn proto(&self) -> &FieldDescriptorProto {
-        match &self.imp {
-            FieldDescriptorImpl::Field(m, i) => {
-                &m.proto().field[*i - m.index().message_index.first_field_index]
+        match &self.index().kind {
+            FieldKind::MessageField(_) => {
+                &self.declaring_message_proto().unwrap().field[self.regular_field_index()]
             }
-            FieldDescriptorImpl::ExtensionInMessage(m, i) => {
-                &m.proto().extension[*i - m.index().message_index.extension_field_range().start]
+            FieldKind::Extension(Some(_), _) => {
+                &self.declaring_message_proto().unwrap().extension
+                    [self.in_message_extension_index()]
             }
-            FieldDescriptorImpl::ExtensionInFile(file, i) => {
-                &file.proto().extension[*i - file.common().first_extension_field_index]
+            FieldKind::Extension(None, _) => {
+                &self.file_descriptor.proto().extension
+                    [self.index - self.file_descriptor.common().first_extension_field_index]
             }
         }
     }
@@ -179,7 +177,7 @@ impl FieldDescriptor {
 
     /// Oneof descriptor containing this field. Do not skip synthetic oneofs.
     pub fn containing_oneof_including_synthetic(&self) -> Option<OneofDescriptor> {
-        if let FieldDescriptorImpl::Field(..) = &self.imp {
+        if let FieldKind::MessageField(..) = self.index().kind {
             let proto = self.proto();
             if proto.has_oneof_index() {
                 Some(OneofDescriptor {
@@ -203,9 +201,27 @@ impl FieldDescriptor {
             .filter(|o| !o.is_synthetic())
     }
 
+    /// Message which declares this field (for extension, **not** the message we extend).
+    fn _declaring_message(&self) -> Option<MessageDescriptor> {
+        match &self.index().kind {
+            FieldKind::MessageField(m) => Some(self.file_descriptor.message_by_index(*m)),
+            FieldKind::Extension(m, _) => Some(self.file_descriptor.message_by_index(*m.as_ref()?)),
+        }
+    }
+
+    /// Message which declares this field (for extension, **not** the message we extend).
+    fn declaring_message_proto(&self) -> Option<&DescriptorProto> {
+        match &self.index().kind {
+            FieldKind::MessageField(m) => Some(self.file_descriptor.message_proto_by_index(*m)),
+            FieldKind::Extension(m, _) => {
+                Some(self.file_descriptor.message_proto_by_index(*m.as_ref()?))
+            }
+        }
+    }
+
     /// Message which contains this field.
     ///
-    /// For extension fields, this is the message being extended (**not implemented**).
+    /// For extension fields, this is the message being extended.
     pub fn containing_message(&self) -> MessageDescriptor {
         match &self.index().kind {
             FieldKind::MessageField(m) => self.file_descriptor().message_by_index(*m),
@@ -214,12 +230,39 @@ impl FieldDescriptor {
     }
 
     fn index(&self) -> &FieldIndex {
-        match &self.imp {
-            FieldDescriptorImpl::Field(_, i) => &self.file_descriptor().common().fields[*i],
-            FieldDescriptorImpl::ExtensionInMessage(_, i) => {
-                &self.file_descriptor().common().fields[*i]
+        &self.file_descriptor.common().fields[self.index]
+    }
+
+    // TODO: make these names less confusing.
+    fn regular_field_index(&self) -> usize {
+        match &self.index().kind {
+            FieldKind::MessageField(m) => {
+                self.index
+                    - self
+                        .file_descriptor()
+                        .message_by_index(*m)
+                        .index()
+                        .message_index
+                        .first_field_index
             }
-            FieldDescriptorImpl::ExtensionInFile(f, i) => &f.common().fields[*i],
+            FieldKind::Extension(..) => panic!("not a regular field"),
+        }
+    }
+
+    fn in_message_extension_index(&self) -> usize {
+        match &self.index().kind {
+            FieldKind::MessageField(..) => panic!("not an extension"),
+            FieldKind::Extension(None, _) => panic!("file-level extension"),
+            FieldKind::Extension(Some(m), _) => {
+                self.index
+                    - self
+                        .file_descriptor()
+                        .message_by_index(*m)
+                        .index()
+                        .message_index
+                        .extension_field_range()
+                        .start
+            }
         }
     }
 

@@ -129,7 +129,7 @@ impl DynamicMessage {
 
     pub(crate) fn get_reflect<'a>(&'a self, field: &FieldDescriptor) -> ReflectFieldRef<'a> {
         let (descriptor, index) = field.regular();
-        assert_eq!(&self.descriptor, descriptor);
+        assert_eq!(self.descriptor, descriptor);
         if self.fields.is_empty() {
             ReflectFieldRef::default_for_field(field)
         } else {
@@ -139,7 +139,7 @@ impl DynamicMessage {
 
     pub fn clear_field(&mut self, field: &FieldDescriptor) {
         let (descriptor, index) = field.regular();
-        assert_eq!(&self.descriptor, descriptor);
+        assert_eq!(self.descriptor, descriptor);
         if self.fields.is_empty() {
             return;
         }
@@ -163,7 +163,7 @@ impl DynamicMessage {
         field: &FieldDescriptor,
     ) -> ReflectValueMut<'a> {
         let (descriptor, index) = field.regular();
-        assert_eq!(&self.descriptor, descriptor);
+        assert_eq!(self.descriptor, descriptor);
         self.init_fields();
         self.clear_oneof_group_fields_except(field);
         match &mut self.fields[index] {
@@ -177,7 +177,7 @@ impl DynamicMessage {
         field: &FieldDescriptor,
     ) -> ReflectRepeatedMut<'a> {
         let (descriptor, index) = field.regular();
-        assert_eq!(&self.descriptor, descriptor);
+        assert_eq!(self.descriptor, descriptor);
         self.init_fields();
         self.clear_oneof_group_fields_except(field);
         match &mut self.fields[index] {
@@ -188,7 +188,7 @@ impl DynamicMessage {
 
     pub(crate) fn mut_map<'a>(&'a mut self, field: &FieldDescriptor) -> ReflectMapMut<'a> {
         let (descriptor, index) = field.regular();
-        assert_eq!(&self.descriptor, descriptor);
+        assert_eq!(self.descriptor, descriptor);
         self.init_fields();
         self.clear_oneof_group_fields_except(field);
         match &mut self.fields[index] {
@@ -199,7 +199,7 @@ impl DynamicMessage {
 
     pub(crate) fn set_field(&mut self, field: &FieldDescriptor, value: ReflectValueBox) {
         let (descriptor, index) = field.regular();
-        assert_eq!(&self.descriptor, descriptor);
+        assert_eq!(self.descriptor, descriptor);
         self.init_fields();
         self.clear_oneof_group_fields_except(field);
         match &mut self.fields[index] {

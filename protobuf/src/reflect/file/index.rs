@@ -46,13 +46,17 @@ pub(crate) struct MessageFieldsIndex {
 }
 
 impl MessageFieldsIndex {
-    pub(crate) fn slice_fields<'a>(&self, file_fields: &'a [FieldIndex]) -> &'a [FieldIndex] {
-        &file_fields[self.first_field_index..self.first_field_index + self.field_count]
+    pub(crate) fn regular_field_range(&self) -> Range<usize> {
+        self.first_field_index..(self.first_field_index + self.field_count)
     }
 
     pub(crate) fn extension_field_range(&self) -> Range<usize> {
         self.first_field_index + self.field_count
             ..self.first_field_index + self.field_count + self.extension_count
+    }
+
+    pub(crate) fn slice_fields<'a>(&self, file_fields: &'a [FieldIndex]) -> &'a [FieldIndex] {
+        &file_fields[self.first_field_index..self.first_field_index + self.field_count]
     }
 }
 
@@ -119,6 +123,10 @@ pub(crate) struct FileDescriptorCommon {
 }
 
 impl FileDescriptorCommon {
+    pub(crate) fn extension_field_range(&self) -> Range<usize> {
+        self.first_extension_field_index..self.fields.len()
+    }
+
     pub(crate) fn new(
         file: &FileDescriptorProto,
         dependencies: Vec<FileDescriptor>,

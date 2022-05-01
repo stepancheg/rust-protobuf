@@ -6,7 +6,6 @@ use crate::descriptor::FileDescriptorProto;
 use crate::message_dyn::MessageDyn;
 use crate::message_full::MessageFull;
 use crate::reflect::dynamic::DynamicMessage;
-use crate::reflect::field::FieldDescriptorImpl;
 use crate::reflect::file::index::MessageIndex;
 use crate::reflect::file::FileDescriptorImpl;
 use crate::reflect::message::generated::GeneratedMessageDescriptor;
@@ -54,7 +53,7 @@ impl MessageDescriptor {
 
     /// Get underlying `DescriptorProto` object.
     pub fn proto(&self) -> &DescriptorProto {
-        self.file_descriptor.message_proto(self.index)
+        self.file_descriptor.message_proto_by_index(self.index)
     }
 
     /// Message name as specified in `.proto` file.
@@ -250,11 +249,12 @@ impl MessageDescriptor {
 
     /// Message field descriptors.
     pub fn fields<'a>(&'a self) -> impl Iterator<Item = FieldDescriptor> + 'a {
-        let message_index = &self.index().message_index;
-        (message_index.first_field_index
-            ..message_index.first_field_index + message_index.field_count)
+        self.index()
+            .message_index
+            .regular_field_range()
             .map(move |index| FieldDescriptor {
-                imp: FieldDescriptorImpl::Field(self.clone(), index),
+                file_descriptor: self.file_descriptor.clone(),
+                index,
             })
     }
 
@@ -264,7 +264,8 @@ impl MessageDescriptor {
             .message_index
             .extension_field_range()
             .map(move |index| FieldDescriptor {
-                imp: FieldDescriptorImpl::ExtensionInMessage(self.clone(), index),
+                file_descriptor: self.file_descriptor.clone(),
+                index,
             })
     }
 
@@ -274,10 +275,8 @@ impl MessageDescriptor {
 
     pub(crate) fn field_by_index(&self, index: usize) -> FieldDescriptor {
         FieldDescriptor {
-            imp: FieldDescriptorImpl::Field(
-                self.clone(),
-                self.index().message_index.first_field_index + index,
-            ),
+            file_descriptor: self.file_descriptor.clone(),
+            index: self.index().message_index.first_field_index + index,
         }
     }
 
