@@ -264,7 +264,7 @@ where
         failed: 0,
     };
 
-    let mut include_root = join(root, include);
+    let include_root = join(root, include);
 
     let include_full = join(root, include);
     let s_full = join(root, sources_dir);

@@ -3,6 +3,7 @@ use std::collections::HashSet;
 
 use crate::descriptor::field_descriptor_proto::Label;
 use crate::descriptor::FileDescriptorProto;
+use crate::reflect::field::index::FieldIndex;
 use crate::reflect::field::index::ForwardProtobufFieldType;
 use crate::reflect::field::index::ForwardProtobufTypeBox;
 use crate::reflect::file::index::MessageIndex;
@@ -12,6 +13,7 @@ use crate::reflect::Syntax;
 
 pub(crate) fn compute_is_initialized_is_always_true(
     messages: &mut [MessageIndex],
+    file_fields: &[FieldIndex],
     file: &FileDescriptorProto,
 ) {
     for message in messages.iter_mut() {
@@ -35,7 +37,7 @@ pub(crate) fn compute_is_initialized_is_always_true(
         }
 
         let mut is_initialized_is_always_true = true;
-        for ft in message_field_messages(message) {
+        for ft in message_field_messages(message, file_fields) {
             match ft {
                 MessageType::ThisFile(j) => {
                     rdeps.entry(j).or_default().push(i);
@@ -80,8 +82,11 @@ enum MessageType<'m> {
     OtherFile(&'m MessageDescriptor),
 }
 
-fn message_field_messages(message: &MessageIndex) -> impl Iterator<Item = MessageType<'_>> + '_ {
-    message_field_types(message).filter_map(|f| match f {
+fn message_field_messages<'a>(
+    message: &'a MessageIndex,
+    file_fields: &'a [FieldIndex],
+) -> impl Iterator<Item = MessageType<'a>> + 'a {
+    message_field_types(message, file_fields).filter_map(|f| match f {
         ForwardProtobufTypeBox::ProtobufTypeBox(t) => match t.runtime() {
             RuntimeTypeBox::Message(m) => Some(MessageType::OtherFile(m)),
             _ => None,
@@ -91,7 +96,10 @@ fn message_field_messages(message: &MessageIndex) -> impl Iterator<Item = Messag
     })
 }
 
-fn message_field_types(message: &MessageIndex) -> impl Iterator<Item = &ForwardProtobufTypeBox> {
+fn message_field_types<'a>(
+    message: &'a MessageIndex,
+    file_fields: &'a [FieldIndex],
+) -> impl Iterator<Item = &'a ForwardProtobufTypeBox> {
     enum Either<A, B> {
         Left(A),
         Right(B),
@@ -110,7 +118,7 @@ fn message_field_types(message: &MessageIndex) -> impl Iterator<Item = &ForwardP
 
     message
         .message_index
-        .fields
+        .slice_fields(file_fields)
         .iter()
         .flat_map(|f| match &f.field_type {
             ForwardProtobufFieldType::Singular(t) => Either::Left([t].into_iter()),

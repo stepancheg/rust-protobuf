@@ -250,7 +250,7 @@ impl MessageDescriptor {
 
     /// Message field descriptors.
     pub fn fields<'a>(&'a self) -> impl Iterator<Item = FieldDescriptor> + 'a {
-        (0..self.index().message_index.fields.len()).map(move |index| FieldDescriptor {
+        (0..self.index().message_index.field_count).map(move |index| FieldDescriptor {
             imp: FieldDescriptorImpl::Field(self.clone(), index),
         })
     }
@@ -264,10 +264,6 @@ impl MessageDescriptor {
 
     pub(crate) fn index(&self) -> &MessageIndex {
         &self.file_descriptor.common().messages[self.index]
-    }
-
-    pub(crate) fn generated_index(&self) -> &'static MessageIndex {
-        &self.file_descriptor.generated_index().messages[self.index]
     }
 
     pub(crate) fn field_by_index(&self, index: usize) -> FieldDescriptor {

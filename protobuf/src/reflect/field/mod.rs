@@ -86,7 +86,11 @@ pub(crate) enum FieldDescriptorImpl {
     // Index of extension in the file descriptor proto.
     ExtensionInMessage(MessageDescriptor, usize),
     // Index of extension in the file descriptor proto.
-    ExtensionInFile(FileDescriptor, usize),
+    ExtensionInFile(
+        FileDescriptor,
+        /// Index of the field in file.
+        usize,
+    ),
 }
 
 /// Field descriptor.
@@ -136,7 +140,9 @@ impl FieldDescriptor {
         match &self.imp {
             FieldDescriptorImpl::Field(m, i) => &m.proto().field[*i],
             FieldDescriptorImpl::ExtensionInMessage(m, i) => &m.proto().extension[*i],
-            FieldDescriptorImpl::ExtensionInFile(file, i) => &file.proto().extension[*i],
+            FieldDescriptorImpl::ExtensionInFile(file, i) => {
+                &file.proto().extension[*i - file.common().first_extension_field_index]
+            }
         }
     }
 
@@ -197,23 +203,32 @@ impl FieldDescriptor {
 
     fn index(&self) -> &FieldIndex {
         match &self.imp {
-            FieldDescriptorImpl::Field(m, i) => &m.index().message_index.fields[*i],
+            FieldDescriptorImpl::Field(m, i) => &m
+                .index()
+                .message_index
+                .slice_fields(&self.file_descriptor().common().fields)[*i],
             FieldDescriptorImpl::ExtensionInMessage(m, i) => {
                 &m.index().message_index.extensions[*i]
             }
-            FieldDescriptorImpl::ExtensionInFile(f, i) => &f.common().extensions[*i],
+            FieldDescriptorImpl::ExtensionInFile(f, i) => &f.common().fields[*i],
         }
     }
 
     fn index_with_message_lifetime<'a>(&self, m: &'a dyn MessageDyn) -> &'a FieldIndex {
         let (descriptor, index) = self.regular();
-        let message_index = match self.singular() {
-            SingularFieldAccessorRef::Generated(..) => descriptor.generated_index(),
+        let file_fields = match self.singular() {
+            SingularFieldAccessorRef::Generated(..) => {
+                &descriptor.file_descriptor.generated_index().fields
+            }
             SingularFieldAccessorRef::Dynamic(..) => {
-                DynamicMessage::downcast_ref(m).descriptor().index()
+                &DynamicMessage::downcast_ref(m)
+                    .descriptor()
+                    .file_descriptor
+                    .common()
+                    .fields
             }
         };
-        &message_index.message_index.fields[index]
+        &descriptor.index().message_index.slice_fields(file_fields)[index]
     }
 
     /// JSON field name.

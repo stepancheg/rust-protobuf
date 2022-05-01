@@ -145,8 +145,11 @@ impl FileDescriptor {
 
     /// Extension fields.
     pub fn extensions(&self) -> impl Iterator<Item = FieldDescriptor> + '_ {
-        (0..self.common().extensions.len()).map(move |index| FieldDescriptor {
-            imp: FieldDescriptorImpl::ExtensionInFile(self.clone(), index),
+        let common = self.common();
+        (common.first_extension_field_index..common.fields.len()).map(move |index| {
+            FieldDescriptor {
+                imp: FieldDescriptorImpl::ExtensionInFile(self.clone(), index),
+            }
         })
     }
 

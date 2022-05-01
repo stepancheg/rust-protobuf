@@ -33,11 +33,20 @@ pub(crate) struct MessageIndex {
 
 #[derive(Debug, Default)]
 pub(crate) struct MessageFieldsIndex {
-    pub(crate) fields: Vec<FieldIndex>,
+    /// Index of the first field in global field index.
+    pub(crate) first_field_index: usize,
+    pub(crate) field_count: usize,
+    // Following fields map to the local field index.
     pub(crate) field_index_by_name: HashMap<String, usize>,
     pub(crate) field_index_by_name_or_json_name: HashMap<String, usize>,
     pub(crate) field_index_by_number: HashMap<u32, usize>,
     pub(crate) extensions: Vec<FieldIndex>,
+}
+
+impl MessageFieldsIndex {
+    pub(crate) fn slice_fields<'a>(&self, file_fields: &'a [FieldIndex]) -> &'a [FieldIndex] {
+        &file_fields[self.first_field_index..self.first_field_index + self.field_count]
+    }
 }
 
 #[derive(Debug)]
@@ -97,7 +106,9 @@ pub(crate) struct FileDescriptorCommon {
     pub(crate) enums_by_name_to_package: HashMap<String, usize>,
     pub(crate) oneofs: Vec<OneofIndex>,
     pub(crate) services: Vec<ServiceIndex>,
-    pub(crate) extensions: Vec<FieldIndex>,
+    pub(crate) first_extension_field_index: usize,
+    /// All fields followed by file-level extensions.
+    pub(crate) fields: Vec<FieldIndex>,
 }
 
 impl FileDescriptorCommon {
@@ -160,33 +171,33 @@ impl FileDescriptorCommon {
             services.push(service_index);
         }
 
+        let mut fields = Vec::new();
+
         Self::build_message_index(
             file,
             &deps_with_public,
             &mut messages,
+            &mut fields,
             &message_by_name_to_package,
             &enums_by_name_to_package,
         )?;
 
-        let extensions = file
-            .extension
-            .iter()
-            .map(|ext| {
-                FieldIndex::index(
-                    None,
-                    ext,
-                    &FileDescriptorBuilding {
-                        current_file_descriptor: file,
-                        deps_with_public: &deps_with_public,
-                        message_by_name_to_package: &message_by_name_to_package,
-                        messages: &messages,
-                        enums_by_name_to_package: &enums_by_name_to_package,
-                    },
-                )
-            })
-            .collect::<crate::Result<Vec<_>>>()?;
+        let first_extension_field_index = fields.len();
+        for ext in &file.extension {
+            fields.push(FieldIndex::index(
+                None,
+                ext,
+                &FileDescriptorBuilding {
+                    current_file_descriptor: file,
+                    deps_with_public: &deps_with_public,
+                    message_by_name_to_package: &message_by_name_to_package,
+                    messages: &messages,
+                    enums_by_name_to_package: &enums_by_name_to_package,
+                },
+            )?);
+        }
 
-        compute_is_initialized_is_always_true(&mut messages, file);
+        compute_is_initialized_is_always_true(&mut messages, &fields, file);
 
         Ok(FileDescriptorCommon {
             dependencies,
@@ -197,7 +208,8 @@ impl FileDescriptorCommon {
             enums_by_name_to_package,
             oneofs,
             services,
-            extensions,
+            first_extension_field_index,
+            fields,
         })
     }
 
@@ -302,6 +314,7 @@ impl FileDescriptorCommon {
         file: &FileDescriptorProto,
         deps_with_public: &[FileDescriptor],
         messages: &mut [MessageIndex],
+        fields: &mut Vec<FieldIndex>,
         message_by_name_to_package: &HashMap<String, usize>,
         enums_by_name_to_package: &HashMap<String, usize>,
     ) -> crate::Result<()> {
@@ -314,7 +327,7 @@ impl FileDescriptorCommon {
                 messages,
                 enums_by_name_to_package,
             };
-            let message_index = Self::index_message(i, message_proto, &building)?;
+            let message_index = Self::index_message(i, message_proto, &building, fields)?;
             messages[i].message_index = message_index;
         }
         Ok(())
@@ -324,18 +337,22 @@ impl FileDescriptorCommon {
         message_index: usize,
         proto: &DescriptorProto,
         building: &FileDescriptorBuilding,
+        fields: &mut Vec<FieldIndex>,
     ) -> crate::Result<MessageFieldsIndex> {
         let mut index_by_name = HashMap::new();
         let mut index_by_name_or_json_name = HashMap::new();
         let mut index_by_number = HashMap::new();
 
-        let fields: Vec<FieldIndex> = proto
-            .field
-            .iter()
-            .map(|f| FieldIndex::index(Some(message_index), f, building))
-            .collect::<crate::Result<_>>()?;
+        let first_field_index = fields.len();
+
+        for field in &proto.field {
+            fields.push(FieldIndex::index(Some(message_index), field, building)?);
+        }
+
+        let field_count = proto.field.len();
+
         for (i, f) in proto.field.iter().enumerate() {
-            let field_index = &fields[i];
+            let field_index = &fields[first_field_index + i];
 
             if index_by_number.insert(f.number() as u32, i).is_some() {
                 return Err(ReflectError::NonUniqueFieldName(f.name().to_owned()).into());
@@ -367,7 +384,8 @@ impl FileDescriptorCommon {
             .collect::<crate::Result<Vec<_>>>()?;
 
         Ok(MessageFieldsIndex {
-            fields,
+            first_field_index,
+            field_count,
             field_index_by_name: index_by_name,
             field_index_by_name_or_json_name: index_by_name_or_json_name,
             field_index_by_number: index_by_number,
