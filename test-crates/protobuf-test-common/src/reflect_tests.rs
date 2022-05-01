@@ -3,8 +3,8 @@ use protobuf::reflect::MessageDescriptor;
 use protobuf::reflect::ReflectValueBox;
 use protobuf::reflect::RuntimeFieldType;
 use protobuf::reflect::RuntimeType;
-use protobuf::well_known_types::value;
-use protobuf::well_known_types::Value;
+use protobuf::well_known_types::struct_::value;
+use protobuf::well_known_types::struct_::Value;
 use protobuf::MessageDyn;
 use protobuf::MessageFull;
 

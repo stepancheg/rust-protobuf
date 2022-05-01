@@ -1,4 +1,4 @@
-use crate::well_known_types::Duration;
+use crate::well_known_types::duration::Duration;
 use crate::SpecialFields;
 
 impl Duration {
@@ -42,7 +42,7 @@ impl Into<std::time::Duration> for Duration {
 
 #[cfg(test)]
 mod test {
-    use crate::well_known_types::Duration;
+    use crate::well_known_types::duration::Duration;
 
     #[test]
     fn to_from_duration() {

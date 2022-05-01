@@ -391,23 +391,6 @@ impl<'a> MessageWithScope<'a> {
         message_name_to_nested_mod_name(self.message.name())
     }
 
-    /** Need to generate a mod for message nested objects. */
-    pub fn need_mod(&self) -> anyhow::Result<bool> {
-        for nested in self.to_scope().messages() {
-            if nested.is_map()? {
-                continue;
-            }
-            return Ok(true);
-        }
-        if !self.to_scope().enums().is_empty() {
-            return Ok(true);
-        }
-        if !self.message.all_oneofs().next().is_none() {
-            return Ok(true);
-        }
-        Ok(false)
-    }
-
     /// This message is a special message which is a map.
     pub fn is_map(&self) -> anyhow::Result<bool> {
         Ok(map_entry(self)?.is_some())

@@ -55,8 +55,9 @@ pub(crate) fn proto_path_to_fn_file_descriptor(
             protobuf_crate.append("descriptor::file_descriptor".into())
         }
         s if WELL_KNOWN_TYPES_PROTO_FILE_FULL_NAMES.contains(&s) => protobuf_crate
-            .append("well_known_types::file_descriptors".into())
-            .append_ident(proto_path_to_rust_mod(s)),
+            .append_ident("well_known_types".into())
+            .append_ident(proto_path_to_rust_mod(s))
+            .append_ident("file_descriptor".into()),
         s => RustPath::super_path()
             .append_ident(proto_path_to_rust_mod(s))
             .append_ident("file_descriptor".into()),

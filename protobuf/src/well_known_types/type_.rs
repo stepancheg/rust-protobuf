@@ -40,7 +40,7 @@ pub struct Type {
     pub options: ::std::vec::Vec<Option>,
     ///  The source context.
     // @@protoc_insertion_point(field:google.protobuf.Type.source_context)
-    pub source_context: crate::MessageField<crate::well_known_types::SourceContext>,
+    pub source_context: crate::MessageField<crate::well_known_types::source_context::SourceContext>,
     ///  The source syntax.
     // @@protoc_insertion_point(field:google.protobuf.Type.syntax)
     pub syntax: crate::EnumOrUnknown<Syntax>,
@@ -83,7 +83,7 @@ impl Type {
             |m: &Type| { &m.options },
             |m: &mut Type| { &mut m.options },
         ));
-        fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, crate::well_known_types::SourceContext>(
+        fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, crate::well_known_types::source_context::SourceContext>(
             "source_context",
             |m: &Type| { &m.source_context },
             |m: &mut Type| { &mut m.source_context },
@@ -746,7 +746,7 @@ pub struct Enum {
     pub options: ::std::vec::Vec<Option>,
     ///  The source context.
     // @@protoc_insertion_point(field:google.protobuf.Enum.source_context)
-    pub source_context: crate::MessageField<crate::well_known_types::SourceContext>,
+    pub source_context: crate::MessageField<crate::well_known_types::source_context::SourceContext>,
     ///  The source syntax.
     // @@protoc_insertion_point(field:google.protobuf.Enum.syntax)
     pub syntax: crate::EnumOrUnknown<Syntax>,
@@ -784,7 +784,7 @@ impl Enum {
             |m: &Enum| { &m.options },
             |m: &mut Enum| { &mut m.options },
         ));
-        fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, crate::well_known_types::SourceContext>(
+        fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, crate::well_known_types::source_context::SourceContext>(
             "source_context",
             |m: &Enum| { &m.source_context },
             |m: &mut Enum| { &mut m.source_context },
@@ -1113,7 +1113,7 @@ pub struct Option {
     ///  should be used. If the value is an enum, it should be stored as an int32
     ///  value using the google.protobuf.Int32Value type.
     // @@protoc_insertion_point(field:google.protobuf.Option.value)
-    pub value: crate::MessageField<crate::well_known_types::Any>,
+    pub value: crate::MessageField<crate::well_known_types::any::Any>,
     // special fields
     // @@protoc_insertion_point(special_field:google.protobuf.Option.special_fields)
     pub special_fields: crate::SpecialFields,
@@ -1138,7 +1138,7 @@ impl Option {
             |m: &Option| { &m.name },
             |m: &mut Option| { &mut m.name },
         ));
-        fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, crate::well_known_types::Any>(
+        fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, crate::well_known_types::any::Any>(
             "value",
             |m: &Option| { &m.value },
             |m: &mut Option| { &mut m.value },
@@ -1600,8 +1600,8 @@ pub fn file_descriptor() -> crate::reflect::FileDescriptor {
     static file_descriptor_lazy: crate::rt::Lazy<crate::reflect::GeneratedFileDescriptor> = crate::rt::Lazy::new();
     let file_descriptor = file_descriptor_lazy.get(|| {
         let mut deps = ::std::vec::Vec::with_capacity(2);
-        deps.push(crate::well_known_types::file_descriptors::any());
-        deps.push(crate::well_known_types::file_descriptors::source_context());
+        deps.push(crate::well_known_types::any::file_descriptor());
+        deps.push(crate::well_known_types::source_context::file_descriptor());
         let mut messages = ::std::vec::Vec::with_capacity(5);
         messages.push(Type::generated_message_descriptor_data());
         messages.push(Field::generated_message_descriptor_data());

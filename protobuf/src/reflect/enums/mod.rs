@@ -80,7 +80,7 @@ impl EnumValueDescriptor {
     /// Convert this value descriptor into proper enum object.
     ///
     /// ```
-    /// # use protobuf::well_known_types::NullValue;
+    /// # use protobuf::well_known_types::struct_::NullValue;
     /// # use protobuf::EnumFull;
     /// # use protobuf::reflect::EnumValueDescriptor;
     ///
@@ -256,7 +256,7 @@ mod test {
     use crate::descriptor::field_descriptor_proto::Label;
     use crate::descriptor::field_descriptor_proto::Type;
     use crate::descriptor::FieldDescriptorProto;
-    use crate::well_known_types::NullValue;
+    use crate::well_known_types::struct_::NullValue;
     use crate::EnumFull;
     use crate::MessageFull;
 

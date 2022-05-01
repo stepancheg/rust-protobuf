@@ -1,6 +1,6 @@
 use crate::message_dyn::MessageDyn;
 use crate::reflect::MessageDescriptor;
-use crate::well_known_types::Any;
+use crate::well_known_types::any::Any;
 use crate::MessageFull;
 
 impl Any {
@@ -21,7 +21,7 @@ impl Any {
     ///
     /// ```
     /// # use protobuf::MessageFull;
-    /// use protobuf::well_known_types::Any;
+    /// use protobuf::well_known_types::any::Any;
     ///
     /// # fn the_test<MyMessage: MessageFull>(message: &MyMessage) -> protobuf::Result<()> {
     /// let message: &MyMessage = message;
@@ -40,7 +40,7 @@ impl Any {
     ///
     /// ```
     /// use protobuf::{MessageFull, MessageDyn};
-    /// use protobuf::well_known_types::Any;
+    /// use protobuf::well_known_types::any::Any;
     ///
     /// # fn the_test(message: &dyn MessageDyn) -> protobuf::Result<()> {
     /// let message: &dyn MessageDyn = message;

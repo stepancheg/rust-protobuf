@@ -1,7 +1,7 @@
 use std::time::Duration;
 use std::time::SystemTime;
 
-use crate::well_known_types::Timestamp;
+use crate::well_known_types::timestamp::Timestamp;
 use crate::SpecialFields;
 
 impl Timestamp {
@@ -72,7 +72,7 @@ mod test {
     use std::time::Duration;
     use std::time::SystemTime;
 
-    use crate::well_known_types::Timestamp;
+    use crate::well_known_types::timestamp::Timestamp;
 
     #[test]
     fn to_from_system_time() {

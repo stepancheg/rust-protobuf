@@ -43,7 +43,7 @@ pub struct Api {
     pub methods: ::std::vec::Vec<Method>,
     ///  Any metadata attached to the interface.
     // @@protoc_insertion_point(field:google.protobuf.Api.options)
-    pub options: ::std::vec::Vec<crate::well_known_types::Option>,
+    pub options: ::std::vec::Vec<crate::well_known_types::type_::Option>,
     ///  A version string for this interface. If specified, must have the form
     ///  `major-version.minor-version`, as in `1.10`. If the minor version is
     ///  omitted, it defaults to zero. If the entire version field is empty, the
@@ -70,13 +70,13 @@ pub struct Api {
     ///  Source context for the protocol buffer service represented by this
     ///  message.
     // @@protoc_insertion_point(field:google.protobuf.Api.source_context)
-    pub source_context: crate::MessageField<crate::well_known_types::SourceContext>,
+    pub source_context: crate::MessageField<crate::well_known_types::source_context::SourceContext>,
     ///  Included interfaces. See [Mixin][].
     // @@protoc_insertion_point(field:google.protobuf.Api.mixins)
     pub mixins: ::std::vec::Vec<Mixin>,
     ///  The source syntax of the service.
     // @@protoc_insertion_point(field:google.protobuf.Api.syntax)
-    pub syntax: crate::EnumOrUnknown<crate::well_known_types::Syntax>,
+    pub syntax: crate::EnumOrUnknown<crate::well_known_types::type_::Syntax>,
     // special fields
     // @@protoc_insertion_point(special_field:google.protobuf.Api.special_fields)
     pub special_fields: crate::SpecialFields,
@@ -116,7 +116,7 @@ impl Api {
             |m: &Api| { &m.version },
             |m: &mut Api| { &mut m.version },
         ));
-        fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, crate::well_known_types::SourceContext>(
+        fields.push(crate::reflect::rt::v2::make_message_field_accessor::<_, crate::well_known_types::source_context::SourceContext>(
             "source_context",
             |m: &Api| { &m.source_context },
             |m: &mut Api| { &mut m.source_context },
@@ -204,7 +204,7 @@ impl crate::Message for Api {
             let len = value.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
-        if self.syntax != crate::EnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2) {
+        if self.syntax != crate::EnumOrUnknown::new(crate::well_known_types::type_::Syntax::SYNTAX_PROTO2) {
             my_size += crate::rt::int32_size(7, self.syntax.value());
         }
         my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
@@ -231,7 +231,7 @@ impl crate::Message for Api {
         for v in &self.mixins {
             crate::rt::write_message_field_with_cached_size(6, v, os)?;
         };
-        if self.syntax != crate::EnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2) {
+        if self.syntax != crate::EnumOrUnknown::new(crate::well_known_types::type_::Syntax::SYNTAX_PROTO2) {
             os.write_enum(7, crate::EnumOrUnknown::value(&self.syntax))?;
         }
         os.write_unknown_fields(self.special_fields.unknown_fields())?;
@@ -257,7 +257,7 @@ impl crate::Message for Api {
         self.version.clear();
         self.source_context.clear();
         self.mixins.clear();
-        self.syntax = crate::EnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2);
+        self.syntax = crate::EnumOrUnknown::new(crate::well_known_types::type_::Syntax::SYNTAX_PROTO2);
         self.special_fields.clear();
     }
 
@@ -315,10 +315,10 @@ pub struct Method {
     pub response_streaming: bool,
     ///  Any metadata attached to the method.
     // @@protoc_insertion_point(field:google.protobuf.Method.options)
-    pub options: ::std::vec::Vec<crate::well_known_types::Option>,
+    pub options: ::std::vec::Vec<crate::well_known_types::type_::Option>,
     ///  The source syntax of this method.
     // @@protoc_insertion_point(field:google.protobuf.Method.syntax)
-    pub syntax: crate::EnumOrUnknown<crate::well_known_types::Syntax>,
+    pub syntax: crate::EnumOrUnknown<crate::well_known_types::type_::Syntax>,
     // special fields
     // @@protoc_insertion_point(special_field:google.protobuf.Method.special_fields)
     pub special_fields: crate::SpecialFields,
@@ -443,7 +443,7 @@ impl crate::Message for Method {
             let len = value.compute_size();
             my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         };
-        if self.syntax != crate::EnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2) {
+        if self.syntax != crate::EnumOrUnknown::new(crate::well_known_types::type_::Syntax::SYNTAX_PROTO2) {
             my_size += crate::rt::int32_size(7, self.syntax.value());
         }
         my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
@@ -470,7 +470,7 @@ impl crate::Message for Method {
         for v in &self.options {
             crate::rt::write_message_field_with_cached_size(6, v, os)?;
         };
-        if self.syntax != crate::EnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2) {
+        if self.syntax != crate::EnumOrUnknown::new(crate::well_known_types::type_::Syntax::SYNTAX_PROTO2) {
             os.write_enum(7, crate::EnumOrUnknown::value(&self.syntax))?;
         }
         os.write_unknown_fields(self.special_fields.unknown_fields())?;
@@ -496,7 +496,7 @@ impl crate::Message for Method {
         self.response_type_url.clear();
         self.response_streaming = false;
         self.options.clear();
-        self.syntax = crate::EnumOrUnknown::new(crate::well_known_types::Syntax::SYNTAX_PROTO2);
+        self.syntax = crate::EnumOrUnknown::new(crate::well_known_types::type_::Syntax::SYNTAX_PROTO2);
         self.special_fields.clear();
     }
 
@@ -909,8 +909,8 @@ pub fn file_descriptor() -> crate::reflect::FileDescriptor {
     static file_descriptor_lazy: crate::rt::Lazy<crate::reflect::GeneratedFileDescriptor> = crate::rt::Lazy::new();
     let file_descriptor = file_descriptor_lazy.get(|| {
         let mut deps = ::std::vec::Vec::with_capacity(2);
-        deps.push(crate::well_known_types::file_descriptors::source_context());
-        deps.push(crate::well_known_types::file_descriptors::type_());
+        deps.push(crate::well_known_types::source_context::file_descriptor());
+        deps.push(crate::well_known_types::type_::file_descriptor());
         let mut messages = ::std::vec::Vec::with_capacity(3);
         messages.push(Api::generated_message_descriptor_data());
         messages.push(Method::generated_message_descriptor_data());

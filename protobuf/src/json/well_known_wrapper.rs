@@ -1,14 +1,14 @@
 //! Trait for well-known wrapper types
 
-use crate::well_known_types::BoolValue;
-use crate::well_known_types::BytesValue;
-use crate::well_known_types::DoubleValue;
-use crate::well_known_types::FloatValue;
-use crate::well_known_types::Int32Value;
-use crate::well_known_types::Int64Value;
-use crate::well_known_types::StringValue;
-use crate::well_known_types::UInt32Value;
-use crate::well_known_types::UInt64Value;
+use crate::well_known_types::wrappers::BoolValue;
+use crate::well_known_types::wrappers::BytesValue;
+use crate::well_known_types::wrappers::DoubleValue;
+use crate::well_known_types::wrappers::FloatValue;
+use crate::well_known_types::wrappers::Int32Value;
+use crate::well_known_types::wrappers::Int64Value;
+use crate::well_known_types::wrappers::StringValue;
+use crate::well_known_types::wrappers::UInt32Value;
+use crate::well_known_types::wrappers::UInt64Value;
 
 /// Well-known wrapper types have single field.
 /// This trait operations return pointers to that field.

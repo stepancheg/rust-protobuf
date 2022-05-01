@@ -24,24 +24,24 @@ use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::RuntimeFieldType;
 use crate::reflect::RuntimeType;
-use crate::well_known_types::value;
-use crate::well_known_types::Any;
-use crate::well_known_types::BoolValue;
-use crate::well_known_types::BytesValue;
-use crate::well_known_types::DoubleValue;
-use crate::well_known_types::Duration;
-use crate::well_known_types::FieldMask;
-use crate::well_known_types::FloatValue;
-use crate::well_known_types::Int32Value;
-use crate::well_known_types::Int64Value;
-use crate::well_known_types::ListValue;
-use crate::well_known_types::NullValue;
-use crate::well_known_types::StringValue;
-use crate::well_known_types::Struct;
-use crate::well_known_types::Timestamp;
-use crate::well_known_types::UInt32Value;
-use crate::well_known_types::UInt64Value;
-use crate::well_known_types::Value;
+use crate::well_known_types::any::Any;
+use crate::well_known_types::duration::Duration;
+use crate::well_known_types::field_mask::FieldMask;
+use crate::well_known_types::struct_;
+use crate::well_known_types::struct_::ListValue;
+use crate::well_known_types::struct_::NullValue;
+use crate::well_known_types::struct_::Struct;
+use crate::well_known_types::struct_::Value;
+use crate::well_known_types::timestamp::Timestamp;
+use crate::well_known_types::wrappers::BoolValue;
+use crate::well_known_types::wrappers::BytesValue;
+use crate::well_known_types::wrappers::DoubleValue;
+use crate::well_known_types::wrappers::FloatValue;
+use crate::well_known_types::wrappers::Int32Value;
+use crate::well_known_types::wrappers::Int64Value;
+use crate::well_known_types::wrappers::StringValue;
+use crate::well_known_types::wrappers::UInt32Value;
+use crate::well_known_types::wrappers::UInt64Value;
 use crate::Enum;
 
 #[derive(Debug, thiserror::Error)]
@@ -792,19 +792,21 @@ impl<'a> Parser<'a> {
 
     fn merge_wk_value(&mut self, value: &mut Value) -> ParseResultWithoutLoc<()> {
         if self.tokenizer.lookahead_is_ident("null")? {
-            value.kind = Some(value::Kind::NullValue(self.read_wk_null_value()?.into()));
+            value.kind = Some(struct_::value::Kind::NullValue(
+                self.read_wk_null_value()?.into(),
+            ));
         } else if self.tokenizer.lookahead_is_ident("true")?
             || self.tokenizer.lookahead_is_ident("false")?
         {
-            value.kind = Some(value::Kind::BoolValue(self.read_bool()?));
+            value.kind = Some(struct_::value::Kind::BoolValue(self.read_bool()?));
         } else if self.tokenizer.lookahead_is_json_number()? {
-            value.kind = Some(value::Kind::NumberValue(self.read_f64()?));
+            value.kind = Some(struct_::value::Kind::NumberValue(self.read_f64()?));
         } else if self.tokenizer.lookahead_is_str_lit()? {
-            value.kind = Some(value::Kind::StringValue(self.read_string()?));
+            value.kind = Some(struct_::value::Kind::StringValue(self.read_string()?));
         } else if self.tokenizer.lookahead_is_symbol('[')? {
-            value.kind = Some(value::Kind::ListValue(self.read_wk_list_value()?));
+            value.kind = Some(struct_::value::Kind::ListValue(self.read_wk_list_value()?));
         } else if self.tokenizer.lookahead_is_symbol('{')? {
-            value.kind = Some(value::Kind::StructValue(self.read_wk_struct()?));
+            value.kind = Some(struct_::value::Kind::StructValue(self.read_wk_struct()?));
         } else {
             return Err(ParseErrorWithoutLoc(
                 ParseErrorWithoutLocInner::UnexpectedToken,

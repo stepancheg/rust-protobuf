@@ -1,4 +1,4 @@
-use protobuf::well_known_types::Any;
+use protobuf::well_known_types::any::Any;
 use protobuf::MessageFull;
 
 use super::test_any_pb::MessageOne;

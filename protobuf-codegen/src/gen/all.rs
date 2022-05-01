@@ -53,7 +53,7 @@ pub(crate) fn gen_all(
     }
 
     if customize.for_elem.inside_protobuf.unwrap_or(false) {
-        results.push(gen_well_known_types_mod(&file_descriptors));
+        results.push(gen_well_known_types_mod());
     }
 
     if customize.for_elem.gen_mod_rs.unwrap_or(true) {

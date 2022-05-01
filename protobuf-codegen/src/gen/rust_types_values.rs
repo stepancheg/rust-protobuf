@@ -1,14 +1,17 @@
 use std::cmp;
 
+use once_cell::sync::Lazy;
 use protobuf::descriptor::*;
 use protobuf::reflect::FileDescriptor;
 use protobuf_parse::ProtobufAbsPath;
+use regex::Regex;
 
 use crate::customize::Customize;
 use crate::gen::field::type_ext::TypeExt;
 use crate::gen::file_and_mod::FileAndMod;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::message::RustTypeMessage;
+use crate::gen::paths::proto_path_to_rust_mod;
 use crate::gen::rust::component::RustPathComponent;
 use crate::gen::rust::ident::RustIdent;
 use crate::gen::rust::ident_with_path::RustIdentWithPath;
@@ -492,10 +495,17 @@ pub(crate) fn message_or_enum_to_rust_relative(
     } else if let Some(name) = is_well_known_type_full(&message_or_enum.name_absolute()) {
         // Well-known types are included in rust-protobuf library
         // https://developers.google.com/protocol-buffers/docs/reference/google.protobuf
+        let file_descriptor = message_or_enum.file_descriptor();
+        static REGEX: Lazy<Regex> =
+            Lazy::new(|| Regex::new(r"^google/protobuf/([^/]+\.proto)$").unwrap());
+        let captures = REGEX
+            .captures(file_descriptor.name())
+            .unwrap_or_else(|| panic!("`{}` does not match the regex", file_descriptor.name()));
+        let file_name = captures.get(1).unwrap().as_str();
+        let mod_name = proto_path_to_rust_mod(file_name);
         RustIdentWithPath::from(format!(
-            "{}::well_known_types::{}",
-            protobuf_crate_path(&current.customize),
-            name
+            "{protobuf_crate}::well_known_types::{mod_name}::{name}",
+            protobuf_crate = protobuf_crate_path(&current.customize),
         ))
     } else if is_descriptor_proto(&message_or_enum.file_descriptor()) {
         // Messages defined in descriptor.proto

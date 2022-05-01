@@ -1,4 +1,10 @@
-use protobuf::well_known_types::*;
+use protobuf::well_known_types::duration::Duration;
+use protobuf::well_known_types::field_mask::FieldMask;
+use protobuf::well_known_types::struct_::ListValue;
+use protobuf::well_known_types::struct_::NullValue;
+use protobuf::well_known_types::struct_::Struct;
+use protobuf::well_known_types::struct_::Value;
+use protobuf::well_known_types::timestamp::Timestamp;
 use protobuf_test_common::*;
 
 use super::test_fmt_json_well_known_pb::*;
