@@ -111,7 +111,7 @@ impl crate::Message for Struct {
             entry_size += crate::rt::string_size(1, &k);
             let len = v.cached_size() as u64;
             entry_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
-            os.write_tag(1, crate::rt::WireType::LengthDelimited)?;
+            os.write_raw_varint32(10)?; // Tag.
             os.write_raw_varint32(entry_size as u32)?;
             os.write_string(1, &k)?;
             crate::rt::write_message_field_with_cached_size(2, v, os)?;
