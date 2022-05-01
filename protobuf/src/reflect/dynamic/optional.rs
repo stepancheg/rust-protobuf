@@ -1,16 +1,16 @@
 use crate::reflect::value::value_ref::ReflectValueMut;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
-use crate::reflect::RuntimeTypeBox;
+use crate::reflect::RuntimeType;
 
 #[derive(Debug, Clone)]
 pub(crate) struct DynamicOptional {
-    elem: RuntimeTypeBox,
+    elem: RuntimeType,
     value: Option<ReflectValueBox>,
 }
 
 impl DynamicOptional {
-    pub fn none(elem: RuntimeTypeBox) -> DynamicOptional {
+    pub fn none(elem: RuntimeType) -> DynamicOptional {
         DynamicOptional { elem, value: None }
     }
 

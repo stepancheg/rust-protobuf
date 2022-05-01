@@ -8,7 +8,7 @@ use crate::reflect::field::index::ForwardProtobufFieldType;
 use crate::reflect::field::index::ForwardProtobufTypeBox;
 use crate::reflect::file::index::MessageIndex;
 use crate::reflect::MessageDescriptor;
-use crate::reflect::RuntimeTypeBox;
+use crate::reflect::RuntimeType;
 use crate::reflect::Syntax;
 
 pub(crate) fn compute_is_initialized_is_always_true(
@@ -88,7 +88,7 @@ fn message_field_messages<'a>(
 ) -> impl Iterator<Item = MessageType<'a>> + 'a {
     message_field_types(message, file_fields).filter_map(|f| match f {
         ForwardProtobufTypeBox::ProtobufTypeBox(t) => match t.runtime() {
-            RuntimeTypeBox::Message(m) => Some(MessageType::OtherFile(m)),
+            RuntimeType::Message(m) => Some(MessageType::OtherFile(m)),
             _ => None,
         },
         ForwardProtobufTypeBox::CurrentFileEnum(_) => None,

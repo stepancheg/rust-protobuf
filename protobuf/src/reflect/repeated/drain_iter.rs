@@ -1,4 +1,4 @@
-use crate::reflect::runtime_types::RuntimeType;
+use crate::reflect::runtime_types::RuntimeTypeTrait;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 

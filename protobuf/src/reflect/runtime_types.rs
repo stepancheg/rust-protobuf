@@ -12,7 +12,7 @@ use crate::chars::Chars;
 use crate::descriptor::field_descriptor_proto::Type;
 use crate::enum_or_unknown::EnumOrUnknown;
 use crate::message_full::MessageFull;
-use crate::reflect::runtime_type_box::RuntimeTypeBox;
+use crate::reflect::runtime_type_box::RuntimeType;
 use crate::reflect::types::ProtobufTypeBool;
 use crate::reflect::types::ProtobufTypeBytes;
 use crate::reflect::types::ProtobufTypeDouble;
@@ -51,12 +51,12 @@ use crate::UnknownValues;
 ///
 /// The downside is that we have to explicitly specify type parameters
 /// in a lot of places.
-pub trait RuntimeType: fmt::Debug + Send + Sync + Sized + 'static {
+pub trait RuntimeTypeTrait: fmt::Debug + Send + Sync + Sized + 'static {
     /// Actual value for this type.
     type Value: ProtobufValue + Clone + Sized + fmt::Debug + Default;
 
     /// "Box" version of type type.
-    fn runtime_type_box() -> RuntimeTypeBox;
+    fn runtime_type_box() -> RuntimeType;
 
     /// Default value for this type.
     fn default_value_ref() -> ReflectValueRef<'static>;
@@ -109,7 +109,7 @@ pub trait RuntimeType: fmt::Debug + Send + Sync + Sized + 'static {
 }
 
 /// Runtime type which can be dereferenced.
-pub trait RuntimeTypeWithDeref: RuntimeType {
+pub trait RuntimeTypeWithDeref: RuntimeTypeTrait {
     /// Deref target.
     type DerefTarget: ?Sized;
 
@@ -119,7 +119,7 @@ pub trait RuntimeTypeWithDeref: RuntimeType {
 }
 
 /// Types which can be hashmap keys.
-pub trait RuntimeTypeHashable: RuntimeType {
+pub trait RuntimeTypeHashable: RuntimeTypeTrait {
     /// Query hash map with a given key.
     fn hash_map_get<'a, V>(map: &'a HashMap<Self::Value, V>, key: ReflectValueRef)
         -> Option<&'a V>;
@@ -169,14 +169,14 @@ pub struct RuntimeTypeEnumOrUnknown<E: EnumFull>(marker::PhantomData<E>);
 #[derive(Debug, Copy, Clone)]
 pub struct RuntimeTypeMessage<M: MessageFull>(marker::PhantomData<M>);
 
-impl RuntimeType for RuntimeTypeF32 {
+impl RuntimeTypeTrait for RuntimeTypeF32 {
     type Value = f32;
 
-    fn runtime_type_box() -> RuntimeTypeBox
+    fn runtime_type_box() -> RuntimeType
     where
         Self: Sized,
     {
-        RuntimeTypeBox::F32
+        RuntimeType::F32
     }
 
     fn default_value_ref() -> ReflectValueRef<'static> {
@@ -214,18 +214,18 @@ impl RuntimeType for RuntimeTypeF32 {
     }
 }
 
-impl RuntimeType for RuntimeTypeF64 {
+impl RuntimeTypeTrait for RuntimeTypeF64 {
     type Value = f64;
 
     fn default_value_ref() -> ReflectValueRef<'static> {
         ReflectValueRef::F64(0.0)
     }
 
-    fn runtime_type_box() -> RuntimeTypeBox
+    fn runtime_type_box() -> RuntimeType
     where
         Self: Sized,
     {
-        RuntimeTypeBox::F64
+        RuntimeType::F64
     }
 
     fn from_value_box(value_box: ReflectValueBox) -> Result<f64, ReflectValueBox> {
@@ -261,18 +261,18 @@ impl RuntimeType for RuntimeTypeF64 {
     }
 }
 
-impl RuntimeType for RuntimeTypeI32 {
+impl RuntimeTypeTrait for RuntimeTypeI32 {
     type Value = i32;
 
     fn default_value_ref() -> ReflectValueRef<'static> {
         ReflectValueRef::I32(0)
     }
 
-    fn runtime_type_box() -> RuntimeTypeBox
+    fn runtime_type_box() -> RuntimeType
     where
         Self: Sized,
     {
-        RuntimeTypeBox::I32
+        RuntimeType::I32
     }
 
     fn from_value_box(value_box: ReflectValueBox) -> Result<i32, ReflectValueBox> {
@@ -320,18 +320,18 @@ impl RuntimeTypeHashable for RuntimeTypeI32 {
     }
 }
 
-impl RuntimeType for RuntimeTypeI64 {
+impl RuntimeTypeTrait for RuntimeTypeI64 {
     type Value = i64;
 
     fn default_value_ref() -> ReflectValueRef<'static> {
         ReflectValueRef::I64(0)
     }
 
-    fn runtime_type_box() -> RuntimeTypeBox
+    fn runtime_type_box() -> RuntimeType
     where
         Self: Sized,
     {
-        RuntimeTypeBox::I64
+        RuntimeType::I64
     }
 
     fn from_value_box(value_box: ReflectValueBox) -> Result<i64, ReflectValueBox> {
@@ -379,14 +379,14 @@ impl RuntimeTypeHashable for RuntimeTypeI64 {
     }
 }
 
-impl RuntimeType for RuntimeTypeU32 {
+impl RuntimeTypeTrait for RuntimeTypeU32 {
     type Value = u32;
 
-    fn runtime_type_box() -> RuntimeTypeBox
+    fn runtime_type_box() -> RuntimeType
     where
         Self: Sized,
     {
-        RuntimeTypeBox::U32
+        RuntimeType::U32
     }
 
     fn default_value_ref() -> ReflectValueRef<'static> {
@@ -437,18 +437,18 @@ impl RuntimeTypeHashable for RuntimeTypeU32 {
     }
 }
 
-impl RuntimeType for RuntimeTypeU64 {
+impl RuntimeTypeTrait for RuntimeTypeU64 {
     type Value = u64;
 
     fn default_value_ref() -> ReflectValueRef<'static> {
         ReflectValueRef::U64(0)
     }
 
-    fn runtime_type_box() -> RuntimeTypeBox
+    fn runtime_type_box() -> RuntimeType
     where
         Self: Sized,
     {
-        RuntimeTypeBox::U64
+        RuntimeType::U64
     }
 
     fn from_value_box(value_box: ReflectValueBox) -> Result<u64, ReflectValueBox> {
@@ -495,18 +495,18 @@ impl RuntimeTypeHashable for RuntimeTypeU64 {
     }
 }
 
-impl RuntimeType for RuntimeTypeBool {
+impl RuntimeTypeTrait for RuntimeTypeBool {
     type Value = bool;
 
     fn default_value_ref() -> ReflectValueRef<'static> {
         ReflectValueRef::Bool(false)
     }
 
-    fn runtime_type_box() -> RuntimeTypeBox
+    fn runtime_type_box() -> RuntimeType
     where
         Self: Sized,
     {
-        RuntimeTypeBox::Bool
+        RuntimeType::Bool
     }
 
     fn from_value_box(value_box: ReflectValueBox) -> Result<bool, ReflectValueBox> {
@@ -550,14 +550,14 @@ impl RuntimeTypeHashable for RuntimeTypeBool {
     }
 }
 
-impl RuntimeType for RuntimeTypeString {
+impl RuntimeTypeTrait for RuntimeTypeString {
     type Value = String;
 
-    fn runtime_type_box() -> RuntimeTypeBox
+    fn runtime_type_box() -> RuntimeType
     where
         Self: Sized,
     {
-        RuntimeTypeBox::String
+        RuntimeType::String
     }
 
     fn default_value_ref() -> ReflectValueRef<'static> {
@@ -608,14 +608,14 @@ impl RuntimeTypeHashable for RuntimeTypeString {
     }
 }
 
-impl RuntimeType for RuntimeTypeVecU8 {
+impl RuntimeTypeTrait for RuntimeTypeVecU8 {
     type Value = Vec<u8>;
 
-    fn runtime_type_box() -> RuntimeTypeBox
+    fn runtime_type_box() -> RuntimeType
     where
         Self: Sized,
     {
-        RuntimeTypeBox::VecU8
+        RuntimeType::VecU8
     }
 
     fn default_value_ref() -> ReflectValueRef<'static> {
@@ -659,18 +659,18 @@ impl RuntimeTypeWithDeref for RuntimeTypeVecU8 {
 }
 
 #[cfg(feature = "bytes")]
-impl RuntimeType for RuntimeTypeTokioBytes {
+impl RuntimeTypeTrait for RuntimeTypeTokioBytes {
     type Value = Bytes;
 
     fn default_value_ref() -> ReflectValueRef<'static> {
         ReflectValueRef::Bytes(b"")
     }
 
-    fn runtime_type_box() -> RuntimeTypeBox
+    fn runtime_type_box() -> RuntimeType
     where
         Self: Sized,
     {
-        RuntimeTypeBox::VecU8
+        RuntimeType::VecU8
     }
 
     fn from_value_box(value_box: ReflectValueBox) -> Result<Bytes, ReflectValueBox> {
@@ -712,18 +712,18 @@ impl RuntimeTypeWithDeref for RuntimeTypeTokioBytes {
 }
 
 #[cfg(feature = "bytes")]
-impl RuntimeType for RuntimeTypeTokioChars {
+impl RuntimeTypeTrait for RuntimeTypeTokioChars {
     type Value = Chars;
 
     fn default_value_ref() -> ReflectValueRef<'static> {
         ReflectValueRef::String("")
     }
 
-    fn runtime_type_box() -> RuntimeTypeBox
+    fn runtime_type_box() -> RuntimeType
     where
         Self: Sized,
     {
-        RuntimeTypeBox::String
+        RuntimeType::String
     }
 
     fn from_value_box(value_box: ReflectValueBox) -> Result<Chars, ReflectValueBox> {
@@ -772,17 +772,17 @@ impl RuntimeTypeHashable for RuntimeTypeTokioChars {
     }
 }
 
-impl<E> RuntimeType for RuntimeTypeEnumOrUnknown<E>
+impl<E> RuntimeTypeTrait for RuntimeTypeEnumOrUnknown<E>
 where
     E: EnumFull + fmt::Debug,
 {
     type Value = EnumOrUnknown<E>;
 
-    fn runtime_type_box() -> RuntimeTypeBox
+    fn runtime_type_box() -> RuntimeType
     where
         Self: Sized,
     {
-        RuntimeTypeBox::Enum(E::enum_descriptor())
+        RuntimeType::Enum(E::enum_descriptor())
     }
 
     fn default_value_ref() -> ReflectValueRef<'static> {
@@ -831,17 +831,17 @@ where
     }
 }
 
-impl<M> RuntimeType for RuntimeTypeMessage<M>
+impl<M> RuntimeTypeTrait for RuntimeTypeMessage<M>
 where
     M: MessageFull + ProtobufValue + Clone + Default,
 {
     type Value = M;
 
-    fn runtime_type_box() -> RuntimeTypeBox
+    fn runtime_type_box() -> RuntimeType
     where
         Self: Sized,
     {
-        RuntimeTypeBox::Message(M::descriptor())
+        RuntimeType::Message(M::descriptor())
     }
 
     fn default_value_ref() -> ReflectValueRef<'static> {

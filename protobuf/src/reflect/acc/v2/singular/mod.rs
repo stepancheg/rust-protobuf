@@ -6,7 +6,7 @@ use crate::message_field::MessageField;
 use crate::message_full::MessageFull;
 use crate::reflect::acc::v2::AccessorV2;
 use crate::reflect::acc::FieldAccessor;
-use crate::reflect::runtime_types::RuntimeType;
+use crate::reflect::runtime_types::RuntimeTypeTrait;
 use crate::reflect::runtime_types::RuntimeTypeWithDeref;
 use crate::reflect::value::value_ref::ReflectValueMut;
 use crate::reflect::ProtobufValue;

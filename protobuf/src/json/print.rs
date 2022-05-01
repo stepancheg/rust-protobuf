@@ -14,7 +14,7 @@ use crate::reflect::ReflectMapRef;
 use crate::reflect::ReflectRepeatedRef;
 use crate::reflect::ReflectValueRef;
 use crate::reflect::RuntimeFieldType;
-use crate::reflect::RuntimeTypeBox;
+use crate::reflect::RuntimeType;
 use crate::well_known_types::value;
 use crate::well_known_types::Any;
 use crate::well_known_types::BoolValue;
@@ -478,7 +478,7 @@ impl Printer {
                     if self.print_options.always_output_default_values {
                         let is_message = match field_type {
                             RuntimeFieldType::Singular(s) => match s {
-                                RuntimeTypeBox::Message(_) => true,
+                                RuntimeType::Message(_) => true,
                                 _ => false,
                             },
                             _ => unreachable!(),

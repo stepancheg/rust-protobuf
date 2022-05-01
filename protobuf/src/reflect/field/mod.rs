@@ -30,7 +30,7 @@ use crate::reflect::FileDescriptor;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
-use crate::reflect::RuntimeTypeBox;
+use crate::reflect::RuntimeType;
 
 pub(crate) mod dynamic;
 pub(crate) mod index;
@@ -467,7 +467,7 @@ impl FieldDescriptor {
     /// # Panics
     ///
     /// If this field belongs to a different message type or field is not singular.
-    pub fn singular_runtime_type(&self) -> RuntimeTypeBox {
+    pub fn singular_runtime_type(&self) -> RuntimeType {
         match self.runtime_field_type() {
             RuntimeFieldType::Singular(s) => s,
             _ => panic!("Not a singular field: {}", self),

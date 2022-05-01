@@ -14,7 +14,7 @@ use crate::reflect::EnumValueDescriptor;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::RuntimeFieldType;
-use crate::reflect::RuntimeTypeBox;
+use crate::reflect::RuntimeType;
 
 #[derive(Debug, thiserror::Error)]
 pub enum ParseErrorWithoutLoc {
@@ -184,8 +184,8 @@ impl<'a> Parser<'a> {
 
     fn read_map_entry(
         &mut self,
-        k: &RuntimeTypeBox,
-        v: &RuntimeTypeBox,
+        k: &RuntimeType,
+        v: &RuntimeType,
     ) -> ParseResult<(ReflectValueBox, ReflectValueBox)> {
         let key_field_name: &str = "key";
         let value_field_name: &str = "value";
@@ -223,22 +223,22 @@ impl<'a> Parser<'a> {
         Ok((key, value))
     }
 
-    fn read_value_of_type(&mut self, t: &RuntimeTypeBox) -> ParseResult<ReflectValueBox> {
+    fn read_value_of_type(&mut self, t: &RuntimeType) -> ParseResult<ReflectValueBox> {
         Ok(match t {
-            RuntimeTypeBox::Enum(d) => {
+            RuntimeType::Enum(d) => {
                 let value = self.read_enum(&d)?.value();
                 ReflectValueBox::Enum(d.clone(), value)
             }
-            RuntimeTypeBox::U32 => ReflectValueBox::U32(self.read_u32()?),
-            RuntimeTypeBox::U64 => ReflectValueBox::U64(self.read_u64()?),
-            RuntimeTypeBox::I32 => ReflectValueBox::I32(self.read_i32()?),
-            RuntimeTypeBox::I64 => ReflectValueBox::I64(self.read_i64()?),
-            RuntimeTypeBox::F32 => ReflectValueBox::F32(self.read_f32()?),
-            RuntimeTypeBox::F64 => ReflectValueBox::F64(self.read_f64()?),
-            RuntimeTypeBox::Bool => ReflectValueBox::Bool(self.read_bool()?),
-            RuntimeTypeBox::String => ReflectValueBox::String(self.read_string()?),
-            RuntimeTypeBox::VecU8 => ReflectValueBox::Bytes(self.read_bytes()?),
-            RuntimeTypeBox::Message(m) => ReflectValueBox::Message(self.read_message(&m)?),
+            RuntimeType::U32 => ReflectValueBox::U32(self.read_u32()?),
+            RuntimeType::U64 => ReflectValueBox::U64(self.read_u64()?),
+            RuntimeType::I32 => ReflectValueBox::I32(self.read_i32()?),
+            RuntimeType::I64 => ReflectValueBox::I64(self.read_i64()?),
+            RuntimeType::F32 => ReflectValueBox::F32(self.read_f32()?),
+            RuntimeType::F64 => ReflectValueBox::F64(self.read_f64()?),
+            RuntimeType::Bool => ReflectValueBox::Bool(self.read_bool()?),
+            RuntimeType::String => ReflectValueBox::String(self.read_string()?),
+            RuntimeType::VecU8 => ReflectValueBox::Bytes(self.read_bytes()?),
+            RuntimeType::Message(m) => ReflectValueBox::Message(self.read_message(&m)?),
         })
     }
 

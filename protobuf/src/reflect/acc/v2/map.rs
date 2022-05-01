@@ -8,15 +8,15 @@ use crate::reflect::acc::v2::AccessorV2;
 use crate::reflect::acc::FieldAccessor;
 use crate::reflect::map::ReflectMapMut;
 use crate::reflect::map::ReflectMapRef;
-use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::runtime_types::RuntimeTypeHashable;
+use crate::reflect::runtime_types::RuntimeTypeTrait;
 use crate::reflect::ProtobufValue;
-use crate::reflect::RuntimeTypeBox;
+use crate::reflect::RuntimeType;
 
 pub(crate) trait MapFieldAccessor: Send + Sync + 'static {
     fn get_reflect<'a>(&self, m: &'a dyn MessageDyn) -> ReflectMapRef<'a>;
     fn mut_reflect<'a>(&self, m: &'a mut dyn MessageDyn) -> ReflectMapMut<'a>;
-    fn element_type(&self) -> (RuntimeTypeBox, RuntimeTypeBox);
+    fn element_type(&self) -> (RuntimeType, RuntimeType);
 }
 
 pub(crate) struct MapFieldAccessorHolder {
@@ -58,7 +58,7 @@ where
         ReflectMapMut::new(map)
     }
 
-    fn element_type(&self) -> (RuntimeTypeBox, RuntimeTypeBox) {
+    fn element_type(&self) -> (RuntimeType, RuntimeType) {
         (
             K::RuntimeType::runtime_type_box(),
             V::RuntimeType::runtime_type_box(),

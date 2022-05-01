@@ -13,7 +13,7 @@ use crate::reflect::FileDescriptor;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
-use crate::reflect::RuntimeTypeBox;
+use crate::reflect::RuntimeType;
 
 #[derive(Debug)]
 pub(crate) enum ForwardProtobufTypeBox {
@@ -49,7 +49,7 @@ impl ForwardProtobufTypeBox {
 
     pub(crate) fn resolve_message(&self, file: &FileDescriptor) -> MessageDescriptor {
         match self.resolve(file).runtime() {
-            RuntimeTypeBox::Message(m) => m.clone(),
+            RuntimeType::Message(m) => m.clone(),
             _ => panic!("not message"),
         }
     }
@@ -134,9 +134,7 @@ impl FieldIndex {
             field_descriptor_proto::Type::TYPE_ENUM => {
                 return Self::enum_default_value(field, building)
             }
-            t => {
-                RuntimeTypeBox::from_proto_type(t).parse_proto_default_value(field.default_value())
-            }
+            t => RuntimeType::from_proto_type(t).parse_proto_default_value(field.default_value()),
         })
     }
 
@@ -182,7 +180,7 @@ impl FieldIndex {
         match &self.default_value {
             Some(FieldDefaultValue::ReflectValueBox(v)) => v.as_value_ref(),
             Some(FieldDefaultValue::Enum(v)) => match field.singular_runtime_type() {
-                RuntimeTypeBox::Enum(e) => {
+                RuntimeType::Enum(e) => {
                     let ev = EnumValueDescriptor::new(e.clone(), *v);
                     ReflectValueRef::from(ev)
                 }

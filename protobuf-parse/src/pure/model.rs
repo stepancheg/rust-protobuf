@@ -9,7 +9,7 @@ use std::ops::Deref;
 
 use indexmap::IndexMap;
 use protobuf::reflect::ReflectValueBox;
-use protobuf::reflect::RuntimeTypeBox;
+use protobuf::reflect::RuntimeType;
 use protobuf_support::lexer::float::format_protobuf_float;
 use protobuf_support::lexer::loc::Loc;
 use protobuf_support::lexer::str_lit::StrLit;
@@ -25,7 +25,7 @@ pub use crate::pure::parser::ParserErrorWithLocation;
 #[derive(thiserror::Error, Debug)]
 enum ModelError {
     #[error("cannot convert value `{1}` to type `{0}`")]
-    InconvertibleValue(RuntimeTypeBox, model::ProtobufConstant),
+    InconvertibleValue(RuntimeType, model::ProtobufConstant),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -458,17 +458,15 @@ impl ProtobufConstant {
     }
 
     /** Interpret .proto constant as an reflection value. */
-    pub fn as_type(&self, ty: RuntimeTypeBox) -> anyhow::Result<ReflectValueBox> {
+    pub fn as_type(&self, ty: RuntimeType) -> anyhow::Result<ReflectValueBox> {
         match (self, &ty) {
-            (ProtobufConstant::Ident(ident), RuntimeTypeBox::Enum(e)) => {
+            (ProtobufConstant::Ident(ident), RuntimeType::Enum(e)) => {
                 if let Some(v) = e.value_by_name(&ident.to_string()) {
                     return Ok(ReflectValueBox::Enum(e.clone(), v.value()));
                 }
             }
-            (ProtobufConstant::Bool(b), RuntimeTypeBox::Bool) => {
-                return Ok(ReflectValueBox::Bool(*b))
-            }
-            (ProtobufConstant::String(lit), RuntimeTypeBox::String) => {
+            (ProtobufConstant::Bool(b), RuntimeType::Bool) => return Ok(ReflectValueBox::Bool(*b)),
+            (ProtobufConstant::String(lit), RuntimeType::String) => {
                 return Ok(ReflectValueBox::String(lit.decode_utf8()?))
             }
             _ => {}

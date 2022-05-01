@@ -3,16 +3,16 @@ use std::fmt;
 use crate::reflect::map::ReflectMapIter;
 use crate::reflect::map::ReflectMapIterTrait;
 use crate::reflect::ReflectValueRef;
-use crate::reflect::RuntimeTypeBox;
+use crate::reflect::RuntimeType;
 
 #[derive(Clone)]
 pub(crate) struct DynamicEmptyMap {
-    key_type: RuntimeTypeBox,
-    value_type: RuntimeTypeBox,
+    key_type: RuntimeType,
+    value_type: RuntimeType,
 }
 
 impl DynamicEmptyMap {
-    pub(crate) fn new(key_type: RuntimeTypeBox, value_type: RuntimeTypeBox) -> DynamicEmptyMap {
+    pub(crate) fn new(key_type: RuntimeType, value_type: RuntimeType) -> DynamicEmptyMap {
         Self {
             key_type,
             value_type,
@@ -31,11 +31,11 @@ impl DynamicEmptyMap {
         None
     }
 
-    pub(crate) fn key_type(&self) -> RuntimeTypeBox {
+    pub(crate) fn key_type(&self) -> RuntimeType {
         self.key_type.clone()
     }
 
-    pub(crate) fn value_type(&self) -> RuntimeTypeBox {
+    pub(crate) fn value_type(&self) -> RuntimeType {
         self.value_type.clone()
     }
 
@@ -54,8 +54,8 @@ impl fmt::Debug for DynamicEmptyMap {
 }
 
 struct DynamicEmptyMapIter {
-    key_type: RuntimeTypeBox,
-    value_type: RuntimeTypeBox,
+    key_type: RuntimeType,
+    value_type: RuntimeType,
 }
 
 impl<'a> ReflectMapIterTrait<'a> for DynamicEmptyMapIter {
@@ -63,11 +63,11 @@ impl<'a> ReflectMapIterTrait<'a> for DynamicEmptyMapIter {
         None
     }
 
-    fn key_type(&self) -> RuntimeTypeBox {
+    fn key_type(&self) -> RuntimeType {
         self.key_type.clone()
     }
 
-    fn value_type(&self) -> RuntimeTypeBox {
+    fn value_type(&self) -> RuntimeType {
         self.value_type.clone()
     }
 }

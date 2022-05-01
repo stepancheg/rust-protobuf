@@ -1,11 +1,11 @@
 use crate::reflect::message::message_ref::MessageRef;
-use crate::reflect::runtime_types::RuntimeType;
+use crate::reflect::runtime_types::RuntimeTypeTrait;
 use crate::reflect::value::value_ref::ReflectValueMut;
 use crate::reflect::value::value_ref::ReflectValueRef;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::EnumValueDescriptor;
 use crate::reflect::ProtobufValue;
-use crate::reflect::RuntimeTypeBox;
+use crate::reflect::RuntimeType;
 use crate::MessageDyn;
 
 /// Owner value of any elementary type
@@ -115,7 +115,7 @@ fn _assert_value_box_send_sync() {
 
 impl ReflectValueBox {
     /// Type of this value.
-    pub fn get_type(&self) -> RuntimeTypeBox {
+    pub fn get_type(&self) -> RuntimeType {
         self.as_value_ref().get_type()
     }
 

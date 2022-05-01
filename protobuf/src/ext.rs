@@ -10,7 +10,7 @@
 use std::marker::PhantomData;
 
 use crate::descriptor::field_descriptor_proto::Type;
-use crate::reflect::runtime_types::RuntimeType;
+use crate::reflect::runtime_types::RuntimeTypeTrait;
 use crate::reflect::ProtobufValue;
 use crate::Message;
 

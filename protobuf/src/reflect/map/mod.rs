@@ -7,7 +7,7 @@ use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
-use crate::reflect::RuntimeTypeBox;
+use crate::reflect::RuntimeType;
 
 mod empty;
 mod generated;
@@ -26,15 +26,15 @@ pub(crate) trait ReflectMap: Debug + Send + Sync + 'static {
 
     fn clear(&mut self);
 
-    fn key_type(&self) -> RuntimeTypeBox;
+    fn key_type(&self) -> RuntimeType;
 
-    fn value_type(&self) -> RuntimeTypeBox;
+    fn value_type(&self) -> RuntimeType;
 }
 
 pub(crate) trait ReflectMapIterTrait<'a> {
     fn next(&mut self) -> Option<(ReflectValueRef<'a>, ReflectValueRef<'a>)>;
-    fn key_type(&self) -> RuntimeTypeBox;
-    fn value_type(&self) -> RuntimeTypeBox;
+    fn key_type(&self) -> RuntimeType;
+    fn value_type(&self) -> RuntimeType;
 }
 
 pub struct ReflectMapIter<'a> {
@@ -109,7 +109,7 @@ impl<'a> ReflectMapRef<'a> {
         }
     }
 
-    pub(crate) fn new_empty(key: RuntimeTypeBox, value: RuntimeTypeBox) -> ReflectMapRef<'a> {
+    pub(crate) fn new_empty(key: RuntimeType, value: RuntimeType) -> ReflectMapRef<'a> {
         ReflectMapRef {
             imp: ReflectMapRefImpl::DynamicEmpty(DynamicEmptyMap::new(key, value)),
         }
@@ -140,7 +140,7 @@ impl<'a> ReflectMapRef<'a> {
     }
 
     /// Map key type
-    pub fn key_type(&self) -> RuntimeTypeBox {
+    pub fn key_type(&self) -> RuntimeType {
         match &self.imp {
             ReflectMapRefImpl::Generated(map) => map.key_type(),
             ReflectMapRefImpl::DynamicEmpty(map) => map.key_type(),
@@ -148,7 +148,7 @@ impl<'a> ReflectMapRef<'a> {
     }
 
     /// Map value type
-    pub fn value_type(&self) -> RuntimeTypeBox {
+    pub fn value_type(&self) -> RuntimeType {
         match &self.imp {
             ReflectMapRefImpl::Generated(map) => map.value_type(),
             ReflectMapRefImpl::DynamicEmpty(map) => map.value_type(),
@@ -189,12 +189,12 @@ impl<'a> ReflectMapMut<'a> {
     }
 
     /// Map key type
-    pub fn key_type(&self) -> RuntimeTypeBox {
+    pub fn key_type(&self) -> RuntimeType {
         self.map.key_type()
     }
 
     /// Map value type
-    pub fn value_type(&self) -> RuntimeTypeBox {
+    pub fn value_type(&self) -> RuntimeType {
         self.map.value_type()
     }
 
@@ -234,11 +234,11 @@ pub struct ReflectMapRefIter<'a> {
 }
 
 impl<'a> ReflectMapRefIter<'a> {
-    fn _key_type(&self) -> RuntimeTypeBox {
+    fn _key_type(&self) -> RuntimeType {
         self.iter.imp.key_type()
     }
 
-    fn _value_type(&self) -> RuntimeTypeBox {
+    fn _value_type(&self) -> RuntimeType {
         self.iter.imp.value_type()
     }
 }

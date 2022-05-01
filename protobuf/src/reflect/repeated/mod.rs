@@ -13,11 +13,11 @@ use crate::reflect::repeated::drain_iter::ReflectRepeatedDrainIter;
 use crate::reflect::repeated::iter::ReflectRepeatedIter;
 use crate::reflect::repeated::transmute::transmute_ref_if_eq;
 use crate::reflect::repeated::vec_downcast::VecMutVariant;
-use crate::reflect::runtime_types::RuntimeType;
+use crate::reflect::runtime_types::RuntimeTypeTrait;
 use crate::reflect::value::value_ref::ReflectValueRef;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
-use crate::reflect::RuntimeTypeBox;
+use crate::reflect::RuntimeType;
 
 pub(crate) trait ReflectRepeated: Sync + 'static + fmt::Debug {
     fn reflect_iter(&self) -> ReflectRepeatedIter;
@@ -42,7 +42,7 @@ pub(crate) trait ReflectRepeated: Sync + 'static + fmt::Debug {
 
     fn clear(&mut self);
     /// Get the collection element type.
-    fn element_type(&self) -> RuntimeTypeBox;
+    fn element_type(&self) -> RuntimeType;
 
     /// Get array data for enum elements.
     ///
@@ -123,7 +123,7 @@ impl<V: ProtobufValue> ReflectRepeated for Vec<V> {
         self.clear()
     }
 
-    fn element_type(&self) -> RuntimeTypeBox {
+    fn element_type(&self) -> RuntimeType {
         V::RuntimeType::runtime_type_box()
     }
 
@@ -202,7 +202,7 @@ impl<'a> ReflectRepeatedRef<'a> {
         }
     }
 
-    pub(crate) fn new_empty(elem: RuntimeTypeBox) -> ReflectRepeatedRef<'static> {
+    pub(crate) fn new_empty(elem: RuntimeType) -> ReflectRepeatedRef<'static> {
         ReflectRepeatedRef {
             imp: ReflectRepeatedRefImpl::DynamicEmpty(DynamicRepeated::new(elem)),
         }
@@ -231,7 +231,7 @@ impl<'a> ReflectRepeatedRef<'a> {
     }
 
     /// Runtime type of element
-    pub fn element_type(&self) -> RuntimeTypeBox {
+    pub fn element_type(&self) -> RuntimeType {
         match &self.imp {
             ReflectRepeatedRefImpl::Generated(r) => r.element_type(),
             ReflectRepeatedRefImpl::DynamicEmpty(r) => r.element_type(),
@@ -392,7 +392,7 @@ impl<'a> ReflectRepeatedMut<'a> {
     }
 
     /// Runtime type of element
-    pub fn element_type(&self) -> RuntimeTypeBox {
+    pub fn element_type(&self) -> RuntimeType {
         self.repeated.element_type()
     }
 

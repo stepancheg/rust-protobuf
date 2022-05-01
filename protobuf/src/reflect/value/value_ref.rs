@@ -10,7 +10,7 @@ use crate::reflect::MessageRef;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectEq;
 use crate::reflect::ReflectEqMode;
-use crate::reflect::RuntimeTypeBox;
+use crate::reflect::RuntimeType;
 use crate::MessageDyn;
 
 /// A reference to a value
@@ -42,19 +42,19 @@ pub enum ReflectValueRef<'a> {
 
 impl<'a> ReflectValueRef<'a> {
     /// Get type of this value.
-    pub fn get_type(&self) -> RuntimeTypeBox {
+    pub fn get_type(&self) -> RuntimeType {
         match self {
-            ReflectValueRef::U32(..) => RuntimeTypeBox::U32,
-            ReflectValueRef::U64(..) => RuntimeTypeBox::U64,
-            ReflectValueRef::I32(..) => RuntimeTypeBox::I32,
-            ReflectValueRef::I64(..) => RuntimeTypeBox::I64,
-            ReflectValueRef::F32(..) => RuntimeTypeBox::F32,
-            ReflectValueRef::F64(..) => RuntimeTypeBox::F64,
-            ReflectValueRef::Bool(..) => RuntimeTypeBox::Bool,
-            ReflectValueRef::String(..) => RuntimeTypeBox::String,
-            ReflectValueRef::Bytes(..) => RuntimeTypeBox::VecU8,
-            ReflectValueRef::Enum(d, ..) => RuntimeTypeBox::Enum(d.clone()),
-            ReflectValueRef::Message(m) => RuntimeTypeBox::Message(m.descriptor_dyn()),
+            ReflectValueRef::U32(..) => RuntimeType::U32,
+            ReflectValueRef::U64(..) => RuntimeType::U64,
+            ReflectValueRef::I32(..) => RuntimeType::I32,
+            ReflectValueRef::I64(..) => RuntimeType::I64,
+            ReflectValueRef::F32(..) => RuntimeType::F32,
+            ReflectValueRef::F64(..) => RuntimeType::F64,
+            ReflectValueRef::Bool(..) => RuntimeType::Bool,
+            ReflectValueRef::String(..) => RuntimeType::String,
+            ReflectValueRef::Bytes(..) => RuntimeType::VecU8,
+            ReflectValueRef::Enum(d, ..) => RuntimeType::Enum(d.clone()),
+            ReflectValueRef::Message(m) => RuntimeType::Message(m.descriptor_dyn()),
         }
     }
 

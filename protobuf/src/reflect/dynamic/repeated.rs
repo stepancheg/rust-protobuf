@@ -7,7 +7,7 @@ use crate::reflect::MessageRef;
 use crate::reflect::ReflectRepeatedMut;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
-use crate::reflect::RuntimeTypeBox;
+use crate::reflect::RuntimeType;
 use crate::MessageDyn;
 
 /// Container of repeated values for dynamic messages.
@@ -200,21 +200,19 @@ impl ReflectRepeated for DynamicRepeated {
         }
     }
 
-    fn element_type(&self) -> RuntimeTypeBox {
+    fn element_type(&self) -> RuntimeType {
         match self {
-            DynamicRepeated::U32(..) => RuntimeTypeBox::U32,
-            DynamicRepeated::U64(..) => RuntimeTypeBox::U64,
-            DynamicRepeated::I32(..) => RuntimeTypeBox::I32,
-            DynamicRepeated::I64(..) => RuntimeTypeBox::I64,
-            DynamicRepeated::F32(..) => RuntimeTypeBox::F32,
-            DynamicRepeated::F64(..) => RuntimeTypeBox::F64,
-            DynamicRepeated::Bool(..) => RuntimeTypeBox::Bool,
-            DynamicRepeated::String(..) => RuntimeTypeBox::String,
-            DynamicRepeated::Bytes(..) => RuntimeTypeBox::VecU8,
-            DynamicRepeated::Enum(descriptor, _vs) => RuntimeTypeBox::Enum(descriptor.clone()),
-            DynamicRepeated::Message(descriptor, _vs) => {
-                RuntimeTypeBox::Message(descriptor.clone())
-            }
+            DynamicRepeated::U32(..) => RuntimeType::U32,
+            DynamicRepeated::U64(..) => RuntimeType::U64,
+            DynamicRepeated::I32(..) => RuntimeType::I32,
+            DynamicRepeated::I64(..) => RuntimeType::I64,
+            DynamicRepeated::F32(..) => RuntimeType::F32,
+            DynamicRepeated::F64(..) => RuntimeType::F64,
+            DynamicRepeated::Bool(..) => RuntimeType::Bool,
+            DynamicRepeated::String(..) => RuntimeType::String,
+            DynamicRepeated::Bytes(..) => RuntimeType::VecU8,
+            DynamicRepeated::Enum(descriptor, _vs) => RuntimeType::Enum(descriptor.clone()),
+            DynamicRepeated::Message(descriptor, _vs) => RuntimeType::Message(descriptor.clone()),
         }
     }
 
@@ -276,21 +274,21 @@ impl ReflectRepeated for DynamicRepeated {
 }
 
 impl DynamicRepeated {
-    pub fn new(elem: RuntimeTypeBox) -> DynamicRepeated {
+    pub fn new(elem: RuntimeType) -> DynamicRepeated {
         match elem {
-            RuntimeTypeBox::U32 => DynamicRepeated::U32(Vec::new()),
-            RuntimeTypeBox::U64 => DynamicRepeated::U64(Vec::new()),
-            RuntimeTypeBox::I32 => DynamicRepeated::I32(Vec::new()),
-            RuntimeTypeBox::I64 => DynamicRepeated::I64(Vec::new()),
-            RuntimeTypeBox::F32 => DynamicRepeated::F32(Vec::new()),
-            RuntimeTypeBox::F64 => DynamicRepeated::F64(Vec::new()),
-            RuntimeTypeBox::Bool => DynamicRepeated::Bool(Vec::new()),
-            RuntimeTypeBox::String => DynamicRepeated::String(Vec::new()),
-            RuntimeTypeBox::VecU8 => DynamicRepeated::Bytes(Vec::new()),
-            RuntimeTypeBox::Enum(enum_descriptor) => {
+            RuntimeType::U32 => DynamicRepeated::U32(Vec::new()),
+            RuntimeType::U64 => DynamicRepeated::U64(Vec::new()),
+            RuntimeType::I32 => DynamicRepeated::I32(Vec::new()),
+            RuntimeType::I64 => DynamicRepeated::I64(Vec::new()),
+            RuntimeType::F32 => DynamicRepeated::F32(Vec::new()),
+            RuntimeType::F64 => DynamicRepeated::F64(Vec::new()),
+            RuntimeType::Bool => DynamicRepeated::Bool(Vec::new()),
+            RuntimeType::String => DynamicRepeated::String(Vec::new()),
+            RuntimeType::VecU8 => DynamicRepeated::Bytes(Vec::new()),
+            RuntimeType::Enum(enum_descriptor) => {
                 DynamicRepeated::Enum(enum_descriptor, Vec::new())
             }
-            RuntimeTypeBox::Message(message_descriptor) => {
+            RuntimeType::Message(message_descriptor) => {
                 DynamicRepeated::Message(message_descriptor, Vec::new())
             }
         }

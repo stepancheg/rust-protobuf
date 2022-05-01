@@ -5,7 +5,6 @@ use ::bytes::Bytes;
 
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;
-use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::runtime_types::RuntimeTypeBool;
 use crate::reflect::runtime_types::RuntimeTypeF32;
 use crate::reflect::runtime_types::RuntimeTypeF64;
@@ -16,6 +15,7 @@ use crate::reflect::runtime_types::RuntimeTypeString;
 use crate::reflect::runtime_types::RuntimeTypeTokioBytes;
 #[cfg(feature = "bytes")]
 use crate::reflect::runtime_types::RuntimeTypeTokioChars;
+use crate::reflect::runtime_types::RuntimeTypeTrait;
 use crate::reflect::runtime_types::RuntimeTypeU32;
 use crate::reflect::runtime_types::RuntimeTypeU64;
 use crate::reflect::runtime_types::RuntimeTypeVecU8;
@@ -29,7 +29,7 @@ pub(crate) mod value_ref;
 /// Used in reflection.
 pub trait ProtobufValue: Clone + Default + fmt::Debug + Send + Sync + Sized + 'static {
     /// Actual implementation of type properties.
-    type RuntimeType: RuntimeType<Value = Self>;
+    type RuntimeType: RuntimeTypeTrait<Value = Self>;
 }
 
 impl ProtobufValue for u32 {

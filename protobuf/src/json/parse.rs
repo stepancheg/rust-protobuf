@@ -23,7 +23,7 @@ use crate::reflect::FieldDescriptor;
 use crate::reflect::MessageDescriptor;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::RuntimeFieldType;
-use crate::reflect::RuntimeTypeBox;
+use crate::reflect::RuntimeType;
 use crate::well_known_types::value;
 use crate::well_known_types::Any;
 use crate::well_known_types::BoolValue;
@@ -402,21 +402,21 @@ impl<'a> Parser<'a> {
         Ok(m)
     }
 
-    fn read_value(&mut self, t: &RuntimeTypeBox) -> ParseResultWithoutLoc<ReflectValueBox> {
+    fn read_value(&mut self, t: &RuntimeType) -> ParseResultWithoutLoc<ReflectValueBox> {
         match t {
-            RuntimeTypeBox::I32 => self.read_i32().map(ReflectValueBox::from),
-            RuntimeTypeBox::I64 => self.read_i64().map(ReflectValueBox::from),
-            RuntimeTypeBox::U32 => self.read_u32().map(ReflectValueBox::from),
-            RuntimeTypeBox::U64 => self.read_u64().map(ReflectValueBox::from),
-            RuntimeTypeBox::F32 => self.read_f32().map(ReflectValueBox::from),
-            RuntimeTypeBox::F64 => self.read_f64().map(ReflectValueBox::from),
-            RuntimeTypeBox::Bool => self.read_bool().map(ReflectValueBox::from),
-            RuntimeTypeBox::String => self.read_string().map(ReflectValueBox::from),
-            RuntimeTypeBox::VecU8 => self.read_bytes().map(ReflectValueBox::from),
-            RuntimeTypeBox::Enum(e) => self
+            RuntimeType::I32 => self.read_i32().map(ReflectValueBox::from),
+            RuntimeType::I64 => self.read_i64().map(ReflectValueBox::from),
+            RuntimeType::U32 => self.read_u32().map(ReflectValueBox::from),
+            RuntimeType::U64 => self.read_u64().map(ReflectValueBox::from),
+            RuntimeType::F32 => self.read_f32().map(ReflectValueBox::from),
+            RuntimeType::F64 => self.read_f64().map(ReflectValueBox::from),
+            RuntimeType::Bool => self.read_bool().map(ReflectValueBox::from),
+            RuntimeType::String => self.read_string().map(ReflectValueBox::from),
+            RuntimeType::VecU8 => self.read_bytes().map(ReflectValueBox::from),
+            RuntimeType::Enum(e) => self
                 .read_enum(&e)
                 .map(|v| ReflectValueBox::Enum(e.clone(), v)),
-            RuntimeTypeBox::Message(m) => self.read_message(&m).map(ReflectValueBox::from),
+            RuntimeType::Message(m) => self.read_message(&m).map(ReflectValueBox::from),
         }
     }
 
@@ -424,7 +424,7 @@ impl<'a> Parser<'a> {
         &mut self,
         message: &mut dyn MessageDyn,
         field: &FieldDescriptor,
-        t: &RuntimeTypeBox,
+        t: &RuntimeType,
     ) -> ParseResultWithoutLoc<()> {
         field.set_singular_field(message, self.read_value(t)?);
         Ok(())
@@ -457,7 +457,7 @@ impl<'a> Parser<'a> {
         &mut self,
         message: &mut dyn MessageDyn,
         field: &FieldDescriptor,
-        t: &RuntimeTypeBox,
+        t: &RuntimeType,
     ) -> ParseResultWithoutLoc<()> {
         let mut repeated = field.mut_repeated(message);
         repeated.clear();
@@ -508,19 +508,19 @@ impl<'a> Parser<'a> {
         Ok(())
     }
 
-    fn parse_key(&self, key: String, t: &RuntimeTypeBox) -> ParseResultWithoutLoc<ReflectValueBox> {
+    fn parse_key(&self, key: String, t: &RuntimeType) -> ParseResultWithoutLoc<ReflectValueBox> {
         match t {
-            RuntimeTypeBox::I32 => self.parse_number::<i32>(&key).map(ReflectValueBox::I32),
-            RuntimeTypeBox::I64 => self.parse_number::<i64>(&key).map(ReflectValueBox::I64),
-            RuntimeTypeBox::U32 => self.parse_number::<u32>(&key).map(ReflectValueBox::U32),
-            RuntimeTypeBox::U64 => self.parse_number::<u64>(&key).map(ReflectValueBox::U64),
-            RuntimeTypeBox::Bool => self.parse_bool(&key).map(ReflectValueBox::Bool),
-            RuntimeTypeBox::String => Ok(ReflectValueBox::String(key)),
-            t @ RuntimeTypeBox::F32
-            | t @ RuntimeTypeBox::F64
-            | t @ RuntimeTypeBox::VecU8
-            | t @ RuntimeTypeBox::Enum(..) => panic!("{} cannot be a map key", t),
-            RuntimeTypeBox::Message(_) => panic!("message cannot be a map key"),
+            RuntimeType::I32 => self.parse_number::<i32>(&key).map(ReflectValueBox::I32),
+            RuntimeType::I64 => self.parse_number::<i64>(&key).map(ReflectValueBox::I64),
+            RuntimeType::U32 => self.parse_number::<u32>(&key).map(ReflectValueBox::U32),
+            RuntimeType::U64 => self.parse_number::<u64>(&key).map(ReflectValueBox::U64),
+            RuntimeType::Bool => self.parse_bool(&key).map(ReflectValueBox::Bool),
+            RuntimeType::String => Ok(ReflectValueBox::String(key)),
+            t @ RuntimeType::F32
+            | t @ RuntimeType::F64
+            | t @ RuntimeType::VecU8
+            | t @ RuntimeType::Enum(..) => panic!("{} cannot be a map key", t),
+            RuntimeType::Message(_) => panic!("message cannot be a map key"),
         }
     }
 
@@ -528,8 +528,8 @@ impl<'a> Parser<'a> {
         &mut self,
         message: &mut dyn MessageDyn,
         field: &FieldDescriptor,
-        kt: &RuntimeTypeBox,
-        vt: &RuntimeTypeBox,
+        kt: &RuntimeType,
+        vt: &RuntimeType,
     ) -> ParseResultWithoutLoc<()> {
         let mut map = field.mut_map(message);
         map.clear();

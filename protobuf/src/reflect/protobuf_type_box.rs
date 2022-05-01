@@ -6,7 +6,7 @@ use crate::reflect::MessageDescriptor;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectRepeatedMut;
 use crate::reflect::ReflectValueBox;
-use crate::reflect::RuntimeTypeBox;
+use crate::reflect::RuntimeType;
 use crate::wire_format::WireType;
 use crate::CodedInputStream;
 
@@ -14,13 +14,13 @@ use crate::CodedInputStream;
 #[derive(Debug, Clone)]
 pub(crate) struct ProtobufType {
     /// Runtime type.
-    runtime: RuntimeTypeBox,
+    runtime: RuntimeType,
     /// Wire type.
     t: Type,
 }
 
 impl ProtobufType {
-    pub(crate) fn runtime(&self) -> &RuntimeTypeBox {
+    pub(crate) fn runtime(&self) -> &RuntimeType {
         &self.runtime
     }
 
@@ -28,41 +28,41 @@ impl ProtobufType {
         self.t
     }
 
-    pub(crate) fn _into_runtime(self) -> RuntimeTypeBox {
+    pub(crate) fn _into_runtime(self) -> RuntimeType {
         self.runtime
     }
 
     pub(crate) fn message(message: MessageDescriptor) -> ProtobufType {
-        ProtobufType::new(RuntimeTypeBox::Message(message), Type::TYPE_MESSAGE).unwrap()
+        ProtobufType::new(RuntimeType::Message(message), Type::TYPE_MESSAGE).unwrap()
     }
 
     pub(crate) fn enumeration(enumeration: EnumDescriptor) -> ProtobufType {
-        ProtobufType::new(RuntimeTypeBox::Enum(enumeration), Type::TYPE_ENUM).unwrap()
+        ProtobufType::new(RuntimeType::Enum(enumeration), Type::TYPE_ENUM).unwrap()
     }
 
     pub(crate) fn from_proto_type(t: Type) -> ProtobufType {
-        ProtobufType::new(RuntimeTypeBox::from_proto_type(t), t).unwrap()
+        ProtobufType::new(RuntimeType::from_proto_type(t), t).unwrap()
     }
 
-    pub(crate) fn new(runtime: RuntimeTypeBox, t: Type) -> crate::Result<ProtobufType> {
+    pub(crate) fn new(runtime: RuntimeType, t: Type) -> crate::Result<ProtobufType> {
         match (t, &runtime) {
-            (Type::TYPE_INT32, RuntimeTypeBox::I32) => {}
-            (Type::TYPE_INT64, RuntimeTypeBox::I64) => {}
-            (Type::TYPE_UINT32, RuntimeTypeBox::U32) => {}
-            (Type::TYPE_UINT64, RuntimeTypeBox::U64) => {}
-            (Type::TYPE_SINT32, RuntimeTypeBox::I32) => {}
-            (Type::TYPE_SINT64, RuntimeTypeBox::I64) => {}
-            (Type::TYPE_FIXED32, RuntimeTypeBox::U32) => {}
-            (Type::TYPE_FIXED64, RuntimeTypeBox::U64) => {}
-            (Type::TYPE_SFIXED32, RuntimeTypeBox::I32) => {}
-            (Type::TYPE_SFIXED64, RuntimeTypeBox::I64) => {}
-            (Type::TYPE_FLOAT, RuntimeTypeBox::F32) => {}
-            (Type::TYPE_DOUBLE, RuntimeTypeBox::F64) => {}
-            (Type::TYPE_BOOL, RuntimeTypeBox::Bool) => {}
-            (Type::TYPE_STRING, RuntimeTypeBox::String) => {}
-            (Type::TYPE_BYTES, RuntimeTypeBox::VecU8) => {}
-            (Type::TYPE_MESSAGE, RuntimeTypeBox::Message(..)) => {}
-            (Type::TYPE_ENUM, RuntimeTypeBox::Enum(..)) => {}
+            (Type::TYPE_INT32, RuntimeType::I32) => {}
+            (Type::TYPE_INT64, RuntimeType::I64) => {}
+            (Type::TYPE_UINT32, RuntimeType::U32) => {}
+            (Type::TYPE_UINT64, RuntimeType::U64) => {}
+            (Type::TYPE_SINT32, RuntimeType::I32) => {}
+            (Type::TYPE_SINT64, RuntimeType::I64) => {}
+            (Type::TYPE_FIXED32, RuntimeType::U32) => {}
+            (Type::TYPE_FIXED64, RuntimeType::U64) => {}
+            (Type::TYPE_SFIXED32, RuntimeType::I32) => {}
+            (Type::TYPE_SFIXED64, RuntimeType::I64) => {}
+            (Type::TYPE_FLOAT, RuntimeType::F32) => {}
+            (Type::TYPE_DOUBLE, RuntimeType::F64) => {}
+            (Type::TYPE_BOOL, RuntimeType::Bool) => {}
+            (Type::TYPE_STRING, RuntimeType::String) => {}
+            (Type::TYPE_BYTES, RuntimeType::VecU8) => {}
+            (Type::TYPE_MESSAGE, RuntimeType::Message(..)) => {}
+            (Type::TYPE_ENUM, RuntimeType::Enum(..)) => {}
             (Type::TYPE_GROUP, ..) => return Err(ProtobufError::GroupIsNotImplemented.into()),
             _ => return Err(ProtobufError::IncompatibleProtobufTypeAndRuntimeType.into()),
         }
@@ -94,7 +94,7 @@ impl ProtobufType {
             Type::TYPE_STRING => ReflectValueBox::String(is.read_string()?),
             Type::TYPE_BYTES => ReflectValueBox::Bytes(is.read_bytes()?),
             Type::TYPE_ENUM => match &self.runtime {
-                RuntimeTypeBox::Enum(e) => {
+                RuntimeType::Enum(e) => {
                     let v = is.read_enum_value()?;
                     ReflectValueBox::Enum(e.clone(), v)
                 }
@@ -102,7 +102,7 @@ impl ProtobufType {
             },
             Type::TYPE_GROUP => return Err(ProtobufError::GroupIsNotImplemented.into()),
             Type::TYPE_MESSAGE => match &self.runtime {
-                RuntimeTypeBox::Message(m) => ReflectValueBox::Message(is.read_message_dyn(m)?),
+                RuntimeType::Message(m) => ReflectValueBox::Message(is.read_message_dyn(m)?),
                 _ => unreachable!(),
             },
         })
@@ -203,7 +203,7 @@ impl ProtobufType {
                     Ok(())
                 }
                 Type::TYPE_ENUM => match &self.runtime {
-                    RuntimeTypeBox::Enum(e) => {
+                    RuntimeType::Enum(e) => {
                         let mut v = Vec::new();
                         is.read_repeated_packed_enum_values_into(&mut v)?;
                         for e_v in v {

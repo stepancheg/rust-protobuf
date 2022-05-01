@@ -6,11 +6,11 @@ use std::hash::Hash;
 use crate::reflect::map::ReflectMap;
 use crate::reflect::map::ReflectMapIter;
 use crate::reflect::map::ReflectMapIterTrait;
-use crate::reflect::runtime_types::RuntimeType;
+use crate::reflect::runtime_types::RuntimeTypeTrait;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
-use crate::reflect::RuntimeTypeBox;
+use crate::reflect::RuntimeType;
 
 #[derive(Clone)]
 enum Maps {
@@ -69,14 +69,14 @@ impl Maps {
         }
     }
 
-    fn key_type(&self) -> RuntimeTypeBox {
+    fn key_type(&self) -> RuntimeType {
         match self {
-            Maps::U32(..) => RuntimeTypeBox::U32,
-            Maps::I32(..) => RuntimeTypeBox::I32,
-            Maps::U64(..) => RuntimeTypeBox::U64,
-            Maps::I64(..) => RuntimeTypeBox::I64,
-            Maps::Bool(..) => RuntimeTypeBox::Bool,
-            Maps::String(..) => RuntimeTypeBox::String,
+            Maps::U32(..) => RuntimeType::U32,
+            Maps::I32(..) => RuntimeType::I32,
+            Maps::U64(..) => RuntimeType::U64,
+            Maps::I64(..) => RuntimeType::I64,
+            Maps::Bool(..) => RuntimeType::Bool,
+            Maps::String(..) => RuntimeType::String,
         }
     }
 }
@@ -86,7 +86,7 @@ pub(crate) struct DynamicMap {
     /// Type of value.
     ///
     /// Type of key is defined by the maps key.
-    value: RuntimeTypeBox,
+    value: RuntimeType,
     maps: Maps,
 }
 
@@ -97,16 +97,16 @@ impl fmt::Debug for DynamicMap {
 }
 
 impl DynamicMap {
-    pub fn new(key: RuntimeTypeBox, value: RuntimeTypeBox) -> DynamicMap {
+    pub fn new(key: RuntimeType, value: RuntimeType) -> DynamicMap {
         DynamicMap {
             value,
             maps: match key {
-                RuntimeTypeBox::U32 => Maps::U32(HashMap::new()),
-                RuntimeTypeBox::I32 => Maps::I32(HashMap::new()),
-                RuntimeTypeBox::U64 => Maps::U64(HashMap::new()),
-                RuntimeTypeBox::I64 => Maps::I64(HashMap::new()),
-                RuntimeTypeBox::Bool => Maps::Bool(HashMap::new()),
-                RuntimeTypeBox::String => Maps::String(HashMap::new()),
+                RuntimeType::U32 => Maps::U32(HashMap::new()),
+                RuntimeType::I32 => Maps::I32(HashMap::new()),
+                RuntimeType::U64 => Maps::U64(HashMap::new()),
+                RuntimeType::I64 => Maps::I64(HashMap::new()),
+                RuntimeType::Bool => Maps::Bool(HashMap::new()),
+                RuntimeType::String => Maps::String(HashMap::new()),
                 t => panic!("type cannot be hashmap key: {}", t),
             },
         }
@@ -115,7 +115,7 @@ impl DynamicMap {
 
 struct DynamicMapIterImpl<'a, K: ProtobufValue + Eq + Hash + 'static> {
     iter: hash_map::Iter<'a, K, ReflectValueBox>,
-    value: &'a RuntimeTypeBox,
+    value: &'a RuntimeType,
 }
 
 impl<'a, K: ProtobufValue + Eq + Hash + 'static> ReflectMapIterTrait<'a>
@@ -127,11 +127,11 @@ impl<'a, K: ProtobufValue + Eq + Hash + 'static> ReflectMapIterTrait<'a>
             .map(|(k, v)| (K::RuntimeType::as_ref(k), v.as_value_ref()))
     }
 
-    fn key_type(&self) -> RuntimeTypeBox {
+    fn key_type(&self) -> RuntimeType {
         K::RuntimeType::runtime_type_box()
     }
 
-    fn value_type(&self) -> RuntimeTypeBox {
+    fn value_type(&self) -> RuntimeType {
         self.value.clone()
     }
 }
@@ -207,11 +207,11 @@ impl ReflectMap for DynamicMap {
         self.maps.clear()
     }
 
-    fn key_type(&self) -> RuntimeTypeBox {
+    fn key_type(&self) -> RuntimeType {
         self.maps.key_type()
     }
 
-    fn value_type(&self) -> RuntimeTypeBox {
+    fn value_type(&self) -> RuntimeType {
         self.value.clone()
     }
 }

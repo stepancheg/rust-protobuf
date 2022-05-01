@@ -5,12 +5,12 @@ use std::hash::Hash;
 use crate::reflect::map::ReflectMap;
 use crate::reflect::map::ReflectMapIter;
 use crate::reflect::map::ReflectMapIterTrait;
-use crate::reflect::runtime_types::RuntimeType;
 use crate::reflect::runtime_types::RuntimeTypeHashable;
+use crate::reflect::runtime_types::RuntimeTypeTrait;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
-use crate::reflect::RuntimeTypeBox;
+use crate::reflect::RuntimeType;
 
 impl<K, V> ReflectMap for HashMap<K, V>
 where
@@ -44,11 +44,11 @@ where
         self.clear();
     }
 
-    fn key_type(&self) -> RuntimeTypeBox {
+    fn key_type(&self) -> RuntimeType {
         K::RuntimeType::runtime_type_box()
     }
 
-    fn value_type(&self) -> RuntimeTypeBox {
+    fn value_type(&self) -> RuntimeType {
         V::RuntimeType::runtime_type_box()
     }
 }
@@ -67,11 +67,11 @@ impl<'a, K: ProtobufValue + Eq + Hash, V: ProtobufValue> ReflectMapIterTrait<'a>
         }
     }
 
-    fn key_type(&self) -> RuntimeTypeBox {
+    fn key_type(&self) -> RuntimeType {
         K::RuntimeType::runtime_type_box()
     }
 
-    fn value_type(&self) -> RuntimeTypeBox {
+    fn value_type(&self) -> RuntimeType {
         V::RuntimeType::runtime_type_box()
     }
 }

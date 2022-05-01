@@ -65,7 +65,7 @@ pub use self::reflect_eq::ReflectEq;
 pub use self::reflect_eq::ReflectEqMode;
 pub use self::repeated::ReflectRepeatedMut;
 pub use self::repeated::ReflectRepeatedRef;
-pub use self::runtime_type_box::RuntimeTypeBox;
+pub use self::runtime_type_box::RuntimeType;
 pub use self::service::MethodDescriptor;
 pub use self::service::ServiceDescriptor;
 pub use self::value::value_box::ReflectValueBox;

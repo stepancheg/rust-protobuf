@@ -13,7 +13,7 @@ use crate::reflect::file::index::MessageIndex;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
 use crate::reflect::name::protobuf_name_starts_with_package;
-use crate::reflect::runtime_type_box::RuntimeTypeBox;
+use crate::reflect::runtime_type_box::RuntimeType;
 use crate::reflect::FileDescriptor;
 
 pub(crate) struct FileDescriptorBuilding<'a> {
@@ -79,7 +79,7 @@ impl<'a> FileDescriptorBuilding<'a> {
                             .unwrap(),
                     ),
                     ForwardProtobufTypeBox::ProtobufTypeBox(t) => match t.runtime() {
-                        RuntimeTypeBox::Message(m) => Some(m.proto()),
+                        RuntimeType::Message(m) => Some(m.proto()),
                         _ => None,
                     },
                     _ => None,
