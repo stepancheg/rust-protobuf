@@ -99,12 +99,26 @@ impl RustType {
 }
 
 impl RustType {
-    pub fn u8() -> RustType {
+    pub(crate) fn u8() -> RustType {
         RustType::Int(false, 8)
     }
 
+    pub(crate) fn i32() -> RustType {
+        RustType::Int(true, 32)
+    }
+
+    /// `&str`.
+    pub(crate) fn amp_str() -> RustType {
+        RustType::Str.wrap_ref()
+    }
+
+    /// `&[u8]`.
+    pub(crate) fn amp_slice_of_u8() -> RustType {
+        RustType::u8().wrap_slice().wrap_ref()
+    }
+
     /// Type is rust primitive?
-    pub fn is_primitive(&self) -> bool {
+    pub(crate) fn is_primitive(&self) -> bool {
         match *self {
             RustType::Int(..) | RustType::Float(..) | RustType::Bool => true,
             _ => false,
@@ -379,6 +393,10 @@ impl RustType {
         RustType::Ref(Box::new(self.clone()))
     }
 
+    pub(crate) fn wrap_slice(&self) -> RustType {
+        RustType::Slice(Box::new(self.clone()))
+    }
+
     pub fn elem_type(&self) -> RustType {
         match self {
             &RustType::Option(ref ty) => (**ty).clone(),
@@ -422,31 +440,6 @@ impl RustValueTyped {
 
     pub fn boxed(self, customize: &Customize) -> RustValueTyped {
         self.into_type(RustType::Uniq(Box::new(self.rust_type.clone())), customize)
-    }
-}
-
-// rust type for protobuf base type
-pub(crate) fn rust_name(field_type: field_descriptor_proto::Type) -> RustType {
-    use field_descriptor_proto::Type;
-    match field_type {
-        Type::TYPE_DOUBLE => RustType::Float(64),
-        Type::TYPE_FLOAT => RustType::Float(32),
-        Type::TYPE_INT32 => RustType::Int(true, 32),
-        Type::TYPE_INT64 => RustType::Int(true, 64),
-        Type::TYPE_UINT32 => RustType::Int(false, 32),
-        Type::TYPE_UINT64 => RustType::Int(false, 64),
-        Type::TYPE_SINT32 => RustType::Int(true, 32),
-        Type::TYPE_SINT64 => RustType::Int(true, 64),
-        Type::TYPE_FIXED32 => RustType::Int(false, 32),
-        Type::TYPE_FIXED64 => RustType::Int(false, 64),
-        Type::TYPE_SFIXED32 => RustType::Int(true, 32),
-        Type::TYPE_SFIXED64 => RustType::Int(true, 64),
-        Type::TYPE_BOOL => RustType::Bool,
-        Type::TYPE_STRING => RustType::String,
-        Type::TYPE_BYTES => RustType::Vec(Box::new(RustType::Int(false, 8))),
-        Type::TYPE_ENUM | Type::TYPE_GROUP | Type::TYPE_MESSAGE => {
-            panic!("there is no rust name for {:?}", field_type)
-        }
     }
 }
 

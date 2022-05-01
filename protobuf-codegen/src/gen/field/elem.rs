@@ -10,7 +10,6 @@ use crate::gen::inside::protobuf_crate_path;
 use crate::gen::message::RustTypeMessage;
 use crate::gen::rust::ident_with_path::RustIdentWithPath;
 use crate::gen::rust_types_values::message_or_enum_to_rust_relative;
-use crate::gen::rust_types_values::rust_name;
 use crate::gen::rust_types_values::PrimitiveTypeVariant;
 use crate::gen::rust_types_values::ProtobufTypeGen;
 use crate::gen::rust_types_values::RustType;
@@ -95,7 +94,7 @@ impl<'a> FieldElem<'a> {
 
     pub(crate) fn rust_storage_elem_type(&self, reference: &FileAndMod) -> RustType {
         match *self {
-            FieldElem::Primitive(t, PrimitiveTypeVariant::Default) => rust_name(t),
+            FieldElem::Primitive(t, PrimitiveTypeVariant::Default) => t.rust_type(),
             FieldElem::Primitive(Type::TYPE_STRING, PrimitiveTypeVariant::TokioBytes) => {
                 RustType::Chars
             }

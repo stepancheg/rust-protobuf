@@ -37,7 +37,6 @@ use crate::gen::rust::ident::RustIdent;
 use crate::gen::rust::quote::quote_escape_bytes;
 use crate::gen::rust::quote::quote_escape_str;
 use crate::gen::rust::snippets::EXPR_NONE;
-use crate::gen::rust_types_values::rust_name;
 use crate::gen::rust_types_values::PrimitiveTypeVariant;
 use crate::gen::rust_types_values::RustType;
 use crate::gen::rust_types_values::RustValueTyped;
@@ -318,18 +317,6 @@ impl<'a> FieldGen<'a> {
         }
     }
 
-    // type of `v` in `os.write_xxx_no_tag(v)`
-    fn os_write_fn_param_type(&self) -> RustType {
-        match self.proto_type {
-            field_descriptor_proto::Type::TYPE_STRING => RustType::Ref(Box::new(RustType::Str)),
-            field_descriptor_proto::Type::TYPE_BYTES => {
-                RustType::Ref(Box::new(RustType::Slice(Box::new(RustType::Int(false, 8)))))
-            }
-            field_descriptor_proto::Type::TYPE_ENUM => RustType::Int(true, 32),
-            t => rust_name(t),
-        }
-    }
-
     // for field `foo`, type of param of `fn set_foo(..)`
     fn set_xxx_param_type(&self, reference: &FileAndMod) -> RustType {
         match self.kind {
@@ -560,7 +547,7 @@ impl<'a> FieldGen<'a> {
                 ));
             }
             _ => {
-                let param_type = self.os_write_fn_param_type();
+                let param_type = self.proto_type.os_write_fn_param_type();
                 let os_write_fn_suffix = self.os_write_fn_suffix();
                 let number = self.proto_field.number();
                 w.write_line(&format!(
