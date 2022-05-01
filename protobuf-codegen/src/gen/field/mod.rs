@@ -23,6 +23,7 @@ use crate::gen::code_writer::Visibility;
 use crate::gen::field::elem::field_elem;
 use crate::gen::field::elem::FieldElem;
 use crate::gen::field::elem::FieldElemEnum;
+use crate::gen::field::elem::HowToGetMessageSize;
 use crate::gen::field::option_kind::OptionKind;
 use crate::gen::field::repeated::RepeatedField;
 use crate::gen::field::singular::SingularField;
@@ -1084,28 +1085,54 @@ impl<'a> FieldGen<'a> {
         elem.write_element_size(
             self.proto_field.number() as u32,
             item_var,
+            HowToGetMessageSize::Compute,
             sum_var,
             &self.customize,
             w,
         );
     }
 
-    fn write_write_map_field(&self, key: &FieldElem, value: &FieldElem, w: &mut CodeWriter) {
-        w.write_line(&format!(
-            "{}::rt::write_map_with_cached_sizes::<{}, {}>({}, &{}, os)?;",
-            protobuf_crate_path(&self.customize),
-            key.lib_protobuf_type(&self.file_and_mod()),
-            value.lib_protobuf_type(&self.file_and_mod()),
-            self.proto_field.number(),
-            self.self_field()
-        ));
+    fn write_write_map_field(
+        &self,
+        key: &FieldElem,
+        value: &FieldElem,
+        os: &str,
+        w: &mut CodeWriter,
+    ) {
+        self.for_each_map_entry(key, value, w, |k, v, w| {
+            w.write_line("let mut entry_size = 0;");
+            key.write_element_size(
+                1,
+                k,
+                HowToGetMessageSize::GetCached,
+                "entry_size",
+                &self.customize,
+                w,
+            );
+            value.write_element_size(
+                2,
+                v,
+                HowToGetMessageSize::GetCached,
+                "entry_size",
+                &self.customize,
+                w,
+            );
+            w.write_line(&format!(
+                "{os}.write_tag({field_number}, {protobuf_crate}::rt::WireType::LengthDelimited)?;",
+                field_number = self.proto_field.number(),
+                protobuf_crate = protobuf_crate_path(&self.customize),
+            ));
+            w.write_line(&format!("{os}.write_raw_varint32(entry_size as u32)?;",));
+            key.write_write_element(1, k, &self.file_and_mod(), &self.customize, os, w);
+            value.write_write_element(2, v, &self.file_and_mod(), &self.customize, os, w);
+        });
     }
 
-    pub(crate) fn write_message_write_field(&self, w: &mut CodeWriter) {
+    pub(crate) fn write_message_write_field(&self, os: &str, w: &mut CodeWriter) {
         match &self.kind {
             FieldKind::Singular(s @ SingularField { elem, .. }) => {
                 self.write_if_let_self_field_is_some(s, w, |v, w| {
-                    self.write_write_element(&elem, w, "os", &v);
+                    self.write_write_element(&elem, w, os, &v);
                 });
             }
             FieldKind::Repeated(RepeatedField {
@@ -1130,10 +1157,32 @@ impl<'a> FieldGen<'a> {
                 ));
             }
             FieldKind::Map(MapField { key, value, .. }) => {
-                self.write_write_map_field(key, value, w)
+                self.write_write_map_field(key, value, os, w)
             }
             FieldKind::Oneof(..) => unreachable!(),
         };
+    }
+
+    fn for_each_map_entry(
+        &self,
+        key: &FieldElem,
+        value: &FieldElem,
+        w: &mut CodeWriter,
+        cb: impl FnOnce(&RustValueTyped, &RustValueTyped, &mut CodeWriter),
+    ) {
+        w.for_stmt(&format!("&{}", self.self_field()), "(k, v)", move |w| {
+            let k = RustValueTyped {
+                value: "k".to_owned(),
+                rust_type: key.rust_storage_elem_type(&self.file_and_mod()).wrap_ref(),
+            };
+            let v = RustValueTyped {
+                value: "v".to_owned(),
+                rust_type: value
+                    .rust_storage_elem_type(&self.file_and_mod())
+                    .wrap_ref(),
+            };
+            cb(&k, &v, w)
+        });
     }
 
     fn write_compute_map_field_size(
@@ -1143,22 +1192,14 @@ impl<'a> FieldGen<'a> {
         value: &FieldElem<'a>,
         w: &mut CodeWriter,
     ) {
-        w.for_stmt(&format!("&{}", self.self_field()), "(k, v)", |w| {
-            w.write_line("let mut entry_size = 0;");
-            let k = RustValueTyped {
-                value: "k".to_owned(),
-                rust_type: value.rust_storage_elem_type(&self.file_and_mod()).wrap_ref(),
-            };
-            let v = RustValueTyped {
-                value: "v".to_owned(),
-                rust_type: value.rust_storage_elem_type(&self.file_and_mod()).wrap_ref(),
-            };
-            key.write_element_size(1, &k, "entry_size", &self.customize, w);
-            value.write_element_size(2, &v, "entry_size", &self.customize, w);
-            w.write_line(&format!("{sum_var} += {tag_size} + {protobuf_crate}::rt::compute_raw_varint64_size(entry_size) + entry_size",
-                tag_size = self.tag_size(),
-                protobuf_crate = protobuf_crate_path(&self.customize),
-            ));
+        self.for_each_map_entry(key, value, w, |k, v, w| {
+                w.write_line("let mut entry_size = 0;");
+                key.write_element_size(1, k, HowToGetMessageSize::Compute, "entry_size", &self.customize, w);
+                value.write_element_size(2, v, HowToGetMessageSize::Compute, "entry_size", &self.customize, w);
+                w.write_line(&format!("{sum_var} += {tag_size} + {protobuf_crate}::rt::compute_raw_varint64_size(entry_size) + entry_size",
+                    tag_size = self.tag_size(),
+                    protobuf_crate = protobuf_crate_path(&self.customize),
+                ));
         });
     }
 

@@ -423,7 +423,7 @@ impl<'a> CodeWriter<'a> {
 
     pub(crate) fn for_stmt<S1: AsRef<str>, S2: AsRef<str>, F>(&mut self, over: S1, varn: S2, cb: F)
     where
-        F: Fn(&mut CodeWriter),
+        F: FnOnce(&mut CodeWriter),
     {
         self.stmt_block(&format!("for {} in {}", varn.as_ref(), over.as_ref()), cb)
     }

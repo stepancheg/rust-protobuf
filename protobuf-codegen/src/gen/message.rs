@@ -246,7 +246,7 @@ impl<'a> MessageGen<'a> {
         w.def_fn(&sig, |w| {
             // To have access to its methods but not polute the name space.
             for f in self.fields_except_oneof_and_group() {
-                f.write_message_write_field(w);
+                f.write_message_write_field("os", w);
             }
             self.write_match_each_oneof_variant(w, |w, variant, v| {
                 variant

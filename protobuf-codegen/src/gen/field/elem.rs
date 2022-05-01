@@ -78,6 +78,11 @@ pub(crate) enum FieldElem<'a> {
     Group,
 }
 
+pub(crate) enum HowToGetMessageSize {
+    Compute,
+    GetCached,
+}
+
 impl<'a> FieldElem<'a> {
     pub(crate) fn proto_type(&self) -> Type {
         match *self {
@@ -204,6 +209,7 @@ impl<'a> FieldElem<'a> {
         &self,
         field_number: u32,
         item_var: &RustValueTyped,
+        how_to_get_message_size: HowToGetMessageSize,
         sum_var: &str,
         customize: &Customize,
         w: &mut CodeWriter,
@@ -211,7 +217,15 @@ impl<'a> FieldElem<'a> {
         let tag_size = tag_size(field_number);
         match self.proto_type() {
             Type::TYPE_MESSAGE => {
-                w.write_line(&format!("let len = {}.compute_size();", item_var.value));
+                match how_to_get_message_size {
+                    HowToGetMessageSize::Compute => {
+                        w.write_line(&format!("let len = {}.compute_size();", item_var.value))
+                    }
+                    HowToGetMessageSize::GetCached => w.write_line(&format!(
+                        "let len = {}.cached_size() as u64;",
+                        item_var.value
+                    )),
+                }
                 w.write_line(&format!(
                     "{sum_var} += {tag_size} + {}::rt::compute_raw_varint64_size(len) + len;",
                     protobuf_crate_path(customize),
