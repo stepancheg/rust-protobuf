@@ -26,6 +26,12 @@ impl Default for WhichParser {
     }
 }
 
+#[derive(Debug, thiserror::Error)]
+enum CodegenError {
+    #[error("out_dir is not specified")]
+    OutDirNotSpecified,
+}
+
 /// Entry point for `.proto` to `.rs` code generation.
 ///
 /// This is similar to `protoc --rust_out...`.
@@ -36,7 +42,7 @@ pub struct Codegen {
     /// Create out directory.
     create_out_dir: bool,
     /// --lang_out= param
-    out_dir: PathBuf,
+    out_dir: Option<PathBuf>,
     /// -I args
     includes: Vec<PathBuf>,
     /// List of .proto files to compile
@@ -80,7 +86,7 @@ impl Codegen {
     /// When invoking from `build.rs`, consider using
     /// [`cargo_out_dir`](Self::cargo_out_dir) instead.
     pub fn out_dir(&mut self, out_dir: impl AsRef<Path>) -> &mut Self {
-        self.out_dir = out_dir.as_ref().to_owned();
+        self.out_dir = Some(out_dir.as_ref().to_owned());
         self
     }
 
@@ -208,11 +214,16 @@ impl Codegen {
     /// This function uses pure Rust parser or `protoc` parser depending on
     /// how this object was configured.
     pub fn run(&self) -> anyhow::Result<()> {
+        let out_dir = match &self.out_dir {
+            Some(out_dir) => out_dir,
+            None => return Err(CodegenError::OutDirNotSpecified.into()),
+        };
+
         if self.create_out_dir {
-            if self.out_dir.exists() {
-                fs::remove_dir_all(&self.out_dir)?;
+            if out_dir.exists() {
+                fs::remove_dir_all(&out_dir)?;
             }
-            fs::create_dir(&self.out_dir)?;
+            fs::create_dir(&out_dir)?;
         }
 
         let mut parser = Parser::new();
@@ -245,7 +256,7 @@ impl Codegen {
             &parsed_and_typechecked.file_descriptors,
             &parsed_and_typechecked.parser,
             &parsed_and_typechecked.relative_paths,
-            &self.out_dir,
+            &out_dir,
             &self.customize,
             &*self.customize_callback,
         )
