@@ -3,6 +3,7 @@ use protobuf::reflect::RuntimeFieldType;
 use protobuf::rt::tag_size;
 use protobuf_parse::ProtobufAbsPath;
 
+use crate::gen::code_writer::CodeWriter;
 use crate::gen::field::type_ext::TypeExt;
 use crate::gen::file_and_mod::FileAndMod;
 use crate::gen::inside::protobuf_crate_path;
@@ -197,6 +198,32 @@ impl<'a> FieldElem<'a> {
                     )
                 }
             },
+        }
+    }
+
+    pub(crate) fn write_element_size(
+        &self,
+        field_number: u32,
+        item_var: &RustValueTyped,
+        sum_var: &str,
+        customize: &Customize,
+        w: &mut CodeWriter,
+    ) {
+        let tag_size = tag_size(field_number);
+        match self.proto_type() {
+            Type::TYPE_MESSAGE => {
+                w.write_line(&format!("let len = {}.compute_size();", item_var.value));
+                w.write_line(&format!(
+                    "{sum_var} += {tag_size} + {}::rt::compute_raw_varint64_size(len) + len;",
+                    protobuf_crate_path(customize),
+                ));
+            }
+            _ => {
+                w.write_line(&format!(
+                    "{sum_var} += {};",
+                    self.singular_field_size(field_number, item_var, customize)
+                ));
+            }
         }
     }
 }

@@ -529,14 +529,6 @@ impl<'a> FieldGen<'a> {
         }
     }
 
-    // expression that returns size of data is variable
-    fn element_size(&self, var: &RustValueTyped) -> String {
-        assert!(!self.is_repeated_packed());
-
-        self.elem()
-            .singular_field_size(self.proto_field.number() as u32, var, &self.customize)
-    }
-
     // output code that writes single element to stream
     pub(crate) fn write_write_element(&self, w: &mut CodeWriter, os: &str, v: &RustValueTyped) {
         if let FieldKind::Repeated(RepeatedField { packed: true, .. }) = self.kind {
@@ -1116,27 +1108,20 @@ impl<'a> FieldGen<'a> {
 
     pub(crate) fn write_element_size(
         &self,
+        elem: &FieldElem,
         w: &mut CodeWriter,
         item_var: &RustValueTyped,
         sum_var: &str,
     ) {
         assert!(!self.is_repeated_packed());
 
-        match self.proto_type {
-            Type::TYPE_MESSAGE => {
-                w.write_line(&format!("let len = {}.compute_size();", item_var.value));
-                let tag_size = self.tag_size();
-                w.write_line(&format!(
-                    "{} += {} + {}::rt::compute_raw_varint64_size(len) + len;",
-                    sum_var,
-                    tag_size,
-                    protobuf_crate_path(&self.customize),
-                ));
-            }
-            _ => {
-                w.write_line(&format!("{} += {};", sum_var, self.element_size(item_var)));
-            }
-        }
+        elem.write_element_size(
+            self.proto_field.number() as u32,
+            item_var,
+            sum_var,
+            &self.customize,
+            w,
+        );
     }
 
     pub(crate) fn write_message_write_field(&self, w: &mut CodeWriter) {
@@ -1207,7 +1192,7 @@ impl<'a> FieldGen<'a> {
                             w.write_line(&format!("{} += {};", sum_var, (s + tag_size) as isize));
                         }
                         None => {
-                            self.write_element_size(w, v, sum_var);
+                            self.write_element_size(&elem, w, v, sum_var);
                         }
                     };
                 });
@@ -1231,6 +1216,7 @@ impl<'a> FieldGen<'a> {
                     None => {
                         self.write_for_self_field(w, "value", |w, value_type| {
                             self.write_element_size(
+                                elem,
                                 w,
                                 &RustValueTyped {
                                     value: "value".to_owned(),

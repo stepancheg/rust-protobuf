@@ -156,6 +156,10 @@ impl<'a> OneofVariantGen<'a> {
             self.oneof_field.oneof_variant_rust_name,
         ))
     }
+
+    pub(crate) fn elem(&self) -> &FieldElem<'_> {
+        self.field.elem()
+    }
 }
 
 pub(crate) struct OneofGen<'a> {

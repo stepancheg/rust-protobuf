@@ -327,7 +327,9 @@ impl<'a> MessageGen<'a> {
                 field.write_message_compute_field_size("my_size", w);
             }
             self.write_match_each_oneof_variant(w, |w, variant, v| {
-                variant.field.write_element_size(w, v, "my_size");
+                variant
+                    .field
+                    .write_element_size(variant.elem(), w, v, "my_size");
             });
             w.write_line(&format!(
                 "my_size += {}::rt::unknown_fields_size(self.special_fields.unknown_fields());",
