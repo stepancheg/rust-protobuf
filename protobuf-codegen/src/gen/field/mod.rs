@@ -526,39 +526,14 @@ impl<'a> FieldGen<'a> {
     ) {
         assert!(!self.is_repeated_packed());
 
-        match elem.proto_type() {
-            Type::TYPE_MESSAGE => {
-                let param_type = RustType::Ref(Box::new(
-                    self.elem().rust_storage_elem_type(
-                        &self
-                            .proto_field
-                            .message
-                            .scope
-                            .file_and_mod(self.customize.clone()),
-                    ),
-                ));
-
-                w.write_line(&format!(
-                    "{}::rt::write_message_field_with_cached_size({}, {}, {})?;",
-                    protobuf_crate_path(&self.customize),
-                    self.proto_field.number(),
-                    v.into_type(param_type, &self.customize).value,
-                    os
-                ));
-            }
-            _ => {
-                let param_type = self.proto_type.os_write_fn_param_type();
-                let os_write_fn_suffix = self.os_write_fn_suffix();
-                let number = self.proto_field.number();
-                w.write_line(&format!(
-                    "{}.write_{}({}, {})?;",
-                    os,
-                    os_write_fn_suffix,
-                    number,
-                    v.into_type(param_type, &self.customize).value
-                ));
-            }
-        }
+        elem.write_write_element(
+            self.proto_field.number() as u32,
+            v,
+            &self.file_and_mod(),
+            &self.customize,
+            os,
+            w,
+        );
     }
 
     fn self_field(&self) -> String {

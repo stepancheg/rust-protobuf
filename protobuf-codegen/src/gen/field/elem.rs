@@ -225,6 +225,41 @@ impl<'a> FieldElem<'a> {
             }
         }
     }
+
+    pub(crate) fn write_write_element(
+        &self,
+        field_number: u32,
+        v: &RustValueTyped,
+        file_and_mod: &FileAndMod,
+        customize: &Customize,
+        os: &str,
+        w: &mut CodeWriter,
+    ) {
+        match self.proto_type() {
+            Type::TYPE_MESSAGE => {
+                let param_type = RustType::Ref(Box::new(self.rust_storage_elem_type(file_and_mod)));
+
+                w.write_line(&format!(
+                    "{}::rt::write_message_field_with_cached_size({}, {}, {})?;",
+                    protobuf_crate_path(customize),
+                    field_number,
+                    v.into_type(param_type, customize).value,
+                    os
+                ));
+            }
+            _ => {
+                let param_type = self.proto_type().os_write_fn_param_type();
+                let os_write_fn_suffix = self.proto_type().protobuf_name();
+                w.write_line(&format!(
+                    "{}.write_{}({}, {})?;",
+                    os,
+                    os_write_fn_suffix,
+                    field_number,
+                    v.into_type(param_type, customize).value
+                ));
+            }
+        }
+    }
 }
 
 pub(crate) fn field_elem<'a>(
