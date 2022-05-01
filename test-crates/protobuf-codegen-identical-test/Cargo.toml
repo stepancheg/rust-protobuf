@@ -11,6 +11,7 @@ test = false
 doctest = false
 
 [dev-dependencies]
+anyhow = "1.0.57"
 tempfile = "3"
 regex = "1.3.9"
 

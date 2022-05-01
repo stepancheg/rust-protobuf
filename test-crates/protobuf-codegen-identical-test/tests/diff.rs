@@ -7,6 +7,7 @@ use std::process::Command;
 use std::process::Stdio;
 use std::str;
 
+use anyhow::Context;
 use protobuf::descriptor::field_descriptor_proto;
 use protobuf::descriptor::DescriptorProto;
 use protobuf::descriptor::EnumDescriptorProto;
@@ -234,6 +235,24 @@ fn descriptor_for_file<'a>(fds: &'a FileDescriptorSet, file_name: &str) -> &'a F
     );
 }
 
+fn join(a: &str, b: &str) -> String {
+    if a == "." {
+        b.to_owned()
+    } else {
+        format!("{}/{}", a, b)
+    }
+}
+
+fn strip_prefix<'a>(path: &'a Path, prefix: &Path) -> &'a Path {
+    if prefix == Path::new(".") {
+        path
+    } else {
+        path.strip_prefix(prefix)
+            .with_context(|| format!("strip_prefix({:?}, {:?})", path, prefix))
+            .unwrap()
+    }
+}
+
 fn test_diff_in<F>(root: &str, sources_dir: &str, include: &str, should_skip: F)
 where
     F: Fn(&str) -> bool,
@@ -245,11 +264,10 @@ where
         failed: 0,
     };
 
-    let mut include_root = Path::new(root).to_path_buf();
-    include_root.push(include);
+    let mut include_root = join(root, include);
 
-    let include_full = format!("{}/{}", root, include);
-    let s_full = format!("{}/{}", root, sources_dir);
+    let include_full = join(root, include);
+    let s_full = join(root, sources_dir);
 
     let inputs_glob = format!("{}/*.proto*", s_full);
     let inputs = to_paths(glob_simple(&inputs_glob));
@@ -270,6 +288,7 @@ where
     Codegen::new()
         .protoc()
         .protoc_path(&protoc_bin_vendored::protoc_bin_path().unwrap())
+        .capture_stderr()
         .inputs(&inputs)
         .includes(&includes)
         .out_dir(&protoc_dir)
@@ -300,8 +319,10 @@ where
     normalize_descriptor_set(&mut pure_descriptors);
 
     for input in &inputs {
-        let label = input.strip_prefix(root).unwrap().to_str().unwrap();
-        let proto_file_name = input.strip_prefix(&include_root).unwrap().to_str().unwrap();
+        let label = strip_prefix(input, Path::new(root)).to_str().unwrap();
+        let proto_file_name = strip_prefix(input, Path::new(&include_root))
+            .to_str()
+            .unwrap();
         let proto_name = input.file_name().unwrap().to_str().unwrap();
         let rs_name = protobuf_codegen::proto_name_to_rs(proto_name);
         let protoc_rs = format!("{}/{}", protoc_dir, rs_name);
@@ -445,4 +466,9 @@ fn google() {
         "src",
         |_| false,
     );
+}
+
+#[test]
+fn test_data() {
+    test_diff_in(".", "test-data", "test-data", |_| false);
 }

@@ -1,0 +1,15 @@
+syntax = "proto2";
+
+message Foo {
+    extensions 100 to 200;
+}
+
+message Bar {
+    optional int32 xx1 = 1;
+    optional int32 xx2 = 201;
+    extend Foo {
+        optional int32 yyy = 111;
+    }
+    optional int32 zz1 = 2;
+    optional int32 zz2 = 202;
+}
