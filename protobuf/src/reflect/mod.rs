@@ -23,6 +23,7 @@ mod find_message_or_enum;
 mod map;
 pub(crate) mod message;
 mod oneof;
+mod optional;
 mod protobuf_type_box;
 mod repeated;
 mod runtime_type_box;
@@ -61,6 +62,7 @@ pub use self::message::MessageDescriptor;
 #[doc(hidden)]
 pub use self::oneof::generated::GeneratedOneofDescriptorData;
 pub use self::oneof::OneofDescriptor;
+pub use self::optional::ReflectOptionalRef;
 pub use self::reflect_eq::ReflectEq;
 pub use self::reflect_eq::ReflectEqMode;
 pub use self::repeated::ReflectRepeatedMut;

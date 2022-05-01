@@ -10,6 +10,7 @@ use crate::reflect::runtime_types::RuntimeTypeTrait;
 use crate::reflect::runtime_types::RuntimeTypeWithDeref;
 use crate::reflect::value::value_ref::ReflectValueMut;
 use crate::reflect::ProtobufValue;
+use crate::reflect::ReflectOptionalRef;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::EnumFull;
@@ -19,7 +20,7 @@ pub(crate) mod oneof;
 
 /// This trait should not be used directly, use `FieldDescriptor` instead
 pub(crate) trait SingularFieldAccessor: Send + Sync + 'static {
-    fn get_field<'a>(&self, m: &'a dyn MessageDyn) -> Option<ReflectValueRef<'a>>;
+    fn get_field<'a>(&self, m: &'a dyn MessageDyn) -> ReflectOptionalRef<'a>;
     fn mut_field_or_default<'a>(&self, m: &'a mut dyn MessageDyn) -> ReflectValueMut<'a>;
     fn set_field(&self, m: &mut dyn MessageDyn, value: ReflectValueBox);
 }
@@ -30,7 +31,7 @@ pub(crate) struct SingularFieldAccessorHolder {
 
 impl SingularFieldAccessorHolder {
     fn new<M>(
-        get_field: impl for<'a> Fn(&'a M) -> Option<ReflectValueRef<'a>> + Send + Sync + 'static,
+        get_field: impl for<'a> Fn(&'a M) -> ReflectOptionalRef<'a> + Send + Sync + 'static,
         mut_field_or_default: impl for<'a> Fn(&'a mut M) -> ReflectValueMut<'a> + Send + Sync + 'static,
         set_field: impl Fn(&mut M, ReflectValueBox) + Send + Sync + 'static,
     ) -> SingularFieldAccessorHolder
@@ -47,11 +48,11 @@ impl SingularFieldAccessorHolder {
         impl<M, G, H, S> SingularFieldAccessor for Impl<M, G, H, S>
         where
             M: MessageFull,
-            G: for<'a> Fn(&'a M) -> Option<ReflectValueRef<'a>> + Send + Sync + 'static,
+            G: for<'a> Fn(&'a M) -> ReflectOptionalRef<'a> + Send + Sync + 'static,
             H: for<'a> Fn(&'a mut M) -> ReflectValueMut<'a> + Send + Sync + 'static,
             S: Fn(&mut M, ReflectValueBox) + Send + Sync + 'static,
         {
-            fn get_field<'a>(&self, m: &'a dyn MessageDyn) -> Option<ReflectValueRef<'a>> {
+            fn get_field<'a>(&self, m: &'a dyn MessageDyn) -> ReflectOptionalRef<'a> {
                 (self.get_field)(m.downcast_ref::<M>().unwrap())
             }
 
@@ -85,11 +86,7 @@ impl SingularFieldAccessorHolder {
         Self::new(
             move |m| {
                 let v = (get_field)(m);
-                if V::RuntimeType::is_non_zero(v) {
-                    Some(V::RuntimeType::as_ref(v))
-                } else {
-                    None
-                }
+                ReflectOptionalRef::new_filter_non_zero(v)
             },
             move |m| V::RuntimeType::as_mut((mut_field)(m)),
             move |m, value| V::RuntimeType::set_from_value_box((mut_field)(m), value),
@@ -105,7 +102,7 @@ impl SingularFieldAccessorHolder {
         V: ProtobufValue,
     {
         Self::new(
-            move |m| (get_field)(m).as_ref().map(V::RuntimeType::as_ref),
+            move |m| ReflectOptionalRef::new_from_option((get_field)(m).as_ref()),
             move |_m| unimplemented!(),
             move |m, value| {
                 *(mut_field)(m) = Some(V::RuntimeType::from_value_box(value).expect("wrong type"))
@@ -122,7 +119,7 @@ impl SingularFieldAccessorHolder {
         V: MessageFull,
     {
         Self::new(
-            move |m| (get_field)(m).as_ref().map(V::RuntimeType::as_ref),
+            move |m| ReflectOptionalRef::new_from_option((get_field)(m).as_ref()),
             move |m| {
                 let option = (mut_field)(m);
                 if option.as_ref().is_none() {
@@ -148,7 +145,13 @@ impl SingularFieldAccessorHolder {
         Self::new(
             move |m| {
                 let value = (get)(m);
-                value.map(|v| ReflectValueRef::Enum(E::enum_descriptor(), v.value()))
+                match value {
+                    Some(v) => ReflectOptionalRef::some(ReflectValueRef::Enum(
+                        E::enum_descriptor(),
+                        v.value(),
+                    )),
+                    None => ReflectOptionalRef::none_from::<EnumOrUnknown<E>>(),
+                }
             },
             |_m| panic!("cannot get mutable pointer"),
             move |m, value| match value {
@@ -173,9 +176,9 @@ impl SingularFieldAccessorHolder {
         Self::new(
             move |m| {
                 if (has)(m) {
-                    Some(V::RuntimeType::into_static_value_ref((get)(m)))
+                    ReflectOptionalRef::some(V::RuntimeType::into_static_value_ref((get)(m)))
                 } else {
-                    None
+                    ReflectOptionalRef::none_from::<V>()
                 }
             },
             |_m| unimplemented!(),
@@ -196,11 +199,11 @@ impl SingularFieldAccessorHolder {
         Self::new(
             move |m| {
                 if (has)(m) {
-                    Some(<V::RuntimeType as RuntimeTypeWithDeref>::deref_as_ref(
-                        (get)(m),
-                    ))
+                    ReflectOptionalRef::some(
+                        <V::RuntimeType as RuntimeTypeWithDeref>::deref_as_ref((get)(m)),
+                    )
                 } else {
-                    None
+                    ReflectOptionalRef::none_from::<V>()
                 }
             },
             |_m| unimplemented!(),
@@ -221,9 +224,9 @@ impl SingularFieldAccessorHolder {
         Self::new(
             move |m| {
                 if (has_field)(m) {
-                    Some(F::RuntimeType::as_ref((get_field)(m)))
+                    ReflectOptionalRef::some(F::RuntimeType::as_ref((get_field)(m)))
                 } else {
-                    None
+                    ReflectOptionalRef::none_from::<F>()
                 }
             },
             move |m| F::RuntimeType::as_mut((mut_field)(m)),

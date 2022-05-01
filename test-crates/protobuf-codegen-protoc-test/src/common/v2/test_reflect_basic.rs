@@ -1,5 +1,6 @@
 use protobuf::reflect::FieldDescriptor;
 use protobuf::reflect::ReflectFieldRef;
+use protobuf::reflect::ReflectOptionalRef;
 use protobuf::reflect::ReflectValueBox;
 use protobuf::reflect::ReflectValueRef;
 use protobuf::reflect::RuntimeFieldType;
@@ -212,7 +213,8 @@ fn test_get_reflect_singular() {
     let descriptor = m.descriptor_dyn();
     let f = descriptor.field_by_name("int64_field").unwrap();
     match f.get_reflect(&m) {
-        ReflectFieldRef::Optional(Some(ReflectValueRef::I64(10))) => {}
+        ReflectFieldRef::Optional(v) if v == ReflectOptionalRef::some(ReflectValueRef::I64(10)) => {
+        }
         _ => panic!(),
     }
 }

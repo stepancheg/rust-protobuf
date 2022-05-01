@@ -474,31 +474,33 @@ impl Printer {
             let field_type = field.runtime_field_type();
 
             match field.get_reflect(&**message) {
-                ReflectFieldRef::Optional(None) => {
-                    if self.print_options.always_output_default_values {
-                        let is_message = match field_type {
-                            RuntimeFieldType::Singular(s) => match s {
-                                RuntimeType::Message(_) => true,
-                                _ => false,
-                            },
-                            _ => unreachable!(),
-                        };
+                ReflectFieldRef::Optional(v) => match v.value() {
+                    None => {
+                        if self.print_options.always_output_default_values {
+                            let is_message = match field_type {
+                                RuntimeFieldType::Singular(s) => match s {
+                                    RuntimeType::Message(_) => true,
+                                    _ => false,
+                                },
+                                _ => unreachable!(),
+                            };
 
-                        let is_oneof = field.proto().has_oneof_index();
+                            let is_oneof = field.proto().has_oneof_index();
 
-                        if !is_message && !is_oneof {
-                            let v = field.get_singular_field_or_default(&**message);
-                            self.print_comma_but_first(&mut first)?;
-                            write!(self.buf, "\"{}\": ", json_field_name)?;
-                            self.print_printable(&v)?;
+                            if !is_message && !is_oneof {
+                                let v = field.get_singular_field_or_default(&**message);
+                                self.print_comma_but_first(&mut first)?;
+                                write!(self.buf, "\"{}\": ", json_field_name)?;
+                                self.print_printable(&v)?;
+                            }
                         }
                     }
-                }
-                ReflectFieldRef::Optional(Some(v)) => {
-                    self.print_comma_but_first(&mut first)?;
-                    write!(self.buf, "\"{}\": ", json_field_name)?;
-                    self.print_printable(&v)?;
-                }
+                    Some(v) => {
+                        self.print_comma_but_first(&mut first)?;
+                        write!(self.buf, "\"{}\": ", json_field_name)?;
+                        self.print_printable(&v)?;
+                    }
+                },
                 ReflectFieldRef::Repeated(v) => {
                     if !v.is_empty() || self.print_options.always_output_default_values {
                         self.print_comma_but_first(&mut first)?;

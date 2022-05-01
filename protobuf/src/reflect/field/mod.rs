@@ -27,6 +27,7 @@ use crate::reflect::repeated::ReflectRepeatedRef;
 use crate::reflect::value::value_ref::ReflectValueMut;
 use crate::reflect::FileDescriptor;
 use crate::reflect::MessageDescriptor;
+use crate::reflect::ReflectOptionalRef;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::reflect::RuntimeType;
@@ -40,7 +41,7 @@ pub(crate) mod runtime_field_type;
 #[derive(PartialEq)]
 pub enum ReflectFieldRef<'a> {
     /// Singular field, optional or required in proto3 and just plain field in proto3
-    Optional(Option<ReflectValueRef<'a>>),
+    Optional(ReflectOptionalRef<'a>),
     /// Repeated field
     Repeated(ReflectRepeatedRef<'a>),
     /// Map field
@@ -50,7 +51,9 @@ pub enum ReflectFieldRef<'a> {
 impl<'a> ReflectFieldRef<'a> {
     pub(crate) fn default_for_field(field: &FieldDescriptor) -> ReflectFieldRef<'a> {
         match field.runtime_field_type() {
-            RuntimeFieldType::Singular(_) => ReflectFieldRef::Optional(None),
+            RuntimeFieldType::Singular(elem) => {
+                ReflectFieldRef::Optional(ReflectOptionalRef::none(elem))
+            }
             RuntimeFieldType::Repeated(elem) => {
                 ReflectFieldRef::Repeated(ReflectRepeatedRef::new_empty(elem))
             }
@@ -62,11 +65,13 @@ impl<'a> ReflectFieldRef<'a> {
 impl<'a> ReflectEq for ReflectFieldRef<'a> {
     fn reflect_eq(&self, that: &Self, mode: &ReflectEqMode) -> bool {
         match (self, that) {
-            (ReflectFieldRef::Optional(a), ReflectFieldRef::Optional(b)) => match (a, b) {
-                (Some(av), Some(bv)) => av.reflect_eq(&bv, mode),
-                (None, None) => true,
-                _ => false,
-            },
+            (ReflectFieldRef::Optional(a), ReflectFieldRef::Optional(b)) => {
+                match (a.value(), b.value()) {
+                    (Some(av), Some(bv)) => av.reflect_eq(&bv, mode),
+                    (None, None) => true,
+                    _ => false,
+                }
+            }
             (ReflectFieldRef::Repeated(a), ReflectFieldRef::Repeated(b)) => a.reflect_eq(b, mode),
             (ReflectFieldRef::Map(a), ReflectFieldRef::Map(b)) => a.reflect_eq(b, mode),
             _ => false,
@@ -298,8 +303,7 @@ impl FieldDescriptor {
     /// If this field belongs to a different message type.
     pub fn has_field(&self, m: &dyn MessageDyn) -> bool {
         match self.get_reflect(m) {
-            ReflectFieldRef::Optional(Some(..)) => true,
-            ReflectFieldRef::Optional(None) => false,
+            ReflectFieldRef::Optional(v) => v.value().is_some(),
             ReflectFieldRef::Repeated(r) => !r.is_empty(),
             ReflectFieldRef::Map(m) => !m.is_empty(),
         }
@@ -465,7 +469,7 @@ impl FieldDescriptor {
     /// If this field belongs to a different message type or fields is not singular.
     pub fn get_singular<'a>(&self, m: &'a dyn MessageDyn) -> Option<ReflectValueRef<'a>> {
         match self.get_reflect(m) {
-            ReflectFieldRef::Optional(o) => o,
+            ReflectFieldRef::Optional(o) => o.value(),
             _ => panic!("not a singular field"),
         }
     }

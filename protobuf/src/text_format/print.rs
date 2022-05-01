@@ -135,7 +135,7 @@ fn print_to_internal(m: &MessageRef, buf: &mut String, pretty: bool, indent: usi
                 }
             }
             ReflectFieldRef::Optional(optional) => {
-                if let Some(v) = optional {
+                if let Some(v) = optional.value() {
                     print_field(buf, pretty, indent, &mut first, f.name(), v);
                 }
             }

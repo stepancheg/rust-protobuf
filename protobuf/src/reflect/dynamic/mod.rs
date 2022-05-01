@@ -70,7 +70,7 @@ enum DynamicFieldValue {
 impl DynamicFieldValue {
     fn as_ref(&self) -> ReflectFieldRef {
         match self {
-            DynamicFieldValue::Singular(v) => ReflectFieldRef::Optional(v.get()),
+            DynamicFieldValue::Singular(v) => ReflectFieldRef::Optional(v.reflect_singlar_ref()),
             DynamicFieldValue::Repeated(r) => ReflectFieldRef::Repeated(ReflectRepeatedRef::new(r)),
             DynamicFieldValue::Map(m) => ReflectFieldRef::Map(ReflectMapRef::new(m)),
         }
@@ -308,7 +308,7 @@ impl MessageDyn for DynamicMessage {
         for f in self.descriptor.fields() {
             let fv = self.get_reflect(&f);
             match fv {
-                ReflectFieldRef::Optional(s) => match s {
+                ReflectFieldRef::Optional(s) => match s.value() {
                     None => {
                         if f.is_required() {
                             return false;
