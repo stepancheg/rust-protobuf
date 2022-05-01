@@ -24,37 +24,37 @@
 /// Extension fields
 pub mod exts {
 
-    pub const expose_fields_all: crate::ext::ExtFieldOptional<crate::descriptor::FileOptions, crate::reflect::types::ProtobufTypeBool> = crate::ext::ExtFieldOptional { field_number: 17003, phantom: ::std::marker::PhantomData };
+    pub const expose_fields_all: crate::ext_new::ExtFieldOptional<crate::descriptor::FileOptions, bool> = crate::ext_new::ExtFieldOptional::new(17003, crate::descriptor::field_descriptor_proto::Type::TYPE_BOOL);
 
-    pub const generate_accessors_all: crate::ext::ExtFieldOptional<crate::descriptor::FileOptions, crate::reflect::types::ProtobufTypeBool> = crate::ext::ExtFieldOptional { field_number: 17004, phantom: ::std::marker::PhantomData };
+    pub const generate_accessors_all: crate::ext_new::ExtFieldOptional<crate::descriptor::FileOptions, bool> = crate::ext_new::ExtFieldOptional::new(17004, crate::descriptor::field_descriptor_proto::Type::TYPE_BOOL);
 
-    pub const generate_getter_all: crate::ext::ExtFieldOptional<crate::descriptor::FileOptions, crate::reflect::types::ProtobufTypeBool> = crate::ext::ExtFieldOptional { field_number: 17005, phantom: ::std::marker::PhantomData };
+    pub const generate_getter_all: crate::ext_new::ExtFieldOptional<crate::descriptor::FileOptions, bool> = crate::ext_new::ExtFieldOptional::new(17005, crate::descriptor::field_descriptor_proto::Type::TYPE_BOOL);
 
-    pub const tokio_bytes_all: crate::ext::ExtFieldOptional<crate::descriptor::FileOptions, crate::reflect::types::ProtobufTypeBool> = crate::ext::ExtFieldOptional { field_number: 17011, phantom: ::std::marker::PhantomData };
+    pub const tokio_bytes_all: crate::ext_new::ExtFieldOptional<crate::descriptor::FileOptions, bool> = crate::ext_new::ExtFieldOptional::new(17011, crate::descriptor::field_descriptor_proto::Type::TYPE_BOOL);
 
-    pub const tokio_bytes_for_string_all: crate::ext::ExtFieldOptional<crate::descriptor::FileOptions, crate::reflect::types::ProtobufTypeBool> = crate::ext::ExtFieldOptional { field_number: 17012, phantom: ::std::marker::PhantomData };
+    pub const tokio_bytes_for_string_all: crate::ext_new::ExtFieldOptional<crate::descriptor::FileOptions, bool> = crate::ext_new::ExtFieldOptional::new(17012, crate::descriptor::field_descriptor_proto::Type::TYPE_BOOL);
 
-    pub const lite_runtime_all: crate::ext::ExtFieldOptional<crate::descriptor::FileOptions, crate::reflect::types::ProtobufTypeBool> = crate::ext::ExtFieldOptional { field_number: 17035, phantom: ::std::marker::PhantomData };
+    pub const lite_runtime_all: crate::ext_new::ExtFieldOptional<crate::descriptor::FileOptions, bool> = crate::ext_new::ExtFieldOptional::new(17035, crate::descriptor::field_descriptor_proto::Type::TYPE_BOOL);
 
-    pub const expose_fields: crate::ext::ExtFieldOptional<crate::descriptor::MessageOptions, crate::reflect::types::ProtobufTypeBool> = crate::ext::ExtFieldOptional { field_number: 17003, phantom: ::std::marker::PhantomData };
+    pub const expose_fields: crate::ext_new::ExtFieldOptional<crate::descriptor::MessageOptions, bool> = crate::ext_new::ExtFieldOptional::new(17003, crate::descriptor::field_descriptor_proto::Type::TYPE_BOOL);
 
-    pub const generate_accessors: crate::ext::ExtFieldOptional<crate::descriptor::MessageOptions, crate::reflect::types::ProtobufTypeBool> = crate::ext::ExtFieldOptional { field_number: 17004, phantom: ::std::marker::PhantomData };
+    pub const generate_accessors: crate::ext_new::ExtFieldOptional<crate::descriptor::MessageOptions, bool> = crate::ext_new::ExtFieldOptional::new(17004, crate::descriptor::field_descriptor_proto::Type::TYPE_BOOL);
 
-    pub const generate_getter: crate::ext::ExtFieldOptional<crate::descriptor::MessageOptions, crate::reflect::types::ProtobufTypeBool> = crate::ext::ExtFieldOptional { field_number: 17005, phantom: ::std::marker::PhantomData };
+    pub const generate_getter: crate::ext_new::ExtFieldOptional<crate::descriptor::MessageOptions, bool> = crate::ext_new::ExtFieldOptional::new(17005, crate::descriptor::field_descriptor_proto::Type::TYPE_BOOL);
 
-    pub const tokio_bytes: crate::ext::ExtFieldOptional<crate::descriptor::MessageOptions, crate::reflect::types::ProtobufTypeBool> = crate::ext::ExtFieldOptional { field_number: 17011, phantom: ::std::marker::PhantomData };
+    pub const tokio_bytes: crate::ext_new::ExtFieldOptional<crate::descriptor::MessageOptions, bool> = crate::ext_new::ExtFieldOptional::new(17011, crate::descriptor::field_descriptor_proto::Type::TYPE_BOOL);
 
-    pub const tokio_bytes_for_string: crate::ext::ExtFieldOptional<crate::descriptor::MessageOptions, crate::reflect::types::ProtobufTypeBool> = crate::ext::ExtFieldOptional { field_number: 17012, phantom: ::std::marker::PhantomData };
+    pub const tokio_bytes_for_string: crate::ext_new::ExtFieldOptional<crate::descriptor::MessageOptions, bool> = crate::ext_new::ExtFieldOptional::new(17012, crate::descriptor::field_descriptor_proto::Type::TYPE_BOOL);
 
-    pub const expose_fields_field: crate::ext::ExtFieldOptional<crate::descriptor::FieldOptions, crate::reflect::types::ProtobufTypeBool> = crate::ext::ExtFieldOptional { field_number: 17003, phantom: ::std::marker::PhantomData };
+    pub const expose_fields_field: crate::ext_new::ExtFieldOptional<crate::descriptor::FieldOptions, bool> = crate::ext_new::ExtFieldOptional::new(17003, crate::descriptor::field_descriptor_proto::Type::TYPE_BOOL);
 
-    pub const generate_accessors_field: crate::ext::ExtFieldOptional<crate::descriptor::FieldOptions, crate::reflect::types::ProtobufTypeBool> = crate::ext::ExtFieldOptional { field_number: 17004, phantom: ::std::marker::PhantomData };
+    pub const generate_accessors_field: crate::ext_new::ExtFieldOptional<crate::descriptor::FieldOptions, bool> = crate::ext_new::ExtFieldOptional::new(17004, crate::descriptor::field_descriptor_proto::Type::TYPE_BOOL);
 
-    pub const generate_getter_field: crate::ext::ExtFieldOptional<crate::descriptor::FieldOptions, crate::reflect::types::ProtobufTypeBool> = crate::ext::ExtFieldOptional { field_number: 17005, phantom: ::std::marker::PhantomData };
+    pub const generate_getter_field: crate::ext_new::ExtFieldOptional<crate::descriptor::FieldOptions, bool> = crate::ext_new::ExtFieldOptional::new(17005, crate::descriptor::field_descriptor_proto::Type::TYPE_BOOL);
 
-    pub const tokio_bytes_field: crate::ext::ExtFieldOptional<crate::descriptor::FieldOptions, crate::reflect::types::ProtobufTypeBool> = crate::ext::ExtFieldOptional { field_number: 17011, phantom: ::std::marker::PhantomData };
+    pub const tokio_bytes_field: crate::ext_new::ExtFieldOptional<crate::descriptor::FieldOptions, bool> = crate::ext_new::ExtFieldOptional::new(17011, crate::descriptor::field_descriptor_proto::Type::TYPE_BOOL);
 
-    pub const tokio_bytes_for_string_field: crate::ext::ExtFieldOptional<crate::descriptor::FieldOptions, crate::reflect::types::ProtobufTypeBool> = crate::ext::ExtFieldOptional { field_number: 17012, phantom: ::std::marker::PhantomData };
+    pub const tokio_bytes_for_string_field: crate::ext_new::ExtFieldOptional<crate::descriptor::FieldOptions, bool> = crate::ext_new::ExtFieldOptional::new(17012, crate::descriptor::field_descriptor_proto::Type::TYPE_BOOL);
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
