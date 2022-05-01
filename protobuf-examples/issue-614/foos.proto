@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+message Foo {
+  int32 bar = 1;
+  oneof baz {
+    string qux = 2;
+    bool quux = 3;
+  }
+}

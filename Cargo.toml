@@ -9,6 +9,7 @@ members = [
     "protobuf-examples/dynamic",
     "protobuf-examples/pure-vs-protoc",
     "protobuf-examples/vs-prost",
+    "protobuf-examples/issue-614",
     "protobuf-parse",
     "protobuf-support",
     "test-crates/perftest/bytes",

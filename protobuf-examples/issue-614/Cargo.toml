@@ -1,0 +1,15 @@
+[package]
+name = "protobuf-examples-issue-614"
+version = "0.0.0"
+authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
+edition = "2021"
+publish = false
+description= """
+Example for https://github.com/stepancheg/rust-protobuf/issues/614
+"""
+
+[dependencies]
+protobuf = { path = "../../protobuf" }
+
+[build-dependencies]
+protobuf-codegen = { path = "../../protobuf-codegen" }
