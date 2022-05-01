@@ -240,7 +240,7 @@ impl ::std::fmt::Display for Type {
 }
 
 impl crate::reflect::ProtobufValue for Type {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 ///  A single field of a message type.
@@ -538,7 +538,7 @@ impl ::std::fmt::Display for Field {
 }
 
 impl crate::reflect::ProtobufValue for Field {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 /// Nested message and enums of message `Field`
@@ -930,7 +930,7 @@ impl ::std::fmt::Display for Enum {
 }
 
 impl crate::reflect::ProtobufValue for Enum {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 ///  Enum value definition.
@@ -1093,7 +1093,7 @@ impl ::std::fmt::Display for EnumValue {
 }
 
 impl crate::reflect::ProtobufValue for EnumValue {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 ///  A protocol buffer option, which can be attached to a message, field,
@@ -1244,7 +1244,7 @@ impl ::std::fmt::Display for Option {
 }
 
 impl crate::reflect::ProtobufValue for Option {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 ///  The syntax in which a protocol buffer element is defined.

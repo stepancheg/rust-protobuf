@@ -290,7 +290,7 @@ impl ::std::fmt::Display for Api {
 }
 
 impl crate::reflect::ProtobufValue for Api {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 ///  Method represents a method of an API interface.
@@ -529,7 +529,7 @@ impl ::std::fmt::Display for Method {
 }
 
 impl crate::reflect::ProtobufValue for Method {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 #[derive(PartialEq,Clone,Default,Debug)]
@@ -672,7 +672,7 @@ impl ::std::fmt::Display for Mixin {
 }
 
 impl crate::reflect::ProtobufValue for Mixin {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\

@@ -144,7 +144,7 @@ impl ::std::fmt::Display for DoubleValue {
 }
 
 impl crate::reflect::ProtobufValue for DoubleValue {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 ///  Wrapper message for `float`.
@@ -270,7 +270,7 @@ impl ::std::fmt::Display for FloatValue {
 }
 
 impl crate::reflect::ProtobufValue for FloatValue {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 ///  Wrapper message for `int64`.
@@ -396,7 +396,7 @@ impl ::std::fmt::Display for Int64Value {
 }
 
 impl crate::reflect::ProtobufValue for Int64Value {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 ///  Wrapper message for `uint64`.
@@ -522,7 +522,7 @@ impl ::std::fmt::Display for UInt64Value {
 }
 
 impl crate::reflect::ProtobufValue for UInt64Value {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 ///  Wrapper message for `int32`.
@@ -648,7 +648,7 @@ impl ::std::fmt::Display for Int32Value {
 }
 
 impl crate::reflect::ProtobufValue for Int32Value {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 ///  Wrapper message for `uint32`.
@@ -774,7 +774,7 @@ impl ::std::fmt::Display for UInt32Value {
 }
 
 impl crate::reflect::ProtobufValue for UInt32Value {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 ///  Wrapper message for `bool`.
@@ -900,7 +900,7 @@ impl ::std::fmt::Display for BoolValue {
 }
 
 impl crate::reflect::ProtobufValue for BoolValue {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 ///  Wrapper message for `string`.
@@ -1026,7 +1026,7 @@ impl ::std::fmt::Display for StringValue {
 }
 
 impl crate::reflect::ProtobufValue for StringValue {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 ///  Wrapper message for `bytes`.
@@ -1152,7 +1152,7 @@ impl ::std::fmt::Display for BytesValue {
 }
 
 impl crate::reflect::ProtobufValue for BytesValue {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\

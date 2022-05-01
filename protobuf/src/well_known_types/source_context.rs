@@ -144,7 +144,7 @@ impl ::std::fmt::Display for SourceContext {
 }
 
 impl crate::reflect::ProtobufValue for SourceContext {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\

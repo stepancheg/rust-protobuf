@@ -169,7 +169,7 @@ impl ::std::fmt::Display for Struct {
 }
 
 impl crate::reflect::ProtobufValue for Struct {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 ///  `Value` represents a dynamically typed value which can be either
@@ -617,7 +617,7 @@ impl ::std::fmt::Display for Value {
 }
 
 impl crate::reflect::ProtobufValue for Value {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 /// Nested message and enums of message `Value`
@@ -782,7 +782,7 @@ impl ::std::fmt::Display for ListValue {
 }
 
 impl crate::reflect::ProtobufValue for ListValue {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 ///  `NullValue` is a singleton enumeration to represent the null value for the

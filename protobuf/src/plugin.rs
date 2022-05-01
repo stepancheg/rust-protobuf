@@ -290,7 +290,7 @@ impl ::std::fmt::Display for Version {
 }
 
 impl crate::reflect::ProtobufValue for Version {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 ///  An encoded CodeGeneratorRequest is written to the plugin's stdin.
@@ -534,7 +534,7 @@ impl ::std::fmt::Display for CodeGeneratorRequest {
 }
 
 impl crate::reflect::ProtobufValue for CodeGeneratorRequest {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 ///  The plugin writes an encoded CodeGeneratorResponse to stdout.
@@ -759,7 +759,7 @@ impl ::std::fmt::Display for CodeGeneratorResponse {
 }
 
 impl crate::reflect::ProtobufValue for CodeGeneratorResponse {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 /// Nested message and enums of message `CodeGeneratorResponse`
@@ -1099,7 +1099,7 @@ pub mod code_generator_response {
     }
 
     impl crate::reflect::ProtobufValue for File {
-        type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+        type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
     }
 
     ///  Sync with code_generator.h.

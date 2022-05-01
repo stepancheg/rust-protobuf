@@ -148,7 +148,7 @@ impl ::std::fmt::Display for FileDescriptorSet {
 }
 
 impl crate::reflect::ProtobufValue for FileDescriptorSet {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 ///  Describes a complete .proto file.
@@ -630,7 +630,7 @@ impl ::std::fmt::Display for FileDescriptorProto {
 }
 
 impl crate::reflect::ProtobufValue for FileDescriptorProto {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 ///  Describes a message type.
@@ -1001,7 +1001,7 @@ impl ::std::fmt::Display for DescriptorProto {
 }
 
 impl crate::reflect::ProtobufValue for DescriptorProto {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 /// Nested message and enums of message `DescriptorProto`
@@ -1205,7 +1205,7 @@ pub mod descriptor_proto {
     }
 
     impl crate::reflect::ProtobufValue for ExtensionRange {
-        type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+        type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
     }
 
     ///  Range of reserved tag numbers. Reserved tag numbers may not be used by
@@ -1386,7 +1386,7 @@ pub mod descriptor_proto {
     }
 
     impl crate::reflect::ProtobufValue for ReservedRange {
-        type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+        type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
     }
 }
 
@@ -1516,7 +1516,7 @@ impl ::std::fmt::Display for ExtensionRangeOptions {
 }
 
 impl crate::reflect::ProtobufValue for ExtensionRangeOptions {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 ///  Describes a field within a message.
@@ -2147,7 +2147,7 @@ impl ::std::fmt::Display for FieldDescriptorProto {
 }
 
 impl crate::reflect::ProtobufValue for FieldDescriptorProto {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 /// Nested message and enums of message `FieldDescriptorProto`
@@ -2534,7 +2534,7 @@ impl ::std::fmt::Display for OneofDescriptorProto {
 }
 
 impl crate::reflect::ProtobufValue for OneofDescriptorProto {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 ///  Describes an enum type.
@@ -2788,7 +2788,7 @@ impl ::std::fmt::Display for EnumDescriptorProto {
 }
 
 impl crate::reflect::ProtobufValue for EnumDescriptorProto {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 /// Nested message and enums of message `EnumDescriptorProto`
@@ -2974,7 +2974,7 @@ pub mod enum_descriptor_proto {
     }
 
     impl crate::reflect::ProtobufValue for EnumReservedRange {
-        type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+        type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
     }
 }
 
@@ -3195,7 +3195,7 @@ impl ::std::fmt::Display for EnumValueDescriptorProto {
 }
 
 impl crate::reflect::ProtobufValue for EnumValueDescriptorProto {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 ///  Describes a service.
@@ -3402,7 +3402,7 @@ impl ::std::fmt::Display for ServiceDescriptorProto {
 }
 
 impl crate::reflect::ProtobufValue for ServiceDescriptorProto {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 ///  Describes a method of a service.
@@ -3771,7 +3771,7 @@ impl ::std::fmt::Display for MethodDescriptorProto {
 }
 
 impl crate::reflect::ProtobufValue for MethodDescriptorProto {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 #[derive(PartialEq,Clone,Default,Debug)]
@@ -4875,7 +4875,7 @@ impl ::std::fmt::Display for FileOptions {
 }
 
 impl crate::reflect::ProtobufValue for FileOptions {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 /// Nested message and enums of message `FileOptions`
@@ -5226,7 +5226,7 @@ impl ::std::fmt::Display for MessageOptions {
 }
 
 impl crate::reflect::ProtobufValue for MessageOptions {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 #[derive(PartialEq,Clone,Default,Debug)]
@@ -5636,7 +5636,7 @@ impl ::std::fmt::Display for FieldOptions {
 }
 
 impl crate::reflect::ProtobufValue for FieldOptions {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 /// Nested message and enums of message `FieldOptions`
@@ -5884,7 +5884,7 @@ impl ::std::fmt::Display for OneofOptions {
 }
 
 impl crate::reflect::ProtobufValue for OneofOptions {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 #[derive(PartialEq,Clone,Default,Debug)]
@@ -6093,7 +6093,7 @@ impl ::std::fmt::Display for EnumOptions {
 }
 
 impl crate::reflect::ProtobufValue for EnumOptions {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 #[derive(PartialEq,Clone,Default,Debug)]
@@ -6263,7 +6263,7 @@ impl ::std::fmt::Display for EnumValueOptions {
 }
 
 impl crate::reflect::ProtobufValue for EnumValueOptions {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 #[derive(PartialEq,Clone,Default,Debug)]
@@ -6433,7 +6433,7 @@ impl ::std::fmt::Display for ServiceOptions {
 }
 
 impl crate::reflect::ProtobufValue for ServiceOptions {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 #[derive(PartialEq,Clone,Default,Debug)]
@@ -6643,7 +6643,7 @@ impl ::std::fmt::Display for MethodOptions {
 }
 
 impl crate::reflect::ProtobufValue for MethodOptions {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 /// Nested message and enums of message `MethodOptions`
@@ -7116,7 +7116,7 @@ impl ::std::fmt::Display for UninterpretedOption {
 }
 
 impl crate::reflect::ProtobufValue for UninterpretedOption {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 /// Nested message and enums of message `UninterpretedOption`
@@ -7324,7 +7324,7 @@ pub mod uninterpreted_option {
     }
 
     impl crate::reflect::ProtobufValue for NamePart {
-        type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+        type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
     }
 }
 
@@ -7450,7 +7450,7 @@ impl ::std::fmt::Display for SourceCodeInfo {
 }
 
 impl crate::reflect::ProtobufValue for SourceCodeInfo {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 /// Nested message and enums of message `SourceCodeInfo`
@@ -7721,7 +7721,7 @@ pub mod source_code_info {
     }
 
     impl crate::reflect::ProtobufValue for Location {
-        type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+        type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
     }
 }
 
@@ -7850,7 +7850,7 @@ impl ::std::fmt::Display for GeneratedCodeInfo {
 }
 
 impl crate::reflect::ProtobufValue for GeneratedCodeInfo {
-    type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+    type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
 /// Nested message and enums of message `GeneratedCodeInfo`
@@ -8109,7 +8109,7 @@ pub mod generated_code_info {
     }
 
     impl crate::reflect::ProtobufValue for Annotation {
-        type RuntimeType = crate::reflect::runtime_types::RuntimeTypeMessage<Self>;
+        type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
     }
 }
 
