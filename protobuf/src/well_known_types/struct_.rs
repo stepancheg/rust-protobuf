@@ -93,7 +93,13 @@ impl crate::Message for Struct {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
-        my_size += crate::rt::compute_map_size::<crate::reflect::types::ProtobufTypeString, crate::reflect::types::ProtobufTypeMessage<Value>>(1, &self.fields);
+        for (k, v) in &self.fields {
+            let mut entry_size = 0;
+            entry_size += crate::rt::string_size(1, &k);
+            let len = v.compute_size();
+            entry_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
+            my_size += 1 + crate::rt::compute_raw_varint64_size(entry_size) + entry_size
+        };
         my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
         my_size
