@@ -9,7 +9,7 @@ use crate::descriptor::FileDescriptorProto;
 use crate::reflect::error::ReflectError;
 use crate::reflect::field::index::ForwardProtobufFieldType;
 use crate::reflect::field::index::ForwardProtobufTypeBox;
-use crate::reflect::file::index::MessageIndex;
+use crate::reflect::file::index::MessageIndices;
 use crate::reflect::find_message_or_enum::find_message_or_enum;
 use crate::reflect::find_message_or_enum::MessageOrEnum;
 use crate::reflect::name::protobuf_name_starts_with_package;
@@ -20,7 +20,7 @@ pub(crate) struct FileDescriptorBuilding<'a> {
     pub(crate) current_file_descriptor: &'a FileDescriptorProto,
     pub(crate) deps_with_public: &'a [FileDescriptor],
     pub(crate) message_by_name_to_package: &'a HashMap<String, usize>,
-    pub(crate) messages: &'a [MessageIndex],
+    pub(crate) messages: &'a [MessageIndices],
     pub(crate) enums_by_name_to_package: &'a HashMap<String, usize>,
 }
 

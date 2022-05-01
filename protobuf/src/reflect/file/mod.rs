@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use std::collections::HashSet;
 use std::hash::Hash;
 use std::hash::Hasher;
@@ -6,12 +5,11 @@ use std::sync::Arc;
 
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::FileDescriptorProto;
-use crate::reflect::error::ReflectError;
 use crate::reflect::file::dynamic::DynamicFileDescriptor;
 use crate::reflect::file::fds::build_fds;
-use crate::reflect::file::index::EnumIndex;
+use crate::reflect::file::index::EnumIndices;
 use crate::reflect::file::index::FileDescriptorCommon;
-use crate::reflect::file::index::MessageIndex;
+use crate::reflect::file::index::MessageIndices;
 use crate::reflect::name::protobuf_name_starts_with_package;
 use crate::reflect::service::ServiceDescriptor;
 use crate::reflect::EnumDescriptor;
@@ -80,14 +78,15 @@ impl FileDescriptor {
         }
     }
 
-    pub(crate) fn generated_index(&self) -> &'static FileDescriptorCommon {
+    /// Same as `common`, but returns `&'static`.
+    pub(crate) fn common_for_generated_descriptor(&self) -> &'static FileDescriptorCommon {
         match &self.imp {
             FileDescriptorImpl::Generated(g) => &g.common,
             FileDescriptorImpl::Dynamic(..) => panic!("not generated"),
         }
     }
 
-    pub(crate) fn message_index_entry(&self, index: usize) -> &MessageIndex {
+    pub(crate) fn message_indices(&self, index: usize) -> &MessageIndices {
         &self.common().messages[index]
     }
 
@@ -102,7 +101,7 @@ impl FileDescriptor {
         &self.common().messages[index].proto
     }
 
-    pub(crate) fn enum_index_entry(&self, index: usize) -> &EnumIndex {
+    pub(crate) fn enum_indices(&self, index: usize) -> &EnumIndices {
         &self.common().enums[index]
     }
 
@@ -111,8 +110,7 @@ impl FileDescriptor {
         Syntax::parse(self.proto().syntax()).unwrap_or(Syntax::Proto2)
     }
 
-    // TODO: return iterator.
-    /// Get top-level messages.
+    /// Top-level messages.
     pub fn messages(&self) -> impl Iterator<Item = MessageDescriptor> + '_ {
         self.common()
             .top_level_messages
@@ -196,7 +194,6 @@ impl FileDescriptor {
 
     /// This function is called from generated code, it is not stable, and should not be called.
     #[doc(hidden)]
-    // TODO: rename
     pub fn new_generated_2(generated: &'static GeneratedFileDescriptor) -> FileDescriptor {
         FileDescriptor {
             imp: FileDescriptorImpl::Generated(generated),
@@ -208,42 +205,6 @@ impl FileDescriptor {
         proto: FileDescriptorProto,
         dependencies: &[FileDescriptor],
     ) -> crate::Result<FileDescriptor> {
-        // remove undeclared dependencies
-        let dependencies_index: HashMap<_, &FileDescriptor> =
-            dependencies.iter().map(|d| (d.proto().name(), d)).collect();
-
-        if dependencies_index.len() != dependencies.len() {
-            return Err(ReflectError::NonUniqueDependencies(
-                dependencies
-                    .iter()
-                    .map(|d| d.proto().name())
-                    .collect::<Vec<_>>()
-                    .join(", "),
-            )
-            .into());
-        }
-
-        let dependencies: Vec<FileDescriptor> = proto
-            .dependency
-            .iter()
-            .map(|d| {
-                let dep = dependencies_index.get(d.as_str());
-                match dep {
-                    Some(dep) => Ok((*dep).clone()),
-                    None => Err(ReflectError::DependencyNotFound(
-                        d.clone(),
-                        proto.name().to_owned(),
-                        dependencies
-                            .iter()
-                            .map(|d| d.proto().name())
-                            .collect::<Vec<_>>()
-                            .join(", "),
-                    )
-                    .into()),
-                }
-            })
-            .collect::<crate::Result<Vec<_>>>()?;
-
         Ok(FileDescriptor {
             imp: FileDescriptorImpl::Dynamic(Arc::new(DynamicFileDescriptor::new(
                 proto,
@@ -305,7 +266,7 @@ mod test {
     use crate::descriptor;
 
     #[test]
-    #[cfg_attr(miri, ignore)] // TODO: figure out why this test hangs on Miri.
+    #[cfg_attr(miri, ignore)]
     fn eq() {
         assert!(descriptor::file_descriptor() == descriptor::file_descriptor().clone());
     }

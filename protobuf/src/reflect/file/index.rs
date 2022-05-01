@@ -15,7 +15,7 @@ use crate::reflect::service::index::ServiceIndex;
 use crate::reflect::FileDescriptor;
 
 #[derive(Debug)]
-pub(crate) struct MessageIndex {
+pub(crate) struct MessageIndices {
     pub(crate) proto: OwningRef<FileDescriptorProto, DescriptorProto>,
     pub(crate) name_to_package: String,
     pub(crate) full_name: String,
@@ -23,12 +23,12 @@ pub(crate) struct MessageIndex {
     pub(crate) nested_messages: Vec<usize>,
     pub(crate) nested_enums: Range<usize>,
     pub(crate) oneofs: Range<usize>,
-    pub(crate) message_index: MessageFieldsIndex,
+    pub(crate) message_index: MessageFieldIndices,
     pub(crate) is_initialized_is_always_true: bool,
 }
 
 #[derive(Debug, Default)]
-pub(crate) struct MessageFieldsIndex {
+pub(crate) struct MessageFieldIndices {
     /// Index of the first field in global field index.
     pub(crate) first_field_index: usize,
     pub(crate) field_count: usize,
@@ -40,7 +40,7 @@ pub(crate) struct MessageFieldsIndex {
     pub(crate) field_index_by_number: HashMap<u32, usize>,
 }
 
-impl MessageFieldsIndex {
+impl MessageFieldIndices {
     pub(crate) fn regular_field_range(&self) -> Range<usize> {
         self.first_field_index..(self.first_field_index + self.field_count)
     }
@@ -56,7 +56,7 @@ impl MessageFieldsIndex {
 }
 
 #[derive(Debug)]
-pub(crate) struct EnumIndex {
+pub(crate) struct EnumIndices {
     pub(crate) proto: OwningRef<FileDescriptorProto, EnumDescriptorProto>,
     pub(crate) name_to_package: String,
     pub(crate) full_name: String,
@@ -65,13 +65,13 @@ pub(crate) struct EnumIndex {
     pub(crate) index_by_number: HashMap<i32, usize>,
 }
 
-impl EnumIndex {
+impl EnumIndices {
     pub(crate) fn new(
         name_to_package: String,
         enclosing_message: Option<usize>,
         proto: OwningRef<FileDescriptorProto, EnumDescriptorProto>,
         file: &FileDescriptorProto,
-    ) -> EnumIndex {
+    ) -> EnumIndices {
         let mut index_by_name = HashMap::new();
         let mut index_by_number = HashMap::new();
         for (i, v) in proto.value.iter().enumerate() {
@@ -79,7 +79,7 @@ impl EnumIndex {
             index_by_name.insert(v.name().to_owned(), i);
         }
         let full_name = concat_paths(file.package(), &name_to_package);
-        EnumIndex {
+        EnumIndices {
             proto,
             full_name,
             name_to_package,
@@ -91,7 +91,7 @@ impl EnumIndex {
 }
 
 #[derive(Debug)]
-pub(crate) struct OneofIndex {
+pub(crate) struct OneofIndices {
     pub(crate) containing_message: usize,
     pub(crate) index_in_containing_message: usize,
     /// Synthetic oneof for proto3 optional field.
@@ -99,17 +99,18 @@ pub(crate) struct OneofIndex {
     pub(crate) fields: Vec<usize>,
 }
 
+/// Common `FileDescriptor` data for generated and dynamic file descriptors.
 #[derive(Debug)]
 pub(crate) struct FileDescriptorCommon {
     /// Direct dependencies of this file.
     pub(crate) dependencies: Vec<FileDescriptor>,
     /// All messages in this file.
-    pub(crate) messages: Vec<MessageIndex>,
+    pub(crate) messages: Vec<MessageIndices>,
     pub(crate) message_by_name_to_package: HashMap<String, usize>,
     pub(crate) top_level_messages: Vec<usize>,
-    pub(crate) enums: Vec<EnumIndex>,
+    pub(crate) enums: Vec<EnumIndices>,
     pub(crate) enums_by_name_to_package: HashMap<String, usize>,
-    pub(crate) oneofs: Vec<OneofIndex>,
+    pub(crate) oneofs: Vec<OneofIndices>,
     pub(crate) services: Vec<ServiceIndex>,
     pub(crate) first_extension_field_index: usize,
     /// All fields followed by file-level extensions.
@@ -134,7 +135,7 @@ impl FileDescriptorCommon {
 
         // Top-level enums start with zero
         for e in file.flat_map_slice(|f| &f.enum_type) {
-            enums.push(EnumIndex::new(e.name().to_owned(), None, e, file.owner()));
+            enums.push(EnumIndices::new(e.name().to_owned(), None, e, file.owner()));
         }
 
         for message in file.flat_map_slice(|f| &f.message_type) {
@@ -216,14 +217,14 @@ impl FileDescriptorCommon {
         message: OwningRef<FileDescriptorProto, DescriptorProto>,
         parent: Option<usize>,
         parent_name_to_package: &str,
-        messages: &mut Vec<MessageIndex>,
-        enums: &mut Vec<EnumIndex>,
-        oneofs: &mut Vec<OneofIndex>,
+        messages: &mut Vec<MessageIndices>,
+        enums: &mut Vec<EnumIndices>,
+        oneofs: &mut Vec<OneofIndices>,
     ) -> usize {
         let name_to_package = concat_paths(parent_name_to_package, message.name());
 
         let message_index = messages.len();
-        messages.push(MessageIndex {
+        messages.push(MessageIndices {
             proto: message.clone(),
             full_name: concat_paths(file.package(), &name_to_package),
             name_to_package: name_to_package.clone(),
@@ -231,13 +232,13 @@ impl FileDescriptorCommon {
             nested_messages: Vec::with_capacity(message.nested_type.len()),
             nested_enums: enums.len()..enums.len() + message.enum_type.len(),
             oneofs: oneofs.len()..oneofs.len() + message.oneof_decl.len(),
-            message_index: MessageFieldsIndex::default(),
+            message_index: MessageFieldIndices::default(),
             // Initialized later.
             is_initialized_is_always_true: false,
         });
 
         for e in message.flat_map_slice(|m| &m.enum_type) {
-            enums.push(EnumIndex::new(
+            enums.push(EnumIndices::new(
                 concat_paths(&name_to_package, e.name()),
                 Some(message_index),
                 e,
@@ -253,7 +254,7 @@ impl FileDescriptorCommon {
                 .filter(|(_, f)| f.has_oneof_index() && f.oneof_index() == i as i32)
                 .collect();
             let synthetic = fields.len() == 1 && fields[0].1.proto3_optional();
-            oneofs.push(OneofIndex {
+            oneofs.push(OneofIndices {
                 containing_message: message_index,
                 index_in_containing_message: i,
                 synthetic,
@@ -277,7 +278,7 @@ impl FileDescriptorCommon {
         message_index
     }
 
-    fn build_message_by_name_to_package(messages: &[MessageIndex]) -> HashMap<String, usize> {
+    fn build_message_by_name_to_package(messages: &[MessageIndices]) -> HashMap<String, usize> {
         messages
             .iter()
             .enumerate()
@@ -285,7 +286,7 @@ impl FileDescriptorCommon {
             .collect()
     }
 
-    fn build_enum_by_name_to_package(enums: &[EnumIndex]) -> HashMap<String, usize> {
+    fn build_enum_by_name_to_package(enums: &[EnumIndices]) -> HashMap<String, usize> {
         enums
             .iter()
             .enumerate()
@@ -296,7 +297,7 @@ impl FileDescriptorCommon {
     fn build_message_index(
         file: &FileDescriptorProto,
         deps_with_public: &[FileDescriptor],
-        messages: &mut [MessageIndex],
+        messages: &mut [MessageIndices],
         fields: &mut Vec<FieldIndex>,
         message_by_name_to_package: &HashMap<String, usize>,
         enums_by_name_to_package: &HashMap<String, usize>,
@@ -321,7 +322,7 @@ impl FileDescriptorCommon {
         proto: &OwningRef<FileDescriptorProto, DescriptorProto>,
         building: &FileDescriptorBuilding,
         fields: &mut Vec<FieldIndex>,
-    ) -> crate::Result<MessageFieldsIndex> {
+    ) -> crate::Result<MessageFieldIndices> {
         let mut index_by_name = HashMap::new();
         let mut index_by_name_or_json_name = HashMap::new();
         let mut index_by_number = HashMap::new();
@@ -366,7 +367,7 @@ impl FileDescriptorCommon {
 
         let extension_count = proto.extension.len();
 
-        Ok(MessageFieldsIndex {
+        Ok(MessageFieldIndices {
             first_field_index,
             field_count,
             extension_count,

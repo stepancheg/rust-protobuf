@@ -6,7 +6,7 @@ use crate::descriptor::FileDescriptorProto;
 use crate::message_dyn::MessageDyn;
 use crate::message_full::MessageFull;
 use crate::reflect::dynamic::DynamicMessage;
-use crate::reflect::file::index::MessageIndex;
+use crate::reflect::file::index::MessageIndices;
 use crate::reflect::file::FileDescriptorImpl;
 use crate::reflect::message::generated::GeneratedMessageDescriptor;
 use crate::reflect::reflect_eq::ReflectEq;
@@ -60,8 +60,8 @@ impl MessageDescriptor {
         self.proto().name()
     }
 
-    fn index_entry(&self) -> &MessageIndex {
-        self.file_descriptor.message_index_entry(self.index)
+    fn index_entry(&self) -> &MessageIndices {
+        self.file_descriptor.message_indices(self.index)
     }
 
     /// Get a message descriptor for given message type
@@ -270,7 +270,7 @@ impl MessageDescriptor {
             })
     }
 
-    pub(crate) fn index(&self) -> &MessageIndex {
+    pub(crate) fn index(&self) -> &MessageIndices {
         &self.file_descriptor.common().messages[self.index]
     }
 

@@ -1,7 +1,7 @@
 pub(crate) mod generated;
 
 use crate::descriptor::OneofDescriptorProto;
-use crate::reflect::file::index::OneofIndex;
+use crate::reflect::file::index::OneofIndices;
 use crate::reflect::file::FileDescriptorImpl;
 use crate::reflect::oneof::generated::GeneratedOneofDescriptor;
 use crate::reflect::FieldDescriptor;
@@ -21,7 +21,7 @@ pub(crate) enum OneofDescriptorImplRef {
 }
 
 impl OneofDescriptor {
-    fn index_entry(&self) -> &OneofIndex {
+    fn index_entry(&self) -> &OneofIndices {
         &self.file_descriptor.common().oneofs[self.index]
     }
 

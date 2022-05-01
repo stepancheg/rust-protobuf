@@ -7,7 +7,7 @@ use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::EnumValueDescriptorProto;
 use crate::enums::Enum;
 use crate::reflect::enums::generated::GeneratedEnumDescriptor;
-use crate::reflect::file::index::EnumIndex;
+use crate::reflect::file::index::EnumIndices;
 use crate::reflect::file::FileDescriptorImpl;
 use crate::reflect::FileDescriptor;
 use crate::reflect::MessageDescriptor;
@@ -148,8 +148,8 @@ impl EnumDescriptor {
         self.proto().name()
     }
 
-    fn index_entry(&self) -> &EnumIndex {
-        self.file_descriptor.enum_index_entry(self.index)
+    fn index_entry(&self) -> &EnumIndices {
+        self.file_descriptor.enum_indices(self.index)
     }
 
     /// Fully qualified protobuf name of enum

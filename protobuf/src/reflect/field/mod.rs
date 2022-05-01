@@ -214,7 +214,10 @@ impl FieldDescriptor {
         let (descriptor, index) = self.regular();
         let file_fields = match self.singular() {
             SingularFieldAccessorRef::Generated(..) => {
-                &descriptor.file_descriptor.generated_index().fields
+                &descriptor
+                    .file_descriptor
+                    .common_for_generated_descriptor()
+                    .fields
             }
             SingularFieldAccessorRef::Dynamic(..) => {
                 &DynamicMessage::downcast_ref(m)
