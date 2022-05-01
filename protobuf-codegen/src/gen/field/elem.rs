@@ -11,7 +11,6 @@ use crate::gen::message::RustTypeMessage;
 use crate::gen::rust::ident_with_path::RustIdentWithPath;
 use crate::gen::rust_types_values::message_or_enum_to_rust_relative;
 use crate::gen::rust_types_values::PrimitiveTypeVariant;
-use crate::gen::rust_types_values::ProtobufTypeGen;
 use crate::gen::rust_types_values::RustType;
 use crate::gen::rust_types_values::RustValueTyped;
 use crate::gen::scope::EnumValueWithContext;
@@ -120,23 +119,6 @@ impl<'a> FieldElem<'a> {
         } else {
             self.rust_storage_elem_type(reference)
         }
-    }
-
-    fn protobuf_type_gen(&self, reference: &FileAndMod) -> ProtobufTypeGen {
-        match *self {
-            FieldElem::Primitive(t, v) => ProtobufTypeGen::Primitive(t, v),
-            FieldElem::Message(ref m) => ProtobufTypeGen::Message(m.rust_name_relative(reference)),
-            FieldElem::Enum(ref en) => {
-                ProtobufTypeGen::EnumOrUnknown(en.rust_name_relative(reference))
-            }
-            FieldElem::Group => unreachable!(),
-        }
-    }
-
-    /// implementation of ProtobufType trait
-    pub(crate) fn lib_protobuf_type(&self, reference: &FileAndMod) -> String {
-        self.protobuf_type_gen(reference)
-            .rust_type(&reference.customize)
     }
 
     pub(crate) fn primitive_type_variant(&self) -> PrimitiveTypeVariant {

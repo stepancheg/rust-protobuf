@@ -519,6 +519,7 @@ impl<'a> CodedInputStream<'a> {
 
     /// Skip field
     pub fn skip_field(&mut self, wire_type: WireType) -> crate::Result<()> {
+        // TODO: suboptimal.
         self.read_unknown(wire_type).map(|_| ())
     }
 

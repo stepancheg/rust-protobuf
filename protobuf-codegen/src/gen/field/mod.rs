@@ -967,14 +967,41 @@ impl<'a> FieldGen<'a> {
     fn write_merge_from_map_case_block(&self, map: &MapField, w: &mut CodeWriter) {
         let MapField { key, value, .. } = map;
         w.case_block(&format!("{}", self.tag()), |w| {
+            w.write_line(&format!("let len = is.read_raw_varint32()?;",));
+            w.write_line(&format!("let old_limit = is.push_limit(len as u64)?;"));
             w.write_line(&format!(
-                "{}::rt::read_map_into::<{}, {}>(is, &mut {})?;",
-                protobuf_crate_path(&self.customize),
-                key.lib_protobuf_type(&self.file_and_mod()),
-                value.lib_protobuf_type(&self.file_and_mod()),
-                self.self_field()
+                "let mut key = ::std::default::Default::default();"
             ));
-        })
+            w.write_line(&format!(
+                "let mut value = ::std::default::Default::default();"
+            ));
+            w.while_block("let Some(tag) = is.read_raw_tag_or_eof()?", |w| {
+                w.match_block("tag", |w| {
+                    let key_tag = make_tag(1, WireType::for_type(key.proto_type()));
+                    let value_tag = make_tag(2, WireType::for_type(value.proto_type()));
+                    w.case_expr(
+                        &format!("{key_tag}"),
+                        &format!("key = {read}", read = key.read_one_liner()),
+                    );
+                    w.case_expr(
+                        &format!("{value_tag}"),
+                        &format!("value = {read}", read = value.read_one_liner()),
+                    );
+                    w.case_expr(
+                        "_",
+                        &format!(
+                            "{protobuf_crate}::rt::skip_field_for_tag(tag, is)?",
+                            protobuf_crate = protobuf_crate_path(&self.customize)
+                        ),
+                    );
+                });
+            });
+            w.write_line(&format!("is.pop_limit(old_limit);"));
+            w.write_line(&format!(
+                "{field}.insert(key, value);",
+                field = self.self_field()
+            ));
+        });
     }
 
     // Write `merge_from` part for this singular field

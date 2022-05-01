@@ -65,3 +65,9 @@ pub fn read_unknown_or_skip_group(
     let (field_humber, wire_type) = Tag::new(tag)?.unpack();
     read_unknown_or_skip_group_with_tag_unpacked(field_humber, wire_type, is, unknown_fields)
 }
+
+/// Skip field.
+pub fn skip_field_for_tag(tag: u32, is: &mut CodedInputStream) -> crate::Result<()> {
+    let (_field_humber, wire_type) = Tag::new(tag)?.unpack();
+    is.skip_field(wire_type)
+}
