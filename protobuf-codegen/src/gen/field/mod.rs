@@ -1186,15 +1186,7 @@ impl<'a> FieldGen<'a> {
         match &self.kind {
             FieldKind::Singular(s @ SingularField { elem, .. }) => {
                 self.write_if_let_self_field_is_some(s, w, |v, w| {
-                    match elem.proto_type().encoded_size() {
-                        Some(s) => {
-                            let tag_size = self.tag_size();
-                            w.write_line(&format!("{} += {};", sum_var, (s + tag_size) as isize));
-                        }
-                        None => {
-                            self.write_element_size(&elem, w, v, sum_var);
-                        }
-                    };
+                    self.write_element_size(&elem, w, v, sum_var)
                 });
             }
             FieldKind::Repeated(RepeatedField {
