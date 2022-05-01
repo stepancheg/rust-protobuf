@@ -530,13 +530,17 @@ impl<'a> FieldGen<'a> {
     }
 
     // output code that writes single element to stream
-    pub(crate) fn write_write_element(&self, w: &mut CodeWriter, os: &str, v: &RustValueTyped) {
-        if let FieldKind::Repeated(RepeatedField { packed: true, .. }) = self.kind {
-            unreachable!();
-        };
+    pub(crate) fn write_write_element(
+        &self,
+        elem: &FieldElem,
+        w: &mut CodeWriter,
+        os: &str,
+        v: &RustValueTyped,
+    ) {
+        assert!(!self.is_repeated_packed());
 
-        match self.proto_type {
-            field_descriptor_proto::Type::TYPE_MESSAGE => {
+        match elem.proto_type() {
+            Type::TYPE_MESSAGE => {
                 let param_type = RustType::Ref(Box::new(
                     self.elem().rust_storage_elem_type(
                         &self
@@ -1125,19 +1129,23 @@ impl<'a> FieldGen<'a> {
     }
 
     pub(crate) fn write_message_write_field(&self, w: &mut CodeWriter) {
-        match self.kind {
-            FieldKind::Singular(ref s) => {
+        match &self.kind {
+            FieldKind::Singular(s @ SingularField { elem, .. }) => {
                 self.write_if_let_self_field_is_some(s, w, |v, w| {
-                    self.write_write_element(w, "os", &v);
+                    self.write_write_element(&elem, w, "os", &v);
                 });
             }
-            FieldKind::Repeated(RepeatedField { packed: false, .. }) => {
+            FieldKind::Repeated(RepeatedField {
+                packed: false,
+                elem,
+                ..
+            }) => {
                 self.write_for_self_field(w, "v", |w, v_type| {
                     let v = RustValueTyped {
                         value: "v".to_owned(),
                         rust_type: v_type.clone(),
                     };
-                    self.write_write_element(w, "os", &v);
+                    self.write_write_element(elem, w, "os", &v);
                 });
             }
             FieldKind::Repeated(RepeatedField { packed: true, .. }) => {

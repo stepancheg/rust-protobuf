@@ -250,7 +250,9 @@ impl<'a> MessageGen<'a> {
                 f.write_message_write_field(w);
             }
             self.write_match_each_oneof_variant(w, |w, variant, v| {
-                variant.field.write_write_element(w, "os", v);
+                variant
+                    .field
+                    .write_write_element(variant.elem(), w, "os", v);
             });
             w.write_line("os.write_unknown_fields(self.special_fields.unknown_fields())?;");
             w.write_line("::std::result::Result::Ok(())");
