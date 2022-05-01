@@ -1090,6 +1090,17 @@ impl<'a> FieldGen<'a> {
         );
     }
 
+    fn write_write_map_field(&self, key: &FieldElem, value: &FieldElem, w: &mut CodeWriter) {
+        w.write_line(&format!(
+            "{}::rt::write_map_with_cached_sizes::<{}, {}>({}, &{}, os)?;",
+            protobuf_crate_path(&self.customize),
+            key.lib_protobuf_type(&self.file_and_mod()),
+            value.lib_protobuf_type(&self.file_and_mod()),
+            self.proto_field.number(),
+            self.self_field()
+        ));
+    }
+
     pub(crate) fn write_message_write_field(&self, w: &mut CodeWriter) {
         match &self.kind {
             FieldKind::Singular(s @ SingularField { elem, .. }) => {
@@ -1118,17 +1129,8 @@ impl<'a> FieldGen<'a> {
                     self.self_field()
                 ));
             }
-            FieldKind::Map(MapField {
-                ref key, ref value, ..
-            }) => {
-                w.write_line(&format!(
-                    "{}::rt::write_map_with_cached_sizes::<{}, {}>({}, &{}, os)?;",
-                    protobuf_crate_path(&self.customize),
-                    key.lib_protobuf_type(&self.file_and_mod()),
-                    value.lib_protobuf_type(&self.file_and_mod()),
-                    self.proto_field.number(),
-                    self.self_field()
-                ));
+            FieldKind::Map(MapField { key, value, .. }) => {
+                self.write_write_map_field(key, value, w)
             }
             FieldKind::Oneof(..) => unreachable!(),
         };
