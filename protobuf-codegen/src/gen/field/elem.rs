@@ -150,7 +150,7 @@ impl<'a> FieldElem<'a> {
     ) -> String {
         let tag_size = tag_size(field_number);
         match self.proto_type().encoded_size() {
-            Some(data_size) => format!("{data_size} + {tag_size}"),
+            Some(data_size) => format!("{tag_size} + {data_size}"),
             None => match self.proto_type() {
                 Type::TYPE_MESSAGE => panic!("not a single-liner"),
                 // We are not inlining `bytes_size` here,

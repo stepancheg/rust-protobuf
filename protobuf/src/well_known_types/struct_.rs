@@ -495,13 +495,13 @@ impl crate::Message for Value {
                     my_size += crate::rt::int32_size(1, v.value());
                 },
                 &value::Kind::NumberValue(v) => {
-                    my_size += 9;
+                    my_size += 1 + 8;
                 },
                 &value::Kind::StringValue(ref v) => {
                     my_size += crate::rt::string_size(3, &v);
                 },
                 &value::Kind::BoolValue(v) => {
-                    my_size += 2;
+                    my_size += 1 + 1;
                 },
                 &value::Kind::StructValue(ref v) => {
                     let len = v.compute_size();

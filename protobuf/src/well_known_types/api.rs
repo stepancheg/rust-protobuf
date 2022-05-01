@@ -431,13 +431,13 @@ impl crate::Message for Method {
             my_size += crate::rt::string_size(2, &self.request_type_url);
         }
         if self.request_streaming != false {
-            my_size += 2;
+            my_size += 1 + 1;
         }
         if !self.response_type_url.is_empty() {
             my_size += crate::rt::string_size(4, &self.response_type_url);
         }
         if self.response_streaming != false {
-            my_size += 2;
+            my_size += 1 + 1;
         }
         for value in &self.options {
             let len = value.compute_size();

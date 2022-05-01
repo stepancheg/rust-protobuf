@@ -89,7 +89,7 @@ impl crate::Message for DoubleValue {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if self.value != 0. {
-            my_size += 9;
+            my_size += 1 + 8;
         }
         my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
@@ -215,7 +215,7 @@ impl crate::Message for FloatValue {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if self.value != 0. {
-            my_size += 5;
+            my_size += 1 + 4;
         }
         my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
@@ -845,7 +845,7 @@ impl crate::Message for BoolValue {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if self.value != false {
-            my_size += 2;
+            my_size += 1 + 1;
         }
         my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);

@@ -2042,7 +2042,7 @@ impl crate::Message for FieldDescriptorProto {
             my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         }
         if let Some(v) = self.proto3_optional {
-            my_size += 3;
+            my_size += 2 + 1;
         }
         my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
@@ -3688,10 +3688,10 @@ impl crate::Message for MethodDescriptorProto {
             my_size += 1 + crate::rt::compute_raw_varint64_size(len) + len;
         }
         if let Some(v) = self.client_streaming {
-            my_size += 2;
+            my_size += 1 + 1;
         }
         if let Some(v) = self.server_streaming {
-            my_size += 2;
+            my_size += 1 + 1;
         }
         my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
         self.special_fields.cached_size().set(my_size as u32);
@@ -4665,13 +4665,13 @@ impl crate::Message for FileOptions {
             my_size += crate::rt::string_size(8, &v);
         }
         if let Some(v) = self.java_multiple_files {
-            my_size += 2;
+            my_size += 1 + 1;
         }
         if let Some(v) = self.java_generate_equals_and_hash {
-            my_size += 3;
+            my_size += 2 + 1;
         }
         if let Some(v) = self.java_string_check_utf8 {
-            my_size += 3;
+            my_size += 2 + 1;
         }
         if let Some(v) = self.optimize_for {
             my_size += crate::rt::int32_size(9, v.value());
@@ -4680,22 +4680,22 @@ impl crate::Message for FileOptions {
             my_size += crate::rt::string_size(11, &v);
         }
         if let Some(v) = self.cc_generic_services {
-            my_size += 3;
+            my_size += 2 + 1;
         }
         if let Some(v) = self.java_generic_services {
-            my_size += 3;
+            my_size += 2 + 1;
         }
         if let Some(v) = self.py_generic_services {
-            my_size += 3;
+            my_size += 2 + 1;
         }
         if let Some(v) = self.php_generic_services {
-            my_size += 3;
+            my_size += 2 + 1;
         }
         if let Some(v) = self.deprecated {
-            my_size += 3;
+            my_size += 2 + 1;
         }
         if let Some(v) = self.cc_enable_arenas {
-            my_size += 3;
+            my_size += 2 + 1;
         }
         if let Some(v) = self.objc_class_prefix.as_ref() {
             my_size += crate::rt::string_size(36, &v);
@@ -5138,16 +5138,16 @@ impl crate::Message for MessageOptions {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if let Some(v) = self.message_set_wire_format {
-            my_size += 2;
+            my_size += 1 + 1;
         }
         if let Some(v) = self.no_standard_descriptor_accessor {
-            my_size += 2;
+            my_size += 1 + 1;
         }
         if let Some(v) = self.deprecated {
-            my_size += 2;
+            my_size += 1 + 1;
         }
         if let Some(v) = self.map_entry {
-            my_size += 2;
+            my_size += 1 + 1;
         }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
@@ -5535,19 +5535,19 @@ impl crate::Message for FieldOptions {
             my_size += crate::rt::int32_size(1, v.value());
         }
         if let Some(v) = self.packed {
-            my_size += 2;
+            my_size += 1 + 1;
         }
         if let Some(v) = self.jstype {
             my_size += crate::rt::int32_size(6, v.value());
         }
         if let Some(v) = self.lazy {
-            my_size += 2;
+            my_size += 1 + 1;
         }
         if let Some(v) = self.deprecated {
-            my_size += 2;
+            my_size += 1 + 1;
         }
         if let Some(v) = self.weak {
-            my_size += 2;
+            my_size += 1 + 1;
         }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
@@ -6021,10 +6021,10 @@ impl crate::Message for EnumOptions {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if let Some(v) = self.allow_alias {
-            my_size += 2;
+            my_size += 1 + 1;
         }
         if let Some(v) = self.deprecated {
-            my_size += 2;
+            my_size += 1 + 1;
         }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
@@ -6199,7 +6199,7 @@ impl crate::Message for EnumValueOptions {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if let Some(v) = self.deprecated {
-            my_size += 2;
+            my_size += 1 + 1;
         }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
@@ -6369,7 +6369,7 @@ impl crate::Message for ServiceOptions {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if let Some(v) = self.deprecated {
-            my_size += 3;
+            my_size += 2 + 1;
         }
         for value in &self.uninterpreted_option {
             let len = value.compute_size();
@@ -6571,7 +6571,7 @@ impl crate::Message for MethodOptions {
     fn compute_size(&self) -> u64 {
         let mut my_size = 0;
         if let Some(v) = self.deprecated {
-            my_size += 3;
+            my_size += 2 + 1;
         }
         if let Some(v) = self.idempotency_level {
             my_size += crate::rt::int32_size(34, v.value());
@@ -7025,7 +7025,7 @@ impl crate::Message for UninterpretedOption {
             my_size += crate::rt::int64_size(5, v);
         }
         if let Some(v) = self.double_value {
-            my_size += 9;
+            my_size += 1 + 8;
         }
         if let Some(v) = self.string_value.as_ref() {
             my_size += crate::rt::bytes_size(7, &v);
@@ -7264,7 +7264,7 @@ pub mod uninterpreted_option {
                 my_size += crate::rt::string_size(1, &v);
             }
             if let Some(v) = self.is_extension {
-                my_size += 2;
+                my_size += 1 + 1;
             }
             my_size += crate::rt::unknown_fields_size(self.special_fields.unknown_fields());
             self.special_fields.cached_size().set(my_size as u32);

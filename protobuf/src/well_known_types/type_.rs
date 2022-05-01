@@ -428,7 +428,7 @@ impl crate::Message for Field {
             my_size += crate::rt::int32_size(7, self.oneof_index);
         }
         if self.packed != false {
-            my_size += 2;
+            my_size += 1 + 1;
         }
         for value in &self.options {
             let len = value.compute_size();
