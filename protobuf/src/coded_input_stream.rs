@@ -14,7 +14,6 @@ use crate::error::ProtobufError;
 use crate::error::WireError;
 use crate::io::buf_read_iter::BufReadIter;
 use crate::misc::maybe_ununit_array_assume_init;
-use crate::reflect::types::ProtobufType;
 use crate::reflect::types::ProtobufTypeBool;
 use crate::reflect::types::ProtobufTypeDouble;
 use crate::reflect::types::ProtobufTypeFixed;
@@ -27,6 +26,7 @@ use crate::reflect::types::ProtobufTypeSfixed32;
 use crate::reflect::types::ProtobufTypeSfixed64;
 use crate::reflect::types::ProtobufTypeSint32;
 use crate::reflect::types::ProtobufTypeSint64;
+use crate::reflect::types::ProtobufTypeTrait;
 use crate::reflect::types::ProtobufTypeUint32;
 use crate::reflect::types::ProtobufTypeUint64;
 use crate::reflect::MessageDescriptor;
@@ -393,7 +393,7 @@ impl<'a> CodedInputStream<'a> {
         Ok(())
     }
 
-    fn read_repeated_packed_into<T: ProtobufType>(
+    fn read_repeated_packed_into<T: ProtobufTypeTrait>(
         &mut self,
         target: &mut Vec<T::ProtobufValue>,
     ) -> crate::Result<()> {

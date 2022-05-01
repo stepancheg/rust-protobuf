@@ -26,7 +26,7 @@ use crate::EnumOrUnknown;
 use crate::Message;
 
 /// Encapsulate type-specific serialization and conversion logic
-pub(crate) trait ProtobufType: Send + Sync + Clone + Sized + 'static {
+pub(crate) trait ProtobufTypeTrait: Send + Sync + Clone + Sized + 'static {
     /// Rust type for this protobuf type.
     type ProtobufValue: Default;
 
@@ -87,7 +87,7 @@ pub(crate) trait ProtobufType: Send + Sync + Clone + Sized + 'static {
 }
 
 /// All fixed size types
-pub(crate) trait ProtobufTypeFixed: ProtobufType {
+pub(crate) trait ProtobufTypeFixed: ProtobufTypeTrait {
     /// Encoded size of value in bytes of this type.
     ///
     /// E. g. it is `4` for `fixed32`
@@ -156,7 +156,7 @@ pub struct ProtobufTypeEnumOrUnknown<E: Enum>(marker::PhantomData<E>);
 #[derive(Copy, Clone)]
 pub struct ProtobufTypeMessage<M: Message>(marker::PhantomData<M>);
 
-impl ProtobufType for ProtobufTypeFloat {
+impl ProtobufTypeTrait for ProtobufTypeFloat {
     type ProtobufValue = f32;
 
     const WIRE_TYPE: WireType = WireType::Fixed32;
@@ -191,7 +191,7 @@ impl ProtobufTypeFixed for ProtobufTypeFloat {
     const ENCODED_SIZE: u32 = 4;
 }
 
-impl ProtobufType for ProtobufTypeDouble {
+impl ProtobufTypeTrait for ProtobufTypeDouble {
     type ProtobufValue = f64;
 
     const WIRE_TYPE: WireType = WireType::Fixed64;
@@ -226,7 +226,7 @@ impl ProtobufTypeFixed for ProtobufTypeDouble {
     const ENCODED_SIZE: u32 = 8;
 }
 
-impl ProtobufType for ProtobufTypeInt32 {
+impl ProtobufTypeTrait for ProtobufTypeInt32 {
     type ProtobufValue = i32;
 
     const WIRE_TYPE: WireType = WireType::Varint;
@@ -256,7 +256,7 @@ impl ProtobufType for ProtobufTypeInt32 {
     }
 }
 
-impl ProtobufType for ProtobufTypeInt64 {
+impl ProtobufTypeTrait for ProtobufTypeInt64 {
     type ProtobufValue = i64;
 
     const WIRE_TYPE: WireType = WireType::Varint;
@@ -282,7 +282,7 @@ impl ProtobufType for ProtobufTypeInt64 {
     }
 }
 
-impl ProtobufType for ProtobufTypeUint32 {
+impl ProtobufTypeTrait for ProtobufTypeUint32 {
     type ProtobufValue = u32;
 
     const WIRE_TYPE: WireType = WireType::Varint;
@@ -308,7 +308,7 @@ impl ProtobufType for ProtobufTypeUint32 {
     }
 }
 
-impl ProtobufType for ProtobufTypeUint64 {
+impl ProtobufTypeTrait for ProtobufTypeUint64 {
     type ProtobufValue = u64;
 
     const WIRE_TYPE: WireType = WireType::Varint;
@@ -334,7 +334,7 @@ impl ProtobufType for ProtobufTypeUint64 {
     }
 }
 
-impl ProtobufType for ProtobufTypeSint32 {
+impl ProtobufTypeTrait for ProtobufTypeSint32 {
     type ProtobufValue = i32;
 
     const WIRE_TYPE: WireType = WireType::Varint;
@@ -360,7 +360,7 @@ impl ProtobufType for ProtobufTypeSint32 {
     }
 }
 
-impl ProtobufType for ProtobufTypeSint64 {
+impl ProtobufTypeTrait for ProtobufTypeSint64 {
     type ProtobufValue = i64;
 
     const WIRE_TYPE: WireType = WireType::Varint;
@@ -386,7 +386,7 @@ impl ProtobufType for ProtobufTypeSint64 {
     }
 }
 
-impl ProtobufType for ProtobufTypeFixed32 {
+impl ProtobufTypeTrait for ProtobufTypeFixed32 {
     type ProtobufValue = u32;
 
     const WIRE_TYPE: WireType = WireType::Fixed32;
@@ -416,7 +416,7 @@ impl ProtobufTypeFixed for ProtobufTypeFixed32 {
     const ENCODED_SIZE: u32 = 4;
 }
 
-impl ProtobufType for ProtobufTypeFixed64 {
+impl ProtobufTypeTrait for ProtobufTypeFixed64 {
     type ProtobufValue = u64;
 
     const WIRE_TYPE: WireType = WireType::Fixed64;
@@ -446,7 +446,7 @@ impl ProtobufTypeFixed for ProtobufTypeFixed64 {
     const ENCODED_SIZE: u32 = 8;
 }
 
-impl ProtobufType for ProtobufTypeSfixed32 {
+impl ProtobufTypeTrait for ProtobufTypeSfixed32 {
     type ProtobufValue = i32;
 
     const WIRE_TYPE: WireType = WireType::Fixed32;
@@ -476,7 +476,7 @@ impl ProtobufTypeFixed for ProtobufTypeSfixed32 {
     const ENCODED_SIZE: u32 = 4;
 }
 
-impl ProtobufType for ProtobufTypeSfixed64 {
+impl ProtobufTypeTrait for ProtobufTypeSfixed64 {
     type ProtobufValue = i64;
 
     const WIRE_TYPE: WireType = WireType::Fixed64;
@@ -506,7 +506,7 @@ impl ProtobufTypeFixed for ProtobufTypeSfixed64 {
     const ENCODED_SIZE: u32 = 8;
 }
 
-impl ProtobufType for ProtobufTypeBool {
+impl ProtobufTypeTrait for ProtobufTypeBool {
     type ProtobufValue = bool;
 
     const WIRE_TYPE: WireType = WireType::Varint;
@@ -532,7 +532,7 @@ impl ProtobufType for ProtobufTypeBool {
     }
 }
 
-impl ProtobufType for ProtobufTypeString {
+impl ProtobufTypeTrait for ProtobufTypeString {
     type ProtobufValue = String;
 
     const WIRE_TYPE: WireType = WireType::LengthDelimited;
@@ -560,7 +560,7 @@ impl ProtobufType for ProtobufTypeString {
     }
 }
 
-impl ProtobufType for ProtobufTypeBytes {
+impl ProtobufTypeTrait for ProtobufTypeBytes {
     type ProtobufValue = Vec<u8>;
 
     const WIRE_TYPE: WireType = WireType::LengthDelimited;
@@ -587,7 +587,7 @@ impl ProtobufType for ProtobufTypeBytes {
 }
 
 #[cfg(feature = "bytes")]
-impl ProtobufType for ProtobufTypeTokioBytes {
+impl ProtobufTypeTrait for ProtobufTypeTokioBytes {
     type ProtobufValue = bytes::Bytes;
 
     const WIRE_TYPE: WireType = ProtobufTypeBytes::WIRE_TYPE;
@@ -614,7 +614,7 @@ impl ProtobufType for ProtobufTypeTokioBytes {
 }
 
 #[cfg(feature = "bytes")]
-impl ProtobufType for ProtobufTypeTokioChars {
+impl ProtobufTypeTrait for ProtobufTypeTokioChars {
     type ProtobufValue = Chars;
 
     const WIRE_TYPE: WireType = ProtobufTypeBytes::WIRE_TYPE;
@@ -640,7 +640,7 @@ impl ProtobufType for ProtobufTypeTokioChars {
     }
 }
 
-impl<E: Enum> ProtobufType for ProtobufTypeEnumOrUnknown<E> {
+impl<E: Enum> ProtobufTypeTrait for ProtobufTypeEnumOrUnknown<E> {
     type ProtobufValue = EnumOrUnknown<E>;
 
     const WIRE_TYPE: WireType = WireType::Varint;
@@ -666,7 +666,7 @@ impl<E: Enum> ProtobufType for ProtobufTypeEnumOrUnknown<E> {
     }
 }
 
-impl<M: Message + Clone + Default> ProtobufType for ProtobufTypeMessage<M> {
+impl<M: Message + Clone + Default> ProtobufTypeTrait for ProtobufTypeMessage<M> {
     type ProtobufValue = M;
 
     const WIRE_TYPE: WireType = WireType::LengthDelimited;

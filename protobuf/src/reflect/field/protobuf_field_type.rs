@@ -1,14 +1,14 @@
-use crate::reflect::protobuf_type_box::ProtobufTypeBox;
+use crate::reflect::protobuf_type_box::ProtobufType;
 use crate::reflect::RuntimeFieldType;
 
 /// Reflective representation of field type plus wire type.
 pub(crate) enum ProtobufFieldType {
     /// Singular field (required, optional for proto2 or singular for proto3)
-    Singular(ProtobufTypeBox),
+    Singular(ProtobufType),
     /// Repeated field
-    Repeated(ProtobufTypeBox),
+    Repeated(ProtobufType),
     /// Map field
-    Map(ProtobufTypeBox, ProtobufTypeBox),
+    Map(ProtobufType, ProtobufType),
 }
 
 impl ProtobufFieldType {

@@ -12,14 +12,14 @@ use crate::CodedInputStream;
 
 /// Runtime type and protobuf type.
 #[derive(Debug, Clone)]
-pub(crate) struct ProtobufTypeBox {
+pub(crate) struct ProtobufType {
     /// Runtime type.
     runtime: RuntimeTypeBox,
     /// Wire type.
     t: Type,
 }
 
-impl ProtobufTypeBox {
+impl ProtobufType {
     pub(crate) fn runtime(&self) -> &RuntimeTypeBox {
         &self.runtime
     }
@@ -32,19 +32,19 @@ impl ProtobufTypeBox {
         self.runtime
     }
 
-    pub(crate) fn message(message: MessageDescriptor) -> ProtobufTypeBox {
-        ProtobufTypeBox::new(RuntimeTypeBox::Message(message), Type::TYPE_MESSAGE).unwrap()
+    pub(crate) fn message(message: MessageDescriptor) -> ProtobufType {
+        ProtobufType::new(RuntimeTypeBox::Message(message), Type::TYPE_MESSAGE).unwrap()
     }
 
-    pub(crate) fn enumeration(enumeration: EnumDescriptor) -> ProtobufTypeBox {
-        ProtobufTypeBox::new(RuntimeTypeBox::Enum(enumeration), Type::TYPE_ENUM).unwrap()
+    pub(crate) fn enumeration(enumeration: EnumDescriptor) -> ProtobufType {
+        ProtobufType::new(RuntimeTypeBox::Enum(enumeration), Type::TYPE_ENUM).unwrap()
     }
 
-    pub(crate) fn from_proto_type(t: Type) -> ProtobufTypeBox {
-        ProtobufTypeBox::new(RuntimeTypeBox::from_proto_type(t), t).unwrap()
+    pub(crate) fn from_proto_type(t: Type) -> ProtobufType {
+        ProtobufType::new(RuntimeTypeBox::from_proto_type(t), t).unwrap()
     }
 
-    pub(crate) fn new(runtime: RuntimeTypeBox, t: Type) -> crate::Result<ProtobufTypeBox> {
+    pub(crate) fn new(runtime: RuntimeTypeBox, t: Type) -> crate::Result<ProtobufType> {
         match (t, &runtime) {
             (Type::TYPE_INT32, RuntimeTypeBox::I32) => {}
             (Type::TYPE_INT64, RuntimeTypeBox::I64) => {}
@@ -66,7 +66,7 @@ impl ProtobufTypeBox {
             (Type::TYPE_GROUP, ..) => return Err(ProtobufError::GroupIsNotImplemented.into()),
             _ => return Err(ProtobufError::IncompatibleProtobufTypeAndRuntimeType.into()),
         }
-        Ok(ProtobufTypeBox { runtime, t })
+        Ok(ProtobufType { runtime, t })
     }
 
     pub(crate) fn read(

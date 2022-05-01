@@ -3,7 +3,7 @@
 use std::marker;
 
 use crate::reflect::runtime_types::RuntimeType;
-use crate::reflect::types::ProtobufType;
+use crate::reflect::types::ProtobufTypeTrait;
 use crate::reflect::ProtobufValue;
 use crate::reflect::RuntimeTypeBox;
 use crate::wire_format::WireType;
@@ -19,12 +19,12 @@ pub trait ProtobufTypeDynamic: Send + Sync + 'static {
     fn runtime_type(&self) -> RuntimeTypeBox;
 }
 
-pub(crate) struct ProtobufTypeDynamicImpl<T: ProtobufType>(pub marker::PhantomData<T>);
+pub(crate) struct ProtobufTypeDynamicImpl<T: ProtobufTypeTrait>(pub marker::PhantomData<T>);
 
 impl<T> ProtobufTypeDynamic for ProtobufTypeDynamicImpl<T>
 where
-    T: ProtobufType,
-    <T as ProtobufType>::ProtobufValue: ProtobufValue,
+    T: ProtobufTypeTrait,
+    <T as ProtobufTypeTrait>::ProtobufValue: ProtobufValue,
 {
     fn wire_type(&self) -> WireType {
         T::WIRE_TYPE

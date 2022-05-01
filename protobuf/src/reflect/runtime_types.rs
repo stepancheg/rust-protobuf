@@ -13,7 +13,6 @@ use crate::descriptor::field_descriptor_proto::Type;
 use crate::enum_or_unknown::EnumOrUnknown;
 use crate::message_full::MessageFull;
 use crate::reflect::runtime_type_box::RuntimeTypeBox;
-use crate::reflect::types::ProtobufType;
 use crate::reflect::types::ProtobufTypeBool;
 use crate::reflect::types::ProtobufTypeBytes;
 use crate::reflect::types::ProtobufTypeDouble;
@@ -33,6 +32,7 @@ use crate::reflect::types::ProtobufTypeString;
 use crate::reflect::types::ProtobufTypeTokioBytes;
 #[cfg(feature = "bytes")]
 use crate::reflect::types::ProtobufTypeTokioChars;
+use crate::reflect::types::ProtobufTypeTrait;
 use crate::reflect::types::ProtobufTypeUint32;
 use crate::reflect::types::ProtobufTypeUint64;
 use crate::reflect::value::value_ref::ReflectValueMut;

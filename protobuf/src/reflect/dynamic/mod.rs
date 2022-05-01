@@ -8,7 +8,7 @@ use crate::reflect::dynamic::map::DynamicMap;
 use crate::reflect::dynamic::optional::DynamicOptional;
 use crate::reflect::dynamic::repeated::DynamicRepeated;
 use crate::reflect::map::ReflectMap;
-use crate::reflect::protobuf_type_box::ProtobufTypeBox;
+use crate::reflect::protobuf_type_box::ProtobufType;
 use crate::reflect::repeated::ReflectRepeated;
 use crate::reflect::value::value_ref::ReflectValueMut;
 use crate::reflect::FieldDescriptor;
@@ -357,12 +357,12 @@ impl MessageDyn for DynamicMessage {
             };
             match field_desc.runtime_field_type() {
                 RuntimeFieldType::Singular(rtb) => {
-                    let pt = ProtobufTypeBox::new(rtb, field_desc.proto().type_())?;
+                    let pt = ProtobufType::new(rtb, field_desc.proto().type_())?;
                     let value = pt.read(is, wire_type)?;
                     self.set_field(&field_desc, value);
                 }
                 RuntimeFieldType::Repeated(rtb) => {
-                    let pt = ProtobufTypeBox::new(rtb, field_desc.proto().type_())?;
+                    let pt = ProtobufType::new(rtb, field_desc.proto().type_())?;
                     let mut repeated = self.mut_repeated(&field_desc);
                     pt.read_repeated_into(is, wire_type, &mut repeated)?;
                 }

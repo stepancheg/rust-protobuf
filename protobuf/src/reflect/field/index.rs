@@ -5,7 +5,7 @@ use crate::descriptor::field_descriptor_proto::Type;
 use crate::descriptor::FieldDescriptorProto;
 use crate::reflect::field::protobuf_field_type::ProtobufFieldType;
 use crate::reflect::file::building::FileDescriptorBuilding;
-use crate::reflect::protobuf_type_box::ProtobufTypeBox;
+use crate::reflect::protobuf_type_box::ProtobufType;
 use crate::reflect::EnumDescriptor;
 use crate::reflect::EnumValueDescriptor;
 use crate::reflect::FieldDescriptor;
@@ -17,32 +17,32 @@ use crate::reflect::RuntimeTypeBox;
 
 #[derive(Debug)]
 pub(crate) enum ForwardProtobufTypeBox {
-    ProtobufTypeBox(ProtobufTypeBox),
+    ProtobufTypeBox(ProtobufType),
     CurrentFileEnum(usize),
     CurrentFileMessage(usize),
 }
 
 impl ForwardProtobufTypeBox {
     pub(crate) fn message(message: MessageDescriptor) -> ForwardProtobufTypeBox {
-        ForwardProtobufTypeBox::ProtobufTypeBox(ProtobufTypeBox::message(message))
+        ForwardProtobufTypeBox::ProtobufTypeBox(ProtobufType::message(message))
     }
 
     pub(crate) fn enumeration(enumeration: EnumDescriptor) -> ForwardProtobufTypeBox {
-        ForwardProtobufTypeBox::ProtobufTypeBox(ProtobufTypeBox::enumeration(enumeration))
+        ForwardProtobufTypeBox::ProtobufTypeBox(ProtobufType::enumeration(enumeration))
     }
 
     pub(crate) fn from_proto_type(t: Type) -> ForwardProtobufTypeBox {
-        ForwardProtobufTypeBox::ProtobufTypeBox(ProtobufTypeBox::from_proto_type(t))
+        ForwardProtobufTypeBox::ProtobufTypeBox(ProtobufType::from_proto_type(t))
     }
 
-    pub(crate) fn resolve(&self, file: &FileDescriptor) -> ProtobufTypeBox {
+    pub(crate) fn resolve(&self, file: &FileDescriptor) -> ProtobufType {
         match self {
             ForwardProtobufTypeBox::ProtobufTypeBox(t) => t.clone(),
             ForwardProtobufTypeBox::CurrentFileMessage(m) => {
-                ProtobufTypeBox::message(MessageDescriptor::new(file.clone(), *m))
+                ProtobufType::message(MessageDescriptor::new(file.clone(), *m))
             }
             ForwardProtobufTypeBox::CurrentFileEnum(m) => {
-                ProtobufTypeBox::enumeration(EnumDescriptor::new(file.clone(), *m))
+                ProtobufType::enumeration(EnumDescriptor::new(file.clone(), *m))
             }
         }
     }

@@ -20,7 +20,7 @@ use crate::reflect::map::ReflectMapRef;
 use crate::reflect::message::message_ref::MessageRef;
 use crate::reflect::message::MessageDescriptorImplRef;
 use crate::reflect::oneof::OneofDescriptor;
-use crate::reflect::protobuf_type_box::ProtobufTypeBox;
+use crate::reflect::protobuf_type_box::ProtobufType;
 use crate::reflect::reflect_eq::ReflectEq;
 use crate::reflect::reflect_eq::ReflectEqMode;
 use crate::reflect::repeated::ReflectRepeatedMut;
@@ -397,7 +397,7 @@ impl FieldDescriptor {
     }
 
     /// Obtain type of map key and value.
-    pub(crate) fn map_proto_type(&self) -> (ProtobufTypeBox, ProtobufTypeBox) {
+    pub(crate) fn map_proto_type(&self) -> (ProtobufType, ProtobufType) {
         match self.protobuf_field_type() {
             ProtobufFieldType::Map(k, v) => (k, v),
             _ => panic!("not a map field: {}", self),
