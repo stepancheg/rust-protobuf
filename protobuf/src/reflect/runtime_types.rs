@@ -118,14 +118,6 @@ pub trait RuntimeTypeWithDeref: RuntimeType {
     fn deref_as_ref(value: &Self::DerefTarget) -> ReflectValueRef;
 }
 
-/// Object wrapper can be used to query hashmap.
-pub enum RefOrValue<'a, Q: ?Sized, K> {
-    /// A reference
-    Ref(&'a Q),
-    /// A value
-    Value(K),
-}
-
 /// Types which can be hashmap keys.
 pub trait RuntimeTypeHashable: RuntimeType {
     /// Query hash map with a given key.

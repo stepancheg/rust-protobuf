@@ -539,7 +539,7 @@ impl<'a> MessageGen<'a> {
             &format!("{}", self.rust_name()),
             |w| {
                 w.write_line(&format!(
-                    "type RuntimeType = {}::reflect::runtime_types::RuntimeTypeMessage<Self>;",
+                    "type RuntimeType = {}::reflect::rt::RuntimeTypeMessage<Self>;",
                     protobuf_crate_path(&self.customize.for_elem)
                 ));
             },
