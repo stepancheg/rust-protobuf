@@ -303,6 +303,10 @@ impl<'a> ReflectEq for ReflectRepeatedRef<'a> {
             return false;
         }
 
+        if self.element_type() != that.element_type() {
+            return false;
+        }
+
         for i in 0..len {
             let a = self.get(i);
             let b = that.get(i);
@@ -317,17 +321,7 @@ impl<'a> ReflectEq for ReflectRepeatedRef<'a> {
 
 impl<'a> PartialEq for ReflectRepeatedRef<'a> {
     fn eq(&self, other: &Self) -> bool {
-        if self.len() != other.len() {
-            return false;
-        }
-
-        for i in 0..self.len() {
-            if self.get(i) != other.get(i) {
-                return false;
-            }
-        }
-
-        return true;
+        self.reflect_eq(other, &ReflectEqMode::default())
     }
 }
 

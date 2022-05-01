@@ -37,7 +37,7 @@ pub(crate) mod protobuf_field_type;
 pub(crate) mod runtime_field_type;
 
 /// Reference to a value stored in a field, optional, repeated or map.
-// TODO: implement Eq
+#[derive(PartialEq)]
 pub enum ReflectFieldRef<'a> {
     /// Singular field, optional or required in proto3 and just plain field in proto3
     Optional(Option<ReflectValueRef<'a>>),

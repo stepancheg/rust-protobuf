@@ -156,11 +156,24 @@ impl<'a> ReflectMapRef<'a> {
     }
 }
 
+impl<'a> PartialEq for ReflectMapRef<'a> {
+    fn eq(&self, other: &Self) -> bool {
+        self.reflect_eq(other, &ReflectEqMode::default())
+    }
+}
+
 impl<'a> ReflectEq for ReflectMapRef<'a> {
     fn reflect_eq(&self, that: &Self, mode: &ReflectEqMode) -> bool {
         let len = self.len();
 
         if len != that.len() {
+            return false;
+        }
+
+        if self.key_type() != that.key_type() {
+            return false;
+        }
+        if self.value_type() != that.value_type() {
             return false;
         }
 
