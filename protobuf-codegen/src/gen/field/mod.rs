@@ -3,6 +3,7 @@ pub(crate) mod elem;
 mod option_kind;
 mod repeated;
 mod singular;
+mod tag;
 pub(crate) mod type_ext;
 
 use protobuf::descriptor::field_descriptor_proto::Type;
@@ -28,6 +29,7 @@ use crate::gen::field::option_kind::OptionKind;
 use crate::gen::field::repeated::RepeatedField;
 use crate::gen::field::singular::SingularField;
 use crate::gen::field::singular::SingularFieldFlag;
+use crate::gen::field::tag::make_tag;
 use crate::gen::field::type_ext::TypeExt;
 use crate::gen::file_and_mod::FileAndMod;
 use crate::gen::inside::protobuf_crate_path;
@@ -929,7 +931,7 @@ impl<'a> FieldGen<'a> {
     }
 
     fn tag_with_wire_type(&self, wire_type: WireType) -> u32 {
-        ((self.proto_field.number() as u32) << 3) + (wire_type as u32)
+        make_tag(self.proto_field.number() as u32, wire_type)
     }
 
     fn tag(&self) -> u32 {
@@ -1118,9 +1120,8 @@ impl<'a> FieldGen<'a> {
                 w,
             );
             w.write_line(&format!(
-                "{os}.write_tag({field_number}, {protobuf_crate}::rt::WireType::LengthDelimited)?;",
-                field_number = self.proto_field.number(),
-                protobuf_crate = protobuf_crate_path(&self.customize),
+                "{os}.write_raw_varint32({tag})?; // Tag.",
+                tag = make_tag(self.proto_field.number() as u32, WireType::LengthDelimited),
             ));
             w.write_line(&format!("{os}.write_raw_varint32(entry_size as u32)?;",));
             key.write_write_element(1, k, &self.file_and_mod(), &self.customize, os, w);
