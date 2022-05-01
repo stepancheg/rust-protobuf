@@ -91,10 +91,23 @@ impl<A: 'static, B: 'static> OwningRef<A, B> {
         }
     }
 
-    pub(crate) fn flat_map<'x, C, T: FnOnce(&B) -> Vec<&C>>(
+    pub(crate) fn _flat_map<'x, C, T: FnOnce(&B) -> Vec<&C>>(
         &self,
         // TODO: how to put something like:
         //   `-> impl Iterator<Item = &C>` here?
+        f: T,
+    ) -> impl Iterator<Item = OwningRef<A, C>> + '_
+    where
+        C: 'static,
+    {
+        f(&self).into_iter().map(|ptr| OwningRef {
+            ptr,
+            owner: self.owner.clone(),
+        })
+    }
+
+    pub(crate) fn flat_map_slice<'x, C, T: FnOnce(&B) -> &[C]>(
+        &self,
         f: T,
     ) -> impl Iterator<Item = OwningRef<A, C>> + '_
     where

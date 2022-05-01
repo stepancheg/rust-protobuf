@@ -133,11 +133,11 @@ impl FileDescriptorCommon {
         let mut top_level_messages = Vec::new();
 
         // Top-level enums start with zero
-        for e in file.flat_map(|f| f.enum_type.iter().collect()) {
+        for e in file.flat_map_slice(|f| &f.enum_type) {
             enums.push(EnumIndex::new(e.name().to_owned(), None, e, file.owner()));
         }
 
-        for message in file.flat_map(|f| f.message_type.iter().collect()) {
+        for message in file.flat_map_slice(|f| &f.message_type) {
             let message_index = Self::index_message_and_inners(
                 file.owner(),
                 message,
@@ -181,7 +181,7 @@ impl FileDescriptorCommon {
         )?;
 
         let first_extension_field_index = fields.len();
-        for ext in file.flat_map(|f| f.extension.iter().collect()) {
+        for ext in file.flat_map_slice(|f| &f.extension) {
             fields.push(FieldIndex::index(
                 None,
                 ext,
@@ -237,7 +237,7 @@ impl FileDescriptorCommon {
             is_initialized_is_always_true: false,
         });
 
-        for e in message.flat_map(|m| m.enum_type.iter().collect()) {
+        for e in message.flat_map_slice(|m| &m.enum_type) {
             enums.push(EnumIndex::new(
                 concat_paths(&name_to_package, e.name()),
                 Some(message_index),
@@ -262,7 +262,7 @@ impl FileDescriptorCommon {
             });
         }
 
-        for nested in message.flat_map(|m| m.nested_type.iter().collect()) {
+        for nested in message.flat_map_slice(|m| &m.nested_type) {
             let nested_index = Self::index_message_and_inners(
                 file,
                 nested,
@@ -332,7 +332,7 @@ impl FileDescriptorCommon {
 
         let first_field_index = fields.len();
 
-        for field in proto.flat_map(|m| m.field.iter().collect()) {
+        for field in proto.flat_map_slice(|m| &m.field) {
             fields.push(FieldIndex::index(Some(message_index), field, building)?);
         }
 
@@ -364,7 +364,7 @@ impl FileDescriptorCommon {
             }
         }
 
-        for ext in proto.flat_map(|m| m.extension.iter().collect()) {
+        for ext in proto.flat_map_slice(|m| &m.extension) {
             fields.push(FieldIndex::index(Some(message_index), ext, building)?);
         }
 
