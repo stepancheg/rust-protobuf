@@ -229,8 +229,9 @@ impl MessageDescriptor {
 
     /// Nested oneofs including synthetic.
     pub fn all_oneofs<'a>(&'a self) -> impl Iterator<Item = OneofDescriptor> + 'a {
-        let index_entry = self.index_entry();
-        (index_entry.first_oneof_index..index_entry.first_oneof_index + index_entry.oneof_count)
+        self.index_entry()
+            .oneofs
+            .clone()
             .map(move |i| OneofDescriptor {
                 file_descriptor: self.file_descriptor.clone(),
                 index: i,

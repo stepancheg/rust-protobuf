@@ -22,8 +22,7 @@ pub(crate) struct MessageIndex {
     pub(crate) enclosing_message: Option<usize>,
     pub(crate) nested_messages: Vec<usize>,
     pub(crate) nested_enums: Range<usize>,
-    pub(crate) first_oneof_index: usize,
-    pub(crate) oneof_count: usize,
+    pub(crate) oneofs: Range<usize>,
     pub(crate) message_index: MessageFieldsIndex,
     pub(crate) is_initialized_is_always_true: bool,
 }
@@ -232,8 +231,7 @@ impl FileDescriptorCommon {
             enclosing_message: parent,
             nested_messages: Vec::with_capacity(message.nested_type.len()),
             nested_enums: enums.len()..enums.len() + message.enum_type.len(),
-            first_oneof_index: oneofs.len(),
-            oneof_count: message.oneof_decl.len(),
+            oneofs: oneofs.len()..oneofs.len() + message.oneof_decl.len(),
             message_index: MessageFieldsIndex::default(),
             // Initialized later.
             is_initialized_is_always_true: false,

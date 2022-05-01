@@ -182,7 +182,7 @@ impl FieldDescriptor {
             if proto.has_oneof_index() {
                 Some(OneofDescriptor {
                     file_descriptor: self.file_descriptor().clone(),
-                    index: self.containing_message().index().first_oneof_index
+                    index: self.containing_message().index().oneofs.start
                         + proto.oneof_index() as usize,
                 })
             } else {
