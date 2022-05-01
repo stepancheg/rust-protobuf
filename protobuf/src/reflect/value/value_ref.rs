@@ -1,3 +1,4 @@
+use std::fmt;
 use std::hash::Hash;
 use std::hash::Hasher;
 use std::mem;
@@ -45,6 +46,28 @@ pub enum ReflectValueRef<'a> {
     ),
     /// `message`
     Message(MessageRef<'a>),
+}
+
+impl<'a> fmt::Display for ReflectValueRef<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            ReflectValueRef::U32(v) => write!(f, "{}", v),
+            ReflectValueRef::U64(v) => write!(f, "{}", v),
+            ReflectValueRef::I32(v) => write!(f, "{}", v),
+            ReflectValueRef::I64(v) => write!(f, "{}", v),
+            ReflectValueRef::F32(v) => write!(f, "{}", v),
+            ReflectValueRef::F64(v) => write!(f, "{}", v),
+            ReflectValueRef::Bool(v) => write!(f, "{}", v),
+            ReflectValueRef::String(v) => write!(f, "{}", v),
+            // TODO: better display
+            ReflectValueRef::Bytes(v) => write!(f, "{:?}", v),
+            ReflectValueRef::Enum(descriptor, value) => match descriptor.value_by_number(*value) {
+                Some(v) => write!(f, "{}", v.name()),
+                None => write!(f, "{}", value),
+            },
+            ReflectValueRef::Message(msg) => write!(f, "{}", msg),
+        }
+    }
 }
 
 impl<'a> ReflectValueRef<'a> {

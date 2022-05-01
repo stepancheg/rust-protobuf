@@ -1,3 +1,4 @@
+use std::fmt;
 use std::ops::Deref;
 
 use crate::message_dyn::MessageDyn;
@@ -17,6 +18,12 @@ enum MessageRefImpl<'a> {
 #[derive(Clone, Debug)]
 pub struct MessageRef<'a> {
     imp: MessageRefImpl<'a>,
+}
+
+impl<'a> fmt::Display for MessageRef<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Display::fmt(self.deref(), f)
+    }
 }
 
 impl<'a> From<&'a dyn MessageDyn> for MessageRef<'a> {
