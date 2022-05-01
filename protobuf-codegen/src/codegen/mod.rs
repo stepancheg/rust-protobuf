@@ -49,6 +49,8 @@ pub struct Codegen {
     protoc: Option<PathBuf>,
     /// Extra `protoc` args
     protoc_extra_args: Vec<OsString>,
+    /// Capture stderr when running `protoc`.
+    capture_stderr: bool,
 }
 
 impl Codegen {
@@ -170,6 +172,12 @@ impl Codegen {
         self
     }
 
+    /// Capture stderr to error when running `protoc`.
+    pub fn capture_stderr(&mut self) -> &mut Self {
+        self.capture_stderr = true;
+        self
+    }
+
     /// Extra command line flags for `protoc` invocation.
     ///
     /// For example, `--experimental_allow_proto3_optional` option.
@@ -224,6 +232,11 @@ impl Codegen {
 
         parser.inputs(&self.inputs);
         parser.includes(&self.includes);
+
+        if self.capture_stderr {
+            parser.capture_stderr();
+        }
+
         let parsed_and_typechecked = parser
             .parse_and_typecheck()
             .context("parse and typecheck")?;
