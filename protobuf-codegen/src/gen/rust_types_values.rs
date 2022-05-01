@@ -1,6 +1,7 @@
 use std::cmp;
 
 use protobuf::descriptor::*;
+use protobuf::reflect::FileDescriptor;
 use protobuf_parse::ProtobufAbsPath;
 
 use crate::customize::Customize;
@@ -458,7 +459,7 @@ fn test_file_last_component() {
     assert_eq!("ab.proto", file_last_component("yy\\xx\\ab.proto"));
 }
 
-fn is_descriptor_proto(file: &FileDescriptorProto) -> bool {
+fn is_descriptor_proto(file: &FileDescriptor) -> bool {
     file.package() == "google.protobuf" && file_last_component(file.name()) == "descriptor.proto"
 }
 
@@ -496,7 +497,7 @@ pub(crate) fn message_or_enum_to_rust_relative(
             protobuf_crate_path(&current.customize),
             name
         ))
-    } else if is_descriptor_proto(message_or_enum.file_descriptor()) {
+    } else if is_descriptor_proto(&message_or_enum.file_descriptor()) {
         // Messages defined in descriptor.proto
         RustIdentWithPath::from(format!(
             "{}::descriptor::{}",

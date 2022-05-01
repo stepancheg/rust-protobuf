@@ -77,8 +77,8 @@ impl<'a> EnumGen<'a> {
         let lite_runtime = customize.for_elem.lite_runtime.unwrap_or_else(|| {
             enum_with_scope
                 .file_descriptor()
+                .proto()
                 .options
-                .get_or_default()
                 .optimize_for()
                 == file_options::OptimizeMode::LITE_RUNTIME
         });

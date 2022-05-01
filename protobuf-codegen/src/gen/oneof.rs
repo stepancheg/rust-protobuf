@@ -181,8 +181,8 @@ impl<'a> OneofGen<'a> {
             oneof
                 .message
                 .file_descriptor()
+                .proto()
                 .options
-                .get_or_default()
                 .optimize_for()
                 == file_options::OptimizeMode::LITE_RUNTIME
         });

@@ -1,6 +1,5 @@
 use std::ops::Deref;
 
-use protobuf::descriptor::FileDescriptorProto;
 use protobuf::reflect::EnumDescriptor;
 use protobuf::reflect::EnumValueDescriptor;
 use protobuf::reflect::FieldDescriptor;
@@ -163,8 +162,8 @@ pub(crate) struct Scope<'a> {
 }
 
 impl<'a> Scope<'a> {
-    pub fn file_descriptor(&self) -> &'a FileDescriptorProto {
-        self.file_scope.file_descriptor.proto()
+    pub(crate) fn file_descriptor(&self) -> FileDescriptor {
+        self.file_scope.file_descriptor.clone()
     }
 
     // get message descriptors in this scope
@@ -292,7 +291,7 @@ impl<'a> Scope<'a> {
 pub(crate) trait WithScope<'a> {
     fn scope(&self) -> &Scope<'a>;
 
-    fn file_descriptor(&self) -> &'a FileDescriptorProto {
+    fn file_descriptor(&self) -> FileDescriptor {
         self.scope().file_descriptor()
     }
 

@@ -108,11 +108,7 @@ impl<'a> MessageGen<'a> {
             })
             .collect::<anyhow::Result<Vec<_>>>()?;
         let lite_runtime = customize.for_elem.lite_runtime.unwrap_or_else(|| {
-            message
-                .file_descriptor()
-                .options
-                .get_or_default()
-                .optimize_for()
+            message.file_descriptor().proto().options.optimize_for()
                 == file_options::OptimizeMode::LITE_RUNTIME
         });
         Ok(MessageGen {
