@@ -260,9 +260,12 @@ impl MessageDescriptor {
 
     /// Extension fields.
     pub fn extensions(&self) -> impl Iterator<Item = FieldDescriptor> + '_ {
-        (0..self.index().message_index.extensions.len()).map(move |index| FieldDescriptor {
-            imp: FieldDescriptorImpl::ExtensionInMessage(self.clone(), index),
-        })
+        self.index()
+            .message_index
+            .extension_field_range()
+            .map(move |index| FieldDescriptor {
+                imp: FieldDescriptorImpl::ExtensionInMessage(self.clone(), index),
+            })
     }
 
     pub(crate) fn index(&self) -> &MessageIndex {

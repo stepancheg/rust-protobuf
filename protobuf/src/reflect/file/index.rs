@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::ops::Range;
 
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::EnumDescriptorProto;
@@ -36,16 +37,22 @@ pub(crate) struct MessageFieldsIndex {
     /// Index of the first field in global field index.
     pub(crate) first_field_index: usize,
     pub(crate) field_count: usize,
+    /// Extensions follow fields in global field index.
+    pub(crate) extension_count: usize,
     // Following fields map to the local field index.
     pub(crate) field_index_by_name: HashMap<String, usize>,
     pub(crate) field_index_by_name_or_json_name: HashMap<String, usize>,
     pub(crate) field_index_by_number: HashMap<u32, usize>,
-    pub(crate) extensions: Vec<FieldIndex>,
 }
 
 impl MessageFieldsIndex {
     pub(crate) fn slice_fields<'a>(&self, file_fields: &'a [FieldIndex]) -> &'a [FieldIndex] {
         &file_fields[self.first_field_index..self.first_field_index + self.field_count]
+    }
+
+    pub(crate) fn extension_field_range(&self) -> Range<usize> {
+        self.first_field_index + self.field_count
+            ..self.first_field_index + self.field_count + self.extension_count
     }
 }
 
@@ -377,19 +384,19 @@ impl FileDescriptorCommon {
             }
         }
 
-        let extensions: Vec<FieldIndex> = proto
-            .extension
-            .iter()
-            .map(|f| FieldIndex::index(Some(message_index), f, building))
-            .collect::<crate::Result<Vec<_>>>()?;
+        for ext in &proto.extension {
+            fields.push(FieldIndex::index(Some(message_index), ext, building)?);
+        }
+
+        let extension_count = proto.extension.len();
 
         Ok(MessageFieldsIndex {
             first_field_index,
             field_count,
+            extension_count,
             field_index_by_name: index_by_name,
             field_index_by_name_or_json_name: index_by_name_or_json_name,
             field_index_by_number: index_by_number,
-            extensions,
         })
     }
 }

@@ -88,7 +88,11 @@ pub(crate) enum FieldDescriptorImpl {
         usize,
     ),
     // Index of extension in the file descriptor proto.
-    ExtensionInMessage(MessageDescriptor, usize),
+    ExtensionInMessage(
+        MessageDescriptor,
+        /// Index of the field in file.
+        usize,
+    ),
     // Index of extension in the file descriptor proto.
     ExtensionInFile(
         FileDescriptor,
@@ -145,7 +149,9 @@ impl FieldDescriptor {
             FieldDescriptorImpl::Field(m, i) => {
                 &m.proto().field[*i - m.index().message_index.first_field_index]
             }
-            FieldDescriptorImpl::ExtensionInMessage(m, i) => &m.proto().extension[*i],
+            FieldDescriptorImpl::ExtensionInMessage(m, i) => {
+                &m.proto().extension[*i - m.index().message_index.extension_field_range().start]
+            }
             FieldDescriptorImpl::ExtensionInFile(file, i) => {
                 &file.proto().extension[*i - file.common().first_extension_field_index]
             }
@@ -210,8 +216,8 @@ impl FieldDescriptor {
     fn index(&self) -> &FieldIndex {
         match &self.imp {
             FieldDescriptorImpl::Field(_, i) => &self.file_descriptor().common().fields[*i],
-            FieldDescriptorImpl::ExtensionInMessage(m, i) => {
-                &m.index().message_index.extensions[*i]
+            FieldDescriptorImpl::ExtensionInMessage(_, i) => {
+                &self.file_descriptor().common().fields[*i]
             }
             FieldDescriptorImpl::ExtensionInFile(f, i) => &f.common().fields[*i],
         }
