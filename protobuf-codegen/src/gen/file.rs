@@ -31,21 +31,27 @@ pub(crate) fn gen_file(
     parent_customize: &CustomizeElemCtx,
     parser: &str,
 ) -> anyhow::Result<GenFileResult> {
-    let customize = parent_customize.child(
-        &customize_from_rustproto_for_file(file_descriptor.proto().options.get_or_default()),
-        file_descriptor,
-    );
+    let lite_runtime_from_builtin_option = file_descriptor
+        .proto()
+        .options
+        .get_or_default()
+        .optimize_for()
+        == file_options::OptimizeMode::LITE_RUNTIME;
+
+    let mut customize_from_proto =
+        customize_from_rustproto_for_file(file_descriptor.proto().options.get_or_default());
+    if customize_from_proto.lite_runtime.is_none()
+        && parent_customize.for_elem.lite_runtime.is_none()
+    {
+        customize_from_proto.lite_runtime = Some(lite_runtime_from_builtin_option);
+    }
+
+    let customize = parent_customize.child(&customize_from_proto, file_descriptor);
 
     let file_scope = FileScope { file_descriptor };
     let scope = file_scope.to_scope();
-    let lite_runtime = customize.for_elem.lite_runtime.unwrap_or_else(|| {
-        file_descriptor
-            .proto()
-            .options
-            .get_or_default()
-            .optimize_for()
-            == file_options::OptimizeMode::LITE_RUNTIME
-    });
+
+    let lite_runtime = customize.for_elem.lite_runtime.unwrap_or(false);
 
     let v = CodeWriter::with(|w| {
         w.write_generated_by("rust-protobuf", env!("CARGO_PKG_VERSION"), parser);
@@ -55,6 +61,11 @@ pub(crate) fn gen_file(
             "//! Generated file from `{}`",
             file_descriptor.proto().name()
         ));
+
+        if customize.for_elem.lite_runtime.unwrap_or(false) {
+            w.comment("Generated for lite runtime");
+        }
+
         if customize.for_elem.inside_protobuf != Some(true) {
             w.write_line("");
             w.write_line("/// Generated files are compatible only with the same version");
