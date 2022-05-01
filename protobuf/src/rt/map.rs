@@ -1,8 +1,4 @@
-use std::collections::HashMap;
-use std::hash::Hash;
-
 use crate::error::WireError;
-use crate::reflect::types::ProtobufType;
 use crate::wire_format::WireType;
 use crate::CodedInputStream;
 
@@ -36,40 +32,4 @@ pub(crate) fn read_map_template(
     }
 
     read_map_template_new(is, key, value)
-}
-
-/// Read `map` field.
-pub fn read_map_into<K, V>(
-    is: &mut CodedInputStream,
-    target: &mut HashMap<K::ProtobufValue, V::ProtobufValue>,
-) -> crate::Result<()>
-where
-    K: ProtobufType,
-    V: ProtobufType,
-    K::ProtobufValue: Eq + Hash,
-{
-    let mut key = Default::default();
-    let mut value = Default::default();
-
-    read_map_template_new(
-        is,
-        |wire_type, is| {
-            if wire_type != K::WIRE_TYPE {
-                return Err(WireError::UnexpectedWireType(wire_type).into());
-            }
-            key = K::read(is)?;
-            Ok(())
-        },
-        |wire_type, is| {
-            if wire_type != V::WIRE_TYPE {
-                return Err(WireError::UnexpectedWireType(wire_type).into());
-            }
-            value = V::read(is)?;
-            Ok(())
-        },
-    )?;
-
-    target.insert(key, value);
-
-    Ok(())
 }
