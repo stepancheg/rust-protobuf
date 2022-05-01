@@ -196,7 +196,7 @@ impl<'a> MessageGen<'a> {
 
     fn write_match_each_oneof_variant<F>(&self, w: &mut CodeWriter, cb: F)
     where
-        F: Fn(&mut CodeWriter, &OneofVariantGen, &str, &RustType),
+        F: Fn(&mut CodeWriter, &OneofVariantGen, &RustValueTyped),
     {
         for oneof in self.oneofs() {
             let variants = oneof.variants_except_group();
@@ -221,7 +221,14 @@ impl<'a> MessageGen<'a> {
                             w.case_block(
                                 format!("&{}({})", variant.path(&self.file_and_mod()), refv),
                                 |w| {
-                                    cb(w, &variant, "v", &vtype);
+                                    cb(
+                                        w,
+                                        &variant,
+                                        &RustValueTyped {
+                                            value: "v".to_owned(),
+                                            rust_type: vtype.clone(),
+                                        },
+                                    );
                                 },
                             );
                         }
@@ -242,12 +249,8 @@ impl<'a> MessageGen<'a> {
             for f in self.fields_except_oneof_and_group() {
                 f.write_message_write_field(w);
             }
-            self.write_match_each_oneof_variant(w, |w, variant, v, v_type| {
-                let v = RustValueTyped {
-                    value: v.to_owned(),
-                    rust_type: v_type.clone(),
-                };
-                variant.field.write_write_element(w, "os", &v);
+            self.write_match_each_oneof_variant(w, |w, variant, v| {
+                variant.field.write_write_element(w, "os", v);
             });
             w.write_line("os.write_unknown_fields(self.special_fields.unknown_fields())?;");
             w.write_line("::std::result::Result::Ok(())");
@@ -323,8 +326,8 @@ impl<'a> MessageGen<'a> {
             for field in self.fields_except_oneof_and_group() {
                 field.write_message_compute_field_size("my_size", w);
             }
-            self.write_match_each_oneof_variant(w, |w, variant, v, vtype| {
-                variant.field.write_element_size(w, v, vtype, "my_size");
+            self.write_match_each_oneof_variant(w, |w, variant, v| {
+                variant.field.write_element_size(w, v, "my_size");
             });
             w.write_line(&format!(
                 "my_size += {}::rt::unknown_fields_size(self.special_fields.unknown_fields());",

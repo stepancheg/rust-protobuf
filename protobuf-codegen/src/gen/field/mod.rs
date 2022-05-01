@@ -1117,15 +1117,14 @@ impl<'a> FieldGen<'a> {
     pub(crate) fn write_element_size(
         &self,
         w: &mut CodeWriter,
-        item_var: &str,
-        item_var_type: &RustType,
+        item_var: &RustValueTyped,
         sum_var: &str,
     ) {
         assert!(!self.is_repeated_packed());
 
         match self.proto_type {
             Type::TYPE_MESSAGE => {
-                w.write_line(&format!("let len = {}.compute_size();", item_var));
+                w.write_line(&format!("let len = {}.compute_size();", item_var.value));
                 let tag_size = self.tag_size();
                 w.write_line(&format!(
                     "{} += {} + {}::rt::compute_raw_varint64_size(len) + len;",
@@ -1135,14 +1134,7 @@ impl<'a> FieldGen<'a> {
                 ));
             }
             _ => {
-                w.write_line(&format!(
-                    "{} += {};",
-                    sum_var,
-                    self.element_size(&RustValueTyped {
-                        value: item_var.to_owned(),
-                        rust_type: item_var_type.clone(),
-                    })
-                ));
+                w.write_line(&format!("{} += {};", sum_var, self.element_size(item_var)));
             }
         }
     }
@@ -1215,7 +1207,7 @@ impl<'a> FieldGen<'a> {
                             w.write_line(&format!("{} += {};", sum_var, (s + tag_size) as isize));
                         }
                         None => {
-                            self.write_element_size(w, &v.value, &v.rust_type, sum_var);
+                            self.write_element_size(w, v, sum_var);
                         }
                     };
                 });
@@ -1238,7 +1230,14 @@ impl<'a> FieldGen<'a> {
                     }
                     None => {
                         self.write_for_self_field(w, "value", |w, value_type| {
-                            self.write_element_size(w, "value", value_type, sum_var);
+                            self.write_element_size(
+                                w,
+                                &RustValueTyped {
+                                    value: "value".to_owned(),
+                                    rust_type: value_type.clone(),
+                                },
+                                sum_var,
+                            );
                         });
                     }
                 };
