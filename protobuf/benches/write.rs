@@ -4,9 +4,9 @@
 
 extern crate test;
 
-use protobuf::well_known_types::value;
-use protobuf::well_known_types::Struct;
-use protobuf::well_known_types::Value;
+use protobuf::well_known_types::struct_::value;
+use protobuf::well_known_types::struct_::Struct;
+use protobuf::well_known_types::struct_::Value;
 use protobuf::Message;
 use test::Bencher;
 
