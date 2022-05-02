@@ -72,7 +72,7 @@ impl<'a> CodedInputStream<'a> {
     /// Create from `BufRead`.
     ///
     /// `CodedInputStream` will utilize `BufRead` buffer.
-    pub fn from_buffered_reader(buf_read: &'a mut dyn BufRead) -> CodedInputStream<'a> {
+    pub fn from_buf_read(buf_read: &'a mut dyn BufRead) -> CodedInputStream<'a> {
         CodedInputStream::from_buf_read_iter(BufReadIter::from_buf_read(buf_read))
     }
 
@@ -697,7 +697,7 @@ mod test {
         // Test with buffered reader.
         {
             let mut reader = io::Cursor::new(&d);
-            let mut is = CodedInputStream::from_buffered_reader(&mut reader as &mut dyn BufRead);
+            let mut is = CodedInputStream::from_buf_read(&mut reader as &mut dyn BufRead);
             assert_eq!(0, is.pos());
             callback(&mut is);
         }
