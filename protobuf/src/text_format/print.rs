@@ -7,6 +7,7 @@ use crate::message_dyn::MessageDyn;
 use crate::reflect::MessageRef;
 use crate::reflect::ReflectFieldRef;
 use crate::reflect::ReflectValueRef;
+use crate::UnknownValueRef;
 
 fn print_str_to(s: &str, buf: &mut String) {
     // TODO: keep printable Unicode
@@ -142,15 +143,19 @@ fn print_to_internal(m: &MessageRef, buf: &mut String, pretty: bool, indent: usi
         }
     }
 
-    let unknown_fields = m.unknown_fields_dyn();
-    let mut numbers: Vec<u32> = m.unknown_fields_dyn().iter().map(|(n, _)| n).collect();
+    let mut fields: Vec<(u32, UnknownValueRef)> = m.unknown_fields_dyn().iter().collect();
     // Sort for stable output
-    numbers.sort();
-    for &n in &numbers {
-        for v in unknown_fields.get_all(n).unwrap() {
-            // TODO: try decode nested message for length-delimited
-            print_field(buf, pretty, indent, &mut first, n, v.to_reflect_value_ref());
-        }
+    fields.sort_by_key(|(field_number, _)| *field_number);
+    for (field_number, value) in fields {
+        // TODO: try decode nested message for length-delimited
+        print_field(
+            buf,
+            pretty,
+            indent,
+            &mut first,
+            field_number,
+            value.to_reflect_value_ref(),
+        );
     }
 }
 
