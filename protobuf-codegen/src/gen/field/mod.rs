@@ -172,7 +172,7 @@ impl<'a> FieldGen<'a> {
                 let message = root_scope
                     .find_message(&ProtobufAbsPath::from(field.field.proto().type_name()));
 
-                let (key, value) = map_entry(&message)?.unwrap();
+                let (key, value) = map_entry(&message).unwrap();
 
                 let key = field_elem(&key, root_scope, &customize);
                 let value = field_elem(&value, root_scope, &customize);

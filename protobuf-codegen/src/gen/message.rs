@@ -691,15 +691,11 @@ impl<'a> MessageGen<'a> {
             .to_scope()
             .messages()
             .into_iter()
-            .filter_map(|nested| {
+            .filter(|nested| {
                 // ignore map entries, because they are not used in map fields
-                match nested.is_map() {
-                    Ok(true) => None,
-                    Ok(false) => Some(Ok(nested)),
-                    Err(err) => Some(Err(err)),
-                }
+                !nested.is_map()
             })
-            .collect::<anyhow::Result<_>>()?;
+            .collect();
         let nested_enums = self.message.to_scope().enums();
 
         if !oneofs.is_empty() || !nested_messages.is_empty() || !nested_enums.is_empty() {

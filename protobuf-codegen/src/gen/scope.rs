@@ -136,10 +136,7 @@ impl<'a> FileScope<'a> {
     pub fn find_messages_except_map(&self) -> Vec<MessageWithScope<'a>> {
         self.find_messages()
             .into_iter()
-            .filter(|m| {
-                // TODO: do not unwrap
-                !m.is_map().unwrap()
-            })
+            .filter(|m| !m.is_map())
             .collect()
     }
 
@@ -392,8 +389,8 @@ impl<'a> MessageWithScope<'a> {
     }
 
     /// This message is a special message which is a map.
-    pub fn is_map(&self) -> anyhow::Result<bool> {
-        Ok(map_entry(self)?.is_some())
+    pub fn is_map(&self) -> bool {
+        map_entry(self).is_some()
     }
 }
 
