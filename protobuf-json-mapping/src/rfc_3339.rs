@@ -234,8 +234,8 @@ impl TmUtc {
         let (mut year, mut seconds) = if seconds >= 0 {
             (1970, seconds as u64)
         } else {
-            let minus_seconds = if seconds == i64::min_value() {
-                i64::min_value() as u64
+            let minus_seconds = if seconds == i64::MIN {
+                i64::MIN as u64
             } else {
                 -seconds as u64
             };
@@ -575,14 +575,11 @@ mod test {
         // I didn't check that resulting strings are correct.
         assert_eq!(
             "-292277022657-01-27T08:29:52.000000000Z",
-            format!("{}", TmUtc::from_protobuf_timestamp(i64::min_value(), 0))
+            format!("{}", TmUtc::from_protobuf_timestamp(i64::MIN, 0))
         );
         assert_eq!(
             "+292277026596-12-04T15:30:07.999999999Z",
-            format!(
-                "{}",
-                TmUtc::from_protobuf_timestamp(i64::max_value(), 999_999_999)
-            )
+            format!("{}", TmUtc::from_protobuf_timestamp(i64::MAX, 999_999_999))
         );
     }
 }
