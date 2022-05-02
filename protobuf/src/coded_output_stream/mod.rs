@@ -535,25 +535,22 @@ impl<'a> CodedOutputStream<'a> {
 
     /// Write unknown fields
     pub fn write_unknown_fields(&mut self, fields: &UnknownFields) -> crate::Result<()> {
-        for (number, values) in fields {
-            for value in values {
-                self.write_unknown(number, value)?;
-            }
+        for (number, value) in fields {
+            self.write_unknown(number, value)?;
         }
         Ok(())
     }
 
     /// Write unknown fields sorting them by name
+    // TODO: make unknown fields deterministic and remove this.
     pub(crate) fn write_unknown_fields_sorted(
         &mut self,
         fields: &UnknownFields,
     ) -> crate::Result<()> {
         let mut fields: Vec<_> = fields.iter().collect();
         fields.sort_by_key(|(n, _)| *n);
-        for (number, values) in fields {
-            for value in values {
-                self.write_unknown(number, value)?;
-            }
+        for (number, value) in fields {
+            self.write_unknown(number, value)?;
         }
         Ok(())
     }

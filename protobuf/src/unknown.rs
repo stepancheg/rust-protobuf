@@ -89,6 +89,7 @@ impl UnknownValue {
 /// Reference to unknown value.
 ///
 /// See [`UnknownFields`](crate::UnknownFields) for explanations.
+#[derive(Debug, PartialEq)]
 pub enum UnknownValueRef<'o> {
     /// 32-bit unknown
     Fixed32(u32),
@@ -125,15 +126,15 @@ impl<'o> UnknownValueRef<'o> {
 ///
 /// See [`UnknownFields`](crate::UnknownFields) for explanations.
 #[derive(Clone, PartialEq, Eq, Debug, Default, Hash)]
-pub struct UnknownValues {
+pub(crate) struct UnknownValues {
     /// 32-bit unknowns
-    pub fixed32: Vec<u32>,
+    pub(crate) fixed32: Vec<u32>,
     /// 64-bit unknowns
-    pub fixed64: Vec<u64>,
+    pub(crate) fixed64: Vec<u64>,
     /// Varint unknowns
-    pub varint: Vec<u64>,
+    pub(crate) varint: Vec<u64>,
     /// Length-delimited unknowns
-    pub length_delimited: Vec<Vec<u8>>,
+    pub(crate) length_delimited: Vec<Vec<u8>>,
 }
 
 impl UnknownValues {
@@ -325,12 +326,18 @@ impl UnknownFields {
     /// Iterate over all unknowns
     pub fn iter<'s>(&'s self) -> UnknownFieldsIter<'s> {
         UnknownFieldsIter {
-            entries: self.fields.as_ref().map(|m| m.iter()),
+            entries: self.fields.as_ref().map(|m| {
+                let iter: Box<dyn Iterator<Item = (u32, UnknownValueRef<'s>)>> =
+                    Box::new(m.iter().flat_map(move |(field_number, values)| {
+                        values.iter().map(move |v| (*field_number, v))
+                    }));
+                iter
+            }),
         }
     }
 
     /// Find unknown field by number
-    pub fn get_all(&self, field_number: u32) -> Option<&UnknownValues> {
+    pub(crate) fn get_all(&self, field_number: u32) -> Option<&UnknownValues> {
         match self.fields {
             Some(ref map) => map.get(&field_number),
             None => None,
@@ -355,7 +362,7 @@ impl UnknownFields {
 }
 
 impl<'a> IntoIterator for &'a UnknownFields {
-    type Item = (u32, &'a UnknownValues);
+    type Item = (u32, UnknownValueRef<'a>);
     type IntoIter = UnknownFieldsIter<'a>;
 
     fn into_iter(self) -> UnknownFieldsIter<'a> {
@@ -365,15 +372,16 @@ impl<'a> IntoIterator for &'a UnknownFields {
 
 /// Iterator over [`UnknownFields`](crate::UnknownFields)
 pub struct UnknownFieldsIter<'s> {
-    entries: Option<hash_map::Iter<'s, u32, UnknownValues>>,
+    // `Box` is bad, but unknown fields are not used often.
+    entries: Option<Box<dyn Iterator<Item = (u32, UnknownValueRef<'s>)> + 's>>,
 }
 
 impl<'s> Iterator for UnknownFieldsIter<'s> {
-    type Item = (u32, &'s UnknownValues);
+    type Item = (u32, UnknownValueRef<'s>);
 
-    fn next(&mut self) -> Option<(u32, &'s UnknownValues)> {
-        match self.entries {
-            Some(ref mut entries) => entries.next().map(|(&number, values)| (number, values)),
+    fn next(&mut self) -> Option<(u32, UnknownValueRef<'s>)> {
+        match &mut self.entries {
+            Some(entries) => entries.next(),
             None => None,
         }
     }

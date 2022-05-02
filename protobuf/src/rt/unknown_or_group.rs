@@ -5,6 +5,7 @@ use crate::wire_format::Tag;
 use crate::wire_format::WireType;
 use crate::CodedInputStream;
 use crate::UnknownFields;
+use crate::UnknownValueRef;
 
 fn skip_group(is: &mut CodedInputStream) -> crate::Result<()> {
     loop {
@@ -19,19 +20,14 @@ fn skip_group(is: &mut CodedInputStream) -> crate::Result<()> {
 /// Size of encoded unknown fields size.
 pub fn unknown_fields_size(unknown_fields: &UnknownFields) -> u64 {
     let mut r = 0;
-    for (number, values) in unknown_fields {
-        r += (tag_size(number) + 4) * values.fixed32.len() as u64;
-        r += (tag_size(number) + 8) * values.fixed64.len() as u64;
-
-        r += tag_size(number) * values.varint.len() as u64;
-        for varint in &values.varint {
-            r += compute_raw_varint64_size(*varint);
-        }
-
-        r += tag_size(number) * values.length_delimited.len() as u64;
-        for bytes in &values.length_delimited {
-            r += bytes_size_no_tag(&bytes);
-        }
+    for (number, value) in unknown_fields {
+        r += tag_size(number);
+        r += match value {
+            UnknownValueRef::Fixed32(_) => 4,
+            UnknownValueRef::Fixed64(_) => 8,
+            UnknownValueRef::Varint(v) => compute_raw_varint64_size(v),
+            UnknownValueRef::LengthDelimited(v) => bytes_size_no_tag(v),
+        };
     }
     r
 }
