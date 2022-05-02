@@ -1,6 +1,6 @@
 # Changelog
 
-## [3] - Unreleased
+Changelog after version 3.0.0 lives in [CHANGELOG.md](CHANGELOG.md).
 
 ## [3.0.0] - 2022-05-01
 
