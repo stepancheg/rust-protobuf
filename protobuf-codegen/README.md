@@ -27,7 +27,7 @@ There are two protobuf parsers which can be plugged into this crate:
 `protoc`-based parser is expected to parse `.proto` files very correctly:
 all Google's protobuf implementations rely on it.
 
-Where there are no known bugs in `protobuf-parse`, it is not tested very well.
+While there are no known bugs in `protobuf-parse`, it is not tested very well.
 Also `protobuf-parse` does not implement certain rarely used features of `.proto` parser,
 mostly complex message options specified in `.proto` files.
 I never saw anyone using them, but you have been warned.
@@ -35,25 +35,22 @@ I never saw anyone using them, but you have been warned.
 Note `protoc` command can be obtained from
 [`protoc-bin-vendored`](https://docs.rs/protoc-bin-vendored) crate.
 
-# Version 3
-
-Note this is documentation for protobuf-codegen version 3 (which is currently in development).
-
-In version 3 this crate encapsulates both `protoc`-based codegen and pure rust codegen.
-
-In version 2 `protobuf-codegen` contains `protoc`-based codegen,
-and `protobuf-codegen-pure` is pure rust codegen.
-
 # Example
 
 ```rust
 // Use this in build.rs
 protobuf_codegen::Codegen::new()
+    // Use `protoc` parser, optional.
+    .protoc()
+    // Use `protoc-bin-vendored` bundled protoc command, optional.
+    .protoc_path(&protoc_bin_vendored::protoc_bin_path().unwrap())
+    // All inputs and imports from the inputs must reside in `includes` directories.
     .includes(&["src/protos"])
     // Inputs must reside in some of include paths.
     .input("src/protos/apple.proto")
     .input("src/protos/banana.proto")
-    .out_dir("src/protos")
+    // Specify output directory relative to Cargo output directory.
+    .cargo_out_dir("protos")
     .run_from_script();
 ```
 
@@ -118,7 +115,8 @@ rust-protobuf since version 3 no longer directly supports serde.
 
 Rust-protobuf 3 fully supports:
 * runtime reflection
-* JSON parsing and printing
+* JSON parsing and printing via
+ [`protobuf-json-mapping`](https://docs.rs/protobuf-json-mapping)
 
 Which covers the most of serde use cases.
 
