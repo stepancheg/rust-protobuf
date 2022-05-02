@@ -326,12 +326,9 @@ impl UnknownFields {
     /// Iterate over all unknowns
     pub fn iter<'s>(&'s self) -> UnknownFieldsIter<'s> {
         UnknownFieldsIter {
-            entries: self.fields.as_ref().map(|m| {
-                let iter: Box<dyn Iterator<Item = (u32, UnknownValueRef<'s>)>> =
-                    Box::new(m.iter().flat_map(move |(field_number, values)| {
-                        values.iter().map(move |v| (*field_number, v))
-                    }));
-                iter
+            entries: self.fields.as_ref().map(|m| UnknownFieldsNotEmptyIter {
+                fields: m.iter(),
+                current: None,
             }),
         }
     }
@@ -365,20 +362,37 @@ impl<'a> IntoIterator for &'a UnknownFields {
     }
 }
 
+struct UnknownFieldsNotEmptyIter<'s> {
+    fields: hash_map::Iter<'s, u32, UnknownValues>,
+    current: Option<(u32, UnknownValuesIter<'s>)>,
+}
+
 /// Iterator over [`UnknownFields`](crate::UnknownFields)
 pub struct UnknownFieldsIter<'s> {
-    // `Box` is bad, but unknown fields are not used often.
-    entries: Option<Box<dyn Iterator<Item = (u32, UnknownValueRef<'s>)> + 's>>,
+    entries: Option<UnknownFieldsNotEmptyIter<'s>>,
+}
+
+impl<'s> Iterator for UnknownFieldsNotEmptyIter<'s> {
+    type Item = (u32, UnknownValueRef<'s>);
+
+    fn next(&mut self) -> Option<(u32, UnknownValueRef<'s>)> {
+        loop {
+            if let Some((field_number, values)) = &mut self.current {
+                if let Some(value) = values.next() {
+                    return Some((*field_number, value));
+                }
+            }
+            let (field_number, values) = self.fields.next()?;
+            self.current = Some((*field_number, values.iter()));
+        }
+    }
 }
 
 impl<'s> Iterator for UnknownFieldsIter<'s> {
     type Item = (u32, UnknownValueRef<'s>);
 
     fn next(&mut self) -> Option<(u32, UnknownValueRef<'s>)> {
-        match &mut self.entries {
-            Some(entries) => entries.next(),
-            None => None,
-        }
+        self.entries.as_mut().and_then(|entries| entries.next())
     }
 }
 
