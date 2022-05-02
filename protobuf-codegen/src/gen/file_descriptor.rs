@@ -31,6 +31,62 @@ fn escape_byte(s: &mut String, b: u8) {
     }
 }
 
+fn write_generate_file_descriptor(
+    file_descriptor: &FileDescriptor,
+    customize: &Customize,
+    w: &mut CodeWriter,
+) {
+    let deps = &file_descriptor.proto().dependency;
+    w.write_line(&format!(
+        "let mut deps = {vec_with_capacity};",
+        vec_with_capacity = expr_vec_with_capacity_const(deps.len())
+    ));
+    for f in deps {
+        w.write_line(&format!(
+            "deps.push({}().clone());",
+            proto_path_to_fn_file_descriptor(f, customize)
+        ));
+    }
+
+    let scope = FileScope { file_descriptor };
+
+    let messages = scope.find_messages_except_map();
+    w.write_line(&format!(
+        "let mut messages = {vec_with_capacity};",
+        vec_with_capacity = expr_vec_with_capacity_const(messages.len())
+    ));
+    for m in &messages {
+        w.write_line(&format!(
+            "messages.push({}::generated_message_descriptor_data());",
+            m.rust_name_to_file(),
+        ));
+    }
+
+    let enums = scope.find_enums();
+    w.write_line(&format!(
+        "let mut enums = {};",
+        expr_vec_with_capacity_const(enums.len())
+    ));
+    for e in &enums {
+        w.write_line(&format!(
+            "enums.push({}::generated_enum_descriptor_data());",
+            e.rust_name_to_file(),
+        ));
+    }
+
+    w.write_line(&format!(
+        "{}::reflect::GeneratedFileDescriptor::new_generated(",
+        protobuf_crate_path(&customize),
+    ));
+    w.indented(|w| {
+        w.write_line(&format!("file_descriptor_proto(),"));
+        w.write_line(&format!("deps,"));
+        w.write_line(&format!("messages,"));
+        w.write_line(&format!("enums,"));
+    });
+    w.write_line(")");
+}
+
 fn write_file_descriptor(
     file_descriptor: &FileDescriptor,
     customize: &Customize,
@@ -39,77 +95,37 @@ fn write_file_descriptor(
     w.write_line("/// `FileDescriptor` object which allows dynamic access to files");
     w.pub_fn(
         &format!(
-            "file_descriptor() -> {protobuf_crate}::reflect::FileDescriptor",
+            "file_descriptor() -> &'static {protobuf_crate}::reflect::FileDescriptor",
             protobuf_crate = protobuf_crate_path(customize)
         ),
         |w| {
             w.lazy_static(
-                "file_descriptor_lazy",
+                "generated_file_descriptor_lazy",
                 &format!(
                     "{protobuf_crate}::reflect::GeneratedFileDescriptor",
                     protobuf_crate = protobuf_crate_path(customize)
                 ),
                 &format!("{}", protobuf_crate_path(customize)),
             );
-            w.block(
-                "let file_descriptor = file_descriptor_lazy.get(|| {",
-                "});",
+            w.lazy_static_decl_get(
+                "file_descriptor",
+                &format!(
+                    "{protobuf_crate}::reflect::FileDescriptor",
+                    protobuf_crate = protobuf_crate_path(customize)
+                ),
+                &format!("{}", protobuf_crate_path(customize)),
                 |w| {
-                    let deps = &file_descriptor.proto().dependency;
+                    w.block(
+                        "let generated_file_descriptor = generated_file_descriptor_lazy.get(|| {",
+                        "});",
+                        |w| write_generate_file_descriptor(file_descriptor, customize, w),
+                    );
                     w.write_line(&format!(
-                        "let mut deps = {vec_with_capacity};",
-                        vec_with_capacity = expr_vec_with_capacity_const(deps.len())
+                        "{protobuf_crate}::reflect::FileDescriptor::new_generated_2(generated_file_descriptor)",
+                        protobuf_crate=protobuf_crate_path(&customize),
                     ));
-                    for f in deps {
-                        w.write_line(&format!(
-                            "deps.push({}());",
-                            proto_path_to_fn_file_descriptor(f, customize)
-                        ));
-                    }
-
-                    let scope = FileScope { file_descriptor };
-
-                    let messages = scope.find_messages_except_map();
-                    w.write_line(&format!(
-                        "let mut messages = {vec_with_capacity};",
-                        vec_with_capacity = expr_vec_with_capacity_const(messages.len())
-                    ));
-                    for m in &messages {
-                        w.write_line(&format!(
-                            "messages.push({}::generated_message_descriptor_data());",
-                            m.rust_name_to_file(),
-                        ));
-                    }
-
-                    let enums = scope.find_enums();
-                    w.write_line(&format!(
-                        "let mut enums = {};",
-                        expr_vec_with_capacity_const(enums.len())
-                    ));
-                    for e in &enums {
-                        w.write_line(&format!(
-                            "enums.push({}::generated_enum_descriptor_data());",
-                            e.rust_name_to_file(),
-                        ));
-                    }
-
-                    w.write_line(&format!(
-                        "{}::reflect::GeneratedFileDescriptor::new_generated(",
-                        protobuf_crate_path(&customize),
-                    ));
-                    w.indented(|w| {
-                        w.write_line(&format!("file_descriptor_proto(),"));
-                        w.write_line(&format!("deps,"));
-                        w.write_line(&format!("messages,"));
-                        w.write_line(&format!("enums,"));
-                    });
-                    w.write_line(")");
-                },
+                }
             );
-            w.write_line(&format!(
-                "{}::reflect::FileDescriptor::new_generated_2(file_descriptor)",
-                protobuf_crate_path(&customize),
-            ));
         },
     );
 }
@@ -149,6 +165,12 @@ pub(crate) fn write_file_descriptor_data(
     });
     w.write_line("\";");
     w.write_line("");
+    write_file_descriptor_proto(&customize, w);
+    w.write_line("");
+    write_file_descriptor(file, &customize, w);
+}
+
+fn write_file_descriptor_proto(customize: &Customize, w: &mut CodeWriter) {
     w.write_line("/// `FileDescriptorProto` object which was a source for this generated file");
     w.def_fn(
         &format!(
@@ -172,8 +194,6 @@ pub(crate) fn write_file_descriptor_data(
             );
         },
     );
-    w.write_line("");
-    write_file_descriptor(file, &customize, w);
 }
 
 /// Code to generate call `module::file_descriptor()`.
