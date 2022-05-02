@@ -946,7 +946,7 @@ impl<'a> FieldGen<'a> {
                 o.oneof_field_name,
                 o.variant_path(&self.proto_field.message.scope.rust_path_to_file()),
                 maybe_boxed.value
-            )); // TODO: into_type
+            ));
         })
     }
 
