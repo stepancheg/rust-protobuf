@@ -163,7 +163,6 @@ impl FieldGen<'_> {
 
     fn accessor_fn_oneof(&self, oneof: &OneofField) -> AccessorFn {
         let OneofField { ref elem, .. } = oneof;
-        // TODO: uses old style
 
         let reference = self
             .proto_field
