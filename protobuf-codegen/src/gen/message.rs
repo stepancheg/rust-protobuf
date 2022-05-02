@@ -22,7 +22,7 @@ use crate::gen::protoc_insertion_point::write_protoc_insertion_point_for_special
 use crate::gen::rust::ident::RustIdent;
 use crate::gen::rust::ident_with_path::RustIdentWithPath;
 use crate::gen::rust::rel_path::RustRelativePath;
-use crate::gen::rust::snippets::expr_vec_with_capacity;
+use crate::gen::rust::snippets::expr_vec_with_capacity_const;
 use crate::gen::rust::snippets::EXPR_NONE;
 use crate::gen::rust_types_values::*;
 use crate::gen::scope::MessageWithScope;
@@ -419,11 +419,11 @@ impl<'a> MessageGen<'a> {
                 let oneofs = self.oneofs();
                 w.write_line(&format!(
                     "let mut fields = {};",
-                    expr_vec_with_capacity(&format!("{}", fields.len()))
+                    expr_vec_with_capacity_const(fields.len())
                 ));
                 w.write_line(&format!(
                     "let mut oneofs = {};",
-                    expr_vec_with_capacity(&format!("{}", oneofs.len()))
+                    expr_vec_with_capacity_const(oneofs.len())
                 ));
                 for field in fields {
                     field.write_push_accessor("fields", w);

@@ -6,7 +6,7 @@ use protobuf::Message;
 use crate::gen::code_writer::CodeWriter;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::paths::proto_path_to_fn_file_descriptor;
-use crate::gen::rust::snippets::expr_vec_with_capacity;
+use crate::gen::rust::snippets::expr_vec_with_capacity_const;
 use crate::gen::scope::FileScope;
 use crate::gen::scope::Scope;
 use crate::gen::scope::WithScope;
@@ -58,7 +58,7 @@ fn write_file_descriptor(
                     let deps = &file_descriptor.proto().dependency;
                     w.write_line(&format!(
                         "let mut deps = {vec_with_capacity};",
-                        vec_with_capacity = expr_vec_with_capacity(&format!("{}", deps.len()))
+                        vec_with_capacity = expr_vec_with_capacity_const(deps.len())
                     ));
                     for f in deps {
                         w.write_line(&format!(
@@ -72,7 +72,7 @@ fn write_file_descriptor(
                     let messages = scope.find_messages_except_map();
                     w.write_line(&format!(
                         "let mut messages = {vec_with_capacity};",
-                        vec_with_capacity = expr_vec_with_capacity(&format!("{}", messages.len()))
+                        vec_with_capacity = expr_vec_with_capacity_const(messages.len())
                     ));
                     for m in &messages {
                         w.write_line(&format!(
@@ -84,7 +84,7 @@ fn write_file_descriptor(
                     let enums = scope.find_enums();
                     w.write_line(&format!(
                         "let mut enums = {};",
-                        expr_vec_with_capacity(&format!("{}", enums.len()))
+                        expr_vec_with_capacity_const(enums.len())
                     ));
                     for e in &enums {
                         w.write_line(&format!(
