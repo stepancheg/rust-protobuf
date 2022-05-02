@@ -150,7 +150,7 @@ pub(crate) fn write_file_descriptor_data(
     w.write_line("\";");
     w.write_line("");
     w.write_line("/// `FileDescriptorProto` object which was a source for this generated file");
-    w.pub_fn(
+    w.def_fn(
         &format!(
             "file_descriptor_proto() -> &'static {protobuf_crate}::descriptor::FileDescriptorProto",
             protobuf_crate=protobuf_crate_path(customize)
