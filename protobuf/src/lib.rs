@@ -26,10 +26,12 @@
 //! `bytes` or `string` protobuf types instead of default `Vec<u8>` or `String`,
 //! just enabling option on this crate is not enough.
 //!
-//! See `Customize` struct in [`protobuf-codegen` crate](https://docs.rs/protobuf/%3E=3.0.0-alpha).
+//! See `Customize` struct in [`protobuf-codegen` crate](https://docs.rs/protobuf-codegen/%3E=3.0.0-alpha).
 //!
 //! ## Accompanying crates
 //!
+//! * [`protobuf-json-mapping`](https://docs.rs/protobuf-json-mapping/%3E=3.0.0-alpha)
+//    implements JSON parsing and serialization for protobuf messages.
 //! * [`protobuf-codegen`](https://docs.rs/protobuf-codegen/%3E=3.0.0-alpha)
 //!   can be used to rust code from `.proto` crates.
 //! * [`protoc-bin-vendored`](https://docs.rs/protoc-bin-vendored/%3E=3.0.0-alpha)
@@ -77,7 +79,6 @@ mod enum_or_unknown;
 mod enums;
 mod error;
 pub mod ext;
-pub mod json;
 mod lazy;
 mod message;
 mod message_dyn;

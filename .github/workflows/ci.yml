@@ -316,6 +316,9 @@ jobs:
             - name: sync-readme protobuf-examples/vs-prost
               run: cd protobuf-examples/vs-prost && cargo sync-readme --check
               shell: bash
+            - name: sync-readme protobuf-json-mapping
+              run: cd protobuf-json-mapping && cargo sync-readme --check
+              shell: bash
             - name: sync-readme protobuf-parse
               run: cd protobuf-parse && cargo sync-readme --check
               shell: bash

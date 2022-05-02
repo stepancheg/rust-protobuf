@@ -28,8 +28,6 @@ serde_derive = { version = "1.0", optional = true }
 serde_json   = { version = "1.0", optional = true }
 bytes = { version = "1.1", optional = true }
 
-[dependencies.protobuf]
-path = "../../protobuf"
-
-[dependencies.protobuf-codegen]
-path = "../../protobuf-codegen"
+protobuf = { path = "../../protobuf" }
+protobuf-json-mapping = { path = "../../protobuf-json-mapping" }
+protobuf-codegen = { path = "../../protobuf-codegen" }

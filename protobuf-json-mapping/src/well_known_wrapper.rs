@@ -1,14 +1,14 @@
 //! Trait for well-known wrapper types
 
-use crate::well_known_types::wrappers::BoolValue;
-use crate::well_known_types::wrappers::BytesValue;
-use crate::well_known_types::wrappers::DoubleValue;
-use crate::well_known_types::wrappers::FloatValue;
-use crate::well_known_types::wrappers::Int32Value;
-use crate::well_known_types::wrappers::Int64Value;
-use crate::well_known_types::wrappers::StringValue;
-use crate::well_known_types::wrappers::UInt32Value;
-use crate::well_known_types::wrappers::UInt64Value;
+use protobuf::well_known_types::wrappers::BoolValue;
+use protobuf::well_known_types::wrappers::BytesValue;
+use protobuf::well_known_types::wrappers::DoubleValue;
+use protobuf::well_known_types::wrappers::FloatValue;
+use protobuf::well_known_types::wrappers::Int32Value;
+use protobuf::well_known_types::wrappers::Int64Value;
+use protobuf::well_known_types::wrappers::StringValue;
+use protobuf::well_known_types::wrappers::UInt32Value;
+use protobuf::well_known_types::wrappers::UInt64Value;
 
 /// Well-known wrapper types have single field.
 /// This trait operations return pointers to that field.

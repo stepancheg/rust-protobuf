@@ -1,44 +1,46 @@
 use std::fmt;
 use std::fmt::Write as fmt_Write;
 
-use crate::json::base64;
-use crate::json::float;
-use crate::json::rfc_3339::TmUtc;
-use crate::json::well_known_wrapper::WellKnownWrapper;
-use crate::message_dyn::MessageDyn;
-use crate::reflect::EnumDescriptor;
-use crate::reflect::EnumValueDescriptor;
-use crate::reflect::MessageRef;
-use crate::reflect::ReflectFieldRef;
-use crate::reflect::ReflectMapRef;
-use crate::reflect::ReflectRepeatedRef;
-use crate::reflect::ReflectValueRef;
-use crate::reflect::RuntimeFieldType;
-use crate::reflect::RuntimeType;
-use crate::well_known_types::any::Any;
-use crate::well_known_types::duration::Duration;
-use crate::well_known_types::field_mask::FieldMask;
-use crate::well_known_types::struct_::value;
-use crate::well_known_types::struct_::ListValue;
-use crate::well_known_types::struct_::NullValue;
-use crate::well_known_types::struct_::Struct;
-use crate::well_known_types::struct_::Value;
-use crate::well_known_types::timestamp::Timestamp;
-use crate::well_known_types::wrappers::BoolValue;
-use crate::well_known_types::wrappers::BytesValue;
-use crate::well_known_types::wrappers::DoubleValue;
-use crate::well_known_types::wrappers::FloatValue;
-use crate::well_known_types::wrappers::Int32Value;
-use crate::well_known_types::wrappers::Int64Value;
-use crate::well_known_types::wrappers::StringValue;
-use crate::well_known_types::wrappers::UInt32Value;
-use crate::well_known_types::wrappers::UInt64Value;
+use protobuf::reflect::EnumDescriptor;
+use protobuf::reflect::EnumValueDescriptor;
+use protobuf::reflect::MessageRef;
+use protobuf::reflect::ReflectFieldRef;
+use protobuf::reflect::ReflectMapRef;
+use protobuf::reflect::ReflectRepeatedRef;
+use protobuf::reflect::ReflectValueRef;
+use protobuf::reflect::RuntimeFieldType;
+use protobuf::reflect::RuntimeType;
+use protobuf::well_known_types::any::Any;
+use protobuf::well_known_types::duration::Duration;
+use protobuf::well_known_types::field_mask::FieldMask;
+use protobuf::well_known_types::struct_::value;
+use protobuf::well_known_types::struct_::ListValue;
+use protobuf::well_known_types::struct_::NullValue;
+use protobuf::well_known_types::struct_::Struct;
+use protobuf::well_known_types::struct_::Value;
+use protobuf::well_known_types::timestamp::Timestamp;
+use protobuf::well_known_types::wrappers::BoolValue;
+use protobuf::well_known_types::wrappers::BytesValue;
+use protobuf::well_known_types::wrappers::DoubleValue;
+use protobuf::well_known_types::wrappers::FloatValue;
+use protobuf::well_known_types::wrappers::Int32Value;
+use protobuf::well_known_types::wrappers::Int64Value;
+use protobuf::well_known_types::wrappers::StringValue;
+use protobuf::well_known_types::wrappers::UInt32Value;
+use protobuf::well_known_types::wrappers::UInt64Value;
+use protobuf::MessageDyn;
+
+use crate::base64;
+use crate::float;
+use crate::rfc_3339::TmUtc;
+use crate::well_known_wrapper::WellKnownWrapper;
 
 #[derive(Debug)]
 enum PrintErrorInner {
     Fmt(fmt::Error),
     AnyPrintingIsNotImplemented,
     TimestampNegativeNanos,
+    UnknownStructValueKind,
 }
 
 /// Print to JSON error.
@@ -262,6 +264,7 @@ impl PrintableToJson for Value {
             Some(value::Kind::StringValue(ref s)) => w.print_printable::<String>(&s),
             Some(value::Kind::StructValue(ref s)) => w.print_printable(&s),
             Some(value::Kind::ListValue(ref l)) => w.print_printable(&l),
+            Some(_) => Err(PrintError(PrintErrorInner::UnknownStructValueKind)),
         }
     }
 }
@@ -539,8 +542,7 @@ impl Printer {
 /// # Examples
 ///
 /// ```
-/// use protobuf::json;
-/// let print_options = json::PrintOptions {
+/// let print_options = protobuf_json_mapping::PrintOptions {
 ///     enum_values_int: true,
 ///     ..Default::default()
 /// };

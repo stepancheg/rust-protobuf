@@ -11,7 +11,7 @@ fn test_parse_message(m: &InteropMessageList) {
 
     let mut mm = InteropMessageList::new();
 
-    json::merge_from_str(&mut mm, &json).expect("parse json");
+    protobuf_json_mapping::merge_from_str(&mut mm, &json).expect("parse json");
 
     assert!(
         Message::reflect_eq(m, &mm, &ReflectEqMode::nan_equal()),
@@ -23,7 +23,7 @@ fn test_parse_message(m: &InteropMessageList) {
 }
 
 fn test_print_message(m: &InteropMessageList) {
-    let m_json = json::print_to_string(m).unwrap();
+    let m_json = protobuf_json_mapping::print_to_string(m).unwrap();
 
     let mm = interop::interop_json_decode_typed(&m_json);
 

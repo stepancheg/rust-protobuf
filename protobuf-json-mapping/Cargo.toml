@@ -1,0 +1,25 @@
+[package]
+
+name = "protobuf-json-mapping"
+version = "3.0.0-alpha.13"
+authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
+edition = "2021"
+license = "MIT"
+homepage = "https://github.com/stepancheg/rust-protobuf/"
+repository = "https://github.com/stepancheg/rust-protobuf/"
+documentation = "https://github.com/stepancheg/rust-protobuf/blob/master/README.md"
+description = """
+JSON mapping for Protocol Buffers messages.
+"""
+
+[lib]
+bench = false
+
+[dependencies]
+thiserror = "1.0.30"
+
+protobuf = { path = "../protobuf", version = "3.0.0-alpha.13" }
+protobuf-support = { path = "../protobuf-support", version = "=3.0.0-alpha.13" }
+
+[package.metadata.docs.rs]
+all-features = true

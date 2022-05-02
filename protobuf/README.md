@@ -28,16 +28,10 @@ Note, codegen also need to be instructed to generate `Bytes` or `Chars` for
 `bytes` or `string` protobuf types instead of default `Vec<u8>` or `String`,
 just enabling option on this crate is not enough.
 
-See `Customize` struct in [`protobuf-codegen` crate](https://docs.rs/protobuf/%3E=3.0.0-alpha).
+See `Customize` struct in [`protobuf-codegen` crate](https://docs.rs/protobuf-codegen/%3E=3.0.0-alpha).
 
 ## Accompanying crates
 
-* [`protobuf-codegen`](https://docs.rs/protobuf-codegen/%3E=3.0.0-alpha)
-  can be used to rust code from `.proto` crates.
-* [`protoc-bin-vendored`](https://docs.rs/protoc-bin-vendored/%3E=3.0.0-alpha)
-  contains `protoc` command packed into the crate.
-* [`protobuf-parse`](https://docs.rs/protobuf-parse/%3E=3.0.0-alpha) contains
-  `.proto` file parser. Rarely need to be used directly,
-  but can be used for mechanical processing of `.proto` files.
+* [`protobuf-json-mapping`](https://docs.rs/protobuf-json-mapping/%3E=3.0.0-alpha)
 
 <!-- cargo-sync-readme end -->

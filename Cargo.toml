@@ -4,6 +4,7 @@ members = [
     "ci-gen",
     "protoc-bin",
     "protobuf",
+    "protobuf-json-mapping",
     "protobuf-codegen",
     "protobuf-examples/customize-serde",
     "protobuf-examples/dynamic",

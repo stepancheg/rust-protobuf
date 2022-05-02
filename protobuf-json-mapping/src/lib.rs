@@ -1,5 +1,5 @@
 //! JSON printer and parser which tries to follow
-//! [protobuf conventions](https://developers.google.com/protocol-buffers/docs/proto3#json)
+//! [protobuf conventions](https://developers.google.com/protocol-buffers/docs/proto3#json).
 
 mod base64;
 mod float;

@@ -1,10 +1,12 @@
-use protobuf::json;
 use protobuf::reflect::ReflectEqMode;
 use protobuf::text_format;
 use protobuf::MessageDyn;
 
 pub fn test_json_print_parse_message(s: &str, m: &dyn MessageDyn) {
-    assert_eq!(s, json::print_to_string(m).expect("print_to_string"));
+    assert_eq!(
+        s,
+        protobuf_json_mapping::print_to_string(m).expect("print_to_string")
+    );
 
     test_json_parse_message(s, m);
 }
@@ -13,7 +15,7 @@ pub fn test_json_parse_message(s: &str, m: &dyn MessageDyn) {
     let descriptor = m.descriptor_dyn();
 
     let mut new = descriptor.new_instance();
-    json::merge_from_str(&mut *new, s).expect("parse");
+    protobuf_json_mapping::merge_from_str(&mut *new, s).expect("parse");
     assert!(
         m.reflect_eq_dyn(&*new, &ReflectEqMode::nan_equal()),
         "{:?} should be == {:?}",
@@ -27,9 +29,9 @@ pub fn test_json_parse_message(s: &str, m: &dyn MessageDyn) {
 pub fn test_json_message(m: &dyn MessageDyn) {
     let descriptor = m.descriptor_dyn();
 
-    let s = json::print_to_string(m).expect("print_to_string");
+    let s = protobuf_json_mapping::print_to_string(m).expect("print_to_string");
     let mut new = descriptor.new_instance();
-    json::merge_from_str(&mut *new, &s).expect(&format!(
+    protobuf_json_mapping::merge_from_str(&mut *new, &s).expect(&format!(
         "failed to parse serialized: {}; from message: {:?}",
         s, m
     ));

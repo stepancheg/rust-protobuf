@@ -1,6 +1,34 @@
 use std::num::ParseFloatError;
 use std::num::ParseIntError;
 
+use protobuf::reflect::EnumDescriptor;
+use protobuf::reflect::EnumValueDescriptor;
+use protobuf::reflect::FieldDescriptor;
+use protobuf::reflect::MessageDescriptor;
+use protobuf::reflect::ReflectValueBox;
+use protobuf::reflect::RuntimeFieldType;
+use protobuf::reflect::RuntimeType;
+use protobuf::well_known_types::any::Any;
+use protobuf::well_known_types::duration::Duration;
+use protobuf::well_known_types::field_mask::FieldMask;
+use protobuf::well_known_types::struct_;
+use protobuf::well_known_types::struct_::ListValue;
+use protobuf::well_known_types::struct_::NullValue;
+use protobuf::well_known_types::struct_::Struct;
+use protobuf::well_known_types::struct_::Value;
+use protobuf::well_known_types::timestamp::Timestamp;
+use protobuf::well_known_types::wrappers::BoolValue;
+use protobuf::well_known_types::wrappers::BytesValue;
+use protobuf::well_known_types::wrappers::DoubleValue;
+use protobuf::well_known_types::wrappers::FloatValue;
+use protobuf::well_known_types::wrappers::Int32Value;
+use protobuf::well_known_types::wrappers::Int64Value;
+use protobuf::well_known_types::wrappers::StringValue;
+use protobuf::well_known_types::wrappers::UInt32Value;
+use protobuf::well_known_types::wrappers::UInt64Value;
+use protobuf::Enum;
+use protobuf::MessageDyn;
+use protobuf::MessageFull;
 use protobuf_support::lexer::json_number_lit::JsonNumberLit;
 use protobuf_support::lexer::lexer_impl::Lexer;
 use protobuf_support::lexer::lexer_impl::LexerError;
@@ -13,36 +41,8 @@ use protobuf_support::lexer::tokenizer::TokenizerError;
 use super::base64;
 use super::float;
 use super::rfc_3339;
-use crate::json::base64::FromBase64Error;
-use crate::json::well_known_wrapper::WellKnownWrapper;
-use crate::message_dyn::MessageDyn;
-use crate::message_full::MessageFull;
-use crate::reflect::EnumDescriptor;
-use crate::reflect::EnumValueDescriptor;
-use crate::reflect::FieldDescriptor;
-use crate::reflect::MessageDescriptor;
-use crate::reflect::ReflectValueBox;
-use crate::reflect::RuntimeFieldType;
-use crate::reflect::RuntimeType;
-use crate::well_known_types::any::Any;
-use crate::well_known_types::duration::Duration;
-use crate::well_known_types::field_mask::FieldMask;
-use crate::well_known_types::struct_;
-use crate::well_known_types::struct_::ListValue;
-use crate::well_known_types::struct_::NullValue;
-use crate::well_known_types::struct_::Struct;
-use crate::well_known_types::struct_::Value;
-use crate::well_known_types::timestamp::Timestamp;
-use crate::well_known_types::wrappers::BoolValue;
-use crate::well_known_types::wrappers::BytesValue;
-use crate::well_known_types::wrappers::DoubleValue;
-use crate::well_known_types::wrappers::FloatValue;
-use crate::well_known_types::wrappers::Int32Value;
-use crate::well_known_types::wrappers::Int64Value;
-use crate::well_known_types::wrappers::StringValue;
-use crate::well_known_types::wrappers::UInt32Value;
-use crate::well_known_types::wrappers::UInt64Value;
-use crate::Enum;
+use crate::base64::FromBase64Error;
+use crate::well_known_wrapper::WellKnownWrapper;
 
 #[derive(Debug, thiserror::Error)]
 enum ParseErrorWithoutLocInner {
@@ -843,8 +843,7 @@ impl<'a> Parser<'a> {
 /// # Examples
 ///
 /// ```
-/// use protobuf::json;
-/// let parse_options = json::ParseOptions {
+/// let parse_options = protobuf_json_mapping::ParseOptions {
 ///     ignore_unknown_fields: true,
 ///     ..Default::default()
 /// };

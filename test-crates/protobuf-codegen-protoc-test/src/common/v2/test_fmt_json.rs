@@ -1,4 +1,3 @@
-use protobuf::json;
 use protobuf::MessageFull;
 use protobuf_test_common::*;
 
@@ -229,11 +228,11 @@ fn test_enum() {
 fn test_enum_int() {
     let mut m = TestTypes::new();
     m.set_test_enum_singular(TestEnum::DARK);
-    let print_options = json::PrintOptions {
+    let print_options = protobuf_json_mapping::PrintOptions {
         enum_values_int: true,
         ..Default::default()
     };
-    let json = json::print_to_string_with_options(&m, &print_options).unwrap();
+    let json = protobuf_json_mapping::print_to_string_with_options(&m, &print_options).unwrap();
     assert_eq!("{\"testEnumSingular\": 10}", json);
 }
 
@@ -244,7 +243,7 @@ fn test_map_field_int_key() {
     test_json_print_parse_message("{\"fixed64MapField\": {\"10\": \"20\"}}", &m);
 
     m.fixed64_map_field.insert(30, 40);
-    let json = json::print_to_string(&m).unwrap();
+    let json = protobuf_json_mapping::print_to_string(&m).unwrap();
     assert!(
         json == "{\"fixed64MapField\": {\"10\": \"20\", \"30\": \"40\"}}"
             || json == "{\"fixed64MapField\": {\"30\": \"40\", \"10\": \"20\"}}"
@@ -277,11 +276,11 @@ fn test_accepts_both_json_and_original() {
 fn test_use_original_field_names() {
     let mut m = TestTypes::new();
     m.set_bool_singular(true);
-    let print_options = json::PrintOptions {
+    let print_options = protobuf_json_mapping::PrintOptions {
         proto_field_name: true,
         ..Default::default()
     };
-    let json = json::print_to_string_with_options(&m, &print_options).unwrap();
+    let json = protobuf_json_mapping::print_to_string_with_options(&m, &print_options).unwrap();
     assert_eq!("{\"bool_singular\": true}", json);
 }
 
@@ -289,29 +288,29 @@ fn test_use_original_field_names() {
 fn test_always_output_default_values() {
     let mut m = TestIncludeDefaultValues::new();
     m.set_sss("asd".to_owned());
-    let print_options = json::PrintOptions {
+    let print_options = protobuf_json_mapping::PrintOptions {
         always_output_default_values: true,
         ..Default::default()
     };
-    let json = json::print_to_string_with_options(&m, &print_options).unwrap();
+    let json = protobuf_json_mapping::print_to_string_with_options(&m, &print_options).unwrap();
     assert_eq!("{\"iii\": 0, \"sss\": \"asd\"}", json);
 }
 
 #[test]
 fn test_always_output_default_values_for_repeated_fields() {
     let m = TestIncludeDefaultValuesWithRepeatedField::new();
-    let json = json::print_to_string_with_options(
+    let json = protobuf_json_mapping::print_to_string_with_options(
         &m,
-        &json::PrintOptions {
+        &protobuf_json_mapping::PrintOptions {
             always_output_default_values: false,
             ..Default::default()
         },
     )
     .unwrap();
     assert_eq!("{}", json);
-    let json = json::print_to_string_with_options(
+    let json = protobuf_json_mapping::print_to_string_with_options(
         &m,
-        &json::PrintOptions {
+        &protobuf_json_mapping::PrintOptions {
             always_output_default_values: true,
             ..Default::default()
         },
@@ -325,13 +324,13 @@ fn test_ignore_unknown_fields() {
     let mut expected = TestTypes::new();
     expected.set_bool_singular(true);
 
-    let parse_options = json::ParseOptions {
+    let parse_options = protobuf_json_mapping::ParseOptions {
         ignore_unknown_fields: true,
         ..Default::default()
     };
     let mut m = TestTypes::new();
     let json = "{\"fgfgfg\": 12, \"bool_singular\": true, \"x\": [{\"a\": 12.4}]}";
-    json::merge_from_str_with_options(&mut m, json, &parse_options).unwrap();
+    protobuf_json_mapping::merge_from_str_with_options(&mut m, json, &parse_options).unwrap();
 
     assert_eq!(expected, m);
 }
@@ -347,7 +346,7 @@ fn test_reflect() {
 fn test_use_json_name() {
     let mut m = TestJsonName::new();
     m.set_field_with_json_name(true);
-    let json = json::print_to_string(&m).unwrap();
+    let json = protobuf_json_mapping::print_to_string(&m).unwrap();
     assert_eq!("{\"Field With json_name\": true}", json);
 }
 

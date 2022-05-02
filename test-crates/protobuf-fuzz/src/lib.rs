@@ -21,7 +21,7 @@ fn test_parse_json<M: MessageFull>(bytes: &[u8]) {
         Ok(text) => text,
         Err(_) => return,
     };
-    drop(protobuf::json::parse_from_str::<M>(text));
+    drop(protobuf_json_mapping::parse_from_str::<M>(text));
 }
 
 fn test_parse_text_format<M: MessageFull>(bytes: &[u8]) {
