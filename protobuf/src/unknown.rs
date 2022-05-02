@@ -196,21 +196,17 @@ impl<'o> Iterator for UnknownValuesIter<'o> {
     type Item = UnknownValueRef<'o>;
 
     fn next(&mut self) -> Option<UnknownValueRef<'o>> {
-        let fixed32 = self.fixed32.next();
-        if fixed32.is_some() {
-            return Some(UnknownValueRef::Fixed32(*fixed32.unwrap()));
+        if let Some(fixed32) = self.fixed32.next() {
+            return Some(UnknownValueRef::Fixed32(*fixed32));
         }
-        let fixed64 = self.fixed64.next();
-        if fixed64.is_some() {
-            return Some(UnknownValueRef::Fixed64(*fixed64.unwrap()));
+        if let Some(fixed64) = self.fixed64.next() {
+            return Some(UnknownValueRef::Fixed64(*fixed64));
         }
-        let varint = self.varint.next();
-        if varint.is_some() {
-            return Some(UnknownValueRef::Varint(*varint.unwrap()));
+        if let Some(varint) = self.varint.next() {
+            return Some(UnknownValueRef::Varint(*varint));
         }
-        let length_delimited = self.length_delimited.next();
-        if length_delimited.is_some() {
-            return Some(UnknownValueRef::LengthDelimited(&length_delimited.unwrap()));
+        if let Some(length_delimited) = self.length_delimited.next() {
+            return Some(UnknownValueRef::LengthDelimited(&length_delimited));
         }
         None
     }
