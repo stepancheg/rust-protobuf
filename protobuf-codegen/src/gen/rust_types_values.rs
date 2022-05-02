@@ -322,7 +322,6 @@ impl RustType {
                 if match **t1 {
                        RustType::Str => true,
                        _ => false,
-                    // TODO: from_static
                    } => {
                 return Ok(format!("<{}::Chars as ::std::convert::From<_>>::from({}.to_owned())",
                     protobuf_crate_path(customize), v))
@@ -363,7 +362,6 @@ impl RustType {
                 return Ok(format!("{}::EnumOrUnknown::value({})", protobuf_crate_path(customize), v))
             },
             (&RustType::EnumOrUnknown(ref f, ..), &RustType::Enum(ref t, ..)) if f == t => {
-                // TODO: ignores default value
                 return Ok(format!("{}::EnumOrUnknown::enum_value_or_default(&{})", protobuf_crate_path(customize), v))
             }
             (&RustType::Enum(ref f, ..), &RustType::EnumOrUnknown(ref t, ..)) if f == t => {
