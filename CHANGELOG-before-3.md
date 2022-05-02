@@ -1,11 +1,8 @@
 # Changelog
 
-Alpha versions of branch 3 are published. They are not guaranteed to have backwards compatibility.
-Stable versions are 2.xx still supported.
-
 ## [3] - Unreleased
 
-## [3.0.0] - 2020-05-01
+## [3.0.0] - 2022-05-01
 
 * New stable version released.
 
