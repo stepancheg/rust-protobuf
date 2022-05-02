@@ -123,7 +123,6 @@ pub struct EntryKeyValue<'a>(FieldElem<'a>, FieldElem<'a>);
 
 #[derive(Clone)]
 pub(crate) struct FieldGen<'a> {
-    _root_scope: &'a RootScope<'a>,
     syntax: Syntax,
     pub proto_field: FieldWithContext<'a>,
     // field name in generated code
@@ -226,7 +225,6 @@ impl<'a> FieldGen<'a> {
         };
 
         Ok(FieldGen {
-            _root_scope: root_scope,
             syntax: field.message.message.file_descriptor().syntax(),
             rust_name: rust_field_name_for_protobuf_field_name(&field.field.name()),
             proto_type: field.field.proto().type_(),
