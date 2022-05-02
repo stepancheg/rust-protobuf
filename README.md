@@ -1,19 +1,19 @@
 # rust-protobuf
 
 <!-- https://travis-ci.org/stepancheg/rust-protobuf.png -->
-[![GitHub Workflow Status][actions-shields]][actions]
 [![crates.io version][crates-io-shields]][crates-io]
-[![License][license-shields]][license]
 [![docs.rs][docs-rs-shields]][docs-rs]
+[![GitHub Workflow Status][actions-shields]][actions]
+[![License][license-shields]][license]
 
-[actions]: https://github.com/stepancheg/rust-protobuf/actions?query=workflow%3ACI
-[actions-shields]: https://img.shields.io/github/workflow/status/stepancheg/rust-protobuf/CI
 [crates-io]: https://crates.io/crates/protobuf
 [crates-io-shields]: https://img.shields.io/crates/v/protobuf.svg
-[license]: https://github.com/stepancheg/rust-protobuf/blob/master/LICENSE.txt
-[license-shields]: https://img.shields.io/crates/l/protobuf.svg
 [docs-rs]: https://docs.rs/protobuf
 [docs-rs-shields]: https://img.shields.io/badge/docs.rs-rustdoc-green.svg
+[actions]: https://github.com/stepancheg/rust-protobuf/actions?query=workflow%3ACI
+[actions-shields]: https://img.shields.io/github/workflow/status/stepancheg/rust-protobuf/CI
+[license]: https://github.com/stepancheg/rust-protobuf/blob/master/LICENSE.txt
+[license-shields]: https://img.shields.io/crates/l/protobuf.svg
 
 [Protobuf](https://developers.google.com/protocol-buffers/docs/overview) implementation in [Rust](https://www.rust-lang.org/).
 
