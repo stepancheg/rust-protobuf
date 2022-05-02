@@ -336,17 +336,12 @@ impl UnknownFields {
         }
     }
 
-    /// Find unknown field by number
-    pub(crate) fn get_all(&self, field_number: u32) -> Option<&UnknownValues> {
-        match self.fields {
-            Some(ref map) => map.get(&field_number),
-            None => None,
-        }
-    }
-
     /// Get any value for unknown fields.
     pub fn get(&self, field_number: u32) -> Option<UnknownValueRef> {
-        self.get_all(field_number).and_then(|v| v.any())
+        match &self.fields {
+            Some(map) => map.get(&field_number).and_then(|v| v.any()),
+            None => None,
+        }
     }
 
     #[doc(hidden)]
