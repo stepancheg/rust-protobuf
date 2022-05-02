@@ -510,6 +510,17 @@ impl<'a> CodedInputStream<'a> {
         self.read_repeated_packed_into::<ProtobufTypeInt32>(target)
     }
 
+    fn skip_group(&mut self) -> crate::Result<()> {
+        while !self.eof()? {
+            let wire_type = self.read_tag_unpack()?.1;
+            if wire_type == WireType::EndGroup {
+                break;
+            }
+            self.skip_field(wire_type)?;
+        }
+        Ok(())
+    }
+
     /// Read `UnknownValue`
     pub fn read_unknown(&mut self, wire_type: WireType) -> crate::Result<UnknownValue> {
         match wire_type {
@@ -522,13 +533,7 @@ impl<'a> CodedInputStream<'a> {
                     .map(|v| UnknownValue::LengthDelimited(v))
             }
             WireType::StartGroup => {
-                while !self.eof()? {
-                    let wire_type = self.read_tag_unpack()?.1;
-                    if wire_type == WireType::EndGroup {
-                        break;
-                    }
-                    self.skip_field(wire_type)?;
-                }
+                self.skip_group()?;
                 // We do not support groups, so just return something.
                 Ok(UnknownValue::LengthDelimited(Vec::new()))
             }
@@ -538,10 +543,21 @@ impl<'a> CodedInputStream<'a> {
         }
     }
 
-    /// Skip field
+    /// Skip field.
     pub fn skip_field(&mut self, wire_type: WireType) -> crate::Result<()> {
-        // TODO: suboptimal.
-        self.read_unknown(wire_type).map(|_| ())
+        match wire_type {
+            WireType::Varint => self.read_raw_varint64().map(|_| ()),
+            WireType::Fixed64 => self.read_fixed64().map(|_| ()),
+            WireType::Fixed32 => self.read_fixed32().map(|_| ()),
+            WireType::LengthDelimited => {
+                let len = self.read_raw_varint32()?;
+                self.skip_raw_bytes(len)
+            }
+            WireType::StartGroup => self.skip_group(),
+            WireType::EndGroup => {
+                Err(ProtobufError::WireError(WireError::UnexpectedWireType(wire_type)).into())
+            }
+        }
     }
 
     /// Read raw bytes into the supplied vector.  The vector will be resized as needed and
