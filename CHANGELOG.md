@@ -5,6 +5,7 @@ Stable versions are 2.xx still supported.
 
 ## [3] - Unreleased
 
+* JSON support is moved into a separate crate `protobuf-json-mapping`
 * Generated code for well known types is more similar to regular protobuf now
   (well known type modules are now placed as is in `well_known_types` module instead of being flattened).
 * `file_descriptor_proto()` function is private now in generated code.
