@@ -462,7 +462,8 @@ impl<'a> MessageGen<'a> {
 
                 for f in self.message_fields() {
                     if let FieldKind::Map(..) = f.kind {
-                        // TODO: check values
+                        // TODO
+                        w.comment("TODO: check map values are initialized");
                         continue;
                     }
 
