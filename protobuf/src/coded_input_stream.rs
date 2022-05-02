@@ -513,7 +513,20 @@ impl<'a> CodedInputStream<'a> {
                 self.read_raw_bytes(len)
                     .map(|v| UnknownValue::LengthDelimited(v))
             }
-            _ => Err(ProtobufError::WireError(WireError::UnexpectedWireType(wire_type)).into()),
+            WireType::StartGroup => {
+                while !self.eof()? {
+                    let wire_type = self.read_tag_unpack()?.1;
+                    if wire_type == WireType::EndGroup {
+                        break;
+                    }
+                    self.skip_field(wire_type)?;
+                }
+                // We do not support groups, so just return something.
+                Ok(UnknownValue::LengthDelimited(Vec::new()))
+            }
+            WireType::EndGroup => {
+                Err(ProtobufError::WireError(WireError::UnexpectedWireType(wire_type)).into())
+            }
         }
     }
 
@@ -667,6 +680,9 @@ mod test {
     use super::READ_RAW_BYTES_MAX_ALLOC;
     use crate::error::ProtobufError;
     use crate::hex::decode_hex;
+    use crate::wire_format::Tag;
+    use crate::wire_format::WireType;
+    use crate::CodedOutputStream;
 
     fn test_read_partial<F>(hex: &str, mut callback: F)
     where
@@ -884,5 +900,62 @@ mod test {
         assert_eq!(1000 - 10, buf.len());
 
         assert!(is.eof().expect("eof"));
+    }
+
+    // Copy of this test: https://tinyurl.com/34hfavtz
+    #[test]
+    fn test_skip_group() {
+        // Create an output stream with a group in:
+        // Field 1: string "field 1"
+        // Field 2: group containing:
+        //   Field 1: fixed int32 value 100
+        //   Field 2: string "ignore me"
+        //   Field 3: nested group containing
+        //      Field 1: fixed int64 value 1000
+        // Field 3: string "field 3"
+
+        let mut vec = Vec::new();
+        let mut os = CodedOutputStream::new(&mut vec);
+        os.write_tag(1, WireType::LengthDelimited).unwrap();
+        os.write_string_no_tag("field 1").unwrap();
+
+        // The outer group...
+        os.write_tag(2, WireType::StartGroup).unwrap();
+        os.write_tag(1, WireType::Fixed32).unwrap();
+        os.write_fixed32_no_tag(100).unwrap();
+        os.write_tag(3, WireType::LengthDelimited).unwrap();
+        os.write_string_no_tag("ignore me").unwrap();
+        // The nested group...
+        os.write_tag(3, WireType::StartGroup).unwrap();
+        os.write_tag(1, WireType::Fixed64).unwrap();
+        os.write_fixed64_no_tag(1000).unwrap();
+        // Note: Not sure the field number is relevant for end group...
+        os.write_tag(3, WireType::EndGroup).unwrap();
+
+        // End the outer group
+        os.write_tag(2, WireType::EndGroup).unwrap();
+
+        os.write_tag(3, WireType::LengthDelimited).unwrap();
+        os.write_string_no_tag("field 3").unwrap();
+        os.flush().unwrap();
+        drop(os);
+
+        let mut input = CodedInputStream::from_bytes(&vec);
+        // Now act like a generated client
+        assert_eq!(
+            Tag::make(1, WireType::LengthDelimited),
+            input.read_tag().unwrap()
+        );
+        assert_eq!("field 1", &input.read_string().unwrap());
+        assert_eq!(
+            Tag::make(2, WireType::StartGroup),
+            input.read_tag().unwrap()
+        );
+        input.skip_field(WireType::StartGroup).unwrap();
+        assert_eq!(
+            Tag::make(3, WireType::LengthDelimited),
+            input.read_tag().unwrap()
+        );
+        assert_eq!("field 3", input.read_string().unwrap());
     }
 }

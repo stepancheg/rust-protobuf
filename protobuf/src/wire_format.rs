@@ -84,7 +84,7 @@ impl WireType {
 }
 
 /// Parsed field tag (a pair of field number and wire type)
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub(crate) struct Tag {
     field_number: u32,
     wire_type: WireType,
