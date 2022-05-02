@@ -147,7 +147,7 @@ fn print_to_internal(m: &MessageRef, buf: &mut String, pretty: bool, indent: usi
     // Sort for stable output
     numbers.sort();
     for &n in &numbers {
-        for v in unknown_fields.get(n).unwrap() {
+        for v in unknown_fields.get_all(n).unwrap() {
             // TODO: try decode nested message for length-delimited
             print_field(buf, pretty, indent, &mut first, n, v.to_reflect_value_ref());
         }

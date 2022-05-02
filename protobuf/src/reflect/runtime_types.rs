@@ -41,7 +41,7 @@ use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::EnumFull;
-use crate::UnknownValues;
+use crate::UnknownValueRef;
 
 /// `RuntimeType` is not implemented by all protobuf types directly
 /// because it's not possible to implement `RuntimeType` for all `Message`
@@ -105,7 +105,7 @@ pub trait RuntimeTypeTrait: fmt::Debug + Send + Sync + Sized + 'static {
     }
 
     /// Parse the value from unknown fields.
-    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value>;
+    fn get_from_unknown(unknown: UnknownValueRef, field_type: Type) -> Option<Self::Value>;
 }
 
 /// Runtime type which can be dereferenced.
@@ -208,7 +208,7 @@ impl RuntimeTypeTrait for RuntimeTypeF32 {
         *value != 0.0
     }
 
-    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value> {
+    fn get_from_unknown(unknown: UnknownValueRef, field_type: Type) -> Option<Self::Value> {
         assert_eq!(field_type, Type::TYPE_FLOAT);
         ProtobufTypeFloat::get_from_unknown(unknown)
     }
@@ -255,7 +255,7 @@ impl RuntimeTypeTrait for RuntimeTypeF64 {
         unimplemented!()
     }
 
-    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value> {
+    fn get_from_unknown(unknown: UnknownValueRef, field_type: Type) -> Option<Self::Value> {
         assert_eq!(field_type, Type::TYPE_DOUBLE);
         ProtobufTypeDouble::get_from_unknown(unknown)
     }
@@ -302,7 +302,7 @@ impl RuntimeTypeTrait for RuntimeTypeI32 {
         unimplemented!()
     }
 
-    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value> {
+    fn get_from_unknown(unknown: UnknownValueRef, field_type: Type) -> Option<Self::Value> {
         match field_type {
             Type::TYPE_INT32 => ProtobufTypeInt32::get_from_unknown(unknown),
             Type::TYPE_SINT32 => ProtobufTypeSint32::get_from_unknown(unknown),
@@ -361,7 +361,7 @@ impl RuntimeTypeTrait for RuntimeTypeI64 {
         unimplemented!()
     }
 
-    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value> {
+    fn get_from_unknown(unknown: UnknownValueRef, field_type: Type) -> Option<Self::Value> {
         match field_type {
             Type::TYPE_INT64 => ProtobufTypeInt64::get_from_unknown(unknown),
             Type::TYPE_SINT64 => ProtobufTypeSint64::get_from_unknown(unknown),
@@ -420,7 +420,7 @@ impl RuntimeTypeTrait for RuntimeTypeU32 {
         *value != 0
     }
 
-    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value> {
+    fn get_from_unknown(unknown: UnknownValueRef, field_type: Type) -> Option<Self::Value> {
         match field_type {
             Type::TYPE_UINT32 => ProtobufTypeUint32::get_from_unknown(unknown),
             Type::TYPE_FIXED32 => ProtobufTypeFixed32::get_from_unknown(unknown),
@@ -478,7 +478,7 @@ impl RuntimeTypeTrait for RuntimeTypeU64 {
         unimplemented!()
     }
 
-    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value> {
+    fn get_from_unknown(unknown: UnknownValueRef, field_type: Type) -> Option<Self::Value> {
         match field_type {
             Type::TYPE_UINT64 => ProtobufTypeUint64::get_from_unknown(unknown),
             Type::TYPE_FIXED64 => ProtobufTypeFixed64::get_from_unknown(unknown),
@@ -536,7 +536,7 @@ impl RuntimeTypeTrait for RuntimeTypeBool {
         unimplemented!()
     }
 
-    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value> {
+    fn get_from_unknown(unknown: UnknownValueRef, field_type: Type) -> Option<Self::Value> {
         assert_eq!(field_type, Type::TYPE_BOOL);
         ProtobufTypeBool::get_from_unknown(unknown)
     }
@@ -587,7 +587,7 @@ impl RuntimeTypeTrait for RuntimeTypeString {
         !value.is_empty()
     }
 
-    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value> {
+    fn get_from_unknown(unknown: UnknownValueRef, field_type: Type) -> Option<Self::Value> {
         assert_eq!(field_type, Type::TYPE_STRING);
         ProtobufTypeString::get_from_unknown(unknown)
     }
@@ -645,7 +645,7 @@ impl RuntimeTypeTrait for RuntimeTypeVecU8 {
         !value.is_empty()
     }
 
-    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value> {
+    fn get_from_unknown(unknown: UnknownValueRef, field_type: Type) -> Option<Self::Value> {
         assert_eq!(field_type, Type::TYPE_BYTES);
         ProtobufTypeBytes::get_from_unknown(unknown)
     }
@@ -697,7 +697,7 @@ impl RuntimeTypeTrait for RuntimeTypeTokioBytes {
         unimplemented!()
     }
 
-    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value> {
+    fn get_from_unknown(unknown: UnknownValueRef, field_type: Type) -> Option<Self::Value> {
         assert_eq!(field_type, Type::TYPE_BYTES);
         ProtobufTypeTokioBytes::get_from_unknown(unknown)
     }
@@ -749,7 +749,7 @@ impl RuntimeTypeTrait for RuntimeTypeTokioChars {
         unimplemented!()
     }
 
-    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value> {
+    fn get_from_unknown(unknown: UnknownValueRef, field_type: Type) -> Option<Self::Value> {
         assert_eq!(field_type, Type::TYPE_STRING);
         ProtobufTypeTokioChars::get_from_unknown(unknown)
     }
@@ -822,7 +822,7 @@ where
         EnumOrUnknown::cast_to_values(values)
     }
 
-    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value> {
+    fn get_from_unknown(unknown: UnknownValueRef, field_type: Type) -> Option<Self::Value> {
         assert_eq!(field_type, Type::TYPE_ENUM);
         ProtobufTypeEnumOrUnknown::<E>::get_from_unknown(unknown)
     }
@@ -870,7 +870,7 @@ where
         true
     }
 
-    fn get_from_unknown(unknown: &UnknownValues, field_type: Type) -> Option<Self::Value> {
+    fn get_from_unknown(unknown: UnknownValueRef, field_type: Type) -> Option<Self::Value> {
         assert_eq!(field_type, Type::TYPE_MESSAGE);
         ProtobufTypeMessage::<M>::get_from_unknown(unknown)
     }

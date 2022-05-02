@@ -158,6 +158,20 @@ impl UnknownValues {
             length_delimited: self.length_delimited.iter(),
         }
     }
+
+    pub(crate) fn any(&self) -> Option<UnknownValueRef> {
+        if let Some(last) = self.fixed32.last() {
+            Some(UnknownValueRef::Fixed32(*last))
+        } else if let Some(last) = self.fixed64.last() {
+            Some(UnknownValueRef::Fixed64(*last))
+        } else if let Some(last) = self.varint.last() {
+            Some(UnknownValueRef::Varint(*last))
+        } else if let Some(last) = self.length_delimited.last() {
+            Some(UnknownValueRef::LengthDelimited(last))
+        } else {
+            None
+        }
+    }
 }
 
 impl<'a> IntoIterator for &'a UnknownValues {
@@ -316,11 +330,16 @@ impl UnknownFields {
     }
 
     /// Find unknown field by number
-    pub fn get(&self, field_number: u32) -> Option<&UnknownValues> {
+    pub fn get_all(&self, field_number: u32) -> Option<&UnknownValues> {
         match self.fields {
             Some(ref map) => map.get(&field_number),
             None => None,
         }
+    }
+
+    /// Get any value for unknown fields.
+    pub fn get(&self, field_number: u32) -> Option<UnknownValueRef> {
+        self.get_all(field_number).and_then(|v| v.any())
     }
 
     #[doc(hidden)]
