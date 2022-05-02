@@ -1,4 +1,4 @@
-//! Protobuf "text format" implementation.
+//! # Protobuf "text format" implementation.
 //!
 //! Text format message look like this:
 //!
@@ -18,6 +18,12 @@
 //! This format is not specified, but it is implemented by all official
 //! protobuf implementations, including `protoc` command which can decode
 //! and encode messages using text format.
+//!
+//! # JSON
+//!
+//! rust-protobuf also supports JSON printing and parsing.
+//! It is implemented in
+//! [`protobuf-json-mapping` crate](https://docs.rs/protobuf-json-mapping/%3E=3.0.0-alpha).
 
 mod parse;
 mod print;
