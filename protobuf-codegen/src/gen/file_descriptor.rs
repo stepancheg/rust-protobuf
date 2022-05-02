@@ -152,21 +152,21 @@ pub(crate) fn write_file_descriptor_data(
     w.write_line("/// `FileDescriptorProto` object which was a source for this generated file");
     w.pub_fn(
         &format!(
-            "file_descriptor_proto() -> &'static {}::descriptor::FileDescriptorProto",
-            protobuf_crate_path(customize)
+            "file_descriptor_proto() -> &'static {protobuf_crate}::descriptor::FileDescriptorProto",
+            protobuf_crate=protobuf_crate_path(customize)
         ),
         |w| {
             w.lazy_static_decl_get(
                 "file_descriptor_proto_lazy",
                 &format!(
-                    "{}::descriptor::FileDescriptorProto",
-                    protobuf_crate_path(customize)
+                    "{protobuf_crate}::descriptor::FileDescriptorProto",
+                    protobuf_crate=protobuf_crate_path(customize)
                 ),
                 &format!("{}", protobuf_crate_path(customize)),
                 |w| {
                     w.write_line(&format!(
-                        "{}::Message::parse_from_bytes(file_descriptor_proto_data).unwrap()",
-                        protobuf_crate_path(customize)
+                        "{protobuf_crate}::Message::parse_from_bytes(file_descriptor_proto_data).unwrap()",
+                        protobuf_crate=protobuf_crate_path(customize)
                     ));
                 },
             );
