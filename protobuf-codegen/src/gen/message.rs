@@ -655,7 +655,7 @@ impl<'a> MessageGen<'a> {
         );
     }
 
-    pub fn write(&self, w: &mut CodeWriter) {
+    pub fn write(&self, w: &mut CodeWriter) -> anyhow::Result<()> {
         w.all_documentation(self.info, self.path);
         self.write_struct(w);
 
@@ -691,11 +691,15 @@ impl<'a> MessageGen<'a> {
             .to_scope()
             .messages()
             .into_iter()
-            .filter(|nested| {
+            .filter_map(|nested| {
                 // ignore map entries, because they are not used in map fields
-                !nested.is_map().unwrap() // TODO: do not unwrap
+                match nested.is_map() {
+                    Ok(true) => None,
+                    Ok(false) => Some(Ok(nested)),
+                    Err(err) => Some(Err(err)),
+                }
             })
-            .collect();
+            .collect::<anyhow::Result<_>>()?;
         let nested_enums = self.message.to_scope().enums();
 
         if !oneofs.is_empty() || !nested_messages.is_empty() || !nested_enums.is_empty() {
@@ -714,7 +718,7 @@ impl<'a> MessageGen<'a> {
 
                 static NESTED_TYPE_NUMBER: protobuf::rt::Lazy<i32> = protobuf::rt::Lazy::new();
                 let nested_type_number = *NESTED_TYPE_NUMBER.get(|| {
-                    protobuf::reflect::MessageDescriptor::for_type::<DescriptorProto>()
+                    MessageDescriptor::for_type::<DescriptorProto>()
                         .field_by_name("nested_type")
                         .expect("`nested_type` must exist")
                         .proto()
@@ -739,14 +743,16 @@ impl<'a> MessageGen<'a> {
                         &path,
                         self.info,
                     )
-                    // TODO: do not unwrap
+                    // TODO: do not unwrap.
                     .unwrap()
-                    .write(w);
+                    .write(w)
+                    // TODO: do not unwrap.
+                    .unwrap();
                 }
 
                 static ENUM_TYPE_NUMBER: protobuf::rt::Lazy<i32> = protobuf::rt::Lazy::new();
                 let enum_type_number = *ENUM_TYPE_NUMBER.get(|| {
-                    protobuf::reflect::MessageDescriptor::for_type::<DescriptorProto>()
+                    MessageDescriptor::for_type::<DescriptorProto>()
                         .field_by_name("enum_type")
                         .expect("`enum_type` must exist")
                         .proto()
@@ -774,6 +780,7 @@ impl<'a> MessageGen<'a> {
                 }
             });
         }
+        Ok(())
     }
 }
 

@@ -101,7 +101,7 @@ pub(crate) fn gen_file(
                     &path,
                     file_descriptor.proto().source_code_info.as_ref(),
                 )?
-                .write(w);
+                .write(w)?;
             }
         }
 
