@@ -1,6 +1,6 @@
 [package]
 name = "protobuf-codegen"
-version = "3.0.0-alpha.14"
+version = "4.0.0-alpha.0"
 authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 edition = "2021"
 license = "MIT"
@@ -22,8 +22,8 @@ regex     = "1.5.5"
 once_cell = "1.10.0"
 tempfile  = "3"
 
-protobuf = { path = "../protobuf", version = "=3.0.0-alpha.14" }
-protobuf-parse = { path = "../protobuf-parse", version = "=3.0.0-alpha.14" }
+protobuf = { path = "../protobuf", version = "=4.0.0-alpha.0" }
+protobuf-parse = { path = "../protobuf-parse", version = "=4.0.0-alpha.0" }
 
 [[bin]]
 
