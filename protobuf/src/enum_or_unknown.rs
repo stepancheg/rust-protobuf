@@ -11,14 +11,14 @@ use crate::EnumFull;
 /// Protobuf enums with possibly unknown values are preserved in this struct.
 #[derive(Eq, PartialEq, Ord, PartialOrd, Copy, Clone)]
 #[repr(transparent)]
-// TODO: specify <E: ProtobufEnum> when it no longer prevents using const fns
+// This should be <E: ProtobufEnum> when it no longer prevents using const fns.
 pub struct EnumOrUnknown<E> {
     value: i32,
     _marker: PhantomData<E>,
 }
 
-// TODO: move into <E: ProtobufEnum> when no longer:
-//  trait bounds other than `Sized` on const fn parameters are unstable
+// Move into <E: ProtobufEnum> when no longer:
+// > trait bounds other than `Sized` on const fn parameters are unstable.
 impl<E> EnumOrUnknown<E> {
     /// Construct from any `i32` value.
     ///
