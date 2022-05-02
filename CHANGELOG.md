@@ -5,6 +5,9 @@ Stable versions are 2.xx still supported.
 
 ## [3] - Unreleased
 
+* Generated code for well known types is more similar to regular protobuf now
+  (well known type modules are now placed as is in `well_known_types` module instead of being flattened).
+
 ## [3.0.0-alpha.11] - 2022-05-01
 
 * More efficient reflective operations
