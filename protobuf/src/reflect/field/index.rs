@@ -1,10 +1,10 @@
 use protobuf_support::json_name::json_name;
 
-use crate::descriptor::field_descriptor_proto;
 use crate::descriptor::field_descriptor_proto::Type;
 use crate::descriptor::FieldDescriptorProto;
 use crate::descriptor::FileDescriptorProto;
 use crate::owning_ref::OwningRef;
+use crate::reflect::error::ReflectError;
 use crate::reflect::field::protobuf_field_type::ProtobufFieldType;
 use crate::reflect::file::building::FileDescriptorBuilding;
 use crate::reflect::protobuf_type_box::ProtobufType;
@@ -108,7 +108,7 @@ impl FieldIndex {
     fn enum_default_value(
         field: &FieldDescriptorProto,
         building: &FileDescriptorBuilding,
-    ) -> FieldDefaultValue {
+    ) -> crate::Result<FieldDefaultValue> {
         let en = building.find_enum(field.type_name());
         let (n, _) = match en
             .value
@@ -117,28 +117,33 @@ impl FieldIndex {
             .find(|(_n, v)| v.name() == field.default_value())
         {
             Some(v) => v,
-            None => panic!(
-                "enum value not found a default value: {}",
-                field.default_value()
-            ),
+            None => Err(ReflectError::CouldNotParseDefaultValueForField(
+                field.name().to_owned(),
+            ))?,
         };
-        FieldDefaultValue::Enum(n)
+        Ok(FieldDefaultValue::Enum(n))
     }
 
     fn parse_default_value(
         field: &FieldDescriptorProto,
         building: &FileDescriptorBuilding,
-    ) -> FieldDefaultValue {
-        FieldDefaultValue::ReflectValueBox(match field.type_() {
-            t @ field_descriptor_proto::Type::TYPE_GROUP
-            | t @ field_descriptor_proto::Type::TYPE_MESSAGE => {
-                panic!("{:?} cannot have a default value", t)
+    ) -> crate::Result<FieldDefaultValue> {
+        Ok(FieldDefaultValue::ReflectValueBox(match field.type_() {
+            Type::TYPE_GROUP | Type::TYPE_MESSAGE => {
+                return Err(ReflectError::CouldNotParseDefaultValueForField(
+                    field.name().to_owned(),
+                )
+                .into());
             }
-            field_descriptor_proto::Type::TYPE_ENUM => {
-                return Self::enum_default_value(field, building)
+            Type::TYPE_ENUM => {
+                return Self::enum_default_value(field, building);
             }
-            t => RuntimeType::from_proto_type(t).parse_proto_default_value(field.default_value()),
-        })
+            t => RuntimeType::from_proto_type(t)
+                .parse_proto_default_value(field.default_value())
+                .map_err(|()| {
+                    ReflectError::CouldNotParseDefaultValueForField(field.name().to_owned())
+                })?,
+        }))
     }
 
     pub(crate) fn index(
@@ -147,7 +152,7 @@ impl FieldIndex {
         building: &FileDescriptorBuilding,
     ) -> crate::Result<FieldIndex> {
         let default_value = if field.has_default_value() {
-            Some(Self::parse_default_value(&field, building))
+            Some(Self::parse_default_value(&field, building)?)
         } else {
             None
         };

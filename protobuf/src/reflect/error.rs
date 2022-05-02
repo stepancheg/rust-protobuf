@@ -21,4 +21,6 @@ pub(crate) enum ReflectError {
         numbered 1 and 2 and named `key` and `value`"
     )]
     MapEntryIncorrectFields,
+    #[error("Could not parse default value for field {0}")]
+    CouldNotParseDefaultValueForField(String),
 }

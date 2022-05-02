@@ -89,33 +89,45 @@ impl RuntimeType {
         }
     }
 
-    pub(crate) fn parse_proto_default_value(&self, value: &str) -> ReflectValueBox {
+    pub(crate) fn parse_proto_default_value(&self, value: &str) -> Result<ReflectValueBox, ()> {
         match self {
             // For booleans, "true" or "false"
-            RuntimeType::Bool => ReflectValueBox::Bool(if value == "true" {
-                true
-            } else if value == "false" {
-                false
-            } else {
-                panic!("cannot parse bool default value: {}", value)
-            }),
-            RuntimeType::I32 => ReflectValueBox::I32(value.parse().unwrap()),
-            RuntimeType::I64 => ReflectValueBox::I64(value.parse().unwrap()),
-            RuntimeType::U32 => ReflectValueBox::U32(value.parse().unwrap()),
-            RuntimeType::U64 => ReflectValueBox::U64(value.parse().unwrap()),
-            RuntimeType::F32 => ReflectValueBox::F32(parse_protobuf_float(value).unwrap() as f32),
-            RuntimeType::F64 => ReflectValueBox::F64(parse_protobuf_float(value).unwrap()),
-            // For strings, contains the default text contents (not escaped in any way)
-            RuntimeType::String => ReflectValueBox::String(value.to_owned()),
-            // For bytes, contains the C escaped value.  All bytes >= 128 are escaped
-            RuntimeType::VecU8 => ReflectValueBox::Bytes(
-                StrLit {
-                    escaped: value.to_owned(),
+            RuntimeType::Bool => {
+                if value == "true" {
+                    Ok(ReflectValueBox::Bool(true))
+                } else if value == "false" {
+                    Ok(ReflectValueBox::Bool(false))
+                } else {
+                    Err(())
                 }
-                .decode_bytes()
-                .expect("decoded bytes default value"),
-            ),
-            t => unimplemented!("not implemented for {:?}", t),
+            }
+            RuntimeType::I32 => value.parse().map_err(|_| ()).map(ReflectValueBox::I32),
+            RuntimeType::I64 => value.parse().map_err(|_| ()).map(ReflectValueBox::I64),
+            RuntimeType::U32 => value.parse().map_err(|_| ()).map(ReflectValueBox::U32),
+            RuntimeType::U64 => value.parse().map_err(|_| ()).map(ReflectValueBox::U64),
+            RuntimeType::F32 => parse_protobuf_float(value)
+                .map_err(|_| ())
+                .map(|v| ReflectValueBox::F32(v as f32)),
+            RuntimeType::F64 => parse_protobuf_float(value)
+                .map_err(|_| ())
+                .map(ReflectValueBox::F64),
+            // For strings, contains the default text contents (not escaped in any way)
+            RuntimeType::String => Ok(ReflectValueBox::String(value.to_owned())),
+            // For bytes, contains the C escaped value.  All bytes >= 128 are escaped
+            RuntimeType::VecU8 => StrLit {
+                escaped: value.to_owned(),
+            }
+            .decode_bytes()
+            .map_err(|_| ())
+            .map(ReflectValueBox::Bytes),
+            RuntimeType::Enum(_) => {
+                // Handled outside.
+                Err(())
+            }
+            RuntimeType::Message(_) => {
+                // Message cannot have default value.
+                Err(())
+            }
         }
     }
 }
