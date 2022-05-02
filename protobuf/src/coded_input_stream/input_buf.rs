@@ -12,6 +12,12 @@ pub(crate) struct InputBuf<'a> {
 }
 
 impl<'a> InputBuf<'a> {
+    #[inline]
+    pub(crate) fn assertions(&self) {
+        debug_assert!(self.pos_within_buf <= self.limit_within_buf);
+        debug_assert!(self.limit_within_buf <= self.buf.len());
+    }
+
     pub(crate) fn empty() -> InputBuf<'a> {
         InputBuf {
             buf: &[],

@@ -102,6 +102,7 @@ impl<'a> BufReadIter<'a> {
     #[inline]
     fn assertions(&self) {
         debug_assert!(self.pos() <= self.limit);
+        self.buf.assertions();
     }
 
     #[inline(always)]
@@ -177,7 +178,7 @@ impl<'a> BufReadIter<'a> {
     }
 
     fn read_byte_slow(&mut self) -> crate::Result<u8> {
-        self.do_fill_buf()?;
+        self.fill_buf_slow()?;
 
         if let Some(b) = self.buf.read_byte() {
             return Ok(b);
@@ -363,11 +364,8 @@ impl<'a> BufReadIter<'a> {
         }
     }
 
-    fn do_fill_buf(&mut self) -> crate::Result<()> {
-        debug_assert!(self.remaining_in_buf().is_empty());
-
-        // Limit is reached, do not fill buf, because otherwise
-        // synchronous read from `CodedInputStream` may block.
+    fn fill_buf_slow(&mut self) -> crate::Result<()> {
+        self.assertions();
         if self.limit == self.pos() {
             return Ok(());
         }
@@ -398,8 +396,11 @@ impl<'a> BufReadIter<'a> {
             return Ok(rem);
         }
 
-        // TODO: partially inline this.
-        self.do_fill_buf()?;
+        if self.limit == self.pos() {
+            return Ok(&[]);
+        }
+
+        self.fill_buf_slow()?;
 
         Ok(self.buf.remaining_in_buf())
     }
