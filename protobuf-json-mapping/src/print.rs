@@ -35,16 +35,21 @@ use crate::float;
 use crate::rfc_3339::TmUtc;
 use crate::well_known_wrapper::WellKnownWrapper;
 
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 enum PrintErrorInner {
+    #[error(transparent)]
     Fmt(fmt::Error),
+    #[error("JSON printing of Any is not implemented")]
     AnyPrintingIsNotImplemented,
+    #[error("Negative nanoseconds in timestamp")]
     TimestampNegativeNanos,
+    #[error("Unknown struct value kind")]
     UnknownStructValueKind,
 }
 
 /// Print to JSON error.
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
+#[error(transparent)]
 pub struct PrintError(PrintErrorInner);
 
 impl From<fmt::Error> for PrintError {
