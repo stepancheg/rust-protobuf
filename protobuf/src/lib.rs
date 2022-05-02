@@ -106,7 +106,6 @@ mod unknown;
 mod varint;
 mod zigzag;
 
-mod io;
 mod misc;
 
 // TODO: does not work: https://github.com/rust-lang/rust/issues/67295

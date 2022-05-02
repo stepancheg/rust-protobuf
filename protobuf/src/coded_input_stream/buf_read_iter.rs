@@ -14,12 +14,12 @@ use bytes::Bytes;
 #[cfg(feature = "bytes")]
 use bytes::BytesMut;
 
+use crate::coded_input_stream::buf_read_or_reader::BufReadOrReader;
+use crate::coded_input_stream::input_buf::InputBuf;
+use crate::coded_input_stream::input_source::InputSource;
 use crate::coded_input_stream::READ_RAW_BYTES_MAX_ALLOC;
 use crate::error::ProtobufError;
 use crate::error::WireError;
-use crate::io::buf_read_or_reader::BufReadOrReader;
-use crate::io::input_buf::InputBuf;
-use crate::io::input_source::InputSource;
 
 // If an input stream is constructed with a `Read`, we create a
 // `BufReader` with an internal buffer of this size.

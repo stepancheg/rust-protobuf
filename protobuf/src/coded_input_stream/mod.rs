@@ -1,3 +1,8 @@
+mod buf_read_iter;
+mod buf_read_or_reader;
+mod input_buf;
+mod input_source;
+
 use std::io;
 use std::io::BufRead;
 use std::io::Read;
@@ -9,10 +14,10 @@ use ::bytes::Bytes;
 
 #[cfg(feature = "bytes")]
 use crate::chars::Chars;
+use crate::coded_input_stream::buf_read_iter::BufReadIter;
 use crate::enums::Enum;
 use crate::error::ProtobufError;
 use crate::error::WireError;
-use crate::io::buf_read_iter::BufReadIter;
 use crate::misc::maybe_ununit_array_assume_init;
 use crate::reflect::types::ProtobufTypeBool;
 use crate::reflect::types::ProtobufTypeDouble;
