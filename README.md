@@ -1,5 +1,4 @@
-rust-protobuf
-=============
+# rust-protobuf
 
 <!-- https://travis-ci.org/stepancheg/rust-protobuf.png -->
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/stepancheg/rust-protobuf/CI)](https://github.com/stepancheg/rust-protobuf/actions?query=workflow%3ACI)
@@ -17,35 +16,24 @@ rust-protobuf
 
 ## Where is documentation
 
-Documentation is moved to the crates.
+Documentation is [hosted on docs.rs](https://docs.rs/protobuf).
 
-* [protobuf=2](https://docs.rs/protobuf/=2)
-* [protobuf=3](https://docs.rs/protobuf/>=3.0.0-alpha)
-
-(Note both versions 2 and 3 or rust-protobuf support both `proto2` and `proto3`
-syntax of `.proto` files.)
-
-## About versions and branches
-
-### Version 2
-
-`2.*.*` is the latest stable version. `2.*.*` versions follow semver conventions,
-including generated code: code generated with `2.*.*` is compatible with newer `2.*.*`.
+## Versions and branches
 
 ### Version 3
 
-Compared to version 2, it has:
-* runtime reflection support
-* JSON and text format parsing and printing (based on reflection)
-* dynamic messages (messages which can be created using schema but without generated code)
+Version 3 is current stable version. Compared to version 2 it implements:
+* runtime reflection
+* JSON and text format parsing and printing
+* dynamic messages (messages which can be created from `.proto` file on the fly
+  without code generation)
 
-Version 3 of rust-protobuf is mostly feature-complete, but to release it:
-* more testing needed
-* API need to be polished since breaking API is not semver-friendly
+### Version 2
 
-Current plan is to release version 3 in a few weeks.
+Version is previous stable version. Only most critical bugfixes will be applied
+to 2.x version, otherwise it won't be maintained.
 
-[Tracking issue for rust-protobuf=3](https://github.com/stepancheg/rust-protobuf/issues/518).
+### Help
 
 The crate **needs help**:
 * testing
@@ -58,7 +46,7 @@ The crate **needs help**:
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG-before-3.md) for a list of changes and compatility issues between versions.
+See [CHANGELOG.md](CHANGELOG.md) for a list of changes and compatility issues between versions.
 
 ## Related projects
 
