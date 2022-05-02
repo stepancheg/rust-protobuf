@@ -12,4 +12,13 @@ pub(crate) enum ReflectError {
     NonUniqueFileDescriptor(String),
     #[error("Cycle in provided file descriptors")]
     CycleInFileDescriptors,
+    #[error("Map entry message name must end with `Entry`")]
+    MapEntryNameMustEndWithEntry,
+    #[error("Map entry message must have no extensions, nested messages or enums")]
+    MapEntryMustHaveNo,
+    #[error(
+        "Map entry message must have two optional fields, \
+        numbered 1 and 2 and named `key` and `value`"
+    )]
+    MapEntryIncorrectFields,
 }

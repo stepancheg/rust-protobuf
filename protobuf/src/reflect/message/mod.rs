@@ -113,7 +113,7 @@ impl MessageDescriptor {
 
     /// This message descriptor is a map entry.
     pub fn is_map_entry(&self) -> bool {
-        self.proto().options.get_or_default().map_entry()
+        self.index().map_entry
     }
 
     fn assert_not_map_entry(&self) {

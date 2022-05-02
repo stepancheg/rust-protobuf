@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use std::ops::Range;
 
+use crate::descriptor::field_descriptor_proto::Label;
 use crate::descriptor::DescriptorProto;
 use crate::descriptor::EnumDescriptorProto;
 use crate::descriptor::FileDescriptorProto;
@@ -23,6 +24,7 @@ pub(crate) struct MessageIndices {
     pub(crate) nested_messages: Vec<usize>,
     pub(crate) nested_enums: Range<usize>,
     pub(crate) oneofs: Range<usize>,
+    pub(crate) map_entry: bool,
     pub(crate) message_index: MessageFieldIndices,
     pub(crate) is_initialized_is_always_true: bool,
 }
@@ -147,7 +149,7 @@ impl FileDescriptorCommon {
                 &mut messages,
                 &mut enums,
                 &mut oneofs,
-            );
+            )?;
             top_level_messages.push(message_index);
         }
 
@@ -212,6 +214,45 @@ impl FileDescriptorCommon {
         })
     }
 
+    fn is_map_entry(message: &DescriptorProto) -> crate::Result<bool> {
+        // Must be consistent with
+        // DescriptorBuilder::ValidateMapEntry
+
+        if !message.options.map_entry() {
+            return Ok(false);
+        }
+
+        if !message.name().ends_with("Entry") {
+            return Err(ReflectError::MapEntryNameMustEndWithEntry.into());
+        }
+        if !message.extension.is_empty()
+            || !message.extension_range.is_empty()
+            || !message.nested_type.is_empty()
+            || !message.enum_type.is_empty()
+        {
+            return Err(ReflectError::MapEntryMustHaveNo.into());
+        }
+
+        if message.field.len() != 2 {
+            return Err(ReflectError::MapEntryIncorrectFields.into());
+        }
+
+        let key = &message.field[0];
+        let value = &message.field[1];
+
+        if key.number() != 1
+            || key.name() != "key"
+            || key.label() != Label::LABEL_OPTIONAL
+            || value.number() != 2
+            || value.name() != "value"
+            || value.label() != Label::LABEL_OPTIONAL
+        {
+            return Err(ReflectError::MapEntryIncorrectFields.into());
+        }
+
+        Ok(true)
+    }
+
     fn index_message_and_inners(
         file: &FileDescriptorProto,
         message: OwningRef<FileDescriptorProto, DescriptorProto>,
@@ -220,7 +261,7 @@ impl FileDescriptorCommon {
         messages: &mut Vec<MessageIndices>,
         enums: &mut Vec<EnumIndices>,
         oneofs: &mut Vec<OneofIndices>,
-    ) -> usize {
+    ) -> crate::Result<usize> {
         let name_to_package = concat_paths(parent_name_to_package, message.name());
 
         let message_index = messages.len();
@@ -233,6 +274,7 @@ impl FileDescriptorCommon {
             nested_enums: enums.len()..enums.len() + message.enum_type.len(),
             oneofs: oneofs.len()..oneofs.len() + message.oneof_decl.len(),
             message_index: MessageFieldIndices::default(),
+            map_entry: Self::is_map_entry(&message)?,
             // Initialized later.
             is_initialized_is_always_true: false,
         });
@@ -271,11 +313,11 @@ impl FileDescriptorCommon {
                 messages,
                 enums,
                 oneofs,
-            );
+            )?;
             messages[message_index].nested_messages.push(nested_index);
         }
 
-        message_index
+        Ok(message_index)
     }
 
     fn build_message_by_name_to_package(messages: &[MessageIndices]) -> HashMap<String, usize> {
