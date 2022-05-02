@@ -7,8 +7,10 @@ Stable versions are 2.xx still supported.
 
 * Generated code for well known types is more similar to regular protobuf now
   (well known type modules are now placed as is in `well_known_types` module instead of being flattened).
+* `file_descriptor_proto` function is private now in generated code.
+  Descriptor can be obtained by calling `file_descriptor().proto()`.
 
-## [3.0.0-alpha.11] - 2022-05-01
+## [3.0.0-alpha.13] - 2022-05-01
 
 * More efficient reflective operations
 * Fewer internals exposed from public API (e.g. `ProtobufType` is no longer public)
