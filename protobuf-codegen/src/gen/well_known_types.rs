@@ -43,7 +43,6 @@ static NAMES: &'static [&'static str] = &[
     "Enum",
     "EnumValue",
     "Field",
-    // TODO: dotted names
     "Field.Cardinality",
     "Field.Kind",
     "FieldMask",
