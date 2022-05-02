@@ -59,7 +59,6 @@ pub use crate::unknown::UnknownFields;
 pub use crate::unknown::UnknownFieldsIter;
 pub use crate::unknown::UnknownValue;
 pub use crate::unknown::UnknownValueRef;
-pub use crate::unknown::UnknownValuesIter;
 pub(crate) mod wire_format;
 #[cfg(feature = "bytes")]
 pub use crate::chars::Chars;

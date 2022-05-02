@@ -185,7 +185,7 @@ impl<'a> IntoIterator for &'a UnknownValues {
 }
 
 /// Iterator over unknown values
-pub struct UnknownValuesIter<'o> {
+pub(crate) struct UnknownValuesIter<'o> {
     fixed32: slice::Iter<'o, u32>,
     fixed64: slice::Iter<'o, u64>,
     varint: slice::Iter<'o, u64>,
