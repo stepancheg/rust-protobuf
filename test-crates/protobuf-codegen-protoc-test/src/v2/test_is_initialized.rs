@@ -6,8 +6,11 @@ use crate::v2::test_is_initialized_pb;
 use crate::v2::test_is_initialized_pb::TestIsInitialized;
 
 fn file_descriptor_dynamic() -> FileDescriptor {
-    FileDescriptor::new_dynamic(test_is_initialized_pb::file_descriptor_proto().clone(), &[])
-        .unwrap()
+    FileDescriptor::new_dynamic(
+        test_is_initialized_pb::file_descriptor().proto().clone(),
+        &[],
+    )
+    .unwrap()
 }
 
 fn test_is_initialized(message: &mut dyn MessageDyn) {
