@@ -108,7 +108,7 @@ mod zigzag;
 
 mod misc;
 
-// TODO: does not work: https://github.com/rust-lang/rust/issues/67295
+// This does not work: https://github.com/rust-lang/rust/issues/67295
 #[cfg(doctest)]
 mod doctest_pb;
 

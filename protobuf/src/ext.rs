@@ -76,7 +76,6 @@ impl<M, V> ExtFieldRepeated<M, V> {
 impl<M: Message, V: ProtobufValue> ExtFieldRepeated<M, V> {
     /// Get a copy of value from a message (**not implemented**).
     pub fn get(&self, _m: &M) -> Vec<V> {
-        // TODO
-        unimplemented!()
+        unimplemented!("extension fields implementation in rust-protobuf is stopgap")
     }
 }

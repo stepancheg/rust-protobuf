@@ -172,5 +172,3 @@ impl From<()> for well_known_types::empty::Empty {
         Self::new()
     }
 }
-
-// TODO Think about `std::time::Duration` and `std::time::SystemTime` conversions.
