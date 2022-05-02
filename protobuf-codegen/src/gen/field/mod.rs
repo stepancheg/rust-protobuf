@@ -555,13 +555,6 @@ impl<'a> FieldGen<'a> {
             _ => {}
         };
 
-        //        let as_option_type = RustType::Option(Box::new(elem.rust_storage_elem_type().ref_type()));
-        //
-        //        // TODO: do not use as_option_ref, return Box for OptionBox instead (for simpler code)
-        //        let v = option_kind.as_option_ref(&self.self_field());
-        //
-        //        as_option_type.value(v)
-
         let as_option_type = option_kind.as_ref_type(
             elem.rust_storage_elem_type(
                 &self
