@@ -158,13 +158,9 @@ impl<'a> FieldGen<'a> {
             && field.field.proto().label() != field_descriptor_proto::Label::LABEL_REPEATED
             && field.field.proto().type_() != Type::TYPE_MESSAGE;
 
-        let default_expose_field = !field_may_have_custom_default_value;
-        let expose_field = customize.expose_fields.unwrap_or(default_expose_field);
-
-        let default_generate_accessors = !expose_field;
         let generate_accessors = customize
             .generate_accessors
-            .unwrap_or(default_generate_accessors)
+            .unwrap_or(field_may_have_custom_default_value)
             || field.is_oneof();
 
         let default_generate_getter = generate_accessors || field_may_have_custom_default_value;
