@@ -9,7 +9,8 @@ Stable versions are 2.xx still supported.
   (well known type modules are now placed as is in `well_known_types` module instead of being flattened).
 * `file_descriptor_proto()` function is private now in generated code.
   Descriptor can be obtained by calling `file_descriptor().proto()`.
-* `file_descriptor()` now returns `&'static FileDescriptor`.
+* `file_descriptor()` now returns `&'static FileDescriptor`
+* Hide `UnknownValues` from public API (keep `UnknownFields`)
 
 ## [3.0.0-alpha.13] - 2022-05-01
 
