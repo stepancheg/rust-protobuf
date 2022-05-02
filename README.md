@@ -58,7 +58,7 @@ The crate **needs help**:
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for a list of changes and compatility issues between versions.
+See [CHANGELOG.md](CHANGELOG-before-3.md) for a list of changes and compatility issues between versions.
 
 ## Related projects
 
