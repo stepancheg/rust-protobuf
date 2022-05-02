@@ -39,15 +39,15 @@ fn write_file_descriptor(
     w.write_line("/// `FileDescriptor` object which allows dynamic access to files");
     w.pub_fn(
         &format!(
-            "file_descriptor() -> {}::reflect::FileDescriptor",
-            protobuf_crate_path(customize)
+            "file_descriptor() -> {protobuf_crate}::reflect::FileDescriptor",
+            protobuf_crate = protobuf_crate_path(customize)
         ),
         |w| {
             w.lazy_static(
                 "file_descriptor_lazy",
                 &format!(
-                    "{}::reflect::GeneratedFileDescriptor",
-                    protobuf_crate_path(customize)
+                    "{protobuf_crate}::reflect::GeneratedFileDescriptor",
+                    protobuf_crate = protobuf_crate_path(customize)
                 ),
                 &format!("{}", protobuf_crate_path(customize)),
             );
@@ -57,8 +57,8 @@ fn write_file_descriptor(
                 |w| {
                     let deps = &file_descriptor.proto().dependency;
                     w.write_line(&format!(
-                        "let mut deps = {};",
-                        expr_vec_with_capacity(&format!("{}", deps.len()))
+                        "let mut deps = {vec_with_capacity};",
+                        vec_with_capacity = expr_vec_with_capacity(&format!("{}", deps.len()))
                     ));
                     for f in deps {
                         w.write_line(&format!(
@@ -71,8 +71,8 @@ fn write_file_descriptor(
 
                     let messages = scope.find_messages_except_map();
                     w.write_line(&format!(
-                        "let mut messages = {};",
-                        expr_vec_with_capacity(&format!("{}", messages.len()))
+                        "let mut messages = {vec_with_capacity};",
+                        vec_with_capacity = expr_vec_with_capacity(&format!("{}", messages.len()))
                     ));
                     for m in &messages {
                         w.write_line(&format!(
