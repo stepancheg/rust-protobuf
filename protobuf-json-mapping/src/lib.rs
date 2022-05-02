@@ -10,8 +10,8 @@ mod well_known_wrapper;
 
 pub use self::parse::merge_from_str;
 pub use self::parse::merge_from_str_with_options;
-pub use self::parse::parse_dynamic_from_str;
-pub use self::parse::parse_dynamic_from_str_with_options;
+pub use self::parse::parse_dyn_from_str;
+pub use self::parse::parse_dyn_from_str_with_options;
 pub use self::parse::parse_from_str;
 pub use self::parse::parse_from_str_with_options;
 pub use self::parse::ParseError;

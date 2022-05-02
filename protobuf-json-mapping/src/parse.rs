@@ -878,7 +878,7 @@ pub fn merge_from_str(message: &mut dyn MessageDyn, json: &str) -> ParseResult<(
 }
 
 /// Parse JSON to protobuf message.
-pub fn parse_dynamic_from_str_with_options(
+pub fn parse_dyn_from_str_with_options(
     d: &MessageDescriptor,
     json: &str,
     parse_options: &ParseOptions,
@@ -895,11 +895,8 @@ pub fn parse_dynamic_from_str_with_options(
 }
 
 /// Parse JSON to protobuf message.
-pub fn parse_dynamic_from_str(
-    d: &MessageDescriptor,
-    json: &str,
-) -> ParseResult<Box<dyn MessageDyn>> {
-    parse_dynamic_from_str_with_options(d, json, &ParseOptions::default())
+pub fn parse_dyn_from_str(d: &MessageDescriptor, json: &str) -> ParseResult<Box<dyn MessageDyn>> {
+    parse_dyn_from_str_with_options(d, json, &ParseOptions::default())
 }
 
 /// Parse JSON to protobuf message.
@@ -907,7 +904,7 @@ pub fn parse_from_str_with_options<M: MessageFull>(
     json: &str,
     parse_options: &ParseOptions,
 ) -> ParseResult<M> {
-    let m = parse_dynamic_from_str_with_options(&M::descriptor(), json, parse_options)?;
+    let m = parse_dyn_from_str_with_options(&M::descriptor(), json, parse_options)?;
     Ok(*m.downcast_box().unwrap())
 }
 
