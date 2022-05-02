@@ -34,8 +34,8 @@ fn parse_using_protoc(text: &str, message_descriptor: &MessageDescriptor) -> Box
 
     let mut fds = FileDescriptorSet::new();
     fds.file = vec![
-        descriptor::file_descriptor_proto().clone(),
-        rustproto::file_descriptor_proto().clone(),
+        descriptor::file_descriptor().proto().clone(),
+        rustproto::file_descriptor().proto().clone(),
         message_descriptor.file_descriptor_proto().clone(),
     ]
     .into();
@@ -101,8 +101,8 @@ fn print_using_protoc(message: &dyn MessageDyn) -> String {
 
     let mut fds = FileDescriptorSet::new();
     fds.file = vec![
-        descriptor::file_descriptor_proto().clone(),
-        rustproto::file_descriptor_proto().clone(),
+        descriptor::file_descriptor().proto().clone(),
+        rustproto::file_descriptor().proto().clone(),
         message_descriptor.file_descriptor_proto().clone(),
     ]
     .into();

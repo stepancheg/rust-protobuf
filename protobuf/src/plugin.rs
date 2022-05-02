@@ -1403,7 +1403,7 @@ static file_descriptor_proto_data: &'static [u8] = b"\
 ";
 
 /// `FileDescriptorProto` object which was a source for this generated file
-pub fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
+fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
     static file_descriptor_proto_lazy: crate::rt::Lazy<crate::descriptor::FileDescriptorProto> = crate::rt::Lazy::new();
     file_descriptor_proto_lazy.get(|| {
         crate::Message::parse_from_bytes(file_descriptor_proto_data).unwrap()
