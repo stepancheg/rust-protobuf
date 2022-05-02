@@ -1,5 +1,6 @@
 use std::fs;
 use std::io;
+use std::process::Command;
 
 use crate::checkout_sources;
 use crate::rust_install_toolchain;
@@ -61,6 +62,12 @@ pub(crate) fn cargo_sync_readme_job() -> Job {
         ),
     ];
     for cr in find_sync_readme_crates() {
+        Command::new("cargo")
+            .arg("sync-readme")
+            .current_dir(&cr)
+            .output()
+            .unwrap();
+
         steps.push(Step::run(
             &format!("sync-readme {}", cr),
             &format!("cd {} && cargo sync-readme --check", cr),
