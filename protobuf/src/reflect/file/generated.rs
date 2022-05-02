@@ -31,22 +31,7 @@ impl fmt::Debug for GeneratedFileDescriptor {
 }
 
 impl GeneratedFileDescriptor {
-    /// This function is to be called from generated code.
-    pub fn new_generated_2(
-        file_descriptor_proto: &'static FileDescriptorProto,
-        dependencies: Vec<&'static FileDescriptor>,
-        messages: Vec<GeneratedMessageDescriptorData>,
-        enums: Vec<GeneratedEnumDescriptorData>,
-    ) -> GeneratedFileDescriptor {
-        GeneratedFileDescriptor::new_generated(
-            file_descriptor_proto,
-            dependencies.into_iter().map(|f| f.clone()).collect(),
-            messages,
-            enums,
-        )
-    }
-
-    /// This function is to be called from generated code.
+    /// This function is called from generated code.
     pub fn new_generated(
         file_descriptor_proto: &'static FileDescriptorProto,
         dependencies: Vec<FileDescriptor>,
