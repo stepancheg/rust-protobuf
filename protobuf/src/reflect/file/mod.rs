@@ -278,6 +278,6 @@ mod test {
     #[test]
     #[cfg_attr(miri, ignore)]
     fn eq() {
-        assert!(descriptor::file_descriptor() == descriptor::file_descriptor().clone());
+        assert!(descriptor::file_descriptor() == &descriptor::file_descriptor().clone());
     }
 }

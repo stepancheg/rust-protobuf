@@ -1596,28 +1596,31 @@ fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
 }
 
 /// `FileDescriptor` object which allows dynamic access to files
-pub fn file_descriptor() -> crate::reflect::FileDescriptor {
-    static file_descriptor_lazy: crate::rt::Lazy<crate::reflect::GeneratedFileDescriptor> = crate::rt::Lazy::new();
-    let file_descriptor = file_descriptor_lazy.get(|| {
-        let mut deps = ::std::vec::Vec::with_capacity(2);
-        deps.push(crate::well_known_types::any::file_descriptor());
-        deps.push(crate::well_known_types::source_context::file_descriptor());
-        let mut messages = ::std::vec::Vec::with_capacity(5);
-        messages.push(Type::generated_message_descriptor_data());
-        messages.push(Field::generated_message_descriptor_data());
-        messages.push(Enum::generated_message_descriptor_data());
-        messages.push(EnumValue::generated_message_descriptor_data());
-        messages.push(Option::generated_message_descriptor_data());
-        let mut enums = ::std::vec::Vec::with_capacity(3);
-        enums.push(Syntax::generated_enum_descriptor_data());
-        enums.push(field::Kind::generated_enum_descriptor_data());
-        enums.push(field::Cardinality::generated_enum_descriptor_data());
-        crate::reflect::GeneratedFileDescriptor::new_generated(
-            file_descriptor_proto(),
-            deps,
-            messages,
-            enums,
-        )
-    });
-    crate::reflect::FileDescriptor::new_generated_2(file_descriptor)
+pub fn file_descriptor() -> &'static crate::reflect::FileDescriptor {
+    static generated_file_descriptor_lazy: crate::rt::Lazy<crate::reflect::GeneratedFileDescriptor> = crate::rt::Lazy::new();
+    static file_descriptor: crate::rt::Lazy<crate::reflect::FileDescriptor> = crate::rt::Lazy::new();
+    file_descriptor.get(|| {
+        let generated_file_descriptor = generated_file_descriptor_lazy.get(|| {
+            let mut deps = ::std::vec::Vec::with_capacity(2);
+            deps.push(crate::well_known_types::any::file_descriptor().clone());
+            deps.push(crate::well_known_types::source_context::file_descriptor().clone());
+            let mut messages = ::std::vec::Vec::with_capacity(5);
+            messages.push(Type::generated_message_descriptor_data());
+            messages.push(Field::generated_message_descriptor_data());
+            messages.push(Enum::generated_message_descriptor_data());
+            messages.push(EnumValue::generated_message_descriptor_data());
+            messages.push(Option::generated_message_descriptor_data());
+            let mut enums = ::std::vec::Vec::with_capacity(3);
+            enums.push(Syntax::generated_enum_descriptor_data());
+            enums.push(field::Kind::generated_enum_descriptor_data());
+            enums.push(field::Cardinality::generated_enum_descriptor_data());
+            crate::reflect::GeneratedFileDescriptor::new_generated(
+                file_descriptor_proto(),
+                deps,
+                messages,
+                enums,
+            )
+        });
+        crate::reflect::FileDescriptor::new_generated_2(generated_file_descriptor)
+    })
 }

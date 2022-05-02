@@ -966,22 +966,25 @@ fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
 }
 
 /// `FileDescriptor` object which allows dynamic access to files
-pub fn file_descriptor() -> crate::reflect::FileDescriptor {
-    static file_descriptor_lazy: crate::rt::Lazy<crate::reflect::GeneratedFileDescriptor> = crate::rt::Lazy::new();
-    let file_descriptor = file_descriptor_lazy.get(|| {
-        let mut deps = ::std::vec::Vec::with_capacity(0);
-        let mut messages = ::std::vec::Vec::with_capacity(3);
-        messages.push(Struct::generated_message_descriptor_data());
-        messages.push(Value::generated_message_descriptor_data());
-        messages.push(ListValue::generated_message_descriptor_data());
-        let mut enums = ::std::vec::Vec::with_capacity(1);
-        enums.push(NullValue::generated_enum_descriptor_data());
-        crate::reflect::GeneratedFileDescriptor::new_generated(
-            file_descriptor_proto(),
-            deps,
-            messages,
-            enums,
-        )
-    });
-    crate::reflect::FileDescriptor::new_generated_2(file_descriptor)
+pub fn file_descriptor() -> &'static crate::reflect::FileDescriptor {
+    static generated_file_descriptor_lazy: crate::rt::Lazy<crate::reflect::GeneratedFileDescriptor> = crate::rt::Lazy::new();
+    static file_descriptor: crate::rt::Lazy<crate::reflect::FileDescriptor> = crate::rt::Lazy::new();
+    file_descriptor.get(|| {
+        let generated_file_descriptor = generated_file_descriptor_lazy.get(|| {
+            let mut deps = ::std::vec::Vec::with_capacity(0);
+            let mut messages = ::std::vec::Vec::with_capacity(3);
+            messages.push(Struct::generated_message_descriptor_data());
+            messages.push(Value::generated_message_descriptor_data());
+            messages.push(ListValue::generated_message_descriptor_data());
+            let mut enums = ::std::vec::Vec::with_capacity(1);
+            enums.push(NullValue::generated_enum_descriptor_data());
+            crate::reflect::GeneratedFileDescriptor::new_generated(
+                file_descriptor_proto(),
+                deps,
+                messages,
+                enums,
+            )
+        });
+        crate::reflect::FileDescriptor::new_generated_2(generated_file_descriptor)
+    })
 }

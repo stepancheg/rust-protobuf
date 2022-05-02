@@ -9576,51 +9576,54 @@ fn file_descriptor_proto() -> &'static crate::descriptor::FileDescriptorProto {
 }
 
 /// `FileDescriptor` object which allows dynamic access to files
-pub fn file_descriptor() -> crate::reflect::FileDescriptor {
-    static file_descriptor_lazy: crate::rt::Lazy<crate::reflect::GeneratedFileDescriptor> = crate::rt::Lazy::new();
-    let file_descriptor = file_descriptor_lazy.get(|| {
-        let mut deps = ::std::vec::Vec::with_capacity(0);
-        let mut messages = ::std::vec::Vec::with_capacity(27);
-        messages.push(FileDescriptorSet::generated_message_descriptor_data());
-        messages.push(FileDescriptorProto::generated_message_descriptor_data());
-        messages.push(DescriptorProto::generated_message_descriptor_data());
-        messages.push(ExtensionRangeOptions::generated_message_descriptor_data());
-        messages.push(FieldDescriptorProto::generated_message_descriptor_data());
-        messages.push(OneofDescriptorProto::generated_message_descriptor_data());
-        messages.push(EnumDescriptorProto::generated_message_descriptor_data());
-        messages.push(EnumValueDescriptorProto::generated_message_descriptor_data());
-        messages.push(ServiceDescriptorProto::generated_message_descriptor_data());
-        messages.push(MethodDescriptorProto::generated_message_descriptor_data());
-        messages.push(FileOptions::generated_message_descriptor_data());
-        messages.push(MessageOptions::generated_message_descriptor_data());
-        messages.push(FieldOptions::generated_message_descriptor_data());
-        messages.push(OneofOptions::generated_message_descriptor_data());
-        messages.push(EnumOptions::generated_message_descriptor_data());
-        messages.push(EnumValueOptions::generated_message_descriptor_data());
-        messages.push(ServiceOptions::generated_message_descriptor_data());
-        messages.push(MethodOptions::generated_message_descriptor_data());
-        messages.push(UninterpretedOption::generated_message_descriptor_data());
-        messages.push(SourceCodeInfo::generated_message_descriptor_data());
-        messages.push(GeneratedCodeInfo::generated_message_descriptor_data());
-        messages.push(descriptor_proto::ExtensionRange::generated_message_descriptor_data());
-        messages.push(descriptor_proto::ReservedRange::generated_message_descriptor_data());
-        messages.push(enum_descriptor_proto::EnumReservedRange::generated_message_descriptor_data());
-        messages.push(uninterpreted_option::NamePart::generated_message_descriptor_data());
-        messages.push(source_code_info::Location::generated_message_descriptor_data());
-        messages.push(generated_code_info::Annotation::generated_message_descriptor_data());
-        let mut enums = ::std::vec::Vec::with_capacity(6);
-        enums.push(field_descriptor_proto::Type::generated_enum_descriptor_data());
-        enums.push(field_descriptor_proto::Label::generated_enum_descriptor_data());
-        enums.push(file_options::OptimizeMode::generated_enum_descriptor_data());
-        enums.push(field_options::CType::generated_enum_descriptor_data());
-        enums.push(field_options::JSType::generated_enum_descriptor_data());
-        enums.push(method_options::IdempotencyLevel::generated_enum_descriptor_data());
-        crate::reflect::GeneratedFileDescriptor::new_generated(
-            file_descriptor_proto(),
-            deps,
-            messages,
-            enums,
-        )
-    });
-    crate::reflect::FileDescriptor::new_generated_2(file_descriptor)
+pub fn file_descriptor() -> &'static crate::reflect::FileDescriptor {
+    static generated_file_descriptor_lazy: crate::rt::Lazy<crate::reflect::GeneratedFileDescriptor> = crate::rt::Lazy::new();
+    static file_descriptor: crate::rt::Lazy<crate::reflect::FileDescriptor> = crate::rt::Lazy::new();
+    file_descriptor.get(|| {
+        let generated_file_descriptor = generated_file_descriptor_lazy.get(|| {
+            let mut deps = ::std::vec::Vec::with_capacity(0);
+            let mut messages = ::std::vec::Vec::with_capacity(27);
+            messages.push(FileDescriptorSet::generated_message_descriptor_data());
+            messages.push(FileDescriptorProto::generated_message_descriptor_data());
+            messages.push(DescriptorProto::generated_message_descriptor_data());
+            messages.push(ExtensionRangeOptions::generated_message_descriptor_data());
+            messages.push(FieldDescriptorProto::generated_message_descriptor_data());
+            messages.push(OneofDescriptorProto::generated_message_descriptor_data());
+            messages.push(EnumDescriptorProto::generated_message_descriptor_data());
+            messages.push(EnumValueDescriptorProto::generated_message_descriptor_data());
+            messages.push(ServiceDescriptorProto::generated_message_descriptor_data());
+            messages.push(MethodDescriptorProto::generated_message_descriptor_data());
+            messages.push(FileOptions::generated_message_descriptor_data());
+            messages.push(MessageOptions::generated_message_descriptor_data());
+            messages.push(FieldOptions::generated_message_descriptor_data());
+            messages.push(OneofOptions::generated_message_descriptor_data());
+            messages.push(EnumOptions::generated_message_descriptor_data());
+            messages.push(EnumValueOptions::generated_message_descriptor_data());
+            messages.push(ServiceOptions::generated_message_descriptor_data());
+            messages.push(MethodOptions::generated_message_descriptor_data());
+            messages.push(UninterpretedOption::generated_message_descriptor_data());
+            messages.push(SourceCodeInfo::generated_message_descriptor_data());
+            messages.push(GeneratedCodeInfo::generated_message_descriptor_data());
+            messages.push(descriptor_proto::ExtensionRange::generated_message_descriptor_data());
+            messages.push(descriptor_proto::ReservedRange::generated_message_descriptor_data());
+            messages.push(enum_descriptor_proto::EnumReservedRange::generated_message_descriptor_data());
+            messages.push(uninterpreted_option::NamePart::generated_message_descriptor_data());
+            messages.push(source_code_info::Location::generated_message_descriptor_data());
+            messages.push(generated_code_info::Annotation::generated_message_descriptor_data());
+            let mut enums = ::std::vec::Vec::with_capacity(6);
+            enums.push(field_descriptor_proto::Type::generated_enum_descriptor_data());
+            enums.push(field_descriptor_proto::Label::generated_enum_descriptor_data());
+            enums.push(file_options::OptimizeMode::generated_enum_descriptor_data());
+            enums.push(field_options::CType::generated_enum_descriptor_data());
+            enums.push(field_options::JSType::generated_enum_descriptor_data());
+            enums.push(method_options::IdempotencyLevel::generated_enum_descriptor_data());
+            crate::reflect::GeneratedFileDescriptor::new_generated(
+                file_descriptor_proto(),
+                deps,
+                messages,
+                enums,
+            )
+        });
+        crate::reflect::FileDescriptor::new_generated_2(generated_file_descriptor)
+    })
 }
