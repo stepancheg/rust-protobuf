@@ -514,7 +514,6 @@ impl<'a> OneofWithContext<'a> {
 
     // rust type name of enum
     pub fn rust_name(&self) -> RustIdentWithPath {
-        // TODO: escape name
         let type_name = RustIdent::from(capitalize(self.oneof.name()));
         self.message
             .to_scope()
