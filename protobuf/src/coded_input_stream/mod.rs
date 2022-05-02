@@ -67,7 +67,7 @@ impl<'a> CodedInputStream<'a> {
     /// Note resulting `CodedInputStream` is buffered.
     ///
     /// If `Read` is buffered, the resulting stream will be double buffered,
-    /// consider using [`from_buf_read`](Self::from_buffered_read) instead.
+    /// consider using [`from_buf_read`](Self::from_buf_read) instead.
     pub fn new(read: &'a mut dyn Read) -> CodedInputStream<'a> {
         CodedInputStream::from_buf_read_iter(BufReadIter::from_read(read))
     }
