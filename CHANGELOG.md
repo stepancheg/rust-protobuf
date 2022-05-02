@@ -5,6 +5,8 @@ Stable versions are 2.xx still supported.
 
 ## [3] - Unreleased
 
+## [3.0.0-alpha.14] - 2022-05-01
+
 * JSON support is moved into a separate crate `protobuf-json-mapping`
 * Generated code for well known types is more similar to regular protobuf now
   (well known type modules are now placed as is in `well_known_types` module instead of being flattened).
