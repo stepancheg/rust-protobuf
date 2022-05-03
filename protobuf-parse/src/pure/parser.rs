@@ -405,9 +405,14 @@ impl<'a> Parser<'a> {
         self.tokenizer
             .next_symbol_expect_eq('{', "message constant")?;
         while !self.tokenizer.lookahead_is_symbol('}')? {
-            let n = self.next_message_constant_field_name()?;
-            let v = self.next_field_value()?;
-            r.fields.insert(n, v);
+            // FIXME 临时补丁处理validate 逗号解析问题
+            if self.tokenizer.next_symbol_if_eq(',')? {
+                self.tokenizer.next_symbol_expect_eq(',', "message constant expect comma");
+            } else {
+                let n = self.next_message_constant_field_name()?;
+                let v = self.next_field_value()?;
+                r.fields.insert(n, v);
+            }
         }
         self.tokenizer
             .next_symbol_expect_eq('}', "message constant")?;
