@@ -33,6 +33,7 @@ where
         parameter: req.parameter(),
     })?;
     let mut resp = CodeGeneratorResponse::new();
+    resp.set_supported_features(code_generator_response::Feature::FEATURE_PROTO3_OPTIONAL as u64);
     resp.file = result
         .iter()
         .map(|file| {
