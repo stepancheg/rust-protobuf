@@ -2,6 +2,9 @@
 
 ## [3] - Unreleased
 
+* `optional` fields in proto3 are now
+  [handled correctly in `protoc-gen-rust` plugin for `protoc`](https://github.com/stepancheg/rust-protobuf/issues/625)
+
 ## [3.0.2] - 2022-05-06
 
 * [Sort modules in generated mod.rs](https://github.com/stepancheg/rust-protobuf/issues/621)
