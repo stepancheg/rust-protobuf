@@ -438,6 +438,20 @@ impl FieldDescriptor {
         }
     }
 
+    /// Clear a field.
+    pub fn clear_field(&self, m: &mut dyn MessageDyn) {
+        if self.is_singular() {
+            match self.singular() {
+                SingularFieldAccessorRef::Generated(g) => g.accessor.clear_field(m),
+                SingularFieldAccessorRef::Dynamic(d) => d.clear_field(m),
+            }
+        } else if self.is_repeated() {
+            self.mut_repeated(m).clear();
+        } else if self.is_map() {
+            self.mut_map(m).clear();
+        }
+    }
+
     /// Dynamic representation of field type with wire type.
     pub(crate) fn protobuf_field_type(&self) -> ProtobufFieldType {
         self.index().field_type.resolve(self.file_descriptor())
