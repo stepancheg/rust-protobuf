@@ -29,4 +29,8 @@ impl<'a> DynamicFieldDescriptorRef<'a> {
     pub(crate) fn set_field(&self, message: &mut dyn MessageDyn, value: ReflectValueBox) {
         DynamicMessage::downcast_mut(message).set_field(&self.field, value)
     }
+
+    pub(crate) fn clear_field(&self, message: &mut dyn MessageDyn) {
+        DynamicMessage::downcast_mut(message).clear_field(&self.field)
+    }
 }

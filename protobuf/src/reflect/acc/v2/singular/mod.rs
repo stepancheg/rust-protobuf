@@ -23,6 +23,7 @@ pub(crate) trait SingularFieldAccessor: Send + Sync + 'static {
     fn get_field<'a>(&self, m: &'a dyn MessageDyn) -> ReflectOptionalRef<'a>;
     fn mut_field_or_default<'a>(&self, m: &'a mut dyn MessageDyn) -> ReflectValueMut<'a>;
     fn set_field(&self, m: &mut dyn MessageDyn, value: ReflectValueBox);
+    fn clear_field(&self, m: &mut dyn MessageDyn);
 }
 
 pub(crate) struct SingularFieldAccessorHolder {
@@ -34,23 +35,26 @@ impl SingularFieldAccessorHolder {
         get_field: impl for<'a> Fn(&'a M) -> ReflectOptionalRef<'a> + Send + Sync + 'static,
         mut_field_or_default: impl for<'a> Fn(&'a mut M) -> ReflectValueMut<'a> + Send + Sync + 'static,
         set_field: impl Fn(&mut M, ReflectValueBox) + Send + Sync + 'static,
+        clear_field: impl Fn(&mut M) + Send + Sync + 'static,
     ) -> SingularFieldAccessorHolder
     where
         M: MessageFull,
     {
-        struct Impl<M, G, H, S> {
+        struct Impl<M, G, H, S, C> {
             get_field: G,
             mut_field_or_default: H,
             set_field: S,
+            clear_field: C,
             _marker: marker::PhantomData<M>,
         }
 
-        impl<M, G, H, S> SingularFieldAccessor for Impl<M, G, H, S>
+        impl<M, G, H, S, C> SingularFieldAccessor for Impl<M, G, H, S, C>
         where
             M: MessageFull,
             G: for<'a> Fn(&'a M) -> ReflectOptionalRef<'a> + Send + Sync + 'static,
             H: for<'a> Fn(&'a mut M) -> ReflectValueMut<'a> + Send + Sync + 'static,
             S: Fn(&mut M, ReflectValueBox) + Send + Sync + 'static,
+            C: Fn(&mut M) + Send + Sync + 'static,
         {
             fn get_field<'a>(&self, m: &'a dyn MessageDyn) -> ReflectOptionalRef<'a> {
                 (self.get_field)(m.downcast_ref::<M>().unwrap())
@@ -63,6 +67,10 @@ impl SingularFieldAccessorHolder {
             fn set_field(&self, m: &mut dyn MessageDyn, value: ReflectValueBox) {
                 (self.set_field)(m.downcast_mut::<M>().unwrap(), value);
             }
+
+            fn clear_field(&self, m: &mut dyn MessageDyn) {
+                (self.clear_field)(m.downcast_mut::<M>().unwrap());
+            }
         }
 
         SingularFieldAccessorHolder {
@@ -70,6 +78,7 @@ impl SingularFieldAccessorHolder {
                 get_field,
                 mut_field_or_default,
                 set_field,
+                clear_field,
                 _marker: marker::PhantomData,
             }),
         }
@@ -90,6 +99,10 @@ impl SingularFieldAccessorHolder {
             },
             move |m| V::RuntimeType::as_mut((mut_field)(m)),
             move |m, value| V::RuntimeType::set_from_value_box((mut_field)(m), value),
+            move |m| {
+                let default_value = V::RuntimeType::default_value_ref().to_box();
+                V::RuntimeType::set_from_value_box((mut_field)(m), default_value);
+            },
         )
     }
 
@@ -107,6 +120,7 @@ impl SingularFieldAccessorHolder {
             move |m, value| {
                 *(mut_field)(m) = Some(V::RuntimeType::from_value_box(value).expect("wrong type"))
             },
+            move |m| *(mut_field)(m) = None,
         )
     }
 
@@ -130,6 +144,9 @@ impl SingularFieldAccessorHolder {
             move |m, value| {
                 *(mut_field)(m) =
                     MessageField::some(V::RuntimeType::from_value_box(value).expect("wrong type"))
+            },
+            move |m| {
+                *(mut_field)(m) = MessageField::none();
             },
         )
     }
@@ -161,6 +178,9 @@ impl SingularFieldAccessorHolder {
                 }
                 _ => panic!("expecting enum value"),
             },
+            move |m| {
+                (set)(m, EnumOrUnknown::from_i32(0));
+            },
         )
     }
 
@@ -183,6 +203,11 @@ impl SingularFieldAccessorHolder {
             },
             |_m| unimplemented!(),
             move |m, value| (set)(m, value.downcast::<V>().expect("wrong type")),
+            move |m| {
+                if (has)(m) {
+                    (set)(m, V::default());
+                }
+            },
         )
     }
 
@@ -208,6 +233,11 @@ impl SingularFieldAccessorHolder {
             },
             |_m| unimplemented!(),
             move |m, value| (set)(m, value.downcast::<V>().expect("message")),
+            move |m| {
+                if (has)(m) {
+                    (set)(m, V::default());
+                }
+            },
         )
     }
 
@@ -231,6 +261,11 @@ impl SingularFieldAccessorHolder {
             },
             move |m| F::RuntimeType::as_mut((mut_field)(m)),
             move |m, value| (set_field)(m, value.downcast::<F>().expect("message")),
+            move |m| {
+                if (has_field)(m) {
+                    (set_field)(m, F::default());
+                }
+            },
         )
     }
 }
