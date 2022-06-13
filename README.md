@@ -40,7 +40,7 @@ Version 3 is current stable version. Compared to version 2 it implements:
 
 ### Version 2
 
-Version is previous stable version. Only most critical bugfixes will be applied
+Version 2 is previous stable version. Only most critical bugfixes will be applied
 to 2.x version, otherwise it won't be maintained.
 
 ### Help
