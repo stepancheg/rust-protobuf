@@ -563,7 +563,11 @@ pub(crate) enum FieldDescriptorImplRef<'a> {
 
 #[cfg(test)]
 mod test {
+    use std::collections::HashMap;
+
     use crate::descriptor::DescriptorProto;
+    use crate::reflect::ReflectValueBox;
+    use crate::well_known_types::struct_::{Struct, Value};
     use crate::MessageFull;
 
     #[test]
@@ -576,5 +580,62 @@ mod test {
             "google.protobuf.DescriptorProto.enum_type",
             field.to_string()
         );
+    }
+
+    #[test]
+    fn generated_clear_field_singular_repeated() {
+        let mut msg = DescriptorProto {
+            name: Some("name".to_string()),
+            reserved_name: vec!["reserved".to_string()],
+            ..Default::default()
+        };
+
+        let msg_desc = DescriptorProto::descriptor();
+
+        let name_field = msg_desc.field_by_name("name").unwrap();
+        name_field.clear_field(&mut msg);
+
+        let reserved_name_field = msg_desc.field_by_name("reserved_name").unwrap();
+        reserved_name_field.clear_field(&mut msg);
+
+        assert_eq!(msg, DescriptorProto::default());
+    }
+
+    #[test]
+    fn generated_clear_field_map() {
+        let mut fields = HashMap::new();
+        fields.insert("key".to_string(), Value::default());
+
+        let mut msg = Struct {
+            fields,
+            ..Default::default()
+        };
+
+        let msg_desc = Struct::descriptor();
+
+        let fields_field = msg_desc.field_by_name("fields").unwrap();
+        fields_field.clear_field(&mut msg);
+
+        assert_eq!(msg, Struct::default());
+    }
+
+    #[test]
+    fn dynamic_clear_field() {
+        let msg_desc = DescriptorProto::descriptor();
+
+        let mut msg_dyn = msg_desc.new_instance();
+
+        let some_value = ReflectValueBox::String("some_value".to_string());
+
+        let name_field = msg_desc.field_by_name("name").unwrap();
+        name_field.set_singular_field(msg_dyn.as_mut(), some_value.clone());
+
+        assert_eq!(
+            name_field.get_singular(msg_dyn.as_ref()).unwrap(),
+            some_value
+        );
+
+        name_field.clear_field(msg_dyn.as_mut());
+        assert!(name_field.get_singular(msg_dyn.as_ref()).is_none());
     }
 }
