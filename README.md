@@ -46,13 +46,13 @@ to 2.x version, otherwise it won't be maintained.
 ### Help
 
 The crate **needs help**:
+* **a new maintainer**, but also
 * testing
 * documentation
 * examples to be used as documentation
 * feedback on API design
 * feedback on implementation
 * pull requests
-* a new maintainer
 
 ## Changelog
 
