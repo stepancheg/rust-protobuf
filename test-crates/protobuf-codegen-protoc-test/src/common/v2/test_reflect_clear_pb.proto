@@ -1,0 +1,17 @@
+syntax = "proto2";
+
+import "rustproto.proto";
+option (rustproto.generate_accessors_all) = true;
+
+package test_reflect_clear;
+
+message TestMessage {
+    message Nested {
+    }
+
+    optional int32 a = 1;
+    optional string b = 2;
+    optional Nested c = 3;
+    repeated int32 d = 4;
+    map<string, string> e = 5;
+}
