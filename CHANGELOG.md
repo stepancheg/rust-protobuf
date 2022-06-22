@@ -2,6 +2,8 @@
 
 ## [3] - Unreleased
 
+* [Reflection API to clear fields](https://github.com/stepancheg/rust-protobuf/pull/635)
+
 ## [3.0.3] - 2022-05-31
 
 * `optional` fields in proto3 are now
