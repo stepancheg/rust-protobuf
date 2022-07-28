@@ -1,0 +1,18 @@
+syntax = "proto2";
+
+
+message Req {
+    required int32 a = 1;
+    repeated string b = 2;
+}
+
+message Resp {
+    required int32 status = 1;
+}
+
+service TestService {
+    rpc test_client_streaming(stream Req) returns (Resp);
+    rpc test_server_streaming(Req) returns (stream Resp);
+    rpc test_bi_streaming(stream Req) returns (stream Resp);
+}
+
