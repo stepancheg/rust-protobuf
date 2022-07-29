@@ -13,6 +13,5 @@ src/test/lib
 protobuf-bin-gen-rust
 protoc-gen-rust
 target/
-Cargo.lock
 .idea
 *.iml
