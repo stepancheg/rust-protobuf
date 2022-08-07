@@ -21,7 +21,7 @@
 
 //! Generated file from `google/protobuf/timestamp.proto`
 
-#[derive(PartialEq,Clone,Default,Debug)]
+#[derive(PartialEq,Clone,Default,Debug, Hash, Eq)]
 // @@protoc_insertion_point(message:google.protobuf.Timestamp)
 pub struct Timestamp {
     // message fields

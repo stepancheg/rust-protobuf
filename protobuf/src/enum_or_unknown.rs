@@ -9,7 +9,7 @@ use crate::Enum;
 use crate::EnumFull;
 
 /// Protobuf enums with possibly unknown values are preserved in this struct.
-#[derive(Eq, PartialEq, Ord, PartialOrd, Copy, Clone)]
+#[derive(Eq, PartialEq, Ord, PartialOrd, Copy, Clone, Hash)]
 #[repr(transparent)]
 // This should be <E: ProtobufEnum> when it no longer prevents using const fns.
 pub struct EnumOrUnknown<E> {

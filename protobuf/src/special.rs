@@ -1,3 +1,6 @@
+use std::hash::Hash;
+use std::hash::Hasher;
+
 use crate::cached_size::CachedSize;
 use crate::UnknownFields;
 
@@ -36,5 +39,11 @@ impl SpecialFields {
     /// Setter.
     pub fn mut_unknown_fields(&mut self) -> &mut UnknownFields {
         &mut self.unknown_fields
+    }
+}
+
+impl Hash for SpecialFields {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.unknown_fields.hash(state)
     }
 }
