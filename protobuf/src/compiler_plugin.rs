@@ -38,6 +38,7 @@ where
         parameter: req.get_parameter(),
     });
     let mut resp = CodeGeneratorResponse::new();
+    resp.set_supported_features(CodeGeneratorResponse_Feature::FEATURE_PROTO3_OPTIONAL as u64);
     resp.set_file(
         result
             .iter()
