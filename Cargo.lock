@@ -138,7 +138,7 @@ dependencies = [
 
 [[package]]
 name = "protobuf"
-version = "2.27.1"
+version = "2.28.0-pre"
 dependencies = [
  "bytes",
  "serde",
@@ -147,7 +147,7 @@ dependencies = [
 
 [[package]]
 name = "protobuf-codegen"
-version = "2.27.1"
+version = "2.28.0-pre"
 dependencies = [
  "protobuf",
 ]
@@ -169,7 +169,7 @@ dependencies = [
 
 [[package]]
 name = "protobuf-codegen-pure"
-version = "2.27.1"
+version = "2.28.0-pre"
 dependencies = [
  "protobuf",
  "protobuf-codegen",
@@ -236,7 +236,7 @@ dependencies = [
 
 [[package]]
 name = "protoc"
-version = "2.27.1"
+version = "2.28.0-pre"
 dependencies = [
  "log",
  "which",
@@ -301,7 +301,7 @@ checksum = "9653c3ed92974e34c5a6e0a510864dab979760481714c172e0a34e437cb98804"
 
 [[package]]
 name = "protoc-rust"
-version = "2.27.1"
+version = "2.28.0-pre"
 dependencies = [
  "protobuf",
  "protobuf-codegen",
