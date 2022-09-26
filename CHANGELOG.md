@@ -2,6 +2,8 @@
 
 ## [3] - Unreleased
 
+* [Correctly specify `log` version](https://github.com/stepancheg/rust-protobuf/pull/652)
+
 ## [3.1.0] - 2022-06-22
 
 * [Reflection API to clear fields](https://github.com/stepancheg/rust-protobuf/pull/635)
