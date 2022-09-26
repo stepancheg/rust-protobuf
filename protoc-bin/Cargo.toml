@@ -5,6 +5,7 @@ authors = ["Stepan Koltsov <stepan.koltsov@gmail.com>"]
 license = "MIT"
 homepage = "https://github.com/stepancheg/rust-protobuf/"
 repository = "https://github.com/stepancheg/rust-protobuf/"
+publish = false
 description = """
 Internal crate to rust-protobuf
 """
