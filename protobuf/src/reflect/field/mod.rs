@@ -567,7 +567,8 @@ mod test {
 
     use crate::descriptor::DescriptorProto;
     use crate::reflect::ReflectValueBox;
-    use crate::well_known_types::struct_::{Struct, Value};
+    use crate::well_known_types::struct_::Struct;
+    use crate::well_known_types::struct_::Value;
     use crate::MessageFull;
 
     #[test]

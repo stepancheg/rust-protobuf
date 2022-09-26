@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
-use protobuf::{reflect::ReflectValueBox, MessageFull};
+use protobuf::reflect::ReflectValueBox;
+use protobuf::MessageFull;
 
 use super::test_reflect_clear_pb::*;
 
