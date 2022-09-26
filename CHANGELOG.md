@@ -1,6 +1,8 @@
 # Changelog
 
-## [3.1] - Unreleased
+## [3.2] - Unreleased
+
+## [3.2.0] - 2022-09-26
 
 * [Correctly specify `log` version](https://github.com/stepancheg/rust-protobuf/pull/652)
 * [Hash for SpecialFields](https://github.com/stepancheg/rust-protobuf/pull/648)
