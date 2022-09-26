@@ -2,7 +2,7 @@ use crate::cached_size::CachedSize;
 use crate::UnknownFields;
 
 /// Special fields included in each generated message.
-#[derive(Default, Eq, PartialEq, Clone, Debug)]
+#[derive(Default, Eq, PartialEq, Clone, Debug, Hash)]
 pub struct SpecialFields {
     unknown_fields: UnknownFields,
     cached_size: CachedSize,
