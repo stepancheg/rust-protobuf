@@ -139,8 +139,12 @@ Version 3.0 is backward incompatible with 2.0 version. Changes are listed here:
 - `generate_getter` option to disable generation of getters functions.
 - [Flush `CodedOutputStream` on `drop`](https://github.com/stepancheg/rust-protobuf/commit/0e9cc5964c2731a771725bcf70125d3eb1c273b3)
 
+
 ## [2.27] - Unreleased
 
+## [2.28.0] - 2022-09-26
+
+- [backport optional fields from version 3](https://github.com/stepancheg/rust-protobuf/pull/649)
 - `protoc-bin-vendored` now lives in a [separate repository](https://github.com/stepancheg/rust-protoc-bin-vendored)
 
 ## [2.27.1] - 2022-02-05
