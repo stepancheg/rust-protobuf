@@ -51,7 +51,7 @@ pub fn unescape_string(string: &str) -> Vec<u8> {
             Some(f) => f,
         };
         let d = match f {
-            '0'..='9' => (f as u8 - b'0'),
+            '0'..='9' => f as u8 - b'0',
             _ => return 0,
         };
         *chars = copy;
