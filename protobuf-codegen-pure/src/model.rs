@@ -136,7 +136,7 @@ pub struct Field {
     /// Field name
     pub name: String,
     /// Field `Rule`
-    pub rule: Rule,
+    pub rule: Option<Rule>,
     /// Field type
     pub typ: FieldType,
     /// Tag number
