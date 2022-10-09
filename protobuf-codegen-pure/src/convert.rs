@@ -4,6 +4,7 @@ use std::iter;
 
 use model;
 use protobuf;
+use protobuf::descriptor::OneofDescriptorProto;
 use protobuf::json::json_name;
 use protobuf::text_format::lexer::StrLitDecodeError;
 use protobuf::text_format::quote_bytes_to;
@@ -300,7 +301,17 @@ impl<'a> Resolver<'a> {
             for fo in &input.fields {
                 match fo {
                     FieldOrOneOf::Field(f) => {
-                        fields.push(self.field(f, None, &nested_path_in_file)?);
+                        let oneof_index = if self.is_proto3_optional(f) {
+                            let oneof_index = output.oneof_decl.len() as i32;
+                            let mut oneof = OneofDescriptorProto::new();
+                            oneof.set_name(format!("_{}", f.name));
+                            output.oneof_decl.push(oneof);
+                            Some(oneof_index)
+                        } else {
+                            None
+                        };
+
+                        fields.push(self.field(f, oneof_index, &nested_path_in_file)?);
                     }
                     FieldOrOneOf::OneOf(o) => {
                         let oneof_index = output.oneof_decl.len();
@@ -384,6 +395,11 @@ impl<'a> Resolver<'a> {
         Ok(r)
     }
 
+    fn is_proto3_optional(&self, input: &model::Field) -> bool {
+        (self.current_file.syntax, input.rule)
+            == (model::Syntax::Proto3, Some(model::Rule::Optional))
+    }
+
     fn field(
         &self,
         input: &model::Field,
@@ -397,6 +413,10 @@ impl<'a> Resolver<'a> {
             output.set_label(protobuf::descriptor::FieldDescriptorProto_Label::LABEL_REPEATED);
         } else {
             output.set_label(label(input.rule));
+
+            if self.is_proto3_optional(input) {
+                output.set_proto3_optional(true);
+            }
         }
 
         let (t, t_name) = self.field_type(&input.name, &input.typ, path_in_file);
@@ -776,11 +796,18 @@ fn syntax(input: model::Syntax) -> String {
     }
 }
 
-fn label(input: model::Rule) -> protobuf::descriptor::FieldDescriptorProto_Label {
+fn label(input: Option<model::Rule>) -> protobuf::descriptor::FieldDescriptorProto_Label {
     match input {
-        model::Rule::Optional => protobuf::descriptor::FieldDescriptorProto_Label::LABEL_OPTIONAL,
-        model::Rule::Required => protobuf::descriptor::FieldDescriptorProto_Label::LABEL_REQUIRED,
-        model::Rule::Repeated => protobuf::descriptor::FieldDescriptorProto_Label::LABEL_REPEATED,
+        Some(model::Rule::Optional) => {
+            protobuf::descriptor::FieldDescriptorProto_Label::LABEL_OPTIONAL
+        }
+        Some(model::Rule::Required) => {
+            protobuf::descriptor::FieldDescriptorProto_Label::LABEL_REQUIRED
+        }
+        Some(model::Rule::Repeated) => {
+            protobuf::descriptor::FieldDescriptorProto_Label::LABEL_REPEATED
+        }
+        None => protobuf::descriptor::FieldDescriptorProto_Label::LABEL_OPTIONAL,
     }
 }
 

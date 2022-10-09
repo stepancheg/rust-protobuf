@@ -1180,7 +1180,7 @@ impl<'a> Parser<'a> {
     // Fields
 
     // label = "required" | "optional" | "repeated"
-    fn next_label(&mut self, mode: MessageBodyParseMode) -> ParserResult<Rule> {
+    fn next_label(&mut self, mode: MessageBodyParseMode) -> ParserResult<Option<Rule>> {
         let map = &[
             ("optional", Rule::Optional),
             ("required", Rule::Required),
@@ -1194,14 +1194,14 @@ impl<'a> Parser<'a> {
                 }
 
                 *self = clone;
-                return Ok(value);
+                return Ok(Some(value));
             }
         }
 
         if mode.some_label_required() {
             Err(ParserError::LabelRequired)
         } else {
-            Ok(Rule::Optional)
+            Ok(None)
         }
     }
 
@@ -1272,7 +1272,7 @@ impl<'a> Parser<'a> {
             if !mode.map_allowed() {
                 return Err(ParserError::MapFieldNotAllowed);
             }
-            Rule::Optional
+            None
         } else {
             self.next_label(mode)?
         };
