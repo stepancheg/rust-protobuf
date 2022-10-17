@@ -243,6 +243,28 @@ impl<'a> EnumGen<'a> {
         );
     }
 
+    fn write_impl_enum_fn_from_str(&self, w: &mut CodeWriter) {
+        w.def_fn(
+            &format!(
+                "from_str(str: &str) -> ::std::option::Option<{}>",
+                self.type_name
+            ),
+            |w| {
+                w.match_expr("str", |w| {
+                    let values = self.values_unique();
+                    for value in values {
+                        w.write_line(&format!(
+                            "\"{}\" => ::std::option::Option::Some({}),",
+                            value.value.proto.name(),
+                            value.rust_name_outer()
+                        ));
+                    }
+                    w.write_line(&format!("_ => {}", EXPR_NONE));
+                });
+            },
+        );
+    }
+
     fn write_impl_enum_const_values(&self, w: &mut CodeWriter) {
         w.write_line(&format!("const VALUES: &'static [{}] = &[", self.type_name));
         w.indented(|w| {
@@ -263,6 +285,8 @@ impl<'a> EnumGen<'a> {
                 self.write_impl_enum_fn_value(w);
                 w.write_line("");
                 self.write_impl_enum_fn_from_i32(w);
+                w.write_line("");
+                self.write_impl_enum_fn_from_str(w);
                 w.write_line("");
                 self.write_impl_enum_const_values(w);
             },

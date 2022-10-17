@@ -2224,6 +2224,30 @@ pub mod field_descriptor_proto {
             }
         }
 
+        fn from_str(str: &str) -> ::std::option::Option<Type> {
+            match str {
+                "TYPE_DOUBLE" => ::std::option::Option::Some(Type::TYPE_DOUBLE),
+                "TYPE_FLOAT" => ::std::option::Option::Some(Type::TYPE_FLOAT),
+                "TYPE_INT64" => ::std::option::Option::Some(Type::TYPE_INT64),
+                "TYPE_UINT64" => ::std::option::Option::Some(Type::TYPE_UINT64),
+                "TYPE_INT32" => ::std::option::Option::Some(Type::TYPE_INT32),
+                "TYPE_FIXED64" => ::std::option::Option::Some(Type::TYPE_FIXED64),
+                "TYPE_FIXED32" => ::std::option::Option::Some(Type::TYPE_FIXED32),
+                "TYPE_BOOL" => ::std::option::Option::Some(Type::TYPE_BOOL),
+                "TYPE_STRING" => ::std::option::Option::Some(Type::TYPE_STRING),
+                "TYPE_GROUP" => ::std::option::Option::Some(Type::TYPE_GROUP),
+                "TYPE_MESSAGE" => ::std::option::Option::Some(Type::TYPE_MESSAGE),
+                "TYPE_BYTES" => ::std::option::Option::Some(Type::TYPE_BYTES),
+                "TYPE_UINT32" => ::std::option::Option::Some(Type::TYPE_UINT32),
+                "TYPE_ENUM" => ::std::option::Option::Some(Type::TYPE_ENUM),
+                "TYPE_SFIXED32" => ::std::option::Option::Some(Type::TYPE_SFIXED32),
+                "TYPE_SFIXED64" => ::std::option::Option::Some(Type::TYPE_SFIXED64),
+                "TYPE_SINT32" => ::std::option::Option::Some(Type::TYPE_SINT32),
+                "TYPE_SINT64" => ::std::option::Option::Some(Type::TYPE_SINT64),
+                _ => ::std::option::Option::None
+            }
+        }
+
         const VALUES: &'static [Type] = &[
             Type::TYPE_DOUBLE,
             Type::TYPE_FLOAT,
@@ -2313,6 +2337,15 @@ pub mod field_descriptor_proto {
                 1 => ::std::option::Option::Some(Label::LABEL_OPTIONAL),
                 2 => ::std::option::Option::Some(Label::LABEL_REQUIRED),
                 3 => ::std::option::Option::Some(Label::LABEL_REPEATED),
+                _ => ::std::option::Option::None
+            }
+        }
+
+        fn from_str(str: &str) -> ::std::option::Option<Label> {
+            match str {
+                "LABEL_OPTIONAL" => ::std::option::Option::Some(Label::LABEL_OPTIONAL),
+                "LABEL_REQUIRED" => ::std::option::Option::Some(Label::LABEL_REQUIRED),
+                "LABEL_REPEATED" => ::std::option::Option::Some(Label::LABEL_REPEATED),
                 _ => ::std::option::Option::None
             }
         }
@@ -4908,6 +4941,15 @@ pub mod file_options {
             }
         }
 
+        fn from_str(str: &str) -> ::std::option::Option<OptimizeMode> {
+            match str {
+                "SPEED" => ::std::option::Option::Some(OptimizeMode::SPEED),
+                "CODE_SIZE" => ::std::option::Option::Some(OptimizeMode::CODE_SIZE),
+                "LITE_RUNTIME" => ::std::option::Option::Some(OptimizeMode::LITE_RUNTIME),
+                _ => ::std::option::Option::None
+            }
+        }
+
         const VALUES: &'static [OptimizeMode] = &[
             OptimizeMode::SPEED,
             OptimizeMode::CODE_SIZE,
@@ -5668,6 +5710,15 @@ pub mod field_options {
             }
         }
 
+        fn from_str(str: &str) -> ::std::option::Option<CType> {
+            match str {
+                "STRING" => ::std::option::Option::Some(CType::STRING),
+                "CORD" => ::std::option::Option::Some(CType::CORD),
+                "STRING_PIECE" => ::std::option::Option::Some(CType::STRING_PIECE),
+                _ => ::std::option::Option::None
+            }
+        }
+
         const VALUES: &'static [CType] = &[
             CType::STRING,
             CType::CORD,
@@ -5722,6 +5773,15 @@ pub mod field_options {
                 0 => ::std::option::Option::Some(JSType::JS_NORMAL),
                 1 => ::std::option::Option::Some(JSType::JS_STRING),
                 2 => ::std::option::Option::Some(JSType::JS_NUMBER),
+                _ => ::std::option::Option::None
+            }
+        }
+
+        fn from_str(str: &str) -> ::std::option::Option<JSType> {
+            match str {
+                "JS_NORMAL" => ::std::option::Option::Some(JSType::JS_NORMAL),
+                "JS_STRING" => ::std::option::Option::Some(JSType::JS_STRING),
+                "JS_NUMBER" => ::std::option::Option::Some(JSType::JS_NUMBER),
                 _ => ::std::option::Option::None
             }
         }
@@ -6674,6 +6734,15 @@ pub mod method_options {
                 0 => ::std::option::Option::Some(IdempotencyLevel::IDEMPOTENCY_UNKNOWN),
                 1 => ::std::option::Option::Some(IdempotencyLevel::NO_SIDE_EFFECTS),
                 2 => ::std::option::Option::Some(IdempotencyLevel::IDEMPOTENT),
+                _ => ::std::option::Option::None
+            }
+        }
+
+        fn from_str(str: &str) -> ::std::option::Option<IdempotencyLevel> {
+            match str {
+                "IDEMPOTENCY_UNKNOWN" => ::std::option::Option::Some(IdempotencyLevel::IDEMPOTENCY_UNKNOWN),
+                "NO_SIDE_EFFECTS" => ::std::option::Option::Some(IdempotencyLevel::NO_SIDE_EFFECTS),
+                "IDEMPOTENT" => ::std::option::Option::Some(IdempotencyLevel::IDEMPOTENT),
                 _ => ::std::option::Option::None
             }
         }
