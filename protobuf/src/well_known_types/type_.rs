@@ -619,6 +619,31 @@ pub mod field {
             }
         }
 
+        fn from_str(str: &str) -> ::std::option::Option<Kind> {
+            match str {
+                stringify!(TYPE_UNKNOWN) => ::std::option::Option::Some(Kind::TYPE_UNKNOWN),
+                stringify!(TYPE_DOUBLE) => ::std::option::Option::Some(Kind::TYPE_DOUBLE),
+                stringify!(TYPE_FLOAT) => ::std::option::Option::Some(Kind::TYPE_FLOAT),
+                stringify!(TYPE_INT64) => ::std::option::Option::Some(Kind::TYPE_INT64),
+                stringify!(TYPE_UINT64) => ::std::option::Option::Some(Kind::TYPE_UINT64),
+                stringify!(TYPE_INT32) => ::std::option::Option::Some(Kind::TYPE_INT32),
+                stringify!(TYPE_FIXED64) => ::std::option::Option::Some(Kind::TYPE_FIXED64),
+                stringify!(TYPE_FIXED32) => ::std::option::Option::Some(Kind::TYPE_FIXED32),
+                stringify!(TYPE_BOOL) => ::std::option::Option::Some(Kind::TYPE_BOOL),
+                stringify!(TYPE_STRING) => ::std::option::Option::Some(Kind::TYPE_STRING),
+                stringify!(TYPE_GROUP) => ::std::option::Option::Some(Kind::TYPE_GROUP),
+                stringify!(TYPE_MESSAGE) => ::std::option::Option::Some(Kind::TYPE_MESSAGE),
+                stringify!(TYPE_BYTES) => ::std::option::Option::Some(Kind::TYPE_BYTES),
+                stringify!(TYPE_UINT32) => ::std::option::Option::Some(Kind::TYPE_UINT32),
+                stringify!(TYPE_ENUM) => ::std::option::Option::Some(Kind::TYPE_ENUM),
+                stringify!(TYPE_SFIXED32) => ::std::option::Option::Some(Kind::TYPE_SFIXED32),
+                stringify!(TYPE_SFIXED64) => ::std::option::Option::Some(Kind::TYPE_SFIXED64),
+                stringify!(TYPE_SINT32) => ::std::option::Option::Some(Kind::TYPE_SINT32),
+                stringify!(TYPE_SINT64) => ::std::option::Option::Some(Kind::TYPE_SINT64),
+                _ => ::std::option::Option::None
+            }
+        }
+
         const VALUES: &'static [Kind] = &[
             Kind::TYPE_UNKNOWN,
             Kind::TYPE_DOUBLE,
@@ -693,6 +718,16 @@ pub mod field {
                 1 => ::std::option::Option::Some(Cardinality::CARDINALITY_OPTIONAL),
                 2 => ::std::option::Option::Some(Cardinality::CARDINALITY_REQUIRED),
                 3 => ::std::option::Option::Some(Cardinality::CARDINALITY_REPEATED),
+                _ => ::std::option::Option::None
+            }
+        }
+
+        fn from_str(str: &str) -> ::std::option::Option<Cardinality> {
+            match str {
+                stringify!(CARDINALITY_UNKNOWN) => ::std::option::Option::Some(Cardinality::CARDINALITY_UNKNOWN),
+                stringify!(CARDINALITY_OPTIONAL) => ::std::option::Option::Some(Cardinality::CARDINALITY_OPTIONAL),
+                stringify!(CARDINALITY_REQUIRED) => ::std::option::Option::Some(Cardinality::CARDINALITY_REQUIRED),
+                stringify!(CARDINALITY_REPEATED) => ::std::option::Option::Some(Cardinality::CARDINALITY_REPEATED),
                 _ => ::std::option::Option::None
             }
         }
@@ -1268,6 +1303,14 @@ impl crate::Enum for Syntax {
         match value {
             0 => ::std::option::Option::Some(Syntax::SYNTAX_PROTO2),
             1 => ::std::option::Option::Some(Syntax::SYNTAX_PROTO3),
+            _ => ::std::option::Option::None
+        }
+    }
+
+    fn from_str(str: &str) -> ::std::option::Option<Syntax> {
+        match str {
+            stringify!(SYNTAX_PROTO2) => ::std::option::Option::Some(Syntax::SYNTAX_PROTO2),
+            stringify!(SYNTAX_PROTO3) => ::std::option::Option::Some(Syntax::SYNTAX_PROTO3),
             _ => ::std::option::Option::None
         }
     }
