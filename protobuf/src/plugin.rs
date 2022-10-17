@@ -1127,6 +1127,14 @@ pub mod code_generator_response {
             }
         }
 
+        fn from_str(str: &str) -> ::std::option::Option<Feature> {
+            match str {
+                "FEATURE_NONE" => ::std::option::Option::Some(Feature::FEATURE_NONE),
+                "FEATURE_PROTO3_OPTIONAL" => ::std::option::Option::Some(Feature::FEATURE_PROTO3_OPTIONAL),
+                _ => ::std::option::Option::None
+            }
+        }
+
         const VALUES: &'static [Feature] = &[
             Feature::FEATURE_NONE,
             Feature::FEATURE_PROTO3_OPTIONAL,
