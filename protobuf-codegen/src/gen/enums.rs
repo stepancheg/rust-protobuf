@@ -139,6 +139,8 @@ impl<'a> EnumGen<'a> {
         w.write_line("");
         self.write_impl_default(w);
         w.write_line("");
+        self.write_impl_display(w);
+        w.write_line("");
         self.write_impl_self(w);
     }
 
@@ -409,5 +411,14 @@ impl<'a> EnumGen<'a> {
                 });
             },
         );
+    }
+
+    fn write_impl_display(&self, w: &mut CodeWriter) {
+        w.impl_for_block("::std::fmt::Display", &format!("{}", self.type_name), |w| {
+            w.def_fn(
+                "fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result",
+                |w| w.write_line(&format!("::std::fmt::Debug::fmt(self, f)")),
+            )
+        })
     }
 }
