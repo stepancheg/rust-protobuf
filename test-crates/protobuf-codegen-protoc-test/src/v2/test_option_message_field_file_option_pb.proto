@@ -1,0 +1,13 @@
+syntax = "proto2";
+
+package test_option_message_field_file_option;
+
+import "test_option_message_field_pb.proto";
+import "rustproto.proto";
+
+option (rustproto.option_for_message_all) = true;
+
+message TestOptionMessageFieldFileOption {
+    optional test_option_message_field.Msg v = 1;
+    optional test_option_message_field.Msg vv = 2;
+}

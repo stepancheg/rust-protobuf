@@ -142,14 +142,21 @@ impl FieldGen<'_> {
     fn accessor_fn_singular_with_flag(
         &self,
         elem: &FieldElem,
-        _option_kind: OptionKind,
+        option_kind: OptionKind,
     ) -> AccessorFn {
         match elem {
-            FieldElem::Message(m) => AccessorFn {
-                name: "make_message_field_accessor".to_owned(),
-                type_params: vec![format!("{}", m.rust_name_relative(&self.file_and_mod()))],
-                callback_params: self.make_accessor_fns_lambda(),
-            },
+            FieldElem::Message(m) => {
+                let name = if option_kind == OptionKind::MessageField {
+                    "make_message_field_accessor".to_owned()
+                } else {
+                    "make_option_accessor".to_owned()
+                };
+                AccessorFn {
+                    name,
+                    type_params: vec![format!("{}", m.rust_name_relative(&self.file_and_mod()))],
+                    callback_params: self.make_accessor_fns_lambda(),
+                }
+            }
             FieldElem::Primitive(..) | FieldElem::Enum(..) => AccessorFn {
                 name: "make_option_accessor".to_owned(),
                 type_params: vec!["_".to_owned()],

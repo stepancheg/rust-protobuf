@@ -4,6 +4,20 @@ use crate::CodedOutputStream;
 use crate::Message;
 use crate::MessageField;
 
+/// Read option `message` field.
+pub fn read_option_message_into_field<M>(
+    is: &mut CodedInputStream,
+    target: &mut Option<M>,
+) -> crate::Result<()>
+where
+    M: Message,
+{
+    let mut m = M::new();
+    is.merge_message(&mut m)?;
+    *target = Some(m);
+    Ok(())
+}
+
 /// Read singular `message` field.
 pub fn read_singular_message_into_field<M>(
     is: &mut CodedInputStream,
