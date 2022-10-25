@@ -1,0 +1,24 @@
+syntax = "proto2";
+
+import "rustproto.proto";
+
+message SimpleMessage {
+    optional int64 i = 1;
+    optional uint64 u = 2;
+}
+
+message TestMessageField {
+    optional SimpleMessage m1 = 1;
+    optional SimpleMessage m2 = 2;
+    optional SimpleMessage m3 = 3;
+    optional SimpleMessage m4 = 4;
+}
+
+message TestMessageFieldWithOption {
+    option(rustproto.option_for_message) = true;
+
+    optional SimpleMessage m1 = 1;
+    optional SimpleMessage m2 = 2;
+    optional SimpleMessage m3 = 3;
+    optional SimpleMessage m4 = 4;
+}
