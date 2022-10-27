@@ -98,6 +98,8 @@ pub struct Customize {
     pub(crate) tokio_bytes: Option<bool>,
     /// Use `bytes::Bytes` for `string` fields
     pub(crate) tokio_bytes_for_string: Option<bool>,
+    /// Use `Option` for `message` fields.
+    pub(crate) option_for_message: Option<bool>,
     /// Enable lite runtime.
     pub(crate) lite_runtime: Option<bool>,
     /// Generate `mod.rs` in the output directory.
@@ -148,6 +150,11 @@ impl Customize {
         self
     }
 
+    pub fn option_for_message(mut self, option_for_message: bool) -> Self {
+        self.option_for_message = Some(option_for_message);
+        self
+    }
+
     /// Generate code for "lite runtime". Generated code contains no code for reflection.
     /// So the generated code (and more importantly, generated binary size) is smaller,
     /// but reflection, text format, JSON serialization won't work.
@@ -187,6 +194,9 @@ impl Customize {
         }
         if let Some(v) = that.tokio_bytes_for_string {
             self.tokio_bytes_for_string = Some(v);
+        }
+        if let Some(v) = that.option_for_message {
+            self.option_for_message = Some(v)
         }
         if let Some(v) = that.lite_runtime {
             self.lite_runtime = Some(v);
@@ -232,6 +242,8 @@ impl Customize {
                 r.tokio_bytes = Some(parse_bool(v)?);
             } else if n == "tokio_bytes_for_string" {
                 r.tokio_bytes_for_string = Some(parse_bool(v)?);
+            } else if n == "option_for_message" {
+                r.option_for_message = Some(parse_bool(v)?);
             } else if n == "lite_runtime" {
                 r.lite_runtime = Some(parse_bool(v)?);
             } else if n == "gen_mod_rs" {

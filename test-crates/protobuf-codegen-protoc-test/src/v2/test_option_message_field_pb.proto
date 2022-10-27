@@ -1,0 +1,23 @@
+syntax = "proto2";
+
+package test_option_message_field;
+
+import "rustproto.proto";
+
+message Msg {
+    optional int64 i = 1;
+}
+
+message TestOptionMessageFieldFieldOption {
+    optional Msg v = 1 [(rustproto.option_for_message_field) = true];
+    optional Msg p = 2 [(rustproto.option_for_message_field) = false];
+    // option_for_message_field has no effect to other fields.
+    optional bytes b = 3 [(rustproto.option_for_message_field) = true];
+}
+
+message TestOptionMessageFieldMessageOption {
+    option (rustproto.option_for_message) = true;
+
+    optional Msg v = 1;
+    optional Msg vv = 2;
+}

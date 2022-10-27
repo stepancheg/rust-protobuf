@@ -19,6 +19,8 @@ extend google.protobuf.FileOptions {
     optional bool tokio_bytes_all = 17011;
     // Use `bytes::Bytes` for `string` fields
     optional bool tokio_bytes_for_string_all = 17012;
+    // Use `Option` for `message` fields.
+    optional bool option_for_message_all = 17013;
 
     // When true, will only generate codes that works with lite runtime.
     optional bool lite_runtime_all = 17035;
@@ -33,6 +35,8 @@ extend google.protobuf.MessageOptions {
     optional bool tokio_bytes = 17011;
     // Use `bytes::Bytes` for `string` fields
     optional bool tokio_bytes_for_string = 17012;
+    // Use `Option` for `message` fields.
+    optional bool option_for_message = 17013;
 }
 
 extend google.protobuf.FieldOptions {
@@ -44,4 +48,6 @@ extend google.protobuf.FieldOptions {
     optional bool tokio_bytes_field = 17011;
     // Use `bytes::Bytes` for `string` fields
     optional bool tokio_bytes_for_string_field = 17012;
+    // Use `Option` for `message` fields.
+    optional bool option_for_message_field = 17013;
 }

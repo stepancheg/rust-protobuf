@@ -2,6 +2,19 @@ use std::env;
 use std::io::Read;
 use std::process;
 
+use protobuf_codegen::Codegen;
+use protobuf_codegen::Customize;
+
+fn generate_protos() {
+    Codegen::new()
+        .pure()
+        .out_dir("src")
+        .input("src/messages.proto")
+        .includes(&["src", "../../proto"])
+        .customize(Customize::default().gen_mod_rs(false))
+        .run_from_script();
+}
+
 // % rustc +stable --version
 // rustc 1.26.0 (a77568041 2018-05-07)
 // % rustc +beta --version
@@ -38,5 +51,7 @@ fn export_rustc_cfg() {
 }
 
 fn main() {
+    generate_protos();
+
     export_rustc_cfg();
 }

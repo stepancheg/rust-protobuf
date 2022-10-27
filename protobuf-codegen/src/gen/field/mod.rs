@@ -206,7 +206,11 @@ impl<'a> FieldGen<'a> {
                         let required = field.field.proto().label()
                             == field_descriptor_proto::Label::LABEL_REQUIRED;
                         let option_kind = match field.field.proto().type_() {
-                            field_descriptor_proto::Type::TYPE_MESSAGE => OptionKind::MessageField,
+                            field_descriptor_proto::Type::TYPE_MESSAGE
+                                if customize.option_for_message != Some(true) =>
+                            {
+                                OptionKind::MessageField
+                            }
                             _ => OptionKind::Option,
                         };
 
@@ -995,11 +999,23 @@ impl<'a> FieldGen<'a> {
     fn write_merge_from_singular_case_block(&self, s: &SingularField, w: &mut CodeWriter) {
         w.case_block(&format!("{}", self.tag()), |w| match s.elem {
             FieldElem::Message(..) => {
-                w.write_line(&format!(
-                    "{}::rt::read_singular_message_into_field(is, &mut self.{})?;",
-                    protobuf_crate_path(&self.customize),
-                    self.rust_name,
-                ));
+                if let SingularFieldFlag::WithFlag {
+                    option_kind: OptionKind::Option { .. },
+                    ..
+                } = &s.flag
+                {
+                    w.write_line(&format!(
+                        "{}::rt::read_option_message_into_field(is, &mut self.{})?;",
+                        protobuf_crate_path(&self.customize),
+                        self.rust_name,
+                    ));
+                } else {
+                    w.write_line(&format!(
+                        "{}::rt::read_singular_message_into_field(is, &mut self.{})?;",
+                        protobuf_crate_path(&self.customize),
+                        self.rust_name,
+                    ));
+                }
             }
             _ => {
                 let read_proc = s.elem.read_one_liner();

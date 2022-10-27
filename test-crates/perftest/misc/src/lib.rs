@@ -13,3 +13,5 @@ pub fn black_box<T>(v: T) -> T {
 pub fn black_box<T>(v: T) -> T {
     std::hint::black_box(v)
 }
+
+pub mod messages;
