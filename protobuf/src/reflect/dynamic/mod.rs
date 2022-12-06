@@ -229,7 +229,8 @@ impl DynamicMessage {
                 RuntimeFieldType::Singular(..) => {
                     if let Some(v) = field_desc.get_singular(self) {
                         // Ignore default value for proto3.
-                        if !is_proto3 || v.is_non_zero() || field_desc.containing_oneof() {
+                        if !is_proto3 || v.is_non_zero() || field_desc.containing_oneof().is_some()
+                        {
                             handler.field(field_desc.proto().type_(), field_number, &v)?;
                         }
                     }
