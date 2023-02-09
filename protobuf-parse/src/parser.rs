@@ -101,7 +101,7 @@ impl Parser {
     pub fn parse_and_typecheck(&self) -> anyhow::Result<ParsedAndTypechecked> {
         match &self.which_parser {
             WhichParser::Pure => {
-                pure::parse_and_typecheck::parse_and_typecheck(&self).context("using pure parser")
+                pure::parse_and_typecheck::parse_and_typecheck(&self)
             }
             WhichParser::Protoc => protoc::parse_and_typecheck::parse_and_typecheck(&self)
                 .context("using protoc parser"),
