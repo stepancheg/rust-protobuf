@@ -31,7 +31,8 @@
 //! I never saw anyone using them, but you have been warned.
 //!
 //! Note `protoc` command can be obtained from
-//! [`protoc-bin-vendored`](https://docs.rs/protoc-bin-vendored) crate.
+//! [`protoc-bin-vendored`](https://docs.rs/protoc-bin-vendored) crate
+//! or [`protoc-prebuilt`](https://docs.rs/protoc-prebuilt) crate.
 //!
 //! # Example
 //!
@@ -41,12 +42,21 @@
 //! #       unimplemented!()
 //! #   }
 //! # }
+//! # mod protoc_prebuilt {
+//! #   pub fn init(
+//! #       version: &str
+//! #   ) -> Result<(std::path::PathBuf, std::path::PathBuf), std::io::Error> {
+//! #       unimplemented!()
+//! #   }
+//! # }
 //! // Use this in build.rs
 //! protobuf_codegen::Codegen::new()
 //!     // Use `protoc` parser, optional.
 //!     .protoc()
 //!     // Use `protoc-bin-vendored` bundled protoc command, optional.
 //!     .protoc_path(&protoc_bin_vendored::protoc_bin_path().unwrap())
+//!     // Or use `protoc-prebuilt` bundled protoc command, optional.
+//!     // .protoc_path(&protoc_prebuilt::init("22.0").unwrap().0)
 //!     // All inputs and imports from the inputs must reside in `includes` directories.
 //!     .includes(&["src/protos"])
 //!     // Inputs must reside in some of include paths.

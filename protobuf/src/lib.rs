@@ -23,6 +23,8 @@
 //!   can be used to rust code from `.proto` crates.
 //! * [`protoc-bin-vendored`](https://docs.rs/protoc-bin-vendored)
 //!   contains `protoc` command packed into the crate.
+//! * [`protoc-prebuilt`](https://docs.rs/protoc-prebuilt)
+//!   can be used to install specified version of `protoc` pre-built binaries into the crate.
 //! * [`protobuf-parse`](https://docs.rs/protobuf-parse) contains
 //!   `.proto` file parser. Rarely need to be used directly,
 //!   but can be used for mechanical processing of `.proto` files.
