@@ -20,7 +20,7 @@
 //! * [`protobuf-json-mapping`](https://docs.rs/protobuf-json-mapping)
 //!   implements JSON parsing and serialization for protobuf messages.
 //! * [`protobuf-codegen`](https://docs.rs/protobuf-codegen)
-//!   can be used to rust code from `.proto` crates.
+//!   can be used to generate rust code from `.proto` crates.
 //! * [`protoc-bin-vendored`](https://docs.rs/protoc-bin-vendored)
 //!   contains `protoc` command packed into the crate.
 //! * [`protobuf-parse`](https://docs.rs/protobuf-parse) contains
