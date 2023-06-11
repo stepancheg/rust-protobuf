@@ -568,17 +568,18 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_struct(&self, w: &mut CodeWriter) {
+        write_protoc_insertion_point_for_message(
+            w,
+            &self.customize.for_elem,
+            &self.message_descriptor,
+        );
         let mut derive = Vec::new();
         if self.supports_derive_partial_eq() {
             derive.push("PartialEq");
         }
         derive.extend(&["Clone", "Default", "Debug"]);
         w.derive(&derive);
-        write_protoc_insertion_point_for_message(
-            w,
-            &self.customize.for_elem,
-            &self.message_descriptor,
-        );
+
         w.pub_struct(&format!("{}", self.rust_name()), |w| {
             if !self.fields_except_oneof().is_empty() {
                 w.comment("message fields");
