@@ -243,6 +243,7 @@ impl Codegen {
 
         parser.inputs(&self.inputs);
         parser.includes(&self.includes);
+        parser.protoc_extra_args(&self.protoc_extra_args);
 
         if self.capture_stderr {
             parser.capture_stderr();
