@@ -3,11 +3,11 @@
 ## I just want to ask a question
 
 Feel free to open an issue to ask a question, the volume of questions is low,
-so it's OK at the moment. But please don't expect prompt answer.
+so it's OK at the moment. But please don't expect a prompt answer.
 
 ## I have found a bug
 
-Please open an issue. When reporting a bug please include minimal example
+Please open an [issue](https://github.com/stepancheg/rust-protobuf/issues). When reporting a bug please include minimal example
 providing as much information as possible. In particular, please specify:
 
 * exact proto file
@@ -38,4 +38,4 @@ Are always welcome, especially if they are backward-compatible.
 
 ## Help wanted
 
-Most of all documentation is needed, any changes to rustdoc or markdown pages on github are welcome.
+Most of all documentation is needed, any changes to rustdoc or markdown pages on GitHub are welcome.
