@@ -167,7 +167,7 @@ pub fn print_to(m: &dyn MessageDyn, buf: &mut String) {
 fn print_to_string_internal(m: &dyn MessageDyn, pretty: bool) -> String {
     let mut r = String::new();
     print_to_internal(&MessageRef::from(m), &mut r, pretty, 0);
-    r.to_string()
+    r
 }
 
 /// Text-format
