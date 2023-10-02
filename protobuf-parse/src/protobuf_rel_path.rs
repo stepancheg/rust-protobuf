@@ -72,11 +72,11 @@ impl ProtobufRelPathRef {
     }
 
     pub fn self_and_parents(&self) -> Vec<&ProtobufRelPathRef> {
-        let mut tmp = self.clone();
+        let mut tmp = self;
 
         let mut r = Vec::new();
 
-        r.push(self.clone());
+        r.push(self);
 
         while let Some(parent) = tmp.parent() {
             r.push(parent);
