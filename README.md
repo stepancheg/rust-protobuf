@@ -60,7 +60,7 @@ See [CHANGELOG.md](CHANGELOG.md) for a list of changes and compatility issues be
 
 ## Related projects
 
-* [prost](https://github.com/danburkert/prost) — another protobuf implementation in Rust, also has gRPC implementation
+* [prost](https://github.com/tokio-rs/prost) — another protobuf implementation in Rust, also has gRPC implementation
 * [quick-protobuf](https://github.com/tafia/quick-protobuf) — alternative protobuf implementation in Rust
 * [grpc-rs](https://github.com/pingcap/grpc-rs/) — another gRPC implementation for Rust
 * [grpc-rust](https://github.com/stepancheg/grpc-rust) — incomplete implementation of gRPC based on this library
