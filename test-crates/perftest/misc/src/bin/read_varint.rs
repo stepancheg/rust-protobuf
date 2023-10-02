@@ -1,10 +1,10 @@
 use std::env;
+use std::hint;
 use std::process;
 use std::time::Instant;
 
 use protobuf::CodedInputStream;
 use protobuf::CodedOutputStream;
-use protobuf_perftest_misc::black_box;
 
 fn main() {
     let args: Vec<String> = env::args().skip(1).collect();
@@ -42,9 +42,9 @@ fn main() {
         if i % br == 0 {
             eprintln!("{}", i / br);
         }
-        let mut is = CodedInputStream::from_bytes(black_box(&data));
+        let mut is = CodedInputStream::from_bytes(hint::black_box(&data));
         while !is.eof().unwrap() {
-            black_box(is.read_raw_varint64().unwrap());
+            hint::black_box(is.read_raw_varint64().unwrap());
         }
     }
 
