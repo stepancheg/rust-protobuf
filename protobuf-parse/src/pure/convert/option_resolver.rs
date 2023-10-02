@@ -90,7 +90,7 @@ impl LookupScope2 {
         match self.messages().iter().find(|m| m.name() == name.as_str()) {
             Some(m) => {
                 let mut path = self.current_path();
-                path.push_simple(name.clone());
+                path.push_simple(name);
                 Some(LookupScope2::Message(m.clone(), path))
             }
             None => None,
