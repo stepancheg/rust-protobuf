@@ -30,8 +30,8 @@
 ///  sometimes simply referred to as "APIs" in other contexts, such as the name of
 ///  this message itself. See https://cloud.google.com/apis/design/glossary for
 ///  detailed terminology.
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.Api)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct Api {
     // message fields
     ///  The fully qualified name of this interface, including package name
@@ -294,8 +294,8 @@ impl crate::reflect::ProtobufValue for Api {
 }
 
 ///  Method represents a method of an API interface.
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.Method)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct Method {
     // message fields
     ///  The simple name of this method.
@@ -532,8 +532,8 @@ impl crate::reflect::ProtobufValue for Method {
     type RuntimeType = crate::reflect::rt::RuntimeTypeMessage<Self>;
 }
 
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.Mixin)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct Mixin {
     // message fields
     ///  The fully qualified name of the interface which is included.

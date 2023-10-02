@@ -21,8 +21,8 @@
 
 //! Generated file from `google/protobuf/duration.proto`
 
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.Duration)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct Duration {
     // message fields
     ///  Signed seconds of the span of time. Must be from -315,576,000,000

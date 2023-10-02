@@ -23,8 +23,8 @@
 
 ///  `SourceContext` represents information about the source of a
 ///  protobuf element, like the file in which it is defined.
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.SourceContext)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct SourceContext {
     // message fields
     ///  The path-qualified name of the .proto file that contained the associated

@@ -29,8 +29,8 @@
 ///  with the proto support for the language.
 ///
 ///  The JSON representation for `Struct` is JSON object.
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.Struct)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct Struct {
     // message fields
     ///  Unordered map of dynamically typed values.
@@ -178,8 +178,8 @@ impl crate::reflect::ProtobufValue for Struct {
 ///  variants. Absence of any variant indicates an error.
 ///
 ///  The JSON representation for `Value` is JSON value.
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.Value)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct Value {
     // message oneof groups
     pub kind: ::std::option::Option<value::Kind>,
@@ -661,8 +661,8 @@ pub mod value {
 ///  `ListValue` is a wrapper around a repeated field of values.
 ///
 ///  The JSON representation for `ListValue` is JSON array.
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.ListValue)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct ListValue {
     // message fields
     ///  Repeated field of dynamically typed values.

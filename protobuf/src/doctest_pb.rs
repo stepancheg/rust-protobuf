@@ -21,8 +21,8 @@
 
 //! Generated file from `doctest_pb.proto`
 
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:MyMessage)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct MyMessage {
     // special fields
     // @@protoc_insertion_point(special_field:MyMessage.special_fields)
