@@ -3,6 +3,7 @@
 ## [3.2] - Unreleased
 
 * [protoc_extra_arg not passed through](https://github.com/stepancheg/rust-protobuf/issues/643)
+* [move custom code before derive block in struct](https://github.com/stepancheg/rust-protobuf/issues/675)
 
 ## [3.2.0] - 2022-09-26
 
