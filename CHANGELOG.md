@@ -2,6 +2,8 @@
 
 ## [3.2] - Unreleased
 
+* [protoc_extra_arg not passed through](https://github.com/stepancheg/rust-protobuf/issues/643)
+
 ## [3.2.0] - 2022-09-26
 
 * [Correctly specify `log` version](https://github.com/stepancheg/rust-protobuf/pull/652)
