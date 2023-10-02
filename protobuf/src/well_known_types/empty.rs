@@ -21,8 +21,8 @@
 
 //! Generated file from `google/protobuf/empty.proto`
 
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.Empty)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct Empty {
     // special fields
     // @@protoc_insertion_point(special_field:google.protobuf.Empty.special_fields)

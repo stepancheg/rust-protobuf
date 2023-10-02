@@ -24,8 +24,8 @@
 ///  Wrapper message for `double`.
 ///
 ///  The JSON representation for `DoubleValue` is JSON number.
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.DoubleValue)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct DoubleValue {
     // message fields
     ///  The double value.
@@ -150,8 +150,8 @@ impl crate::reflect::ProtobufValue for DoubleValue {
 ///  Wrapper message for `float`.
 ///
 ///  The JSON representation for `FloatValue` is JSON number.
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.FloatValue)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct FloatValue {
     // message fields
     ///  The float value.
@@ -276,8 +276,8 @@ impl crate::reflect::ProtobufValue for FloatValue {
 ///  Wrapper message for `int64`.
 ///
 ///  The JSON representation for `Int64Value` is JSON string.
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.Int64Value)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct Int64Value {
     // message fields
     ///  The int64 value.
@@ -402,8 +402,8 @@ impl crate::reflect::ProtobufValue for Int64Value {
 ///  Wrapper message for `uint64`.
 ///
 ///  The JSON representation for `UInt64Value` is JSON string.
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.UInt64Value)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct UInt64Value {
     // message fields
     ///  The uint64 value.
@@ -528,8 +528,8 @@ impl crate::reflect::ProtobufValue for UInt64Value {
 ///  Wrapper message for `int32`.
 ///
 ///  The JSON representation for `Int32Value` is JSON number.
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.Int32Value)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct Int32Value {
     // message fields
     ///  The int32 value.
@@ -654,8 +654,8 @@ impl crate::reflect::ProtobufValue for Int32Value {
 ///  Wrapper message for `uint32`.
 ///
 ///  The JSON representation for `UInt32Value` is JSON number.
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.UInt32Value)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct UInt32Value {
     // message fields
     ///  The uint32 value.
@@ -780,8 +780,8 @@ impl crate::reflect::ProtobufValue for UInt32Value {
 ///  Wrapper message for `bool`.
 ///
 ///  The JSON representation for `BoolValue` is JSON `true` and `false`.
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.BoolValue)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct BoolValue {
     // message fields
     ///  The bool value.
@@ -906,8 +906,8 @@ impl crate::reflect::ProtobufValue for BoolValue {
 ///  Wrapper message for `string`.
 ///
 ///  The JSON representation for `StringValue` is JSON string.
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.StringValue)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct StringValue {
     // message fields
     ///  The string value.
@@ -1032,8 +1032,8 @@ impl crate::reflect::ProtobufValue for StringValue {
 ///  Wrapper message for `bytes`.
 ///
 ///  The JSON representation for `BytesValue` is JSON string.
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.BytesValue)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct BytesValue {
     // message fields
     ///  The bytes value.

@@ -21,8 +21,8 @@
 
 //! Generated file from `google/protobuf/any.proto`
 
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.Any)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct Any {
     // message fields
     ///  A URL/resource name that uniquely identifies the type of the serialized

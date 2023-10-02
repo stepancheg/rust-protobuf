@@ -21,8 +21,8 @@
 
 //! Generated file from `google/protobuf/timestamp.proto`
 
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.Timestamp)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct Timestamp {
     // message fields
     ///  Represents seconds of UTC time since Unix epoch

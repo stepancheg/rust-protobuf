@@ -21,8 +21,8 @@
 
 //! Generated file from `google/protobuf/field_mask.proto`
 
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.FieldMask)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct FieldMask {
     // message fields
     ///  The set of field mask paths.

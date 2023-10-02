@@ -22,8 +22,8 @@
 //! Generated file from `google/protobuf/type.proto`
 
 ///  A protocol buffer message type.
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.Type)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct Type {
     // message fields
     ///  The fully qualified message name.
@@ -244,8 +244,8 @@ impl crate::reflect::ProtobufValue for Type {
 }
 
 ///  A single field of a message type.
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.Field)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct Field {
     // message fields
     ///  The field type.
@@ -731,8 +731,8 @@ pub mod field {
 }
 
 ///  Enum type definition.
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.Enum)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct Enum {
     // message fields
     ///  Enum type name.
@@ -934,8 +934,8 @@ impl crate::reflect::ProtobufValue for Enum {
 }
 
 ///  Enum value definition.
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.EnumValue)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct EnumValue {
     // message fields
     ///  Enum value name.
@@ -1098,8 +1098,8 @@ impl crate::reflect::ProtobufValue for EnumValue {
 
 ///  A protocol buffer option, which can be attached to a message, field,
 ///  enumeration, etc.
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.Option)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct Option {
     // message fields
     ///  The option's name. For protobuf built-in options (options defined in

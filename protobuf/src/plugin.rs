@@ -22,8 +22,8 @@
 //! Generated file from `google/protobuf/compiler/plugin.proto`
 
 ///  The version number of protocol compiler.
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.compiler.Version)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct Version {
     // message fields
     // @@protoc_insertion_point(field:google.protobuf.compiler.Version.major)
@@ -294,8 +294,8 @@ impl crate::reflect::ProtobufValue for Version {
 }
 
 ///  An encoded CodeGeneratorRequest is written to the plugin's stdin.
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.compiler.CodeGeneratorRequest)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct CodeGeneratorRequest {
     // message fields
     ///  The .proto files that were explicitly listed on the command-line.  The
@@ -538,8 +538,8 @@ impl crate::reflect::ProtobufValue for CodeGeneratorRequest {
 }
 
 ///  The plugin writes an encoded CodeGeneratorResponse to stdout.
-#[derive(PartialEq,Clone,Default,Debug)]
 // @@protoc_insertion_point(message:google.protobuf.compiler.CodeGeneratorResponse)
+#[derive(PartialEq,Clone,Default,Debug)]
 pub struct CodeGeneratorResponse {
     // message fields
     ///  Error message.  If non-empty, code generation failed.  The plugin process
@@ -765,8 +765,8 @@ impl crate::reflect::ProtobufValue for CodeGeneratorResponse {
 /// Nested message and enums of message `CodeGeneratorResponse`
 pub mod code_generator_response {
     ///  Represents a single generated file.
-    #[derive(PartialEq,Clone,Default,Debug)]
     // @@protoc_insertion_point(message:google.protobuf.compiler.CodeGeneratorResponse.File)
+    #[derive(PartialEq,Clone,Default,Debug)]
     pub struct File {
         // message fields
         ///  The file name, relative to the output directory.  The name must not
