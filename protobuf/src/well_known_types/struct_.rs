@@ -810,13 +810,6 @@ impl crate::Enum for NullValue {
         }
     }
 
-    fn from_str(str: &str) -> ::std::option::Option<NullValue> {
-        match str {
-            stringify!(NULL_VALUE) => ::std::option::Option::Some(NullValue::NULL_VALUE),
-            _ => ::std::option::Option::None
-        }
-    }
-
     const VALUES: &'static [NullValue] = &[
         NullValue::NULL_VALUE,
     ];
