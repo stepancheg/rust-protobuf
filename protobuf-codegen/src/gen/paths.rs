@@ -40,8 +40,8 @@ pub(crate) fn proto_path_to_rust_mod(path: &str) -> RustIdent {
 }
 
 /// Used in protobuf-codegen-identical-test
-pub fn proto_name_to_rs(proto_file_path: &str) -> String {
-    format!("{}.rs", proto_path_to_rust_mod(proto_file_path))
+pub fn proto_name_to_rs(proto_name: &str) -> String {
+    format!("{}.rs", proto_path_to_rust_mod(proto_name))
 }
 
 pub(crate) fn proto_path_to_fn_file_descriptor(
