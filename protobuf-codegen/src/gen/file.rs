@@ -14,6 +14,7 @@ use crate::gen::extensions::write_extensions;
 use crate::gen::file_descriptor::write_file_descriptor_data;
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::message::MessageGen;
+use crate::gen::paths::file_descriptor_to_hierarchical_rs;
 use crate::gen::paths::proto_path_to_rust_mod;
 use crate::gen::scope::FileScope;
 use crate::gen::scope::RootScope;
@@ -141,7 +142,11 @@ pub(crate) fn gen_file(
 
     Ok(GenFileResult {
         compiler_plugin_result: compiler_plugin::GenResult {
-            name: proto_name_to_rs(file_descriptor.proto().name()),
+            name: if customize.for_elem.gen_mod_rs_hierarchy_out_dir_mod_name.is_some() {
+                file_descriptor_to_hierarchical_rs(file_descriptor.proto())
+            } else {
+                proto_name_to_rs(file_descriptor.proto().name())
+            },
             content: v.into_bytes(),
         },
         mod_name: proto_path_to_rust_mod(file_descriptor.proto().name()).into_string(),

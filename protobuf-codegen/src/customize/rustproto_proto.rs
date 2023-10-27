@@ -14,6 +14,7 @@ pub(crate) fn customize_from_rustproto_for_message(source: &MessageOptions) -> C
     let tokio_bytes_for_string = rustproto::exts::tokio_bytes_for_string.get(source);
     let lite_runtime = None;
     let gen_mod_rs = None;
+    let gen_mod_rs_hierarchy_out_dir_mod_name = None;
     let inside_protobuf = None;
     Customize {
         before,
@@ -23,6 +24,7 @@ pub(crate) fn customize_from_rustproto_for_message(source: &MessageOptions) -> C
         tokio_bytes_for_string,
         lite_runtime,
         gen_mod_rs,
+        gen_mod_rs_hierarchy_out_dir_mod_name,
         inside_protobuf,
     }
 }
@@ -39,6 +41,7 @@ pub(crate) fn customize_from_rustproto_for_field(source: &FieldOptions) -> Custo
     let tokio_bytes_for_string = rustproto::exts::tokio_bytes_for_string_field.get(source);
     let lite_runtime = None;
     let gen_mod_rs = None;
+    let gen_mod_rs_hierarchy_out_dir_mod_name = None;
     let inside_protobuf = None;
     Customize {
         before,
@@ -48,6 +51,7 @@ pub(crate) fn customize_from_rustproto_for_field(source: &FieldOptions) -> Custo
         tokio_bytes_for_string,
         lite_runtime,
         gen_mod_rs,
+        gen_mod_rs_hierarchy_out_dir_mod_name,
         inside_protobuf,
     }
 }
@@ -60,6 +64,7 @@ pub(crate) fn customize_from_rustproto_for_file(source: &FileOptions) -> Customi
     let tokio_bytes_for_string = rustproto::exts::tokio_bytes_for_string_all.get(source);
     let lite_runtime = rustproto::exts::lite_runtime_all.get(source);
     let gen_mod_rs = None;
+    let gen_mod_rs_hierarchy_out_dir_mod_name = None;
     let inside_protobuf = None;
     Customize {
         before,
@@ -70,5 +75,6 @@ pub(crate) fn customize_from_rustproto_for_file(source: &FileOptions) -> Customi
         lite_runtime,
         inside_protobuf,
         gen_mod_rs,
+        gen_mod_rs_hierarchy_out_dir_mod_name,
     }
 }

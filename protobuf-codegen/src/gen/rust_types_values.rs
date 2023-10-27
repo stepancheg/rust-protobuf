@@ -512,6 +512,17 @@ pub(crate) fn message_or_enum_to_rust_relative(
             protobuf_crate_path(&current.customize),
             message_or_enum.rust_name_to_file()
         ))
+    } else if let Some(mod_name) = &current.customize.gen_mod_rs_hierarchy_out_dir_mod_name {
+        let mut rust_name = format!("crate::{}", mod_name.to_owned());
+        for component in message_or_enum
+            .name_absolute()
+            .trim_start_matches(':')
+            .split('.')
+            .filter(|s| !s.is_empty())
+        {
+            rust_name.push_str(&format!("::{}", component.replace('-', "_")));
+        }
+        RustIdentWithPath::from(rust_name)
     } else {
         current
             .relative_mod
