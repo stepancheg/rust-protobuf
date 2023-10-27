@@ -176,6 +176,8 @@ impl<'a> OneofGen<'a> {
         oneof: OneofWithContext<'a>,
         parent_customize: &CustomizeElemCtx<'a>,
     ) -> OneofGen<'a> {
+        let message_proto = message.message.message.proto();
+        eprintln!("OneofGen::parse message.name: {}", message_proto.name());        
         let customize = parent_customize.child(&Customize::default(), &oneof.oneof);
         let lite_runtime = customize.for_elem.lite_runtime.unwrap_or_else(|| {
             oneof

@@ -81,14 +81,19 @@ impl RustType {
             RustType::Option(ref param) => {
                 format!("::std::option::Option<{}>", param.to_code(customize))
             }
-            RustType::MessageField(ref param) => format!(
-                "{}::MessageField<{}>",
-                protobuf_crate_path(customize),
-                param.to_code(customize)
-            ),
+            RustType::MessageField(ref param) => {
+                let crate_path = protobuf_crate_path(customize);
+                eprintln!("Writing MessageField");
+                format!("{}::MessageField<{}>", crate_path, param.to_code(customize))
+            }
             RustType::Uniq(ref param) => format!("::std::boxed::Box<{}>", param.to_code(customize)),
             RustType::Ref(ref param) => format!("&{}", param.to_code(customize)),
-            RustType::Message(ref name) => format!("{}", name),
+            RustType::Message(ref name) => {
+                eprintln!("Writing Message name: {}", name);
+                eprintln!("Writing Message rust.ident: {}", name.0.ident);
+                eprintln!("Writing Message rust.path: {}", name.0.path);
+                format!("{}", name)
+            }
             RustType::Enum(ref name, ..) | RustType::Oneof(ref name) => format!("{}", name),
             RustType::EnumOrUnknown(ref name, ..) => format!(
                 "{}::EnumOrUnknown<{}>",
@@ -486,6 +491,7 @@ pub(crate) fn message_or_enum_to_rust_relative(
     message_or_enum: &dyn WithScope,
     current: &FileAndMod,
 ) -> RustIdentWithPath {
+    eprintln!("message_or_enum_to_rust_relative");
     let same_file = message_or_enum.file_descriptor().name() == current.file;
     if same_file {
         // field type is a message or enum declared in the same file
@@ -514,16 +520,60 @@ pub(crate) fn message_or_enum_to_rust_relative(
         ))
     } else if let Some(mod_name) = &current.customize.gen_mod_rs_hierarchy_out_dir_mod_name {
         let mut rust_name = format!("crate::{}", mod_name.to_owned());
+        eprintln!(
+            "message_or_enum_to_rust_relative MY_WAY mod_name: {}",
+            rust_name
+        );
         for component in message_or_enum
             .name_absolute()
             .trim_start_matches(':')
             .split('.')
             .filter(|s| !s.is_empty())
         {
+            eprintln!(
+                "message_or_enum_to_rust_relative MY_WAY component: {}",
+                component
+            );
             rust_name.push_str(&format!("::{}", component.replace('-', "_")));
         }
+        eprintln!(
+            "message_or_enum_to_rust_relative MY_WAY rust_name: {}",
+            rust_name
+        );
         RustIdentWithPath::from(rust_name)
     } else {
+        eprintln!(
+            "message_or_enum_to_rust_relative current.file: {}",
+            current.file
+        );
+        eprintln!(
+            "message_or_enum_to_rust_relative current.relative_mod: {}",
+            current.relative_mod
+        );
+        eprintln!(
+            "message_or_enum_to_rust_relative message_or_enum.name_absolute: {}",
+            message_or_enum.name_absolute()
+        );
+        eprintln!(
+            "message_or_enum_to_rust_relative message_or_enum.name_to_package: {}",
+            message_or_enum.name_to_package()
+        );
+        eprintln!(
+            "message_or_enum_to_rust_relative message_or_enum.protobuf_name_to_package: {}",
+            message_or_enum.protobuf_name_to_package()
+        );
+        eprintln!(
+            "message_or_enum_to_rust_relative message_or_enum.rust_name: {}",
+            message_or_enum.rust_name()
+        );
+        eprintln!(
+            "message_or_enum_to_rust_relative message_or_enum.rust_name_to_file: {}",
+            message_or_enum.rust_name_to_file()
+        );
+        eprintln!(
+            "message_or_enum_to_rust_relative message_or_enum.rust_name_with_file: {}",
+            message_or_enum.rust_name_with_file()
+        );
         current
             .relative_mod
             .to_reverse()
