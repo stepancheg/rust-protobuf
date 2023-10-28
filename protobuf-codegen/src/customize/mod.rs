@@ -172,7 +172,10 @@ impl Customize {
     /// hierarchy.
     ///
     /// This option is on by default in rust-protobuf version 3.
-    pub fn gen_mod_rs_hierarchy_out_dir_mod_name(mut self, gen_mod_rs_hierarchy_out_dir_mod_name: String) -> Self {
+    pub fn gen_mod_rs_hierarchy_out_dir_mod_name(
+        mut self,
+        gen_mod_rs_hierarchy_out_dir_mod_name: String,
+    ) -> Self {
         self.gen_mod_rs_hierarchy_out_dir_mod_name = Some(gen_mod_rs_hierarchy_out_dir_mod_name);
         self
     }
