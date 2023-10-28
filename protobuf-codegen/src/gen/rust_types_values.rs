@@ -5,6 +5,8 @@ use protobuf::descriptor::*;
 use protobuf::reflect::FileDescriptor;
 use protobuf_parse::ProtobufAbsPath;
 use regex::Regex;
+use tracing::event;
+use tracing::{instrument, Level};
 
 use crate::customize::Customize;
 use crate::gen::field::type_ext::TypeExt;
@@ -83,15 +85,11 @@ impl RustType {
             }
             RustType::MessageField(ref param) => {
                 let crate_path = protobuf_crate_path(customize);
-                eprintln!("Writing MessageField");
                 format!("{}::MessageField<{}>", crate_path, param.to_code(customize))
             }
             RustType::Uniq(ref param) => format!("::std::boxed::Box<{}>", param.to_code(customize)),
             RustType::Ref(ref param) => format!("&{}", param.to_code(customize)),
             RustType::Message(ref name) => {
-                eprintln!("Writing Message name: {}", name);
-                eprintln!("Writing Message rust.ident: {}", name.0.ident);
-                eprintln!("Writing Message rust.path: {}", name.0.path);
                 format!("{}", name)
             }
             RustType::Enum(ref name, ..) | RustType::Oneof(ref name) => format!("{}", name),
@@ -487,16 +485,28 @@ pub(crate) fn make_path(source: &RustRelativePath, dest: &RustIdentWithPath) -> 
     make_path_to_path(source, &dest.path).with_ident(dest.ident.clone())
 }
 
+#[instrument(level = Level::DEBUG, skip_all, fields(current.file = current.file, current.relative_mod = current.relative_mod.to_string()), ret(Display))]
 pub(crate) fn message_or_enum_to_rust_relative(
     message_or_enum: &dyn WithScope,
     current: &FileAndMod,
 ) -> RustIdentWithPath {
-    eprintln!("message_or_enum_to_rust_relative");
     let same_file = message_or_enum.file_descriptor().name() == current.file;
     if same_file {
         // field type is a message or enum declared in the same file
+        event!(
+            Level::DEBUG,
+            current.file = current.file,
+            current.relative_mod = current.relative_mod.to_string(),
+            "Field type is message or enum in same file"
+        );
         make_path(&current.relative_mod, &message_or_enum.rust_name_to_file())
     } else if let Some(name) = is_well_known_type_full(&message_or_enum.name_absolute()) {
+        event!(
+            Level::DEBUG,
+            current.file = current.file,
+            current.relative_mod = current.relative_mod.to_string(),
+            "Field type is a well-known type included in the rust-protobuf library"
+        );
         // Well-known types are included in rust-protobuf library
         // https://developers.google.com/protocol-buffers/docs/reference/google.protobuf
         let file_descriptor = message_or_enum.file_descriptor();
@@ -512,6 +522,12 @@ pub(crate) fn message_or_enum_to_rust_relative(
             protobuf_crate = protobuf_crate_path(&current.customize),
         ))
     } else if is_descriptor_proto(&message_or_enum.file_descriptor()) {
+        event!(
+            Level::DEBUG,
+            current.file = current.file,
+            current.relative_mod = current.relative_mod.to_string(),
+            "Field type is a descriptor proto"
+        );
         // Messages defined in descriptor.proto
         RustIdentWithPath::from(format!(
             "{}::descriptor::{}",
@@ -519,60 +535,29 @@ pub(crate) fn message_or_enum_to_rust_relative(
             message_or_enum.rust_name_to_file()
         ))
     } else if let Some(mod_name) = &current.customize.gen_mod_rs_hierarchy_out_dir_mod_name {
-        let mut rust_name = format!("crate::{}", mod_name.to_owned());
-        eprintln!(
-            "message_or_enum_to_rust_relative MY_WAY mod_name: {}",
-            rust_name
+        event!(
+            Level::DEBUG,
+            current.file = current.file,
+            current.relative_mod = current.relative_mod.to_string(),
+            root_mod_name = mod_name,
+            "Field type identifier needs to be resolved in the output dir hierarchy"
         );
+        let mut rust_name = format!("crate::{}", mod_name.to_owned());
         for component in message_or_enum
             .name_absolute()
             .trim_start_matches(':')
             .split('.')
             .filter(|s| !s.is_empty())
         {
-            eprintln!(
-                "message_or_enum_to_rust_relative MY_WAY component: {}",
-                component
-            );
             rust_name.push_str(&format!("::{}", component.replace('-', "_")));
         }
-        eprintln!(
-            "message_or_enum_to_rust_relative MY_WAY rust_name: {}",
-            rust_name
-        );
         RustIdentWithPath::from(rust_name)
     } else {
-        eprintln!(
-            "message_or_enum_to_rust_relative current.file: {}",
-            current.file
-        );
-        eprintln!(
-            "message_or_enum_to_rust_relative current.relative_mod: {}",
-            current.relative_mod
-        );
-        eprintln!(
-            "message_or_enum_to_rust_relative message_or_enum.name_absolute: {}",
-            message_or_enum.name_absolute()
-        );
-        eprintln!(
-            "message_or_enum_to_rust_relative message_or_enum.name_to_package: {}",
-            message_or_enum.name_to_package()
-        );
-        eprintln!(
-            "message_or_enum_to_rust_relative message_or_enum.protobuf_name_to_package: {}",
-            message_or_enum.protobuf_name_to_package()
-        );
-        eprintln!(
-            "message_or_enum_to_rust_relative message_or_enum.rust_name: {}",
-            message_or_enum.rust_name()
-        );
-        eprintln!(
-            "message_or_enum_to_rust_relative message_or_enum.rust_name_to_file: {}",
-            message_or_enum.rust_name_to_file()
-        );
-        eprintln!(
-            "message_or_enum_to_rust_relative message_or_enum.rust_name_with_file: {}",
-            message_or_enum.rust_name_with_file()
+        event!(
+            Level::DEBUG,
+            current.file = current.file,
+            current.relative_mod = current.relative_mod.to_string(),
+            "Field type identifier is relative to current mod"
         );
         current
             .relative_mod

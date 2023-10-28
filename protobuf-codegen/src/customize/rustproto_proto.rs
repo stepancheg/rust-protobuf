@@ -16,6 +16,7 @@ pub(crate) fn customize_from_rustproto_for_message(source: &MessageOptions) -> C
     let gen_mod_rs = None;
     let gen_mod_rs_hierarchy_out_dir_mod_name = None;
     let inside_protobuf = None;
+    let log_file = None;
     Customize {
         before,
         generate_accessors,
@@ -26,6 +27,7 @@ pub(crate) fn customize_from_rustproto_for_message(source: &MessageOptions) -> C
         gen_mod_rs,
         gen_mod_rs_hierarchy_out_dir_mod_name,
         inside_protobuf,
+        log_file,
     }
 }
 
@@ -43,6 +45,7 @@ pub(crate) fn customize_from_rustproto_for_field(source: &FieldOptions) -> Custo
     let gen_mod_rs = None;
     let gen_mod_rs_hierarchy_out_dir_mod_name = None;
     let inside_protobuf = None;
+    let log_file = None;
     Customize {
         before,
         generate_accessors,
@@ -53,6 +56,7 @@ pub(crate) fn customize_from_rustproto_for_field(source: &FieldOptions) -> Custo
         gen_mod_rs,
         gen_mod_rs_hierarchy_out_dir_mod_name,
         inside_protobuf,
+        log_file,
     }
 }
 
@@ -66,6 +70,7 @@ pub(crate) fn customize_from_rustproto_for_file(source: &FileOptions) -> Customi
     let gen_mod_rs = None;
     let gen_mod_rs_hierarchy_out_dir_mod_name = None;
     let inside_protobuf = None;
+    let log_file = None;
     Customize {
         before,
         generate_accessors,
@@ -76,5 +81,6 @@ pub(crate) fn customize_from_rustproto_for_file(source: &FileOptions) -> Customi
         inside_protobuf,
         gen_mod_rs,
         gen_mod_rs_hierarchy_out_dir_mod_name,
+        log_file,
     }
 }

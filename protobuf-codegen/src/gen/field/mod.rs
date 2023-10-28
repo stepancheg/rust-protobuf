@@ -145,12 +145,6 @@ impl<'a> FieldGen<'a> {
         path: Vec<i32>,
         info: Option<&'a SourceCodeInfo>,
     ) -> anyhow::Result<FieldGen<'a>> {
-        let message_proto = field.message.message.proto();
-        eprintln!("FieldGen::parse message.name: {}", message_proto.name());
-        eprintln!("FieldGen::parse field.name: {}", field.field.proto().name());
-        eprintln!("FieldGen::parse field.type.protobuf_name: {}", field.field.proto().type_().protobuf_name());
-        eprintln!("FieldGen::parse field.type_name: {}", field.field.proto().type_name());
-        
         let customize = parent_customize
             .child(
                 &customize_from_rustproto_for_field(field.field.proto().options.get_or_default()),
@@ -342,8 +336,6 @@ impl<'a> FieldGen<'a> {
 
     // for field `foo`, return type of `fn foo(..)`
     fn getter_return_type(&self) -> RustType {
-        eprintln!("FieldGen::getter_return_type");
-
         let reference = self
             .proto_field
             .message

@@ -10,6 +10,7 @@ use protobuf_parse::ProtoPathBuf;
 
 use crate::customize::CustomizeCallback;
 use crate::gen::all::gen_all;
+use crate::logging::init_logging;
 use crate::Customize;
 
 #[derive(Debug, thiserror::Error)]
@@ -45,6 +46,8 @@ pub fn gen_and_write(
             );
         }
     }
+
+    init_logging(&customize)?;
 
     let results = gen_all(
         file_descriptors,

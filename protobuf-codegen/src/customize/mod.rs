@@ -112,6 +112,9 @@ pub struct Customize {
     /// Used internally to generate protos bundled in protobuf crate
     /// like `descriptor.proto`
     pub(crate) inside_protobuf: Option<bool>,
+    /// Enable logging to the specified `log_file` for debugging. The logging
+    /// verbosity is controlled with the `RUST_LOG` environment variable.
+    pub(crate) log_file: Option<String>,
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -186,6 +189,11 @@ impl Customize {
         self
     }
 
+    pub fn log_file(mut self, log_file: String) -> Self {
+        self.log_file = Some(log_file);
+        self
+    }
+
     /// Update fields of self with fields defined in other customize
     pub fn update_with(&mut self, that: &Customize) {
         if let Some(v) = &that.before {
@@ -214,6 +222,9 @@ impl Customize {
         }
         if let Some(v) = that.inside_protobuf {
             self.inside_protobuf = Some(v);
+        }
+        if let Some(v) = &that.log_file {
+            self.log_file = Some(v.to_owned());
         }
     }
 
@@ -262,6 +273,8 @@ impl Customize {
                 // Support Java and C++ protoc plugin syntax:
                 // https://github.com/protocolbuffers/protobuf/issues/6489
                 r.lite_runtime = Some(parse_bool(v)?);
+            } else if n == "log_file" {
+                r.log_file = Some(v.to_owned());
             } else {
                 return Err(CustomizeParseParameterError::UnknownOptionName(n.to_owned()).into());
             }

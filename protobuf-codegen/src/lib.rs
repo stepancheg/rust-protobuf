@@ -136,6 +136,7 @@ mod compiler_plugin;
 mod customize;
 mod gen;
 pub mod gen_and_write;
+mod logging;
 pub mod protoc_gen_rust;
 
 pub use codegen::Codegen;

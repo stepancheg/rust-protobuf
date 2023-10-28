@@ -1,4 +1,5 @@
 use protobuf::descriptor::FileDescriptorProto;
+use tracing::{instrument, Level};
 
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::rust::ident::RustIdent;
@@ -59,6 +60,7 @@ pub fn file_descriptor_to_hierarchical_rs(file_descriptor: &FileDescriptorProto)
     }
 }
 
+#[instrument(level = Level::DEBUG, skip(customize), ret(Display))]
 pub(crate) fn proto_path_to_fn_file_descriptor(
     proto_path: &str,
     customize: &Customize,
@@ -76,14 +78,11 @@ pub(crate) fn proto_path_to_fn_file_descriptor(
         s => {
             if let Some(mod_path) = &customize.gen_mod_rs_hierarchy_out_dir_mod_name {
                 let mut rust_path = RustPath::from("crate");
-                eprintln!("Forming path wth rust_path: {}", rust_path);
                 for mod_part in mod_path.split("::") {
                     rust_path = rust_path.append_ident(RustIdent::from(mod_part));
-                    eprintln!("Forming path wth rust_path: {}", rust_path);
                 }
                 for component in proto_path.split("/").filter(|p| !p.ends_with(".proto")) {
                     rust_path = rust_path.append_ident(RustIdent::from(component));
-                    eprintln!("Forming path wth rust_path: {}", rust_path);
                 }
                 rust_path.append_ident("file_descriptor".into())
             } else {

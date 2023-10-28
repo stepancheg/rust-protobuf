@@ -4,6 +4,9 @@ use protobuf::descriptor::file_options;
 use protobuf::descriptor::FileDescriptorProto;
 use protobuf::reflect::FileDescriptor;
 use protobuf_parse::ProtoPath;
+use tracing::event;
+use tracing::instrument;
+use tracing::Level;
 
 use crate::compiler_plugin;
 use crate::customize::ctx::CustomizeElemCtx;
@@ -25,6 +28,7 @@ pub(crate) struct GenFileResult {
     pub(crate) mod_name: String,
 }
 
+#[instrument(level = Level::INFO, skip_all)]
 pub(crate) fn gen_file(
     file_descriptor: &FileDescriptor,
     _files_map: &HashMap<&ProtoPath, &FileDescriptor>,
@@ -53,6 +57,17 @@ pub(crate) fn gen_file(
     let scope = file_scope.to_scope();
 
     let lite_runtime = customize.for_elem.lite_runtime.unwrap_or(false);
+
+    let mod_name = proto_path_to_rust_mod(file_descriptor.proto().name()).into_string();
+
+    event!(
+        Level::INFO,
+        file_descriptor.name = file_descriptor.proto().name(),
+        file_descriptor.package = file_descriptor.proto().package(),
+        lite_runtime,
+        mod_name,
+        "Generating file"
+    );
 
     let v = CodeWriter::with(|w| {
         w.write_generated_by("rust-protobuf", env!("CARGO_PKG_VERSION"), parser);
@@ -142,13 +157,17 @@ pub(crate) fn gen_file(
 
     Ok(GenFileResult {
         compiler_plugin_result: compiler_plugin::GenResult {
-            name: if customize.for_elem.gen_mod_rs_hierarchy_out_dir_mod_name.is_some() {
+            name: if customize
+                .for_elem
+                .gen_mod_rs_hierarchy_out_dir_mod_name
+                .is_some()
+            {
                 file_descriptor_to_hierarchical_rs(file_descriptor.proto())
             } else {
                 proto_name_to_rs(file_descriptor.proto().name())
             },
             content: v.into_bytes(),
         },
-        mod_name: proto_path_to_rust_mod(file_descriptor.proto().name()).into_string(),
+        mod_name,
     })
 }

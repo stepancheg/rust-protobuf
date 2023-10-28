@@ -65,8 +65,6 @@ impl<'a> FieldElemMessage<'a> {
     }
 
     fn rust_type(&self, reference: &FileAndMod) -> RustType {
-        eprintln!("FieldElemMessage::rust_type message.mod_name: {}", self.message.mod_name().to_string());
-        eprintln!("FieldElemMessage::rust_type message.name: {}", self.message.message.name());
         RustType::Message(self.rust_name_relative(reference))
     }
 }

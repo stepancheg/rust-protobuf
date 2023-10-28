@@ -70,9 +70,6 @@ impl<'a> EnumGen<'a> {
         path: &'a [i32],
         info: Option<&'a SourceCodeInfo>,
     ) -> EnumGen<'a> {
-        let enum_proto = enum_with_scope.en.proto();
-        eprintln!("EnumGen::parse enum.name: {}", enum_proto.name());        
-
         let customize = customize.child(
             &customize_from_rustproto_for_enum(enum_with_scope.en.proto().options.get_or_default()),
             &enum_with_scope.en,

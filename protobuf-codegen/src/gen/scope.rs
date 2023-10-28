@@ -277,11 +277,6 @@ impl<'a> Scope<'a> {
     }
 
     pub fn file_and_mod(&self, customize: Customize) -> FileAndMod {
-        let d = self.file_scope.file_descriptor.proto();
-        eprintln!("Scope::file_and_mod package: package: {}", d.package());
-        eprintln!("Scope::file_and_mod package: name: {}", d.name());
-        eprintln!("Scope::file_and_mod package: rust_path_to_file: {}", self.rust_path_to_file());
-        eprintln!("Scope::file_and_mod package: path_str: {}", self.path_str());
         FileAndMod {
             file: self.file_scope.file_descriptor.proto().name().to_owned(),
             relative_mod: self.rust_path_to_file(),
