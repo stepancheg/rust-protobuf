@@ -2,6 +2,8 @@
 
 ## [3.3] - Unreleased
 
+* [Unnecessary copy in print_to_string_internal](https://github.com/stepancheg/rust-protobuf/pull/684)
+
 ## [3.3.0] - 2023-09-30
 
 * [protoc_extra_arg not passed through](https://github.com/stepancheg/rust-protobuf/issues/643)
