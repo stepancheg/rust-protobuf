@@ -1,13 +1,11 @@
-use std::collections::HashMap;
-
 use protobuf::reflect::ReflectValueBox;
-use protobuf::MessageFull;
+use protobuf::{Map, MessageFull};
 
 use super::test_reflect_clear_pb::*;
 
 #[test]
 fn test_generated() {
-    let mut map = HashMap::new();
+    let mut map = Map::new();
     map.insert("key".to_string(), "value".to_string());
 
     let mut msg = TestMessage::default();
@@ -45,7 +43,7 @@ fn test_dynamic() {
 
     let mut msg = msg_desc.new_instance();
 
-    let mut map = HashMap::new();
+    let mut map = Map::new();
     map.insert("key".to_string(), "value".to_string());
 
     a_field.set_singular_field(msg.as_mut(), 1.into());

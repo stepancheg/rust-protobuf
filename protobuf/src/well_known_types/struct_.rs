@@ -35,7 +35,7 @@ pub struct Struct {
     // message fields
     ///  Unordered map of dynamically typed values.
     // @@protoc_insertion_point(field:google.protobuf.Struct.fields)
-    pub fields: ::std::collections::HashMap<::std::string::String, Value>,
+    pub fields: crate::Map<::std::string::String, Value>,
     // special fields
     // @@protoc_insertion_point(special_field:google.protobuf.Struct.special_fields)
     pub special_fields: crate::SpecialFields,

@@ -1,29 +1,26 @@
-use std::collections::hash_map;
-use std::collections::HashMap;
-use std::hash::Hash;
-
+use crate::map::{self, Map};
 use crate::reflect::map::ReflectMap;
 use crate::reflect::map::ReflectMapIter;
 use crate::reflect::map::ReflectMapIterTrait;
-use crate::reflect::runtime_types::RuntimeTypeHashable;
+use crate::reflect::runtime_types::RuntimeTypeMapKey;
 use crate::reflect::runtime_types::RuntimeTypeTrait;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
 use crate::reflect::ReflectValueRef;
 use crate::reflect::RuntimeType;
 
-impl<K, V> ReflectMap for HashMap<K, V>
+impl<K, V> ReflectMap for Map<K, V>
 where
-    K: ProtobufValue + Eq + Hash,
+    K: ProtobufValue + Eq + map::KeyConstraint,
     V: ProtobufValue,
-    K::RuntimeType: RuntimeTypeHashable,
+    K::RuntimeType: RuntimeTypeMapKey,
 {
     fn reflect_iter<'a>(&'a self) -> ReflectMapIter<'a> {
         ReflectMapIter::new(GeneratedMapIterImpl::<'a, K, V> { iter: self.iter() })
     }
 
     fn len(&self) -> usize {
-        HashMap::len(self)
+        Map::len(self)
     }
 
     fn is_empty(&self) -> bool {
@@ -31,7 +28,7 @@ where
     }
 
     fn get<'a>(&'a self, key: ReflectValueRef) -> Option<ReflectValueRef<'a>> {
-        <K::RuntimeType as RuntimeTypeHashable>::hash_map_get(self, key).map(V::RuntimeType::as_ref)
+        <K::RuntimeType as RuntimeTypeMapKey>::map_get(self, key).map(V::RuntimeType::as_ref)
     }
 
     fn insert(&mut self, key: ReflectValueBox, value: ReflectValueBox) {
@@ -53,11 +50,11 @@ where
     }
 }
 
-struct GeneratedMapIterImpl<'a, K: Eq + Hash + 'static, V: 'static> {
-    iter: hash_map::Iter<'a, K, V>,
+struct GeneratedMapIterImpl<'a, K: Eq + map::KeyConstraint + 'static, V: 'static> {
+    iter: map::Iter<'a, K, V>,
 }
 
-impl<'a, K: ProtobufValue + Eq + Hash, V: ProtobufValue> ReflectMapIterTrait<'a>
+impl<'a, K: ProtobufValue + Eq + map::KeyConstraint, V: ProtobufValue> ReflectMapIterTrait<'a>
     for GeneratedMapIterImpl<'a, K, V>
 {
     fn next(&mut self) -> Option<(ReflectValueRef<'a>, ReflectValueRef<'a>)> {
