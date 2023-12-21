@@ -1,11 +1,11 @@
-use std::collections::hash_map;
-use std::collections::HashMap;
+use std::collections::{btree_map, hash_map};
+use std::collections::{BTreeMap, HashMap};
 use std::hash::Hash;
 
 use crate::reflect::map::ReflectMap;
 use crate::reflect::map::ReflectMapIter;
 use crate::reflect::map::ReflectMapIterTrait;
-use crate::reflect::runtime_types::RuntimeTypeHashable;
+use crate::reflect::runtime_types::RuntimeTypeMapKey;
 use crate::reflect::runtime_types::RuntimeTypeTrait;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
@@ -16,10 +16,12 @@ impl<K, V> ReflectMap for HashMap<K, V>
 where
     K: ProtobufValue + Eq + Hash,
     V: ProtobufValue,
-    K::RuntimeType: RuntimeTypeHashable,
+    K::RuntimeType: RuntimeTypeMapKey,
 {
     fn reflect_iter<'a>(&'a self) -> ReflectMapIter<'a> {
-        ReflectMapIter::new(GeneratedMapIterImpl::<'a, K, V> { iter: self.iter() })
+        ReflectMapIter::new(GeneratedMapIterImpl::<'a, K, V, hash_map::Iter<'a, K, V>> {
+            iter: self.iter(),
+        })
     }
 
     fn len(&self) -> usize {
@@ -31,7 +33,7 @@ where
     }
 
     fn get<'a>(&'a self, key: ReflectValueRef) -> Option<ReflectValueRef<'a>> {
-        <K::RuntimeType as RuntimeTypeHashable>::hash_map_get(self, key).map(V::RuntimeType::as_ref)
+        <K::RuntimeType as RuntimeTypeMapKey>::hash_map_get(self, key).map(V::RuntimeType::as_ref)
     }
 
     fn insert(&mut self, key: ReflectValueBox, value: ReflectValueBox) {
@@ -53,12 +55,55 @@ where
     }
 }
 
-struct GeneratedMapIterImpl<'a, K: Eq + Hash + 'static, V: 'static> {
-    iter: hash_map::Iter<'a, K, V>,
+impl<K, V> ReflectMap for BTreeMap<K, V>
+where
+    K: ProtobufValue + Ord,
+    V: ProtobufValue,
+    K::RuntimeType: RuntimeTypeMapKey,
+{
+    fn reflect_iter<'a>(&'a self) -> ReflectMapIter<'a> {
+        ReflectMapIter::new(
+            GeneratedMapIterImpl::<'a, K, V, btree_map::Iter<'a, K, V>> { iter: self.iter() },
+        )
+    }
+
+    fn len(&self) -> usize {
+        BTreeMap::len(self)
+    }
+
+    fn is_empty(&self) -> bool {
+        self.is_empty()
+    }
+
+    fn get<'a>(&'a self, key: ReflectValueRef) -> Option<ReflectValueRef<'a>> {
+        <K::RuntimeType as RuntimeTypeMapKey>::btree_map_get(self, key).map(V::RuntimeType::as_ref)
+    }
+
+    fn insert(&mut self, key: ReflectValueBox, value: ReflectValueBox) {
+        let key: K = key.downcast().expect("wrong key type");
+        let value: V = value.downcast().expect("wrong value type");
+        self.insert(key, value);
+    }
+
+    fn clear(&mut self) {
+        self.clear();
+    }
+
+    fn key_type(&self) -> RuntimeType {
+        K::RuntimeType::runtime_type_box()
+    }
+
+    fn value_type(&self) -> RuntimeType {
+        V::RuntimeType::runtime_type_box()
+    }
 }
 
-impl<'a, K: ProtobufValue + Eq + Hash, V: ProtobufValue> ReflectMapIterTrait<'a>
-    for GeneratedMapIterImpl<'a, K, V>
+struct GeneratedMapIterImpl<'a, K: 'static, V: 'static, I: Iterator<Item = (&'a K, &'a V)>> {
+    iter: I,
+}
+
+impl<'a, K: ProtobufValue, V: ProtobufValue, I: Iterator<Item = (&'a K, &'a V)>>
+    ReflectMapIterTrait<'a> for GeneratedMapIterImpl<'a, K, V, I>
 {
     fn next(&mut self) -> Option<(ReflectValueRef<'a>, ReflectValueRef<'a>)> {
         match self.iter.next() {

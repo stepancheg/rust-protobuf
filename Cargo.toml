@@ -16,6 +16,7 @@ members = [
     "test-crates/perftest/bytes",
     "test-crates/perftest/misc",
     "test-crates/perftest/vs-cxx",
+    "test-crates/protobuf-codegen-btreemap-test",
     "test-crates/protobuf-codegen-identical-test",
     "test-crates/protobuf-codegen-protoc-test",
     "test-crates/protobuf-codegen-pure-test",
