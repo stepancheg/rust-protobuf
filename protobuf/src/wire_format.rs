@@ -31,7 +31,7 @@ pub(crate) fn check_message_size(size: u64) -> crate::Result<u32> {
 pub enum WireType {
     /// Variable-length integer
     Varint = 0,
-    /// 32-bit field (e. g. `fixed64` or `double`)
+    /// 64-bit field (e. g. `fixed64` or `double`)
     Fixed64 = 1,
     /// Length-delimited field
     LengthDelimited = 2,
