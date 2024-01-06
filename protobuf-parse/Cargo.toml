@@ -20,7 +20,7 @@ log       = "0.4"
 which     = "4.0"
 anyhow    = "1.0.53"
 thiserror = "1.0.30"
-indexmap  = "1.8.0"
+indexmap  = "2.0.0"
 
 protobuf = { path = "../protobuf", version = "=4.0.0-alpha.0" }
 protobuf-support = { path = "../protobuf-support", version = "=4.0.0-alpha.0" }
