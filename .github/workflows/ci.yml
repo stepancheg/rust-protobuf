@@ -8,8 +8,14 @@ jobs:
     linux-stable-default-features:
         name: linux stable (default features)
         runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                map_representation:
+                    - btreemap
+                    - hashmap
         env:
             RUST_BACKTRACE: 1
+            MAP_REPRESENTATION: ${{ matrix.map_representation }}
         steps:
             - name: Checkout sources
               uses: actions/checkout@v2
@@ -53,8 +59,14 @@ jobs:
     linux-beta-default-features:
         name: linux beta (default features)
         runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                map_representation:
+                    - btreemap
+                    - hashmap
         env:
             RUST_BACKTRACE: 1
+            MAP_REPRESENTATION: ${{ matrix.map_representation }}
         steps:
             - name: Checkout sources
               uses: actions/checkout@v2
@@ -98,8 +110,14 @@ jobs:
     linux-stable-with-bytes:
         name: linux stable (with-bytes)
         runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                map_representation:
+                    - btreemap
+                    - hashmap
         env:
             RUST_BACKTRACE: 1
+            MAP_REPRESENTATION: ${{ matrix.map_representation }}
         steps:
             - name: Checkout sources
               uses: actions/checkout@v2
@@ -140,8 +158,14 @@ jobs:
     linux-nightly-all-features:
         name: linux nightly (all features)
         runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                map_representation:
+                    - btreemap
+                    - hashmap
         env:
             RUST_BACKTRACE: 1
+            MAP_REPRESENTATION: ${{ matrix.map_representation }}
         steps:
             - name: Checkout sources
               uses: actions/checkout@v2
@@ -183,8 +207,14 @@ jobs:
     windows-stable-default-features:
         name: windows stable (default features)
         runs-on: windows-latest
+        strategy:
+            matrix:
+                map_representation:
+                    - btreemap
+                    - hashmap
         env:
             RUST_BACKTRACE: 1
+            MAP_REPRESENTATION: ${{ matrix.map_representation }}
             VCPKGRS_DYNAMIC: 1
         steps:
             - name: Checkout sources

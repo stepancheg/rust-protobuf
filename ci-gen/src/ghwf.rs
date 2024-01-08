@@ -121,6 +121,7 @@ pub struct Job {
     pub id: String,
     pub name: String,
     pub runs_on: Env,
+    pub strategy: Option<Strategy>,
     pub steps: Vec<Step>,
     pub timeout_minutes: Option<u64>,
     pub env: Vec<(String, String)>,
@@ -141,6 +142,9 @@ impl Into<(String, Yaml)> for Job {
             ("name", Yaml::string(self.name)),
             ("runs-on", Yaml::string(format!("{}", self.runs_on))),
         ];
+        if let Some(strategy) = self.strategy {
+            entries.push(("strategy", strategy.into()));
+        }
         if let Some(timeout_minutes) = self.timeout_minutes {
             entries.push((
                 "timeout-minutes",
@@ -152,5 +156,28 @@ impl Into<(String, Yaml)> for Job {
         }
         entries.push(("steps", Yaml::list(self.steps)));
         (self.id, Yaml::map(entries))
+    }
+}
+
+pub struct Strategy {
+    pub matrix: Matrix,
+}
+
+impl Into<Yaml> for Strategy {
+    fn into(self) -> Yaml {
+        Yaml::map(vec![("matrix".to_owned(), self.matrix)])
+    }
+}
+
+pub struct Matrix {
+    pub map_representation: Vec<String>,
+}
+
+impl Into<Yaml> for Matrix {
+    fn into(self) -> Yaml {
+        Yaml::map(vec![(
+            "map_representation".to_owned(),
+            Yaml::list(self.map_representation),
+        )])
     }
 }

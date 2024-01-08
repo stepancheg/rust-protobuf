@@ -30,7 +30,11 @@ fn gen_in_dir(dir: &str, include_dir: &str) {
                 .out_dir(out_dir)
                 .inputs(input)
                 .includes(&["../../proto", include_dir])
-                .customize(customize)
+                .customize(
+                    customize.btreemaps(
+                        env::var("MAP_REPRESENTATION").unwrap_or_default() == "btreemap",
+                    ),
+                )
                 .run_from_script()
         },
     );

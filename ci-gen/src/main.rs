@@ -16,7 +16,9 @@ use crate::actions::RustToolchain;
 use crate::cargo_sync_readme::cargo_sync_readme_job;
 use crate::ghwf::Env;
 use crate::ghwf::Job;
+use crate::ghwf::Matrix;
 use crate::ghwf::Step;
+use crate::ghwf::Strategy;
 use crate::yaml::Yaml;
 use crate::yaml::YamlWriter;
 
@@ -155,7 +157,13 @@ fn job(channel: RustToolchain, os: Os, features: Features) -> Job {
         }
     }
 
-    let mut env = vec![("RUST_BACKTRACE".to_owned(), "1".to_owned())];
+    let mut env = vec![
+        ("RUST_BACKTRACE".to_owned(), "1".to_owned()),
+        (
+            "MAP_REPRESENTATION".to_owned(),
+            "${{ matrix.map_representation }}".to_owned(),
+        ),
+    ];
     if os == WINDOWS {
         env.push(("VCPKGRS_DYNAMIC".to_owned(), "1".to_owned()));
     };
@@ -167,6 +175,11 @@ fn job(channel: RustToolchain, os: Os, features: Features) -> Job {
         runs_on: os.ghwf.to_owned(),
         steps,
         env,
+        strategy: Some(Strategy {
+            matrix: Matrix {
+                map_representation: vec!["btreemap".to_owned(), "hashmap".to_owned()],
+            },
+        }),
         ..Default::default()
     }
 }

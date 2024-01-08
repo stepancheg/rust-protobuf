@@ -33,7 +33,7 @@ pub(crate) enum RustType {
     Float(u32),
     Bool,
     Vec(Box<RustType>),
-    HashMap(Box<RustType>, Box<RustType>),
+    Map(Box<RustType>, Box<RustType>),
     String,
     // [T], not &[T]
     Slice(Box<RustType>),
@@ -70,11 +70,19 @@ impl RustType {
             RustType::Float(bits) => format!("f{}", bits),
             RustType::Bool => format!("bool"),
             RustType::Vec(ref param) => format!("::std::vec::Vec<{}>", param.to_code(customize)),
-            RustType::HashMap(ref key, ref value) => format!(
-                "::std::collections::HashMap<{}, {}>",
-                key.to_code(customize),
-                value.to_code(customize)
-            ),
+            RustType::Map(ref key, ref value) => {
+                let ty = if let Some(true) = customize.btreemaps {
+                    "::std::collections::BTreeMap"
+                } else {
+                    "::std::collections::HashMap"
+                };
+                format!(
+                    "{}<{}, {}>",
+                    ty,
+                    key.to_code(customize),
+                    value.to_code(customize)
+                )
+            }
             RustType::String => format!("::std::string::String"),
             RustType::Slice(ref param) => format!("[{}]", param.to_code(customize)),
             RustType::Str => format!("str"),
@@ -220,7 +228,14 @@ impl RustType {
             RustType::Float(..) => "0.".to_string(),
             RustType::Bool => "false".to_string(),
             RustType::Vec(..) => EXPR_VEC_NEW.to_string(),
-            RustType::HashMap(..) => "::std::collections::HashMap::new()".to_string(),
+            RustType::Map(..) => {
+                let ty = if let Some(true) = customize.btreemaps {
+                    "::std::collections::BTreeMap"
+                } else {
+                    "::std::collections::HashMap"
+                };
+                format!("{}::new()", ty)
+            }
             RustType::String => "::std::string::String::new()".to_string(),
             RustType::Bytes => "::bytes::Bytes::new()".to_string(),
             RustType::Chars => format!("{}::Chars::new()", protobuf_crate_path(customize)),
@@ -266,7 +281,7 @@ impl RustType {
             | RustType::Chars
             | RustType::String
             | RustType::MessageField(..)
-            | RustType::HashMap(..) => format!("{}.clear()", v),
+            | RustType::Map(..) => format!("{}.clear()", v),
             RustType::Bool
             | RustType::Float(..)
             | RustType::Int(..)
