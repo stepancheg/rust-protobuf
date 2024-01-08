@@ -7,3 +7,9 @@ message TestMap {
     map<string, string> map_string_string = 1;
     map<int32, bool> map_int32_bool = 2;
 }
+
+message TestMapBTreeMap {
+    map<string, string> map_string_string = 1;
+    map<int32, bool> map_int32_bool = 2;
+    option (rustproto.btreemap) = true;
+}

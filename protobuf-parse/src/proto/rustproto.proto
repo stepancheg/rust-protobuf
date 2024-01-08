@@ -21,6 +21,8 @@ extend google.protobuf.FileOptions {
     optional bool tokio_bytes_for_string_all = 17012;
     // When false, `#[non_exhaustive]` is not generated for `oneof` fields.
     optional bool oneofs_non_exhaustive_all = 17013;
+    // When true, generate `BTreeMap` instead of `HashMap` for map fields.
+    optional bool btreemap_all = 17014;
 
     // When true, will only generate codes that works with lite runtime.
     optional bool lite_runtime_all = 17035;
@@ -37,6 +39,8 @@ extend google.protobuf.MessageOptions {
     optional bool tokio_bytes_for_string = 17012;
     // When false, `#[non_exhaustive]` is not generated for `oneof` fields.
     optional bool oneofs_non_exhaustive = 17013;
+    // When true, generate `BTreeMap` instead of `HashMap` for map fields.
+    optional bool btreemap = 17014;
 }
 
 extend google.protobuf.FieldOptions {
@@ -50,4 +54,6 @@ extend google.protobuf.FieldOptions {
     optional bool tokio_bytes_for_string_field = 17012;
     // When false, `#[non_exhaustive]` is not generated for `oneof` fields.
     optional bool oneofs_non_exhaustive_field = 17013;
+    // When true, generate `BTreeMap` instead of `HashMap` for map fields.
+    optional bool btreemap_field = 17014;
 }

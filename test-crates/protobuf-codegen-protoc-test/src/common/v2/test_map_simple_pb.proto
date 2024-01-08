@@ -13,6 +13,14 @@ message TestMap {
     map<fixed64, TestMapEnum> me = 3;
 }
 
+message TestMapBTreeMap {
+    map<string, int32> m = 1;
+    map<string, TestMapEntry> mm = 2;
+    // just check it compiles
+    map<fixed64, TestMapEnum> me = 3;
+    option (rustproto.btreemap) = true;
+}
+
 message TestMapEntry {
     optional int64 v = 1;
 }

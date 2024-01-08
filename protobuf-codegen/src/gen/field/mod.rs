@@ -304,6 +304,12 @@ impl<'a> FieldGen<'a> {
             FieldKind::Repeated(ref repeated) => repeated.rust_type(reference),
             FieldKind::Map(MapField {
                 ref key, ref value, ..
+            }) if self.customize.btreemap == Some(true) => RustType::BTreeMap(
+                Box::new(key.rust_storage_elem_type(reference)),
+                Box::new(value.rust_storage_elem_type(reference)),
+            ),
+            FieldKind::Map(MapField {
+                ref key, ref value, ..
             }) => RustType::HashMap(
                 Box::new(key.rust_storage_elem_type(reference)),
                 Box::new(value.rust_storage_elem_type(reference)),

@@ -111,6 +111,8 @@ pub struct Customize {
     /// Used internally to generate protos bundled in protobuf crate
     /// like `descriptor.proto`
     pub(crate) inside_protobuf: Option<bool>,
+    /// When true, protobuf maps are represented with `std::collections::BTreeMap`
+    pub(crate) btreemap: Option<bool>,
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -178,6 +180,14 @@ impl Customize {
         self
     }
 
+    /// Use btreemaps for maps representation
+    pub fn btreemaps(self, use_btreemaps: bool) -> Self {
+        Self {
+            btreemap: Some(use_btreemaps),
+            ..self
+        }
+    }
+
     /// Update fields of self with fields defined in other customize
     pub fn update_with(&mut self, that: &Customize) {
         if let Some(v) = &that.before {
@@ -203,6 +213,9 @@ impl Customize {
         }
         if let Some(v) = that.inside_protobuf {
             self.inside_protobuf = Some(v);
+        }
+        if let Some(v) = that.btreemap {
+            self.btreemap = Some(v);
         }
     }
 
@@ -243,6 +256,8 @@ impl Customize {
                 r.lite_runtime = Some(parse_bool(v)?);
             } else if n == "gen_mod_rs" {
                 r.gen_mod_rs = Some(parse_bool(v)?);
+            } else if n == "btreemap" {
+                r.btreemap = Some(parse_bool(v)?);
             } else if n == "inside_protobuf" {
                 r.inside_protobuf = Some(parse_bool(v)?);
             } else if n == "lite" {

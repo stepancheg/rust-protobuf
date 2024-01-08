@@ -34,6 +34,7 @@ pub(crate) enum RustType {
     Bool,
     Vec(Box<RustType>),
     HashMap(Box<RustType>, Box<RustType>),
+    BTreeMap(Box<RustType>, Box<RustType>),
     String,
     // [T], not &[T]
     Slice(Box<RustType>),
@@ -72,6 +73,11 @@ impl RustType {
             RustType::Vec(ref param) => format!("::std::vec::Vec<{}>", param.to_code(customize)),
             RustType::HashMap(ref key, ref value) => format!(
                 "::std::collections::HashMap<{}, {}>",
+                key.to_code(customize),
+                value.to_code(customize)
+            ),
+            RustType::BTreeMap(ref key, ref value) => format!(
+                "::std::collections::BTreeMap<{}, {}>",
                 key.to_code(customize),
                 value.to_code(customize)
             ),
@@ -221,6 +227,7 @@ impl RustType {
             RustType::Bool => "false".to_owned(),
             RustType::Vec(..) => EXPR_VEC_NEW.to_owned(),
             RustType::HashMap(..) => "::std::collections::HashMap::new()".to_owned(),
+            RustType::BTreeMap(..) => "::std::collections::BTreeMap::new()".to_owned(),
             RustType::String => "::std::string::String::new()".to_owned(),
             RustType::Bytes => "::bytes::Bytes::new()".to_owned(),
             RustType::Chars => format!("{}::Chars::new()", protobuf_crate_path(customize)),
@@ -266,7 +273,8 @@ impl RustType {
             | RustType::Chars
             | RustType::String
             | RustType::MessageField(..)
-            | RustType::HashMap(..) => format!("{}.clear()", v),
+            | RustType::HashMap(..)
+            | RustType::BTreeMap(..) => format!("{}.clear()", v),
             RustType::Bool
             | RustType::Float(..)
             | RustType::Int(..)

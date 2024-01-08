@@ -22,6 +22,24 @@ fn test_map() {
 }
 
 #[test]
+fn test_map_btree_map() {
+    let mut map = TestMapBTreeMap::new();
+    let mut entry = TestMapEntry::new();
+    entry.set_v(10);
+
+    test_serialize_deserialize_with_dynamic("", &map);
+
+    map.mut_m().insert("two".to_owned(), 2);
+    test_serialize_deserialize_with_dynamic("0a 07 0a 03 74 77 6f 10 02", &map);
+
+    map.mut_m().insert("sixty six".to_owned(), 66);
+    // Insert map entry sub message
+    map.mut_mm().insert("map".to_owned(), entry);
+    // cannot (easily) test hex, because order is not specified
+    test_serialize_deserialize_no_hex_with_dynamic(&map);
+}
+
+#[test]
 fn test_map_negative_i32_value() {
     let mut map = TestMap::new();
     map.mut_m().insert("two".to_owned(), -2);
