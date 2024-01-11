@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.3] - Unreleased
+## [3.4] - Unreleased
 
 * [Unnecessary copy in print_to_string_internal](https://github.com/stepancheg/rust-protobuf/pull/684)
 
