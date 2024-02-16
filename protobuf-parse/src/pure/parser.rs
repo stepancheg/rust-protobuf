@@ -1,4 +1,4 @@
-use std::ops::{RangeInclusive};
+use std::ops::RangeInclusive;
 use std::str;
 
 use protobuf_support::lexer::int;
@@ -898,7 +898,6 @@ impl<'a> Parser<'a> {
             let mut reserved_nums = Vec::new();
             let mut reserved_names = Vec::new();
 
-
             self.tokenizer.next_symbol_expect_eq('{', "enum")?;
             while self.tokenizer.lookahead_if_symbol()? != Some('}') {
                 // emptyStatement
@@ -911,7 +910,7 @@ impl<'a> Parser<'a> {
                     reserved_names.extend(field_names);
                     continue;
                 }
-                
+
                 if let Some(o) = self.next_option_opt()? {
                     options.push(o);
                     continue;
@@ -925,7 +924,7 @@ impl<'a> Parser<'a> {
                 values,
                 options,
                 reserved_nums,
-                reserved_names
+                reserved_names,
             };
             Ok(Some(WithLoc {
                 loc,
@@ -1491,12 +1490,7 @@ mod test {
 
         let mess = parse_opt(msg, |p| p.next_message_opt());
         assert_eq!(
-            vec![
-                4..=4,
-                15..=15,
-                17..=20,
-                30..=30,
-            ],
+            vec![4..=4, 15..=15, 17..=20, 30..=30,],
             mess.t.reserved_nums
         );
         assert_eq!(
@@ -1515,12 +1509,7 @@ mod test {
 
         let enum_ = parse_opt(msg, |p| p.next_enum_opt());
         assert_eq!(
-            vec![
-                4..=4,
-                15..=15,
-                17..=20,
-                30..=30,
-            ],
+            vec![4..=4, 15..=15, 17..=20, 30..=30,],
             enum_.t.reserved_nums
         );
         assert_eq!(

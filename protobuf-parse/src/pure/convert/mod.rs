@@ -527,7 +527,7 @@ impl<'a> Resolver<'a> {
             .iter()
             .map(|v| self.enum_value(scope, &v))
             .collect::<Result<_, _>>()?;
-        
+
         for reserved in &input.reserved_nums {
             let mut reserved_range = EnumReservedRange::new();
             reserved_range.set_start(*reserved.start());
@@ -536,9 +536,9 @@ impl<'a> Resolver<'a> {
             reserved_range.set_end(*reserved.end());
             output.reserved_range.push(reserved_range);
         }
-        
-        output.reserved_name = input.reserved_names.clone().into();        
-        
+
+        output.reserved_name = input.reserved_names.clone().into();
+
         Ok(output)
     }
 

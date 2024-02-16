@@ -213,7 +213,6 @@ pub(crate) enum FieldOrOneOf {
     OneOf(OneOf),
 }
 
-
 /// A protobuf message
 #[derive(Debug, Clone, Default)]
 pub(crate) struct Message {
