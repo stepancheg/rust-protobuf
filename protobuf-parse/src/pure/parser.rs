@@ -1,3 +1,4 @@
+use std::ops::RangeInclusive;
 use std::str;
 
 use protobuf_support::lexer::int;
@@ -21,7 +22,6 @@ use crate::pure::model::EnumValue;
 use crate::pure::model::Enumeration;
 use crate::pure::model::Extension;
 use crate::pure::model::Field;
-use crate::pure::model::FieldNumberRange;
 use crate::pure::model::FieldOrOneOf;
 use crate::pure::model::FieldType;
 use crate::pure::model::FileDescriptor;
@@ -264,12 +264,12 @@ impl MessageBodyParseMode {
 #[derive(Default)]
 pub(crate) struct MessageBody {
     pub fields: Vec<WithLoc<FieldOrOneOf>>,
-    pub reserved_nums: Vec<FieldNumberRange>,
+    pub reserved_nums: Vec<RangeInclusive<i32>>,
     pub reserved_names: Vec<String>,
     pub messages: Vec<WithLoc<Message>>,
     pub enums: Vec<WithLoc<Enumeration>>,
     pub options: Vec<ProtobufOption>,
-    pub extension_ranges: Vec<FieldNumberRange>,
+    pub extension_ranges: Vec<RangeInclusive<i32>>,
     pub extensions: Vec<WithLoc<Extension>>,
 }
 
@@ -775,7 +775,7 @@ impl<'a> Parser<'a> {
     // Extensions
 
     // range =  intLit [ "to" ( intLit | "max" ) ]
-    fn next_range(&mut self) -> anyhow::Result<FieldNumberRange> {
+    fn next_range(&mut self) -> anyhow::Result<RangeInclusive<i32>> {
         let from = self.next_field_number()?;
         let to = if self.tokenizer.next_ident_if_eq("to")? {
             if self.tokenizer.next_ident_if_eq("max")? {
@@ -786,11 +786,11 @@ impl<'a> Parser<'a> {
         } else {
             from
         };
-        Ok(FieldNumberRange { from, to })
+        Ok(from..=to)
     }
 
     // ranges = range { "," range }
-    fn next_ranges(&mut self) -> anyhow::Result<Vec<FieldNumberRange>> {
+    fn next_ranges(&mut self) -> anyhow::Result<Vec<RangeInclusive<i32>>> {
         let mut ranges = Vec::new();
         ranges.push(self.next_range()?);
         while self.tokenizer.next_symbol_if_eq(',')? {
@@ -800,7 +800,7 @@ impl<'a> Parser<'a> {
     }
 
     // extensions = "extensions" ranges ";"
-    fn next_extensions_opt(&mut self) -> anyhow::Result<Option<Vec<FieldNumberRange>>> {
+    fn next_extensions_opt(&mut self) -> anyhow::Result<Option<Vec<RangeInclusive<i32>>>> {
         if self.tokenizer.next_ident_if_eq("extensions")? {
             Ok(Some(self.next_ranges()?))
         } else {
@@ -815,7 +815,7 @@ impl<'a> Parser<'a> {
     // fieldNames = fieldName { "," fieldName }
     fn next_reserved_opt(
         &mut self,
-    ) -> anyhow::Result<Option<(Vec<FieldNumberRange>, Vec<String>)>> {
+    ) -> anyhow::Result<Option<(Vec<RangeInclusive<i32>>, Vec<String>)>> {
         if self.tokenizer.next_ident_if_eq("reserved")? {
             let (ranges, names) = if let &Token::StrLit(..) = self.tokenizer.lookahead_some()? {
                 let mut names = Vec::new();
@@ -886,7 +886,7 @@ impl<'a> Parser<'a> {
     }
 
     // enum = "enum" enumName enumBody
-    // enumBody = "{" { option | enumField | emptyStatement } "}"
+    // enumBody = "{" { option | enumField | emptyStatement | reserved } "}"
     fn next_enum_opt(&mut self) -> anyhow::Result<Option<WithLoc<Enumeration>>> {
         let loc = self.tokenizer.lookahead_loc();
 
@@ -895,11 +895,19 @@ impl<'a> Parser<'a> {
 
             let mut values = Vec::new();
             let mut options = Vec::new();
+            let mut reserved_nums = Vec::new();
+            let mut reserved_names = Vec::new();
 
             self.tokenizer.next_symbol_expect_eq('{', "enum")?;
             while self.tokenizer.lookahead_if_symbol()? != Some('}') {
                 // emptyStatement
                 if self.tokenizer.next_symbol_if_eq(';')? {
+                    continue;
+                }
+
+                if let Some((field_nums, field_names)) = self.next_reserved_opt()? {
+                    reserved_nums.extend(field_nums);
+                    reserved_names.extend(field_names);
                     continue;
                 }
 
@@ -915,6 +923,8 @@ impl<'a> Parser<'a> {
                 name,
                 values,
                 options,
+                reserved_nums,
+                reserved_names,
             };
             Ok(Some(WithLoc {
                 loc,
@@ -1470,7 +1480,7 @@ mod test {
     }
 
     #[test]
-    fn test_reserved() {
+    fn test_reserved_in_message() {
         let msg = r#"message Sample {
        reserved 4, 15, 17 to 20, 30;
        reserved "foo", "bar";
@@ -1480,12 +1490,7 @@ mod test {
 
         let mess = parse_opt(msg, |p| p.next_message_opt());
         assert_eq!(
-            vec![
-                FieldNumberRange { from: 4, to: 4 },
-                FieldNumberRange { from: 15, to: 15 },
-                FieldNumberRange { from: 17, to: 20 },
-                FieldNumberRange { from: 30, to: 30 }
-            ],
+            vec![4..=4, 15..=15, 17..=20, 30..=30,],
             mess.t.reserved_nums
         );
         assert_eq!(
@@ -1493,6 +1498,24 @@ mod test {
             mess.t.reserved_names
         );
         assert_eq!(2, mess.t.fields.len());
+    }
+
+    #[test]
+    fn test_reserved_in_enum() {
+        let msg = r#"enum Sample {
+       reserved 4, 15, 17 to 20, 30;
+       reserved "foo", "bar";
+    }"#;
+
+        let enum_ = parse_opt(msg, |p| p.next_enum_opt());
+        assert_eq!(
+            vec![4..=4, 15..=15, 17..=20, 30..=30,],
+            enum_.t.reserved_nums
+        );
+        assert_eq!(
+            vec!["foo".to_string(), "bar".to_string()],
+            enum_.t.reserved_names
+        );
     }
 
     #[test]
