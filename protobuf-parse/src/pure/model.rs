@@ -6,6 +6,7 @@
 use std::fmt;
 use std::fmt::Write;
 use std::ops::Deref;
+use std::ops::RangeInclusive;
 
 use indexmap::IndexMap;
 use protobuf::reflect::ReflectValueBox;
@@ -213,15 +214,6 @@ pub(crate) enum FieldOrOneOf {
     OneOf(OneOf),
 }
 
-/// Extension range
-#[derive(Default, Debug, Eq, PartialEq, Copy, Clone)]
-pub(crate) struct FieldNumberRange {
-    /// First number
-    pub from: i32,
-    /// Inclusive
-    pub to: i32,
-}
-
 /// A protobuf message
 #[derive(Debug, Clone, Default)]
 pub(crate) struct Message {
@@ -230,9 +222,7 @@ pub(crate) struct Message {
     /// Message fields and oneofs
     pub fields: Vec<WithLoc<FieldOrOneOf>>,
     /// Message reserved numbers
-    ///
-    /// TODO: use RangeInclusive once stable
-    pub reserved_nums: Vec<FieldNumberRange>,
+    pub reserved_nums: Vec<RangeInclusive<i32>>,
     /// Message reserved names
     pub reserved_names: Vec<String>,
     /// Nested messages
@@ -242,7 +232,7 @@ pub(crate) struct Message {
     /// Non-builtin options
     pub options: Vec<ProtobufOption>,
     /// Extension field numbers
-    pub extension_ranges: Vec<FieldNumberRange>,
+    pub extension_ranges: Vec<RangeInclusive<i32>>,
     /// Extensions
     pub extensions: Vec<WithLoc<Extension>>,
 }
@@ -318,6 +308,10 @@ pub(crate) struct Enumeration {
     pub values: Vec<EnumValue>,
     /// enum options
     pub options: Vec<ProtobufOption>,
+    /// enum reserved numbers
+    pub reserved_nums: Vec<RangeInclusive<i32>>,
+    /// enum reserved names
+    pub reserved_names: Vec<String>,
 }
 
 /// A OneOf

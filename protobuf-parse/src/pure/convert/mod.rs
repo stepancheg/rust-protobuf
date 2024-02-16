@@ -5,6 +5,7 @@ mod type_resolver;
 
 use protobuf;
 use protobuf::descriptor::descriptor_proto::ReservedRange;
+use protobuf::descriptor::enum_descriptor_proto::EnumReservedRange;
 use protobuf::descriptor::field_descriptor_proto;
 use protobuf::descriptor::field_descriptor_proto::Type;
 use protobuf::descriptor::FieldDescriptorProto;
@@ -296,8 +297,8 @@ impl<'a> Resolver<'a> {
 
         for ext in &input.extension_ranges {
             let mut extension_range = protobuf::descriptor::descriptor_proto::ExtensionRange::new();
-            extension_range.set_start(ext.from);
-            extension_range.set_end(ext.to + 1);
+            extension_range.set_start(*ext.start());
+            extension_range.set_end(*ext.end() + 1);
             output.extension_range.push(extension_range);
         }
         for ext in &input.extensions {
@@ -313,8 +314,8 @@ impl<'a> Resolver<'a> {
 
         for reserved in &input.reserved_nums {
             let mut reserved_range = ReservedRange::new();
-            reserved_range.set_start(reserved.from);
-            reserved_range.set_end(reserved.to + 1);
+            reserved_range.set_start(*reserved.start());
+            reserved_range.set_end(*reserved.end() + 1);
             output.reserved_range.push(reserved_range);
         }
         output.reserved_name = input.reserved_names.clone().into();
@@ -526,6 +527,18 @@ impl<'a> Resolver<'a> {
             .iter()
             .map(|v| self.enum_value(scope, &v))
             .collect::<Result<_, _>>()?;
+
+        for reserved in &input.reserved_nums {
+            let mut reserved_range = EnumReservedRange::new();
+            reserved_range.set_start(*reserved.start());
+            // EnumReservedRange is inclusive, not like ExtensionRange and
+            // ReservedRange, which are exclusive.
+            reserved_range.set_end(*reserved.end());
+            output.reserved_range.push(reserved_range);
+        }
+
+        output.reserved_name = input.reserved_names.clone().into();
+
         Ok(output)
     }
 
