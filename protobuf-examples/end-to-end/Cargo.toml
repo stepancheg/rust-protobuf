@@ -1,0 +1,13 @@
+[package]
+name = "protobuf-examples-end-to-end"
+version = "0.0.1"
+authors = ["Jeff Garzik"]
+edition = "2021"
+publish = false
+
+[dependencies]
+protobuf = { path = "../../protobuf" }
+
+[build-dependencies]
+protobuf = { path = "../../protobuf" }
+protobuf-codegen = { path = "../../protobuf-codegen" }

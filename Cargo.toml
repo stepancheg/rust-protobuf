@@ -8,6 +8,7 @@ members = [
     "protobuf-codegen",
     "protobuf-examples/customize-serde",
     "protobuf-examples/dynamic",
+    "protobuf-examples/end-to-end",
     "protobuf-examples/pure-vs-protoc",
     "protobuf-examples/vs-prost",
     "protobuf-examples/issue-614",
