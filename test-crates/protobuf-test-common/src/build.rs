@@ -8,7 +8,6 @@ use std::io::Write;
 use std::path::Path;
 
 use anyhow::Context;
-use glob;
 use log::debug;
 pub use protobuf_codegen::Customize;
 
