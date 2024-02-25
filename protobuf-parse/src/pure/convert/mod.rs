@@ -3,7 +3,6 @@
 mod option_resolver;
 mod type_resolver;
 
-use protobuf;
 use protobuf::descriptor::descriptor_proto::ReservedRange;
 use protobuf::descriptor::enum_descriptor_proto::EnumReservedRange;
 use protobuf::descriptor::field_descriptor_proto;
