@@ -3,6 +3,7 @@
 ## [3.4] - Unreleased
 
 * [Unnecessary copy in print_to_string_internal](https://github.com/stepancheg/rust-protobuf/pull/684)
+* [Ignore error of `flush` in `Drop` of `CodedOutputStream`](https://github.com/stepancheg/rust-protobuf/issues/714)
 
 ## [3.3.0] - 2023-09-30
 
