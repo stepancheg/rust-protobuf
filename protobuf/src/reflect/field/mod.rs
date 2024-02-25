@@ -563,12 +563,7 @@ pub(crate) enum FieldDescriptorImplRef<'a> {
 
 #[cfg(test)]
 mod test {
-    use std::collections::HashMap;
-
     use crate::descriptor::DescriptorProto;
-    use crate::reflect::ReflectValueBox;
-    use crate::well_known_types::struct_::Struct;
-    use crate::well_known_types::struct_::Value;
     use crate::MessageFull;
 
     #[test]
