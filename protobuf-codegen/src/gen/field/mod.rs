@@ -198,12 +198,12 @@ impl<'a> FieldGen<'a> {
                     | Type::TYPE_SFIXED32
                     | Type::TYPE_SFIXED64
                     | Type::TYPE_SINT32
-                    | Type::TYPE_SINT64
-                    | Type::TYPE_ENUM => true,
+                    | Type::TYPE_SINT64 => true,
                     Type::TYPE_STRING
                     | Type::TYPE_GROUP
                     | Type::TYPE_MESSAGE
-                    | Type::TYPE_BYTES => false,
+                    | Type::TYPE_BYTES
+                    | Type::TYPE_ENUM => false,
                 };
                 let packed = field
                     .field
