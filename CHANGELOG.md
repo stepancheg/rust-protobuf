@@ -6,6 +6,7 @@
 * [Ignore error of `flush` in `Drop` of `CodedOutputStream`](https://github.com/stepancheg/rust-protobuf/issues/714)
 * [Faster `encoded_varint64_len`](https://github.com/stepancheg/rust-protobuf/pull/709)
 * [`reserved` keyword in enums](https://github.com/stepancheg/rust-protobuf/pull/712)
+* [repeated primitives are packed by default in proto3](https://github.com/stepancheg/rust-protobuf/pull/707)
 
 ## [3.3.0] - 2023-09-30
 
