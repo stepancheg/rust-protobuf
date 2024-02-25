@@ -446,8 +446,6 @@ mod test_bytes {
 #[cfg(test)]
 mod test {
     use std::io;
-    use std::io::BufRead;
-    use std::io::Read;
 
     use super::*;
 
