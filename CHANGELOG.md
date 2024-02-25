@@ -6,6 +6,7 @@
 * [Ignore error of `flush` in `Drop` of `CodedOutputStream`](https://github.com/stepancheg/rust-protobuf/issues/714)
 * [Faster `encoded_varint64_len`](https://github.com/stepancheg/rust-protobuf/pull/709)
 * [`reserved` keyword in enums](https://github.com/stepancheg/rust-protobuf/pull/712)
+* [Set streaming options in pure parser](https://github.com/stepancheg/rust-protobuf/pull/646)
 
 ## [3.3.0] - 2023-09-30
 
