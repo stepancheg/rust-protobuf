@@ -1,92 +1,59 @@
 use std::mem::MaybeUninit;
 
+use crate::varint::MAX_VARINT32_ENCODED_LEN;
 use crate::varint::MAX_VARINT_ENCODED_LEN;
+
+struct VarInt64Iterator {
+    num: u64,
+    cont: bool,
+}
+
+impl VarInt64Iterator {
+    fn new(num: u64) -> Self {
+        Self { num, cont: true }
+    }
+}
+
+impl Iterator for VarInt64Iterator {
+    type Item = u8;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.cont {
+            self.cont = (self.num & !0x7F) != 0;
+            let num = self.num;
+            let val = if self.cont { (num & 0x7F) | 0x80 } else { num } as u8;
+            self.num >>= 7;
+            Some(val)
+        } else {
+            None
+        }
+    }
+}
+
+fn encode_varint(value: u64, buf: &mut [MaybeUninit<u8>]) -> usize {
+    let iter = VarInt64Iterator::new(value);
+    let mut bytes_written = 0;
+    for (val, slot) in iter.zip(buf.iter_mut()) {
+        slot.write(val);
+        bytes_written += 1;
+    }
+    bytes_written
+}
 
 /// Encode u64 as varint.
 /// Panics if buffer length is less than 10.
 #[inline]
-pub(crate) fn encode_varint64(mut value: u64, buf: &mut [MaybeUninit<u8>]) -> usize {
+pub(crate) fn encode_varint64(value: u64, buf: &mut [MaybeUninit<u8>]) -> usize {
     assert!(buf.len() >= MAX_VARINT_ENCODED_LEN);
-
-    fn iter(value: &mut u64, byte: &mut MaybeUninit<u8>) -> bool {
-        if (*value & !0x7F) > 0 {
-            byte.write(((*value & 0x7F) | 0x80) as u8);
-            *value >>= 7;
-            true
-        } else {
-            byte.write(*value as u8);
-            false
-        }
-    }
-
-    // Explicitly unroll loop to avoid either
-    // unsafe code or bound checking when writing to `buf`
-
-    if !iter(&mut value, &mut buf[0]) {
-        return 1;
-    };
-    if !iter(&mut value, &mut buf[1]) {
-        return 2;
-    };
-    if !iter(&mut value, &mut buf[2]) {
-        return 3;
-    };
-    if !iter(&mut value, &mut buf[3]) {
-        return 4;
-    };
-    if !iter(&mut value, &mut buf[4]) {
-        return 5;
-    };
-    if !iter(&mut value, &mut buf[5]) {
-        return 6;
-    };
-    if !iter(&mut value, &mut buf[6]) {
-        return 7;
-    };
-    if !iter(&mut value, &mut buf[7]) {
-        return 8;
-    };
-    if !iter(&mut value, &mut buf[8]) {
-        return 9;
-    };
-    buf[9].write(value as u8);
-    10
+    encode_varint(value, buf)
 }
 
 /// Encode u32 value as varint.
 /// Panics if buffer length is less than 5.
 #[inline]
-pub(crate) fn encode_varint32(mut value: u32, buf: &mut [MaybeUninit<u8>]) -> usize {
-    assert!(buf.len() >= 5);
-
-    fn iter(value: &mut u32, byte: &mut MaybeUninit<u8>) -> bool {
-        if (*value & !0x7F) > 0 {
-            byte.write(((*value & 0x7F) | 0x80) as u8);
-            *value >>= 7;
-            true
-        } else {
-            byte.write(*value as u8);
-            false
-        }
-    }
-
-    // Explicitly unroll loop to avoid either
-    // unsafe code or bound checking when writing to `buf`
-
-    if !iter(&mut value, &mut buf[0]) {
-        return 1;
-    };
-    if !iter(&mut value, &mut buf[1]) {
-        return 2;
-    };
-    if !iter(&mut value, &mut buf[2]) {
-        return 3;
-    };
-    if !iter(&mut value, &mut buf[3]) {
-        return 4;
-    };
-    buf[4].write(value as u8);
-    5
+pub(crate) fn encode_varint32(value: u32, buf: &mut [MaybeUninit<u8>]) -> usize {
+    assert!(buf.len() >= MAX_VARINT32_ENCODED_LEN);
+    encode_varint(value as u64, buf)
 }
 
 /// Encoded size of u64 value.
