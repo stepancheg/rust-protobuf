@@ -1,4 +1,3 @@
-use std::default::Default;
 use std::hash::Hash;
 use std::ops::Deref;
 use std::option;

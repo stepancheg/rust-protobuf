@@ -13,7 +13,6 @@ use protobuf::text_format::merge_from_str;
 use protobuf::text_format::print_to_string;
 use protobuf::Message;
 use protobuf::MessageDyn;
-use tempfile;
 
 pub fn parse_using_rust_protobuf(
     text: &str,

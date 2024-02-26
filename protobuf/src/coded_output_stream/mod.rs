@@ -1010,8 +1010,9 @@ impl<'a> Write for CodedOutputStream<'a> {
 
 impl<'a> Drop for CodedOutputStream<'a> {
     fn drop(&mut self) {
-        // This may panic
-        CodedOutputStream::flush(self).expect("failed to flush");
+        // User must call `flush` to guarantee that the data is written.
+        // Rust should have a lint to enforce `flush` call before drop.
+        let _ignore = CodedOutputStream::flush(self);
     }
 }
 
