@@ -4,6 +4,8 @@ use protobuf::descriptor::*;
 use protobuf::reflect::FileDescriptor;
 use protobuf::reflect::MessageDescriptor;
 use protobuf_parse::snake_case;
+use tracing::event;
+use tracing::Level;
 
 use crate::customize::ctx::CustomizeElemCtx;
 use crate::customize::ctx::SpecialFieldPseudoDescriptor;
@@ -657,6 +659,14 @@ impl<'a> MessageGen<'a> {
     }
 
     pub fn write(&self, w: &mut CodeWriter) -> anyhow::Result<()> {
+        event!(
+            Level::INFO,
+            proto_file.name = self.file_descriptor.proto().name(),
+            proto_file.package = self.file_descriptor.proto().package(),
+            message.name = self.message_descriptor.proto().name(),
+            "Generating message"
+        );
+
         w.all_documentation(self.info, self.path);
         self.write_struct(w);
 

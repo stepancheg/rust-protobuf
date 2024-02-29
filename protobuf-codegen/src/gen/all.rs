@@ -1,9 +1,10 @@
-use std::collections::HashMap;
-
 use protobuf::descriptor::FileDescriptorProto;
 use protobuf::reflect::FileDescriptor;
 use protobuf_parse::ProtoPath;
 use protobuf_parse::ProtoPathBuf;
+use std::collections::HashMap;
+use tracing::instrument;
+use tracing::Level;
 
 use crate::compiler_plugin;
 use crate::customize::ctx::CustomizeElemCtx;
@@ -14,6 +15,7 @@ use crate::gen::scope::RootScope;
 use crate::gen::well_known_types::gen_well_known_types_mod;
 use crate::Customize;
 
+#[instrument(level = Level::INFO, skip_all)]
 pub(crate) fn gen_all(
     file_descriptors: &[FileDescriptorProto],
     parser: &str,
