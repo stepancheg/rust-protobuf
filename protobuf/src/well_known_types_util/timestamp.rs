@@ -23,8 +23,8 @@ impl Timestamp {
 /// # Panics
 ///
 /// This function panics if given `SystemTime` is outside of `Timestamp` range.
-impl From<SystemTime> for Timestamp {
-    fn from(time: SystemTime) -> Self {
+impl From<&SystemTime> for Timestamp {
+    fn from(time: &SystemTime) -> Self {
         match time.duration_since(SystemTime::UNIX_EPOCH) {
             Ok(since_epoch) => Timestamp {
                 seconds: since_epoch.as_secs() as i64,
@@ -44,6 +44,17 @@ impl From<SystemTime> for Timestamp {
     }
 }
 
+/// Convert from [`Timestamp`].
+///
+/// # Panics
+///
+/// This function panics if given `SystemTime` is outside of `Timestamp` range.
+impl From<SystemTime> for Timestamp {
+    fn from(time: SystemTime) -> Self {
+        Self::from(&time)
+    }
+}
+
 /// Convert into [`SystemTime`].
 ///
 /// The conversion could be lossy if `SystemTime` precision is smaller than nanoseconds.
@@ -53,17 +64,32 @@ impl From<SystemTime> for Timestamp {
 /// This function panics:
 /// * if given `Timestamp` is outside of `SystemTime` range
 /// * if `Timestamp` is malformed
-impl Into<SystemTime> for Timestamp {
-    fn into(self) -> SystemTime {
-        if self.seconds >= 0 {
+impl From<&Timestamp> for SystemTime {
+    fn from(time: &Timestamp) -> SystemTime {
+        if time.seconds >= 0 {
             let duration =
-                Duration::from_secs(self.seconds as u64) + Duration::from_nanos(self.nanos as u64);
+                Duration::from_secs(time.seconds as u64) + Duration::from_nanos(time.nanos as u64);
             SystemTime::UNIX_EPOCH + duration
         } else {
             let duration =
-                Duration::from_secs(-self.seconds as u64) - Duration::from_nanos(self.nanos as u64);
+                Duration::from_secs(-time.seconds as u64) - Duration::from_nanos(time.nanos as u64);
             SystemTime::UNIX_EPOCH - duration
         }
+    }
+}
+
+/// Convert into [`SystemTime`].
+///
+/// The conversion could be lossy if `SystemTime` precision is smaller than nanoseconds.
+///
+/// # Panics
+///
+/// This function panics:
+/// * if given `Timestamp` is outside of `SystemTime` range
+/// * if `Timestamp` is malformed
+impl From<Timestamp> for SystemTime {
+    fn from(time: Timestamp) -> SystemTime {
+        SystemTime::from(&time)
     }
 }
 
