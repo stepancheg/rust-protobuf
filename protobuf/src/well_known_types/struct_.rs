@@ -55,7 +55,7 @@ impl Struct {
     fn generated_message_descriptor_data() -> crate::reflect::GeneratedMessageDescriptorData {
         let mut fields = ::std::vec::Vec::with_capacity(1);
         let mut oneofs = ::std::vec::Vec::with_capacity(0);
-        fields.push(crate::reflect::rt::v2::make_map_simpler_accessor::<_, _, _>(
+        fields.push(crate::reflect::rt::v2::make_map_simpler_accessor::<_, _>(
             "fields",
             |m: &Struct| { &m.fields },
             |m: &mut Struct| { &mut m.fields },

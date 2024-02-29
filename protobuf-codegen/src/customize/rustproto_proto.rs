@@ -15,6 +15,7 @@ pub(crate) fn customize_from_rustproto_for_message(source: &MessageOptions) -> C
     let lite_runtime = None;
     let gen_mod_rs = None;
     let inside_protobuf = None;
+    let btreemaps = None;
     Customize {
         before,
         generate_accessors,
@@ -24,6 +25,7 @@ pub(crate) fn customize_from_rustproto_for_message(source: &MessageOptions) -> C
         lite_runtime,
         gen_mod_rs,
         inside_protobuf,
+        btreemaps,
     }
 }
 
@@ -40,6 +42,7 @@ pub(crate) fn customize_from_rustproto_for_field(source: &FieldOptions) -> Custo
     let lite_runtime = None;
     let gen_mod_rs = None;
     let inside_protobuf = None;
+    let btreemaps = None;
     Customize {
         before,
         generate_accessors,
@@ -49,6 +52,7 @@ pub(crate) fn customize_from_rustproto_for_field(source: &FieldOptions) -> Custo
         lite_runtime,
         gen_mod_rs,
         inside_protobuf,
+        btreemaps,
     }
 }
 
@@ -61,6 +65,7 @@ pub(crate) fn customize_from_rustproto_for_file(source: &FileOptions) -> Customi
     let lite_runtime = rustproto::exts::lite_runtime_all.get(source);
     let gen_mod_rs = None;
     let inside_protobuf = None;
+    let btreemaps = None;
     Customize {
         before,
         generate_accessors,
@@ -70,5 +75,6 @@ pub(crate) fn customize_from_rustproto_for_file(source: &FileOptions) -> Customi
         lite_runtime,
         inside_protobuf,
         gen_mod_rs,
+        btreemaps,
     }
 }

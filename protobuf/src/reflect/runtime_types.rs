@@ -1,6 +1,6 @@
 //! Implementations of `RuntimeType` for all types.
 
-use std::collections::HashMap;
+use std::collections::{BTreeMap, HashMap};
 use std::fmt;
 use std::marker;
 
@@ -118,13 +118,29 @@ pub trait RuntimeTypeWithDeref: RuntimeTypeTrait {
     fn deref_as_ref(value: &Self::DerefTarget) -> ReflectValueRef;
 }
 
-/// Types which can be hashmap keys.
-pub trait RuntimeTypeHashable: RuntimeTypeTrait {
+/// Types which can be map keys.
+pub trait RuntimeTypeMapKey: RuntimeTypeTrait {
+    /// Try to extract the value from the given ref
+    fn try_deref_key(key: ReflectValueRef) -> Option<Self::Value>;
     /// Query hash map with a given key.
-    fn hash_map_get<'a, V>(map: &'a HashMap<Self::Value, V>, key: ReflectValueRef)
-        -> Option<&'a V>;
-}
+    fn hash_map_get<'a, V>(map: &'a HashMap<Self::Value, V>, key: ReflectValueRef) -> Option<&'a V>
+    where
+        Self::Value: std::hash::Hash + Eq,
+    {
+        Self::try_deref_key(key).and_then(|key| map.get(&key))
+    }
 
+    /// Query btree map with a given key.
+    fn btree_map_get<'a, V>(
+        map: &'a BTreeMap<Self::Value, V>,
+        key: ReflectValueRef,
+    ) -> Option<&'a V>
+    where
+        Self::Value: Ord,
+    {
+        Self::try_deref_key(key).and_then(|key| map.get(&key))
+    }
+}
 /// Implementation for `f32`
 #[derive(Debug, Copy, Clone)]
 pub struct RuntimeTypeF32;
@@ -311,10 +327,10 @@ impl RuntimeTypeTrait for RuntimeTypeI32 {
         }
     }
 }
-impl RuntimeTypeHashable for RuntimeTypeI32 {
-    fn hash_map_get<'a, V>(map: &'a HashMap<i32, V>, key: ReflectValueRef) -> Option<&'a V> {
+impl RuntimeTypeMapKey for RuntimeTypeI32 {
+    fn try_deref_key(key: ReflectValueRef) -> Option<Self::Value> {
         match key {
-            ReflectValueRef::I32(i) => map.get(&i),
+            ReflectValueRef::I32(i) => Some(i),
             _ => None,
         }
     }
@@ -370,10 +386,10 @@ impl RuntimeTypeTrait for RuntimeTypeI64 {
         }
     }
 }
-impl RuntimeTypeHashable for RuntimeTypeI64 {
-    fn hash_map_get<'a, V>(map: &'a HashMap<i64, V>, key: ReflectValueRef) -> Option<&'a V> {
+impl RuntimeTypeMapKey for RuntimeTypeI64 {
+    fn try_deref_key(key: ReflectValueRef) -> Option<Self::Value> {
         match key {
-            ReflectValueRef::I64(i) => map.get(&i),
+            ReflectValueRef::I64(i) => Some(i),
             _ => None,
         }
     }
@@ -428,10 +444,10 @@ impl RuntimeTypeTrait for RuntimeTypeU32 {
         }
     }
 }
-impl RuntimeTypeHashable for RuntimeTypeU32 {
-    fn hash_map_get<'a, V>(map: &'a HashMap<u32, V>, key: ReflectValueRef) -> Option<&'a V> {
+impl RuntimeTypeMapKey for RuntimeTypeU32 {
+    fn try_deref_key(key: ReflectValueRef) -> Option<Self::Value> {
         match key {
-            ReflectValueRef::U32(i) => map.get(&i),
+            ReflectValueRef::U32(i) => Some(i),
             _ => None,
         }
     }
@@ -486,10 +502,10 @@ impl RuntimeTypeTrait for RuntimeTypeU64 {
         }
     }
 }
-impl RuntimeTypeHashable for RuntimeTypeU64 {
-    fn hash_map_get<'a, V>(map: &'a HashMap<u64, V>, key: ReflectValueRef) -> Option<&'a V> {
+impl RuntimeTypeMapKey for RuntimeTypeU64 {
+    fn try_deref_key(key: ReflectValueRef) -> Option<Self::Value> {
         match key {
-            ReflectValueRef::U64(i) => map.get(&i),
+            ReflectValueRef::U64(u) => Some(u),
             _ => None,
         }
     }
@@ -541,10 +557,10 @@ impl RuntimeTypeTrait for RuntimeTypeBool {
         ProtobufTypeBool::get_from_unknown(unknown)
     }
 }
-impl RuntimeTypeHashable for RuntimeTypeBool {
-    fn hash_map_get<'a, V>(map: &'a HashMap<bool, V>, key: ReflectValueRef) -> Option<&'a V> {
+impl RuntimeTypeMapKey for RuntimeTypeBool {
+    fn try_deref_key(key: ReflectValueRef) -> Option<Self::Value> {
         match key {
-            ReflectValueRef::Bool(i) => map.get(&i),
+            ReflectValueRef::Bool(b) => Some(b),
             _ => None,
         }
     }
@@ -599,10 +615,31 @@ impl RuntimeTypeWithDeref for RuntimeTypeString {
         ReflectValueRef::String(value)
     }
 }
-impl RuntimeTypeHashable for RuntimeTypeString {
-    fn hash_map_get<'a, V>(map: &'a HashMap<String, V>, key: ReflectValueRef) -> Option<&'a V> {
+impl RuntimeTypeMapKey for RuntimeTypeString {
+    fn try_deref_key(_key: ReflectValueRef) -> Option<Self::Value> {
+        unimplemented!()
+    }
+
+    fn hash_map_get<'a, V>(map: &'a HashMap<Self::Value, V>, key: ReflectValueRef) -> Option<&'a V>
+    where
+        Self::Value: std::hash::Hash + Eq,
+    {
         match key {
-            ReflectValueRef::String(s) => map.get(*&s),
+            ReflectValueRef::String(s) => map.get(s),
+            _ => None,
+        }
+    }
+
+    /// Query btree map with a given key.
+    fn btree_map_get<'a, V>(
+        map: &'a BTreeMap<Self::Value, V>,
+        key: ReflectValueRef,
+    ) -> Option<&'a V>
+    where
+        Self::Value: Ord,
+    {
+        match key {
+            ReflectValueRef::String(s) => map.get(s),
             _ => None,
         }
     }
@@ -763,8 +800,17 @@ impl RuntimeTypeWithDeref for RuntimeTypeTokioChars {
     }
 }
 #[cfg(feature = "bytes")]
-impl RuntimeTypeHashable for RuntimeTypeTokioChars {
+impl RuntimeTypeMapKey for RuntimeTypeTokioChars {
+    fn try_deref_key(_key: ReflectValueRef) -> Option<Self::Value> {
+        unimplemented!()
+    }
     fn hash_map_get<'a, V>(map: &'a HashMap<Chars, V>, key: ReflectValueRef) -> Option<&'a V> {
+        match key {
+            ReflectValueRef::String(s) => map.get(&*s),
+            _ => None,
+        }
+    }
+    fn btree_map_get<'a, V>(map: &'a BTreeMap<Chars, V>, key: ReflectValueRef) -> Option<&'a V> {
         match key {
             ReflectValueRef::String(s) => map.get(&*s),
             _ => None,

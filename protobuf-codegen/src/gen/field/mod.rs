@@ -276,7 +276,7 @@ impl<'a> FieldGen<'a> {
             FieldKind::Repeated(ref repeated) => repeated.rust_type(reference),
             FieldKind::Map(MapField {
                 ref key, ref value, ..
-            }) => RustType::HashMap(
+            }) => RustType::Map(
                 Box::new(key.rust_storage_elem_type(reference)),
                 Box::new(value.rust_storage_elem_type(reference)),
             ),
