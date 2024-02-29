@@ -11,7 +11,7 @@ pub fn protoc_gen_rust_main() {
         let customize = Customize::parse_from_parameter(r.parameter).expect("parse options");
         gen_all(
             r.file_descriptors,
-            "protoc --rust-out=...",
+            "protoc --rust_out=...",
             r.files_to_generate,
             &customize,
             &CustomizeCallbackDefault,
