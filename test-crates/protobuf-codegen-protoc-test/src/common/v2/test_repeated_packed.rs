@@ -1,3 +1,5 @@
+use protobuf::reflect::Syntax;
+use protobuf::MessageFull;
 use protobuf_test_common::*;
 
 use super::test_repeated_packed_pb::*;
@@ -82,4 +84,17 @@ fn test_issue_281() {
     let mut test = TestIssue281::new();
     test.values = (0..100).collect();
     test_serialize_deserialize_no_hex(&test);
+}
+
+#[test]
+fn test_write_packed_default() {
+    let mut test = TestPackedDefault::new();
+    test.varints = vec![0, 1, 2, 3, 4, 5];
+
+    // Proto3 packs primitives by default, proto2 does not.
+    let expected_hex = match TestPackedDefault::descriptor().file_descriptor().syntax() {
+        Syntax::Proto2 => "08 00 08 01 08 02 08 03 08 04 08 05",
+        Syntax::Proto3 => "0a 06 00 01 02 03 04 05",
+    };
+    test_serialize_deserialize(expected_hex, &test);
 }
