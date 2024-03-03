@@ -13,3 +13,7 @@ message TestUnpacked {
 message TestIssue281 {
     repeated fixed32 values = 1 [packed=true];
 }
+
+message TestPackedDefault {
+    repeated uint32 varints = 1;
+}
