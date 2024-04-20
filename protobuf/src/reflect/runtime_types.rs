@@ -3,6 +3,7 @@
 use std::collections::HashMap;
 use std::fmt;
 use std::marker;
+use std::ops::Deref;
 
 #[cfg(feature = "bytes")]
 use bytes::Bytes;
@@ -738,7 +739,7 @@ impl RuntimeTypeTrait for RuntimeTypeTokioChars {
     }
 
     fn as_ref(value: &Chars) -> ReflectValueRef {
-        ReflectValueRef::String(value.as_ref())
+        ReflectValueRef::String(<Chars as Deref>::deref(value))
     }
 
     fn is_non_zero(value: &Chars) -> bool {
