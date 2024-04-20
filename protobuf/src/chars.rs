@@ -4,6 +4,7 @@ use std::borrow::Borrow;
 use std::fmt;
 use std::ops::Deref;
 use std::str;
+use std::convert::AsRef;
 
 use bytes::Bytes;
 
@@ -78,6 +79,12 @@ impl Deref for Chars {
 impl Borrow<str> for Chars {
     fn borrow(&self) -> &str {
         &*self
+    }
+}
+
+impl AsRef<Bytes> for Chars {
+    fn borrow(&self) -> &Bytes {
+        &self.0
     }
 }
 
