@@ -83,7 +83,7 @@ impl Borrow<str> for Chars {
 }
 
 impl AsRef<Bytes> for Chars {
-    fn borrow(&self) -> &Bytes {
+    fn as_ref(&self) -> &Bytes {
         &self.0
     }
 }
