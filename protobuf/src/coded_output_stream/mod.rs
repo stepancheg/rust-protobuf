@@ -244,6 +244,7 @@ impl<'a> CodedOutputStream<'a> {
             }
             OutputTarget::Write(ref mut write, _) => {
                 write.write_all(bytes)?;
+                self.pos_of_buffer_start += bytes.len() as u64;
             }
             OutputTarget::Vec(ref mut vec) => {
                 assert!(self.buffer.pos_within_buf() == 0);
@@ -1222,5 +1223,16 @@ mod test {
             stream.write_raw_bytes(&[0, 1, 2]).unwrap();
             assert_eq!((i + 1) * 3, stream.total_bytes_written());
         }
+    }
+
+    #[test]
+    fn total_bytes_written_updated_when_writing_lots_of_bytes() {
+        let data = "ff".repeat(10000);
+        let bytes = decode_hex(&data);
+        test_write(&data, |os| {
+            os.write_raw_bytes(&bytes)?;
+            assert_eq!(os.total_bytes_written(), 10000);
+            Ok(())
+        });
     }
 }
