@@ -12,6 +12,7 @@ pub(crate) fn customize_from_rustproto_for_message(source: &MessageOptions) -> C
     let generate_getter = rustproto::exts::generate_getter.get(source);
     let tokio_bytes = rustproto::exts::tokio_bytes.get(source);
     let tokio_bytes_for_string = rustproto::exts::tokio_bytes_for_string.get(source);
+    let oneofs_non_exhaustive = rustproto::exts::oneofs_non_exhaustive.get(source);
     let lite_runtime = None;
     let gen_mod_rs = None;
     let inside_protobuf = None;
@@ -21,6 +22,7 @@ pub(crate) fn customize_from_rustproto_for_message(source: &MessageOptions) -> C
         generate_getter,
         tokio_bytes,
         tokio_bytes_for_string,
+        oneofs_non_exhaustive,
         lite_runtime,
         gen_mod_rs,
         inside_protobuf,
@@ -37,6 +39,7 @@ pub(crate) fn customize_from_rustproto_for_field(source: &FieldOptions) -> Custo
     let generate_getter = rustproto::exts::generate_getter_field.get(source);
     let tokio_bytes = rustproto::exts::tokio_bytes_field.get(source);
     let tokio_bytes_for_string = rustproto::exts::tokio_bytes_for_string_field.get(source);
+    let oneofs_non_exhaustive = rustproto::exts::oneofs_non_exhaustive_field.get(source);
     let lite_runtime = None;
     let gen_mod_rs = None;
     let inside_protobuf = None;
@@ -46,6 +49,7 @@ pub(crate) fn customize_from_rustproto_for_field(source: &FieldOptions) -> Custo
         generate_getter,
         tokio_bytes,
         tokio_bytes_for_string,
+        oneofs_non_exhaustive,
         lite_runtime,
         gen_mod_rs,
         inside_protobuf,
@@ -58,6 +62,7 @@ pub(crate) fn customize_from_rustproto_for_file(source: &FileOptions) -> Customi
     let generate_getter = rustproto::exts::generate_getter_all.get(source);
     let tokio_bytes = rustproto::exts::tokio_bytes_all.get(source);
     let tokio_bytes_for_string = rustproto::exts::tokio_bytes_for_string_all.get(source);
+    let oneofs_non_exhaustive = rustproto::exts::oneofs_non_exhaustive_all.get(source);
     let lite_runtime = rustproto::exts::lite_runtime_all.get(source);
     let gen_mod_rs = None;
     let inside_protobuf = None;
@@ -67,6 +72,7 @@ pub(crate) fn customize_from_rustproto_for_file(source: &FileOptions) -> Customi
         generate_getter,
         tokio_bytes,
         tokio_bytes_for_string,
+        oneofs_non_exhaustive,
         lite_runtime,
         inside_protobuf,
         gen_mod_rs,
