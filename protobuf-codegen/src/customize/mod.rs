@@ -98,6 +98,8 @@ pub struct Customize {
     pub(crate) tokio_bytes: Option<bool>,
     /// Use `bytes::Bytes` for `string` fields
     pub(crate) tokio_bytes_for_string: Option<bool>,
+    /// When false, `#[non_exhaustive]` is not generated for `oneof` fields.
+    pub(crate) oneofs_non_exhaustive: Option<bool>,
     /// Enable lite runtime.
     pub(crate) lite_runtime: Option<bool>,
     /// Generate `mod.rs` in the output directory.
@@ -145,6 +147,11 @@ impl Customize {
 
     pub fn tokio_bytes_for_string(mut self, tokio_bytes_for_string: bool) -> Self {
         self.tokio_bytes_for_string = Some(tokio_bytes_for_string);
+        self
+    }
+
+    pub fn oneofs_non_exhaustive(mut self, non_exhaustive: bool) -> Self {
+        self.oneofs_non_exhaustive = Some(non_exhaustive);
         self
     }
 
