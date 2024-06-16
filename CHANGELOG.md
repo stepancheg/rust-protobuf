@@ -1,6 +1,10 @@
 # Changelog
 
-## [3.4] - Unreleased
+## [3.5] - Unreleased
+
+- [Default to packed for repeated primitives in proto3](https://github.com/stepancheg/rust-protobuf/pull/707)
+
+## [3.4] - 2024-02-24
 
 * [Unnecessary copy in print_to_string_internal](https://github.com/stepancheg/rust-protobuf/pull/684)
 * [Ignore error of `flush` in `Drop` of `CodedOutputStream`](https://github.com/stepancheg/rust-protobuf/issues/714)
