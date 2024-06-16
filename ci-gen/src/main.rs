@@ -190,7 +190,7 @@ fn miri_test_job() -> Job {
     let env = vec![
         ("RUST_BACKTRACE".to_owned(), "1".to_owned()),
         ("RUST_TEST_THREADS".to_owned(), "1".to_owned()),
-        ("MIRIFLAGS".to_owned(), "-Zmiri-tag-raw-pointers".to_owned()),
+        // ("MIRIFLAGS".to_owned(), "-Zmiri-tag-raw-pointers".to_owned()),
     ];
     Job {
         id,

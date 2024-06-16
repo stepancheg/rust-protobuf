@@ -220,7 +220,6 @@ jobs:
         env:
             RUST_BACKTRACE: 1
             RUST_TEST_THREADS: 1
-            MIRIFLAGS: -Zmiri-tag-raw-pointers
         steps:
             - name: Checkout sources
               uses: actions/checkout@v2
