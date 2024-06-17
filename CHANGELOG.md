@@ -4,6 +4,7 @@
 
 - [Default to packed for repeated primitives in proto3](https://github.com/stepancheg/rust-protobuf/pull/707)
 - [Put correct flag in comment of generated files](https://github.com/stepancheg/rust-protobuf/pull/655)
+- [Option to disable non-exhausive annotation for oneof](https://github.com/stepancheg/rust-protobuf/pull/726)
 
 ## [3.4] - 2024-02-24
 
