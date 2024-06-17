@@ -32,10 +32,11 @@ impl StrLit {
         let mut lexer = Lexer::new(&self.escaped, ParserLanguage::Json);
         let mut r = Vec::new();
         while !lexer.eof() {
-            r.push(
+            r.extend(
                 lexer
-                    .next_byte_value()
-                    .map_err(|_| StrLitDecodeError::OtherError)?,
+                    .next_str_lit_bytes()
+                    .map_err(|_| StrLitDecodeError::OtherError)?
+                    .bytes(),
             );
         }
         Ok(String::from_utf8(r)?)
@@ -45,10 +46,11 @@ impl StrLit {
         let mut lexer = Lexer::new(&self.escaped, ParserLanguage::Json);
         let mut r = Vec::new();
         while !lexer.eof() {
-            r.push(
+            r.extend(
                 lexer
-                    .next_byte_value()
-                    .map_err(|_| StrLitDecodeError::OtherError)?,
+                    .next_str_lit_bytes()
+                    .map_err(|_| StrLitDecodeError::OtherError)?
+                    .bytes(),
             );
         }
         Ok(r)

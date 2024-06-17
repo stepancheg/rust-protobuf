@@ -117,8 +117,7 @@ fn test_string_bytes() {
 #[test]
 fn non_ascii_strings() {
     test_text_format_str_descriptor("string_singular: \"À\"", &TestTypes::descriptor());
-    // TODO: fix this.
-    // test_text_format_str_descriptor("string_singular: \"日月\"", &TestTypes::descriptor());
+    test_text_format_str_descriptor("string_singular: \"日月\"", &TestTypes::descriptor());
 }
 
 #[test]

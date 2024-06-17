@@ -67,6 +67,34 @@ impl From<ProtobufFloatParseError> for LexerError {
     }
 }
 
+/// The raw bytes for a single char or escape sequence in a string literal
+///
+/// The raw bytes are available via an `into_iter` implementation.
+pub(crate) struct DecodedBytes {
+    // a single char can be up to 4-bytes when encoded in utf-8
+    buf: [u8; 4],
+    len: usize,
+}
+
+impl DecodedBytes {
+    fn byte(b: u8) -> DecodedBytes {
+        DecodedBytes {
+            buf: [b, 0, 0, 0],
+            len: 1,
+        }
+    }
+
+    fn char(value: char) -> Self {
+        let mut buf = [0; 4];
+        let len = value.encode_utf8(&mut buf).len();
+        DecodedBytes { buf, len }
+    }
+
+    pub(crate) fn bytes(&self) -> &[u8] {
+        &self.buf[..self.len]
+    }
+}
+
 #[derive(Copy, Clone)]
 pub struct Lexer<'a> {
     language: ParserLanguage,
@@ -440,24 +468,24 @@ impl<'a> Lexer<'a> {
     // octEscape = '\' octalDigit octalDigit octalDigit
     // charEscape = '\' ( "a" | "b" | "f" | "n" | "r" | "t" | "v" | '\' | "'" | '"' )
     // quote = "'" | '"'
-    pub fn next_byte_value(&mut self) -> LexerResult<u8> {
+    pub(crate) fn next_str_lit_bytes(&mut self) -> LexerResult<DecodedBytes> {
         match self.next_char()? {
             '\\' => {
                 match self.next_char()? {
-                    '\'' => Ok(b'\''),
-                    '"' => Ok(b'"'),
-                    '\\' => Ok(b'\\'),
-                    'a' => Ok(b'\x07'),
-                    'b' => Ok(b'\x08'),
-                    'f' => Ok(b'\x0c'),
-                    'n' => Ok(b'\n'),
-                    'r' => Ok(b'\r'),
-                    't' => Ok(b'\t'),
-                    'v' => Ok(b'\x0b'),
+                    '\'' => Ok(DecodedBytes::byte(b'\'')),
+                    '"' => Ok(DecodedBytes::byte(b'"')),
+                    '\\' => Ok(DecodedBytes::byte(b'\\')),
+                    'a' => Ok(DecodedBytes::byte(b'\x07')),
+                    'b' => Ok(DecodedBytes::byte(b'\x08')),
+                    'f' => Ok(DecodedBytes::byte(b'\x0c')),
+                    'n' => Ok(DecodedBytes::byte(b'\n')),
+                    'r' => Ok(DecodedBytes::byte(b'\r')),
+                    't' => Ok(DecodedBytes::byte(b'\t')),
+                    'v' => Ok(DecodedBytes::byte(b'\x0b')),
                     'x' => {
                         let d1 = self.next_hex_digit()? as u8;
                         let d2 = self.next_hex_digit()? as u8;
-                        Ok(((d1 << 4) | d2) as u8)
+                        Ok(DecodedBytes::byte((d1 << 4) | d2))
                     }
                     d if d >= '0' && d <= '7' => {
                         let mut r = d as u8 - b'0';
@@ -467,16 +495,14 @@ impl<'a> Lexer<'a> {
                                 Ok(d) => r = (r << 3) + d as u8,
                             }
                         }
-                        Ok(r)
+                        Ok(DecodedBytes::byte(r))
                     }
                     // https://github.com/google/protobuf/issues/4562
-                    // TODO: overflow
-                    c => Ok(c as u8),
+                    c => Ok(DecodedBytes::char(c)),
                 }
             }
             '\n' | '\0' => Err(LexerError::IncorrectInput),
-            // TODO: check overflow
-            c => Ok(c as u8),
+            c => Ok(DecodedBytes::char(c)),
         }
     }
 
@@ -530,7 +556,7 @@ impl<'a> Lexer<'a> {
             };
             first = false;
             while self.lookahead_char() != Some(q) {
-                self.next_byte_value()?;
+                self.next_str_lit_bytes()?;
             }
             self.next_char_expect_eq(q)?;
 
