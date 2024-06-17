@@ -67,6 +67,15 @@ impl From<ProtobufFloatParseError> for LexerError {
     }
 }
 
+/// The raw bytes for a single char or escape sequence in a string literal
+///
+/// The raw bytes are available via an `into_iter` implementation.
+pub struct DecodedBytes {
+    // a single char can be up to 4-bytes when encoded in utf-8
+    buf: [u8; 4],
+    len: u8,
+}
+
 #[derive(Copy, Clone)]
 pub struct Lexer<'a> {
     language: ParserLanguage,
@@ -440,24 +449,24 @@ impl<'a> Lexer<'a> {
     // octEscape = '\' octalDigit octalDigit octalDigit
     // charEscape = '\' ( "a" | "b" | "f" | "n" | "r" | "t" | "v" | '\' | "'" | '"' )
     // quote = "'" | '"'
-    pub fn next_byte_value(&mut self) -> LexerResult<u8> {
+    pub fn next_str_lit_bytes(&mut self) -> LexerResult<DecodedBytes> {
         match self.next_char()? {
             '\\' => {
                 match self.next_char()? {
-                    '\'' => Ok(b'\''),
-                    '"' => Ok(b'"'),
-                    '\\' => Ok(b'\\'),
-                    'a' => Ok(b'\x07'),
-                    'b' => Ok(b'\x08'),
-                    'f' => Ok(b'\x0c'),
-                    'n' => Ok(b'\n'),
-                    'r' => Ok(b'\r'),
-                    't' => Ok(b'\t'),
-                    'v' => Ok(b'\x0b'),
+                    '\'' => Ok(b'\''.into()),
+                    '"' => Ok(b'"'.into()),
+                    '\\' => Ok(b'\\'.into()),
+                    'a' => Ok(b'\x07'.into()),
+                    'b' => Ok(b'\x08'.into()),
+                    'f' => Ok(b'\x0c'.into()),
+                    'n' => Ok(b'\n'.into()),
+                    'r' => Ok(b'\r'.into()),
+                    't' => Ok(b'\t'.into()),
+                    'v' => Ok(b'\x0b'.into()),
                     'x' => {
                         let d1 = self.next_hex_digit()? as u8;
                         let d2 = self.next_hex_digit()? as u8;
-                        Ok(((d1 << 4) | d2) as u8)
+                        Ok((((d1 << 4) | d2) as u8).into())
                     }
                     d if d >= '0' && d <= '7' => {
                         let mut r = d as u8 - b'0';
@@ -467,16 +476,14 @@ impl<'a> Lexer<'a> {
                                 Ok(d) => r = (r << 3) + d as u8,
                             }
                         }
-                        Ok(r)
+                        Ok(r.into())
                     }
                     // https://github.com/google/protobuf/issues/4562
-                    // TODO: overflow
-                    c => Ok(c as u8),
+                    c => Ok(c.into()),
                 }
             }
             '\n' | '\0' => Err(LexerError::IncorrectInput),
-            // TODO: check overflow
-            c => Ok(c as u8),
+            c => Ok(c.into()),
         }
     }
 
@@ -530,7 +537,7 @@ impl<'a> Lexer<'a> {
             };
             first = false;
             while self.lookahead_char() != Some(q) {
-                self.next_byte_value()?;
+                self.next_str_lit_bytes()?;
             }
             self.next_char_expect_eq(q)?;
 
@@ -660,6 +667,37 @@ impl<'a> Lexer<'a> {
             self.skip_ws()?;
             Some(TokenWithLocation { token, loc })
         })
+    }
+}
+
+impl From<u8> for DecodedBytes {
+    fn from(value: u8) -> Self {
+        DecodedBytes {
+            buf: [value, 0, 0, 0],
+            len: 1,
+        }
+    }
+}
+
+impl From<char> for DecodedBytes {
+    fn from(value: char) -> Self {
+        let mut this = DecodedBytes {
+            buf: [0; 4],
+            len: 0,
+        };
+        let len = value.encode_utf8(&mut this.buf).len();
+        this.len = len as _;
+        this
+    }
+}
+
+// means that we work with `Vec::extend`.
+impl IntoIterator for DecodedBytes {
+    type Item = u8;
+    type IntoIter = std::iter::Take<std::array::IntoIter<u8, 4>>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.buf.into_iter().take(self.len as _)
     }
 }
 
