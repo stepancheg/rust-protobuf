@@ -1,0 +1,14 @@
+syntax = "proto2";
+
+import "rustproto.proto";
+
+package test_oneof;
+
+message MessageWithOneofNonexhaustiveDisabled{
+    option (rustproto.oneofs_non_exhaustive) = false;
+    
+    oneof one {
+        uint32 first_field = 1;
+        string second_field = 2;
+    }
+}
