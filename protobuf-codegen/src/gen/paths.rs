@@ -1,3 +1,6 @@
+use protobuf::descriptor::FileDescriptorProto;
+use tracing::{instrument, Level};
+
 use crate::gen::inside::protobuf_crate_path;
 use crate::gen::rust::ident::RustIdent;
 use crate::gen::rust::path::RustPath;
@@ -40,10 +43,24 @@ pub(crate) fn proto_path_to_rust_mod(path: &str) -> RustIdent {
 }
 
 /// Used in protobuf-codegen-identical-test
-pub fn proto_name_to_rs(proto_file_path: &str) -> String {
-    format!("{}.rs", proto_path_to_rust_mod(proto_file_path))
+pub fn proto_name_to_rs(proto_name: &str) -> String {
+    format!("{}.rs", proto_path_to_rust_mod(proto_name))
 }
 
+/// Determines the one-for-one relative path in which a Rust source file
+/// should be found for the provided `file_descriptor`.
+pub fn file_descriptor_to_hierarchical_rs(file_descriptor: &FileDescriptorProto) -> String {
+    match &file_descriptor.package {
+        Some(package) => format!(
+            "{}/{}",
+            package.replace('.', "/"),
+            proto_name_to_rs(file_descriptor.name())
+        ),
+        None => proto_name_to_rs(file_descriptor.name()),
+    }
+}
+
+#[instrument(level = Level::DEBUG, skip(customize), ret(Display))]
 pub(crate) fn proto_path_to_fn_file_descriptor(
     proto_path: &str,
     customize: &Customize,
@@ -58,9 +75,22 @@ pub(crate) fn proto_path_to_fn_file_descriptor(
             .append_ident("well_known_types".into())
             .append_ident(proto_path_to_rust_mod(s))
             .append_ident("file_descriptor".into()),
-        s => RustPath::super_path()
-            .append_ident(proto_path_to_rust_mod(s))
-            .append_ident("file_descriptor".into()),
+        s => {
+            if let Some(mod_path) = &customize.gen_mod_rs_hierarchy_out_dir_mod_name {
+                let mut rust_path = RustPath::from("crate");
+                for mod_part in mod_path.split("::") {
+                    rust_path = rust_path.append_ident(RustIdent::from(mod_part));
+                }
+                for component in proto_path.split("/").filter(|p| !p.ends_with(".proto")) {
+                    rust_path = rust_path.append_ident(RustIdent::from(component));
+                }
+                rust_path.append_ident("file_descriptor".into())
+            } else {
+                RustPath::super_path()
+                    .append_ident(proto_path_to_rust_mod(s))
+                    .append_ident("file_descriptor".into())
+            }
+        }
     }
 }
 

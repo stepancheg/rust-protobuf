@@ -108,9 +108,15 @@ pub struct Customize {
     ///
     /// This option will likely be on by default in rust-protobuf version 3.
     pub(crate) gen_mod_rs: Option<bool>,
+    /// Generate `mod.rs` in a hierarchy in the output directory assuming that
+    /// this name is the crate-relative Rust path to the output directory.
+    pub(crate) gen_mod_rs_hierarchy_out_dir_mod_name: Option<String>,
     /// Used internally to generate protos bundled in protobuf crate
     /// like `descriptor.proto`
     pub(crate) inside_protobuf: Option<bool>,
+    /// Enable logging to the specified `log_file` for debugging. The logging
+    /// verbosity is controlled with the `RUST_LOG` environment variable.
+    pub(crate) log_file: Option<String>,
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -172,9 +178,26 @@ impl Customize {
         self
     }
 
+    /// Generate `mod.rs` with all the generated modules in a Rust mod
+    /// hierarchy.
+    ///
+    /// This option is on by default in rust-protobuf version 3.
+    pub fn gen_mod_rs_hierarchy_out_dir_mod_name(
+        mut self,
+        gen_mod_rs_hierarchy_out_dir_mod_name: String,
+    ) -> Self {
+        self.gen_mod_rs_hierarchy_out_dir_mod_name = Some(gen_mod_rs_hierarchy_out_dir_mod_name);
+        self
+    }
+
     /// Generate code bundled in protobuf crate. Regular users don't need this option.
     pub fn inside_protobuf(mut self, inside_protobuf: bool) -> Self {
         self.inside_protobuf = Some(inside_protobuf);
+        self
+    }
+
+    pub fn log_file(mut self, log_file: String) -> Self {
+        self.log_file = Some(log_file);
         self
     }
 
@@ -201,8 +224,14 @@ impl Customize {
         if let Some(v) = that.gen_mod_rs {
             self.gen_mod_rs = Some(v);
         }
+        if let Some(v) = &that.gen_mod_rs_hierarchy_out_dir_mod_name {
+            self.gen_mod_rs_hierarchy_out_dir_mod_name = Some(v.to_owned());
+        }
         if let Some(v) = that.inside_protobuf {
             self.inside_protobuf = Some(v);
+        }
+        if let Some(v) = &that.log_file {
+            self.log_file = Some(v.to_owned());
         }
     }
 
@@ -243,12 +272,16 @@ impl Customize {
                 r.lite_runtime = Some(parse_bool(v)?);
             } else if n == "gen_mod_rs" {
                 r.gen_mod_rs = Some(parse_bool(v)?);
+            } else if n == "gen_mod_rs_hierarchy_out_dir_mod_name" {
+                r.gen_mod_rs_hierarchy_out_dir_mod_name = Some(v.to_owned());
             } else if n == "inside_protobuf" {
                 r.inside_protobuf = Some(parse_bool(v)?);
             } else if n == "lite" {
                 // Support Java and C++ protoc plugin syntax:
                 // https://github.com/protocolbuffers/protobuf/issues/6489
                 r.lite_runtime = Some(parse_bool(v)?);
+            } else if n == "log_file" {
+                r.log_file = Some(v.to_owned());
             } else {
                 return Err(CustomizeParseParameterError::UnknownOptionName(n.to_owned()).into());
             }

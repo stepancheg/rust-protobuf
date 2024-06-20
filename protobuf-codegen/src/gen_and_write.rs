@@ -1,6 +1,7 @@
 #![doc(hidden)]
 
 use std::fs;
+use std::fs::create_dir_all;
 use std::io;
 use std::path::Path;
 
@@ -9,6 +10,7 @@ use protobuf_parse::ProtoPathBuf;
 
 use crate::customize::CustomizeCallback;
 use crate::gen::all::gen_all;
+use crate::logging::init_logging;
 use crate::Customize;
 
 #[derive(Debug, thiserror::Error)]
@@ -19,6 +21,8 @@ enum Error {
     OutputDoesNotExistOrNotAccssible(String, #[source] io::Error),
     #[error("failed to create file `{0}`: {1}")]
     FailedToWriteFile(String, #[source] io::Error),
+    #[error("failed to create directory hierarchy for path `{0}`")]
+    FailedToCreateDirectoryHierarchy(String, #[source] io::Error),
 }
 
 #[doc(hidden)]
@@ -43,6 +47,8 @@ pub fn gen_and_write(
         }
     }
 
+    init_logging(&customize)?;
+
     let results = gen_all(
         file_descriptors,
         parser,
@@ -54,6 +60,13 @@ pub fn gen_and_write(
     for r in &results {
         let mut file_path = out_dir.to_owned();
         file_path.push(&r.name);
+        if customize.gen_mod_rs_hierarchy_out_dir_mod_name.is_some() {
+            if let Some(parent) = file_path.parent() {
+                create_dir_all(parent).map_err(|error| {
+                    Error::FailedToCreateDirectoryHierarchy(parent.display().to_string(), error)
+                })?;
+            }
+        }
         fs::write(&file_path, r.content.as_slice())
             .map_err(|e| Error::FailedToWriteFile(file_path.display().to_string(), e))?;
     }
