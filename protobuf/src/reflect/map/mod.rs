@@ -12,7 +12,7 @@ use crate::reflect::RuntimeType;
 mod empty;
 mod generated;
 
-/// Implemented for `HashMap` with appropriate keys and values
+/// Implemented for `HashMap`, `BTreeMap` with appropriate keys and values
 pub(crate) trait ReflectMap: Debug + Send + Sync + 'static {
     fn reflect_iter(&self) -> ReflectMapIter;
 
