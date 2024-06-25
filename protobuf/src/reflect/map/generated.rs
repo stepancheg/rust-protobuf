@@ -5,7 +5,7 @@ use std::hash::Hash;
 use crate::reflect::map::ReflectMap;
 use crate::reflect::map::ReflectMapIter;
 use crate::reflect::map::ReflectMapIterTrait;
-use crate::reflect::runtime_types::RuntimeTypeHashable;
+use crate::reflect::runtime_types::RuntimeTypeMapKey;
 use crate::reflect::runtime_types::RuntimeTypeTrait;
 use crate::reflect::ProtobufValue;
 use crate::reflect::ReflectValueBox;
@@ -16,7 +16,7 @@ impl<K, V> ReflectMap for HashMap<K, V>
 where
     K: ProtobufValue + Eq + Hash,
     V: ProtobufValue,
-    K::RuntimeType: RuntimeTypeHashable,
+    K::RuntimeType: RuntimeTypeMapKey,
 {
     fn reflect_iter<'a>(&'a self) -> ReflectMapIter<'a> {
         ReflectMapIter::new(GeneratedMapIterImpl::<'a, K, V> { iter: self.iter() })
@@ -31,7 +31,7 @@ where
     }
 
     fn get<'a>(&'a self, key: ReflectValueRef) -> Option<ReflectValueRef<'a>> {
-        <K::RuntimeType as RuntimeTypeHashable>::hash_map_get(self, key).map(V::RuntimeType::as_ref)
+        <K::RuntimeType as RuntimeTypeMapKey>::hash_map_get(self, key).map(V::RuntimeType::as_ref)
     }
 
     fn insert(&mut self, key: ReflectValueBox, value: ReflectValueBox) {
