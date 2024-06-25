@@ -214,17 +214,17 @@ impl RustType {
     // default value for type
     pub fn default_value(&self, customize: &Customize, const_expr: bool) -> String {
         match *self {
-            RustType::Ref(ref t) if t.is_str() => "\"\"".to_string(),
-            RustType::Ref(ref t) if t.is_slice().is_some() => "&[]".to_string(),
-            RustType::Int(..) => "0".to_string(),
-            RustType::Float(..) => "0.".to_string(),
-            RustType::Bool => "false".to_string(),
-            RustType::Vec(..) => EXPR_VEC_NEW.to_string(),
-            RustType::HashMap(..) => "::std::collections::HashMap::new()".to_string(),
-            RustType::String => "::std::string::String::new()".to_string(),
-            RustType::Bytes => "::bytes::Bytes::new()".to_string(),
+            RustType::Ref(ref t) if t.is_str() => "\"\"".to_owned(),
+            RustType::Ref(ref t) if t.is_slice().is_some() => "&[]".to_owned(),
+            RustType::Int(..) => "0".to_owned(),
+            RustType::Float(..) => "0.".to_owned(),
+            RustType::Bool => "false".to_owned(),
+            RustType::Vec(..) => EXPR_VEC_NEW.to_owned(),
+            RustType::HashMap(..) => "::std::collections::HashMap::new()".to_owned(),
+            RustType::String => "::std::string::String::new()".to_owned(),
+            RustType::Bytes => "::bytes::Bytes::new()".to_owned(),
             RustType::Chars => format!("{}::Chars::new()", protobuf_crate_path(customize)),
-            RustType::Option(..) => EXPR_NONE.to_string(),
+            RustType::Option(..) => EXPR_NONE.to_owned(),
             RustType::MessageField(..) => {
                 format!("{}::MessageField::none()", protobuf_crate_path(customize))
             }
