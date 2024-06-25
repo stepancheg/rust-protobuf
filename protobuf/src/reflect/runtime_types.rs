@@ -1,5 +1,6 @@
 //! Implementations of `RuntimeType` for all types.
 
+use std::collections::BTreeMap;
 use std::collections::HashMap;
 use std::fmt;
 use std::marker;
@@ -123,6 +124,12 @@ pub trait RuntimeTypeMapKey: RuntimeTypeTrait {
     /// Query hash map with a given key.
     fn hash_map_get<'a, V>(map: &'a HashMap<Self::Value, V>, key: ReflectValueRef)
         -> Option<&'a V>;
+
+    /// Query btree map with a given key.
+    fn btree_map_get<'a, V>(
+        map: &'a BTreeMap<Self::Value, V>,
+        key: ReflectValueRef,
+    ) -> Option<&'a V>;
 }
 
 /// Implementation for `f32`
@@ -318,6 +325,16 @@ impl RuntimeTypeMapKey for RuntimeTypeI32 {
             _ => None,
         }
     }
+
+    fn btree_map_get<'a, V>(
+        map: &'a BTreeMap<Self::Value, V>,
+        key: ReflectValueRef,
+    ) -> Option<&'a V> {
+        match key {
+            ReflectValueRef::I32(i) => map.get(&i),
+            _ => None,
+        }
+    }
 }
 
 impl RuntimeTypeTrait for RuntimeTypeI64 {
@@ -371,7 +388,20 @@ impl RuntimeTypeTrait for RuntimeTypeI64 {
     }
 }
 impl RuntimeTypeMapKey for RuntimeTypeI64 {
-    fn hash_map_get<'a, V>(map: &'a HashMap<i64, V>, key: ReflectValueRef) -> Option<&'a V> {
+    fn hash_map_get<'a, V>(
+        map: &'a HashMap<Self::Value, V>,
+        key: ReflectValueRef,
+    ) -> Option<&'a V> {
+        match key {
+            ReflectValueRef::I64(i) => map.get(&i),
+            _ => None,
+        }
+    }
+
+    fn btree_map_get<'a, V>(
+        map: &'a BTreeMap<Self::Value, V>,
+        key: ReflectValueRef,
+    ) -> Option<&'a V> {
         match key {
             ReflectValueRef::I64(i) => map.get(&i),
             _ => None,
@@ -435,6 +465,13 @@ impl RuntimeTypeMapKey for RuntimeTypeU32 {
             _ => None,
         }
     }
+
+    fn btree_map_get<'a, V>(map: &'a BTreeMap<u32, V>, key: ReflectValueRef) -> Option<&'a V> {
+        match key {
+            ReflectValueRef::U32(i) => map.get(&i),
+            _ => None,
+        }
+    }
 }
 
 impl RuntimeTypeTrait for RuntimeTypeU64 {
@@ -488,6 +525,13 @@ impl RuntimeTypeTrait for RuntimeTypeU64 {
 }
 impl RuntimeTypeMapKey for RuntimeTypeU64 {
     fn hash_map_get<'a, V>(map: &'a HashMap<u64, V>, key: ReflectValueRef) -> Option<&'a V> {
+        match key {
+            ReflectValueRef::U64(i) => map.get(&i),
+            _ => None,
+        }
+    }
+
+    fn btree_map_get<'a, V>(map: &'a BTreeMap<u64, V>, key: ReflectValueRef) -> Option<&'a V> {
         match key {
             ReflectValueRef::U64(i) => map.get(&i),
             _ => None,
@@ -548,6 +592,16 @@ impl RuntimeTypeMapKey for RuntimeTypeBool {
             _ => None,
         }
     }
+
+    fn btree_map_get<'a, V>(
+        map: &'a BTreeMap<Self::Value, V>,
+        key: ReflectValueRef,
+    ) -> Option<&'a V> {
+        match key {
+            ReflectValueRef::Bool(i) => map.get(&i),
+            _ => None,
+        }
+    }
 }
 
 impl RuntimeTypeTrait for RuntimeTypeString {
@@ -603,6 +657,20 @@ impl RuntimeTypeMapKey for RuntimeTypeString {
     fn hash_map_get<'a, V>(map: &'a HashMap<String, V>, key: ReflectValueRef) -> Option<&'a V> {
         match key {
             ReflectValueRef::String(s) => map.get(*&s),
+            _ => None,
+        }
+    }
+
+    /// Query btree map with a given key.
+    fn btree_map_get<'a, V>(
+        map: &'a BTreeMap<Self::Value, V>,
+        key: ReflectValueRef,
+    ) -> Option<&'a V>
+    where
+        Self::Value: Ord,
+    {
+        match key {
+            ReflectValueRef::String(s) => map.get(s),
             _ => None,
         }
     }
@@ -765,6 +833,12 @@ impl RuntimeTypeWithDeref for RuntimeTypeTokioChars {
 #[cfg(feature = "bytes")]
 impl RuntimeTypeMapKey for RuntimeTypeTokioChars {
     fn hash_map_get<'a, V>(map: &'a HashMap<Chars, V>, key: ReflectValueRef) -> Option<&'a V> {
+        match key {
+            ReflectValueRef::String(s) => map.get(&*s),
+            _ => None,
+        }
+    }
+    fn btree_map_get<'a, V>(map: &'a BTreeMap<Chars, V>, key: ReflectValueRef) -> Option<&'a V> {
         match key {
             ReflectValueRef::String(s) => map.get(&*s),
             _ => None,
