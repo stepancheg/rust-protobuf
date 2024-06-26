@@ -13,8 +13,8 @@ use crate::coded_input_stream::CodedInputStream;
 use crate::coded_output_stream::CodedOutputStream;
 use crate::enums::Enum;
 use crate::error::Result;
-use crate::reflect::type_dynamic::ProtobufTypeDynamicImpl;
 use crate::reflect::type_dynamic::_ProtobufTypeDynamic;
+use crate::reflect::type_dynamic::_ProtobufTypeDynamicImpl;
 use crate::reflect::ProtobufValue;
 use crate::rt;
 use crate::rt::singular::value_varint_zigzag_size_no_tag;
@@ -35,7 +35,7 @@ pub(crate) trait ProtobufTypeTrait: Send + Sync + Clone + Sized + 'static {
     where
         Self::ProtobufValue: ProtobufValue,
     {
-        &ProtobufTypeDynamicImpl::<Self>(marker::PhantomData)
+        &_ProtobufTypeDynamicImpl::<Self>(marker::PhantomData)
     }
 
     /// Wire type for encoding objects of this type

@@ -19,9 +19,9 @@ pub(crate) trait _ProtobufTypeDynamic: Send + Sync + 'static {
     fn runtime_type(&self) -> RuntimeType;
 }
 
-pub(crate) struct ProtobufTypeDynamicImpl<T: ProtobufTypeTrait>(pub marker::PhantomData<T>);
+pub(crate) struct _ProtobufTypeDynamicImpl<T: ProtobufTypeTrait>(pub marker::PhantomData<T>);
 
-impl<T> _ProtobufTypeDynamic for ProtobufTypeDynamicImpl<T>
+impl<T> _ProtobufTypeDynamic for _ProtobufTypeDynamicImpl<T>
 where
     T: ProtobufTypeTrait,
     <T as ProtobufTypeTrait>::ProtobufValue: ProtobufValue,
