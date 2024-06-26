@@ -109,6 +109,9 @@ where
 }
 
 /// Make accessor for map field, new version
+// This is only used in generated code.
+// Rust compiler allows it, and we want to avoid exposing traits in public API.
+#[allow(private_bounds)]
 pub fn make_map_simpler_accessor_new<M, T>(
     name: &'static str,
     get_field: for<'a> fn(&'a M) -> &'a T,
