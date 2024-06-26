@@ -11,7 +11,7 @@ use crate::wire_format::WireType;
 /// Dynamic version of [`ProtobufType`](crate::reflect::types::ProtobufType).
 ///
 /// This is used internally.
-pub trait ProtobufTypeDynamic: Send + Sync + 'static {
+pub(crate) trait _ProtobufTypeDynamic: Send + Sync + 'static {
     /// Wire type for this type.
     fn wire_type(&self) -> WireType;
 
@@ -21,7 +21,7 @@ pub trait ProtobufTypeDynamic: Send + Sync + 'static {
 
 pub(crate) struct ProtobufTypeDynamicImpl<T: ProtobufTypeTrait>(pub marker::PhantomData<T>);
 
-impl<T> ProtobufTypeDynamic for ProtobufTypeDynamicImpl<T>
+impl<T> _ProtobufTypeDynamic for ProtobufTypeDynamicImpl<T>
 where
     T: ProtobufTypeTrait,
     <T as ProtobufTypeTrait>::ProtobufValue: ProtobufValue,

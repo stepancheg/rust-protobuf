@@ -41,8 +41,8 @@ impl DynamicEmptyMap {
 
     pub(crate) fn reflect_iter(&self) -> ReflectMapIter {
         ReflectMapIter::new(DynamicEmptyMapIter {
-            key_type: self.key_type.clone(),
-            value_type: self.value_type.clone(),
+            _key_type: self.key_type.clone(),
+            _value_type: self.value_type.clone(),
         })
     }
 }
@@ -54,8 +54,8 @@ impl fmt::Debug for DynamicEmptyMap {
 }
 
 struct DynamicEmptyMapIter {
-    key_type: RuntimeType,
-    value_type: RuntimeType,
+    _key_type: RuntimeType,
+    _value_type: RuntimeType,
 }
 
 impl<'a> ReflectMapIterTrait<'a> for DynamicEmptyMapIter {
@@ -63,11 +63,11 @@ impl<'a> ReflectMapIterTrait<'a> for DynamicEmptyMapIter {
         None
     }
 
-    fn key_type(&self) -> RuntimeType {
-        self.key_type.clone()
+    fn _key_type(&self) -> RuntimeType {
+        self._key_type.clone()
     }
 
     fn _value_type(&self) -> RuntimeType {
-        self.value_type.clone()
+        self._value_type.clone()
     }
 }

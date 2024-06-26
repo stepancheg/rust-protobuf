@@ -114,7 +114,7 @@ impl<'a, K: ProtobufValue, V: ProtobufValue, I: Iterator<Item = (&'a K, &'a V)>>
         }
     }
 
-    fn key_type(&self) -> RuntimeType {
+    fn _key_type(&self) -> RuntimeType {
         K::RuntimeType::runtime_type_box()
     }
 
