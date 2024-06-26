@@ -6,6 +6,7 @@
 - [Put correct flag in comment of generated files](https://github.com/stepancheg/rust-protobuf/pull/655)
 - [Option to disable non-exhausive annotation for oneof](https://github.com/stepancheg/rust-protobuf/pull/726)
 - [Option to generate `BTreeMap` for map fields](https://github.com/stepancheg/rust-protobuf/pull/700)
+- [Fix writing large messages](https://github.com/stepancheg/rust-protobuf/pull/725)
 
 ## [3.4] - 2024-02-24
 
