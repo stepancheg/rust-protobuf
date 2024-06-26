@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+import "rustproto.proto";
+option (rustproto.generate_accessors_all) = true;
+
+message TestMap {
+    map<string, string> map_string_string = 1;
+    map<int32, bool> map_int32_bool = 2;
+}
