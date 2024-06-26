@@ -67,7 +67,7 @@ impl<'a> ReflectMapIterTrait<'a> for DynamicEmptyMapIter {
         self.key_type.clone()
     }
 
-    fn value_type(&self) -> RuntimeType {
+    fn _value_type(&self) -> RuntimeType {
         self.value_type.clone()
     }
 }

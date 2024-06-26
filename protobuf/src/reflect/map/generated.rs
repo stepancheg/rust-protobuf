@@ -118,7 +118,7 @@ impl<'a, K: ProtobufValue, V: ProtobufValue, I: Iterator<Item = (&'a K, &'a V)>>
         K::RuntimeType::runtime_type_box()
     }
 
-    fn value_type(&self) -> RuntimeType {
+    fn _value_type(&self) -> RuntimeType {
         V::RuntimeType::runtime_type_box()
     }
 }

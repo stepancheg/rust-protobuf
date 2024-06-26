@@ -34,7 +34,7 @@ pub(crate) trait ReflectMap: Debug + Send + Sync + 'static {
 pub(crate) trait ReflectMapIterTrait<'a> {
     fn next(&mut self) -> Option<(ReflectValueRef<'a>, ReflectValueRef<'a>)>;
     fn key_type(&self) -> RuntimeType;
-    fn value_type(&self) -> RuntimeType;
+    fn _value_type(&self) -> RuntimeType;
 }
 
 pub struct ReflectMapIter<'a> {
@@ -252,7 +252,7 @@ impl<'a> ReflectMapRefIter<'a> {
     }
 
     fn _value_type(&self) -> RuntimeType {
-        self.iter.imp.value_type()
+        self.iter.imp._value_type()
     }
 }
 

@@ -115,7 +115,7 @@ impl DynamicMap {
 
 struct DynamicMapIterImpl<'a, K: ProtobufValue + Eq + Hash + 'static> {
     iter: hash_map::Iter<'a, K, ReflectValueBox>,
-    value: &'a RuntimeType,
+    _value_type: &'a RuntimeType,
 }
 
 impl<'a, K: ProtobufValue + Eq + Hash + 'static> ReflectMapIterTrait<'a>
@@ -131,8 +131,8 @@ impl<'a, K: ProtobufValue + Eq + Hash + 'static> ReflectMapIterTrait<'a>
         K::RuntimeType::runtime_type_box()
     }
 
-    fn value_type(&self) -> RuntimeType {
-        self.value.clone()
+    fn _value_type(&self) -> RuntimeType {
+        self._value_type.clone()
     }
 }
 
@@ -141,27 +141,27 @@ impl ReflectMap for DynamicMap {
         match &self.maps {
             Maps::U32(m) => ReflectMapIter::new(DynamicMapIterImpl {
                 iter: m.iter(),
-                value: &self.value,
+                _value_type: &self.value,
             }),
             Maps::I32(m) => ReflectMapIter::new(DynamicMapIterImpl {
                 iter: m.iter(),
-                value: &self.value,
+                _value_type: &self.value,
             }),
             Maps::U64(m) => ReflectMapIter::new(DynamicMapIterImpl {
                 iter: m.iter(),
-                value: &self.value,
+                _value_type: &self.value,
             }),
             Maps::I64(m) => ReflectMapIter::new(DynamicMapIterImpl {
                 iter: m.iter(),
-                value: &self.value,
+                _value_type: &self.value,
             }),
             Maps::Bool(m) => ReflectMapIter::new(DynamicMapIterImpl {
                 iter: m.iter(),
-                value: &self.value,
+                _value_type: &self.value,
             }),
             Maps::String(m) => ReflectMapIter::new(DynamicMapIterImpl {
                 iter: m.iter(),
-                value: &self.value,
+                _value_type: &self.value,
             }),
         }
     }
