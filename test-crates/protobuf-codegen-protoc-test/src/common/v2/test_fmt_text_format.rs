@@ -115,6 +115,12 @@ fn test_string_bytes() {
 }
 
 #[test]
+fn non_ascii_strings() {
+    test_text_format_str_descriptor("string_singular: \"À\"", &TestTypes::descriptor());
+    test_text_format_str_descriptor("string_singular: \"😭\"", &TestTypes::descriptor());
+}
+
+#[test]
 fn test_message() {
     test_text_format_str_descriptor("test_message_singular {}", &TestTypes::descriptor());
 
