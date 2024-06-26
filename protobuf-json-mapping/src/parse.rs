@@ -131,17 +131,17 @@ struct Parser<'a> {
 }
 
 trait FromJsonNumber: PartialEq + Sized {
-    fn from_f64(v: f64) -> Self;
-    fn to_f64(&self) -> f64;
+    fn _from_f64(v: f64) -> Self;
+    fn _to_f64(&self) -> f64;
     fn from_string(v: &str) -> ParseResultWithoutLoc<Self>;
 }
 
 impl FromJsonNumber for u32 {
-    fn from_f64(v: f64) -> Self {
+    fn _from_f64(v: f64) -> Self {
         v as u32
     }
 
-    fn to_f64(&self) -> f64 {
+    fn _to_f64(&self) -> f64 {
         *self as f64
     }
 
@@ -151,11 +151,11 @@ impl FromJsonNumber for u32 {
 }
 
 impl FromJsonNumber for u64 {
-    fn from_f64(v: f64) -> Self {
+    fn _from_f64(v: f64) -> Self {
         v as u64
     }
 
-    fn to_f64(&self) -> f64 {
+    fn _to_f64(&self) -> f64 {
         *self as f64
     }
 
@@ -165,11 +165,11 @@ impl FromJsonNumber for u64 {
 }
 
 impl FromJsonNumber for i32 {
-    fn from_f64(v: f64) -> Self {
+    fn _from_f64(v: f64) -> Self {
         v as i32
     }
 
-    fn to_f64(&self) -> f64 {
+    fn _to_f64(&self) -> f64 {
         *self as f64
     }
 
@@ -179,11 +179,11 @@ impl FromJsonNumber for i32 {
 }
 
 impl FromJsonNumber for i64 {
-    fn from_f64(v: f64) -> Self {
+    fn _from_f64(v: f64) -> Self {
         v as i64
     }
 
-    fn to_f64(&self) -> f64 {
+    fn _to_f64(&self) -> f64 {
         *self as f64
     }
 
@@ -193,11 +193,11 @@ impl FromJsonNumber for i64 {
 }
 
 impl FromJsonNumber for f32 {
-    fn from_f64(v: f64) -> Self {
+    fn _from_f64(v: f64) -> Self {
         v as f32
     }
 
-    fn to_f64(&self) -> f64 {
+    fn _to_f64(&self) -> f64 {
         *self as f64
     }
 
@@ -215,11 +215,11 @@ impl FromJsonNumber for f32 {
 }
 
 impl FromJsonNumber for f64 {
-    fn from_f64(v: f64) -> Self {
+    fn _from_f64(v: f64) -> Self {
         v
     }
 
-    fn to_f64(&self) -> f64 {
+    fn _to_f64(&self) -> f64 {
         *self
     }
 

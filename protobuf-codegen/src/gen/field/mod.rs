@@ -117,10 +117,6 @@ impl<'a> SingularOrOneofField<'a> {
     }
 }
 
-// Representation of map entry: key type and value type
-#[derive(Clone, Debug)]
-pub struct EntryKeyValue<'a>(FieldElem<'a>, FieldElem<'a>);
-
 #[derive(Clone)]
 pub(crate) struct FieldGen<'a> {
     syntax: Syntax,

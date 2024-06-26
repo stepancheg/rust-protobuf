@@ -49,8 +49,6 @@ pub(crate) enum ParserError {
     // TODO
     #[error("incorrect input")]
     IncorrectInput,
-    #[error("not UTF-8")]
-    NotUtf8,
     #[error("expecting a constant")]
     ExpectConstant,
     #[error("unknown syntax")]
@@ -112,20 +110,12 @@ pub struct ParserErrorWithLocation {
     pub col: u32,
 }
 
-trait ToU8 {
-    fn to_u8(&self) -> anyhow::Result<u8>;
-}
-
 trait ToI32 {
     fn to_i32(&self) -> anyhow::Result<i32>;
 }
 
 trait ToI64 {
     fn to_i64(&self) -> anyhow::Result<i64>;
-}
-
-trait ToChar {
-    fn to_char(&self) -> anyhow::Result<char>;
 }
 
 impl ToI32 for u64 {
@@ -152,26 +142,6 @@ impl ToI64 for u64 {
     fn to_i64(&self) -> anyhow::Result<i64> {
         if *self <= i64::max_value() as u64 {
             Ok(*self as i64)
-        } else {
-            Err(ParserError::IntegerOverflow.into())
-        }
-    }
-}
-
-impl ToChar for u8 {
-    fn to_char(&self) -> anyhow::Result<char> {
-        if *self <= 0x7f {
-            Ok(*self as char)
-        } else {
-            Err(ParserError::NotUtf8.into())
-        }
-    }
-}
-
-impl ToU8 for u32 {
-    fn to_u8(&self) -> anyhow::Result<u8> {
-        if *self as u8 as u32 == *self {
-            Ok(*self as u8)
         } else {
             Err(ParserError::IntegerOverflow.into())
         }

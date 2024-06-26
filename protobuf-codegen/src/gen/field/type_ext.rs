@@ -5,7 +5,7 @@ use crate::gen::rust_types_values::RustType;
 
 pub(crate) trait TypeExt {
     fn read(&self, is: &str, primitive_type_variant: PrimitiveTypeVariant) -> String;
-    fn is_s_varint(&self) -> bool;
+    fn _is_s_varint(&self) -> bool;
     fn is_copy(&self) -> bool;
     fn protobuf_name(&self) -> &'static str;
     fn rust_type(&self) -> RustType;
@@ -28,7 +28,7 @@ impl TypeExt for Type {
     }
 
     /// True if self is signed integer with zigzag encoding
-    fn is_s_varint(&self) -> bool {
+    fn _is_s_varint(&self) -> bool {
         match *self {
             Type::TYPE_SINT32 | Type::TYPE_SINT64 => true,
             _ => false,
