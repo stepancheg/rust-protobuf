@@ -16,6 +16,7 @@ pub struct OneofDescriptor {
 }
 
 pub(crate) enum OneofDescriptorImplRef {
+    #[allow(dead_code)]
     Generated(&'static GeneratedOneofDescriptor),
     Dynamic,
 }
