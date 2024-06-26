@@ -1226,6 +1226,7 @@ mod test {
     }
 
     #[test]
+    #[cfg_attr(miri, ignore)] // Miri is too slow for this test.
     fn total_bytes_written_updated_when_writing_lots_of_bytes() {
         let data = "ff".repeat(10000);
         let bytes = decode_hex(&data);
