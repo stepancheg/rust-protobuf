@@ -15,7 +15,7 @@ use crate::reflect::RuntimeType;
 pub(crate) trait RepeatedFieldAccessor: Send + Sync + 'static {
     fn get_repeated<'a>(&self, m: &'a dyn MessageDyn) -> ReflectRepeatedRef<'a>;
     fn mut_repeated<'a>(&self, m: &'a mut dyn MessageDyn) -> ReflectRepeatedMut<'a>;
-    fn element_type(&self) -> RuntimeType;
+    fn _element_type(&self) -> RuntimeType;
 }
 
 pub(crate) struct RepeatedFieldAccessorHolder {
@@ -84,7 +84,7 @@ where
         ReflectRepeatedMut::new(repeated)
     }
 
-    fn element_type(&self) -> RuntimeType {
+    fn _element_type(&self) -> RuntimeType {
         V::RuntimeType::runtime_type_box()
     }
 }

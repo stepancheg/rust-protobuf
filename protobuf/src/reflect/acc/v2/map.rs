@@ -17,7 +17,7 @@ use crate::reflect::RuntimeType;
 pub(crate) trait MapFieldAccessor: Send + Sync + 'static {
     fn get_reflect<'a>(&self, m: &'a dyn MessageDyn) -> ReflectMapRef<'a>;
     fn mut_reflect<'a>(&self, m: &'a mut dyn MessageDyn) -> ReflectMapMut<'a>;
-    fn element_type(&self) -> (RuntimeType, RuntimeType);
+    fn _element_type(&self) -> (RuntimeType, RuntimeType);
 }
 
 pub(crate) struct MapFieldAccessorHolder {
@@ -57,7 +57,7 @@ where
         ReflectMapMut::new(map)
     }
 
-    fn element_type(&self) -> (RuntimeType, RuntimeType) {
+    fn _element_type(&self) -> (RuntimeType, RuntimeType) {
         (
             K::RuntimeType::runtime_type_box(),
             V::RuntimeType::runtime_type_box(),
@@ -84,7 +84,7 @@ where
         ReflectMapMut::new(map)
     }
 
-    fn element_type(&self) -> (RuntimeType, RuntimeType) {
+    fn _element_type(&self) -> (RuntimeType, RuntimeType) {
         (
             K::RuntimeType::runtime_type_box(),
             V::RuntimeType::runtime_type_box(),
