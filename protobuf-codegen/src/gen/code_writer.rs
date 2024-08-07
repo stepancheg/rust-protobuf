@@ -85,7 +85,6 @@ impl<'a> CodeWriter<'a> {
         self.write_line("#![allow(unused_attributes)]");
         self.write_line("#![cfg_attr(rustfmt, rustfmt::skip)]");
         self.write_line("");
-        self.write_line("#![allow(box_pointers)]");
         self.write_line("#![allow(dead_code)]");
         self.write_line("#![allow(missing_docs)]");
         self.write_line("#![allow(non_camel_case_types)]");
