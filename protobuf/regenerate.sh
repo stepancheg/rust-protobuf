@@ -7,14 +7,6 @@ die() {
     exit 1
 }
 
-protoc_ver=$(protoc --version)
-case "$protoc_ver" in
-"libprotoc 3"*) ;;
-*)
-    die "you need to use protobuf 3 to regenerate .rs from .proto"
-    ;;
-esac
-
 cargo build --manifest-path=../protobuf-codegen/Cargo.toml
 cargo build --manifest-path=../protoc-bin/Cargo.toml --bin protoc-bin-print-paths
 
