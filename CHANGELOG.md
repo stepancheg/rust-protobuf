@@ -1,6 +1,12 @@
 # Changelog
 
-## [3.5] - Unreleased
+## [3.6] - Unreleased
+
+## [3.5.1] - Unreleased
+
+- [Remove deprecated `box_pointers` lint](https://github.com/stepancheg/rust-protobuf/pull/733)
+
+## [3.5.0] - 2024-06-26
 
 - [Default to packed for repeated primitives in proto3](https://github.com/stepancheg/rust-protobuf/pull/707)
 - [Put correct flag in comment of generated files](https://github.com/stepancheg/rust-protobuf/pull/655)
