@@ -19,8 +19,15 @@ fn version_is_nightly(version: &str) -> bool {
 
 fn cfg_rust_version() {
     let rustc = env::var("RUSTC").expect("RUSTC unset");
+    let mut cmd = if let Some(wrapper) = env::var_os("RUSTC_WRAPPER").filter(|w| !w.is_empty()) {
+        let mut cmd = process::Command::new(wrapper);
+        cmd.arg(rustc);
+        cmd
+    } else {
+        process::Command::new(rustc)
+    };
 
-    let mut child = process::Command::new(rustc)
+    let mut child = cmd
         .args(&["--version"])
         .stdin(process::Stdio::null())
         .stdout(process::Stdio::piped())
