@@ -377,6 +377,18 @@ impl<'a> Parser<'a> {
         while !self.tokenizer.lookahead_is_symbol('}')? {
             let n = self.next_message_constant_field_name()?;
             let v = self.next_field_value()?;
+
+            // Consume the comma or semicolon if present. Commas and semicolons
+            // between message fields are optional, all these are valid:
+            //
+            //    {foo: 1,bar: 2,baz: 3,}
+            //    {foo: 1;bar: 2;baz: 3;}
+            //    {foo: 1 bar: 2 baz: 3}
+            //    {foo: 1,bar: 2;baz: 3}
+            //    {foo: 1,bar: 2 baz: 3}
+            //
+            self.tokenizer.next_symbol_if_in(&[',', ';'])?;
+
             r.fields.insert(n, v);
         }
         self.tokenizer
@@ -1334,6 +1346,29 @@ mod test {
             mess.t.options[0].name
         );
         assert_eq!("10", mess.t.options[0].value.format());
+    }
+
+    #[test]
+    fn test_field_options() {
+        let msg = r#" (my_opt).my_field = {foo: 1 bar: 2} "#;
+        let opt = parse(msg, |p| p.next_field_option());
+        assert_eq!(r#"{ foo: 1 bar: 2 }"#, opt.value.format());
+
+        let msg = r#" (my_opt).my_field = {foo: 1; bar:2;} "#;
+        let opt = parse(msg, |p| p.next_field_option());
+        assert_eq!(r#"{ foo: 1 bar: 2 }"#, opt.value.format());
+
+        let msg = r#" (my_opt).my_field = {foo: 1, bar: 2} "#;
+        let opt = parse(msg, |p| p.next_field_option());
+        assert_eq!(r#"{ foo: 1 bar: 2 }"#, opt.value.format());
+
+        let msg = r#" (my_opt).my_field = "foo" "#;
+        let opt = parse(msg, |p| p.next_field_option());
+        assert_eq!(r#""foo""#, opt.value.format());
+
+        let msg = r#" (my_opt) = { my_field: "foo"} "#;
+        let opt = parse(msg, |p| p.next_field_option());
+        assert_eq!(r#"{ my_field: "foo" }"#, opt.value.format());
     }
 
     #[test]
