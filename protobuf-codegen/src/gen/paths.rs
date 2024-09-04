@@ -7,12 +7,12 @@ use crate::Customize;
 
 // Copy-pasted from libsyntax.
 fn ident_start(c: char) -> bool {
-    (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_'
+    c.is_ascii_lowercase() || c.is_ascii_uppercase() || c == '_'
 }
 
 // Copy-pasted from libsyntax.
 fn ident_continue(c: char) -> bool {
-    (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_'
+    c.is_ascii_lowercase() || c.is_ascii_uppercase() || c.is_ascii_digit() || c == '_'
 }
 
 pub(crate) fn proto_path_to_rust_mod(path: &str) -> RustIdent {

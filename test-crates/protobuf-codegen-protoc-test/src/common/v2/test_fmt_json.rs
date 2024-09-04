@@ -196,7 +196,7 @@ fn test_string() {
     test_json_print_parse_message("{\"stringSingular\": \"ab\"}", &m);
 
     let mut m = TestTypes::new();
-    m.set_string_repeated(vec!["".to_owned(), "\0".to_owned(), "A\nB".to_owned()].into());
+    m.set_string_repeated(vec!["".to_owned(), "\0".to_owned(), "A\nB".to_owned()]);
     test_json_print_parse_message("{\"stringRepeated\": [\"\", \"\\u0000\", \"A\\nB\"]}", &m);
 }
 
@@ -207,7 +207,7 @@ fn test_bytes() {
     test_json_print_parse_message("{\"bytesSingular\": \"YWI=\"}", &m);
 
     let mut m = TestTypes::new();
-    m.set_bytes_repeated(vec![b"".to_vec(), b"\0".to_vec(), b"A\nB".to_vec()].into());
+    m.set_bytes_repeated(vec![b"".to_vec(), b"\0".to_vec(), b"A\nB".to_vec()]);
     test_json_print_parse_message("{\"bytesRepeated\": [\"\", \"AA==\", \"QQpC\"]}", &m);
 }
 

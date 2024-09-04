@@ -70,7 +70,7 @@ impl OneofDescriptor {
     }
 
     /// Fields in this oneof.
-    pub fn fields<'a>(&'a self) -> impl Iterator<Item = FieldDescriptor> + 'a {
+    pub fn fields(&self) -> impl Iterator<Item = FieldDescriptor> + '_ {
         let message = self.containing_message();
         self.index_entry()
             .fields

@@ -32,11 +32,11 @@ impl From<std::time::Duration> for Duration {
 /// # Panics
 ///
 /// If `Duration` value is outside of `std::time::Duration` supported range.
-impl Into<std::time::Duration> for Duration {
-    fn into(self) -> std::time::Duration {
-        assert!(self.seconds >= 0);
-        std::time::Duration::from_secs(self.seconds as u64)
-            + std::time::Duration::from_nanos(self.nanos as u64)
+impl From<Duration> for std::time::Duration {
+    fn from(val: Duration) -> Self {
+        assert!(val.seconds >= 0);
+        std::time::Duration::from_secs(val.seconds as u64)
+            + std::time::Duration::from_nanos(val.nanos as u64)
     }
 }
 

@@ -128,7 +128,7 @@ impl dyn MessageDyn {
     /// Write the message to bytes vec.
     ///
     /// > **Note**: You can use [`Message::parse_from_bytes`](crate::Message::parse_from_bytes)
-    /// to do the reverse.
+    /// > to do the reverse.
     pub fn write_to_bytes_dyn(&self) -> crate::Result<Vec<u8>> {
         self.check_initialized_dyn()?;
 
@@ -216,7 +216,7 @@ impl dyn MessageDyn {
     /// # }
     /// ```
     pub fn downcast_ref<'a, M: MessageFull + 'a>(&'a self) -> Option<&'a M> {
-        if Any::type_id(&*self) == TypeId::of::<M>() {
+        if Any::type_id(self) == TypeId::of::<M>() {
             unsafe { Some(&*(self as *const dyn MessageDyn as *const M)) }
         } else {
             None

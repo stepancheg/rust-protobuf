@@ -83,7 +83,7 @@ impl OutputBuffer {
     #[inline]
     pub(crate) fn replace_buffer_keep_pos(&mut self, buffer: *mut [MaybeUninit<u8>]) {
         unsafe {
-            assert!(self.pos_within_buf <= (&*buffer).len());
+            assert!(self.pos_within_buf <= (*buffer).len());
         }
         self.buffer = buffer;
     }
@@ -100,8 +100,8 @@ impl OutputBuffer {
     #[inline]
     pub(crate) unsafe fn write_bytes(&mut self, bytes: &[u8]) {
         debug_assert!(self.unfilled_len() >= bytes.len());
-        let bottom = self.pos_within_buf as usize;
-        let top = bottom + (bytes.len() as usize);
+        let bottom = self.pos_within_buf;
+        let top = bottom + bytes.len();
         // SAFETY: caller is responsible for ensuring that `bytes` fits in the buffer.
         let buffer = self.buffer_mut().get_unchecked_mut(bottom..top);
         maybe_uninit_write_slice(buffer, bytes);

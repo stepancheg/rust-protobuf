@@ -324,7 +324,7 @@ impl ProtobufTypeTrait for ProtobufTypeUint64 {
 
     fn get_from_unknown(unknown: UnknownValueRef) -> Option<u64> {
         match unknown {
-            UnknownValueRef::Varint(v) => Some(v as u64),
+            UnknownValueRef::Varint(v) => Some(v),
             _ => None,
         }
     }
@@ -580,7 +580,7 @@ impl ProtobufTypeTrait for ProtobufTypeString {
         value: &String,
         os: &mut CodedOutputStream,
     ) -> Result<()> {
-        os.write_string(field_number, &value)
+        os.write_string(field_number, value)
     }
 }
 
@@ -609,7 +609,7 @@ impl ProtobufTypeTrait for ProtobufTypeBytes {
         value: &Vec<u8>,
         os: &mut CodedOutputStream,
     ) -> Result<()> {
-        os.write_bytes(field_number, &value)
+        os.write_bytes(field_number, value)
     }
 }
 
@@ -636,7 +636,7 @@ impl ProtobufTypeTrait for ProtobufTypeTokioBytes {
         value: &Bytes,
         os: &mut CodedOutputStream,
     ) -> Result<()> {
-        os.write_bytes(field_number, &value)
+        os.write_bytes(field_number, value)
     }
 }
 
@@ -663,7 +663,7 @@ impl ProtobufTypeTrait for ProtobufTypeTokioChars {
         value: &Chars,
         os: &mut CodedOutputStream,
     ) -> Result<()> {
-        os.write_string(field_number, &value)
+        os.write_string(field_number, value)
     }
 }
 
@@ -704,7 +704,7 @@ impl<M: Message + Clone + Default> ProtobufTypeTrait for ProtobufTypeMessage<M> 
 
     fn get_from_unknown(unknown: UnknownValueRef) -> Option<M> {
         match unknown {
-            UnknownValueRef::LengthDelimited(v) => M::parse_from_bytes(&v).ok(),
+            UnknownValueRef::LengthDelimited(v) => M::parse_from_bytes(v).ok(),
             _ => None,
         }
     }

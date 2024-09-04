@@ -46,8 +46,7 @@ fn test_singular_basic() {
 
     bool_field.set_singular_field(&mut message, ReflectValueBox::Bool(true));
     assert!(bool_field.has_field(&message));
-    assert_eq!(
-        true,
+    assert!(
         bool_field
             .get_singular_field_or_default(&message)
             .to_bool()

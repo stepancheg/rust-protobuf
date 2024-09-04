@@ -36,12 +36,12 @@ impl UnknownValue {
     }
 
     /// As ref
-    pub fn get_ref<'s>(&'s self) -> UnknownValueRef<'s> {
+    pub fn get_ref(&self) -> UnknownValueRef<'_> {
         match *self {
             UnknownValue::Fixed32(fixed32) => UnknownValueRef::Fixed32(fixed32),
             UnknownValue::Fixed64(fixed64) => UnknownValueRef::Fixed64(fixed64),
             UnknownValue::Varint(varint) => UnknownValueRef::Varint(varint),
-            UnknownValue::LengthDelimited(ref bytes) => UnknownValueRef::LengthDelimited(&bytes),
+            UnknownValue::LengthDelimited(ref bytes) => UnknownValueRef::LengthDelimited(bytes),
         }
     }
 
@@ -151,7 +151,7 @@ impl UnknownValues {
     }
 
     /// Iterate over unknown values
-    pub fn iter<'s>(&'s self) -> UnknownValuesIter<'s> {
+    pub fn iter(&self) -> UnknownValuesIter<'_> {
         UnknownValuesIter {
             fixed32: self.fixed32.iter(),
             fixed64: self.fixed64.iter(),
@@ -167,11 +167,7 @@ impl UnknownValues {
             Some(UnknownValueRef::Fixed64(*last))
         } else if let Some(last) = self.varint.last() {
             Some(UnknownValueRef::Varint(*last))
-        } else if let Some(last) = self.length_delimited.last() {
-            Some(UnknownValueRef::LengthDelimited(last))
-        } else {
-            None
-        }
+        } else { self.length_delimited.last().map(|last| UnknownValueRef::LengthDelimited(last)) }
     }
 }
 
@@ -206,7 +202,7 @@ impl<'o> Iterator for UnknownValuesIter<'o> {
             return Some(UnknownValueRef::Varint(*varint));
         }
         if let Some(length_delimited) = self.length_delimited.next() {
-            return Some(UnknownValueRef::LengthDelimited(&length_delimited));
+            return Some(UnknownValueRef::LengthDelimited(length_delimited));
         }
         None
     }
@@ -320,7 +316,7 @@ impl UnknownFields {
     }
 
     /// Iterate over all unknowns
-    pub fn iter<'s>(&'s self) -> UnknownFieldsIter<'s> {
+    pub fn iter(&self) -> UnknownFieldsIter<'_> {
         UnknownFieldsIter {
             entries: self.fields.as_ref().map(|m| UnknownFieldsNotEmptyIter {
                 fields: m.iter(),

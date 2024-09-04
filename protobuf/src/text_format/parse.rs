@@ -69,7 +69,7 @@ impl<'a> Parser<'a> {
         Ok(self.tokenizer.next_symbol_expect_eq(':', desc)?)
     }
 
-    fn read_enum<'e>(&mut self, e: &'e EnumDescriptor) -> ParseResult<EnumValueDescriptor> {
+    fn read_enum(&mut self, e: &EnumDescriptor) -> ParseResult<EnumValueDescriptor> {
         self.read_colon("enum")?;
 
         // TODO: read integer?
@@ -226,7 +226,7 @@ impl<'a> Parser<'a> {
     fn read_value_of_type(&mut self, t: &RuntimeType) -> ParseResult<ReflectValueBox> {
         Ok(match t {
             RuntimeType::Enum(d) => {
-                let value = self.read_enum(&d)?.value();
+                let value = self.read_enum(d)?.value();
                 ReflectValueBox::Enum(d.clone(), value)
             }
             RuntimeType::U32 => ReflectValueBox::U32(self.read_u32()?),
@@ -238,7 +238,7 @@ impl<'a> Parser<'a> {
             RuntimeType::Bool => ReflectValueBox::Bool(self.read_bool()?),
             RuntimeType::String => ReflectValueBox::String(self.read_string()?),
             RuntimeType::VecU8 => ReflectValueBox::Bytes(self.read_bytes()?),
-            RuntimeType::Message(m) => ReflectValueBox::Message(self.read_message(&m)?),
+            RuntimeType::Message(m) => ReflectValueBox::Message(self.read_message(m)?),
         })
     }
 

@@ -42,9 +42,9 @@ impl From<String> for ProtobufIdent {
     }
 }
 
-impl Into<String> for ProtobufIdent {
-    fn into(self) -> String {
-        self.0
+impl From<ProtobufIdent> for String {
+    fn from(val: ProtobufIdent) -> Self {
+        val.0
     }
 }
 
@@ -55,14 +55,14 @@ impl fmt::Display for ProtobufIdent {
 }
 
 impl ProtobufIdentRef {
-    pub fn new<'a>(ident: &'a str) -> &'a ProtobufIdentRef {
+    pub fn new(ident: &str) -> &ProtobufIdentRef {
         assert!(!ident.is_empty());
         // SAFETY: ProtobufIdentRef is repr(transparent)
         unsafe { mem::transmute(ident) }
     }
 
     pub fn as_str(&self) -> &str {
-        &*self
+        self
     }
 
     pub fn to_owned(&self) -> ProtobufIdent {

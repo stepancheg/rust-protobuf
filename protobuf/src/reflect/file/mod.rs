@@ -35,7 +35,7 @@ impl PartialEq for FileDescriptorImpl {
     fn eq(&self, other: &Self) -> bool {
         match (self, other) {
             (FileDescriptorImpl::Generated(a), FileDescriptorImpl::Generated(b)) => {
-                *a as *const GeneratedFileDescriptor == *b as *const GeneratedFileDescriptor
+                std::ptr::eq(*a, *b)
             }
             (FileDescriptorImpl::Dynamic(a), FileDescriptorImpl::Dynamic(b)) => Arc::ptr_eq(a, b),
             _ => false,
@@ -234,7 +234,7 @@ impl FileDescriptor {
     /// `.proto` data for this file.
     pub fn proto(&self) -> &FileDescriptorProto {
         match &self.imp {
-            FileDescriptorImpl::Generated(g) => &g.proto,
+            FileDescriptorImpl::Generated(g) => g.proto,
             FileDescriptorImpl::Dynamic(d) => &d.proto,
         }
     }

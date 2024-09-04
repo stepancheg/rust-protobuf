@@ -47,25 +47,22 @@ impl<T> WithLoc<T> {
     pub fn with_loc(loc: Loc) -> impl FnOnce(T) -> WithLoc<T> {
         move |t| WithLoc {
             t,
-            loc: loc.clone(),
+            loc,
         }
     }
 }
 
 /// Protobuf syntax.
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
+#[derive(Default)]
 pub(crate) enum Syntax {
     /// Protobuf syntax [2](https://developers.google.com/protocol-buffers/docs/proto) (default)
+    #[default]
     Proto2,
     /// Protobuf syntax [3](https://developers.google.com/protocol-buffers/docs/proto3)
     Proto3,
 }
 
-impl Default for Syntax {
-    fn default() -> Syntax {
-        Syntax::Proto2
-    }
-}
 
 /// A field rule
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Hash)]
@@ -529,17 +526,14 @@ pub(crate) struct ProtobufOption {
 
 /// Visibility of import statement
 #[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Default)]
 pub(crate) enum ImportVis {
+    #[default]
     Default,
     Public,
     Weak,
 }
 
-impl Default for ImportVis {
-    fn default() -> Self {
-        ImportVis::Default
-    }
-}
 
 /// Import statement
 #[derive(Debug, Default, Clone)]

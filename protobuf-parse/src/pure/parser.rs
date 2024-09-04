@@ -412,12 +412,12 @@ impl<'a> Parser<'a> {
             if c == '+' || c == '-' {
                 self.tokenizer.advance()?;
                 let sign = c == '+';
-                return Ok(self.next_num_lit()?.to_option_value(sign)?);
+                return self.next_num_lit()?.to_option_value(sign);
             }
         }
 
         if let Some(r) = self.tokenizer.next_token_if_map(|token| match token {
-            &Token::StrLit(ref s) => Some(ProtobufConstant::String(s.clone())),
+            Token::StrLit(s) => Some(ProtobufConstant::String(s.clone())),
             _ => None,
         })? {
             return Ok(r);
@@ -595,7 +595,7 @@ impl<'a> Parser<'a> {
             ("float", FieldType::Float),
             ("double", FieldType::Double),
         ];
-        for &(ref n, ref t) in simple {
+        for (n, ref t) in simple {
             if self.tokenizer.next_ident_if_eq(n)? {
                 return Ok(t.clone());
             }
@@ -1293,11 +1293,11 @@ mod test {
     {
         let mut parser = Parser::new(input);
         let r =
-            parse_what(&mut parser).expect(&format!("parse failed at {}", parser.tokenizer.loc()));
+            parse_what(&mut parser).unwrap_or_else(|_| panic!("parse failed at {}", parser.tokenizer.loc()));
         let eof = parser
             .tokenizer
             .syntax_eof()
-            .expect(&format!("check eof failed at {}", parser.tokenizer.loc()));
+            .unwrap_or_else(|_| panic!("check eof failed at {}", parser.tokenizer.loc()));
         assert!(eof, "{}", parser.tokenizer.loc());
         r
     }
@@ -1308,11 +1308,9 @@ mod test {
     {
         let mut parser = Parser::new(input);
         let o =
-            parse_what(&mut parser).expect(&format!("parse failed at {}", parser.tokenizer.loc()));
-        let r = o.expect(&format!(
-            "parser returned none at {}",
-            parser.tokenizer.loc()
-        ));
+            parse_what(&mut parser).unwrap_or_else(|_| panic!("parse failed at {}", parser.tokenizer.loc()));
+        let r = o.unwrap_or_else(|| panic!("parser returned none at {}",
+            parser.tokenizer.loc()));
         assert!(parser.tokenizer.syntax_eof().unwrap());
         r
     }
@@ -1604,7 +1602,7 @@ mod test {
             dfgdg
         "#;
 
-        let err = FileDescriptor::parse(msg).err().expect("err");
+        let err = FileDescriptor::parse(msg).expect_err("err");
         assert_eq!(4, err.line);
     }
 }

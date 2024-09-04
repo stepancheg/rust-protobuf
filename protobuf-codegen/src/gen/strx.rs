@@ -1,4 +1,4 @@
-pub fn remove_to<'s, P>(s: &'s str, pattern: P) -> &'s str
+pub fn remove_to<P>(s: &str, pattern: P) -> &str
 where
     P: Fn(char) -> bool,
 {

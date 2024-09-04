@@ -8,11 +8,11 @@ enum _CharacterSet {
     _UrlSafe,
 }
 
-static STANDARD_CHARS: &'static [u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
+static STANDARD_CHARS: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
                                         abcdefghijklmnopqrstuvwxyz\
                                         0123456789+/";
 
-static _URLSAFE_CHARS: &'static [u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
+static _URLSAFE_CHARS: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
                                        abcdefghijklmnopqrstuvwxyz\
                                        0123456789-_";
 
@@ -46,7 +46,7 @@ pub fn encode(input: &[u8]) -> String {
             write(enc((n >> 18) & 63));
             write(enc((n >> 12) & 63));
             write(enc((n >> 6) & 63));
-            write(enc((n >> 0) & 63));
+            write(enc(n & 63));
         }
 
         // Heh, would be cool if we knew this was exhaustive

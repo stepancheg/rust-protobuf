@@ -37,7 +37,7 @@ impl RustRelativePath {
     }
 
     pub fn first(&self) -> Option<RustPathComponent> {
-        self.path.iter().cloned().next()
+        self.path.first().cloned()
     }
 
     pub fn remove_first(&mut self) -> Option<RustPathComponent> {

@@ -175,7 +175,7 @@ impl EnumDescriptor {
     }
 
     /// This enum values
-    pub fn values<'a>(&'a self) -> impl Iterator<Item = EnumValueDescriptor> + 'a {
+    pub fn values(&self) -> impl Iterator<Item = EnumValueDescriptor> + '_ {
         let value_len = self.proto().value.len();
         (0..value_len).map(move |index| EnumValueDescriptor {
             enum_descriptor: self.clone(),

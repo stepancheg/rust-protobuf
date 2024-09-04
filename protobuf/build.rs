@@ -21,7 +21,7 @@ fn cfg_rust_version() {
     let rustc = env::var("RUSTC").expect("RUSTC unset");
 
     let mut child = process::Command::new(rustc)
-        .args(&["--version"])
+        .args(["--version"])
         .stdin(process::Stdio::null())
         .stdout(process::Stdio::piped())
         .spawn()

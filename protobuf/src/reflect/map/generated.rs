@@ -108,10 +108,7 @@ impl<'a, K: ProtobufValue, V: ProtobufValue, I: Iterator<Item = (&'a K, &'a V)>>
     ReflectMapIterTrait<'a> for GeneratedMapIterImpl<'a, K, V, I>
 {
     fn next(&mut self) -> Option<(ReflectValueRef<'a>, ReflectValueRef<'a>)> {
-        match self.iter.next() {
-            Some((k, v)) => Some((K::RuntimeType::as_ref(k), V::RuntimeType::as_ref(v))),
-            None => None,
-        }
+        self.iter.next().map(|(k, v)| (K::RuntimeType::as_ref(k), V::RuntimeType::as_ref(v)))
     }
 
     fn _key_type(&self) -> RuntimeType {

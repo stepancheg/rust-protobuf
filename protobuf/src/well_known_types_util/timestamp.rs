@@ -53,15 +53,15 @@ impl From<SystemTime> for Timestamp {
 /// This function panics:
 /// * if given `Timestamp` is outside of `SystemTime` range
 /// * if `Timestamp` is malformed
-impl Into<SystemTime> for Timestamp {
-    fn into(self) -> SystemTime {
-        if self.seconds >= 0 {
+impl From<Timestamp> for SystemTime {
+    fn from(val: Timestamp) -> Self {
+        if val.seconds >= 0 {
             let duration =
-                Duration::from_secs(self.seconds as u64) + Duration::from_nanos(self.nanos as u64);
+                Duration::from_secs(val.seconds as u64) + Duration::from_nanos(val.nanos as u64);
             SystemTime::UNIX_EPOCH + duration
         } else {
             let duration =
-                Duration::from_secs(-self.seconds as u64) - Duration::from_nanos(self.nanos as u64);
+                Duration::from_secs(-val.seconds as u64) - Duration::from_nanos(val.nanos as u64);
             SystemTime::UNIX_EPOCH - duration
         }
     }

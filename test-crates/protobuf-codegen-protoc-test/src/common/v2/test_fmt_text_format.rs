@@ -173,7 +173,7 @@ fn test_reflect() {
 
     let mut l = TestTypesList::new();
     // TODO: make `ts` field public in codegen
-    l.set_ts(special_messages_typed().into());
+    l.set_ts(special_messages_typed());
     test_text_format_message(&l);
 }
 

@@ -16,7 +16,7 @@ impl<'a> ReflectRepeatedIter<'a> {
     }
 
     pub(crate) fn new_slice<V: ProtobufValue>(slice: &'a [V]) -> ReflectRepeatedIter<'a> {
-        ReflectRepeatedIter::new(slice.into_iter().map(V::RuntimeType::as_ref))
+        ReflectRepeatedIter::new(slice.iter().map(V::RuntimeType::as_ref))
     }
 }
 

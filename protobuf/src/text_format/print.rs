@@ -34,7 +34,7 @@ fn print_start_field<F: FieldName>(
     field_name: F,
 ) {
     if !*first && !pretty {
-        buf.push_str(" ");
+        buf.push(' ');
     }
     do_indent(buf, pretty, indent);
     *first = false;
@@ -43,7 +43,7 @@ fn print_start_field<F: FieldName>(
 
 fn print_end_field(buf: &mut String, pretty: bool) {
     if pretty {
-        buf.push_str("\n");
+        buf.push('\n');
     }
 }
 
@@ -61,11 +61,11 @@ fn print_field<F: FieldName>(
         ReflectValueRef::Message(m) => {
             buf.push_str(" {");
             if pretty {
-                buf.push_str("\n");
+                buf.push('\n');
             }
             print_to_internal(&m, buf, pretty, indent + 1);
             do_indent(buf, pretty, indent);
-            buf.push_str("}");
+            buf.push('}');
         }
         ReflectValueRef::Enum(d, v) => {
             buf.push_str(": ");
@@ -118,7 +118,7 @@ fn print_to_internal(m: &MessageRef, buf: &mut String, pretty: bool, indent: usi
                     print_start_field(buf, pretty, indent, &mut first, f.name());
                     buf.push_str(" {");
                     if pretty {
-                        buf.push_str("\n");
+                        buf.push('\n');
                     }
 
                     let mut entry_first = true;
@@ -126,7 +126,7 @@ fn print_to_internal(m: &MessageRef, buf: &mut String, pretty: bool, indent: usi
                     print_field(buf, pretty, indent + 1, &mut entry_first, "key", k);
                     print_field(buf, pretty, indent + 1, &mut entry_first, "value", v);
                     do_indent(buf, pretty, indent);
-                    buf.push_str("}");
+                    buf.push('}');
                     print_end_field(buf, pretty);
                 }
             }

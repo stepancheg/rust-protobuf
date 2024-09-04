@@ -65,7 +65,6 @@ impl<'a> OneofField<'a> {
                     message
                         .message
                         .fields()
-                        .into_iter()
                         .filter(|f| f.containing_oneof().is_some()),
                 );
             }
@@ -206,10 +205,8 @@ impl<'a> OneofGen<'a> {
                 let field = self
                     .message
                     .fields
-                    .iter()
-                    .filter(|f| f.proto_field.name() == v.field.name())
-                    .next()
-                    .expect(&format!("field not found by name: {}", v.field.name()));
+                    .iter().find(|f| f.proto_field.name() == v.field.name())
+                    .unwrap_or_else(|| panic!("field not found by name: {}", v.field.name()));
                 match field.proto_type {
                     field_descriptor_proto::Type::TYPE_GROUP => None,
                     _ => Some(OneofVariantGen::parse(

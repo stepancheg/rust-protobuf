@@ -18,18 +18,18 @@ fn test_set_clear_field() {
     assert!(test_message.has_int32_field());
     assert_eq!(10, test_message.int32_field());
     assert!(!test_message.has_bool_field());
-    assert_eq!(false, test_message.bool_field());
+    assert!(!test_message.bool_field());
 
     test_message.set_bool_field(true);
     assert!(test_message.has_bool_field());
-    assert_eq!(true, test_message.bool_field());
+    assert!(test_message.bool_field());
     assert!(!test_message.has_int32_field());
     assert_eq!(0, test_message.int32_field());
 
     test_message.clear_int32_field();
     assert!(!test_message.has_int32_field());
     assert!(!test_message.has_bool_field());
-    assert_eq!(false, test_message.bool_field());
+    assert!(!test_message.bool_field());
     assert_eq!(0, test_message.int32_field());
 }
 

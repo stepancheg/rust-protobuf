@@ -160,7 +160,7 @@ pub trait Message: Default + Clone + Send + Sync + Sized + PartialEq + 'static {
     /// Write the message to bytes vec.
     ///
     /// > **Note**: You can use [`Message::parse_from_bytes`]
-    /// to do the reverse.
+    /// > to do the reverse.
     fn write_to_bytes(&self) -> crate::Result<Vec<u8>> {
         self.check_initialized()?;
 
@@ -194,7 +194,7 @@ pub trait Message: Default + Clone + Send + Sync + Sized + PartialEq + 'static {
 
     /// Get a reference to unknown fields.
     fn unknown_fields(&self) -> &UnknownFields {
-        &self.special_fields().unknown_fields()
+        self.special_fields().unknown_fields()
     }
     /// Get a mutable reference to unknown fields.
     fn mut_unknown_fields(&mut self) -> &mut UnknownFields {

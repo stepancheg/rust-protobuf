@@ -9,6 +9,12 @@ pub struct Lazy<T> {
     once_cell: OnceCell<T>,
 }
 
+impl<T> Default for Lazy<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<T> Lazy<T> {
     /// Uninitialized state.
     pub const fn new() -> Lazy<T> {

@@ -67,7 +67,7 @@ impl<'a> InputBuf<'a> {
     #[inline(always)]
     pub(crate) fn read_byte(&mut self) -> Option<u8> {
         let r = self.remaining_in_buf().first().copied();
-        if let Some(..) = r {
+        if r.is_some() {
             self.pos_within_buf += 1;
         }
         r

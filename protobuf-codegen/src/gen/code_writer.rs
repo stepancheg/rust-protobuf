@@ -23,7 +23,10 @@ impl<'a> CodeWriter<'a> {
     }
 
     pub(crate) fn with_no_error(f: impl FnOnce(&mut CodeWriter)) -> String {
-        Self::with_impl::<Infallible, _>(|w| Ok(f(w))).unwrap_or_else(|e| match e {})
+        Self::with_impl::<Infallible, _>(|w| {
+            f(w);
+            Ok(())
+        }).unwrap_or_else(|e| match e {})
     }
 
     pub(crate) fn with<F>(f: F) -> anyhow::Result<String>
@@ -47,7 +50,7 @@ impl<'a> CodeWriter<'a> {
 
     pub(crate) fn write_line<S: AsRef<str>>(&mut self, line: S) {
         if line.as_ref().is_empty() {
-            self.writer.push_str("\n");
+            self.writer.push('\n');
         } else {
             let s: String = [self.indent.as_ref(), line.as_ref(), "\n"].concat();
             self.writer.push_str(&s);
@@ -96,7 +99,7 @@ impl<'a> CodeWriter<'a> {
     }
 
     pub(crate) fn unimplemented(&mut self) {
-        self.write_line(format!("unimplemented!();"));
+        self.write_line("unimplemented!();");
     }
 
     pub(crate) fn indented<F>(&mut self, cb: F)
@@ -333,8 +336,7 @@ impl<'a> CodeWriter<'a> {
 
         let lines = doc
             .iter()
-            .map(|doc| doc.lines())
-            .flatten()
+            .flat_map(|doc| doc.lines())
             .collect::<Vec<_>>();
 
         // Skip comments with code blocks to avoid rustdoc trying to compile them.

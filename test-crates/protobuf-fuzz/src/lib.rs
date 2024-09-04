@@ -73,7 +73,7 @@ pub fn fuzz_target_map_read(bytes: &[u8]) {
 }
 
 fn test_message<M: MessageFull>(bytes: &[u8]) {
-    if bytes.len() < 1 {
+    if bytes.is_empty() {
         return;
     }
     match bytes[0] {
@@ -87,7 +87,7 @@ fn test_message<M: MessageFull>(bytes: &[u8]) {
 }
 
 pub fn fuzz_target_all(bytes: &[u8]) {
-    if bytes.len() < 1 {
+    if bytes.is_empty() {
         return;
     }
     match bytes[0] {

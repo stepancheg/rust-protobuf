@@ -167,7 +167,7 @@ impl<'a> EnumGen<'a> {
             w.comment("Note: you cannot use pattern matching for enums with allow_alias option");
         }
         w.derive(&derive);
-        let ref type_name = self.type_name;
+        let type_name = &self.type_name;
         write_protoc_insertion_point_for_enum(
             w,
             &self.customize.for_elem,
@@ -294,7 +294,7 @@ impl<'a> EnumGen<'a> {
     }
 
     fn write_impl_enum_full(&self, w: &mut CodeWriter) {
-        let ref type_name = self.type_name;
+        let type_name = &self.type_name;
         w.impl_for_block(
             &format!(
                 "{}::EnumFull",
@@ -351,7 +351,7 @@ impl<'a> EnumGen<'a> {
                 });
                 w.write_line("};");
             }
-            w.write_line(&format!("Self::enum_descriptor().value_by_index(index)"));
+            w.write_line("Self::enum_descriptor().value_by_index(index)");
         });
     }
 

@@ -51,10 +51,7 @@ pub(crate) struct BufReadIter<'a> {
 
 impl<'a> Drop for BufReadIter<'a> {
     fn drop(&mut self) {
-        match self.input_source {
-            InputSource::Read(ref mut buf_read) => buf_read.consume(self.buf.pos_within_buf()),
-            _ => {}
-        }
+        if let InputSource::Read(ref mut buf_read) = self.input_source { buf_read.consume(self.buf.pos_within_buf()) }
     }
 }
 
@@ -93,7 +90,7 @@ impl<'a> BufReadIter<'a> {
     pub(crate) fn from_bytes(bytes: &'a Bytes) -> BufReadIter<'a> {
         BufReadIter {
             input_source: InputSource::Bytes(bytes),
-            buf: InputBuf::from_bytes(&bytes),
+            buf: InputBuf::from_bytes(bytes),
             pos_of_buf_start: 0,
             limit: NO_LIMIT,
         }
@@ -207,22 +204,20 @@ impl<'a> BufReadIter<'a> {
             let r = bytes.slice(self.buf.pos_within_buf()..end);
             self.buf.consume(len);
             Ok(r)
+        } else if len >= READ_RAW_BYTES_MAX_ALLOC {
+            // We cannot trust `len` because protobuf message could be malformed.
+            // Reading should not result in OOM when allocating a buffer.
+            let mut v = Vec::new();
+            self.read_exact_to_vec(len, &mut v)?;
+            Ok(Bytes::from(v))
         } else {
-            if len >= READ_RAW_BYTES_MAX_ALLOC {
-                // We cannot trust `len` because protobuf message could be malformed.
-                // Reading should not result in OOM when allocating a buffer.
-                let mut v = Vec::new();
-                self.read_exact_to_vec(len, &mut v)?;
-                Ok(Bytes::from(v))
-            } else {
-                let mut r = BytesMut::with_capacity(len);
-                unsafe {
-                    let buf = Self::uninit_slice_as_mut_slice(&mut r.chunk_mut()[..len]);
-                    self.read_exact(buf)?;
-                    r.advance_mut(len);
-                }
-                Ok(r.freeze())
+            let mut r = BytesMut::with_capacity(len);
+            unsafe {
+                let buf = Self::uninit_slice_as_mut_slice(&mut r.chunk_mut()[..len]);
+                self.read_exact(buf)?;
+                r.advance_mut(len);
             }
+            Ok(r.freeze())
         }
     }
 
@@ -464,7 +459,7 @@ mod test {
         impl BufRead for Read5ThenPanic {
             fn fill_buf(&mut self) -> io::Result<&[u8]> {
                 assert_eq!(0, self.pos);
-                static ZERO_TO_FIVE: &'static [u8] = &[0, 1, 2, 3, 4];
+                static ZERO_TO_FIVE: &[u8] = &[0, 1, 2, 3, 4];
                 Ok(ZERO_TO_FIVE)
             }
 

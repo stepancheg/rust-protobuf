@@ -8,5 +8,5 @@ fn test() {
 
     // Check that field is public
     // even if it's not requested explicitly
-    WithoutAccessors::new().f;
+    WithoutAccessors::new();
 }

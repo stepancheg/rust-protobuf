@@ -1,5 +1,5 @@
-#[cfg_attr(rustfmt, rustfmt_skip)]
-static RUST_KEYWORDS: &'static [&'static str] = &[
+#[rustfmt::skip]
+static RUST_KEYWORDS: &[&str] = &[
     "_",
     "as",
     "async",
@@ -59,8 +59,8 @@ static RUST_KEYWORDS: &'static [&'static str] = &[
 ];
 
 // https://internals.rust-lang.org/t/raw-identifiers-dont-work-for-all-identifiers/9094/3
-#[cfg_attr(rustfmt, rustfmt_skip)]
-static RUST_KEYWORDS_WHICH_CANNOT_BE_RAW: &'static [&'static str] = &[
+#[rustfmt::skip]
+static RUST_KEYWORDS_WHICH_CANNOT_BE_RAW: &[&str] = &[
     "super",
     "self",
     "Self",
@@ -81,6 +81,5 @@ pub(crate) fn is_rust_keyword_which_cannot_be_raw(ident: &str) -> bool {
     RUST_KEYWORDS_WHICH_CANNOT_BE_RAW
         .iter()
         .cloned()
-        .find(|&kw| kw == ident)
-        .is_some()
+        .any(|kw| kw == ident)
 }

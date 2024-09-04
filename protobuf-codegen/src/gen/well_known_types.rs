@@ -32,7 +32,7 @@ pub(crate) static WELL_KNOWN_TYPES_PROTO_FILE_FULL_NAMES: &[&str] = &[
     "google/protobuf/wrappers.proto",
 ];
 
-static NAMES: &'static [&'static str] = &[
+static NAMES: &[&str] = &[
     "Any",
     "Api",
     "BoolValue",

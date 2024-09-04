@@ -36,5 +36,5 @@ fn parse_recursively(path: &Path) {
 #[test]
 fn test() {
     let path = &Path::new("../google-protobuf-all-protos/protobuf");
-    parse_recursively(&Path::new(path));
+    parse_recursively(Path::new(path));
 }

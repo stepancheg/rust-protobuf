@@ -64,7 +64,7 @@ where
         protobuf_path: &ProtoPath,
         result: &mut IndexMap<ProtoPathBuf, FileDescriptorPair>,
     ) {
-        if let Some(_) = result.get(protobuf_path) {
+        if result.get(protobuf_path).is_some() {
             return;
         }
 
@@ -95,7 +95,7 @@ where
         let content = str::from_utf8(&resolved.content)
             .map_err(|_| ParseAndTypeckError::FileContentIsNotUtf8(protobuf_path.to_string()))?;
 
-        let parsed = model::FileDescriptor::parse(&content).map_err(|e| WithFileError {
+        let parsed = model::FileDescriptor::parse(content).map_err(|e| WithFileError {
             file: resolved.path.clone(),
             error: e.into(),
         })?;
@@ -112,7 +112,7 @@ where
         let descriptor_proto = convert::file_descriptor(protobuf_path, &parsed, &this_file_deps)
             .map_err(|e| WithFileError {
                 file: resolved.path.clone(),
-                error: e.into(),
+                error: e,
             })?;
 
         let deps: Vec<FileDescriptor> = self
@@ -135,7 +135,7 @@ where
     }
 
     fn add_imported_file(&mut self, protobuf_path: &ProtoPath) -> anyhow::Result<()> {
-        if let Some(_) = self.parsed_files.get(protobuf_path) {
+        if self.parsed_files.get(protobuf_path).is_some() {
             return Ok(());
         }
 

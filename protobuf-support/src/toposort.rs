@@ -92,7 +92,7 @@ mod tests {
                 .get(k)
                 .map(|v| v.as_slice())
                 .unwrap_or_default()
-                .into_iter()
+                .iter()
                 .copied()
         })
     }

@@ -207,7 +207,7 @@ impl<'a> MessageGen<'a> {
                 |w| {
                     w.match_block("v", |w| {
                         for variant in variants {
-                            let ref field = variant.field;
+                            let field = &variant.field;
 
                             let (refv, vtype) = if field.elem_type_is_copy() {
                                 ("v", variant.rust_type(&self.file_and_mod()))
@@ -450,7 +450,7 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_is_initialized(&self, w: &mut CodeWriter) {
-        w.def_fn(&format!("is_initialized(&self) -> bool"), |w| {
+        w.def_fn("is_initialized(&self) -> bool", |w| {
             if !self.message.message.is_initialized_is_always_true() {
                 // TODO: use single loop
 
@@ -684,7 +684,7 @@ impl<'a> MessageGen<'a> {
             self.write_impl_value(w);
         }
 
-        let mod_name = message_name_to_nested_mod_name(&self.message.message.name());
+        let mod_name = message_name_to_nested_mod_name(self.message.message.name());
 
         let oneofs = self.oneofs();
         let nested_messages: Vec<_> = self
@@ -733,7 +733,7 @@ impl<'a> MessageGen<'a> {
                     }
                     first = false;
                     MessageGen::new(
-                        &self.file_descriptor,
+                        self.file_descriptor,
                         nested,
                         self.root_scope,
                         &self.customize,

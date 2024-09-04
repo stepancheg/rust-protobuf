@@ -22,12 +22,12 @@ impl Token {
     /// Back to original
     pub fn format(&self) -> String {
         match self {
-            &Token::Ident(ref s) => s.clone(),
+            Token::Ident(s) => s.clone(),
             &Token::Symbol(c) => c.to_string(),
-            &Token::IntLit(ref i) => i.to_string(),
-            &Token::StrLit(ref s) => s.quoted(),
-            &Token::FloatLit(ref f) => f.to_string(),
-            &Token::JsonNumber(ref f) => f.to_string(),
+            Token::IntLit(i) => i.to_string(),
+            Token::StrLit(s) => s.quoted(),
+            Token::FloatLit(f) => f.to_string(),
+            Token::JsonNumber(f) => f.to_string(),
         }
     }
 

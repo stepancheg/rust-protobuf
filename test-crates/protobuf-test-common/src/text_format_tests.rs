@@ -36,8 +36,7 @@ fn parse_using_protoc(text: &str, message_descriptor: &MessageDescriptor) -> Box
         descriptor::file_descriptor().proto().clone(),
         rustproto::file_descriptor().proto().clone(),
         message_descriptor.file_descriptor_proto().clone(),
-    ]
-    .into();
+    ];
 
     let mut temp_file = temp_dir.path().to_owned();
     temp_file.push("fds");
@@ -46,7 +45,7 @@ fn parse_using_protoc(text: &str, message_descriptor: &MessageDescriptor) -> Box
 
     // TODO: use protoc crate
     let mut protoc = process::Command::new("protoc")
-        .args(&[
+        .args([
             &format!(
                 "--descriptor_set_in={}",
                 temp_file.to_str().expect("to_str")
@@ -103,8 +102,7 @@ fn print_using_protoc(message: &dyn MessageDyn) -> String {
         descriptor::file_descriptor().proto().clone(),
         rustproto::file_descriptor().proto().clone(),
         message_descriptor.file_descriptor_proto().clone(),
-    ]
-    .into();
+    ];
 
     let mut temp_file = temp_dir.path().to_owned();
     temp_file.push("fds");
@@ -113,7 +111,7 @@ fn print_using_protoc(message: &dyn MessageDyn) -> String {
 
     // TODO: use protoc crate
     let mut protoc = process::Command::new("protoc")
-        .args(&[
+        .args([
             &format!(
                 "--descriptor_set_in={}",
                 temp_file.to_str().expect("to_str")
@@ -154,7 +152,7 @@ fn print_using_protoc(message: &dyn MessageDyn) -> String {
 
 pub fn test_text_format_str_descriptor(text: &str, message_descriptor: &MessageDescriptor) {
     let message = parse_using_rust_protobuf(text, message_descriptor)
-        .expect(format!("parse_using_rust_protobuf: {:?}", &text).as_str());
+        .unwrap_or_else(|_| panic!("parse_using_rust_protobuf: {:?}", &text));
     let expected = parse_using_protoc(text, message_descriptor);
 
     assert!(
@@ -167,7 +165,7 @@ pub fn test_text_format_str_descriptor(text: &str, message_descriptor: &MessageD
     // print using protoc and parse using rust-protobuf
     let printed_using_protoc = print_using_protoc(&*message);
     let pp = parse_using_rust_protobuf(&printed_using_protoc, message_descriptor)
-        .expect(format!("parse_using_rust_protobuf: {:?}", &printed_using_protoc).as_str());
+        .unwrap_or_else(|_| panic!("parse_using_rust_protobuf: {:?}", &printed_using_protoc));
 
     assert!(
         message_descriptor.eq(&*expected, &*pp),
@@ -190,7 +188,7 @@ pub fn test_text_format_message(message: &dyn MessageDyn) {
     let printed_with_protoc = print_using_protoc(message);
 
     let from_protoc = parse_using_rust_protobuf(&printed_with_protoc, &descriptor)
-        .expect(format!("parse_using_rust_protobuf: {:?}", &printed_with_protoc).as_str());
+        .unwrap_or_else(|_| panic!("parse_using_rust_protobuf: {:?}", &printed_with_protoc));
     let from_protobuf = parse_using_protoc(&printed_with_rust_protobuf, &descriptor);
 
     assert!(

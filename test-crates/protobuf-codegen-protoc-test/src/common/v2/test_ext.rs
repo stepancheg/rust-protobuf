@@ -18,7 +18,7 @@ fn test_get() {
     assert_eq!(16, exts::fixed64_field.get(message).unwrap_or_default());
     assert_eq!(7, exts::sfixed32_field.get(message).unwrap_or_default());
     assert_eq!(-17, exts::sfixed64_field.get(message).unwrap_or_default());
-    assert_eq!(true, exts::bool_field.get(message).unwrap_or_default());
+    assert!(exts::bool_field.get(message).unwrap_or_default());
     assert_eq!(
         "Hello world!",
         exts::string_field.get(message).unwrap_or_default()

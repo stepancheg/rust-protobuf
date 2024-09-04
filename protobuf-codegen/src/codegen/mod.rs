@@ -15,16 +15,13 @@ use crate::gen_and_write::gen_and_write;
 use crate::Customize;
 
 #[derive(Debug)]
+#[derive(Default)]
 enum WhichParser {
+    #[default]
     Pure,
     Protoc,
 }
 
-impl Default for WhichParser {
-    fn default() -> WhichParser {
-        WhichParser::Pure
-    }
-}
 
 #[derive(Debug, thiserror::Error)]
 enum CodegenError {
@@ -221,9 +218,9 @@ impl Codegen {
 
         if self.create_out_dir {
             if out_dir.exists() {
-                fs::remove_dir_all(&out_dir)?;
+                fs::remove_dir_all(out_dir)?;
             }
-            fs::create_dir(&out_dir)?;
+            fs::create_dir(out_dir)?;
         }
 
         let mut parser = Parser::new();
@@ -257,7 +254,7 @@ impl Codegen {
             &parsed_and_typechecked.file_descriptors,
             &parsed_and_typechecked.parser,
             &parsed_and_typechecked.relative_paths,
-            &out_dir,
+            out_dir,
             &self.customize,
             &*self.customize_callback,
         )

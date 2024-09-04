@@ -75,11 +75,11 @@ fn data_impl<V: ProtobufValue, X: ProtobufValue>(v: &Vec<V>) -> &[X] {
 }
 
 impl<V: ProtobufValue> ReflectRepeated for Vec<V> {
-    fn reflect_iter<'a>(&'a self) -> ReflectRepeatedIter<'a> {
+    fn reflect_iter(&self) -> ReflectRepeatedIter<'_> {
         ReflectRepeatedIter::new_slice(self.as_slice())
     }
 
-    fn reflect_drain_iter<'a>(&'a mut self) -> ReflectRepeatedDrainIter<'a> {
+    fn reflect_drain_iter(&mut self) -> ReflectRepeatedDrainIter<'_> {
         ReflectRepeatedDrainIter::new_vec(self)
     }
 
@@ -128,7 +128,7 @@ impl<V: ProtobufValue> ReflectRepeated for Vec<V> {
     }
 
     fn data_enum_values(&self) -> &[i32] {
-        V::RuntimeType::cast_to_enum_values(&self)
+        V::RuntimeType::cast_to_enum_values(self)
     }
 
     fn data_bool(&self) -> &[bool] {
@@ -337,7 +337,7 @@ impl<'a> PartialEq<[ReflectValueBox]> for ReflectRepeatedRef<'a> {
             }
         }
 
-        return true;
+        true
     }
 }
 
