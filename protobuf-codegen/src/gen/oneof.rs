@@ -205,7 +205,8 @@ impl<'a> OneofGen<'a> {
                 let field = self
                     .message
                     .fields
-                    .iter().find(|f| f.proto_field.name() == v.field.name())
+                    .iter()
+                    .find(|f| f.proto_field.name() == v.field.name())
                     .unwrap_or_else(|| panic!("field not found by name: {}", v.field.name()));
                 match field.proto_type {
                     field_descriptor_proto::Type::TYPE_GROUP => None,

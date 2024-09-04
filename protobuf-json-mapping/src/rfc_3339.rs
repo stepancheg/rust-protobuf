@@ -12,7 +12,9 @@ fn is_leap_year(year: i64) -> bool {
         false
     } else if year % 100 != 0 {
         true
-    } else { year % 400 == 0 }
+    } else {
+        year % 400 == 0
+    }
 }
 
 fn days_in_year(year: i64) -> u32 {

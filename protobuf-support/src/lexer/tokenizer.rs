@@ -306,7 +306,8 @@ mod test {
         P: FnOnce(&mut Tokenizer) -> TokenizerResult<R>,
     {
         let mut tokenizer = Tokenizer::new(input, ParserLanguage::Proto);
-        let r = what(&mut tokenizer).unwrap_or_else(|_| panic!("parse failed at {}", tokenizer.loc()));
+        let r =
+            what(&mut tokenizer).unwrap_or_else(|_| panic!("parse failed at {}", tokenizer.loc()));
         let eof = tokenizer
             .syntax_eof()
             .unwrap_or_else(|_| panic!("check eof failed at {}", tokenizer.loc()));

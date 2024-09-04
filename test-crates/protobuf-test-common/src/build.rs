@@ -77,7 +77,8 @@ fn clean_recursively(dir: &Path, patterns: &[&str]) {
         } else {
             for pattern in &patterns_compiled {
                 if pattern.matches(file_name) {
-                    fs::remove_file(&entry_path).unwrap_or_else(|_| panic!("remove_file {:?}", entry_path));
+                    fs::remove_file(&entry_path)
+                        .unwrap_or_else(|_| panic!("remove_file {:?}", entry_path));
                     break;
                 }
             }
@@ -160,7 +161,8 @@ fn test_version_from_file_path(mut file_path: &Path) -> TestProtobufVersions {
 }
 
 fn test_version_from_file_content(file_path: &Path) -> ProtobufSyntax {
-    let content = fs::read_to_string(file_path).unwrap_or_else(|_| panic!("read_to_string {:?}", file_path));
+    let content =
+        fs::read_to_string(file_path).unwrap_or_else(|_| panic!("read_to_string {:?}", file_path));
     if content.contains("syntax = \"proto2\"") {
         ProtobufSyntax::V2
     } else if content.contains("syntax = \"proto3\"") {

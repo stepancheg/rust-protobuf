@@ -1,4 +1,3 @@
-
 use super::test_oneof_nonexhaustive_pb::*;
 
 #[test]

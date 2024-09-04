@@ -14,14 +14,12 @@ use crate::customize::CustomizeCallbackHolder;
 use crate::gen_and_write::gen_and_write;
 use crate::Customize;
 
-#[derive(Debug)]
-#[derive(Default)]
+#[derive(Debug, Default)]
 enum WhichParser {
     #[default]
     Pure,
     Protoc,
 }
-
 
 #[derive(Debug, thiserror::Error)]
 enum CodegenError {

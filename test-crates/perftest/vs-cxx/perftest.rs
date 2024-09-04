@@ -110,10 +110,7 @@ fn main() {
     if args.len() > 3 {
         panic!("usage: {} [data_size] [test]", args[0])
     }
-    let data_size = args
-        .get(1)
-        .map(|x| x.parse().unwrap())
-        .unwrap_or(1000000);
+    let data_size = args.get(1).map(|x| x.parse().unwrap()).unwrap_or(1000000);
     let selected = args.get(2).cloned();
 
     let mut runner = TestRunner {

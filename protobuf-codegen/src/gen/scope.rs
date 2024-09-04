@@ -94,7 +94,8 @@ impl<'a> FileScope<'a> {
         name: &ProtobufRelPathRef,
     ) -> Option<MessageOrEnumWithScope<'a>> {
         self.find_messages_and_enums()
-            .into_iter().find(|e| e.protobuf_name_to_package().as_ref() == name)
+            .into_iter()
+            .find(|e| e.protobuf_name_to_package().as_ref() == name)
     }
 
     fn find_message_or_enum_abs(
@@ -206,11 +207,7 @@ impl<'a> Scope<'a> {
         self.messages()
             .into_iter()
             .map(MessageOrEnumWithScope::Message)
-            .chain(
-                self.enums()
-                    .into_iter()
-                    .map(MessageOrEnumWithScope::Enum),
-            )
+            .chain(self.enums().into_iter().map(MessageOrEnumWithScope::Enum))
             .collect()
     }
 
@@ -481,9 +478,9 @@ impl<'a> FieldWithContext<'a> {
 
     pub fn oneof(&self) -> Option<OneofWithContext<'a>> {
         self.field.containing_oneof().map(|oneof| OneofWithContext {
-                message: self.message.clone(),
-                oneof,
-            })
+            message: self.message.clone(),
+            oneof,
+        })
     }
 }
 

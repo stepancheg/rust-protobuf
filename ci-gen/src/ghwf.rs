@@ -3,15 +3,13 @@ use std::fmt;
 use crate::yaml::Yaml;
 
 #[allow(dead_code)]
-#[derive(Copy, Clone, Eq, PartialEq)]
-#[derive(Default)]
+#[derive(Copy, Clone, Eq, PartialEq, Default)]
 pub enum Env {
     WindowsLatest,
     #[default]
     UbuntuLatest,
     MacosLatest,
 }
-
 
 impl fmt::Display for Env {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {

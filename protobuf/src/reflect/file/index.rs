@@ -393,9 +393,11 @@ impl FileDescriptorCommon {
                 return Err(ReflectError::NonUniqueFieldName(f.name().to_owned()).into());
             }
 
-            if field_index.json_name != f.name() && index_by_name_or_json_name
+            if field_index.json_name != f.name()
+                && index_by_name_or_json_name
                     .insert(field_index.json_name.clone(), i)
-                    .is_some() {
+                    .is_some()
+            {
                 return Err(ReflectError::NonUniqueFieldName(f.name().to_owned()).into());
             }
         }

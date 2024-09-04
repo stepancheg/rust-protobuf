@@ -605,26 +605,28 @@ impl<'a> OptionResoler<'a> {
                 TypeResolved::Bytes => return Ok(UnknownValue::LengthDelimited(s.decode_bytes()?)),
                 _ => {}
             },
-            model::ProtobufConstant::Ident(ident) => if let TypeResolved::Enum(e) = &field_type {
-                let e = self
-                    .resolver
-                    .find_enum_by_abs_name(e)
-                    .map_err(OptionResolverError::OtherError)?;
-                let n = match e
-                    .values
-                    .iter()
-                    .find(|v| v.name == format!("{}", ident))
-                    .map(|v| v.number)
-                {
-                    Some(n) => n,
-                    None => {
-                        return Err(
-                            OptionResolverError::UnknownEnumValue(ident.to_string()).into()
-                        )
-                    }
-                };
-                return Ok(UnknownValue::int32(n));
-            },
+            model::ProtobufConstant::Ident(ident) => {
+                if let TypeResolved::Enum(e) = &field_type {
+                    let e = self
+                        .resolver
+                        .find_enum_by_abs_name(e)
+                        .map_err(OptionResolverError::OtherError)?;
+                    let n = match e
+                        .values
+                        .iter()
+                        .find(|v| v.name == format!("{}", ident))
+                        .map(|v| v.number)
+                    {
+                        Some(n) => n,
+                        None => {
+                            return Err(
+                                OptionResolverError::UnknownEnumValue(ident.to_string()).into()
+                            )
+                        }
+                    };
+                    return Ok(UnknownValue::int32(n));
+                }
+            }
             model::ProtobufConstant::Message(mo) => {
                 return self.option_value_message_to_unknown_value(
                     field_type,
@@ -651,8 +653,7 @@ impl<'a> OptionResoler<'a> {
         option_name_for_diag: &str,
     ) -> anyhow::Result<UnknownValue> {
         let field_type = self.resolver.field_type(scope, name, field_type)?;
-        self
-            .option_value_to_unknown_value(&field_type, value, option_name_for_diag)
+        self.option_value_to_unknown_value(&field_type, value, option_name_for_diag)
             .context("parsing custom option value")
     }
 
@@ -666,7 +667,9 @@ impl<'a> OptionResoler<'a> {
     where
         M: MessageFull,
     {
-        if M::descriptor().full_name() == "google.protobuf.FieldOptions" && (option.get() == "default" || option.get() == "json_name") {
+        if M::descriptor().full_name() == "google.protobuf.FieldOptions"
+            && (option.get() == "default" || option.get() == "json_name")
+        {
             // some options are written to non-options message and handled outside
             return Ok(());
         }

@@ -26,7 +26,8 @@ impl<'a> CodeWriter<'a> {
         Self::with_impl::<Infallible, _>(|w| {
             f(w);
             Ok(())
-        }).unwrap_or_else(|e| match e {})
+        })
+        .unwrap_or_else(|e| match e {})
     }
 
     pub(crate) fn with<F>(f: F) -> anyhow::Result<String>
@@ -334,10 +335,7 @@ impl<'a> CodeWriter<'a> {
             .and_then(|ls| ls.iter().find(|l| l.path == path))
             .map(|l| l.leading_comments());
 
-        let lines = doc
-            .iter()
-            .flat_map(|doc| doc.lines())
-            .collect::<Vec<_>>();
+        let lines = doc.iter().flat_map(|doc| doc.lines()).collect::<Vec<_>>();
 
         // Skip comments with code blocks to avoid rustdoc trying to compile them.
         if !lines.iter().any(|line| line.starts_with("    ")) {

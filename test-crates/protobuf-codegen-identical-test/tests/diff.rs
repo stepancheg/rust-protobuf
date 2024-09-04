@@ -329,8 +329,8 @@ where
         normalize_generated_file_in_place(Path::new(&protoc_rs));
         normalize_generated_file_in_place(Path::new(&pure_rs));
 
-        let protoc_rs_contents =
-            fs::read_to_string(&protoc_rs).unwrap_or_else(|_| panic!("while reading {}", protoc_rs));
+        let protoc_rs_contents = fs::read_to_string(&protoc_rs)
+            .unwrap_or_else(|_| panic!("while reading {}", protoc_rs));
         let pure_rs_contents =
             fs::read_to_string(&pure_rs).unwrap_or_else(|_| panic!("while reading {}", pure_rs));
 

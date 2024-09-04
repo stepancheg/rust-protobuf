@@ -528,8 +528,7 @@ impl<'a> CodedInputStream<'a> {
             WireType::Fixed32 => self.read_fixed32().map(UnknownValue::Fixed32),
             WireType::LengthDelimited => {
                 let len = self.read_raw_varint32()?;
-                self.read_raw_bytes(len)
-                    .map(UnknownValue::LengthDelimited)
+                self.read_raw_bytes(len).map(UnknownValue::LengthDelimited)
             }
             WireType::StartGroup => {
                 self.skip_group()?;

@@ -51,7 +51,9 @@ pub(crate) struct BufReadIter<'a> {
 
 impl<'a> Drop for BufReadIter<'a> {
     fn drop(&mut self) {
-        if let InputSource::Read(ref mut buf_read) = self.input_source { buf_read.consume(self.buf.pos_within_buf()) }
+        if let InputSource::Read(ref mut buf_read) = self.input_source {
+            buf_read.consume(self.buf.pos_within_buf())
+        }
     }
 }
 

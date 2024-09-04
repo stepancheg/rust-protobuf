@@ -61,15 +61,13 @@ pub struct YamlWriter {
     minus: MinusState,
 }
 
-#[derive(Eq, PartialEq)]
-#[derive(Default)]
+#[derive(Eq, PartialEq, Default)]
 enum MinusState {
     #[default]
     No,
     Yes,
     Already,
 }
-
 
 impl YamlWriter {
     pub fn write_line(&mut self, line: &str) {

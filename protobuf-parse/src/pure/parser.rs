@@ -1292,8 +1292,8 @@ mod test {
         P: FnOnce(&mut Parser) -> anyhow::Result<R>,
     {
         let mut parser = Parser::new(input);
-        let r =
-            parse_what(&mut parser).unwrap_or_else(|_| panic!("parse failed at {}", parser.tokenizer.loc()));
+        let r = parse_what(&mut parser)
+            .unwrap_or_else(|_| panic!("parse failed at {}", parser.tokenizer.loc()));
         let eof = parser
             .tokenizer
             .syntax_eof()
@@ -1307,10 +1307,9 @@ mod test {
         P: FnOnce(&mut Parser) -> anyhow::Result<Option<R>>,
     {
         let mut parser = Parser::new(input);
-        let o =
-            parse_what(&mut parser).unwrap_or_else(|_| panic!("parse failed at {}", parser.tokenizer.loc()));
-        let r = o.unwrap_or_else(|| panic!("parser returned none at {}",
-            parser.tokenizer.loc()));
+        let o = parse_what(&mut parser)
+            .unwrap_or_else(|_| panic!("parse failed at {}", parser.tokenizer.loc()));
+        let r = o.unwrap_or_else(|| panic!("parser returned none at {}", parser.tokenizer.loc()));
         assert!(parser.tokenizer.syntax_eof().unwrap());
         r
     }

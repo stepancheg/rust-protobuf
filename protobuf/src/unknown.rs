@@ -167,7 +167,11 @@ impl UnknownValues {
             Some(UnknownValueRef::Fixed64(*last))
         } else if let Some(last) = self.varint.last() {
             Some(UnknownValueRef::Varint(*last))
-        } else { self.length_delimited.last().map(|last| UnknownValueRef::LengthDelimited(last)) }
+        } else {
+            self.length_delimited
+                .last()
+                .map(|last| UnknownValueRef::LengthDelimited(last))
+        }
     }
 }
 
