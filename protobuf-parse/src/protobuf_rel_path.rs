@@ -23,7 +23,7 @@ impl From<&'_ str> for ProtobufRelPath {
 
 impl ProtobufRelPathRef {
     pub fn as_str(&self) -> &str {
-        &self
+        self
     }
 
     pub fn empty() -> &'static ProtobufRelPathRef {
@@ -57,7 +57,7 @@ impl ProtobufRelPathRef {
     pub fn components(&self) -> impl Iterator<Item = &ProtobufIdentRef> {
         iter::once(&self.0)
             .filter(|s| !s.is_empty())
-            .flat_map(|p| p.split('.').map(|s| ProtobufIdentRef::new(s)))
+            .flat_map(|p| p.split('.').map(ProtobufIdentRef::new))
     }
 
     fn parent(&self) -> Option<&ProtobufRelPathRef> {
@@ -115,7 +115,7 @@ impl ProtobufRelPathRef {
 
 impl ProtobufRelPath {
     pub fn as_ref(&self) -> &ProtobufRelPathRef {
-        &self
+        self
     }
 
     pub fn empty() -> ProtobufRelPath {

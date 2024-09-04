@@ -53,10 +53,10 @@ impl From<String> for Chars {
     }
 }
 
-impl Into<String> for Chars {
-    fn into(self) -> String {
+impl From<Chars> for String {
+    fn from(val: Chars) -> Self {
         // This is safe because `Chars` is guaranteed to store a valid UTF-8 string
-        unsafe { String::from_utf8_unchecked(self.0.as_ref().to_owned()) }
+        unsafe { String::from_utf8_unchecked(val.0.as_ref().to_owned()) }
     }
 }
 
@@ -77,7 +77,7 @@ impl Deref for Chars {
 
 impl Borrow<str> for Chars {
     fn borrow(&self) -> &str {
-        &*self
+        self
     }
 }
 

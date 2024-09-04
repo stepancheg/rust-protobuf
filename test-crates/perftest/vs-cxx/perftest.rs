@@ -32,7 +32,7 @@ struct TestRunner {
 
 impl TestRunner {
     fn run_test<M: MessageFull + Clone + PartialEq>(&self, name: &str, data: &[M]) {
-        assert!(data.len() > 0, "empty string for test: {}", name);
+        assert!(!data.is_empty(), "empty string for test: {}", name);
 
         let mut rng: StdRng = SeedableRng::from_seed([
             10, 20, 30, 40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -43,7 +43,7 @@ impl TestRunner {
 
         let mut total_size = 0;
         while total_size < self.data_size {
-            let ref item = data[rng.gen_range(0, data.len())];
+            let item = &data[rng.gen_range(0, data.len())];
             random_data.push(item.clone());
             total_size += item.compute_size() as u32;
         }
@@ -110,20 +110,16 @@ fn main() {
     if args.len() > 3 {
         panic!("usage: {} [data_size] [test]", args[0])
     }
-    let data_size = args
-        .iter()
-        .nth(1)
-        .map(|x| x.parse().unwrap())
-        .unwrap_or(1000000);
-    let selected = args.iter().nth(2).cloned();
+    let data_size = args.get(1).map(|x| x.parse().unwrap()).unwrap_or(1000000);
+    let selected = args.get(2).cloned();
 
     let mut runner = TestRunner {
-        selected: selected,
+        selected,
         any_matched: false,
-        data_size: data_size,
+        data_size,
     };
 
-    let mut is = File::open(&Path::new("perftest_data.pbbin")).unwrap();
+    let mut is = File::open(Path::new("perftest_data.pbbin")).unwrap();
     let test_data = PerftestData::parse_from_reader(&mut is).unwrap();
 
     runner.test("test1", &test_data.test1);

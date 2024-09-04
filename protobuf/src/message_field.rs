@@ -75,13 +75,13 @@ impl<T> MessageField<T> {
     /// View data as reference option.
     #[inline]
     pub fn as_ref(&self) -> Option<&T> {
-        self.0.as_ref().map(|v| &**v)
+        self.0.as_deref()
     }
 
     /// View data as mutable reference option.
     #[inline]
     pub fn as_mut(&mut self) -> Option<&mut T> {
-        self.0.as_mut().map(|v| &mut **v)
+        self.0.as_deref_mut()
     }
 
     /// Take the data.

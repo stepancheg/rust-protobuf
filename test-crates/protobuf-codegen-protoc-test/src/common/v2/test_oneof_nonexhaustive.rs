@@ -1,6 +1,3 @@
-use protobuf::OneofFull;
-use protobuf_test_common::*;
-
 use super::test_oneof_nonexhaustive_pb::*;
 
 #[test]

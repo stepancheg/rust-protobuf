@@ -31,7 +31,7 @@ fn main() {
     Codegen::new()
         .cargo_out_dir("protos")
         .include("src")
-        .inputs(&["src/customize_example.proto"])
+        .inputs(["src/customize_example.proto"])
         .customize_callback(GenSerde)
         .run_from_script();
 }

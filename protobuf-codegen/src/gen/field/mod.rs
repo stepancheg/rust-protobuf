@@ -47,7 +47,7 @@ use crate::gen::scope::FieldWithContext;
 use crate::gen::scope::MessageWithScope;
 use crate::gen::scope::RootScope;
 
-fn field_type_protobuf_name<'a>(field: &'a FieldDescriptorProto) -> &'a str {
+fn field_type_protobuf_name(field: &FieldDescriptorProto) -> &str {
     if field.has_type_name() {
         field.type_name()
     } else {
@@ -250,7 +250,7 @@ impl<'a> FieldGen<'a> {
 
         Ok(FieldGen {
             syntax: field.message.message.file_descriptor().syntax(),
-            rust_name: rust_field_name_for_protobuf_field_name(&field.field.name()),
+            rust_name: rust_field_name_for_protobuf_field_name(field.field.name()),
             proto_type: field.field.proto().type_(),
             wire_type: WireType::for_type(field.field.proto().type_()),
             proto_field: field,
@@ -291,9 +291,9 @@ impl<'a> FieldGen<'a> {
 
     pub(crate) fn elem(&self) -> &FieldElem {
         match self.kind {
-            FieldKind::Singular(SingularField { ref elem, .. }) => &elem,
-            FieldKind::Repeated(RepeatedField { ref elem, .. }) => &elem,
-            FieldKind::Oneof(OneofField { ref elem, .. }) => &elem,
+            FieldKind::Singular(SingularField { ref elem, .. }) => elem,
+            FieldKind::Repeated(RepeatedField { ref elem, .. }) => elem,
+            FieldKind::Oneof(OneofField { ref elem, .. }) => elem,
             FieldKind::Map(..) => unreachable!(),
         }
     }
@@ -423,9 +423,9 @@ impl<'a> FieldGen<'a> {
             ReflectValueRef::String(v) => quote_escape_str(v),
             ReflectValueRef::Bytes(v) => quote_escape_bytes(v),
             ReflectValueRef::F32(v) => Self::defaut_value_from_proto_float(v as f64, "f32"),
-            ReflectValueRef::F64(v) => Self::defaut_value_from_proto_float(v as f64, "f64"),
+            ReflectValueRef::F64(v) => Self::defaut_value_from_proto_float(v, "f64"),
             ReflectValueRef::Enum(_e, _v) => {
-                if let &FieldElem::Enum(ref e) = elem {
+                if let FieldElem::Enum(e) = elem {
                     format!("{}", e.default_value_rust_expr(&self.file_and_mod()))
                 } else {
                     unreachable!()
@@ -988,14 +988,10 @@ impl<'a> FieldGen<'a> {
     fn write_merge_from_map_case_block(&self, map: &MapField, w: &mut CodeWriter) {
         let MapField { key, value, .. } = map;
         w.case_block(&format!("{}", self.tag()), |w| {
-            w.write_line(&format!("let len = is.read_raw_varint32()?;",));
-            w.write_line(&format!("let old_limit = is.push_limit(len as u64)?;"));
-            w.write_line(&format!(
-                "let mut key = ::std::default::Default::default();"
-            ));
-            w.write_line(&format!(
-                "let mut value = ::std::default::Default::default();"
-            ));
+            w.write_line("let len = is.read_raw_varint32()?;");
+            w.write_line("let old_limit = is.push_limit(len as u64)?;");
+            w.write_line("let mut key = ::std::default::Default::default();");
+            w.write_line("let mut value = ::std::default::Default::default();");
             w.while_block("let Some(tag) = is.read_raw_tag_or_eof()?", |w| {
                 w.match_block("tag", |w| {
                     let key_tag = make_tag(1, WireType::for_type(key.proto_type()));
@@ -1017,7 +1013,7 @@ impl<'a> FieldGen<'a> {
                     );
                 });
             });
-            w.write_line(&format!("is.pop_limit(old_limit);"));
+            w.write_line("is.pop_limit(old_limit);");
             w.write_line(&format!(
                 "{field}.insert(key, value);",
                 field = self.self_field()
@@ -1169,7 +1165,7 @@ impl<'a> FieldGen<'a> {
         match &self.kind {
             FieldKind::Singular(s @ SingularField { elem, .. }) => {
                 self.write_if_let_self_field_is_some(s, w, |v, w| {
-                    self.write_write_element(&elem, w, os, &v);
+                    self.write_write_element(elem, w, os, v);
                 });
             }
             FieldKind::Repeated(RepeatedField {
@@ -1244,7 +1240,7 @@ impl<'a> FieldGen<'a> {
         match &self.kind {
             FieldKind::Singular(s @ SingularField { elem, .. }) => {
                 self.write_if_let_self_field_is_some(s, w, |v, w| {
-                    self.write_element_size(&elem, w, v, sum_var)
+                    self.write_element_size(elem, w, v, sum_var)
                 });
             }
             FieldKind::Repeated(RepeatedField {
@@ -1294,7 +1290,7 @@ impl<'a> FieldGen<'a> {
             SingularFieldFlag::WithoutFlag => unimplemented!(),
             SingularFieldFlag::WithFlag { option_kind, .. } => {
                 let self_field = self.self_field();
-                let ref field_type_name = self.elem().rust_storage_elem_type(
+                let field_type_name = &self.elem().rust_storage_elem_type(
                     &self
                         .proto_field
                         .message
@@ -1324,10 +1320,10 @@ impl<'a> FieldGen<'a> {
                 w.write_line(&format!("self.{}.enum_value_or_default()", self.rust_name));
             }
             SingularFieldFlag::WithFlag { .. } => {
-                w.match_expr(&self.self_field(), |w| {
+                w.match_expr(self.self_field(), |w| {
                     let default_value = self.xxx_default_value_rust();
                     w.case_expr("Some(e)", &format!("e.enum_value_or({})", default_value));
-                    w.case_expr("None", &format!("{}", default_value));
+                    w.case_expr("None", &default_value);
                 });
             }
         }
@@ -1764,7 +1760,7 @@ impl<'a> FieldGen<'a> {
             } => {
                 if !elem.is_copy() {
                     w.write_line(
-                        &option_kind.unwrap_or_else(
+                        option_kind.unwrap_or_else(
                             &format!("{}.take()", self.self_field()),
                             &elem
                                 .rust_storage_elem_type(
@@ -1819,7 +1815,7 @@ impl<'a> FieldGen<'a> {
                 take_xxx_return_type.to_code(&self.customize)
             ),
             |w| match self.kind {
-                FieldKind::Singular(ref s) => self.write_message_field_take_singular(&s, w),
+                FieldKind::Singular(ref s) => self.write_message_field_take_singular(s, w),
                 FieldKind::Oneof(ref o) => self.write_message_field_take_oneof(o, w),
                 FieldKind::Repeated(..) | FieldKind::Map(..) => {
                     w.write_line(&format!(

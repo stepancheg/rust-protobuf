@@ -203,13 +203,11 @@ fn normalize_service(service: &mut ServiceDescriptorProto) {
 fn normalize_field(field: &mut FieldDescriptorProto) {
     field.options.mut_or_insert_default();
 
-    if field.has_default_value() {
-        if field.type_() == field_descriptor_proto::Type::TYPE_FLOAT {
-            field.set_default_value(format!(
-                "{}",
-                parse_protobuf_float(field.default_value()).unwrap()
-            ));
-        }
+    if field.has_default_value() && field.type_() == field_descriptor_proto::Type::TYPE_FLOAT {
+        field.set_default_value(format!(
+            "{}",
+            parse_protobuf_float(field.default_value()).unwrap()
+        ));
     }
 }
 
@@ -331,13 +329,13 @@ where
         normalize_generated_file_in_place(Path::new(&protoc_rs));
         normalize_generated_file_in_place(Path::new(&pure_rs));
 
-        let protoc_rs_contents =
-            fs::read_to_string(&protoc_rs).expect(&format!("while reading {}", protoc_rs));
+        let protoc_rs_contents = fs::read_to_string(&protoc_rs)
+            .unwrap_or_else(|_| panic!("while reading {}", protoc_rs));
         let pure_rs_contents =
-            fs::read_to_string(&pure_rs).expect(&format!("while reading {}", pure_rs));
+            fs::read_to_string(&pure_rs).unwrap_or_else(|_| panic!("while reading {}", pure_rs));
 
-        let protoc_descriptor_for_file = descriptor_for_file(&protoc_descriptors, &proto_file_name);
-        let pure_descriptor_for_file = descriptor_for_file(&pure_descriptors, &proto_file_name);
+        let protoc_descriptor_for_file = descriptor_for_file(&protoc_descriptors, proto_file_name);
+        let pure_descriptor_for_file = descriptor_for_file(&pure_descriptors, proto_file_name);
 
         let skip = should_skip(input.to_str().unwrap());
         if protoc_rs_contents == pure_rs_contents

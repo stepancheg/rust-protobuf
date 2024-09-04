@@ -15,7 +15,7 @@ impl DynamicOptional {
     }
 
     pub(crate) fn mut_or_default(&mut self) -> ReflectValueMut {
-        if let None = self.value {
+        if self.value.is_none() {
             self.value = Some(self.elem.default_value_ref().to_box());
         }
         self.value.as_mut().unwrap().as_value_mut()

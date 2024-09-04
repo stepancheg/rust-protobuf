@@ -228,7 +228,7 @@ impl MessageDescriptor {
     }
 
     /// Nested oneofs including synthetic.
-    pub fn all_oneofs<'a>(&'a self) -> impl Iterator<Item = OneofDescriptor> + 'a {
+    pub fn all_oneofs(&self) -> impl Iterator<Item = OneofDescriptor> + '_ {
         self.index_entry()
             .oneofs
             .clone()
@@ -239,7 +239,7 @@ impl MessageDescriptor {
     }
 
     /// Non-synthetic oneofs.
-    pub fn oneofs<'a>(&'a self) -> impl Iterator<Item = OneofDescriptor> + 'a {
+    pub fn oneofs(&self) -> impl Iterator<Item = OneofDescriptor> + '_ {
         self.all_oneofs().filter(|oneof| !oneof.is_synthetic())
     }
 
@@ -249,7 +249,7 @@ impl MessageDescriptor {
     }
 
     /// Message field descriptors.
-    pub fn fields<'a>(&'a self) -> impl Iterator<Item = FieldDescriptor> + 'a {
+    pub fn fields(&self) -> impl Iterator<Item = FieldDescriptor> + '_ {
         self.index()
             .message_index
             .regular_field_range()
@@ -291,7 +291,7 @@ impl MessageDescriptor {
     }
 
     /// Find message field by field name or field JSON name
-    pub fn field_by_name_or_json_name<'a>(&'a self, name: &str) -> Option<FieldDescriptor> {
+    pub fn field_by_name_or_json_name(&self, name: &str) -> Option<FieldDescriptor> {
         let &index = self
             .index()
             .message_index

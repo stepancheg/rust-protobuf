@@ -12,14 +12,14 @@ fn copy_test<P1: AsRef<Path>, P2: AsRef<Path>>(src: P1, dst: P2) {
     eprintln!("copy {:?} to {:?}", src.as_ref(), dst.as_ref());
     let mut content = Vec::new();
     fs::File::open(src.as_ref())
-        .expect(&format!("open {}", src.as_ref().display()))
+        .unwrap_or_else(|_| panic!("open {}", src.as_ref().display()))
         .read_to_end(&mut content)
-        .expect(&format!("read_to_end {}", src.as_ref().display()));
+        .unwrap_or_else(|_| panic!("read_to_end {}", src.as_ref().display()));
 
     let mut write = fs::File::create(dst).expect("create");
     writeln!(write, "// @generated").expect("write");
     writeln!(write, "// copied from {}", src.as_ref().display()).expect("write");
-    writeln!(write, "").expect("write");
+    writeln!(write).expect("write");
     write.write_all(&content).expect("write_all");
     // Print generated twice to avoid overlooking it accidentally
     writeln!(write, "// @generated").expect("write");
@@ -29,7 +29,7 @@ fn copy_test<P1: AsRef<Path>, P2: AsRef<Path>>(src: P1, dst: P2) {
 fn copy_from_protobuf_test(path: &str) {
     copy_test(
         &format!("../../test-crates/protobuf-codegen-protoc-test/{}", path),
-        &format!("{}", path),
+        &path.to_string(),
     )
 }
 
@@ -64,7 +64,7 @@ fn classify_file_name(dir: &str, name: &str) -> FileNameClass {
 // Copy tests from `protobuf-test` directory to the same directory here
 fn copy_tests(dir: &str) {
     let src_dir = format!("../../test-crates/protobuf-codegen-protoc-test/{}", dir);
-    for entry in fs::read_dir(&src_dir).expect(&format!("read_dir {}", src_dir)) {
+    for entry in fs::read_dir(&src_dir).unwrap_or_else(|_| panic!("read_dir {}", src_dir)) {
         let file_name = entry.expect("entry").file_name().into_string().unwrap();
 
         match classify_file_name(dir, &file_name) {
@@ -88,7 +88,7 @@ fn gen_in_dir(dir: &str, include_dir: &str) {
                 .pure()
                 .out_dir(out_dir)
                 .inputs(input)
-                .includes(&[include_dir])
+                .includes([include_dir])
                 .customize(customize)
                 .run_from_script()
         },
@@ -103,7 +103,7 @@ fn generate_interop() {
     Codegen::new()
         .pure()
         .out_dir("src/interop")
-        .includes(&["../../test-crates/interop/cxx", "../../proto"])
+        .includes(["../../test-crates/interop/cxx", "../../proto"])
         .input("../../test-crates/interop/cxx/interop_pb.proto")
         .run_from_script();
 }

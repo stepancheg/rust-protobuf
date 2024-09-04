@@ -102,7 +102,7 @@ pub fn values_for_runtime_type(field_type: &RuntimeType) -> Vec<ReflectValueBox>
             ReflectValueBox::from(e.values().next().unwrap()),
             ReflectValueBox::from(e.values().last().unwrap()),
         ],
-        RuntimeType::Message(m) => values_for_message_type(&m)
+        RuntimeType::Message(m) => values_for_message_type(m)
             .into_iter()
             .map(ReflectValueBox::from)
             .collect(),

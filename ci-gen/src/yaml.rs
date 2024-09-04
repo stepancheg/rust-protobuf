@@ -61,23 +61,18 @@ pub struct YamlWriter {
     minus: MinusState,
 }
 
-#[derive(Eq, PartialEq)]
+#[derive(Eq, PartialEq, Default)]
 enum MinusState {
+    #[default]
     No,
     Yes,
     Already,
 }
 
-impl Default for MinusState {
-    fn default() -> Self {
-        MinusState::No
-    }
-}
-
 impl YamlWriter {
     pub fn write_line(&mut self, line: &str) {
         if line.is_empty() {
-            self.buffer.push_str("\n");
+            self.buffer.push('\n');
         } else {
             for _ in 0..self.indent {
                 self.buffer.push_str("    ");
@@ -95,7 +90,7 @@ impl YamlWriter {
             }
 
             self.buffer.push_str(line);
-            self.buffer.push_str("\n");
+            self.buffer.push('\n');
         }
     }
 

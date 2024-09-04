@@ -107,7 +107,7 @@ impl ProtobufAbsPathRef {
 
         let mut r: Vec<&ProtobufAbsPathRef> = Vec::new();
 
-        r.push(&self);
+        r.push(self);
 
         while let Some(parent) = tmp.parent() {
             r.push(parent);
@@ -175,7 +175,7 @@ impl ProtobufAbsPath {
     }
 
     pub fn from_message(message: &MessageDescriptor) -> ProtobufAbsPath {
-        Self::new_from_rel(&message.full_name())
+        Self::new_from_rel(message.full_name())
     }
 
     pub fn concat(a: &ProtobufAbsPathRef, b: &ProtobufRelPathRef) -> ProtobufAbsPath {
@@ -201,7 +201,7 @@ impl ProtobufAbsPath {
 
     pub fn push_simple(&mut self, simple: &ProtobufIdentRef) {
         self.path.push('.');
-        self.path.push_str(&simple);
+        self.path.push_str(simple);
     }
 
     pub fn push_relative(&mut self, relative: &ProtobufRelPathRef) {

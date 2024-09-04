@@ -55,9 +55,9 @@ enum Features {
 impl Features {
     fn flag(&self) -> String {
         match self {
-            Features::Default => format!(""),
+            Features::Default => String::new(),
             Features::Specific(f) => format!("--features={}", f.join(",")),
-            Features::All => format!("--all-features"),
+            Features::All => "--all-features".to_string(),
         }
     }
 
@@ -72,16 +72,16 @@ impl Features {
 
     fn id(&self) -> String {
         match self {
-            Features::Default => format!("default-features"),
-            Features::All => format!("all-features"),
+            Features::Default => "default-features".to_string(),
+            Features::All => "all-features".to_string(),
             Features::Specific(s) => s.join("-"),
         }
     }
 
     fn name(&self) -> String {
         match self {
-            Features::Default => format!("default features"),
-            Features::All => format!("all features"),
+            Features::Default => "default features".to_string(),
+            Features::All => "all features".to_string(),
             Features::Specific(s) => s.join(","),
         }
     }
@@ -89,8 +89,8 @@ impl Features {
 
 fn self_check_job() -> Job {
     Job {
-        id: format!("self-check"),
-        name: format!("CI self-check"),
+        id: "self-check".to_string(),
+        name: "CI self-check".to_string(),
         runs_on: LINUX.ghwf,
         steps: vec![
             checkout_sources(),

@@ -15,7 +15,7 @@ pub fn format_protobuf_float(f: f64) -> String {
         PROTOBUF_NAN.to_owned()
     } else if f.is_infinite() {
         if f > 0.0 {
-            format!("{}", PROTOBUF_INF)
+            PROTOBUF_INF.to_string()
         } else {
             format!("-{}", PROTOBUF_INF)
         }

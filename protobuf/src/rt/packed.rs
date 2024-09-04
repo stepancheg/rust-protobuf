@@ -8,7 +8,7 @@ use crate::EnumOrUnknown;
 
 /// Size of serialized repeated packed field, excluding length and tag.
 pub(crate) fn vec_packed_varint_data_size<T: ProtobufVarint>(vec: &[T]) -> u64 {
-    vec.iter().map(|v| v.len_varint() as u64).sum()
+    vec.iter().map(|v| v.len_varint()).sum()
 }
 
 /// Size of serialized repeated packed field, excluding length and tag.

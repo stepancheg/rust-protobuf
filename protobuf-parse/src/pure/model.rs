@@ -45,26 +45,18 @@ impl<T> Deref for WithLoc<T> {
 
 impl<T> WithLoc<T> {
     pub fn with_loc(loc: Loc) -> impl FnOnce(T) -> WithLoc<T> {
-        move |t| WithLoc {
-            t,
-            loc: loc.clone(),
-        }
+        move |t| WithLoc { t, loc }
     }
 }
 
 /// Protobuf syntax.
-#[derive(Debug, Clone, Copy, Eq, PartialEq)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Default)]
 pub(crate) enum Syntax {
     /// Protobuf syntax [2](https://developers.google.com/protocol-buffers/docs/proto) (default)
+    #[default]
     Proto2,
     /// Protobuf syntax [3](https://developers.google.com/protocol-buffers/docs/proto3)
     Proto3,
-}
-
-impl Default for Syntax {
-    fn default() -> Syntax {
-        Syntax::Proto2
-    }
 }
 
 /// A field rule
@@ -426,11 +418,11 @@ impl fmt::Display for ProtobufConstant {
 impl ProtobufConstantMessage {
     pub fn format(&self) -> String {
         let mut s = String::new();
-        write!(s, "{{").unwrap();
+        write!(s, "{{ ").unwrap();
         for (n, v) in &self.fields {
             match v {
                 ProtobufConstant::Message(m) => write!(s, "{} {}", n, m.format()).unwrap(),
-                v => write!(s, "{}: {}", n, v.format()).unwrap(),
+                v => write!(s, "{}: {} ", n, v.format()).unwrap(),
             }
         }
         write!(s, "}}").unwrap();
@@ -528,17 +520,12 @@ pub(crate) struct ProtobufOption {
 }
 
 /// Visibility of import statement
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq, Default)]
 pub(crate) enum ImportVis {
+    #[default]
     Default,
     Public,
     Weak,
-}
-
-impl Default for ImportVis {
-    fn default() -> Self {
-        ImportVis::Default
-    }
 }
 
 /// Import statement

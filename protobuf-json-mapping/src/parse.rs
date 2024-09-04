@@ -414,9 +414,9 @@ impl<'a> Parser<'a> {
             RuntimeType::String => self.read_string().map(ReflectValueBox::from),
             RuntimeType::VecU8 => self.read_bytes().map(ReflectValueBox::from),
             RuntimeType::Enum(e) => self
-                .read_enum(&e)
+                .read_enum(e)
                 .map(|v| ReflectValueBox::Enum(e.clone(), v)),
-            RuntimeType::Message(m) => self.read_message(&m).map(ReflectValueBox::from),
+            RuntimeType::Message(m) => self.read_message(m).map(ReflectValueBox::from),
         }
     }
 
@@ -693,9 +693,9 @@ impl<'a> Parser<'a> {
         let mut lexer = Lexer::new(&s, ParserLanguage::Json);
 
         fn next_dec(lexer: &mut Lexer) -> ParseResultWithoutLoc<(u64, u32)> {
-            let s = lexer.take_while(|c| c >= '0' && c <= '9');
+            let s = lexer.take_while(|c: char| c.is_ascii_digit());
 
-            if s.len() == 0 {
+            if s.is_empty() {
                 Ok((0, 0))
             } else {
                 match s.parse() {

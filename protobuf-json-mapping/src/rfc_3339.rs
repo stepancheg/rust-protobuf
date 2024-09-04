@@ -12,10 +12,8 @@ fn is_leap_year(year: i64) -> bool {
         false
     } else if year % 100 != 0 {
         true
-    } else if year % 400 != 0 {
-        false
     } else {
-        true
+        year % 400 == 0
     }
 }
 
@@ -42,7 +40,7 @@ const YEARS_1970_2000_SECONDS: u64 = 946684800;
 const YEARS_1600_1970_SECONDS: u64 = CYCLE_SECONDS - YEARS_1970_2000_SECONDS;
 
 // For each year in the cycle, number of leap years before in the cycle.
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 static YEAR_DELTAS: [u8; 401] = [
     0,  1,  1,  1,  1,  2,  2,  2,  2,  3,  3,  3,  3,  4,  4,  4,  4,  5,  5,  5,
     5,  6,  6,  6,  6,  7,  7,  7,  7,  8,  8,  8,  8,  9,  9,  9,  9, 10, 10, 10,
@@ -111,7 +109,7 @@ impl TmUtc {
         debug_assert!(day_of_cycle < CYCLE_DAYS);
 
         let mut year_mod_400 = (day_of_cycle / 365) as i64;
-        let mut day_or_year = (day_of_cycle % 365) as u32;
+        let mut day_or_year = day_of_cycle % 365;
 
         let delta = YEAR_DELTAS[year_mod_400 as usize] as u32;
         if day_or_year < delta {
@@ -171,7 +169,7 @@ impl TmUtc {
             month += 1;
         }
 
-        debug_assert!(rem_days + 1 <= days_in_months[month - 1]);
+        debug_assert!(rem_days < days_in_months[month - 1]);
 
         (month as u32, rem_days + 1)
     }
@@ -289,7 +287,7 @@ impl TmUtc {
                 let mut r = 0;
                 for i in 0..len {
                     let c = self.s[self.pos + i];
-                    if c >= b'0' && c <= b'9' {
+                    if c.is_ascii_digit() {
                         r = r * 10 + (c - b'0') as u32;
                     } else {
                         return Err(Rfc3339ParseError::ExpectingDigits);
@@ -328,11 +326,11 @@ impl TmUtc {
         parser.next_char(b'-')?;
         let day = parser.next_number(2)?;
 
-        if month < 1 || month > 12 {
+        if !(1..=12).contains(&month) {
             return Err(Rfc3339ParseError::DateTimeFieldOutOfRange);
         }
 
-        if day < 1 || day > TmUtc::days_in_months(year as i64)[month as usize - 1] {
+        if day < 1 || day > TmUtc::days_in_months(year)[month as usize - 1] {
             return Err(Rfc3339ParseError::DateTimeFieldOutOfRange);
         }
 
@@ -452,7 +450,7 @@ impl fmt::Display for TmUtc {
                 subsec /= 10;
             }
 
-            write!(f, ".{:0width$}", subsec, width = width as usize)?;
+            write!(f, ".{:0width$}", subsec, width = { width })?;
 
             // Adding more than 9 digits is meaningless,
             // but if user requests it, we should print zeros.

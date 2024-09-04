@@ -21,11 +21,11 @@ impl<'a> WithCodedOutputStream for &'a mut (dyn Write + 'a) {
 }
 
 impl<'a> WithCodedOutputStream for &'a mut Vec<u8> {
-    fn with_coded_output_stream<T, F>(mut self, cb: F) -> crate::Result<T>
+    fn with_coded_output_stream<T, F>(self, cb: F) -> crate::Result<T>
     where
         F: FnOnce(&mut CodedOutputStream) -> crate::Result<T>,
     {
-        let mut os = CodedOutputStream::vec(&mut self);
+        let mut os = CodedOutputStream::vec(self);
         let r = cb(&mut os)?;
         os.flush()?;
         Ok(r)

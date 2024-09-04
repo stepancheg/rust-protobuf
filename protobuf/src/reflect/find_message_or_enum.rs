@@ -43,7 +43,7 @@ pub(crate) fn find_message_or_enum<'a>(
         };
 
         if !package_to_name.is_empty() {
-            package_to_name.push_str(".");
+            package_to_name.push('.');
         }
         package_to_name.push_str(message.name());
 

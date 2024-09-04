@@ -217,7 +217,7 @@ impl Protoc {
                 .stdin(process::Stdio::null())
                 .stdout(process::Stdio::piped())
                 .stderr(process::Stdio::piped())
-                .args(&["--version"]),
+                .args(["--version"]),
         )?;
 
         let output = child.wait_with_output()?;
@@ -238,7 +238,7 @@ impl Protoc {
             return Err(Error::VersionIsEmpty.into());
         }
         let first = output.chars().next().unwrap();
-        if !first.is_digit(10) {
+        if !first.is_ascii_digit() {
             return Err(Error::VersionDoesNotStartWithDigit.into());
         }
         Ok(Version {
@@ -265,10 +265,8 @@ impl Protoc {
                 let stderr = stderr.trim_end().to_owned();
                 return Err(Error::ProtocNamedNonZeroStderr(format!("{:?}", cmd), stderr).into());
             }
-        } else {
-            if !child.wait()?.success() {
-                return Err(Error::ProtocNamedNonZero(format!("{:?}", cmd)).into());
-            }
+        } else if !child.wait()?.success() {
+            return Err(Error::ProtocNamedNonZero(format!("{:?}", cmd)).into());
         }
 
         Ok(())

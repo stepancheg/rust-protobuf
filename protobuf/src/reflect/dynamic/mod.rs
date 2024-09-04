@@ -209,7 +209,7 @@ impl DynamicMessage {
     }
 
     pub(crate) fn downcast_ref(message: &dyn MessageDyn) -> &DynamicMessage {
-        assert!(Any::type_id(&*message) == TypeId::of::<DynamicMessage>());
+        assert!(Any::type_id(message) == TypeId::of::<DynamicMessage>());
         unsafe { &*(message as *const dyn MessageDyn as *const DynamicMessage) }
     }
 
@@ -265,7 +265,7 @@ impl DynamicMessage {
             }
         }
 
-        handler.unknown_fields(&self.special_fields.unknown_fields())?;
+        handler.unknown_fields(self.special_fields.unknown_fields())?;
         Ok(())
     }
 }
@@ -350,7 +350,7 @@ impl MessageDyn for DynamicMessage {
                         field,
                         wire_type,
                         is,
-                        &mut self.special_fields.mut_unknown_fields(),
+                        self.special_fields.mut_unknown_fields(),
                     )?;
                     continue;
                 }

@@ -31,10 +31,8 @@ pub fn test_json_message(m: &dyn MessageDyn) {
 
     let s = protobuf_json_mapping::print_to_string(m).expect("print_to_string");
     let mut new = descriptor.new_instance();
-    protobuf_json_mapping::merge_from_str(&mut *new, &s).expect(&format!(
-        "failed to parse serialized: {}; from message: {:?}",
-        s, m
-    ));
+    protobuf_json_mapping::merge_from_str(&mut *new, &s)
+        .unwrap_or_else(|_| panic!("failed to parse serialized: {}; from message: {:?}", s, m));
     assert!(
         m.reflect_eq_dyn(&*new, &ReflectEqMode::nan_equal()),
         "{:?} should be == {:?}",

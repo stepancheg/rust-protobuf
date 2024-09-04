@@ -42,11 +42,13 @@ pub(crate) fn gen_all(
     };
 
     for file_name in files_to_generate {
-        let file = files_map.get(file_name.as_path()).expect(&format!(
-            "file not found in file descriptors: {:?}, files: {:?}",
-            file_name,
-            files_map.keys()
-        ));
+        let file = files_map.get(file_name.as_path()).unwrap_or_else(|| {
+            panic!(
+                "file not found in file descriptors: {:?}, files: {:?}",
+                file_name,
+                files_map.keys()
+            )
+        });
         let gen_file_result = gen_file(file, &files_map, &root_scope, &customize, parser)?;
         results.push(gen_file_result.compiler_plugin_result);
         mods.push(gen_file_result.mod_name);

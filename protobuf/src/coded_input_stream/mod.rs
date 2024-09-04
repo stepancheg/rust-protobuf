@@ -6,7 +6,6 @@ mod input_source;
 use std::io;
 use std::io::BufRead;
 use std::io::Read;
-use std::mem;
 use std::mem::MaybeUninit;
 
 #[cfg(feature = "bytes")]
@@ -190,7 +189,7 @@ impl<'a> CodedInputStream<'a> {
             if i == 9 && (b & 0x7f) > 1 {
                 return Err(ProtobufError::WireError(WireError::IncorrectVarint).into());
             }
-            r = r | (((b & 0x7f) as u64) << (i * 7));
+            r |= ((b & 0x7f) as u64) << (i * 7);
             i += 1;
             if b < 0x80 {
                 return Ok(r);
@@ -524,13 +523,12 @@ impl<'a> CodedInputStream<'a> {
     /// Read `UnknownValue`
     pub fn read_unknown(&mut self, wire_type: WireType) -> crate::Result<UnknownValue> {
         match wire_type {
-            WireType::Varint => self.read_raw_varint64().map(|v| UnknownValue::Varint(v)),
-            WireType::Fixed64 => self.read_fixed64().map(|v| UnknownValue::Fixed64(v)),
-            WireType::Fixed32 => self.read_fixed32().map(|v| UnknownValue::Fixed32(v)),
+            WireType::Varint => self.read_raw_varint64().map(UnknownValue::Varint),
+            WireType::Fixed64 => self.read_fixed64().map(UnknownValue::Fixed64),
+            WireType::Fixed32 => self.read_fixed32().map(UnknownValue::Fixed32),
             WireType::LengthDelimited => {
                 let len = self.read_raw_varint32()?;
-                self.read_raw_bytes(len)
-                    .map(|v| UnknownValue::LengthDelimited(v))
+                self.read_raw_bytes(len).map(UnknownValue::LengthDelimited)
             }
             WireType::StartGroup => {
                 self.skip_group()?;
@@ -617,7 +615,7 @@ impl<'a> CodedInputStream<'a> {
     pub fn read_string_into(&mut self, target: &mut String) -> crate::Result<()> {
         target.clear();
         // take target's buffer
-        let mut vec = mem::replace(target, String::new()).into_bytes();
+        let mut vec = std::mem::take(target).into_bytes();
         self.read_bytes_into(&mut vec)?;
 
         let s = match String::from_utf8(vec) {
@@ -638,11 +636,11 @@ impl<'a> CodedInputStream<'a> {
             }
         }
 
-        let mut decr = DecrRecursion(self);
+        let decr = DecrRecursion(self);
 
         let len = decr.0.read_raw_varint64()?;
         let old_limit = decr.0.push_limit(len)?;
-        message.merge_from(&mut decr.0)?;
+        message.merge_from(decr.0)?;
         decr.0.pop_limit(old_limit);
         Ok(())
     }
@@ -871,10 +869,10 @@ mod test {
             let old_limit = is.push_limit(1).unwrap();
             assert_eq!(1, is.bytes_until_limit());
             let r1 = is.read_raw_bytes(1).unwrap();
-            assert_eq!(&[0xaa as u8], &r1[..]);
+            assert_eq!(&[0xaa_u8], &r1[..]);
             is.pop_limit(old_limit);
             let r2 = is.read_raw_bytes(2).unwrap();
-            assert_eq!(&[0xbb as u8, 0xcc], &r2[..]);
+            assert_eq!(&[0xbb_u8, 0xcc], &r2[..]);
         });
     }
 

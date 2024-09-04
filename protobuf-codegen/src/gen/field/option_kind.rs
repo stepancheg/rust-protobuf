@@ -35,15 +35,11 @@ impl OptionKind {
     }
 
     pub(crate) fn unwrap_or_else(&self, what: &str, default_value: &str) -> String {
-        match self {
-            _ => format!("{}.unwrap_or_else(|| {})", what, default_value),
-        }
+        format!("{}.unwrap_or_else(|| {})", what, default_value)
     }
 
     pub(crate) fn unwrap_ref_or_else(&self, what: &str, default_value: &str) -> String {
-        match self {
-            _ => format!("{}.unwrap_or_else(|| {})", what, default_value),
-        }
+        format!("{}.unwrap_or_else(|| {})", what, default_value)
     }
 
     pub(crate) fn wrap_value(&self, value: &str, customize: &Customize) -> String {

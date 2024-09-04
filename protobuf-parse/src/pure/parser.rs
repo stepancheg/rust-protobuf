@@ -377,6 +377,18 @@ impl<'a> Parser<'a> {
         while !self.tokenizer.lookahead_is_symbol('}')? {
             let n = self.next_message_constant_field_name()?;
             let v = self.next_field_value()?;
+
+            // Consume the comma or semicolon if present. Commas and semicolons
+            // between message fields are optional, all these are valid:
+            //
+            //    {foo: 1,bar: 2,baz: 3,}
+            //    {foo: 1;bar: 2;baz: 3;}
+            //    {foo: 1 bar: 2 baz: 3}
+            //    {foo: 1,bar: 2;baz: 3}
+            //    {foo: 1,bar: 2 baz: 3}
+            //
+            self.tokenizer.next_symbol_if_in(&[',', ';'])?;
+
             r.fields.insert(n, v);
         }
         self.tokenizer
@@ -400,12 +412,12 @@ impl<'a> Parser<'a> {
             if c == '+' || c == '-' {
                 self.tokenizer.advance()?;
                 let sign = c == '+';
-                return Ok(self.next_num_lit()?.to_option_value(sign)?);
+                return self.next_num_lit()?.to_option_value(sign);
             }
         }
 
         if let Some(r) = self.tokenizer.next_token_if_map(|token| match token {
-            &Token::StrLit(ref s) => Some(ProtobufConstant::String(s.clone())),
+            Token::StrLit(s) => Some(ProtobufConstant::String(s.clone())),
             _ => None,
         })? {
             return Ok(r);
@@ -583,7 +595,7 @@ impl<'a> Parser<'a> {
             ("float", FieldType::Float),
             ("double", FieldType::Double),
         ];
-        for &(ref n, ref t) in simple {
+        for (n, ref t) in simple {
             if self.tokenizer.next_ident_if_eq(n)? {
                 return Ok(t.clone());
             }
@@ -1280,12 +1292,12 @@ mod test {
         P: FnOnce(&mut Parser) -> anyhow::Result<R>,
     {
         let mut parser = Parser::new(input);
-        let r =
-            parse_what(&mut parser).expect(&format!("parse failed at {}", parser.tokenizer.loc()));
+        let r = parse_what(&mut parser)
+            .unwrap_or_else(|_| panic!("parse failed at {}", parser.tokenizer.loc()));
         let eof = parser
             .tokenizer
             .syntax_eof()
-            .expect(&format!("check eof failed at {}", parser.tokenizer.loc()));
+            .unwrap_or_else(|_| panic!("check eof failed at {}", parser.tokenizer.loc()));
         assert!(eof, "{}", parser.tokenizer.loc());
         r
     }
@@ -1295,12 +1307,9 @@ mod test {
         P: FnOnce(&mut Parser) -> anyhow::Result<Option<R>>,
     {
         let mut parser = Parser::new(input);
-        let o =
-            parse_what(&mut parser).expect(&format!("parse failed at {}", parser.tokenizer.loc()));
-        let r = o.expect(&format!(
-            "parser returned none at {}",
-            parser.tokenizer.loc()
-        ));
+        let o = parse_what(&mut parser)
+            .unwrap_or_else(|_| panic!("parse failed at {}", parser.tokenizer.loc()));
+        let r = o.unwrap_or_else(|| panic!("parser returned none at {}", parser.tokenizer.loc()));
         assert!(parser.tokenizer.syntax_eof().unwrap());
         r
     }
@@ -1334,6 +1343,29 @@ mod test {
             mess.t.options[0].name
         );
         assert_eq!("10", mess.t.options[0].value.format());
+    }
+
+    #[test]
+    fn test_field_options() {
+        let msg = r#" (my_opt).my_field = {foo: 1 bar: 2} "#;
+        let opt = parse(msg, |p| p.next_field_option());
+        assert_eq!(r#"{ foo: 1 bar: 2 }"#, opt.value.format());
+
+        let msg = r#" (my_opt).my_field = {foo: 1; bar:2;} "#;
+        let opt = parse(msg, |p| p.next_field_option());
+        assert_eq!(r#"{ foo: 1 bar: 2 }"#, opt.value.format());
+
+        let msg = r#" (my_opt).my_field = {foo: 1, bar: 2} "#;
+        let opt = parse(msg, |p| p.next_field_option());
+        assert_eq!(r#"{ foo: 1 bar: 2 }"#, opt.value.format());
+
+        let msg = r#" (my_opt).my_field = "foo" "#;
+        let opt = parse(msg, |p| p.next_field_option());
+        assert_eq!(r#""foo""#, opt.value.format());
+
+        let msg = r#" (my_opt) = { my_field: "foo"} "#;
+        let opt = parse(msg, |p| p.next_field_option());
+        assert_eq!(r#"{ my_field: "foo" }"#, opt.value.format());
     }
 
     #[test]
@@ -1569,7 +1601,7 @@ mod test {
             dfgdg
         "#;
 
-        let err = FileDescriptor::parse(msg).err().expect("err");
+        let err = FileDescriptor::parse(msg).expect_err("err");
         assert_eq!(4, err.line);
     }
 }

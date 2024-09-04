@@ -630,7 +630,7 @@ impl RuntimeTypeTrait for RuntimeTypeString {
     }
 
     fn as_ref(value: &String) -> ReflectValueRef {
-        ReflectValueRef::String(&*value)
+        ReflectValueRef::String(value)
     }
 
     fn as_mut(_value: &mut Self::Value) -> ReflectValueMut {
@@ -656,7 +656,7 @@ impl RuntimeTypeWithDeref for RuntimeTypeString {
 impl RuntimeTypeMapKey for RuntimeTypeString {
     fn hash_map_get<'a, V>(map: &'a HashMap<String, V>, key: ReflectValueRef) -> Option<&'a V> {
         match key {
-            ReflectValueRef::String(s) => map.get(*&s),
+            ReflectValueRef::String(s) => map.get(s),
             _ => None,
         }
     }
@@ -834,13 +834,13 @@ impl RuntimeTypeWithDeref for RuntimeTypeTokioChars {
 impl RuntimeTypeMapKey for RuntimeTypeTokioChars {
     fn hash_map_get<'a, V>(map: &'a HashMap<Chars, V>, key: ReflectValueRef) -> Option<&'a V> {
         match key {
-            ReflectValueRef::String(s) => map.get(&*s),
+            ReflectValueRef::String(s) => map.get(s),
             _ => None,
         }
     }
     fn btree_map_get<'a, V>(map: &'a BTreeMap<Chars, V>, key: ReflectValueRef) -> Option<&'a V> {
         match key {
-            ReflectValueRef::String(s) => map.get(&*s),
+            ReflectValueRef::String(s) => map.get(s),
             _ => None,
         }
     }

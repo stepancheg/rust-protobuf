@@ -181,7 +181,7 @@ impl ReflectMap for DynamicMap {
             (Maps::I32(m), ReflectValueRef::I32(v)) => m.get(&v),
             (Maps::I64(m), ReflectValueRef::I64(v)) => m.get(&v),
             (Maps::Bool(m), ReflectValueRef::Bool(v)) => m.get(&v),
-            (Maps::String(m), ReflectValueRef::String(v)) => m.get(&*v),
+            (Maps::String(m), ReflectValueRef::String(v)) => m.get(v),
             _ => None,
         }
         .map(ReflectValueBox::as_value_ref)

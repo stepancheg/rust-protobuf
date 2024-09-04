@@ -15,8 +15,8 @@ fn test_default_value_simple() {
     assert_eq!(10, d.fixed64_field());
     assert_eq!(11, d.sfixed32_field());
     assert_eq!(12, d.sfixed64_field());
-    assert_eq!(true, d.bool_field());
-    assert_eq!(false, d.bool_default_false_field());
+    assert!(d.bool_field());
+    assert!(!d.bool_default_false_field());
     assert_eq!("abc\n22", d.string_field());
     assert_eq!(b"cde\n33", d.bytes_field());
     assert_eq!(EnumForDefaultValue::TWO, d.enum_field());

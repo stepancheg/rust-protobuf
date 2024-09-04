@@ -10,7 +10,7 @@ fn generate_protos() {
         .pure()
         .out_dir("src")
         .input("src/messages.proto")
-        .includes(&["src", "../../proto"])
+        .includes(["src", "../../proto"])
         .customize(Customize::default().gen_mod_rs(false))
         .run_from_script();
 }
@@ -29,7 +29,7 @@ fn export_rustc_cfg() {
     let rustc = env::var("RUSTC").expect("RUSTC unset");
 
     let mut child = process::Command::new(rustc)
-        .args(&["--version"])
+        .args(["--version"])
         .stdin(process::Stdio::null())
         .stdout(process::Stdio::piped())
         .spawn()

@@ -60,7 +60,7 @@ impl<'a> RootScope<'a> {
             .into_iter()
             .flat_map(|p| p.find_message_or_enum_abs(fqn))
             .next()
-            .expect(&format!("enum not found by name: {}", fqn))
+            .unwrap_or_else(|| panic!("enum not found by name: {}", fqn))
     }
 }
 
@@ -95,8 +95,7 @@ impl<'a> FileScope<'a> {
     ) -> Option<MessageOrEnumWithScope<'a>> {
         self.find_messages_and_enums()
             .into_iter()
-            .filter(|e| e.protobuf_name_to_package().as_ref() == name)
-            .next()
+            .find(|e| e.protobuf_name_to_package().as_ref() == name)
     }
 
     fn find_message_or_enum_abs(
@@ -105,7 +104,7 @@ impl<'a> FileScope<'a> {
     ) -> Option<MessageOrEnumWithScope<'a>> {
         let name = name.to_owned();
         match name.remove_prefix(&self.package()) {
-            Some(rem) => self.find_message_or_enum(&rem),
+            Some(rem) => self.find_message_or_enum(rem),
             None => None,
         }
     }
@@ -207,12 +206,8 @@ impl<'a> Scope<'a> {
     pub fn messages_and_enums(&self) -> Vec<MessageOrEnumWithScope<'a>> {
         self.messages()
             .into_iter()
-            .map(|m| MessageOrEnumWithScope::Message(m))
-            .chain(
-                self.enums()
-                    .into_iter()
-                    .map(|m| MessageOrEnumWithScope::Enum(m)),
-            )
+            .map(MessageOrEnumWithScope::Message)
+            .chain(self.enums().into_iter().map(MessageOrEnumWithScope::Enum))
             .collect()
     }
 
@@ -297,7 +292,7 @@ pub(crate) trait WithScope<'a> {
 
     fn name_to_package(&self) -> String {
         let mut r = self.scope().prefix();
-        r.push_str(&self.name());
+        r.push_str(self.name());
         r
     }
 
@@ -315,7 +310,7 @@ pub(crate) trait WithScope<'a> {
 
     // rust type name of this descriptor
     fn rust_name(&self) -> RustIdent {
-        let rust_name = capitalize(&self.name());
+        let rust_name = capitalize(self.name());
         RustIdent::new(&rust_name)
     }
 
@@ -365,7 +360,6 @@ impl<'a> MessageWithScope<'a> {
     pub fn fields(&self) -> Vec<FieldWithContext<'a>> {
         self.message
             .fields()
-            .into_iter()
             .map(|field| FieldWithContext {
                 field,
                 message: self.clone(),
@@ -376,7 +370,6 @@ impl<'a> MessageWithScope<'a> {
     pub fn oneofs(&self) -> Vec<OneofWithContext<'a>> {
         self.message
             .oneofs()
-            .into_iter()
             .map(|oneof| OneofWithContext {
                 message: self.clone(),
                 oneof,
@@ -404,7 +397,6 @@ impl<'a> EnumWithScope<'a> {
     pub fn values(&self) -> Vec<EnumValueWithContext<'a>> {
         self.en
             .values()
-            .into_iter()
             .map(|v| EnumValueWithContext {
                 en: self.clone(),
                 proto: v,
@@ -485,13 +477,10 @@ impl<'a> FieldWithContext<'a> {
     }
 
     pub fn oneof(&self) -> Option<OneofWithContext<'a>> {
-        match self.field.containing_oneof() {
-            Some(oneof) => Some(OneofWithContext {
-                message: self.message.clone(),
-                oneof,
-            }),
-            None => None,
-        }
+        self.field.containing_oneof().map(|oneof| OneofWithContext {
+            message: self.message.clone(),
+            oneof,
+        })
     }
 }
 

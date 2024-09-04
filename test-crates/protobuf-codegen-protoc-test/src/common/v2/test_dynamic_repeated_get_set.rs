@@ -38,5 +38,5 @@ fn generated_repeated() {
 
 #[test]
 fn dynamic_repeated() {
-    do_test_repeated(&test_dynamic_repeated_get_set_pb::file_descriptor());
+    do_test_repeated(test_dynamic_repeated_get_set_pb::file_descriptor());
 }

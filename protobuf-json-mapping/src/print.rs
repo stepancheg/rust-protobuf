@@ -75,7 +75,7 @@ trait JsonFloat: fmt::Display + fmt::Debug + PrintableToJson {
     fn is_neg_infinity(&self) -> bool;
 
     fn print_to_json_impl(&self, w: &mut String) -> PrintResult<()> {
-        Ok(if self.is_nan() {
+        if self.is_nan() {
             write!(w, "\"{}\"", float::PROTOBUF_JSON_NAN)?
         } else if self.is_pos_infinity() {
             write!(w, "\"{}\"", float::PROTOBUF_JSON_INF)?
@@ -83,7 +83,8 @@ trait JsonFloat: fmt::Display + fmt::Debug + PrintableToJson {
             write!(w, "\"{}\"", float::PROTOBUF_JSON_MINUS_INF)?
         } else {
             write!(w, "{:?}", self)?
-        })
+        };
+        Ok(())
     }
 }
 
@@ -103,7 +104,7 @@ impl JsonFloat for f32 {
 
 impl PrintableToJson for f32 {
     fn print_to_json(&self, w: &mut Printer) -> PrintResult<()> {
-        Ok(self.print_to_json_impl(&mut w.buf)?)
+        self.print_to_json_impl(&mut w.buf)
     }
 }
 
@@ -266,7 +267,7 @@ impl PrintableToJson for Value {
             }
             Some(value::Kind::BoolValue(b)) => w.print_printable(&b),
             Some(value::Kind::NumberValue(n)) => w.print_printable(&n),
-            Some(value::Kind::StringValue(ref s)) => w.print_printable::<String>(&s),
+            Some(value::Kind::StringValue(ref s)) => w.print_printable::<String>(s),
             Some(value::Kind::StructValue(ref s)) => w.print_printable(&s),
             Some(value::Kind::ListValue(ref l)) => w.print_printable(&l),
             Some(_) => Err(PrintError(PrintErrorInner::UnknownStructValueKind)),
@@ -403,18 +404,16 @@ impl Printer {
     }
 
     fn print_map(&mut self, map: &ReflectMapRef) -> PrintResult<()> {
-        self.print_object(map.into_iter())
+        self.print_object(map)
     }
 
     fn print_enum_known(&mut self, value: &EnumValueDescriptor) -> PrintResult<()> {
         if let Some(null_value) = value.cast() {
             self.print_wk_null_value(&null_value)
+        } else if self.print_options.enum_values_int {
+            self.print_printable(&value.value())
         } else {
-            if self.print_options.enum_values_int {
-                self.print_printable(&value.value())
-            } else {
-                Ok(write!(self.buf, "\"{}\"", value.name())?)
-            }
+            Ok(write!(self.buf, "\"{}\"", value.name())?)
         }
     }
 

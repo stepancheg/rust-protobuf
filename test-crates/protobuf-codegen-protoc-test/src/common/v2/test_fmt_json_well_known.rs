@@ -148,14 +148,14 @@ fn test_field_mask() {
 
     m.set_field_mask({
         let mut v = FieldMask::new();
-        v.paths = vec!["a.b".to_owned()].into();
+        v.paths = vec!["a.b".to_owned()];
         v
     });
     test_json_print_parse_message("{\"fieldMask\": \"a.b\"}", &m);
 
     m.set_field_mask({
         let mut v = FieldMask::new();
-        v.paths = vec!["ab".to_owned(), "c.d.e".to_owned()].into();
+        v.paths = vec!["ab".to_owned(), "c.d.e".to_owned()];
         v
     });
     test_json_print_parse_message("{\"fieldMask\": \"ab,c.d.e\"}", &m);

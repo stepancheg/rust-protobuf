@@ -27,9 +27,9 @@ impl AccessorFn {
         s.push_str("::<_");
         for p in &self.type_params {
             s.push_str(", ");
-            s.push_str(&p);
+            s.push_str(p);
         }
-        s.push_str(">");
+        s.push('>');
         s
     }
 }

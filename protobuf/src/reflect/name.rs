@@ -28,17 +28,15 @@ pub(crate) fn protobuf_name_starts_with_package<'a>(
 
     if package.is_empty() {
         Some(name)
-    } else {
-        if name.starts_with(package) {
-            let rem = &name[package.len()..];
-            if rem.starts_with(".") {
-                Some(&rem[1..])
-            } else {
-                None
-            }
+    } else if name.starts_with(package) {
+        let rem = &name[package.len()..];
+        if rem.starts_with(".") {
+            Some(&rem[1..])
         } else {
             None
         }
+    } else {
+        None
     }
 }
 

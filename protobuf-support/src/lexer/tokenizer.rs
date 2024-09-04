@@ -60,9 +60,9 @@ impl<'a> Tokenizer<'a> {
         // After lookahead return the location of the next token
         self.next_token
             .as_ref()
-            .map(|t| t.loc.clone())
+            .map(|t| t.loc)
             // After token consumed return the location of that token
-            .or(self.last_token_loc.clone())
+            .or(self.last_token_loc)
             // Otherwise return the position of lexer
             .unwrap_or(self.lexer.loc)
     }
@@ -78,7 +78,7 @@ impl<'a> Tokenizer<'a> {
             Some(ref token) => Some(&token.token),
             None => {
                 self.next_token = self.lexer.next_token()?;
-                self.last_token_loc = self.next_token.as_ref().map(|t| t.loc.clone());
+                self.last_token_loc = self.next_token.as_ref().map(|t| t.loc);
                 match self.next_token {
                     Some(ref token) => Some(&token.token),
                     None => None,
@@ -161,8 +161,8 @@ impl<'a> Tokenizer<'a> {
 
     pub fn next_ident_if_in(&mut self, idents: &[&str]) -> TokenizerResult<Option<String>> {
         let v = match self.lookahead()? {
-            Some(&Token::Ident(ref next)) => {
-                if idents.into_iter().find(|&i| i == next).is_some() {
+            Some(Token::Ident(next)) => {
+                if idents.iter().any(|i| i == next) {
                     next.clone()
                 } else {
                     return Ok(None);
@@ -175,7 +175,7 @@ impl<'a> Tokenizer<'a> {
     }
 
     pub fn next_ident_if_eq(&mut self, word: &str) -> TokenizerResult<bool> {
-        Ok(self.next_ident_if_in(&[word])? != None)
+        Ok((self.next_ident_if_in(&[word])?).is_some())
     }
 
     pub fn next_ident_expect_eq(&mut self, word: &str) -> TokenizerResult<()> {
@@ -194,11 +194,16 @@ impl<'a> Tokenizer<'a> {
         Ok(())
     }
 
-    pub fn next_symbol_if_eq(&mut self, symbol: char) -> TokenizerResult<bool> {
-        Ok(self.next_token_if(|token| match token {
-            &Token::Symbol(c) if c == symbol => true,
+    pub fn next_symbol_if_in(&mut self, symbols: &[char]) -> TokenizerResult<bool> {
+        self.next_token_if(|token| match token {
+            Token::Symbol(c) if symbols.contains(c) => true,
             _ => false,
-        })? != None)
+        })
+        .map(|token| token.is_some())
+    }
+
+    pub fn next_symbol_if_eq(&mut self, symbol: char) -> TokenizerResult<bool> {
+        self.next_symbol_if_in(&[symbol])
     }
 
     pub fn next_symbol_expect_eq(
@@ -264,14 +269,14 @@ impl<'a> Tokenizer<'a> {
 
     pub fn next_ident(&mut self) -> TokenizerResult<String> {
         self.next_token_check_map(|token| match token {
-            &Token::Ident(ref ident) => Ok(ident.clone()),
+            Token::Ident(ident) => Ok(ident.clone()),
             _ => Err(TokenizerError::ExpectIdent),
         })
     }
 
     pub fn next_str_lit(&mut self) -> TokenizerResult<StrLit> {
         self.next_token_check_map(|token| match token {
-            &Token::StrLit(ref str_lit) => Ok(str_lit.clone()),
+            Token::StrLit(str_lit) => Ok(str_lit.clone()),
             _ => Err(TokenizerError::ExpectStrLit),
         })
     }
@@ -301,10 +306,11 @@ mod test {
         P: FnOnce(&mut Tokenizer) -> TokenizerResult<R>,
     {
         let mut tokenizer = Tokenizer::new(input, ParserLanguage::Proto);
-        let r = what(&mut tokenizer).expect(&format!("parse failed at {}", tokenizer.loc()));
+        let r =
+            what(&mut tokenizer).unwrap_or_else(|_| panic!("parse failed at {}", tokenizer.loc()));
         let eof = tokenizer
             .syntax_eof()
-            .expect(&format!("check eof failed at {}", tokenizer.loc()));
+            .unwrap_or_else(|_| panic!("check eof failed at {}", tokenizer.loc()));
         assert!(eof, "{}", tokenizer.loc());
         r
     }

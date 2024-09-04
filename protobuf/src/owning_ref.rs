@@ -15,7 +15,7 @@ impl<A: 'static> Deref for Owner<A> {
 
     fn deref(&self) -> &A {
         match self {
-            Owner::Arc(a) => &*a,
+            Owner::Arc(a) => a,
             Owner::Static(a) => a,
         }
     }
@@ -98,7 +98,7 @@ impl<A: 'static, B: 'static> OwningRef<A, B> {
     where
         C: 'static,
     {
-        f(&self).into_iter().map(|ptr| OwningRef {
+        f(self).iter().map(|ptr| OwningRef {
             ptr,
             owner: self.owner.clone(),
         })

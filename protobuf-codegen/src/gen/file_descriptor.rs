@@ -76,13 +76,13 @@ fn write_generate_file_descriptor(
 
     w.write_line(&format!(
         "{}::reflect::GeneratedFileDescriptor::new_generated(",
-        protobuf_crate_path(&customize),
+        protobuf_crate_path(customize),
     ));
     w.indented(|w| {
-        w.write_line(&format!("file_descriptor_proto(),"));
-        w.write_line(&format!("deps,"));
-        w.write_line(&format!("messages,"));
-        w.write_line(&format!("enums,"));
+        w.write_line("file_descriptor_proto(),");
+        w.write_line("deps,");
+        w.write_line("messages,");
+        w.write_line("enums,");
     });
     w.write_line(")");
 }
@@ -122,7 +122,7 @@ fn write_file_descriptor(
                     );
                     w.write_line(&format!(
                         "{protobuf_crate}::reflect::FileDescriptor::new_generated_2(generated_file_descriptor)",
-                        protobuf_crate=protobuf_crate_path(&customize),
+                        protobuf_crate=protobuf_crate_path(customize),
                     ));
                 }
             );
@@ -165,9 +165,9 @@ pub(crate) fn write_file_descriptor_data(
     });
     w.write_line("\";");
     w.write_line("");
-    write_file_descriptor_proto(&customize, w);
+    write_file_descriptor_proto(customize, w);
     w.write_line("");
-    write_file_descriptor(file, &customize, w);
+    write_file_descriptor(file, customize, w);
 }
 
 fn write_file_descriptor_proto(customize: &Customize, w: &mut CodeWriter) {

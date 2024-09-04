@@ -96,7 +96,7 @@ pub(crate) fn gen_file(
                 MessageGen::new(
                     file_descriptor,
                     message,
-                    &root_scope,
+                    root_scope,
                     &customize,
                     &path,
                     file_descriptor.proto().source_code_info.as_ref(),
@@ -129,7 +129,7 @@ pub(crate) fn gen_file(
             .write(w);
         }
 
-        write_extensions(file_descriptor, &root_scope, w, &customize);
+        write_extensions(file_descriptor, root_scope, w, &customize);
 
         if !lite_runtime {
             w.write_line("");

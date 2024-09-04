@@ -5,7 +5,7 @@ use std::process;
 /// Invoke `interop` binary, pass given data as stdin, return stdout.
 pub fn interop_command(command: &str, stdin: &[u8]) -> Vec<u8> {
     let mut interop = process::Command::new("../test-crates/interop/cxx/interop")
-        .args(&[command])
+        .args([command])
         .stdin(process::Stdio::piped())
         .stdout(process::Stdio::piped())
         .stderr(process::Stdio::inherit())

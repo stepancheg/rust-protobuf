@@ -69,7 +69,7 @@ impl RustType {
             RustType::Int(true, bits) => format!("i{}", bits),
             RustType::Int(false, bits) => format!("u{}", bits),
             RustType::Float(bits) => format!("f{}", bits),
-            RustType::Bool => format!("bool"),
+            RustType::Bool => "bool".to_string(),
             RustType::Vec(ref param) => format!("::std::vec::Vec<{}>", param.to_code(customize)),
             RustType::HashMap(ref key, ref value) => format!(
                 "::std::collections::HashMap<{}, {}>",
@@ -81,9 +81,9 @@ impl RustType {
                 key.to_code(customize),
                 value.to_code(customize)
             ),
-            RustType::String => format!("::std::string::String"),
+            RustType::String => "::std::string::String".to_string(),
             RustType::Slice(ref param) => format!("[{}]", param.to_code(customize)),
-            RustType::Str => format!("str"),
+            RustType::Str => "str".to_string(),
             RustType::Option(ref param) => {
                 format!("::std::option::Option<{}>", param.to_code(customize))
             }
@@ -101,8 +101,8 @@ impl RustType {
                 protobuf_crate_path(customize),
                 name
             ),
-            RustType::Group => format!("<group>"),
-            RustType::Bytes => format!("::bytes::Bytes"),
+            RustType::Group => "<group>".to_string(),
+            RustType::Bytes => "::bytes::Bytes".to_string(),
             RustType::Chars => format!("{}::Chars", protobuf_crate_path(customize)),
         }
     }
@@ -289,11 +289,11 @@ impl RustType {
     // expression to convert `v` of type `self` to type `target`
     pub fn into_target(&self, target: &RustType, v: &str, customize: &Customize) -> String {
         self.try_into_target(target, v, customize)
-            .expect(&format!("failed to convert {:?} into {:?}", self, target))
+            .unwrap_or_else(|_| panic!("failed to convert {:?} into {:?}", self, target))
     }
 
     // https://github.com/rust-lang-nursery/rustfmt/issues/3131
-    #[cfg_attr(rustfmt, rustfmt_skip)]
+    #[rustfmt::skip]
     fn try_into_target(&self, target: &RustType, v: &str, customize: &Customize) -> Result<String, ()> {
         {
             if let Some(t1) = self.is_ref().and_then(|t| t.is_box()) {
@@ -306,27 +306,27 @@ impl RustType {
         }
 
         match (self, target) {
-            (x, y) if x == y => return Ok(format!("{}", v)),
-            (&RustType::Ref(ref x), y) if **x == *y => return Ok(format!("*{}", v)),
-            (x, &RustType::Uniq(ref y)) if *x == **y => {
+            (x, y) if x == y => return Ok(v.to_string()),
+            (RustType::Ref(x), y) if **x == *y => return Ok(format!("*{}", v)),
+            (x, RustType::Uniq(y)) if *x == **y => {
                 return Ok(format!("::std::boxed::Box::new({})", v))
             }
-            (&RustType::Uniq(ref x), y) if **x == *y => return Ok(format!("*{}", v)),
-            (&RustType::String, &RustType::Ref(ref t)) if **t == RustType::Str => {
+            (RustType::Uniq(x), y) if **x == *y => return Ok(format!("*{}", v)),
+            (&RustType::String, RustType::Ref(t)) if **t == RustType::Str => {
                 return Ok(format!("&{}", v))
             }
-            (&RustType::Chars, &RustType::Ref(ref t)) if **t == RustType::Str => {
+            (&RustType::Chars, RustType::Ref(t)) if **t == RustType::Str => {
                 return Ok(format!("&{}", v))
             }
-            (&RustType::Ref(ref t1), &RustType::Ref(ref t2)) if t1.is_string() && t2.is_str() => {
+            (RustType::Ref(t1), RustType::Ref(t2)) if t1.is_string() && t2.is_str() => {
                 return Ok(format!("&{}", v))
             }
-            (&RustType::Ref(ref t1), &RustType::String)
+            (RustType::Ref(t1), &RustType::String)
                 if match **t1 {
                        RustType::Str => true,
                        _ => false,
                    } => return Ok(format!("{}.to_owned()", v)),
-            (&RustType::Ref(ref t1), &RustType::Chars)
+            (RustType::Ref(t1), &RustType::Chars)
                 if match **t1 {
                        RustType::Str => true,
                        _ => false,
@@ -334,27 +334,27 @@ impl RustType {
                 return Ok(format!("<{}::Chars as ::std::convert::From<_>>::from({}.to_owned())",
                     protobuf_crate_path(customize), v))
             },
-            (&RustType::Ref(ref t1), &RustType::Vec(ref t2))
+            (RustType::Ref(t1), RustType::Vec(t2))
                 if match (&**t1, &**t2) {
-                       (&RustType::Slice(ref x), ref y) => **x == **y,
+                       (RustType::Slice(x), y) => **x == *y,
                        _ => false,
                    } => return Ok(format!("{}.to_vec()", v)),
-            (&RustType::Ref(ref t1), &RustType::Bytes)
+            (RustType::Ref(t1), &RustType::Bytes)
                 if t1.is_slice_u8() =>
                     return Ok(format!("<::bytes::Bytes as ::std::convert::From<_>>::from({}.to_vec())", v)),
-            (&RustType::Vec(ref x), &RustType::Ref(ref t))
+            (RustType::Vec(x), RustType::Ref(t))
                 if match **t {
                        RustType::Slice(ref y) => x == y,
                        _ => false,
                    } => return Ok(format!("&{}", v)),
-            (&RustType::Bytes, &RustType::Ref(ref t))
+            (&RustType::Bytes, RustType::Ref(t))
                 if match **t {
                        RustType::Slice(ref y) => **y == RustType::u8(),
                        _ => false,
                    } => return Ok(format!("&{}", v)),
-            (&RustType::Ref(ref t1), &RustType::Ref(ref t2))
+            (RustType::Ref(t1), RustType::Ref(t2))
                 if match (&**t1, &**t2) {
-                       (&RustType::Vec(ref x), &RustType::Slice(ref y)) => x == y,
+                       (RustType::Vec(x), RustType::Slice(y)) => x == y,
                        _ => false,
                    } => return Ok(format!("&{}", v)),
             (&RustType::Enum(..), &RustType::Int(true, 32)) => {
@@ -363,22 +363,22 @@ impl RustType {
             (&RustType::EnumOrUnknown(..), &RustType::Int(true, 32)) => {
                 return Ok(format!("{}::EnumOrUnknown::value(&{})", protobuf_crate_path(customize), v))
             },
-            (&RustType::Ref(ref t), &RustType::Int(true, 32)) if t.is_enum() => {
+            (RustType::Ref(t), &RustType::Int(true, 32)) if t.is_enum() => {
                 return Ok(format!("{}::Enum::value({})", protobuf_crate_path(customize), v))
             }
-            (&RustType::Ref(ref t), &RustType::Int(true, 32)) if t.is_enum_or_unknown() => {
+            (RustType::Ref(t), &RustType::Int(true, 32)) if t.is_enum_or_unknown() => {
                 return Ok(format!("{}::EnumOrUnknown::value({})", protobuf_crate_path(customize), v))
             },
-            (&RustType::EnumOrUnknown(ref f, ..), &RustType::Enum(ref t, ..)) if f == t => {
+            (RustType::EnumOrUnknown(f, ..), RustType::Enum(t, ..)) if f == t => {
                 return Ok(format!("{}::EnumOrUnknown::enum_value_or_default(&{})", protobuf_crate_path(customize), v))
             }
-            (&RustType::Enum(ref f, ..), &RustType::EnumOrUnknown(ref t, ..)) if f == t => {
+            (RustType::Enum(f, ..), RustType::EnumOrUnknown(t, ..)) if f == t => {
                 return Ok(format!("{}::EnumOrUnknown::new({})", protobuf_crate_path(customize), v))
             }
             _ => (),
         };
 
-        if let &RustType::Ref(ref s) = self {
+        if let RustType::Ref(s) = self {
             if let Ok(conv) = s.try_into_target(target, v, customize) {
                 return Ok(conv);
             }
@@ -391,10 +391,10 @@ impl RustType {
     pub fn ref_type(&self) -> RustType {
         RustType::Ref(Box::new(match self {
             &RustType::String | &RustType::Chars => RustType::Str,
-            &RustType::Vec(ref p) => RustType::Slice(p.clone()),
+            RustType::Vec(p) => RustType::Slice(p.clone()),
             &RustType::Bytes => RustType::Slice(Box::new(RustType::u8())),
-            &RustType::Message(ref p) => RustType::Message(p.clone()),
-            &RustType::Uniq(ref p) => RustType::Uniq(p.clone()),
+            RustType::Message(p) => RustType::Message(p.clone()),
+            RustType::Uniq(p) => RustType::Uniq(p.clone()),
             x => panic!("no ref type for {:?}", x),
         }))
     }
@@ -409,8 +409,8 @@ impl RustType {
 
     pub fn elem_type(&self) -> RustType {
         match self {
-            &RustType::Option(ref ty) => (**ty).clone(),
-            &RustType::MessageField(ref ty) => (**ty).clone(),
+            RustType::Option(ty) => (**ty).clone(),
+            RustType::MessageField(ty) => (**ty).clone(),
             x => panic!("cannot get elem type of {:?}", x),
         }
     }
@@ -427,7 +427,7 @@ impl RustType {
 
     pub fn value(self, value: String) -> RustValueTyped {
         RustValueTyped {
-            value: value,
+            value,
             rust_type: self,
         }
     }
@@ -595,12 +595,12 @@ impl ProtobufTypeGen {
                 protobuf_crate_path(customize)
             ),
             &ProtobufTypeGen::Primitive(.., PrimitiveTypeVariant::TokioBytes) => unreachable!(),
-            &ProtobufTypeGen::Message(ref name) => format!(
+            ProtobufTypeGen::Message(name) => format!(
                 "{}::reflect::types::ProtobufTypeMessage<{}>",
                 protobuf_crate_path(customize),
                 name
             ),
-            &ProtobufTypeGen::EnumOrUnknown(ref name) => format!(
+            ProtobufTypeGen::EnumOrUnknown(name) => format!(
                 "{}::reflect::types::ProtobufTypeEnumOrUnknown<{}>",
                 protobuf_crate_path(customize),
                 name

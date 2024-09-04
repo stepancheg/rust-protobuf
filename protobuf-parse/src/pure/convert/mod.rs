@@ -155,7 +155,7 @@ impl<'a> Resolver<'a> {
         output.set_name(name.to_owned());
         output.set_number(number);
 
-        let t = self.field_type(&scope, name, field_type)?;
+        let t = self.field_type(scope, name, field_type)?;
         output.set_type(t.type_enum());
         if let Some(t_name) = t.type_name() {
             output.set_type_name(t_name.path.clone());
@@ -163,7 +163,7 @@ impl<'a> Resolver<'a> {
 
         output.set_label(field_descriptor_proto::Label::LABEL_OPTIONAL);
 
-        output.set_json_name(json_name(&name));
+        output.set_json_name(json_name(name));
 
         Ok(output)
     }
@@ -181,10 +181,10 @@ impl<'a> Resolver<'a> {
         output.set_name(Resolver::map_entry_name_for_field_name(field_name).into_string());
         output
             .field
-            .push(self.map_entry_field(&scope, "key", 1, key)?);
+            .push(self.map_entry_field(scope, "key", 1, key)?);
         output
             .field
-            .push(self.map_entry_field(&scope, "value", 2, value)?);
+            .push(self.map_entry_field(scope, "value", 2, value)?);
 
         Ok(output)
     }
@@ -317,7 +317,7 @@ impl<'a> Resolver<'a> {
             reserved_range.set_end(*reserved.end() + 1);
             output.reserved_range.push(reserved_range);
         }
-        output.reserved_name = input.reserved_names.clone().into();
+        output.reserved_name = input.reserved_names.clone();
 
         Ok(output)
     }
@@ -403,14 +403,14 @@ impl<'a> Resolver<'a> {
         if let Some(ref default) = input.t.options.as_slice().by_name("default") {
             let default = match output.type_() {
                 protobuf::descriptor::field_descriptor_proto::Type::TYPE_STRING => {
-                    if let &model::ProtobufConstant::String(ref s) = default {
+                    if let model::ProtobufConstant::String(s) = default {
                         s.decode_utf8()?
                     } else {
                         return Err(ConvertError::DefaultValueIsNotStringLiteral.into());
                     }
                 }
                 protobuf::descriptor::field_descriptor_proto::Type::TYPE_BYTES => {
-                    if let &model::ProtobufConstant::String(ref s) = default {
+                    if let model::ProtobufConstant::String(s) = default {
                         let mut buf = String::new();
                         escape_bytes_to(&s.decode_bytes()?, &mut buf);
                         buf
@@ -489,7 +489,7 @@ impl<'a> Resolver<'a> {
             model::FieldType::String => TypeResolved::String,
             model::FieldType::Bytes => TypeResolved::Bytes,
             model::FieldType::MessageOrEnum(ref name) => {
-                let t = self.type_resolver.resolve_message_or_enum(scope, &name)?;
+                let t = self.type_resolver.resolve_message_or_enum(scope, name)?;
                 match t.t {
                     MessageOrEnum::Message(..) => TypeResolved::Message(t.full_name),
                     MessageOrEnum::Enum(..) => TypeResolved::Enum(t.full_name),
@@ -532,7 +532,7 @@ impl<'a> Resolver<'a> {
         output.value = input
             .values
             .iter()
-            .map(|v| self.enum_value(scope, &v))
+            .map(|v| self.enum_value(scope, v))
             .collect::<Result<_, _>>()?;
 
         for reserved in &input.reserved_nums {
@@ -544,7 +544,7 @@ impl<'a> Resolver<'a> {
             output.reserved_range.push(reserved_range);
         }
 
-        output.reserved_name = input.reserved_names.clone().into();
+        output.reserved_name = input.reserved_names.clone();
 
         Ok(output)
     }
@@ -627,9 +627,9 @@ pub(crate) fn file_descriptor(
     deps: &[FileDescriptorPair],
 ) -> anyhow::Result<protobuf::descriptor::FileDescriptorProto> {
     let resolver = Resolver {
-        current_file: &input,
+        current_file: input,
         type_resolver: TypeResolver {
-            current_file: &input,
+            current_file: input,
             deps,
         },
     };
@@ -642,7 +642,7 @@ pub(crate) fn file_descriptor(
         output.set_package(input.package.to_root_rel().to_string());
     }
 
-    populate_dependencies(&input, &mut output);
+    populate_dependencies(input, &mut output);
 
     let mut messages = Vec::new();
     let mut services = Vec::new();

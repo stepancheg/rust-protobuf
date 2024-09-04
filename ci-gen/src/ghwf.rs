@@ -3,17 +3,12 @@ use std::fmt;
 use crate::yaml::Yaml;
 
 #[allow(dead_code)]
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq, Default)]
 pub enum Env {
     WindowsLatest,
+    #[default]
     UbuntuLatest,
     MacosLatest,
-}
-
-impl Default for Env {
-    fn default() -> Self {
-        Env::UbuntuLatest
-    }
 }
 
 impl fmt::Display for Env {
@@ -60,7 +55,7 @@ impl Step {
             name: name.to_owned(),
             uses: Some(uses.to_owned()),
             env: env
-                .into_iter()
+                .iter()
                 .map(|(k, v)| (String::from(*k), String::from(*v)))
                 .collect(),
             with: Some(with),
@@ -85,8 +80,8 @@ impl Step {
     }
 }
 
-impl Into<Yaml> for Step {
-    fn into(self) -> Yaml {
+impl From<Step> for Yaml {
+    fn from(val: Step) -> Self {
         let Step {
             name,
             uses,
@@ -94,7 +89,7 @@ impl Into<Yaml> for Step {
             run,
             shell,
             env,
-        } = self;
+        } = val;
         let mut entries = Vec::new();
         entries.push(("name", Yaml::string(name)));
         if let Some(uses) = uses {
@@ -134,23 +129,23 @@ impl Job {
     }
 }
 
-impl Into<(String, Yaml)> for Job {
-    fn into(self) -> (String, Yaml) {
-        assert!(!self.id.is_empty());
+impl From<Job> for (String, Yaml) {
+    fn from(val: Job) -> Self {
+        assert!(!val.id.is_empty());
         let mut entries = vec![
-            ("name", Yaml::string(self.name)),
-            ("runs-on", Yaml::string(format!("{}", self.runs_on))),
+            ("name", Yaml::string(val.name)),
+            ("runs-on", Yaml::string(format!("{}", val.runs_on))),
         ];
-        if let Some(timeout_minutes) = self.timeout_minutes {
+        if let Some(timeout_minutes) = val.timeout_minutes {
             entries.push((
                 "timeout-minutes",
                 Yaml::string(format!("{}", timeout_minutes)),
             ));
         }
-        if !self.env.is_empty() {
-            entries.push(("env", Yaml::map(self.env)));
+        if !val.env.is_empty() {
+            entries.push(("env", Yaml::map(val.env)));
         }
-        entries.push(("steps", Yaml::list(self.steps)));
-        (self.id, Yaml::map(entries))
+        entries.push(("steps", Yaml::list(val.steps)));
+        (val.id, Yaml::map(entries))
     }
 }

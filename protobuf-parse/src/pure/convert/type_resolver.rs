@@ -61,7 +61,7 @@ impl<'a> LookupScope<'a> {
 
     fn find_message(&self, simple_name: &ProtobufIdentRef) -> Option<&'a model::Message> {
         self.messages()
-            .into_iter()
+            .iter()
             .find(|m| m.t.name == simple_name.as_str())
             .map(|m| &m.t)
     }
@@ -77,10 +77,10 @@ impl<'a> LookupScope<'a> {
         let mut r = Vec::new();
         r.extend(
             self.enums()
-                .into_iter()
+                .iter()
                 .map(|e| (ProtobufIdent::from(&e.name[..]), MessageOrEnum::Enum(e))),
         );
-        r.extend(self.messages().into_iter().map(|m| {
+        r.extend(self.messages().iter().map(|m| {
             (
                 ProtobufIdent::from(&m.t.name[..]),
                 MessageOrEnum::Message(&m.t),
@@ -156,13 +156,13 @@ impl<'a> TypeResolver<'a> {
     ) -> anyhow::Result<WithFullName<MessageOrEnum<'a>>> {
         for file in self.all_files() {
             if let Some(relative) = absolute_path.remove_prefix(&file.package) {
-                if let Some(w) = LookupScope::File(file).find_message_or_enum(&relative) {
+                if let Some(w) = LookupScope::File(file).find_message_or_enum(relative) {
                     return Ok(w);
                 }
             }
         }
 
-        return Err(TypeResolverError::NotFoundByAbsPath(absolute_path.clone()).into());
+        Err(TypeResolverError::NotFoundByAbsPath(absolute_path.clone()).into())
     }
 
     pub(crate) fn resolve_message_or_enum(
@@ -171,12 +171,12 @@ impl<'a> TypeResolver<'a> {
         name: &ProtobufPath,
     ) -> anyhow::Result<WithFullName<MessageOrEnum>> {
         match name {
-            ProtobufPath::Abs(name) => Ok(self.find_message_or_enum_by_abs_name(&name)?),
+            ProtobufPath::Abs(name) => Ok(self.find_message_or_enum_by_abs_name(name)?),
             ProtobufPath::Rel(name) => {
                 // find message or enum in current package
                 for p in scope.self_and_parents() {
                     let mut fq = p.to_owned();
-                    fq.push_relative(&name);
+                    fq.push_relative(name);
                     if let Ok(me) = self.find_message_or_enum_by_abs_name(&fq) {
                         return Ok(me);
                     }

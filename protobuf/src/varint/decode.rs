@@ -42,7 +42,7 @@ fn decode_varint_full<D: DecodeVarint>(rem: &[u8]) -> crate::Result<Option<(D, u
             return Ok(Some((D::from_u64(r), i + 1)));
         }
 
-        r = r | (((b & 0x7f) as u64) << (i as u64 * 7));
+        r |= ((b & 0x7f) as u64) << (i as u64 * 7);
         if b < 0x80 {
             return Ok(Some((D::from_u64(r), i + 1)));
         }
@@ -52,7 +52,7 @@ fn decode_varint_full<D: DecodeVarint>(rem: &[u8]) -> crate::Result<Option<(D, u
 
 #[inline]
 fn decode_varint_impl<D: DecodeVarint>(buf: &[u8]) -> crate::Result<Option<(D, usize)>> {
-    if buf.len() >= 1 && buf[0] < 0x80 {
+    if !buf.is_empty() && buf[0] < 0x80 {
         // The the most common case.
         let ret = buf[0] as u64;
         let consume = 1;
