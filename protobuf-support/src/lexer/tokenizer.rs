@@ -198,7 +198,8 @@ impl<'a> Tokenizer<'a> {
         self.next_token_if(|token| match token {
             Token::Symbol(c) if symbols.contains(c) => true,
             _ => false,
-        }).map(|token| token.is_some())
+        })
+        .map(|token| token.is_some())
     }
 
     pub fn next_symbol_if_eq(&mut self, symbol: char) -> TokenizerResult<bool> {
