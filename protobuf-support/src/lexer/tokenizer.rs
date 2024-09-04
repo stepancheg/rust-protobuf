@@ -194,11 +194,15 @@ impl<'a> Tokenizer<'a> {
         Ok(())
     }
 
-    pub fn next_symbol_if_eq(&mut self, symbol: char) -> TokenizerResult<bool> {
-        Ok(self.next_token_if(|token| match token {
-            &Token::Symbol(c) if c == symbol => true,
+    pub fn next_symbol_if_in(&mut self, symbols: &[char]) -> TokenizerResult<bool> {
+        self.next_token_if(|token| match token {
+            Token::Symbol(c) if symbols.contains(c) => true,
             _ => false,
-        })? != None)
+        }).map(|token| token.is_some())
+    }
+
+    pub fn next_symbol_if_eq(&mut self, symbol: char) -> TokenizerResult<bool> {
+        self.next_symbol_if_in(&[symbol])
     }
 
     pub fn next_symbol_expect_eq(
