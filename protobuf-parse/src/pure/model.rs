@@ -426,11 +426,11 @@ impl fmt::Display for ProtobufConstant {
 impl ProtobufConstantMessage {
     pub fn format(&self) -> String {
         let mut s = String::new();
-        write!(s, "{{").unwrap();
+        write!(s, "{{ ").unwrap();
         for (n, v) in &self.fields {
             match v {
                 ProtobufConstant::Message(m) => write!(s, "{} {}", n, m.format()).unwrap(),
-                v => write!(s, "{}: {}", n, v.format()).unwrap(),
+                v => write!(s, "{}: {} ", n, v.format()).unwrap(),
             }
         }
         write!(s, "}}").unwrap();
