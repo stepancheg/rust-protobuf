@@ -1,4 +1,3 @@
-use anyhow::Context;
 use protobuf::descriptor::DescriptorProto;
 use protobuf::descriptor::EnumDescriptorProto;
 use protobuf::descriptor::EnumValueDescriptorProto;
@@ -343,7 +342,7 @@ impl<'a> OptionResoler<'a> {
         &self,
         scope: &ProtobufAbsPathRef,
         options_type: &MessageDescriptor,
-        options: &mut UnknownFields,
+        unknown_fields: &mut UnknownFields,
         option_name: &ProtobufOptionNamePart,
         option_name_rem: &[ProtobufOptionNamePart],
         option_value: &ProtobufConstant,
@@ -357,18 +356,18 @@ impl<'a> OptionResoler<'a> {
                 match field_type {
                     TypeResolved::Message(message_name) => {
                         let m = self.find_message_by_abs_name(&message_name)?;
-                        let mut unknown_fields = UnknownFields::new();
+                        let mut message_unknown_fields = UnknownFields::new();
                         self.custom_option_ext_step(
                             scope,
                             &m,
-                            &mut unknown_fields,
+                            &mut message_unknown_fields,
                             first,
                             rem,
                             option_value,
                         )?;
-                        options.add_length_delimited(
+                        unknown_fields.add_length_delimited(
                             field.proto().number() as u32,
-                            unknown_fields.write_to_bytes(),
+                            message_unknown_fields.write_to_bytes(),
                         );
                         Ok(())
                     }
@@ -383,26 +382,162 @@ impl<'a> OptionResoler<'a> {
                     .into()),
                 }
             }
-            None => {
-                let value = match self.option_value_to_unknown_value(
+            None => self
+                .add_option_value_to_unknown_fields(
                     &field_type,
+                    field.number() as u32,
+                    unknown_fields,
                     option_value,
                     &format!("{}", option_name),
-                ) {
-                    Ok(value) => value,
-                    Err(e) => {
-                        let e = e.context(format!(
-                            "parsing custom option `{}` value `{}` at `{}`",
-                            option_name, option_value, scope
-                        ));
-                        return Err(e.into());
-                    }
-                };
+                )
+                .map_err(|err| {
+                    err.context(format!(
+                        "parsing custom option `{}` value `{}` at `{}`",
+                        option_name, option_value, scope
+                    ))
+                }),
+        }
+    }
 
-                options.add_value(field.proto().number() as u32, value);
-                Ok(())
+    fn add_option_value_to_unknown_fields(
+        &self,
+        field_type: &TypeResolved,
+        field_num: u32,
+        unknown_fields: &mut UnknownFields,
+        option_value: &ProtobufConstant,
+        option_name_for_diag: &str,
+    ) -> anyhow::Result<()> {
+        let error = || {
+            OptionResolverError::UnsupportedExtensionType(
+                option_name_for_diag.to_owned(),
+                format!("{:?}", field_type),
+                option_value.clone(),
+            )
+        };
+
+        match option_value {
+            ProtobufConstant::U64(v) => match field_type {
+                TypeResolved::Fixed64 => unknown_fields.add_value(field_num, Self::fixed64(*v)?),
+                TypeResolved::Sfixed64 => unknown_fields.add_value(field_num, Self::sfixed64(*v)?),
+                TypeResolved::Fixed32 => unknown_fields.add_value(field_num, Self::fixed32(*v)?),
+                TypeResolved::Sfixed32 => unknown_fields.add_value(field_num, Self::sfixed32(*v)?),
+                TypeResolved::Int32 => unknown_fields.add_value(field_num, Self::int32(*v)?),
+                TypeResolved::Int64 => unknown_fields.add_value(field_num, Self::int64(*v)?),
+                TypeResolved::Uint64 => unknown_fields.add_value(field_num, Self::uint64(*v)?),
+                TypeResolved::Uint32 => unknown_fields.add_value(field_num, Self::uint32(*v)?),
+                TypeResolved::Sint64 => unknown_fields.add_value(field_num, Self::sint64(*v)?),
+                TypeResolved::Sint32 => unknown_fields.add_value(field_num, Self::sint32(*v)?),
+                TypeResolved::Float => {
+                    unknown_fields.add_value(field_num, UnknownValue::float(*v as f32))
+                }
+                TypeResolved::Double => {
+                    unknown_fields.add_value(field_num, UnknownValue::double(*v as f64))
+                }
+                _ => return Err(error().into()),
+            },
+            ProtobufConstant::I64(v) => match field_type {
+                TypeResolved::Fixed64 => unknown_fields.add_value(field_num, Self::fixed64(*v)?),
+                TypeResolved::Sfixed64 => unknown_fields.add_value(field_num, Self::sfixed64(*v)?),
+                TypeResolved::Fixed32 => unknown_fields.add_value(field_num, Self::fixed32(*v)?),
+                TypeResolved::Sfixed32 => unknown_fields.add_value(field_num, Self::sfixed32(*v)?),
+                TypeResolved::Int32 => unknown_fields.add_value(field_num, Self::int32(*v)?),
+                TypeResolved::Int64 => unknown_fields.add_value(field_num, Self::int64(*v)?),
+                TypeResolved::Uint64 => unknown_fields.add_value(field_num, Self::uint64(*v)?),
+                TypeResolved::Uint32 => unknown_fields.add_value(field_num, Self::uint32(*v)?),
+                TypeResolved::Sint64 => unknown_fields.add_value(field_num, Self::sint64(*v)?),
+                TypeResolved::Sint32 => unknown_fields.add_value(field_num, Self::sint32(*v)?),
+                TypeResolved::Float => {
+                    unknown_fields.add_value(field_num, UnknownValue::float(*v as f32))
+                }
+                TypeResolved::Double => {
+                    unknown_fields.add_value(field_num, UnknownValue::double(*v as f64))
+                }
+                _ => return Err(error().into()),
+            },
+            ProtobufConstant::F64(f) => match field_type {
+                TypeResolved::Float => {
+                    unknown_fields.add_value(field_num, UnknownValue::float(*f as f32))
+                }
+                TypeResolved::Double => {
+                    unknown_fields.add_value(field_num, UnknownValue::double(*f))
+                }
+                TypeResolved::Fixed32 => {
+                    unknown_fields.add_value(field_num, UnknownValue::Fixed32(*f as u32))
+                }
+                TypeResolved::Fixed64 => {
+                    unknown_fields.add_value(field_num, UnknownValue::Fixed64(*f as u64))
+                }
+                TypeResolved::Sfixed32 => {
+                    unknown_fields.add_value(field_num, UnknownValue::sfixed32(*f as i32))
+                }
+                TypeResolved::Sfixed64 => {
+                    unknown_fields.add_value(field_num, UnknownValue::sfixed64(*f as i64))
+                }
+                TypeResolved::Sint64 => {
+                    unknown_fields.add_value(field_num, UnknownValue::sint64(*f as i64))
+                }
+                TypeResolved::Sint32 => {
+                    unknown_fields.add_value(field_num, UnknownValue::sint32(*f as i32))
+                }
+                TypeResolved::Int32 | TypeResolved::Int64 => {
+                    unknown_fields.add_value(field_num, UnknownValue::int64(*f as i64))
+                }
+                TypeResolved::Uint32 | TypeResolved::Uint64 => {
+                    unknown_fields.add_value(field_num, UnknownValue::Varint(*f as u64))
+                }
+                _ => return Err(error().into()),
+            },
+            ProtobufConstant::Bool(b) => match field_type {
+                TypeResolved::Bool => unknown_fields
+                    .add_value(field_num, UnknownValue::Varint(if *b { 1 } else { 0 })),
+                _ => return Err(error().into()),
+            },
+            ProtobufConstant::Ident(ident) => match field_type {
+                TypeResolved::Enum(abs_path) => {
+                    let n = self
+                        .resolver
+                        .find_enum_by_abs_name(abs_path)
+                        .map_err(OptionResolverError::OtherError)?
+                        .values
+                        .iter()
+                        .find(|v| v.name == ident.to_string())
+                        .map(|v| v.number)
+                        .ok_or_else(|| OptionResolverError::UnknownEnumValue(ident.to_string()))?;
+
+                    unknown_fields.add_value(field_num, UnknownValue::int32(n));
+                }
+                _ => return Err(error().into()),
+            },
+            ProtobufConstant::String(s) => match field_type {
+                TypeResolved::String => unknown_fields.add_value(
+                    field_num,
+                    UnknownValue::LengthDelimited(s.decode_utf8()?.into_bytes()),
+                ),
+                TypeResolved::Bytes => unknown_fields
+                    .add_value(field_num, UnknownValue::LengthDelimited(s.decode_bytes()?)),
+                _ => return Err(error().into()),
+            },
+            ProtobufConstant::Message(message) => self.add_option_value_message_to_unknown_fields(
+                field_type,
+                field_num,
+                unknown_fields,
+                message,
+                &option_name_for_diag,
+            )?,
+            ProtobufConstant::Repeated(list) => {
+                for v in list {
+                    self.add_option_value_to_unknown_fields(
+                        field_type,
+                        field_num,
+                        unknown_fields,
+                        v,
+                        option_name_for_diag,
+                    )?
+                }
             }
         }
+
+        Ok(())
     }
 
     fn custom_option_ext<M>(
@@ -485,12 +620,14 @@ impl<'a> OptionResoler<'a> {
         Ok(UnknownValue::sint64(v.try_into()?))
     }
 
-    fn option_value_message_to_unknown_value(
+    fn add_option_value_message_to_unknown_fields(
         &self,
         field_type: &TypeResolved,
-        value: &ProtobufConstantMessage,
+        field_num: u32,
+        options: &mut UnknownFields,
+        option_value: &ProtobufConstantMessage,
         option_name_for_diag: &str,
-    ) -> anyhow::Result<UnknownValue> {
+    ) -> anyhow::Result<()> {
         match &field_type {
             TypeResolved::Message(ma) => {
                 let m = self
@@ -499,27 +636,23 @@ impl<'a> OptionResoler<'a> {
                     .map_err(OptionResolverError::OtherError)?
                     .t;
                 let mut unknown_fields = UnknownFields::new();
-                for (n, v) in &value.fields {
+                for (n, v) in &option_value.fields {
                     match n {
                         ProtobufConstantMessageFieldName::Regular(n) => {
-                            let f = match m.field_by_name(n.as_str()) {
-                                Some(f) => f,
-                                None => {
-                                    return Err(
-                                        OptionResolverError::UnknownFieldName(n.clone()).into()
-                                    )
-                                }
-                            };
-                            let u = self
-                                .option_value_field_to_unknown_value(
-                                    ma,
-                                    v,
-                                    n,
-                                    &f.typ,
-                                    option_name_for_diag,
-                                )
-                                .map_err(OptionResolverError::OtherError)?;
-                            unknown_fields.add_value(f.number as u32, u);
+                            let field = m
+                                .field_by_name(n.as_str())
+                                .ok_or_else(|| OptionResolverError::UnknownFieldName(n.clone()))?;
+
+                            let field_type = self.resolver.field_type(&ma, n, &field.typ)?;
+
+                            self.add_option_value_to_unknown_fields(
+                                &field_type,
+                                field.number as u32,
+                                &mut unknown_fields,
+                                v,
+                                option_name_for_diag,
+                            )
+                            .map_err(OptionResolverError::OtherError)?;
                         }
                         ProtobufConstantMessageFieldName::Extension(..) => {
                             // TODO: implement extension fields in constants
@@ -529,136 +662,16 @@ impl<'a> OptionResoler<'a> {
                         }
                     }
                 }
-                Ok(UnknownValue::LengthDelimited(
-                    unknown_fields.write_to_bytes(),
-                ))
+
+                options.add_value(
+                    field_num,
+                    UnknownValue::LengthDelimited(unknown_fields.write_to_bytes()),
+                );
+
+                Ok(())
             }
             _ => Err(OptionResolverError::MessageFieldRequiresMessageConstant.into()),
         }
-    }
-
-    fn option_value_to_unknown_value(
-        &self,
-        field_type: &TypeResolved,
-        value: &model::ProtobufConstant,
-        option_name_for_diag: &str,
-    ) -> anyhow::Result<UnknownValue> {
-        match value {
-            &model::ProtobufConstant::Bool(b) => {
-                if field_type != &TypeResolved::Bool {
-                    {}
-                } else {
-                    return Ok(UnknownValue::Varint(if b { 1 } else { 0 }));
-                }
-            }
-            &model::ProtobufConstant::U64(v) => match field_type {
-                TypeResolved::Fixed64 => return Self::fixed64(v),
-                TypeResolved::Sfixed64 => return Self::sfixed64(v),
-                TypeResolved::Fixed32 => return Self::fixed32(v),
-                TypeResolved::Sfixed32 => return Self::sfixed32(v),
-                TypeResolved::Int32 => return Self::int32(v),
-                TypeResolved::Int64 => return Self::int64(v),
-                TypeResolved::Uint64 => return Self::uint64(v),
-                TypeResolved::Uint32 => return Self::uint32(v),
-                TypeResolved::Sint64 => return Self::sint64(v),
-                TypeResolved::Sint32 => return Self::sint32(v),
-                TypeResolved::Float => return Ok(UnknownValue::float(v as f32)),
-                TypeResolved::Double => return Ok(UnknownValue::double(v as f64)),
-                _ => {}
-            },
-            &model::ProtobufConstant::I64(v) => match field_type {
-                TypeResolved::Fixed64 => return Self::fixed64(v),
-                TypeResolved::Sfixed64 => return Self::sfixed64(v),
-                TypeResolved::Fixed32 => return Self::fixed32(v),
-                TypeResolved::Sfixed32 => return Self::sfixed32(v),
-                TypeResolved::Int64 => return Self::int64(v),
-                TypeResolved::Int32 => return Self::int32(v),
-                TypeResolved::Uint64 => return Self::uint64(v),
-                TypeResolved::Uint32 => return Self::uint32(v),
-                TypeResolved::Sint64 => return Self::sint64(v),
-                TypeResolved::Sint32 => return Self::sint32(v),
-                TypeResolved::Float => return Ok(UnknownValue::float(v as f32)),
-                TypeResolved::Double => return Ok(UnknownValue::double(v as f64)),
-                _ => {}
-            },
-            &model::ProtobufConstant::F64(f) => match field_type {
-                TypeResolved::Float => return Ok(UnknownValue::float(f as f32)),
-                TypeResolved::Double => return Ok(UnknownValue::double(f)),
-                TypeResolved::Fixed32 => return Ok(UnknownValue::Fixed32(f as u32)),
-                TypeResolved::Fixed64 => return Ok(UnknownValue::Fixed64(f as u64)),
-                TypeResolved::Sfixed32 => return Ok(UnknownValue::sfixed32(f as i32)),
-                TypeResolved::Sfixed64 => return Ok(UnknownValue::sfixed64(f as i64)),
-                TypeResolved::Int32 | TypeResolved::Int64 => {
-                    return Ok(UnknownValue::int64(f as i64))
-                }
-                TypeResolved::Uint32 | TypeResolved::Uint64 => {
-                    return Ok(UnknownValue::Varint(f as u64))
-                }
-                TypeResolved::Sint64 => return Ok(UnknownValue::sint64(f as i64)),
-                TypeResolved::Sint32 => return Ok(UnknownValue::sint32(f as i32)),
-                _ => {}
-            },
-            &model::ProtobufConstant::String(ref s) => match field_type {
-                TypeResolved::String => {
-                    return Ok(UnknownValue::LengthDelimited(s.decode_utf8()?.into_bytes()))
-                }
-                TypeResolved::Bytes => return Ok(UnknownValue::LengthDelimited(s.decode_bytes()?)),
-                _ => {}
-            },
-            model::ProtobufConstant::Ident(ident) => match &field_type {
-                TypeResolved::Enum(e) => {
-                    let e = self
-                        .resolver
-                        .find_enum_by_abs_name(e)
-                        .map_err(OptionResolverError::OtherError)?;
-                    let n = match e
-                        .values
-                        .iter()
-                        .find(|v| v.name == format!("{}", ident))
-                        .map(|v| v.number)
-                    {
-                        Some(n) => n,
-                        None => {
-                            return Err(
-                                OptionResolverError::UnknownEnumValue(ident.to_string()).into()
-                            )
-                        }
-                    };
-                    return Ok(UnknownValue::int32(n));
-                }
-                _ => {}
-            },
-            model::ProtobufConstant::Message(mo) => {
-                return self.option_value_message_to_unknown_value(
-                    &field_type,
-                    mo,
-                    option_name_for_diag,
-                );
-            }
-        };
-
-        Err(match field_type {
-            _ => OptionResolverError::UnsupportedExtensionType(
-                option_name_for_diag.to_owned(),
-                format!("{:?}", field_type),
-                value.clone(),
-            )
-            .into(),
-        })
-    }
-
-    fn option_value_field_to_unknown_value(
-        &self,
-        scope: &ProtobufAbsPath,
-        value: &model::ProtobufConstant,
-        name: &str,
-        field_type: &model::FieldType,
-        option_name_for_diag: &str,
-    ) -> anyhow::Result<UnknownValue> {
-        let field_type = self.resolver.field_type(&scope, name, field_type)?;
-        Ok(self
-            .option_value_to_unknown_value(&field_type, value, option_name_for_diag)
-            .context("parsing custom option value")?)
     }
 
     fn custom_option_builtin<M>(
