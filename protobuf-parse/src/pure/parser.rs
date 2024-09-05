@@ -396,12 +396,36 @@ impl<'a> Parser<'a> {
         Ok(r)
     }
 
+    fn next_list_constant(&mut self) -> anyhow::Result<Vec<ProtobufConstant>> {
+        self.tokenizer.next_symbol_expect_eq('[', "list constant")?;
+
+        let mut list = Vec::new();
+
+        // The list may be empty.
+        if self.tokenizer.next_symbol_if_eq(']')? {
+            return Ok(list);
+        }
+
+        list.push(self.next_constant()?);
+        while self.tokenizer.next_symbol_if_eq(',')? {
+            list.push(self.next_constant()?);
+        }
+
+        self.tokenizer.next_symbol_expect_eq(']', "list constant")?;
+
+        Ok(list)
+    }
+
     // constant = fullIdent | ( [ "-" | "+" ] intLit ) | ( [ "-" | "+" ] floatLit ) |
-    //            strLit | boolLit
+    //            strLit | boolLit | MessageValue
     fn next_constant(&mut self) -> anyhow::Result<ProtobufConstant> {
         // https://github.com/google/protobuf/blob/a21f225824e994ebd35e8447382ea4e0cd165b3c/src/google/protobuf/unittest_custom_options.proto#L350
         if self.tokenizer.lookahead_is_symbol('{')? {
             return Ok(ProtobufConstant::Message(self.next_message_constant()?));
+        }
+
+        if self.tokenizer.lookahead_is_symbol('[')? {
+            return Ok(ProtobufConstant::Repeated(self.next_list_constant()?));
         }
 
         if let Some(b) = self.next_bool_lit_opt()? {
@@ -1369,6 +1393,18 @@ mod test {
         let msg = r#" (my_opt) = { my_field: "foo"} "#;
         let opt = parse(msg, |p| p.next_field_option());
         assert_eq!(r#"{ my_field: "foo" }"#, opt.value.format());
+
+        let msg = r#" (my_opt) = { my_field: [] } "#;
+        let opt = parse(msg, |p| p.next_field_option());
+        assert_eq!(r#"{ my_field: [] }"#, opt.value.format());
+
+        let msg = r#" (my_opt) = { my_field: ["foo", "bar"] } "#;
+        let opt = parse(msg, |p| p.next_field_option());
+        assert_eq!(r#"{ my_field: ["foo","bar"] }"#, opt.value.format());
+
+        let msg = r#" (my_opt) = { my_field: [1, 2] } "#;
+        let opt = parse(msg, |p| p.next_field_option());
+        assert_eq!(r#"{ my_field: [1,2] }"#, opt.value.format());
     }
 
     #[test]

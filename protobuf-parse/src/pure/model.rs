@@ -395,8 +395,16 @@ pub(crate) struct ProtobufConstantMessage {
     pub(crate) fields: IndexMap<ProtobufConstantMessageFieldName, ProtobufConstant>,
 }
 
-/// constant = fullIdent | ( [ "-" | "+" ] intLit ) | ( [ "-" | "+" ] floatLit ) |
-//                 strLit | boolLit
+/// constant = fullIdent |
+///            ( [ "-" | "+" ] intLit ) |
+///            ( [ "-" | "+" ] floatLit ) |
+///            strLit |
+///            boolLit |
+///            messageValue
+///
+/// https://protobuf.dev/reference/protobuf/proto2-spec/#constant
+/// https://protobuf.dev/reference/protobuf/proto3-spec/#constant
+/// https://protobuf.dev/reference/protobuf/textformat-spec/#fields
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) enum ProtobufConstant {
     U64(u64),
@@ -406,6 +414,7 @@ pub(crate) enum ProtobufConstant {
     Ident(ProtobufPath),
     String(StrLit),
     Message(ProtobufConstantMessage),
+    Repeated(Vec<ProtobufConstant>),
 }
 
 impl fmt::Display for ProtobufConstant {
@@ -419,6 +428,7 @@ impl fmt::Display for ProtobufConstant {
             ProtobufConstant::String(v) => write!(f, "{}", v),
             // TODO: text format explicitly
             ProtobufConstant::Message(v) => write!(f, "{:?}", v),
+            ProtobufConstant::Repeated(v) => write!(f, "{:?}", v),
         }
     }
 }
@@ -448,6 +458,18 @@ impl ProtobufConstant {
             ProtobufConstant::Ident(ref i) => format!("{}", i),
             ProtobufConstant::String(ref s) => s.quoted(),
             ProtobufConstant::Message(ref s) => s.format(),
+            ProtobufConstant::Repeated(ref l) => {
+                let mut s = String::from("[");
+                let mut it = l.iter().peekable();
+                while let Some(constant) = it.next() {
+                    s.push_str(&constant.format());
+                    if it.peek().is_some() {
+                        s.push(',');
+                    }
+                }
+                s.push(']');
+                s
+            }
         }
     }
 
