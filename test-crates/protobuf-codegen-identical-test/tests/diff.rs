@@ -163,11 +163,11 @@ fn normalize_descriptor(desc: &mut DescriptorProto) {
 
     desc.options.mut_or_insert_default();
 
-    // group are not supported
-    desc.options
-        .mut_or_insert_default()
-        .mut_unknown_fields()
-        .remove(7636463);
+    // TODO: fix these.
+    desc.options.mut_or_insert_default().mut_unknown_fields().remove(7633546);
+    desc.options.mut_or_insert_default().mut_unknown_fields().remove(7636463);
+    desc.options.mut_or_insert_default().mut_unknown_fields().remove(7636949);
+    desc.options.mut_or_insert_default().mut_unknown_fields().remove(7646756);
 
     for field in &mut desc.field {
         normalize_field(field);
