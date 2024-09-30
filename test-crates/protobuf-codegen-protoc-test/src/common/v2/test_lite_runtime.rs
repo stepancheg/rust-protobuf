@@ -9,5 +9,5 @@ fn test_lite_runtime() {
     test_serialize_deserialize("08 0a", &m);
 
     // test it doesn't crash
-    format!("{:?}", m);
+    let _ = format!("{:?}", m);
 }
