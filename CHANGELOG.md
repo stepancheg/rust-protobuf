@@ -2,6 +2,8 @@
 
 ## [3.6] - Unreleased
 
+- [Fix text format parsing of non-ASCII](https://github.com/stepancheg/rust-protobuf/pull/730)
+
 ## [3.5.1] - Unreleased
 
 - [Remove deprecated `box_pointers` lint](https://github.com/stepancheg/rust-protobuf/pull/733)
