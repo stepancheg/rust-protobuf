@@ -146,7 +146,7 @@ impl<'a> MessageGen<'a> {
             .collect()
     }
 
-    fn required_fields(&'a self) -> Vec<&'a FieldGen> {
+    fn required_fields(&'a self) -> Vec<&'a FieldGen<'a>> {
         self.fields
             .iter()
             .filter(|f| match f.kind {
@@ -156,14 +156,14 @@ impl<'a> MessageGen<'a> {
             .collect()
     }
 
-    fn message_fields(&'a self) -> Vec<&'a FieldGen> {
+    fn message_fields(&'a self) -> Vec<&'a FieldGen<'a>> {
         self.fields
             .iter()
             .filter(|f| f.proto_type == field_descriptor_proto::Type::TYPE_MESSAGE)
             .collect()
     }
 
-    fn fields_except_oneof(&'a self) -> Vec<&'a FieldGen> {
+    fn fields_except_oneof(&'a self) -> Vec<&'a FieldGen<'a>> {
         self.fields
             .iter()
             .filter(|f| match f.kind {
@@ -173,14 +173,14 @@ impl<'a> MessageGen<'a> {
             .collect()
     }
 
-    fn fields_except_group(&'a self) -> Vec<&'a FieldGen> {
+    fn fields_except_group(&'a self) -> Vec<&'a FieldGen<'a>> {
         self.fields
             .iter()
             .filter(|f| f.proto_type != field_descriptor_proto::Type::TYPE_GROUP)
             .collect()
     }
 
-    fn fields_except_oneof_and_group(&'a self) -> Vec<&'a FieldGen> {
+    fn fields_except_oneof_and_group(&'a self) -> Vec<&'a FieldGen<'a>> {
         self.fields
             .iter()
             .filter(|f| match f.kind {
