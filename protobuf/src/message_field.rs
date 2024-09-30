@@ -173,17 +173,6 @@ impl<M: Message> Deref for MessageField<M> {
     }
 }
 
-/// Get a mutable reference to the message **and** initialize the message if not initialized yet.
-///
-/// Note that part about initializing is not conventional.
-/// Generally `DerefMut` is not supposed to modify the state.
-#[cfg(no)]
-impl<M: Message> DerefMut for MessageField<M> {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        self.mut_or_insert_default()
-    }
-}
-
 impl<T> Default for MessageField<T> {
     #[inline]
     fn default() -> MessageField<T> {
