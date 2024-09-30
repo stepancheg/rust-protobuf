@@ -9,6 +9,7 @@ description = """
 Internal crate to rust-protobuf
 """
 publish = false
+edition = "2021"
 
 [lib]
 doctest = false
