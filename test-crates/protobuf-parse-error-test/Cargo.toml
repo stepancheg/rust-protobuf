@@ -12,7 +12,7 @@ bench = false
 [dependencies]
 tempfile = "3.2.0"
 
-protoc-bin-vendored = "=3.1.0"
+protoc-bin-vendored = { workspace = true }
 
 protobuf-parse = { path = "../../protobuf-parse" }
 protobuf-test-common = { path = "../../test-crates/protobuf-test-common" }

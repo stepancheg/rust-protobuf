@@ -24,3 +24,6 @@ members = [
     "test-crates/protobuf-test",
     "test-crates/protobuf-test-common",
 ]
+
+[workspace.dependencies]
+protoc-bin-vendored = "=3.1.0"

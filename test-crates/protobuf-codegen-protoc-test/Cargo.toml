@@ -20,7 +20,7 @@ glob        = "0.2"
 log         = "0.4"
 env_logger  = "0.5.*"
 
-protoc-bin-vendored = "=3.1.0"
+protoc-bin-vendored = { workspace = true }
 
 protobuf-codegen = { path = "../../protobuf-codegen" }
 protobuf-test-common = { path = "../../test-crates/protobuf-test-common" }
