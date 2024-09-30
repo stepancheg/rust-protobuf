@@ -28,3 +28,6 @@ protobuf-support = { path = "../protobuf-support", version = "=4.0.0-alpha.0" }
 
 [package.metadata.docs.rs]
 all-features = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(never)'] }
