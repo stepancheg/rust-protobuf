@@ -603,26 +603,22 @@ impl<'a> FieldGen<'a> {
     }
 
     pub(crate) fn write_struct_field(&self, w: &mut CodeWriter) {
-        if self.proto_type == field_descriptor_proto::Type::TYPE_GROUP {
-            w.comment(&format!("{}: <group>", &self.rust_name));
-        } else {
-            w.all_documentation(self.info, &self.path);
+        w.all_documentation(self.info, &self.path);
 
-            write_protoc_insertion_point_for_field(w, &self.customize, &self.proto_field.field);
-            w.field_decl_vis(
-                Visibility::Public,
-                &self.rust_name.to_string(),
-                &self
-                    .full_storage_type(
-                        &self
-                            .proto_field
-                            .message
-                            .scope
-                            .file_and_mod(self.customize.clone()),
-                    )
-                    .to_code(&self.customize),
-            );
-        }
+        write_protoc_insertion_point_for_field(w, &self.customize, &self.proto_field.field);
+        w.field_decl_vis(
+            Visibility::Public,
+            &self.rust_name.to_string(),
+            &self
+                .full_storage_type(
+                    &self
+                        .proto_field
+                        .message
+                        .scope
+                        .file_and_mod(self.customize.clone()),
+                )
+                .to_code(&self.customize),
+        );
     }
 
     fn write_if_let_self_field_is_some<F>(&self, s: &SingularField, w: &mut CodeWriter, cb: F)
@@ -1035,11 +1031,56 @@ impl<'a> FieldGen<'a> {
                     self.rust_name,
                 ));
             }
+            FieldElem::Group(..) => self.write_merge_delimited_group_case_block(w),
             _ => {
                 let read_proc = s.elem.read_one_liner();
                 self.write_self_field_assign_some(w, s, &read_proc);
             }
         })
+    }
+
+    fn write_merge_delimited_repeated_group_case_block(&self, w: &mut CodeWriter<'_>) {
+        let name = &self.rust_name;
+        let proto_path = protobuf_crate_path(&self.customize);
+        w.write_line(&format!(
+            "let end_tag = {proto_path}::rt::set_wire_type_to_end_group(tag);"
+        ));
+        let value_type = &self
+            .elem()
+            .rust_storage_elem_type(
+                &self
+                    .proto_field
+                    .message
+                    .scope
+                    .file_and_mod(self.customize.clone()),
+            )
+            .to_code(&self.customize);
+
+        w.write_line(&format!("let mut {name} = {value_type}::default();"));
+        w.write_line(&format!("{name}.merge_delimited(is, end_tag)?;"));
+        w.write_line(&format!("self.{name}.push({name});",));
+    }
+
+    fn write_merge_delimited_group_case_block(&self, w: &mut CodeWriter<'_>) {
+        let name = &self.rust_name;
+        let proto_path = protobuf_crate_path(&self.customize);
+        w.write_line(&format!(
+            "let end_tag = {proto_path}::rt::set_wire_type_to_end_group(tag);"
+        ));
+        let value_type = &self
+            .elem()
+            .rust_storage_elem_type(
+                &self
+                    .proto_field
+                    .message
+                    .scope
+                    .file_and_mod(self.customize.clone()),
+            )
+            .to_code(&self.customize);
+
+        w.write_line(&format!("let mut {name} = {value_type}::default();"));
+        w.write_line(&format!("{name}.merge_delimited(is, end_tag)?;"));
+        w.write_line(&format!("self.{name} = Some({name});",));
     }
 
     // Write `merge_from` part for this repeated field
@@ -1057,6 +1098,9 @@ impl<'a> FieldGen<'a> {
                     self.write_merge_from_field_message_string_bytes_repeated(field, w);
                 })
             }
+            FieldElem::Group(_) => w.case_block(&format!("{}", self.tag()), |w| {
+                self.write_merge_delimited_repeated_group_case_block(w);
+            }),
             FieldElem::Enum(..) => {
                 w.case_block(
                     &format!("{}", self.tag_with_wire_type(WireType::Varint)),
@@ -1338,6 +1382,7 @@ impl<'a> FieldGen<'a> {
 
         match singular.elem {
             FieldElem::Message(..) => self.write_message_field_get_singular_message(singular, w),
+            FieldElem::Group(..) => self.write_message_field_get_singular_message(singular, w),
             FieldElem::Enum(ref en) => {
                 self.write_message_field_get_singular_enum(singular.flag, en, w)
             }

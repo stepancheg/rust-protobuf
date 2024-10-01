@@ -155,9 +155,11 @@ impl FieldGen<'_> {
                 type_params: vec!["_".to_owned()],
                 callback_params: self.make_accessor_fns_lambda(),
             },
-            FieldElem::Group => {
-                unreachable!("no accessor for group field");
-            }
+            FieldElem::Group(m) => AccessorFn {
+                name: "make_message_field_accessor".to_owned(),
+                type_params: vec![format!("{}", m.rust_name_relative(&self.file_and_mod()))],
+                callback_params: self.make_accessor_fns_lambda(),
+            },
         }
     }
 

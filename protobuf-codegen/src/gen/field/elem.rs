@@ -74,7 +74,7 @@ pub(crate) enum FieldElem<'a> {
     Primitive(Type, PrimitiveTypeVariant),
     Message(FieldElemMessage<'a>),
     Enum(FieldElemEnum<'a>),
-    Group,
+    Group(FieldElemMessage<'a>),
 }
 
 pub(crate) enum HowToGetMessageSize {
@@ -86,7 +86,7 @@ impl<'a> FieldElem<'a> {
     pub(crate) fn proto_type(&self) -> Type {
         match *self {
             FieldElem::Primitive(t, ..) => t,
-            FieldElem::Group => Type::TYPE_GROUP,
+            FieldElem::Group(_) => Type::TYPE_GROUP,
             FieldElem::Message(..) => Type::TYPE_MESSAGE,
             FieldElem::Enum(..) => Type::TYPE_ENUM,
         }
@@ -106,7 +106,7 @@ impl<'a> FieldElem<'a> {
                 RustType::Bytes
             }
             FieldElem::Primitive(.., PrimitiveTypeVariant::TokioBytes) => unreachable!(),
-            FieldElem::Group => RustType::Group,
+            FieldElem::Group(ref m) => m.rust_type(reference),
             FieldElem::Message(ref m) => m.rust_type(reference),
             FieldElem::Enum(ref en) => en.enum_or_unknown_rust_type(reference),
         }
@@ -213,6 +213,18 @@ impl<'a> FieldElem<'a> {
                     protobuf_crate_path(customize),
                 ));
             }
+            Type::TYPE_GROUP => {
+                match how_to_get_message_size {
+                    HowToGetMessageSize::Compute => {
+                        w.write_line(&format!("let len = {}.compute_size();", item_var.value))
+                    }
+                    HowToGetMessageSize::GetCached => w.write_line(&format!(
+                        "let len = {}.cached_size() as u64;",
+                        item_var.value
+                    )),
+                }
+                w.write_line(&format!("{sum_var} += {tag_size} * 2 + len;",));
+            }
             _ => {
                 w.write_line(&format!(
                     "{sum_var} += {};",
@@ -232,7 +244,7 @@ impl<'a> FieldElem<'a> {
         w: &mut CodeWriter,
     ) {
         match self.proto_type() {
-            Type::TYPE_MESSAGE => {
+            Type::TYPE_MESSAGE | Type::TYPE_GROUP => {
                 let param_type = RustType::Ref(Box::new(self.rust_storage_elem_type(file_and_mod)));
 
                 w.write_line(&format!(
@@ -273,15 +285,17 @@ pub(crate) fn field_elem<'a>(
     if let RuntimeFieldType::Map(..) = field.field.runtime_field_type() {
         unreachable!();
     }
-
-    if field.field.proto().type_() == Type::TYPE_GROUP {
-        FieldElem::Group
-    } else if field.field.proto().has_type_name() {
+    if field.field.proto().has_type_name() {
         let message_or_enum = root_scope
             .find_message_or_enum(&ProtobufAbsPath::from(field.field.proto().type_name()));
         match (field.field.proto().type_(), message_or_enum) {
             (Type::TYPE_MESSAGE, MessageOrEnumWithScope::Message(message)) => {
                 FieldElem::Message(FieldElemMessage {
+                    message: message.clone(),
+                })
+            }
+            (Type::TYPE_GROUP, MessageOrEnumWithScope::Message(message)) => {
+                FieldElem::Group(FieldElemMessage {
                     message: message.clone(),
                 })
             }

@@ -21,12 +21,17 @@ fn skip_group(is: &mut CodedInputStream) -> crate::Result<()> {
 pub fn unknown_fields_size(unknown_fields: &UnknownFields) -> u64 {
     let mut r = 0;
     for (number, value) in unknown_fields {
-        r += tag_size(number);
+        let tag_size = tag_size(number);
+        r += tag_size;
         r += match value {
             UnknownValueRef::Fixed32(_) => 4,
             UnknownValueRef::Fixed64(_) => 8,
             UnknownValueRef::Varint(v) => compute_raw_varint64_size(v),
             UnknownValueRef::LengthDelimited(v) => bytes_size_no_tag(v),
+            UnknownValueRef::Group(v) => {
+                // length of encoded data plus end tag
+                v.len() as u64 + tag_size
+            }
         };
     }
     r
@@ -60,6 +65,19 @@ pub fn read_unknown_or_skip_group(
 ) -> crate::Result<()> {
     let (field_humber, wire_type) = Tag::new(tag)?.unpack();
     read_unknown_or_skip_group_with_tag_unpacked(field_humber, wire_type, is, unknown_fields)
+}
+
+/// Store a value in unknown.
+/// Return error if tag is incorrect.
+pub fn read_unknown(
+    tag: u32,
+    is: &mut CodedInputStream<'_>,
+    unknown_fields: &mut UnknownFields,
+) -> crate::Result<()> {
+    let (field_number, wire_type) = Tag::new(tag)?.unpack();
+    let unknown = is.read_unknown_with_tag_unpacked(field_number, wire_type)?;
+    unknown_fields.add_value(tag, unknown);
+    Ok(())
 }
 
 /// Skip field.
