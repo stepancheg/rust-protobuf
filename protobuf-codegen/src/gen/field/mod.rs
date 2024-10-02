@@ -970,13 +970,42 @@ impl<'a> FieldGen<'a> {
             } else {
                 typed
             };
+            let variant_path = o.variant_path(&self.proto_field.message.scope.rust_path_to_file());
+            if o.elem.proto_type() == Type::TYPE_GROUP {
+                let proto_path = protobuf_crate_path(&self.customize);
+                w.write_line(&format!(
+                    "let end_tag = {proto_path}::rt::set_wire_type_to_end_group(tag);"
+                ));
+                let value_type = &self
+                    .elem()
+                    .rust_storage_elem_type(
+                        &self
+                            .proto_field
+                            .message
+                            .scope
+                            .file_and_mod(self.customize.clone()),
+                    )
+                    .to_code(&self.customize);
 
-            w.write_line(&format!(
-                "self.{} = ::std::option::Option::Some({}({}));",
-                o.oneof_field_name,
-                o.variant_path(&self.proto_field.message.scope.rust_path_to_file()),
-                maybe_boxed.value
-            ));
+                w.write_line(&format!(
+                    "let mut {} = {}::default();",
+                    o.oneof_field_name, value_type,
+                ));
+                w.write_line(&format!(
+                    "{}.merge_delimited(is, end_tag)?;",
+                    o.oneof_field_name,
+                ));
+
+                w.write_line(&format!(
+                    "self.{} = ::std::option::Option::Some({}({}));",
+                    o.oneof_field_name, variant_path, o.oneof_field_name,
+                ));
+            } else {
+                w.write_line(&format!(
+                    "self.{} = ::std::option::Option::Some({}({}));",
+                    o.oneof_field_name, variant_path, maybe_boxed.value
+                ));
+            }
         })
     }
 

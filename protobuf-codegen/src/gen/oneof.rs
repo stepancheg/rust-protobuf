@@ -223,6 +223,19 @@ impl<'a> OneofGen<'a> {
             .collect()
     }
 
+    pub fn variants(&'a self) -> impl Iterator<Item = OneofVariantGen<'a>> {
+        self.oneof.variants().into_iter().map(|v| {
+            let field = self
+                .message
+                .fields
+                .iter()
+                .filter(|f| f.proto_field.name() == v.field.name())
+                .next()
+                .expect(&format!("field not found by name: {}", v.field.name()));
+            OneofVariantGen::parse(self, v, field, self.message.root_scope)
+        })
+    }
+
     pub fn full_storage_type(&self) -> RustType {
         RustType::Option(Box::new(RustType::Oneof(
             self.type_name_relative(
@@ -262,7 +275,7 @@ impl<'a> OneofGen<'a> {
         }
         write_protoc_insertion_point_for_oneof(w, &self.customize.for_elem, &self.oneof.oneof);
         w.pub_enum(&self.oneof.rust_name().ident.to_string(), |w| {
-            for variant in self.variants_except_group() {
+            for variant in self.variants() {
                 write_protoc_insertion_point_for_oneof_field(
                     w,
                     &self.customize.for_children,

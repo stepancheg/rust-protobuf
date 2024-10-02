@@ -76,7 +76,7 @@ pub fn read_unknown(
 ) -> crate::Result<()> {
     let (field_number, wire_type) = Tag::new(tag)?.unpack();
     let unknown = is.read_unknown_with_tag_unpacked(field_number, wire_type)?;
-    unknown_fields.add_value(tag, unknown);
+    unknown_fields.add_value(field_number, unknown);
     Ok(())
 }
 
