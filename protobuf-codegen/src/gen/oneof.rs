@@ -223,17 +223,21 @@ impl<'a> OneofGen<'a> {
             .collect()
     }
 
-    pub fn variants(&'a self) -> impl Iterator<Item = OneofVariantGen<'a>> {
-        self.oneof.variants().into_iter().map(|v| {
-            let field = self
-                .message
-                .fields
-                .iter()
-                .filter(|f| f.proto_field.name() == v.field.name())
-                .next()
-                .expect(&format!("field not found by name: {}", v.field.name()));
-            OneofVariantGen::parse(self, v, field, self.message.root_scope)
-        })
+    pub fn variants(&'a self) -> Vec<OneofVariantGen<'a>> {
+        self.oneof
+            .variants()
+            .into_iter()
+            .map(|v| {
+                let field = self
+                    .message
+                    .fields
+                    .iter()
+                    .filter(|f| f.proto_field.name() == v.field.name())
+                    .next()
+                    .expect(&format!("field not found by name: {}", v.field.name()));
+                OneofVariantGen::parse(self, v, field, self.message.root_scope)
+            })
+            .collect()
     }
 
     pub fn full_storage_type(&self) -> RustType {

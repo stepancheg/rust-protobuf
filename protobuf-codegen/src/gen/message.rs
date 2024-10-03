@@ -195,7 +195,7 @@ impl<'a> MessageGen<'a> {
         F: Fn(&mut CodeWriter, &OneofVariantGen, &RustValueTyped),
     {
         for oneof in self.oneofs() {
-            let variants = oneof.variants_except_group();
+            let variants = oneof.variants();
             if variants.is_empty() {
                 // Special case because
                 // https://github.com/rust-lang/rust/issues/50642
