@@ -37,7 +37,7 @@ impl TypeExt for Type {
 
     fn is_copy(&self) -> bool {
         match self {
-            Type::TYPE_MESSAGE | Type::TYPE_STRING | Type::TYPE_BYTES => false,
+            Type::TYPE_GROUP | Type::TYPE_MESSAGE | Type::TYPE_STRING | Type::TYPE_BYTES => false,
             _ => true,
         }
     }

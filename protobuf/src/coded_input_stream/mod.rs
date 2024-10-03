@@ -43,6 +43,7 @@ use crate::wire_format;
 use crate::wire_format::WireType;
 use crate::zigzag::decode_zig_zag_32;
 use crate::zigzag::decode_zig_zag_64;
+use crate::CodedOutputStream;
 use crate::EnumOrUnknown;
 use crate::Message;
 use crate::MessageDyn;
@@ -519,6 +520,81 @@ impl<'a> CodedInputStream<'a> {
             self.skip_field(wire_type)?;
         }
         Ok(())
+    }
+
+    /// Given the field number of a Group field, read raw encoded bytes until corresponding
+    /// end tag is found.
+    pub fn read_group_to_bytes(&mut self, field_number: u32) -> crate::Result<Vec<u8>> {
+        let mut buf = vec![];
+        let mut os = CodedOutputStream::new(&mut buf);
+        let end_tag = field_number << 3 | (WireType::EndGroup as u32);
+        while !self.eof()? {
+            let tag = self.read_tag()?;
+            let (field_number, wire_type) = tag.unpack();
+            if tag.value() == end_tag {
+                drop(os);
+                return Ok(buf);
+            }
+            match wire_type {
+                WireType::Varint => {
+                    let n = self.read_raw_varint64()?;
+                    os.write_raw_varint32(tag.value())?;
+                    os.write_raw_varint64(n)?;
+                }
+                WireType::Fixed32 => {
+                    let n = self.read_fixed32()?;
+                    os.write_raw_varint32(tag.value())?;
+                    os.write_fixed32_no_tag(n)?;
+                }
+                WireType::Fixed64 => {
+                    let n = self.read_fixed64()?;
+                    os.write_raw_varint32(tag.value())?;
+                    os.write_fixed64_no_tag(n)?;
+                }
+                WireType::LengthDelimited => {
+                    let len = self.read_raw_varint32()?;
+                    let bytes = self.read_raw_bytes(len)?;
+                    os.write_raw_varint32(tag.value())?;
+                    os.write_raw_bytes(bytes.as_ref())?;
+                }
+                WireType::StartGroup => {
+                    self.incr_recursion()?;
+                    let group_bytes = self.read_group_to_bytes(field_number)?;
+                    self.decr_recursion();
+                    os.write_raw_varint32(tag.value())?;
+                    os.write_raw_bytes(group_bytes.as_ref())?;
+                    let end_tag = crate::rt::set_wire_type_to_end_group(tag.value());
+                    os.write_raw_varint32(end_tag)?;
+                }
+                WireType::EndGroup => {
+                    return Err(WireError::UnexpectedWireType(wire_type).into());
+                }
+            }
+        }
+        Err(WireError::UnexpectedEof.into())
+    }
+
+    /// Read `UnknownValue` given field number and wire type
+    pub fn read_unknown_with_tag_unpacked(
+        &mut self,
+        field_number: u32,
+        wire_type: WireType,
+    ) -> crate::Result<UnknownValue> {
+        match wire_type {
+            WireType::Varint => self.read_raw_varint64().map(UnknownValue::Varint),
+            WireType::Fixed64 => self.read_fixed64().map(UnknownValue::Fixed64),
+            WireType::Fixed32 => self.read_fixed32().map(UnknownValue::Fixed32),
+            WireType::LengthDelimited => {
+                let len = self.read_raw_varint32()?;
+                self.read_raw_bytes(len).map(UnknownValue::LengthDelimited)
+            }
+            WireType::StartGroup => self
+                .read_group_to_bytes(field_number)
+                .map(UnknownValue::Group),
+            WireType::EndGroup => {
+                Err(ProtobufError::WireError(WireError::UnexpectedWireType(wire_type)).into())
+            }
+        }
     }
 
     /// Read `UnknownValue`

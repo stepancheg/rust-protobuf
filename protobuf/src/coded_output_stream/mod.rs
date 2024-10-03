@@ -416,6 +416,7 @@ impl<'a> CodedOutputStream<'a> {
             UnknownValueRef::Fixed32(fixed32) => self.write_raw_little_endian32(fixed32),
             UnknownValueRef::Varint(varint) => self.write_raw_varint64(varint),
             UnknownValueRef::LengthDelimited(bytes) => self.write_bytes_no_tag(bytes),
+            UnknownValueRef::Group(bytes) => self.write_bytes_no_tag(bytes),
         }
     }
 

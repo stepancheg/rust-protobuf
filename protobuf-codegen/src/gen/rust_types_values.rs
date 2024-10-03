@@ -58,8 +58,6 @@ pub(crate) enum RustType {
     Bytes,
     // chars::Chars
     Chars,
-    // group
-    Group,
 }
 
 impl RustType {
@@ -101,7 +99,6 @@ impl RustType {
                 protobuf_crate_path(customize),
                 name
             ),
-            RustType::Group => format!("<group>"),
             RustType::Bytes => format!("::bytes::Bytes"),
             RustType::Chars => format!("{}::Chars", protobuf_crate_path(customize)),
         }

@@ -35,9 +35,9 @@ pub enum WireType {
     Fixed64 = 1,
     /// Length-delimited field
     LengthDelimited = 2,
-    /// Groups are not supported in rust-protobuf
+    /// Denotes the beginning of a group
     StartGroup = 3,
-    /// Groups are not supported in rust-protobuf
+    /// Denotes the end of a group
     EndGroup = 4,
     /// 32-bit field (e. g. `fixed32` or `float`)
     Fixed32 = 5,
@@ -55,6 +55,11 @@ impl WireType {
             5 => Some(WireType::Fixed32),
             _ => None,
         }
+    }
+
+    /// Indicates whether the `WireType` is a `StartGroup` or `EndGroup`.
+    pub fn is_group(&self) -> bool {
+        matches!(self, WireType::StartGroup | WireType::EndGroup)
     }
 
     #[doc(hidden)]
@@ -78,7 +83,7 @@ impl WireType {
             Type::TYPE_STRING => WireType::LengthDelimited,
             Type::TYPE_BYTES => WireType::LengthDelimited,
             Type::TYPE_MESSAGE => WireType::LengthDelimited,
-            Type::TYPE_GROUP => WireType::LengthDelimited, // not true
+            Type::TYPE_GROUP => WireType::StartGroup,
         }
     }
 }
@@ -131,7 +136,7 @@ impl Tag {
     }
 
     /// Get wire type
-    fn wire_type(self) -> WireType {
+    pub(crate) fn wire_type(self) -> WireType {
         self.wire_type
     }
 

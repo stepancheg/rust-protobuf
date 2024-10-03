@@ -27,6 +27,8 @@ pub enum UnknownValue {
     Varint(u64),
     /// Length-delimited unknown (e. g. `message` or `string`)
     LengthDelimited(Vec<u8>),
+    /// Tag-delimited unknown
+    Group(Vec<u8>),
 }
 
 impl UnknownValue {
@@ -42,6 +44,7 @@ impl UnknownValue {
             UnknownValue::Fixed64(fixed64) => UnknownValueRef::Fixed64(fixed64),
             UnknownValue::Varint(varint) => UnknownValueRef::Varint(varint),
             UnknownValue::LengthDelimited(ref bytes) => UnknownValueRef::LengthDelimited(&bytes),
+            UnknownValue::Group(ref bytes) => UnknownValueRef::Group(&bytes),
         }
     }
 
@@ -99,6 +102,8 @@ pub enum UnknownValueRef<'o> {
     Varint(u64),
     /// Length-delimited unknown
     LengthDelimited(&'o [u8]),
+    /// Tag-delimited unknown
+    Group(&'o [u8]),
 }
 
 impl<'o> UnknownValueRef<'o> {
@@ -109,6 +114,7 @@ impl<'o> UnknownValueRef<'o> {
             UnknownValueRef::Fixed64(_) => WireType::Fixed64,
             UnknownValueRef::Varint(_) => WireType::Varint,
             UnknownValueRef::LengthDelimited(_) => WireType::LengthDelimited,
+            UnknownValueRef::Group(_) => WireType::StartGroup,
         }
     }
 
@@ -118,6 +124,7 @@ impl<'o> UnknownValueRef<'o> {
             UnknownValueRef::Fixed64(v) => ReflectValueRef::U64(*v),
             UnknownValueRef::Varint(v) => ReflectValueRef::U64(*v),
             UnknownValueRef::LengthDelimited(v) => ReflectValueRef::Bytes(v),
+            UnknownValueRef::Group(v) => ReflectValueRef::Bytes(v),
         }
     }
 }
@@ -135,6 +142,7 @@ pub(crate) struct UnknownValues {
     pub(crate) varint: Vec<u64>,
     /// Length-delimited unknowns
     pub(crate) length_delimited: Vec<Vec<u8>>,
+    pub(crate) groups: Vec<Vec<u8>>,
 }
 
 impl UnknownValues {
@@ -147,6 +155,7 @@ impl UnknownValues {
             UnknownValue::LengthDelimited(length_delimited) => {
                 self.length_delimited.push(length_delimited)
             }
+            UnknownValue::Group(g) => self.groups.push(g),
         };
     }
 
@@ -157,6 +166,7 @@ impl UnknownValues {
             fixed64: self.fixed64.iter(),
             varint: self.varint.iter(),
             length_delimited: self.length_delimited.iter(),
+            groups: self.groups.iter(),
         }
     }
 
@@ -169,6 +179,8 @@ impl UnknownValues {
             Some(UnknownValueRef::Varint(*last))
         } else if let Some(last) = self.length_delimited.last() {
             Some(UnknownValueRef::LengthDelimited(last))
+        } else if let Some(last) = self.groups.last() {
+            Some(UnknownValueRef::Group(last))
         } else {
             None
         }
@@ -190,6 +202,7 @@ pub(crate) struct UnknownValuesIter<'o> {
     fixed64: slice::Iter<'o, u64>,
     varint: slice::Iter<'o, u64>,
     length_delimited: slice::Iter<'o, Vec<u8>>,
+    groups: slice::Iter<'o, Vec<u8>>,
 }
 
 impl<'o> Iterator for UnknownValuesIter<'o> {
@@ -207,6 +220,9 @@ impl<'o> Iterator for UnknownValuesIter<'o> {
         }
         if let Some(length_delimited) = self.length_delimited.next() {
             return Some(UnknownValueRef::LengthDelimited(&length_delimited));
+        }
+        if let Some(g) = self.groups.next() {
+            return Some(UnknownValueRef::Group(&g));
         }
         None
     }

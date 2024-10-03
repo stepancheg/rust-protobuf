@@ -36,6 +36,7 @@ pub use singular::sint64_size;
 pub use singular::string_size;
 pub use singular::uint32_size;
 pub use singular::uint64_size;
+pub use unknown_or_group::read_unknown;
 pub use unknown_or_group::read_unknown_or_skip_group;
 pub use unknown_or_group::skip_field_for_tag;
 pub use unknown_or_group::unknown_fields_size;
@@ -59,4 +60,9 @@ pub(crate) fn compute_raw_varint32_size(value: u32) -> u64 {
 #[inline]
 pub fn tag_size(field_number: u32) -> u64 {
     encoded_varint64_len((field_number as u64) << 3) as u64
+}
+
+/// Sets the `WireType` of a raw tag to `WireType::EndGroup`.
+pub fn set_wire_type_to_end_group(tag: u32) -> u32 {
+    tag & !crate::wire_format::TAG_TYPE_MASK | (WireType::EndGroup as u32)
 }

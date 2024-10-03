@@ -195,7 +195,7 @@ impl<'a> MessageGen<'a> {
         F: Fn(&mut CodeWriter, &OneofVariantGen, &RustValueTyped),
     {
         for oneof in self.oneofs() {
-            let variants = oneof.variants_except_group();
+            let variants = oneof.variants();
             if variants.is_empty() {
                 // Special case because
                 // https://github.com/rust-lang/rust/issues/50642
@@ -271,7 +271,7 @@ impl<'a> MessageGen<'a> {
                 self.rust_name()
             ),
             |w| {
-                for f in &self.fields_except_oneof_and_group() {
+                for f in self.fields_except_oneof() {
                     w.field_entry(
                         &f.rust_name.to_string(),
                         &f.kind
@@ -310,6 +310,31 @@ impl<'a> MessageGen<'a> {
         );
     }
 
+    fn write_merge_delimited(&self, w: &mut CodeWriter) {
+        let sig = format!(
+            "merge_delimited(&mut self, is: &mut {}::CodedInputStream<'_>, end_tag: u32) -> {}::Result<()>",
+            protobuf_crate_path(&self.customize.for_elem),
+            protobuf_crate_path(&self.customize.for_elem),
+        );
+        w.comment("read and merge values from the stream, stopping when `end_tag` tag is reached");
+        w.pub_fn(&sig, |w| {
+            w.while_block("let Some(tag) = is.read_raw_tag_or_eof()?", |w| {
+                w.if_stmt("tag == end_tag", |w| {
+                    w.write_line("return ::std::result::Result::Ok(());");
+                });
+                w.match_block("tag", |w| {
+                    for f in &self.fields {
+                        f.write_merge_from_field_case_block(w);
+                    }
+                    w.case_block("tag", |w| {
+                        w.write_line(&format!("{}::rt::read_unknown(tag, is, self.special_fields.mut_unknown_fields())?;", protobuf_crate_path(&self.customize.for_elem)));
+                    });
+                });
+            });
+            w.write_line("::std::result::Result::Ok(())");
+        });
+    }
+
     fn write_compute_size(&self, w: &mut CodeWriter) {
         // Append sizes of messages in the tree to the specified vector.
         // First appended element is size of self, and then nested message sizes.
@@ -320,7 +345,7 @@ impl<'a> MessageGen<'a> {
         w.def_fn("compute_size(&self) -> u64", |w| {
             // To have access to its methods but not polute the name space.
             w.write_line("let mut my_size = 0;");
-            for field in self.fields_except_oneof_and_group() {
+            for field in &self.fields_except_oneof() {
                 field.write_message_compute_field_size("my_size", w);
             }
             self.write_match_each_oneof_variant(w, |w, variant, v| {
@@ -338,7 +363,7 @@ impl<'a> MessageGen<'a> {
     }
 
     fn write_field_accessors(&self, w: &mut CodeWriter) {
-        for f in self.fields_except_group() {
+        for f in &self.fields {
             f.write_message_single_field_accessors(w);
         }
     }
@@ -350,6 +375,9 @@ impl<'a> MessageGen<'a> {
             });
 
             self.write_field_accessors(w);
+
+            w.write_line("");
+            self.write_merge_delimited(w);
 
             if !self.lite_runtime {
                 w.write_line("");
@@ -385,11 +413,11 @@ impl<'a> MessageGen<'a> {
         w.def_fn(&sig, |w| {
             w.while_block("let Some(tag) = is.read_raw_tag_or_eof()?", |w| {
                 w.match_block("tag", |w| {
-                    for f in &self.fields_except_group() {
+                    for f in &self.fields {
                         f.write_merge_from_field_case_block(w);
                     }
                     w.case_block("tag", |w| {
-                        w.write_line(&format!("{}::rt::read_unknown_or_skip_group(tag, is, self.special_fields.mut_unknown_fields())?;", protobuf_crate_path(&self.customize.for_elem)));
+                        w.write_line(&format!("{}::rt::read_unknown(tag, is, self.special_fields.mut_unknown_fields())?;", protobuf_crate_path(&self.customize.for_elem)));
                     });
                 });
             });
