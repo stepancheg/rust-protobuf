@@ -34,7 +34,7 @@ enum CodegenError {
 
 /// Entry point for `.proto` to `.rs` code generation.
 ///
-/// This is similar to `protoc --rust_out...`.
+/// This is similar to `protoc --rs_out...`.
 #[derive(Debug, Default)]
 pub struct Codegen {
     /// What parser to use to parse `.proto` files.
@@ -208,8 +208,8 @@ impl Codegen {
 
     /// Invoke the code generation.
     ///
-    /// This is roughly equivalent to `protoc --rust_out=...` but
-    /// without requiring `protoc-gen-rust` command in `$PATH`.
+    /// This is roughly equivalent to `protoc --rs_out=...` but
+    /// without requiring `protoc-gen-rs` command in `$PATH`.
     ///
     /// This function uses pure Rust parser or `protoc` parser depending on
     /// how this object was configured.
