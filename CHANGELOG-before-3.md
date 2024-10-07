@@ -59,7 +59,7 @@ Changelog after version 3.0.0 lives in [CHANGELOG.md](CHANGELOG.md).
 ## [3.0.0-alpha.8] - 2022-02-21
 
 - Lite runtime generation is restored. When lite runtime requested, code is generated without reflection support.
-- `lite` option can be specified when using `protoc-gen-rust` plugin similarly to how
+- `lite` option can be specified when using `protoc-gen-rs` plugin similarly to how
   [C++ or Java do](https://github.com/protocolbuffers/protobuf/issues/6489).
 
 ## [3.0.0-alpha.7] - 2022-02-20
