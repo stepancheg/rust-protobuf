@@ -5,14 +5,14 @@
 //! # How to generate code
 //!
 //! There are three main ways to generate `.rs` files from `.proto` files:
-//! * using `protoc` command line tool and `protoc-gen-rust` plugin
+//! * using `protoc` command line tool and `protoc-gen-rs` plugin
 //! * using this crate `Codegen` with pure rust parser
 //! * using this crate `Codegen` with `protoc` parser
 //!
 //! Which one should you use depends on your needs.
 //!
 //! If you are using non-cargo build system (like Bazel), you might prefer
-//! using `protoc-gen-rust` plugin for `protoc`.
+//! using `protoc-gen-rs` plugin for `protoc`.
 //!
 //! If you build with `cargo`, you probably want to use `Codegen` from this crate.
 //!
@@ -57,7 +57,7 @@
 //!     .run_from_script();
 //! ```
 //!
-//! ## How to use `protoc-gen-rust`
+//! ## How to use `protoc-gen-rs`
 //!
 //! If you have to.
 //!
@@ -81,11 +81,11 @@
 //! Protobuf is needed only for code generation, `rust-protobuf` runtime
 //! does not use C++ protobuf library.
 //!
-//! 1) Install `protoc-gen-rust` program (which is `protoc` plugin)
+//! 1) Install `protoc-gen-rs` program (which is `protoc` plugin)
 //!
 //! It can be installed either from source or with `cargo install protobuf-codegen` command.
 //!
-//! 2) Add `protoc-gen-rust` to $PATH
+//! 2) Add `protoc-gen-rs` to $PATH
 //!
 //! If you installed it with cargo, it should be
 //!
@@ -96,7 +96,7 @@
 //! 3) Generate .rs files:
 //!
 //! ```sh
-//! protoc --rust_out . foo.proto
+//! protoc --rs_out . foo.proto
 //! ```
 //!
 //! This will generate .rs files in current directory.
@@ -136,7 +136,7 @@ mod compiler_plugin;
 mod customize;
 mod gen;
 pub mod gen_and_write;
-pub mod protoc_gen_rust;
+pub mod protoc_gen_rs;
 
 pub use codegen::Codegen;
 pub use customize::Customize;

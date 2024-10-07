@@ -161,7 +161,7 @@ impl Customize {
     /// So the generated code (and more importantly, generated binary size) is smaller,
     /// but reflection, text format, JSON serialization won't work.
     ///
-    /// Note when using `protoc` plugin `protoc-gen-rust`, the option name is just `lite`.
+    /// Note when using `protoc` plugin `protoc-gen-rs`, the option name is just `lite`.
     pub fn lite_runtime(mut self, lite_runtime: bool) -> Self {
         self.lite_runtime = Some(lite_runtime);
         self

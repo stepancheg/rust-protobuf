@@ -3,7 +3,7 @@
 //! `protoc` command must be in `$PATH`, along with `protoc-gen-LANG` command.
 //!
 //! Note that to generate `rust` code from `.proto` files, `protoc-rust` crate
-//! can be used, which does not require `protoc-gen-rust` present in `$PATH`.
+//! can be used, which does not require `protoc-gen-rs` present in `$PATH`.
 
 #![deny(missing_docs)]
 #![deny(rustdoc::broken_intra_doc_links)]
