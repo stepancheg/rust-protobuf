@@ -7,14 +7,14 @@ This crate is useful mostly from `build.rs` scripts to generate `.rs` files duri
 # How to generate code
 
 There are three main ways to generate `.rs` files from `.proto` files:
-* using `protoc` command line tool and `protoc-gen-rust` plugin
+* using `protoc` command line tool and `protoc-gen-rs` plugin
 * using this crate `Codegen` with pure rust parser
 * using this crate `Codegen` with `protoc` parser
 
 Which one should you use depends on your needs.
 
 If you are using non-cargo build system (like Bazel), you might prefer
-using `protoc-gen-rust` plugin for `protoc`.
+using `protoc-gen-rs` plugin for `protoc`.
 
 If you build with `cargo`, you probably want to use `Codegen` from this crate.
 
@@ -54,12 +54,12 @@ protobuf_codegen::Codegen::new()
     .run_from_script();
 ```
 
-## How to use `protoc-gen-rust`
+## How to use `protoc-gen-rs`
 
 If you have to.
 
 (Note `protoc` can be invoked programmatically with
-[protoc crate](https://docs.rs/protoc/%3E=3.0.0-alpha))
+[protoc crate](https://docs.rs/protoc/%3E=3.1.0-alpha))
 
 0) Install protobuf for `protoc` binary.
 
@@ -78,11 +78,11 @@ apt-get install protobuf-compiler
 Protobuf is needed only for code generation, `rust-protobuf` runtime
 does not use C++ protobuf library.
 
-1) Install `protoc-gen-rust` program (which is `protoc` plugin)
+1) Install `protoc-gen-rs` program (which is `protoc` plugin)
 
 It can be installed either from source or with `cargo install protobuf-codegen` command.
 
-2) Add `protoc-gen-rust` to $PATH
+2) Add `protoc-gen-rs` to $PATH
 
 If you installed it with cargo, it should be
 
@@ -93,7 +93,7 @@ PATH="$HOME/.cargo/bin:$PATH"
 3) Generate .rs files:
 
 ```sh
-protoc --rust_out . foo.proto
+protoc --rs_out . foo.proto
 ```
 
 This will generate .rs files in current directory.

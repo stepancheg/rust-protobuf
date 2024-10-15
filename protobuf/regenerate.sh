@@ -32,9 +32,9 @@ MSYS_NT*)
 esac
 
 "$PROTOC" \
-    --plugin=protoc-gen-rust="$where_am_i/target/debug/protoc-gen-rust$exe_suffix" \
-    --rust_out tmp-generated \
-    --rust_opt 'inside_protobuf=true gen_mod_rs=false' \
+    --plugin=protoc-gen-rs="$where_am_i/target/debug/protoc-gen-rs$exe_suffix" \
+    --rs_out tmp-generated \
+    --rs_opt 'inside_protobuf=true gen_mod_rs=false' \
     -I../proto \
     ../proto/google/protobuf/*.proto \
     ../proto/google/protobuf/compiler/*.proto \
