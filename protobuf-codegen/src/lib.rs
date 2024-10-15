@@ -62,7 +62,7 @@
 //! If you have to.
 //!
 //! (Note `protoc` can be invoked programmatically with
-//! [protoc crate](https://docs.rs/protoc/%3E=3.0.0-alpha))
+//! [protoc crate](https://docs.rs/protoc/))
 //!
 //! 0) Install protobuf for `protoc` binary.
 //!

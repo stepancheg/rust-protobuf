@@ -59,7 +59,7 @@ protobuf_codegen::Codegen::new()
 If you have to.
 
 (Note `protoc` can be invoked programmatically with
-[protoc crate](https://docs.rs/protoc/%3E=3.1.0-alpha))
+[protoc crate](https://docs.rs/protoc/))
 
 0) Install protobuf for `protoc` binary.
 
