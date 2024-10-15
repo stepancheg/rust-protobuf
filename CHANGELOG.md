@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [3.7.1] - Unrelease
+
 - `protoc-gen-rust` renamed to `protoc-gen-rs`. `protoc --rust_out=` no longer works with latest Google protobuf,
   they are working on official protobuf support for Rust.
 - Do not detect nightly in `protobuf` crate (no longer needed)
