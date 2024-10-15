@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- [Use `RUSTC_WRAPPER` env var in `build.rs`](https://github.com/stepancheg/rust-protobuf/pull/737)
+- Do not detect nightly in `protobuf` crate (no longer needed)
 
 ## [3.6.0] - 2024-09-30
 
