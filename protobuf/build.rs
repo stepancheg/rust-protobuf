@@ -1,11 +1,9 @@
 use std::env;
 use std::env::VarError;
 use std::fs::File;
-use std::io::Read;
 use std::io::Write;
 use std::path::Path;
 use std::path::PathBuf;
-use std::process;
 
 fn cfg_serde() {
     match env::var("CARGO_FEATURE_WITH_SERDE") {
@@ -52,7 +50,6 @@ fn write_version() {
 }
 
 fn main() {
-    cfg_rust_version();
     cfg_serde();
     write_version();
 }
