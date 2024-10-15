@@ -5,6 +5,7 @@
 - `protoc-gen-rust` renamed to `protoc-gen-rs`. `protoc --rust_out=` no longer works with latest Google protobuf,
   they are working on official protobuf support for Rust.
 - Do not detect nightly in `protobuf` crate (no longer needed)
+- [Repeated fields in constants](https://github.com/stepancheg/rust-protobuf/pull/740)
 
 ## [3.6.0] - 2024-09-30
 
