@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- [Use `RUSTC_WRAPPER` env var in `build.rs`](https://github.com/stepancheg/rust-protobuf/pull/737)
+
 ## [3.6.0] - 2024-09-30
 
 - [Fix text format parsing of non-ASCII](https://github.com/stepancheg/rust-protobuf/pull/730)
