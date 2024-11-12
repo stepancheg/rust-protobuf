@@ -13,6 +13,7 @@ members = [
     "protobuf-examples/issue-614",
     "protobuf-parse",
     "protobuf-support",
+    "test-crates/conformance",
     "test-crates/perftest/bytes",
     "test-crates/perftest/misc",
     "test-crates/perftest/vs-cxx",
