@@ -231,6 +231,9 @@ impl Customize {
         if let Some(v) = btreemap {
             self.btreemap = Some(v);
         }
+        if let Some(v) = oneofs_non_exhaustive {
+            self.oneofs_non_exhaustive = Some(v);
+        }
     }
 
     /// Update unset fields of self with fields from other customize
