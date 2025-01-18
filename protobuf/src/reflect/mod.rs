@@ -14,7 +14,7 @@
 //! Some minor adjustements are made to make code more idiomatic to rust.
 
 mod acc;
-mod dynamic;
+pub mod dynamic;
 mod enums;
 pub(crate) mod error;
 mod field;
