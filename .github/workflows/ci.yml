@@ -20,7 +20,7 @@ jobs:
                   toolchain: stable
                   override: true
             - name: Cache protobuf
-              uses: actions/cache@v2
+              uses: actions/cache@v4
               with:
                   key: pb-linux-3.19.4
                   path: ~/pb
@@ -65,7 +65,7 @@ jobs:
                   toolchain: beta
                   override: true
             - name: Cache protobuf
-              uses: actions/cache@v2
+              uses: actions/cache@v4
               with:
                   key: pb-linux-3.19.4
                   path: ~/pb
@@ -110,7 +110,7 @@ jobs:
                   toolchain: stable
                   override: true
             - name: Cache protobuf
-              uses: actions/cache@v2
+              uses: actions/cache@v4
               with:
                   key: pb-linux-3.19.4
                   path: ~/pb
@@ -152,7 +152,7 @@ jobs:
                   toolchain: nightly
                   override: true
             - name: Cache protobuf
-              uses: actions/cache@v2
+              uses: actions/cache@v4
               with:
                   key: pb-linux-3.19.4
                   path: ~/pb
@@ -196,7 +196,7 @@ jobs:
                   toolchain: stable
                   override: true
             - name: Cache protobuf
-              uses: actions/cache@v2
+              uses: actions/cache@v4
               with:
                   key: pb-windows-3.19.4
                   path: ~/pb
@@ -267,7 +267,7 @@ jobs:
             - name: Checkout sources
               uses: actions/checkout@v2
             - name: Cache protobuf
-              uses: actions/cache@v2
+              uses: actions/cache@v4
               with:
                   key: pb-linux-3.19.4
                   path: ~/pb
