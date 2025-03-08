@@ -92,7 +92,7 @@ pub fn cargo_doc(name: &str, args: &str) -> Step {
 pub fn cache(name: &str, key: &str, path: &str) -> Step {
     Step::uses_env_with(
         name,
-        "actions/cache@v2",
+        "actions/cache@v4",
         &[("cache-name", "pb")],
         Yaml::map(vec![("key", key), ("path", path)]),
     )
