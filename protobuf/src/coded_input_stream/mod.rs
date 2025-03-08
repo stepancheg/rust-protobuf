@@ -1000,6 +1000,8 @@ mod test {
         for _ in 0..50 {
             os.write_tag(1, WireType::EndGroup).unwrap();
         }
+        drop(os);
+
         let mut input = CodedInputStream::from_bytes(&vec);
         assert!(input.skip_group().is_ok());
     }
@@ -1018,6 +1020,8 @@ mod test {
         for _ in 0..1000 {
             os.write_tag(1, WireType::EndGroup).unwrap();
         }
+        drop(os);
+
         let mut input = CodedInputStream::from_bytes(&vec);
         assert!(input.skip_group().is_err());
     }
