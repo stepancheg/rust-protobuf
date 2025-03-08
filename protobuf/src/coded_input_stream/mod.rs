@@ -1025,6 +1025,7 @@ mod test {
         let mut input = CodedInputStream::from_bytes(&vec);
         assert!(input
             .skip_group()
+            .unwrap_err()
             .to_string()
             .contains("Over recursion limit"));
     }
