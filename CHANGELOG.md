@@ -2,7 +2,11 @@
 
 ## Unreleased
 
-## [3.7.1] - Unrelease
+## [3.7.2] - 2025-03-10 (to be released)
+
+- [Do not stack overflow on groups](https://github.com/stepancheg/rust-protobuf/pull/756)
+
+## [3.7.1] - 2024-11-15
 
 - `protoc-gen-rust` renamed to `protoc-gen-rs`. `protoc --rust_out=` no longer works with latest Google protobuf,
   they are working on official protobuf support for Rust.
