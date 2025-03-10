@@ -11,6 +11,7 @@ documentation = "https://github.com/stepancheg/rust-protobuf/blob/master/README.
 description = """
 Rust implementation of Google protocol buffers
 """
+rust-version = "1.74.0"
 
 [lib]
 bench = false
