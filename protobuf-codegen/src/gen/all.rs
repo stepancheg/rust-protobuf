@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use protobuf::descriptor::FileDescriptorProto;
 use protobuf::reflect::FileDescriptor;
@@ -33,7 +33,7 @@ pub(crate) fn gen_all(
         .map(|f| Ok((ProtoPath::new(f.proto().name())?, f)))
         .collect::<Result<_, anyhow::Error>>()?;
 
-    let mut mods = Vec::new();
+    let mut mods = HashSet::new();
 
     let customize = CustomizeElemCtx {
         for_elem: customize.clone(),
@@ -49,7 +49,7 @@ pub(crate) fn gen_all(
         ));
         let gen_file_result = gen_file(file, &files_map, &root_scope, &customize, parser)?;
         results.push(gen_file_result.compiler_plugin_result);
-        mods.push(gen_file_result.mod_name);
+        mods.insert(gen_file_result.mod_name);
     }
 
     if customize.for_elem.inside_protobuf.unwrap_or(false) {
@@ -57,7 +57,8 @@ pub(crate) fn gen_all(
     }
 
     if customize.for_elem.gen_mod_rs.unwrap_or(true) {
-        results.push(gen_mod_rs(&mods));
+        let r_vec: Vec<String> = mods.into_iter().collect();
+        results.push(gen_mod_rs(&r_vec));
     }
 
     Ok(results)
