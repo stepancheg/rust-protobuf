@@ -190,32 +190,49 @@ impl Customize {
 
     /// Update fields of self with fields defined in other customize
     pub fn update_with(&mut self, that: &Customize) {
-        if let Some(v) = &that.before {
-            self.before = Some(v.clone());
+        // Intentionally exhaustive destructuring ensures that if fields are
+        // added but not at least mentioned here, this code won't compile.
+        let Customize {
+            before,
+            generate_accessors,
+            generate_getter,
+            tokio_bytes,
+            tokio_bytes_for_string,
+            oneofs_non_exhaustive,
+            lite_runtime,
+            gen_mod_rs,
+            inside_protobuf,
+            btreemap,
+        } = that.clone();
+        if let Some(v) = before {
+            self.before = Some(v);
         }
-        if let Some(v) = that.generate_accessors {
+        if let Some(v) = generate_accessors {
             self.generate_accessors = Some(v);
         }
-        if let Some(v) = that.generate_getter {
+        if let Some(v) = generate_getter {
             self.generate_getter = Some(v);
         }
-        if let Some(v) = that.tokio_bytes {
+        if let Some(v) = tokio_bytes {
             self.tokio_bytes = Some(v);
         }
-        if let Some(v) = that.tokio_bytes_for_string {
+        if let Some(v) = tokio_bytes_for_string {
             self.tokio_bytes_for_string = Some(v);
         }
-        if let Some(v) = that.lite_runtime {
+        if let Some(v) = lite_runtime {
             self.lite_runtime = Some(v);
         }
-        if let Some(v) = that.gen_mod_rs {
+        if let Some(v) = gen_mod_rs {
             self.gen_mod_rs = Some(v);
         }
-        if let Some(v) = that.inside_protobuf {
+        if let Some(v) = inside_protobuf {
             self.inside_protobuf = Some(v);
         }
-        if let Some(v) = that.btreemap {
+        if let Some(v) = btreemap {
             self.btreemap = Some(v);
+        }
+        if let Some(v) = oneofs_non_exhaustive {
+            self.oneofs_non_exhaustive = Some(v);
         }
     }
 
