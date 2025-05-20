@@ -1,5 +1,16 @@
 //! # Library to read and write protocol buffers data
 //!
+//! ## Install
+//!
+//! To get started generaing Rust code from ProtoBufs, add this to your `Cargo.toml`
+//! ```toml
+//! [dependencies]
+//! protobuf = "3.7"
+//!
+//! [build-dependencies]
+//! protobuf-codegen = "3.7"
+//! ```
+//!
 //! ## Features
 //!
 //! This crate has one feature, which is `with-bytes`.
