@@ -130,6 +130,9 @@ impl PrintableToJson for f64 {
 impl PrintableToJson for u64 {
     fn print_to_json(&self, w: &mut Printer) -> PrintResult<()> {
         // 64-bit integers are quoted by default
+        if w.print_options.unquoted_64bit_integers {
+            return Ok(write!(w.buf, "{}", self)?);
+        }
         Ok(write!(w.buf, "\"{}\"", self)?)
     }
 }
@@ -137,6 +140,9 @@ impl PrintableToJson for u64 {
 impl PrintableToJson for i64 {
     fn print_to_json(&self, w: &mut Printer) -> PrintResult<()> {
         // 64-bit integers are quoted by default
+        if w.print_options.unquoted_64bit_integers {
+            return Ok(write!(w.buf, "{}", self)?);
+        }
         Ok(write!(w.buf, "\"{}\"", self)?)
     }
 }
@@ -563,6 +569,8 @@ pub struct PrintOptions {
     pub proto_field_name: bool,
     /// Output field default values.
     pub always_output_default_values: bool,
+    /// Do not quote 64-bit integers.
+    pub unquoted_64bit_integers: bool,
     /// Prevent initializing `PrintOptions` enumerating all field.
     pub _future_options: (),
 }
