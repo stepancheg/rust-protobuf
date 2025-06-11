@@ -522,12 +522,12 @@ impl<'a> Lexer<'a> {
             let digit = self.next_hex_digit()?;
             v = v * 16 + digit;
         }
-        
+
         // Check if this is a high surrogate (0xD800-0xDBFF)
         if v >= 0xD800 && v <= 0xDBFF {
             // This is a high surrogate, we need to read the low surrogate
             let high_surrogate = v;
-            
+
             // Expect \u followed by low surrogate
             if self.next_char()? != '\\' {
                 return Err(LexerError::ExpectedLowSurrogate);
@@ -535,18 +535,18 @@ impl<'a> Lexer<'a> {
             if self.next_char()? != 'u' {
                 return Err(LexerError::ExpectedLowSurrogate);
             }
-            
+
             let mut low_surrogate = 0;
             for _ in 0..4 {
                 let digit = self.next_hex_digit()?;
                 low_surrogate = low_surrogate * 16 + digit;
             }
-            
+
             // Verify it's a valid low surrogate (0xDC00-0xDFFF)
             if low_surrogate < 0xDC00 || low_surrogate > 0xDFFF {
                 return Err(LexerError::InvalidLowSurrogate);
             }
-            
+
             // Convert surrogate pair to Unicode code point
             let code_point = 0x10000 + ((high_surrogate & 0x3FF) << 10) + (low_surrogate & 0x3FF);
             Self::char_try_from(code_point)
@@ -760,10 +760,7 @@ mod test {
         let mut lexer = Lexer::new(input, ParserLanguage::Json);
         let mut r = String::new();
         while !lexer.eof() {
-            r.push(
-                 lexer
-                    .next_json_char_value()?
-            );
+            r.push(lexer.next_json_char_value()?);
         }
         Ok(r)
     }
@@ -775,14 +772,14 @@ mod test {
         assert_eq!(10, mess);
     }
 
-     #[test]
+    #[test]
     fn test_lexer_parse_utf8_chars() {
         let str = parse_json_string("Hi \\u0181"); // Valid Unicode character
         assert!(str.is_ok());
         assert_eq!(str.unwrap(), "Hi Ɓ");
     }
 
-     #[test]
+    #[test]
     fn test_lexer_parse_utf16_surrogate_pairs() {
         assert_eq!(parse_json_string("\\ud83d\\ude00").unwrap(), "😀");
         assert_eq!(parse_json_string("\\ud83d\\udc36").unwrap(), "🐶");
@@ -805,7 +802,10 @@ mod test {
 
         let str = parse_json_string(r#""\udc51""#); // Lone low surrogate
         assert!(str.is_err());
-        assert!(matches!(str.unwrap_err(), LexerError::ExpectedHighSurrogate));
+        assert!(matches!(
+            str.unwrap_err(),
+            LexerError::ExpectedHighSurrogate
+        ));
 
         let str = parse_json_string(r#""\ud83d\u0181""#); // Invalid low surrogate
         assert!(str.is_err());
