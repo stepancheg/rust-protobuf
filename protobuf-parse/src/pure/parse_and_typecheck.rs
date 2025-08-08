@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fmt;
 use std::fs;
 use std::io;
@@ -53,6 +54,7 @@ where
 {
     parsed_files: IndexMap<ProtoPathBuf, FileDescriptorPair>,
     resolver: R,
+    custom_embedded: HashMap<String, String>,
 }
 
 impl<R> Run<R>
@@ -144,7 +146,19 @@ where
             return self.add_file_content(protobuf_path, &resolved);
         }
 
-        let embedded = match protobuf_path.to_str() {
+        let protobuf_path_str = protobuf_path.to_str();
+
+        if let Some(content) = self.custom_embedded.get(protobuf_path_str) {
+            return self.add_file_content(
+                protobuf_path,
+                &ResolvedProtoFile {
+                    path: protobuf_path_str.to_string(),
+                    content: content.as_bytes().to_vec(),
+                },
+            );
+        }
+
+        let embedded = match protobuf_path_str {
             "rustproto.proto" => Some(proto::RUSTPROTO_PROTO),
             "google/protobuf/any.proto" => Some(proto::ANY_PROTO),
             "google/protobuf/api.proto" => Some(proto::API_PROTO),
@@ -250,9 +264,25 @@ fn fs_resolver(includes: &[PathBuf]) -> impl ProtoPathResolver {
 
 /// Parse `.proto` files using pure Rust implementation.
 pub fn parse_and_typecheck(parser: &Parser) -> anyhow::Result<ParsedAndTypechecked> {
+    parse_and_typecheck_impl(parser, HashMap::new())
+}
+
+/// Parse `.proto` files with custom embedded proto files.
+pub fn parse_and_typecheck_with_embedded(
+    parser: &Parser,
+    custom_embedded: HashMap<String, String>,
+) -> anyhow::Result<ParsedAndTypechecked> {
+    parse_and_typecheck_impl(parser, custom_embedded)
+}
+
+fn parse_and_typecheck_impl(
+    parser: &Parser,
+    custom_embedded: HashMap<String, String>,
+) -> anyhow::Result<ParsedAndTypechecked> {
     let mut run = Run {
         parsed_files: IndexMap::new(),
         resolver: fs_resolver(&parser.includes),
+        custom_embedded,
     };
 
     let relative_paths = parser
@@ -286,14 +316,24 @@ pub fn parse_and_typecheck(parser: &Parser) -> anyhow::Result<ParsedAndTypecheck
     })
 }
 
-/// TODO: this API is to be refactored.
+/// Parse and typecheck with custom resolver.
 pub fn parse_and_typecheck_custom(
     input: &[ProtoPathBuf],
     resolver: impl ProtoPathResolver,
 ) -> anyhow::Result<Vec<FileDescriptorProto>> {
+    parse_and_typecheck_custom_with_embedded(input, resolver, HashMap::new())
+}
+
+/// Parse and typecheck with custom resolver and embedded files.
+pub fn parse_and_typecheck_custom_with_embedded(
+    input: &[ProtoPathBuf],
+    resolver: impl ProtoPathResolver,
+    custom_embedded: HashMap<String, String>,
+) -> anyhow::Result<Vec<FileDescriptorProto>> {
     let mut run = Run {
         parsed_files: IndexMap::new(),
         resolver,
+        custom_embedded,
     };
 
     for proto_path in input {
