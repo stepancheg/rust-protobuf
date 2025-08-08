@@ -264,25 +264,10 @@ fn fs_resolver(includes: &[PathBuf]) -> impl ProtoPathResolver {
 
 /// Parse `.proto` files using pure Rust implementation.
 pub fn parse_and_typecheck(parser: &Parser) -> anyhow::Result<ParsedAndTypechecked> {
-    parse_and_typecheck_impl(parser, HashMap::new())
-}
-
-/// Parse `.proto` files with custom embedded proto files.
-pub fn parse_and_typecheck_with_embedded(
-    parser: &Parser,
-    custom_embedded: HashMap<String, String>,
-) -> anyhow::Result<ParsedAndTypechecked> {
-    parse_and_typecheck_impl(parser, custom_embedded)
-}
-
-fn parse_and_typecheck_impl(
-    parser: &Parser,
-    custom_embedded: HashMap<String, String>,
-) -> anyhow::Result<ParsedAndTypechecked> {
     let mut run = Run {
         parsed_files: IndexMap::new(),
         resolver: fs_resolver(&parser.includes),
-        custom_embedded,
+        custom_embedded: parser.custom_embedded.clone(),
     };
 
     let relative_paths = parser
@@ -316,24 +301,15 @@ fn parse_and_typecheck_impl(
     })
 }
 
-/// Parse and typecheck with custom resolver.
+/// TODO: this API is to be refactored.
 pub fn parse_and_typecheck_custom(
     input: &[ProtoPathBuf],
     resolver: impl ProtoPathResolver,
 ) -> anyhow::Result<Vec<FileDescriptorProto>> {
-    parse_and_typecheck_custom_with_embedded(input, resolver, HashMap::new())
-}
-
-/// Parse and typecheck with custom resolver and embedded files.
-pub fn parse_and_typecheck_custom_with_embedded(
-    input: &[ProtoPathBuf],
-    resolver: impl ProtoPathResolver,
-    custom_embedded: HashMap<String, String>,
-) -> anyhow::Result<Vec<FileDescriptorProto>> {
     let mut run = Run {
         parsed_files: IndexMap::new(),
         resolver,
-        custom_embedded,
+        custom_embedded: HashMap::new(),
     };
 
     for proto_path in input {
