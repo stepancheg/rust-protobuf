@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::collections::HashSet;
 use std::ffi::OsStr;
 use std::ffi::OsString;
@@ -21,6 +22,7 @@ pub struct Parser {
     pub(crate) protoc: Option<PathBuf>,
     pub(crate) protoc_extra_args: Vec<OsString>,
     pub(crate) capture_stderr: bool,
+    pub(crate) custom_embedded: HashMap<String, String>,
 }
 
 impl Parser {
@@ -94,6 +96,19 @@ impl Parser {
     /// By default `protoc` stderr is inherited from this process stderr.
     pub fn capture_stderr(&mut self) -> &mut Self {
         self.capture_stderr = true;
+        self
+    }
+
+    /// Adds an embedded `.proto` file to the parser.
+    ///
+    /// This allows the parser to use `.proto` files provided as in-memory
+    /// strings rather than reading them from disk.
+    pub fn add_custom_embedded(
+        &mut self,
+        name: impl Into<String>,
+        content: impl Into<String>,
+    ) -> &mut Self {
+        self.custom_embedded.insert(name.into(), content.into());
         self
     }
 

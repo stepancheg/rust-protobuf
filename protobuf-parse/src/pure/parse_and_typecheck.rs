@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fmt;
 use std::fs;
 use std::io;
@@ -53,6 +54,7 @@ where
 {
     parsed_files: IndexMap<ProtoPathBuf, FileDescriptorPair>,
     resolver: R,
+    custom_embedded: HashMap<String, String>,
 }
 
 impl<R> Run<R>
@@ -144,7 +146,19 @@ where
             return self.add_file_content(protobuf_path, &resolved);
         }
 
-        let embedded = match protobuf_path.to_str() {
+        let protobuf_path_str = protobuf_path.to_str();
+
+        if let Some(content) = self.custom_embedded.get(protobuf_path_str) {
+            return self.add_file_content(
+                protobuf_path,
+                &ResolvedProtoFile {
+                    path: protobuf_path_str.to_string(),
+                    content: content.as_bytes().to_vec(),
+                },
+            );
+        }
+
+        let embedded = match protobuf_path_str {
             "rustproto.proto" => Some(proto::RUSTPROTO_PROTO),
             "google/protobuf/any.proto" => Some(proto::ANY_PROTO),
             "google/protobuf/api.proto" => Some(proto::API_PROTO),
@@ -253,6 +267,7 @@ pub fn parse_and_typecheck(parser: &Parser) -> anyhow::Result<ParsedAndTypecheck
     let mut run = Run {
         parsed_files: IndexMap::new(),
         resolver: fs_resolver(&parser.includes),
+        custom_embedded: parser.custom_embedded.clone(),
     };
 
     let relative_paths = parser
@@ -294,6 +309,7 @@ pub fn parse_and_typecheck_custom(
     let mut run = Run {
         parsed_files: IndexMap::new(),
         resolver,
+        custom_embedded: HashMap::new(),
     };
 
     for proto_path in input {
