@@ -2,7 +2,7 @@
 
 pub(crate) mod convert;
 pub(crate) mod model;
-pub mod parse_and_typecheck;
+pub(crate) mod parse_and_typecheck;
 pub(crate) mod parse_dependencies;
 mod parser;
 
