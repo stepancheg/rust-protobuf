@@ -265,6 +265,7 @@ impl<'a> CodedOutputStream<'a> {
     pub fn write_raw_varint32(&mut self, value: u32) -> crate::Result<()> {
         if self.buffer.unfilled_len() >= 5 {
             // fast path
+            // SAFETY: we've just checked that there's enough space in the buffer.
             unsafe {
                 let len = encode_varint32(value, self.buffer.unfilled());
                 self.buffer.advance(len);
@@ -284,6 +285,7 @@ impl<'a> CodedOutputStream<'a> {
     pub fn write_raw_varint64(&mut self, value: u64) -> crate::Result<()> {
         if self.buffer.unfilled_len() >= MAX_VARINT_ENCODED_LEN {
             // fast path
+            // SAFETY: we've just checked that there's enough space in the buffer.
             unsafe {
                 let len = encode_varint64(value, self.buffer.unfilled());
                 self.buffer.advance(len);
@@ -301,12 +303,38 @@ impl<'a> CodedOutputStream<'a> {
 
     /// Write 32-bit integer little endian
     pub fn write_raw_little_endian32(&mut self, value: u32) -> crate::Result<()> {
-        self.write_raw_bytes(&value.to_le_bytes())
+        if self.buffer.unfilled_len() >= 4 {
+            // fast path
+            // SAFETY: we've just checked that there's enough space in the buffer.
+            unsafe {
+                let buf = self.buffer.unfilled();
+                let bytes = value.to_le_bytes();
+                ptr::copy_nonoverlapping(bytes.as_ptr(), buf.as_mut_ptr() as *mut u8, 4);
+                self.buffer.advance(4);
+            };
+            Ok(())
+        } else {
+            // slow path
+            self.write_raw_bytes(&value.to_le_bytes())
+        }
     }
 
     /// Write 64-bit integer little endian
     pub fn write_raw_little_endian64(&mut self, value: u64) -> crate::Result<()> {
-        self.write_raw_bytes(&value.to_le_bytes())
+        if self.buffer.unfilled_len() >= 8 {
+            // fast path
+            // SAFETY: we've just checked that there's enough space in the buffer.
+            unsafe {
+                let buf = self.buffer.unfilled();
+                let bytes = value.to_le_bytes();
+                ptr::copy_nonoverlapping(bytes.as_ptr(), buf.as_mut_ptr() as *mut u8, 8);
+                self.buffer.advance(8);
+            };
+            Ok(())
+        } else {
+            // slow path
+            self.write_raw_bytes(&value.to_le_bytes())
+        }
     }
 
     /// Write `float`
