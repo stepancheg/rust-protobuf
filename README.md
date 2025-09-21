@@ -15,6 +15,11 @@
 [license]: https://github.com/stepancheg/rust-protobuf/blob/master/LICENSE.txt
 [license-shields]: https://img.shields.io/crates/l/protobuf.svg
 
+# End of life
+
+This implementation is approaching end of life. Official protobuf implementation (not based on this implementation) is on the way,
+that will be released as protobuf=4 soon. Follow progress in [protobuf repository](https://github.com/protocolbuffers/protobuf/tree/main/rust).
+
 [Protobuf](https://developers.google.com/protocol-buffers/docs/overview) implementation in [Rust](https://www.rust-lang.org/).
 
 * Written in pure rust
