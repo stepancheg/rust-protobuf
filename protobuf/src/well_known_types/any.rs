@@ -37,7 +37,7 @@ pub struct Any {
     ///  server that maps type URLs to message definitions as follows:
     ///
     ///  * If no scheme is provided, `https` is assumed.
-    ///  * An HTTP GET on the URL must yield a [google.protobuf.Type][]
+    ///  * An HTTP GET on the URL must yield a \[google.protobuf.Type\][]
     ///    value in binary format, or produce an error.
     ///  * Applications are allowed to cache lookup results based on the
     ///    URL, or have them precompiled into a binary to avoid any
