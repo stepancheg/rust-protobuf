@@ -1,3 +1,9 @@
+//! This module contains dynamic reflection.
+//!
+//! It is used for dynamically getting fields' values.
+
+#![doc(hidden)]
+
 use std::any::Any;
 use std::any::TypeId;
 use std::fmt;
@@ -95,8 +101,11 @@ impl DynamicFieldValue {
     }
 }
 
+/// Structure used for dynamic reflection.
+///
+/// It is mostly used for dynamically getting fields' values.
 #[derive(Debug, Clone)]
-pub(crate) struct DynamicMessage {
+pub struct DynamicMessage {
     descriptor: MessageDescriptor,
     /// Fields by index in the description.
     /// This field is lazy-init: it is empty when created.
@@ -127,7 +136,8 @@ impl DynamicMessage {
         }
     }
 
-    pub(crate) fn get_reflect<'a>(&'a self, field: &FieldDescriptor) -> ReflectFieldRef<'a> {
+    /// Get a field reference for a field descriptor.
+    pub fn get_reflect<'a>(&'a self, field: &FieldDescriptor) -> ReflectFieldRef<'a> {
         let (descriptor, index) = field.regular();
         assert_eq!(self.descriptor, descriptor);
         if self.fields.is_empty() {
@@ -137,6 +147,7 @@ impl DynamicMessage {
         }
     }
 
+    /// Clear a field.
     pub fn clear_field(&mut self, field: &FieldDescriptor) {
         let (descriptor, index) = field.regular();
         assert_eq!(self.descriptor, descriptor);
